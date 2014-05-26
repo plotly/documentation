@@ -1,0 +1,17 @@
+signin('test-runner', '9h29fe3l0x')
+
+x0 = randn(500,1);
+x1 = randn(500,1)+1;
+
+trace1 = struct(...
+  'x', x0, ...
+  'type', 'histogram');
+trace2 = struct(...
+  'x', x1, ...
+  'type', 'histogram');
+data = {trace0, trace1};
+
+layout = struct('barmode', 'stacked');
+
+response = plotly(data, struct('layout', layout, 'filename', 'stacked-histogram', 'fileopt', 'overwrite'));
+plot_url = response.url
