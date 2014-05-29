@@ -14,4 +14,5 @@ data = Data([
         y=y
     )
 ])
+
 plot_url = py.plot(data, filename='2d-histogram')

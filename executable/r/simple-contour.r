@@ -13,11 +13,13 @@ for(i in 1:size) {
 }
 
 trace1 <- list(
+  z = z, 
   x = x, 
   y = y, 
-  z = z, 
   type = "contour"
 )
+
+
 response <- p$plotly(trace0, kwargs=list(filename="simple-contour", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

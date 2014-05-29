@@ -7,6 +7,8 @@ trace1 <- list(
   x = x, 
   type = "histogram"
 )
+
+
 response <- p$plotly(trace0, kwargs=list(filename="basic-histogram", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

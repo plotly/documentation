@@ -14,7 +14,6 @@ trace2 = Bar(
     name='LA Zoo'
 )
 data = Data([trace1, trace2])
-
 layout = Layout(
     xaxis=XAxis(
         type='category'
@@ -22,6 +21,6 @@ layout = Layout(
     categories=['giraffes', 'orangutans', 'monkeys'],
     barmode='stack'
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='stacked-bar')

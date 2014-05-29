@@ -7,8 +7,11 @@ trace1 <- list(
   error_x = list(
     value = 10, 
     type = "percent"
-  )
+  ), 
+  type = "scatter"
 )
+
+
 response <- p$plotly(trace0, kwargs=list(filename="error-bar-horizontal", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

@@ -14,7 +14,6 @@ data = [
     "type" => "histogram"
   ]
 ]
-
 layout = ["barmode" => "stacked"]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "stacked-histogram", "fileopt" => "overwrite"])

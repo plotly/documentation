@@ -20,7 +20,6 @@ trace3 = Scatter(
     yaxis='y3'
 )
 data = Data([trace1, trace2, trace3])
-
 layout = Layout(
     yaxis=YAxis(
         domain=[0, 0.266]
@@ -41,6 +40,6 @@ layout = Layout(
         domain=[0.733, 1]
     )
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='stacked-subplots')

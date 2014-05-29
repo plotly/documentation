@@ -12,7 +12,6 @@ trace2 = Scatter(
     y=[0, 4, 7, 8, 3, 6, 3, 3, 4]
 )
 data = Data([trace1, trace2])
-
 layout = Layout(
     legend=Legend(
         x=0,
@@ -29,6 +28,6 @@ layout = Layout(
         traceorder='normal'
     )
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='legend-style')

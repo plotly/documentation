@@ -46,7 +46,6 @@ trace4 = Histogram(
     xaxis='x2'
 )
 data = Data([trace1, trace2, trace3, trace4])
-
 layout = Layout(
     xaxis=XAxis(
         domain=[0, 0.85],
@@ -78,6 +77,6 @@ layout = Layout(
         zeroline=False
     )
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='contour-subplots')

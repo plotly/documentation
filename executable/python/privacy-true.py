@@ -9,4 +9,5 @@ data = Data([
         y=[0, 4, 2]
     )
 ])
+
 plot_url = py.plot(data, filename='privacy-true', world_readable=True)

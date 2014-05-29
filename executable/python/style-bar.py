@@ -27,7 +27,6 @@ trace2 = Bar(
     )
 )
 data = Data([trace1, trace2])
-
 layout = Layout(
     title='Animal Population',
     xaxis=XAxis(
@@ -42,6 +41,6 @@ layout = Layout(
     bargroupgap=0.3,
     orientation='v'
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='style-bar')

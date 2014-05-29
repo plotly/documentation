@@ -26,7 +26,6 @@ trace4 = Scatter(
     yaxis='y4'
 )
 data = Data([trace1, trace2, trace3, trace4])
-
 layout = Layout(
     xaxis=XAxis(
         domain=[0, 0.45]
@@ -49,6 +48,6 @@ layout = Layout(
         anchor='x4'
     )
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='shared-axes-subplots')

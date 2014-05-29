@@ -12,9 +12,9 @@ for i = 1:size
 
 data = [
   [
+    "z" => z, 
     "x" => x, 
     "y" => y, 
-    "z" => z, 
     "type" => "contour"
   ]
 ]

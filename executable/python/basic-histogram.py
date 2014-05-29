@@ -11,4 +11,5 @@ data = Data([
         x=x
     )
 ])
+
 plot_url = py.plot(data, filename='basic-histogram')

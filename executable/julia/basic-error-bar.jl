@@ -6,10 +6,11 @@ data = [
     "x" => [0, 1, 2], 
     "y" => [6, 10, 2], 
     "error_y" => [
-      "type" => "data", 
       "array" => [1, 2, 3], 
+      "type" => "data", 
       "visible" => true
-    ]
+    ], 
+    "type" => "scatter"
   ]
 ]
 

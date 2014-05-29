@@ -16,10 +16,9 @@ trace2 = Histogram(
     opacity=0.75
 )
 data = Data([trace1, trace2])
-
 layout = Layout(
     barmode='overlay'
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='overlaid-histogram')

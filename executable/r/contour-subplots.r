@@ -8,48 +8,41 @@ y = t^6+0.3*rnorm(2000)
 trace1 <- list(
   x = x, 
   y = y, 
-  mode = "markers", 
   name = "points", 
-  type = "scatter", 
+  mode = "markers", 
   marker = list(
+    size = 2, 
     color = "rgb(102,0,0)", 
-    opacity = 0.4, 
-    size = 2
-  )
+    opacity = 0.4
+  ), 
+  type = "scatter"
 )
 trace2 <- list(
   x = x, 
   y = y, 
-  type = "histogram2dcontour", 
-  name = "density", 
   scl = "Hot", 
   reversescl = TRUE, 
+  name = "density", 
+  ncontours = 20, 
   showscale = FALSE, 
-  ncontours = 20
+  type = "histogram2dcontour"
 )
 trace3 <- list(
   x = x, 
-  type = "histogram", 
   name = "x density", 
+  marker = list(color = "rgb(102,0,0)"), 
   yaxis = "y2", 
-  marker = list(color = "rgb(102,0,0)")
+  type = "histogram"
 )
 trace4 <- list(
   y = y, 
-  type = "histogram", 
   name = "y density", 
+  marker = list(color = "rgb(102,0,0)"), 
   xaxis = "x2", 
-  marker = list(color = "rgb(102,0,0)")
+  type = "histogram"
 )
 
 layout <- list(
-  hovermode = "closest", 
-  width = 600, 
-  height = 550, 
-  autosize = FALSE, 
-  showlegend = FALSE, 
-  bargap = 0, 
-  margin = list(t = 50), 
   xaxis = list(
     domain = c(0, 0.85), 
     showgrid = FALSE, 
@@ -60,6 +53,13 @@ layout <- list(
     showgrid = FALSE, 
     zeroline = FALSE
   ), 
+  width = 600, 
+  height = 550, 
+  autosize = FALSE, 
+  margin = list(t = 50), 
+  hovermode = "closest", 
+  bargap = 0, 
+  showlegend = FALSE, 
   xaxis2 = list(
     domain = c(0.85, 1), 
     showgrid = FALSE, 
@@ -71,6 +71,8 @@ layout <- list(
     zeroline = FALSE
   )
 )
+
+
 
 response <- p$plotly(trace0, trace1, trace2, trace3, kwargs=list(layout=layout, filename="contour-subplots", fileopt="overwrite"))
 url <- response$url

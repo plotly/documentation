@@ -9,4 +9,5 @@ data = Data([
         y=[20, 14, 23]
     )
 ])
+
 plot_url = py.plot(data, filename='basic-bar')

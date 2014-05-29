@@ -6,6 +6,8 @@ trace1 <- list(
   y = c(20, 14, 23), 
   type = "bar"
 )
+
+
 response <- p$plotly(trace0, kwargs=list(filename="basic-bar", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

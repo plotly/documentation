@@ -24,10 +24,9 @@ trace2 = Bar(
     )
 )
 data = Data([trace1, trace2])
-
 layout = Layout(
     barmode='group'
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='error-bar-bar')

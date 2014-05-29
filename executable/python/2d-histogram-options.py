@@ -28,4 +28,5 @@ data = Data([
         histnorm='probability'
     )
 ])
+
 plot_url = py.plot(data, filename='2d-histogram-options')

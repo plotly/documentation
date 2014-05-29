@@ -7,14 +7,13 @@ x1 = randn(500)+1
 data = [
   [
     "x" => x0, 
-    "type" => "histogram", 
     "name" => "control", 
     "marker" => [
-      "color" => "fuchsia", 
       "line" => [
         "color" => "grey", 
         "width" => 0
       ], 
+      "color" => "fuchsia", 
       "opacity" => 0.75
     ], 
     "autobinx" => false, 
@@ -23,12 +22,12 @@ data = [
       "end" => 2.8, 
       "size" => 0.2
     ], 
-    "histnorm" => "count"
+    "histnorm" => "count", 
+    "type" => "histogram"
   ], 
   [
     "x" => x1, 
     "name" => "experimental", 
-    "type" => "histogram", 
     "marker" => ["color" => "rgb(255, 217, 102)"], 
     "opacity" => 0.75, 
     "autobinx" => false, 
@@ -36,18 +35,18 @@ data = [
       "start" => -1.8, 
       "end" => 4.2, 
       "size" => 0.2
-    ]
+    ], 
+    "type" => "histogram"
   ]
 ]
-
 layout = [
+  "title" => "Sampled Results", 
+  "xaxis" => ["title" => "Value"], 
+  "yaxis" => ["title" => "Count"], 
   "barmode" => "overlay", 
   "bargap" => 0.25, 
   "bargroupgap" => 0.3, 
-  "bardir" => "v", 
-  "title" => "Sampled Results", 
-  "xaxis" => ["title" => "Value"], 
-  "yaxis" => ["title" => "Count"]
+  "bardir" => "v"
 ]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "style-histogram", "fileopt" => "overwrite"])

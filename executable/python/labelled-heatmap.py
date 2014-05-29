@@ -10,4 +10,5 @@ data = Data([
         y=['Morning', 'Afternoon', 'Evening']
     )
 ])
+
 plot_url = py.plot(data, filename='labelled-heatmap')

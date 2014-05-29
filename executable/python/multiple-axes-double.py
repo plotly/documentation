@@ -15,7 +15,6 @@ trace2 = Scatter(
     yaxis='y2'
 )
 data = Data([trace1, trace2])
-
 layout = Layout(
     title='Double Y Axis Example',
     yaxis=YAxis(
@@ -33,6 +32,6 @@ layout = Layout(
         overlaying='y'
     )
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='multiple-axes-double')

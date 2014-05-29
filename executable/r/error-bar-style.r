@@ -7,37 +7,40 @@ x <- c(-3.8, -3.03, -1.91, -1.46, -0.89, -0.24, -0.0, 0.41, 0.89, 1.01, 1.91, 2.
 y <- c(-0.02, 0.04, -0.01, -0.27, 0.36, 0.75, 1.03, 0.65, 0.28, 0.02, -0.11, 0.16, 0.04, -0.15)
 
 trace1 <- list(
-  name = "sinc(x)", 
-  type = "scatter", 
   x = x_theo, 
-  y = sincx
+  y = sincx, 
+  name = "sinc(x)", 
+  type = "scatter"
 )
 trace2 <- list(
-  name = "measured", 
-  mode = "markers", 
   x = x, 
   y = y, 
-  error_x = list(
-    color = "#85144B", 
-    opacity = 1, 
-    thickness = 1.5, 
-    type = "constant", 
-    value = 0.2, 
-    width = 3
+  name = "measured", 
+  mode = "markers", 
+  marker = list(
+    size = 8, 
+    color = "#85144B"
   ), 
   error_y = list(
+    value = 0.1, 
+    type = "constant", 
     color = "#85144B", 
     opacity = 1, 
     thickness = 1.5, 
-    type = "constant", 
-    value = 0.1, 
     width = 3
   ), 
-  marker = list(
+  error_x = list(
+    value = 0.2, 
+    type = "constant", 
     color = "#85144B", 
-    size = 8
-  )
+    opacity = 1, 
+    thickness = 1.5, 
+    width = 3
+  ), 
+  type = "scatter"
 )
+
+
 response <- p$plotly(trace0, trace1, kwargs=list(filename="error-bar-style", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

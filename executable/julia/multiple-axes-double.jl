@@ -5,16 +5,17 @@ data = [
   [
     "x" => [1, 2, 3], 
     "y" => [40, 50, 60], 
-    "name" => "yaxis data"
+    "name" => "yaxis data", 
+    "type" => "scatter"
   ], 
   [
     "x" => [2, 3, 4], 
     "y" => [4, 5, 6], 
+    "name" => "yaxis2 data", 
     "yaxis" => "y2", 
-    "name" => "yaxis2 data"
+    "type" => "scatter"
   ]
 ]
-
 layout = [
   "title" => "Double Y Axis Example", 
   "yaxis" => ["title" => "yaxis title"], 
@@ -22,8 +23,8 @@ layout = [
     "title" => "yaxis2 title", 
     "titlefont" => ["color" => "rgb(148, 103, 189)"], 
     "tickfont" => ["color" => "rgb(148, 103, 189)"], 
-    "overlaying" => "y", 
-    "side" => "right"
+    "side" => "right", 
+    "overlaying" => "y"
   ]
 ]
 

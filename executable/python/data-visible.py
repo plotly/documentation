@@ -14,4 +14,5 @@ trace2 = Scatter(
     visible=False
 )
 data = Data([trace1, trace2])
+
 plot_url = py.plot(data, filename='data-visible')

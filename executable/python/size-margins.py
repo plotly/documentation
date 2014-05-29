@@ -9,7 +9,6 @@ data = Data([
         y=[0, 1, 2, 3, 4, 5, 6, 7, 8]
     )
 ])
-
 layout = Layout(
     width=500,
     height=500,
@@ -24,6 +23,6 @@ layout = Layout(
     paper_bgcolor='#7f7f7f',
     plot_bgcolor='#c7c7c7'
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='size-margins')

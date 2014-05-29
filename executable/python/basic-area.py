@@ -14,4 +14,5 @@ trace2 = Scatter(
     fill='tonexty'
 )
 data = Data([trace1, trace2])
+
 plot_url = py.plot(data, filename='basic-area')

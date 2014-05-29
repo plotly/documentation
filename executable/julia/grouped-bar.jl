@@ -3,23 +3,22 @@ Plotly.signin("test-runner", "9h29fe3l0x")
 
 data = [
   [
-    "name" => "SF Zoo", 
     "x" => ["giraffes", "orangutans", "monkeys"], 
     "y" => [20, 14, 23], 
+    "name" => "SF Zoo", 
     "type" => "bar"
   ], 
   [
-    "name" => "LA Zoo", 
     "x" => ["giraffes", "orangutans", "monkeys"], 
     "y" => [12, 18, 29], 
+    "name" => "LA Zoo", 
     "type" => "bar"
   ]
 ]
-
 layout = [
-  "barmode" => "group", 
   "xaxis" => ["type" => "category"], 
-  "categories" => ["giraffes", "orangutans", "monkeys"]
+  "categories" => ["giraffes", "orangutans", "monkeys"], 
+  "barmode" => "group"
 ]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "grouped-bar", "fileopt" => "overwrite"])

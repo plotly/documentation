@@ -5,32 +5,31 @@ data = [
   [
     "x" => [0, 1, 2], 
     "y" => [1, 1, 1], 
-    "name" => "Lines, Markers and Text", 
     "text" => ["Text A", "Text B", "Text C"], 
-    "type" => "scatter", 
+    "textposition" => "top", 
+    "name" => "Lines, Markers and Text", 
     "mode" => "lines+markers+text", 
-    "textposition" => "top"
+    "type" => "scatter"
   ], 
   [
     "x" => [0, 1, 2], 
     "y" => [2, 2, 2], 
-    "name" => "Markers and Text", 
     "text" => ["Text D", "Text E", "Text F"], 
-    "type" => "scatter", 
+    "textposition" => "bottom", 
+    "name" => "Markers and Text", 
     "mode" => "markers+text", 
-    "textposition" => "bottom"
+    "type" => "scatter"
   ], 
   [
     "x" => [0, 1, 2], 
     "y" => [3, 3, 3], 
-    "name" => "Lines and Text", 
     "text" => ["Text G", "Text H", "Text I"], 
-    "type" => "scatter", 
+    "textposition" => "bottom", 
+    "name" => "Lines and Text", 
     "mode" => "lines+text", 
-    "textposition" => "bottom"
+    "type" => "scatter"
   ]
 ]
-
 layout = ["showlegend" => false]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "text-chart-basic", "fileopt" => "overwrite"])

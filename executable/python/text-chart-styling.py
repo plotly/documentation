@@ -30,10 +30,9 @@ trace2 = Scatter(
     )
 )
 data = Data([trace1, trace2])
-
 layout = Layout(
     showlegend=False
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='text-chart-styling')

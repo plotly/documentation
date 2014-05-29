@@ -36,10 +36,9 @@ trace3 = Scatter(
     )
 )
 data = Data([trace1, trace2, trace3])
-
 layout = Layout(
     showlegend=False
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='bubblechart')

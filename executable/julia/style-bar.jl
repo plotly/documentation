@@ -3,36 +3,35 @@ Plotly.signin("test-runner", "9h29fe3l0x")
 
 data = [
   [
-    "name" => "SF Zoo", 
     "x" => ["giraffes", "orangutans", "monkeys"], 
     "y" => [20, 14, 23], 
-    "type" => "bar", 
+    "name" => "SF Zoo", 
     "marker" => [
-      "color" => "orange", 
-      "line" => ["color" => "grey"]
-    ]
+      "line" => ["color" => "grey"], 
+      "color" => "orange"
+    ], 
+    "type" => "bar"
   ], 
   [
-    "name" => "LA Zoo", 
     "x" => ["giraffes", "orangutans", "monkeys"], 
     "y" => [12, 18, 29], 
-    "type" => "bar", 
+    "name" => "LA Zoo", 
     "marker" => [
-      "color" => "blue", 
       "line" => [
         "color" => "grey", 
         "width" => 3
-      ]
-    ]
+      ], 
+      "color" => "blue"
+    ], 
+    "type" => "bar"
   ]
 ]
-
 layout = [
   "title" => "Animal Population", 
-  "barmode" => "group", 
-  "yaxis" => ["title" => "# of animals (thousands)"], 
   "xaxis" => ["type" => "category"], 
+  "yaxis" => ["title" => "# of animals (thousands)"], 
   "categories" => ["giraffes", "orangutans", "monkeys"], 
+  "barmode" => "group", 
   "bargap" => 0.25, 
   "bargroupgap" => 0.3, 
   "orientation" => "v"

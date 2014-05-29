@@ -14,7 +14,6 @@ trace2 = Scatter(
     name='$\\beta_{1c} = 25 \\pm 11 \\text{ km s}^{-1}$'
 )
 data = Data([trace1, trace2])
-
 layout = Layout(
     xaxis=XAxis(
         title='$\\sqrt{(n_\\text{c}(t|{T_\\text{early}}))}$'
@@ -23,6 +22,6 @@ layout = Layout(
         title='$d, r \\text{ (solar radius)}$'
     )
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='latex')

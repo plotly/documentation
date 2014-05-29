@@ -5,44 +5,44 @@ data = [
   [
     "x" => [1, 2, 3], 
     "y" => [4, 5, 6], 
-    "type" => "scatter", 
     "name" => "Experiment", 
-    "line" => [
-      "color" => "rgb(3,78,123)", 
-      "width" => 6, 
-      "dash" => "dot"
-    ], 
     "marker" => [
-      "opacity" => 1.0, 
       "symbol" => "square", 
+      "line" => [
+        "color" => "darkblue", 
+        "width" => 3
+      ], 
       "size" => 12, 
       "color" => "rgb(54,144,192)", 
-      "line" => [
-        "width" => 3, 
-        "color" => "darkblue"
-      ]
-    ]
+      "opacity" => 1.0
+    ], 
+    "line" => [
+      "dash" => "dot", 
+      "color" => "rgb(3,78,123)", 
+      "width" => 6
+    ], 
+    "type" => "scatter"
   ], 
   [
     "x" => [1, 2, 3], 
     "y" => [2, 10, 12], 
-    "type" => "scatter", 
     "name" => "Control", 
-    "line" => [
-      "color" => "purple", 
-      "width" => 4, 
-      "dash" => "dashdot"
-    ], 
     "marker" => [
-      "opacity" => 0.9, 
       "symbol" => "cross", 
-      "size" => 16, 
-      "color" => "fuchsia", 
       "line" => [
         "color" => "", 
         "width" => 0
-      ]
-    ]
+      ], 
+      "size" => 16, 
+      "color" => "fuchsia", 
+      "opacity" => 0.9
+    ], 
+    "line" => [
+      "dash" => "dashdot", 
+      "color" => "purple", 
+      "width" => 4
+    ], 
+    "type" => "scatter"
   ]
 ]
 

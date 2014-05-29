@@ -14,22 +14,22 @@ data = [
   [
     "x" => x0, 
     "y" => y0, 
-    "type" => "scatter", 
     "mode" => "markers", 
     "marker" => [
       "symbol" => "circle", 
       "opacity" => 0.7
-    ]
+    ], 
+    "type" => "scatter"
   ], 
   [
     "x" => x1, 
     "y" => y1, 
-    "type" => "scatter", 
     "mode" => "markers", 
     "marker" => [
       "symbol" => "square", 
       "opacity" => 0.7
-    ]
+    ], 
+    "type" => "scatter"
   ], 
   [
     "x" => x, 

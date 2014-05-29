@@ -14,7 +14,6 @@ trace2 = Scatter(
     name='Name of Trace 2'
 )
 data = Data([trace1, trace2])
-
 layout = Layout(
     title='Plot Title',
     xaxis=XAxis(
@@ -34,6 +33,6 @@ layout = Layout(
         )
     )
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='styling-names')

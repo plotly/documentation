@@ -14,4 +14,5 @@ data = Data([
         )
     )
 ])
+
 plot_url = py.plot(data, filename='basic-error-bar')

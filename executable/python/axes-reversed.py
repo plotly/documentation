@@ -9,12 +9,11 @@ data = Data([
         y=[1, 2]
     )
 ])
-
 layout = Layout(
     xaxis=XAxis(
         autorange='reversed'
     )
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='axes-reversed')

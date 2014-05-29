@@ -31,7 +31,6 @@ trace3 = Box(
     )
 )
 data = Data([trace1, trace2, trace3])
-
 layout = Layout(
     yaxis=YAxis(
         title='normalized moisture',
@@ -39,6 +38,6 @@ layout = Layout(
     ),
     boxmode='group'
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='box-grouped')

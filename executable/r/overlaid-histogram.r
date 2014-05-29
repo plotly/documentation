@@ -6,16 +6,18 @@ x1 = rnorm(500)+1
 
 trace1 <- list(
   x = x0, 
-  type = "histogram", 
-  opacity = 0.75
+  opacity = 0.75, 
+  type = "histogram"
 )
 trace2 <- list(
   x = x1, 
-  type = "histogram", 
-  opacity = 0.75
+  opacity = 0.75, 
+  type = "histogram"
 )
 
 layout <- list(barmode = "overlay")
+
+
 
 response <- p$plotly(trace0, trace1, kwargs=list(layout=layout, filename="overlaid-histogram", fileopt="overwrite"))
 url <- response$url

@@ -13,28 +13,30 @@ y &lt;- c(y0, y1)
 trace1 <- list(
   x = x0, 
   y = y0, 
-  type = "scatter", 
   mode = "markers", 
   marker = list(
     symbol = "circle", 
     opacity = 0.7
-  )
+  ), 
+  type = "scatter"
 )
 trace2 <- list(
   x = x1, 
   y = y1, 
-  type = "scatter", 
   mode = "markers", 
   marker = list(
     symbol = "square", 
     opacity = 0.7
-  )
+  ), 
+  type = "scatter"
 )
 trace3 <- list(
   x = x, 
   y = y, 
   type = "histogram2d"
 )
+
+
 response <- p$plotly(trace0, trace1, trace2, kwargs=list(filename="2d-histogram-scatter", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

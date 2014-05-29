@@ -5,12 +5,14 @@ data = [
   [
     "x" => [0, 1, 2, 3], 
     "y" => [0, 2, 4, 6], 
-    "visible" => true
+    "visible" => true, 
+    "type" => "scatter"
   ], 
   [
     "x" => [0, 1, 2, 3], 
     "y" => [8, 4, 2, 0], 
-    "visible" => false
+    "visible" => false, 
+    "type" => "scatter"
   ]
 ]
 

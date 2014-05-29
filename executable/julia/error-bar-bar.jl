@@ -5,27 +5,26 @@ data = [
   [
     "x" => ["Trial 1", "Trial 2", "Trial 3"], 
     "y" => [3, 6, 4], 
-    "type" => "bar", 
     "name" => "Control", 
     "error_y" => [
-      "type" => "data", 
       "array" => [1, 0.5, 1.5], 
+      "type" => "data", 
       "visible" => true
-    ]
+    ], 
+    "type" => "bar"
   ], 
   [
     "x" => ["Trial 1", "Trial 2", "Trial 3"], 
     "y" => [4, 7, 3], 
-    "type" => "bar", 
     "name" => "Experimental", 
     "error_y" => [
-      "type" => "data", 
       "array" => [0.5, 1, 2], 
+      "type" => "data", 
       "visible" => true
-    ]
+    ], 
+    "type" => "bar"
   ]
 ]
-
 layout = ["barmode" => "group"]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "error-bar-bar", "fileopt" => "overwrite"])

@@ -9,7 +9,6 @@ data = Data([
         y=[-3, 0, 3]
     )
 ])
-
 layout = Layout(
     xaxis=XAxis(
         autorange=True,
@@ -21,6 +20,6 @@ layout = Layout(
     ),
     showlegend=False
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='axes-range-mode')

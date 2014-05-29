@@ -39,7 +39,6 @@ trace6 = Scatter(
     yaxis='y6'
 )
 data = Data([trace1, trace2, trace3, trace4, trace5, trace6])
-
 layout = Layout(
     title='multiple y-axes example',
     xaxis=XAxis(
@@ -120,6 +119,6 @@ layout = Layout(
         overlaying='y'
     )
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='multiple-axes-multiple')

@@ -14,7 +14,6 @@ trace2 = Scatter(
     yaxis='y2'
 )
 data = Data([trace1, trace2])
-
 layout = Layout(
     xaxis2=XAxis(
         domain=[0.6, 0.95],
@@ -25,6 +24,6 @@ layout = Layout(
         anchor='x2'
     )
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='simple-inset')

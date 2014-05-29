@@ -9,4 +9,5 @@ data = Data([
         y=[1, 3, 6]
     )
 ])
+
 plot_url = py.plot(data, filename='date-axes')

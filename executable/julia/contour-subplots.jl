@@ -9,49 +9,41 @@ data = [
   [
     "x" => x, 
     "y" => y, 
-    "mode" => "markers", 
     "name" => "points", 
-    "type" => "scatter", 
+    "mode" => "markers", 
     "marker" => [
+      "size" => 2, 
       "color" => "rgb(102,0,0)", 
-      "opacity" => 0.4, 
-      "size" => 2
-    ]
+      "opacity" => 0.4
+    ], 
+    "type" => "scatter"
   ], 
   [
     "x" => x, 
     "y" => y, 
-    "type" => "histogram2dcontour", 
-    "name" => "density", 
     "scl" => "Hot", 
     "reversescl" => true, 
+    "name" => "density", 
+    "ncontours" => 20, 
     "showscale" => false, 
-    "ncontours" => 20
+    "type" => "histogram2dcontour"
   ], 
   [
     "x" => x, 
-    "type" => "histogram", 
     "name" => "x density", 
+    "marker" => ["color" => "rgb(102,0,0)"], 
     "yaxis" => "y2", 
-    "marker" => ["color" => "rgb(102,0,0)"]
+    "type" => "histogram"
   ], 
   [
     "y" => y, 
-    "type" => "histogram", 
     "name" => "y density", 
+    "marker" => ["color" => "rgb(102,0,0)"], 
     "xaxis" => "x2", 
-    "marker" => ["color" => "rgb(102,0,0)"]
+    "type" => "histogram"
   ]
 ]
-
 layout = [
-  "hovermode" => "closest", 
-  "width" => 600, 
-  "height" => 550, 
-  "autosize" => false, 
-  "showlegend" => false, 
-  "bargap" => 0, 
-  "margin" => ["t" => 50], 
   "xaxis" => [
     "domain" => [0, 0.85], 
     "showgrid" => false, 
@@ -62,6 +54,13 @@ layout = [
     "showgrid" => false, 
     "zeroline" => false
   ], 
+  "width" => 600, 
+  "height" => 550, 
+  "autosize" => false, 
+  "margin" => ["t" => 50], 
+  "hovermode" => "closest", 
+  "bargap" => 0, 
+  "showlegend" => false, 
   "xaxis2" => [
     "domain" => [0.85, 1], 
     "showgrid" => false, 

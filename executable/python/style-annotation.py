@@ -12,7 +12,6 @@ trace2 = Scatter(
     y=[0, 4, 5, 1, 2, 2, 3, 4, 2]
 )
 data = Data([trace1, trace2])
-
 layout = Layout(
     showlegend=False,
     annotations=Annotations([
@@ -43,6 +42,6 @@ layout = Layout(
         )
     ])
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='style-annotation')

@@ -8,7 +8,8 @@ data = [
     "error_x" => [
       "value" => 10, 
       "type" => "percent"
-    ]
+    ], 
+    "type" => "scatter"
   ]
 ]
 

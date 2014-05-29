@@ -8,36 +8,37 @@ y = [-0.02, 0.04, -0.01, -0.27, 0.36, 0.75, 1.03, 0.65, 0.28, 0.02, -0.11, 0.16,
 
 data = [
   [
-    "name" => "sinc(x)", 
-    "type" => "scatter", 
     "x" => x_theo, 
-    "y" => sincx
+    "y" => sincx, 
+    "name" => "sinc(x)", 
+    "type" => "scatter"
   ], 
   [
-    "name" => "measured", 
-    "mode" => "markers", 
     "x" => x, 
     "y" => y, 
-    "error_x" => [
-      "color" => "#85144B", 
-      "opacity" => 1, 
-      "thickness" => 1.5, 
-      "type" => "constant", 
-      "value" => 0.2, 
-      "width" => 3
+    "name" => "measured", 
+    "mode" => "markers", 
+    "marker" => [
+      "size" => 8, 
+      "color" => "#85144B"
     ], 
     "error_y" => [
+      "value" => 0.1, 
+      "type" => "constant", 
       "color" => "#85144B", 
       "opacity" => 1, 
       "thickness" => 1.5, 
-      "type" => "constant", 
-      "value" => 0.1, 
       "width" => 3
     ], 
-    "marker" => [
+    "error_x" => [
+      "value" => 0.2, 
+      "type" => "constant", 
       "color" => "#85144B", 
-      "size" => 8
-    ]
+      "opacity" => 1, 
+      "thickness" => 1.5, 
+      "width" => 3
+    ], 
+    "type" => "scatter"
   ]
 ]
 

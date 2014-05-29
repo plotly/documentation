@@ -14,4 +14,5 @@ trace2 = Scatter(
     name='Blue Trace'
 )
 data = Data([trace1, trace2])
+
 plot_url = py.plot(data, filename='legend-labels')

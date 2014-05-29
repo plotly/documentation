@@ -9,10 +9,11 @@ import plotly.utils as utils
 commands = ['all', 'clean', 'code', 'both', 'urls', 'reformat-json']
 
 ### file stuff ###
-json_dir = 'json'
+json_dir = os.path.join('hard-coded', 'json')
 doc_dir = 'docs'
-image_dir = os.path.join(doc_dir, 'images')
-graph_url_file = os.path.join(doc_dir, 'graph_urls.json')
+examples_dir = os.path.join(doc_dir, 'examples')
+image_dir = os.path.join(examples_dir, 'images')
+graph_url_file = os.path.join(examples_dir, 'graph_urls.json')
 exec_dir = 'executable'
 
 ### sign in stuff ###
@@ -27,58 +28,60 @@ users = dict(
 py.sign_in(users['tester']['un'], users['tester']['ak'])
 
 ### server stuff ###
-translator_server = "https://plot.ly/translator/"
-image_server = "https://plot.ly/apigenimage/"  # "https://plot.ly/image/"
+translator_server = "https://plot.ly/translate_figure/"  # not functional yet
+image_server = "https://plot.ly/apigenimage/"  # to be: "https://plot.ly/image/"
+
+### style stuff ###
+lines_between_sections = 2
 
 ### supported languages ###
 languages = ['python', 'matlab', 'r', 'julia']
 
 ### define headers for docs and tests (plotly docs and executables) ###
 header = {
-    doc_dir: dict(
+    examples_dir: dict(
         python=(
             "import plotly.plotly as py\nfrom plotly.graph_objs import *\n\n"
             "py.sign_in({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})\n\n".format(**users['python'])
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python'])
         ),
         matlab=(
             "signin({{% if username %}}'{{{{username}}}}'"
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}'{{{{api_key}}}}'"
-            "{{% else %}}'{ak}'{{% endif %}})\n\n".format(**users['matlab'])
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['matlab'])
         ),
         r=(
             "library(plotly)\n"
             "p &lt;- plotly(username={{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "key={{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})\n\n".format(**users['r'])
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r'])
         ),
         julia=(
             "using Plotly\n"
             "Plotly.signin({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}\"{un}\"{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}\"{ak}\"{{% endif %}})\n\n".format(**users['julia'])
+            "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia'])
         )
     ),
     exec_dir: dict(
         python=(
             "import plotly.plotly as py\nfrom plotly.graph_objs import *\n\n"
-            "py.sign_in('{un}', '{ak}')\n\n".format(**users['tester'])
+            "py.sign_in('{un}', '{ak}')".format(**users['tester'])
         ),
         matlab=(
-            "signin('{un}', '{ak}')\n\n".format(**users['tester'])
+            "signin('{un}', '{ak}')".format(**users['tester'])
         ),
         r=(
             "library(plotly)\n"
-            "p <- plotly(username='{un}', key='{ak}')\n\n"
-            "".format(**users['tester'])
+            "p <- plotly(username='{un}', key='{ak}')".format(**users['tester'])
         ),
         julia=(
-            'using Plotly\nPlotly.signin("{un}", "{ak}")\n\n'
+            'using Plotly\nPlotly.signin("{un}", "{ak}")'
             ''.format(**users['tester'])
         )
     )
@@ -91,11 +94,13 @@ extensions = dict(python='.py', julia='.jl', matlab='.m', r='.r')
 def setup():
     if not os.path.exists(doc_dir):
         os.mkdir(doc_dir)
+    if not os.path.exists(examples_dir):
+        os.mkdir(examples_dir)
     if not os.path.exists(exec_dir):
         os.mkdir(exec_dir)
     if not os.path.exists(image_dir):
         os.mkdir(image_dir)
-    for directory in [doc_dir, exec_dir]:
+    for directory in [examples_dir, exec_dir]:
         for language in languages:
             if not os.path.exists(os.path.join(directory, language)):
                 os.mkdir(os.path.join(directory, language))
@@ -118,7 +123,7 @@ def get_run_list():
     return run_list
 
 def clean():
-    """removes ENTIRE doc_dir directory and exec_dir directory! careful!"""
+    """removes ENTIRE examples_dir directory and exec_dir directory! careful!"""
     def clean_dir(directory):
         for name in os.listdir(directory):
             full_name = os.path.join(directory, name)
@@ -127,7 +132,7 @@ def clean():
                 os.rmdir(full_name)
             else:
                 os.remove(full_name)
-    clean_dir(doc_dir)
+    clean_dir(examples_dir)
     clean_dir(exec_dir)
     setup()
 
@@ -219,39 +224,20 @@ def get_plot_call(language, example):
         return ''
 
 
-def call_graph_decoder(translator_server, payload):
-    """stand in for plot.ly translator call"""
-    import translator
-    pretty = payload['pretty'] == 'true'
-
-    class Response(object):
-        def __init__(self, text, status):
-            self.text = text
-            self.status = status
-    try:
-        response = translator.translate(payload['figure'],
-                                        payload['language'],
-                                        pretty)
-        response = Response(response, 200)
-    except:
-        response = Response('', 401)
-    return response
-
-
 def save_code(directory, language, body_string, example_number, example):
     """saves code to directory, options for which are the the top of this file
     """
     filename = os.path.join(directory, language, example['examplename'])
-    if directory == doc_dir:
+    if directory == examples_dir:
         filename += '.txt'
     elif directory == exec_dir:
         filename += extensions[language]
     file_head = header[directory][language]
     plot_call = get_plot_call(language, example)
+    sections = [file_head, body_string, plot_call]
+    code_string = ("\n" * lines_between_sections).join(sections)
     with open(filename, 'w') as f:
-        f.write(file_head)
-        f.write(body_string)
-        f.write(plot_call)
+        f.write(code_string)
 
 
 def save_image(exec_string, example_number, example):
@@ -375,44 +361,39 @@ def main():
                     print "\tno prepend, skipping '{}'".format(
                         language)
                     continue
-            # res = requests.get(
-            #     translator_server,  # TODO!
-            #     payload={'figure': json.dumps(example['figure']),
-            #              'language': 'python',
-            #              'pretty': 'false'}  # todo bool OK?
-            # )
-            res = call_graph_decoder(  # todo: stand in for now
-                translator_server,
-                payload={'figure': json.dumps(example['figure']),
-                         'language': language,
-                         'pretty': 'true'}
-            )
-            if res.status == 200:
-                string += res.text  # todo, text?
+            data = {'json_figure': example['figure'],
+                    'language': language,
+                    'pretty': True}
+            res = requests.get(translator_server, data=json.dumps(data))
+            if res.status_code == 200:
+                string += res.content  # todo, text?
+                string = string.replace("<pre>", "").replace("</pre>", "")
+                string = string.replace("<br />", "\n")
             else:
-                raise Exception("bad response from translator")
+                print "\tskipping '{}', bad response from plotly translator!" \
+                      "".format(language)
+                continue
             if 'append' in example:
                 try:
                     string += "\n"
                     string += "\n".join(example['append'][language])
-                    string += "\n\n"
                 except KeyError:
                     print "\tno append, skipping '{}'".format(language)
                     continue
             string = string.replace('">>>', "").replace('<<<"', "")
             string = string.replace("'>>>", "").replace("<<<'", "")
             if command == 'code':
-                save_code(doc_dir, language, string, iii, example)
+                save_code(examples_dir, language, string, iii, example)
                 save_code(exec_dir, language, string, iii, example)
             elif command == 'both':
-                save_code(doc_dir, language, string, iii, example)
+                save_code(examples_dir, language, string, iii, example)
                 if language == 'python':
                     save_image(string, iii, example)
             elif command == 'urls':
                 if language == 'python':
                     save_url(string, iii, example)
             elif command == 'all':
-                save_code(doc_dir, language, string, iii, example)
+                save_code(examples_dir, language, string, iii, example)
                 save_code(exec_dir, language, string, iii, example)
                 if language == 'python':
                     save_image(string, iii, example)

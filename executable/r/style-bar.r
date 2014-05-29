@@ -2,39 +2,41 @@ library(plotly)
 p <- plotly(username='test-runner', key='9h29fe3l0x')
 
 trace1 <- list(
-  name = "SF Zoo", 
   x = c("giraffes", "orangutans", "monkeys"), 
   y = c(20, 14, 23), 
-  type = "bar", 
+  name = "SF Zoo", 
   marker = list(
-    color = "orange", 
-    line = list(color = "grey")
-  )
+    line = list(color = "grey"), 
+    color = "orange"
+  ), 
+  type = "bar"
 )
 trace2 <- list(
-  name = "LA Zoo", 
   x = c("giraffes", "orangutans", "monkeys"), 
   y = c(12, 18, 29), 
-  type = "bar", 
+  name = "LA Zoo", 
   marker = list(
-    color = "blue", 
     line = list(
       color = "grey", 
       width = 3
-    )
-  )
+    ), 
+    color = "blue"
+  ), 
+  type = "bar"
 )
 
 layout <- list(
   title = "Animal Population", 
-  barmode = "group", 
-  yaxis = list(title = "# of animals (thousands)"), 
   xaxis = list(type = "category"), 
+  yaxis = list(title = "# of animals (thousands)"), 
   categories = c("giraffes", "orangutans", "monkeys"), 
+  barmode = "group", 
   bargap = 0.25, 
   bargroupgap = 0.3, 
   orientation = "v"
 )
+
+
 
 response <- p$plotly(trace0, trace1, kwargs=list(layout=layout, filename="style-bar", fileopt="overwrite"))
 url <- response$url

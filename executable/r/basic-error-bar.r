@@ -5,11 +5,14 @@ trace1 <- list(
   x = c(0, 1, 2), 
   y = c(6, 10, 2), 
   error_y = list(
-    type = "data", 
     array = c(1, 2, 3), 
+    type = "data", 
     visible = TRUE
-  )
+  ), 
+  type = "scatter"
 )
+
+
 response <- p$plotly(trace0, kwargs=list(filename="basic-error-bar", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

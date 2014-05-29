@@ -12,7 +12,6 @@ trace2 = Scatter(
     y=[0, 1, 2, 3, 4, 5, 6, 7, 8]
 )
 data = Data([trace1, trace2])
-
 layout = Layout(
     xaxis=XAxis(
         showline=True,
@@ -39,6 +38,6 @@ layout = Layout(
         mirror='ticks'
     )
 )
-
 fig = Figure(data=data, layout=layout)
+
 plot_url = py.plot(fig, filename='axes-lines')

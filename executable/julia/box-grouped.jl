@@ -8,32 +8,31 @@ data = [
   [
     "y" => [0.2, 0.2, 0.6, 1.0, 0.5, 0.4, 0.2, 0.7, 0.9, 0.1, 0.5, 0.3], 
     "x" => x, 
-    "type" => "box", 
     "name" => "kale", 
-    "marker" => ["color" => "#3D9970"]
+    "marker" => ["color" => "#3D9970"], 
+    "type" => "box"
   ], 
   [
     "y" => [0.6, 0.7, 0.3, 0.6, 0.0, 0.5, 0.7, 0.9, 0.5, 0.8, 0.7, 0.2], 
     "x" => x, 
-    "type" => "box", 
     "name" => "radishes", 
-    "marker" => ["color" => "#FF4136"]
+    "marker" => ["color" => "#FF4136"], 
+    "type" => "box"
   ], 
   [
     "y" => [0.1, 0.3, 0.1, 0.9, 0.6, 0.6, 0.9, 1.0, 0.3, 0.6, 0.8, 0.5], 
     "x" => x, 
-    "type" => "box", 
     "name" => "carrots", 
-    "marker" => ["color" => "#FF851B"]
+    "marker" => ["color" => "#FF851B"], 
+    "type" => "box"
   ]
 ]
-
 layout = [
-  "boxmode" => "group", 
   "yaxis" => [
-    "zeroline" => false, 
-    "title" => "normalized moisture"
-  ]
+    "title" => "normalized moisture", 
+    "zeroline" => false
+  ], 
+  "boxmode" => "group"
 ]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "box-grouped", "fileopt" => "overwrite"])

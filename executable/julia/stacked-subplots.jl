@@ -4,29 +4,31 @@ Plotly.signin("test-runner", "9h29fe3l0x")
 data = [
   [
     "x" => [0, 1, 2], 
-    "y" => [10, 11, 12]
+    "y" => [10, 11, 12], 
+    "type" => "scatter"
   ], 
   [
     "x" => [2, 3, 4], 
     "y" => [100, 110, 120], 
+    "xaxis" => "x2", 
     "yaxis" => "y2", 
-    "xaxis" => "x2"
+    "type" => "scatter"
   ], 
   [
     "x" => [3, 4, 5], 
     "y" => [1000, 1100, 1200], 
+    "xaxis" => "x3", 
     "yaxis" => "y3", 
-    "xaxis" => "x3"
+    "type" => "scatter"
   ]
 ]
-
 layout = [
   "yaxis" => ["domain" => [0, 0.266]], 
-  "yaxis2" => ["domain" => [0.366, 0.633]], 
-  "yaxis3" => ["domain" => [0.733, 1]], 
-  "xaxis2" => ["anchor" => "y2"], 
+  "legend" => ["traceorder" => "reversed"], 
   "xaxis3" => ["anchor" => "y3"], 
-  "legend" => ["traceorder" => "reversed"]
+  "xaxis2" => ["anchor" => "y2"], 
+  "yaxis2" => ["domain" => [0.366, 0.633]], 
+  "yaxis3" => ["domain" => [0.733, 1]]
 ]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "stacked-subplots", "fileopt" => "overwrite"])

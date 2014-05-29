@@ -6,11 +6,12 @@ data = [
     "x" => [1, 2, 3, 4], 
     "y" => [2, 1, 3, 4], 
     "error_y" => [
-      "symmetric" => false, 
       "value" => 15, 
-      "valueminus" => 25, 
-      "type" => "percent"
-    ]
+      "type" => "percent", 
+      "symmetric" => false, 
+      "valueminus" => 25
+    ], 
+    "type" => "scatter"
   ]
 ]
 

@@ -11,4 +11,5 @@ data = Data([
         pointpos=-1.8
     )
 ])
+
 plot_url = py.plot(data, filename='box-plot-jitter')
