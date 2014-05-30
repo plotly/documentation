@@ -28,14 +28,15 @@ users = dict(
 py.sign_in(users['tester']['un'], users['tester']['ak'])
 
 ### server stuff ###
-translator_server = "https://plot.ly/translate_figure/"  # not functional yet
+# translator_server = "https://plot.ly/translate_figure/"  # not functional yet
+translator_server = "http://ec2-54-234-194-240.compute-1.amazonaws.com/translate_figure/"
 image_server = "https://plot.ly/apigenimage/"  # to be: "https://plot.ly/image/"
 
 ### style stuff ###
 lines_between_sections = 2
 
 ### supported languages ###
-languages = ['python', 'matlab', 'r', 'julia']
+languages = ['python', 'matlab', 'r', 'julia', 'node']
 
 ### define headers for docs and tests (plotly docs and executables) ###
 header = {
@@ -66,7 +67,8 @@ header = {
             "{{% else %}}\"{un}\"{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia'])
-        )
+        ),
+        node=("fill this in!")
     ),
     exec_dir: dict(
         python=(
@@ -83,12 +85,13 @@ header = {
         julia=(
             'using Plotly\nPlotly.signin("{un}", "{ak}")'
             ''.format(**users['tester'])
-        )
+        ),
+        node=("fill this in!")
     )
 }
 
 ### define extensions for executable code ###
-extensions = dict(python='.py', julia='.jl', matlab='.m', r='.r')
+extensions = dict(python='.py', julia='.jl', matlab='.m', r='.r', node='.js')
 
 
 def setup():
