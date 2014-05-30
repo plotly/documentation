@@ -22,7 +22,8 @@ users = dict(
     julia=dict(un='JuliaAPI', ak='3bule2whyg'),
     matlab=dict(un='MATLABAPI', ak='jzt0hr6tzv'),
     python=dict(un="PythonAPI", ak="ubpiol2cve"),
-    r=dict(un='rAPI', ak='yu680v5eii')
+    r=dict(un='rAPI', ak='yu680v5eii'),
+    node=dict(un='nodeAPI', ak='1eobtyua4l')
 )
 
 py.sign_in(users['tester']['un'], users['tester']['ak'])
@@ -68,7 +69,13 @@ header = {
             "{{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia'])
         ),
-        node=("fill this in!")
+        node=("var plotly = require('plotly')("
+              "{{% if username %}}'{{{{username}}}}'"
+              "{{% else %}}'{un}'{{% endif %}},"
+              "{{% if api_key %}}'{{{{api_key}}}}'"
+              "{{% else %}}'{ak}');"
+              "var plotly = require('plotly');".format(**users['node'])
+        )
     ),
     exec_dir: dict(
         python=(
@@ -86,7 +93,9 @@ header = {
             'using Plotly\nPlotly.signin("{un}", "{ak}")'
             ''.format(**users['tester'])
         ),
-        node=("fill this in!")
+        node=("var plotly = require('plotly')('{un}', '{ak}'"
+              "".format(**users['tester'])
+        )
     )
 }
 
