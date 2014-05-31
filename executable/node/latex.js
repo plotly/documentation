@@ -1,4 +1,4 @@
-var plotly = require('plotly')('test-runner', '9h29fe3l0x'
+var plotly = require('plotly')('test-runner', '9h29fe3l0x')
 
 var trace0 = {
   x: [1, 2, 3, 4], 
@@ -12,8 +12,12 @@ var trace1 = {
   name: "$\beta_{1c} = 25 \pm 11 \text{ km s}^{-1}$", 
   type: "scatter"
 };
+var data = [trace1, trace2];
 var layout = {
   xaxis: {title: "$\sqrt{(n_\text{c}(t|{T_\text{early}}))}$"}, 
   yaxis: {title: "$d, r \text{ (solar radius)}$"}
 };
 
+plot_url = plolty.plot(data, layout, function (err, msg) {
+    console.log(msg);
+});

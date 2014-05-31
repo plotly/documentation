@@ -1,4 +1,4 @@
-var plotly = require('plotly')('test-runner', '9h29fe3l0x'
+var plotly = require('plotly')('test-runner', '9h29fe3l0x')
 
 var trace0 = {
   x: ["giraffes", "orangutans", "monkeys"], 
@@ -23,6 +23,7 @@ var trace1 = {
   }, 
   type: "bar"
 };
+var data = [trace1, trace2];
 var layout = {
   title: "Animal Population", 
   xaxis: {type: "category"}, 
@@ -34,3 +35,6 @@ var layout = {
   orientation: "v"
 };
 
+plot_url = plolty.plot(data, layout, function (err, msg) {
+    console.log(msg);
+});

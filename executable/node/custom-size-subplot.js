@@ -1,4 +1,4 @@
-var plotly = require('plotly')('test-runner', '9h29fe3l0x'
+var plotly = require('plotly')('test-runner', '9h29fe3l0x')
 
 var trace0 = {
   x: [1, 2, 3], 
@@ -12,9 +12,13 @@ var trace1 = {
   yaxis: "y2", 
   type: "scatter"
 };
+var data = [trace1, trace2];
 var layout = {
   xaxis: {domain: [0, 0.7]}, 
   yaxis2: {anchor: "x2"}, 
   xaxis2: {domain: [0.8, 1]}
 };
 
+plot_url = plolty.plot(data, layout, function (err, msg) {
+    console.log(msg);
+});

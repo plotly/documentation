@@ -1,4 +1,4 @@
-var plotly = require('plotly')('test-runner', '9h29fe3l0x'
+var plotly = require('plotly')('test-runner', '9h29fe3l0x')
 
 var data = [
   {
@@ -14,3 +14,6 @@ var data = [
   }
 ];
 
+plot_url = plolty.plot(data, function (err, msg) {
+    console.log(msg);
+});

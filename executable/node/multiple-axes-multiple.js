@@ -1,4 +1,4 @@
-var plotly = require('plotly')('test-runner', '9h29fe3l0x'
+var plotly = require('plotly')('test-runner', '9h29fe3l0x')
 
 var trace0 = {
   x: [1, 2, 3], 
@@ -41,6 +41,7 @@ var trace5 = {
   yaxis: "y6", 
   type: "scatter"
 };
+var data = [trace1, trace2, trace3, trace4, trace5, trace6];
 var layout = {
   title: "multiple y-axes example", 
   xaxis: {domain: [0.3, 0.7]}, 
@@ -96,3 +97,6 @@ var layout = {
   }
 };
 
+plot_url = plolty.plot(data, layout, function (err, msg) {
+    console.log(msg);
+});

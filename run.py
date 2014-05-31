@@ -73,8 +73,7 @@ header = {
               "{{% if username %}}'{{{{username}}}}'"
               "{{% else %}}'{un}'{{% endif %}},"
               "{{% if api_key %}}'{{{{api_key}}}}'"
-              "{{% else %}}'{ak}');"
-              "var plotly = require('plotly');".format(**users['node'])
+              "{{% else %}}'{ak}');".format(**users['node'])
         )
     ),
     exec_dir: dict(
@@ -93,8 +92,9 @@ header = {
             'using Plotly\nPlotly.signin("{un}", "{ak}")'
             ''.format(**users['tester'])
         ),
-        node=("var plotly = require('plotly')('{un}', '{ak}'"
-              "".format(**users['tester'])
+        node=(
+            "var plotly = require('plotly')('{un}', '{ak}')"
+            "".format(**users['tester'])
         )
     )
 }
@@ -231,6 +231,18 @@ def get_plot_call(language, example):
         string += ', fileopt="overwrite"))'
         string += '\nurl <- response$url\n'
         string += 'filename <- response$filename'
+        return string
+    elif language == 'node':
+        string = "plot_url = plolty.plot("
+        if 'data' in example['figure'] and example['figure']['data']:
+            string += "data, "
+        else:
+            string += "[]"
+        if 'layout' in example['figure'] and example['figure']['layout']:
+            string += "layout, "
+        string += "function (err, msg) {"
+        string += "\n    console.log(msg);"
+        string += "\n});"
         return string
     else:
         return ''

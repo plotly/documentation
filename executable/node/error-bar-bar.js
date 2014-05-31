@@ -1,4 +1,4 @@
-var plotly = require('plotly')('test-runner', '9h29fe3l0x'
+var plotly = require('plotly')('test-runner', '9h29fe3l0x')
 
 var trace0 = {
   x: ["Trial 1", "Trial 2", "Trial 3"], 
@@ -22,5 +22,9 @@ var trace1 = {
   }, 
   type: "bar"
 };
+var data = [trace1, trace2];
 var layout = {barmode: "group"};
 
+plot_url = plolty.plot(data, layout, function (err, msg) {
+    console.log(msg);
+});
