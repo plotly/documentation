@@ -73,7 +73,7 @@ header = {
               "{{% if username %}}'{{{{username}}}}'"
               "{{% else %}}'{un}'{{% endif %}},"
               "{{% if api_key %}}'{{{{api_key}}}}'"
-              "{{% else %}}'{ak}');".format(**users['node'])
+              "{{% else %}}'{ak}'{{% endif %}});".format(**users['node'])
         )
     ),
     exec_dir: dict(
