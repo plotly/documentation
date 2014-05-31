@@ -1,7 +1,7 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
 
-py.sign_in({% if username %}"{{username}}"{% else %}'PythonAPI'{% endif %}, {% if api_key %}"{{api_key}}"{% else %}'ubpiol2cve'{% endif %})
+py.sign_in('test-runner', '9h29fe3l0x')
 
 import plotly.tools as tls
 
@@ -32,4 +32,4 @@ layout = Layout(
 fig = Figure(data=data, layout=layout)
 fig.update(tls.get_subplots(rows=2, columns=2))
 
-plot_url = py.plot(fig, filename='tools-get-subplots')
+plot_url = py.plot(fig, filename='$$$')

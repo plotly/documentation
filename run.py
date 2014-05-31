@@ -6,15 +6,23 @@ from plotly.graph_objs import *  # for exec statement in 'save_code'
 import plotly.utils as utils
 
 ### command line stuff ###
-commands = ['all', 'clean', 'code', 'both', 'urls', 'reformat-json']
+commands = ['all', 'clean', 'code', 'both', 'urls', 'reformat-json',
+            'exceptions']
 
-### file stuff ###
-json_dir = os.path.join('hard-coded', 'json')
+### auto-generated file stuff ###
 doc_dir = 'docs'
-examples_dir = os.path.join(doc_dir, 'examples')
-image_dir = os.path.join(examples_dir, 'images')
-graph_url_file = os.path.join(examples_dir, 'graph_urls.json')
 exec_dir = 'executable'
+examples_dir = os.path.join(doc_dir, 'examples')
+examples_exceptions_dir = os.path.join(examples_dir, 'exceptions')
+image_dir = os.path.join(examples_dir, 'images')
+
+graph_url_file = os.path.join(examples_dir, 'graph_urls.json')
+
+### hard-coded file stuff ###
+# run.py EXPECTS THESE FOLDERS TO BE HERE!
+hard_coded_dir = 'hard-coded'
+json_dir = os.path.join(hard_coded_dir, 'json')
+exceptions_dir = os.path.join(hard_coded_dir, 'exceptions')
 
 ### sign in stuff ###
 users = dict(
@@ -38,68 +46,119 @@ lines_between_sections = 2
 ### supported languages ###
 languages = ['python', 'matlab', 'r', 'julia', 'node']
 
-### define headers for docs and tests (plotly docs and executables) ###
-header = {
+### define extensions for executable code ###
+lang_to_ext = dict(python='py', julia='jl', matlab='m', r='r', node='js')
+ext_to_lang = dict(py='python', jl='julia', m='matlab', r='r', js='node')
+
+### define imports ###
+imports = dict(
+    python="import plotly.plotly as py\nfrom plotly.graph_objs import *",
+    matlab="",
+    r="library(plotly)",
+    julia="using Plotly",
+    node=""
+)
+
+### define sign in ###
+sign_in = {
     examples_dir: dict(
-        python=(
-            "import plotly.plotly as py\nfrom plotly.graph_objs import *\n\n"
+        python=
             "py.sign_in({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python'])
-        ),
-        matlab=(
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python']),
+        matlab=
             "signin({{% if username %}}'{{{{username}}}}'"
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}'{{{{api_key}}}}'"
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['matlab'])
-        ),
-        r=(
-            "library(plotly)\n"
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['matlab']),
+        r=
             "p &lt;- plotly(username={{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "key={{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r'])
-        ),
-        julia=(
-            "using Plotly\n"
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r']),
+        julia=
             "Plotly.signin({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}\"{un}\"{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia'])
-        ),
-        node=("var plotly = require('plotly')("
-              "{{% if username %}}'{{{{username}}}}'"
-              "{{% else %}}'{un}'{{% endif %}},"
-              "{{% if api_key %}}'{{{{api_key}}}}'"
-              "{{% else %}}'{ak}'{{% endif %}});".format(**users['node'])
-        )
+            "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia']),
+        node=
+            "var plotly = require('plotly')("
+            "{{% if username %}}'{{{{username}}}}'"
+            "{{% else %}}'{un}'{{% endif %}},"
+            "{{% if api_key %}}'{{{{api_key}}}}'"
+            "{{% else %}}'{ak}'{{% endif %}});".format(**users['node'])
     ),
     exec_dir: dict(
-        python=(
-            "import plotly.plotly as py\nfrom plotly.graph_objs import *\n\n"
-            "py.sign_in('{un}', '{ak}')".format(**users['tester'])
-        ),
-        matlab=(
-            "signin('{un}', '{ak}')".format(**users['tester'])
-        ),
-        r=(
-            "library(plotly)\n"
-            "p <- plotly(username='{un}', key='{ak}')".format(**users['tester'])
-        ),
-        julia=(
-            'using Plotly\nPlotly.signin("{un}", "{ak}")'
-            ''.format(**users['tester'])
-        ),
-        node=(
-            "var plotly = require('plotly')('{un}', '{ak}')"
-            "".format(**users['tester'])
-        )
+        python="py.sign_in('{un}', '{ak}')".format(**users['tester']),
+        matlab="signin('{un}', '{ak}')".format(**users['tester']),
+        r="p <- plotly(username='{un}', key='{ak}')".format(**users['tester']),
+        julia='using Plotly\nPlotly.signin("{un}", "{ak}")'
+              ''.format(**users['tester']),
+        node="var plotly = require('plotly')('{un}', '{ak}')"
+             "".format(**users['tester'])
     )
 }
 
-### define extensions for executable code ###
-extensions = dict(python='.py', julia='.jl', matlab='.m', r='.r', node='.js')
+### define headers for docs and tests (plotly docs and executables) ###
+# header = {
+#     examples_dir: dict(
+#         python=(
+#             "import plotly.plotly as py\nfrom plotly.graph_objs import *\n\n"
+#             "py.sign_in({{% if username %}}\"{{{{username}}}}\""
+#             "{{% else %}}'{un}'{{% endif %}}, "
+#             "{{% if api_key %}}\"{{{{api_key}}}}\""
+#             "{{% else %}}'{ak}'{{% endif %}})".format(**users['python'])
+#         ),
+#         matlab=(
+#             "signin({{% if username %}}'{{{{username}}}}'"
+#             "{{% else %}}'{un}'{{% endif %}}, "
+#             "{{% if api_key %}}'{{{{api_key}}}}'"
+#             "{{% else %}}'{ak}'{{% endif %}})".format(**users['matlab'])
+#         ),
+#         r=(
+#             "library(plotly)\n"
+#             "p &lt;- plotly(username={{% if username %}}\"{{{{username}}}}\""
+#             "{{% else %}}'{un}'{{% endif %}}, "
+#             "key={{% if api_key %}}\"{{{{api_key}}}}\""
+#             "{{% else %}}'{ak}'{{% endif %}})".format(**users['r'])
+#         ),
+#         julia=(
+#             "using Plotly\n"
+#             "Plotly.signin({{% if username %}}\"{{{{username}}}}\""
+#             "{{% else %}}\"{un}\"{{% endif %}}, "
+#             "{{% if api_key %}}\"{{{{api_key}}}}\""
+#             "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia'])
+#         ),
+#         node=("var plotly = require('plotly')("
+#               "{{% if username %}}'{{{{username}}}}'"
+#               "{{% else %}}'{un}'{{% endif %}},"
+#               "{{% if api_key %}}'{{{{api_key}}}}'"
+#               "{{% else %}}'{ak}'{{% endif %}});".format(**users['node'])
+#         )
+#     ),
+#     exec_dir: dict(
+#         python=(
+#             "import plotly.plotly as py\nfrom plotly.graph_objs import *\n\n"
+#             "py.sign_in('{un}', '{ak}')".format(**users['tester'])
+#         ),
+#         matlab=(
+#             "signin('{un}', '{ak}')".format(**users['tester'])
+#         ),
+#         r=(
+#             "library(plotly)\n"
+#             "p <- plotly(username='{un}', key='{ak}')".format(**users['tester'])
+#         ),
+#         julia=(
+#             'using Plotly\nPlotly.signin("{un}", "{ak}")'
+#             ''.format(**users['tester'])
+#         ),
+#         node=(
+#             "var plotly = require('plotly')('{un}', '{ak}')"
+#             "".format(**users['tester'])
+#         )
+#     )
+# }
 
 
 def setup():
@@ -107,6 +166,8 @@ def setup():
         os.mkdir(doc_dir)
     if not os.path.exists(examples_dir):
         os.mkdir(examples_dir)
+    if not os.path.exists(examples_exceptions_dir):
+        os.mkdir(examples_exceptions_dir)
     if not os.path.exists(exec_dir):
         os.mkdir(exec_dir)
     if not os.path.exists(image_dir):
@@ -133,6 +194,7 @@ def get_run_list():
         run_list += [sys.argv.pop()]
     return run_list
 
+
 def clean():
     """removes ENTIRE examples_dir directory and exec_dir directory! careful!"""
     def clean_dir(directory):
@@ -148,7 +210,32 @@ def clean():
     setup()
 
 
-def get_example_filenames():
+def get_filenames(directory, dot_extension):
+    filenames = []
+    for name in os.listdir(directory):
+        full_name = os.path.join(directory, name)
+        if os.path.isdir(full_name):
+            filenames += get_filenames(full_name, dot_extension)
+        elif dot_extension in full_name:
+            filenames += [full_name]
+        else:
+            pass # forgettaboutit
+    return filenames
+
+
+def load_exceptional_examples(filenames):
+    example_dict = {}
+    for fn in filenames:
+        with open(fn) as f:
+            name = "-".join(fn.replace(exceptions_dir, "").split(os.path.sep))[1:]
+            name, ext = name.split('.')
+            example_dict[name] = {}
+            example_dict[name]['code'] = f.read()
+            example_dict[name]['ext'] = ext
+    return example_dict
+
+
+def get_json_filenames():
     filenames = []
     for dn in os.listdir(json_dir):
         try:
@@ -172,22 +259,46 @@ def load_json_examples(filenames):
             print 'error from this file:', fn
             raise
     return examples
+    # example_dict = {}
+    # for fn in filenames:
+    #     try:
+    #         with open(fn) as f:
+    #             examples = json.load(f, object_pairs_hook=OrderedDict)
+    #             for example in examples:
+    #                 name = example['examplename'] + '.json'
+    #                 example_dict[name] = example
+    #     except:
+    #         print 'error from this file:', fn
+    #         raise
+    # return example_dict
 
 
-def filter_examples(examples, run_list):
+def filter_examples(ex_dict, run_list):
     if run_list:
-        return [example for example in examples
-                if example['examplename'] in run_list]
+        return {name: ex for name, ex in ex_dict.items()
+                if name.split('.')[0] in run_list} # remove extension
+    else:
+        return ex_dict
+
+
+def filter_json_examples(examples, run_list):
+    if run_list:
+        return [ex for ex in examples if ex['examplename'] in run_list]
     else:
         return examples
 
 
 def reformat_json():
-    filenames = get_example_filenames()
+    filenames = get_filenames(json_dir, '.json')
     for filename in filenames:
-        file_examples = load_json_examples([filename])
-        with open(filename, 'w') as f:
-            json.dump(file_examples, f, indent=2)
+        try:
+            with open(filename) as fin:
+                examples = json.load(fin, object_pairs_hook=OrderedDict)
+            with open(filename, 'w') as fout:
+                json.dump(examples, fout, indent=2)
+        except:
+            print 'error from this file:', filename
+            raise
 
 
 def get_plot_call(language, example):
@@ -254,10 +365,12 @@ def save_code(directory, language, body_string, example_number, example):
     if directory == examples_dir:
         filename += '.txt'
     elif directory == exec_dir:
-        filename += extensions[language]
-    file_head = header[directory][language]
+        filename += "." + lang_to_ext[language]
+    file_import = imports[language]
+    file_sign_in = sign_in[directory][language]
     plot_call = get_plot_call(language, example)
-    sections = [file_head, body_string, plot_call]
+    sections = [file_import, file_sign_in, body_string, plot_call]
+    sections = [sec for sec in sections if sec]
     code_string = ("\n" * lines_between_sections).join(sections)
     with open(filename, 'w') as f:
         f.write(code_string)
@@ -364,9 +477,91 @@ def main():
 ### graph specific examples if they exist ###
     run_list = get_run_list()
 
+### run exceptional examples if that's what you want ###
+    if command == 'exceptions':
+        exceptional_examples = {}
+        for language in languages:
+            filenames = get_filenames(exceptions_dir, "." + lang_to_ext[language])
+            exceptional_examples.update(load_exceptional_examples(filenames))
+
+### format exceptional examples ###
+        formatted_examples = {}
+        image_examples = {}
+        for name, example in exceptional_examples.items():
+            formatted_examples[name] = {}
+            image_examples[name] = {}
+            language = ext_to_lang[example['ext']]  # throws KeyError if bad
+            formatted_code = ""
+            image_code = ""
+            for line in example['code'].splitlines():
+                if users['tester']['ak'] in line:
+                    formatted_code += sign_in[examples_dir][language] + "\n"
+                    image_code += line + "\n"
+                elif '$$$' in line:
+                    formatted_code += line.replace("$$$", name) + "\n"
+                    image_code += line + "\n"
+                else:
+                    formatted_code += line + "\n"
+                    image_code += line + "\n"
+            formatted_examples[name]['code'] = formatted_code
+            formatted_examples[name]['ext'] = example['ext']
+            image_examples[name]['code'] = image_code
+            image_examples[name]['ext'] = example['ext']
+        for name, example in formatted_examples.items():
+            output_name = os.path.join(examples_exceptions_dir, name + '.txt')
+            with open(output_name, 'w') as f:
+                f.write(example['code'])
+
+        for name, example in image_examples.items():
+            if example['ext'] != 'py':
+                print example['ext']
+                continue
+            fig, data = None, None
+            try:
+                exec example['code']
+            except:
+                print example['code']
+                raise
+            time.sleep(3)
+            fig = py.get_figure('test-runner', 153)
+            if 'layout' not in fig:
+                fig['layout'] = dict()
+            if 'margin' not in fig['layout']:
+                fig['layout']['margin'] = dict()
+            fig['layout']['margin'] = dict(t=50, b=50, r=50, l=50)
+            fig['layout'].update(autosize=False, width=500, height=500)
+            filename = os.path.join(image_dir, name + '.png')
+            for attempt in range(2):
+                try:
+                    headers = {'plotly-username': users['tester']['un'],
+                               'plotly-apikey': users['tester']['ak'],
+                               'plotly-version': '2.0',
+                               'plotly-platform': 'python'}
+                    server = image_server
+                    res = requests.post(
+                        server,
+                        data=json.dumps(fig, cls=utils._plotlyJSONEncoder),
+                        headers=headers
+                    )
+                    if res.status_code != 200:
+                        raise plotly.exceptions.PlotlyError()
+                    image = base64.b64decode(json.loads(res.content)['payload'])
+                    with open(filename, 'w') as f:
+                        f.write(image)
+                    break
+                except plotly.exceptions.PlotlyError:
+                    time.sleep(10)
+                    if attempt == 1:
+                        print ("\timage could not be saved, check json and the "
+                               "following python executable:\n\n{}\n"
+                               "".format(example['code']))
+        sys.exit(0)
+
 ### compile all examples (name, prepend, append, figure) ###
-    filenames = get_example_filenames()
-    examples = filter_examples(load_json_examples(filenames), run_list)
+    filenames = get_filenames(json_dir, ".json")
+    json_examples = load_json_examples(filenames)
+    examples = filter_json_examples(json_examples, run_list)
+
 
 ### run them examples! ###
     for iii, example in enumerate(examples):
