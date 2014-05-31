@@ -233,7 +233,7 @@ def get_plot_call(language, example):
         string += 'filename <- response$filename'
         return string
     elif language == 'node':
-        string = "plot_url = plolty.plot("
+        string = "plot_url = plotly.plot("
         if 'data' in example['figure'] and example['figure']['data']:
             string += "data, "
         else:
