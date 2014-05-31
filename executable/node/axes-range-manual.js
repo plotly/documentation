@@ -16,6 +16,6 @@ var layout = {
   yaxis: {range: [2, 5]}
 };
 
-plot_url = plolty.plot(data, layout, function (err, msg) {
+plot_url = plotly.plot(data, layout, function (err, msg) {
     console.log(msg);
 });

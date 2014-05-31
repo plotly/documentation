@@ -14,6 +14,6 @@ var trace1 = {
 };
 var data = [trace1, trace2];
 
-plot_url = plolty.plot(data, function (err, msg) {
+plot_url = plotly.plot(data, function (err, msg) {
     console.log(msg);
 });

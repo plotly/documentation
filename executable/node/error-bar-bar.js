@@ -25,6 +25,6 @@ var trace1 = {
 var data = [trace1, trace2];
 var layout = {barmode: "group"};
 
-plot_url = plolty.plot(data, layout, function (err, msg) {
+plot_url = plotly.plot(data, layout, function (err, msg) {
     console.log(msg);
 });

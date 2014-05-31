@@ -18,6 +18,6 @@ var layout = {
   yaxis: {title: "$d, r \text{ (solar radius)}$"}
 };
 
-plot_url = plolty.plot(data, layout, function (err, msg) {
+plot_url = plotly.plot(data, layout, function (err, msg) {
     console.log(msg);
 });

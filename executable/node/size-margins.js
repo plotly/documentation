@@ -22,6 +22,6 @@ var layout = {
   plot_bgcolor: "#c7c7c7"
 };
 
-plot_url = plolty.plot(data, layout, function (err, msg) {
+plot_url = plotly.plot(data, layout, function (err, msg) {
     console.log(msg);
 });

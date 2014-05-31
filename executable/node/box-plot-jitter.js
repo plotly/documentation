@@ -10,6 +10,6 @@ var data = [
   }
 ];
 
-plot_url = plolty.plot(data, function (err, msg) {
+plot_url = plotly.plot(data, function (err, msg) {
     console.log(msg);
 });

@@ -19,6 +19,6 @@ var layout = {
   xaxis2: {domain: [0.8, 1]}
 };
 
-plot_url = plolty.plot(data, layout, function (err, msg) {
+plot_url = plotly.plot(data, layout, function (err, msg) {
     console.log(msg);
 });
