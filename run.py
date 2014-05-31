@@ -29,8 +29,7 @@ users = dict(
 py.sign_in(users['tester']['un'], users['tester']['ak'])
 
 ### server stuff ###
-# translator_server = "https://plot.ly/translate_figure/"  # not functional yet
-translator_server = "http://ec2-54-234-194-240.compute-1.amazonaws.com/translate_figure/"
+translator_server = "https://plot.ly/translate_figure/"
 image_server = "https://plot.ly/apigenimage/"  # to be: "https://plot.ly/image/"
 
 ### style stuff ###
