@@ -484,7 +484,7 @@ def main():
             filenames = get_filenames(exceptions_dir, "." + lang_to_ext[language])
             exceptional_examples.update(load_exceptional_examples(filenames))
 
-### format exceptional examples ###
+    ### format exceptional examples ###
         formatted_examples = {}
         image_examples = {}
         for name, example in exceptional_examples.items():
