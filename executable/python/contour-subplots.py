@@ -23,10 +23,10 @@ trace1 = Scatter(
 trace2 = Histogram2dContour(
     x=x,
     y=y,
-    scl='Hot',
-    reversescl=True,
     name='density',
     ncontours=20,
+    scl='Hot',
+    reversescl=True,
     showscale=False
 )
 trace3 = Histogram(

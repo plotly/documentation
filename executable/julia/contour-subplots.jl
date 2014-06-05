@@ -1,4 +1,6 @@
 using Plotly
+
+using Plotly
 Plotly.signin("test-runner", "9h29fe3l0x")
 
 t = linspace(-1, 1.2, 2000)
@@ -21,10 +23,10 @@ data = [
   [
     "x" => x, 
     "y" => y, 
-    "scl" => "Hot", 
-    "reversescl" => true, 
     "name" => "density", 
     "ncontours" => 20, 
+    "scl" => "Hot", 
+    "reversescl" => true, 
     "showscale" => false, 
     "type" => "histogram2dcontour"
   ], 

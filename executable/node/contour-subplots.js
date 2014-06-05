@@ -21,10 +21,10 @@ var trace1 = {
 var trace2 = {
   x: x, 
   y: y, 
-  scl: "Hot", 
-  reversescl: true, 
   name: "density", 
   ncontours: 20, 
+  scl: "Hot", 
+  reversescl: true, 
   showscale: false, 
   type: "histogram2dcontour"
 };

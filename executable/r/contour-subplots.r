@@ -1,4 +1,5 @@
 library(plotly)
+
 p <- plotly(username='test-runner', key='9h29fe3l0x')
 
 t = seq(-1, 1.2, length=2000)
@@ -20,10 +21,10 @@ trace1 <- list(
 trace2 <- list(
   x = x, 
   y = y, 
-  scl = "Hot", 
-  reversescl = TRUE, 
   name = "density", 
   ncontours = 20, 
+  scl = "Hot", 
+  reversescl = TRUE, 
   showscale = FALSE, 
   type = "histogram2dcontour"
 )

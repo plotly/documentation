@@ -1,4 +1,5 @@
 library(plotly)
+
 p <- plotly(username='test-runner', key='9h29fe3l0x')
 
 size <- 50

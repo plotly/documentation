@@ -1,4 +1,6 @@
 using Plotly
+
+using Plotly
 Plotly.signin("test-runner", "9h29fe3l0x")
 
 x = (["day 1", "day 1", "day 1", "day 1", "day 1", "day 1", 

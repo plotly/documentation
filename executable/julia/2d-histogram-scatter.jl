@@ -1,4 +1,6 @@
 using Plotly
+
+using Plotly
 Plotly.signin("test-runner", "9h29fe3l0x")
 
 x0 = randn(100)/5. + 0.5
