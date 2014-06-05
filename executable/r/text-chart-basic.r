@@ -29,11 +29,9 @@ trace3 <- list(
   mode = "lines+text", 
   type = "scatter"
 )
-
+data <- list(trace1, trace2, trace3)
 layout <- list(showlegend = FALSE)
 
-
-
-response <- p$plotly(trace0, trace1, trace2, kwargs=list(layout=layout, filename="text-chart-basic", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="text-chart-basic", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

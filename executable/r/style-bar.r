@@ -25,7 +25,7 @@ trace2 <- list(
   ), 
   type = "bar"
 )
-
+data <- list(trace1, trace2)
 layout <- list(
   title = "Animal Population", 
   xaxis = list(type = "category"), 
@@ -37,8 +37,6 @@ layout <- list(
   orientation = "v"
 )
 
-
-
-response <- p$plotly(trace0, trace1, kwargs=list(layout=layout, filename="style-bar", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="style-bar", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

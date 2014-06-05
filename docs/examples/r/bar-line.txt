@@ -12,8 +12,8 @@ trace2 <- list(
   y = c(1, 0.5, 0.7, -1.2, 0.3, 0.4), 
   type = "bar"
 )
+data <- list(trace1, trace2)
 
-
-response <- p$plotly(trace0, trace1, kwargs=list(filename="bar-line", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(filename="bar-line", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

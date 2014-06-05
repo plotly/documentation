@@ -57,7 +57,7 @@ trace5 <- list(
   t = c(0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114, 120, 126, 132, 138, 144, 150, 156, 162, 168, 174, 180, 186, 192, 198, 204, 210, 216, 222, 228, 234, 240, 246, 252, 258, 264, 270, 276, 282, 288, 294, 300, 306, 312, 318, 324, 330, 336, 342, 348, 354, 360), 
   type = "scatter"
 )
-
+data <- list(trace1, trace2, trace3, trace4, trace5)
 layout <- list(
   title = "Mic Patterns", 
   width = 500, 
@@ -80,8 +80,6 @@ layout <- list(
   orientation = -90
 )
 
-
-
-response <- p$plotly(trace0, trace1, trace2, trace3, trace4, kwargs=list(layout=layout, filename="polar-line", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="polar-line", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

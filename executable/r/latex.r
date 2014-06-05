@@ -14,14 +14,12 @@ trace2 <- list(
   name = "$\beta_{1c} = 25 \pm 11 \text{ km s}^{-1}$", 
   type = "scatter"
 )
-
+data <- list(trace1, trace2)
 layout <- list(
   xaxis = list(title = "$\sqrt{(n_\text{c}(t|{T_\text{early}}))}$"), 
   yaxis = list(title = "$d, r \text{ (solar radius)}$")
 )
 
-
-
-response <- p$plotly(trace0, trace1, kwargs=list(layout=layout, filename="latex", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="latex", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

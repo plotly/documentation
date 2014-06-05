@@ -26,7 +26,7 @@ trace3 <- list(
   marker = list(color = "#FF851B"), 
   type = "box"
 )
-
+data <- list(trace1, trace2, trace3)
 layout <- list(
   yaxis = list(
     title = "normalized moisture", 
@@ -35,8 +35,6 @@ layout <- list(
   boxmode = "group"
 )
 
-
-
-response <- p$plotly(trace0, trace1, trace2, kwargs=list(layout=layout, filename="box-grouped", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="box-grouped", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

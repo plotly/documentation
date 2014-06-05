@@ -37,11 +37,9 @@ trace3 <- list(
   ), 
   type = "scatter"
 )
-
+data <- list(trace1, trace2, trace3)
 layout <- list(showlegend = FALSE)
 
-
-
-response <- p$plotly(trace0, trace1, trace2, kwargs=list(layout=layout, filename="bubblechart", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="bubblechart", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

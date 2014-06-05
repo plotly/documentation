@@ -12,8 +12,8 @@ trace2 <- list(
   y = c(16, 5, 11, 9), 
   type = "scatter"
 )
+data <- list(trace1, trace2)
 
-
-response <- p$plotly(trace0, trace1, kwargs=list(filename="basic-line", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(filename="basic-line", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

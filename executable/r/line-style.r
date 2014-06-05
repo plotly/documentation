@@ -66,7 +66,7 @@ trace4 <- list(
   ), 
   type = "scatter"
 )
-
+data <- list(trace1, trace2, trace3, trace4)
 layout <- list(
   title = "Quarter 1 Growth", 
   xaxis = list(
@@ -80,8 +80,6 @@ layout <- list(
   )
 )
 
-
-
-response <- p$plotly(trace0, trace1, trace2, trace3, kwargs=list(layout=layout, filename="line-style", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="line-style", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

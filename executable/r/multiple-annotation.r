@@ -12,7 +12,7 @@ trace2 <- list(
   y = c(0, 4, 5, 1, 2, 2, 3, 4, 2), 
   type = "scatter"
 )
-
+data <- list(trace1, trace2)
 layout <- list(
   showlegend = FALSE, 
   annotations = list(
@@ -41,8 +41,6 @@ layout <- list(
   )
 )
 
-
-
-response <- p$plotly(trace0, trace1, kwargs=list(layout=layout, filename="multiple-annotation", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="multiple-annotation", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

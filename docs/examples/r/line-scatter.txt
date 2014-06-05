@@ -20,8 +20,8 @@ trace3 <- list(
   mode = "lines+markers", 
   type = "scatter"
 )
+data <- list(trace1, trace2, trace3)
 
-
-response <- p$plotly(trace0, trace1, trace2, kwargs=list(filename="line-scatter", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(filename="line-scatter", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

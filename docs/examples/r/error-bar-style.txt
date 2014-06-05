@@ -40,8 +40,8 @@ trace2 <- list(
   ), 
   type = "scatter"
 )
+data <- list(trace1, trace2)
 
-
-response <- p$plotly(trace0, trace1, kwargs=list(filename="error-bar-style", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(filename="error-bar-style", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

@@ -14,15 +14,13 @@ trace2 <- list(
   name = "LA Zoo", 
   type = "bar"
 )
-
+data <- list(trace1, trace2)
 layout <- list(
   xaxis = list(type = "category"), 
   categories = c("giraffes", "orangutans", "monkeys"), 
   barmode = "group"
 )
 
-
-
-response <- p$plotly(trace0, trace1, kwargs=list(layout=layout, filename="grouped-bar", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="grouped-bar", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

@@ -14,7 +14,7 @@ trace2 <- list(
   name = "Name of Trace 2", 
   type = "scatter"
 )
-
+data <- list(trace1, trace2)
 layout <- list(
   title = "Plot Title", 
   xaxis = list(
@@ -35,8 +35,6 @@ layout <- list(
   )
 )
 
-
-
-response <- p$plotly(trace0, trace1, kwargs=list(layout=layout, filename="styling-names", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="styling-names", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

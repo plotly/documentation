@@ -14,8 +14,8 @@ trace2 <- list(
   name = "Blue Trace", 
   type = "scatter"
 )
+data <- list(trace1, trace2)
 
-
-response <- p$plotly(trace0, trace1, kwargs=list(filename="legend-labels", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(filename="legend-labels", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

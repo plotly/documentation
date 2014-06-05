@@ -10,16 +10,15 @@ for(r in 1:size) {
     }
 }
 
-trace1 <- list(
-  z = z, 
-  scl = "Blackbody", 
-  type = "heatmap"
+data <- list(
+  list(
+    z = z, 
+    scl = "Blackbody", 
+    type = "heatmap"
+  )
 )
-
 layout <- list(title = "Blackbody")
 
-
-
-response <- p$plotly(trace0, kwargs=list(layout=layout, filename="Blackbody-heatmap", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="Blackbody-heatmap", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

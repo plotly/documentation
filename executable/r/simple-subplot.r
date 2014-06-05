@@ -14,15 +14,13 @@ trace2 <- list(
   yaxis = "y2", 
   type = "scatter"
 )
-
+data <- list(trace1, trace2)
 layout <- list(
   xaxis = list(domain = c(0, 0.45)), 
   yaxis2 = list(anchor = "x2"), 
   xaxis2 = list(domain = c(0.55, 1))
 )
 
-
-
-response <- p$plotly(trace0, trace1, kwargs=list(layout=layout, filename="simple-subplot", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="simple-subplot", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

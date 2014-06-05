@@ -30,7 +30,7 @@ trace4 <- list(
   marker = list(color = "rgb(242,240,247)"), 
   type = "area"
 )
-
+data <- list(trace1, trace2, trace3, trace4)
 layout <- list(
   title = "Wind Speed Distribution in Laurel, NE", 
   legend = list(font = list(size = 16)), 
@@ -39,8 +39,6 @@ layout <- list(
   radialaxis = list(ticksuffix = "%")
 )
 
-
-
-response <- p$plotly(trace0, trace1, trace2, trace3, kwargs=list(layout=layout, filename="polar-area-chart", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="polar-area-chart", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

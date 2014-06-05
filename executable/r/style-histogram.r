@@ -38,7 +38,7 @@ trace2 <- list(
   ), 
   type = "histogram"
 )
-
+data <- list(trace1, trace2)
 layout <- list(
   title = "Sampled Results", 
   xaxis = list(title = "Value"), 
@@ -49,8 +49,6 @@ layout <- list(
   bardir = "v"
 )
 
-
-
-response <- p$plotly(trace0, trace1, kwargs=list(layout=layout, filename="style-histogram", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="style-histogram", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

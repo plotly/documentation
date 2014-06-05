@@ -10,16 +10,15 @@ for(r in 1:size) {
     }
 }
 
-trace1 <- list(
-  z = z, 
-  scl = "Picnic", 
-  type = "heatmap"
+data <- list(
+  list(
+    z = z, 
+    scl = "Picnic", 
+    type = "heatmap"
+  )
 )
-
 layout <- list(title = "Picnic")
 
-
-
-response <- p$plotly(trace0, kwargs=list(layout=layout, filename="Picnic-heatmap", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="Picnic-heatmap", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

@@ -3,31 +3,30 @@ using Plotly
 using Plotly
 Plotly.signin("test-runner", "9h29fe3l0x")
 
-data = [
-  [
-    "x" => ["giraffes", "orangutans", "monkeys"], 
-    "y" => [20, 14, 23], 
-    "name" => "SF Zoo", 
-    "marker" => [
-      "line" => ["color" => "grey"], 
-      "color" => "orange"
-    ], 
-    "type" => "bar"
+trace1 = [
+  "x" => ["giraffes", "orangutans", "monkeys"], 
+  "y" => [20, 14, 23], 
+  "name" => "SF Zoo", 
+  "marker" => [
+    "line" => ["color" => "grey"], 
+    "color" => "orange"
   ], 
-  [
-    "x" => ["giraffes", "orangutans", "monkeys"], 
-    "y" => [12, 18, 29], 
-    "name" => "LA Zoo", 
-    "marker" => [
-      "line" => [
-        "color" => "grey", 
-        "width" => 3
-      ], 
-      "color" => "blue"
-    ], 
-    "type" => "bar"
-  ]
+  "type" => "bar"
 ]
+trace2 = [
+  "x" => ["giraffes", "orangutans", "monkeys"], 
+  "y" => [12, 18, 29], 
+  "name" => "LA Zoo", 
+  "marker" => [
+    "line" => [
+      "color" => "grey", 
+      "width" => 3
+    ], 
+    "color" => "blue"
+  ], 
+  "type" => "bar"
+]
+data = [trace1, trace2]
 layout = [
   "title" => "Animal Population", 
   "xaxis" => ["type" => "category"], 

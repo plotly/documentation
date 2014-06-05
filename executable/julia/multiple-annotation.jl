@@ -3,18 +3,17 @@ using Plotly
 using Plotly
 Plotly.signin("test-runner", "9h29fe3l0x")
 
-data = [
-  [
-    "x" => [0, 1, 2, 3, 4, 5, 6, 7, 8], 
-    "y" => [0, 1, 3, 2, 4, 3, 4, 6, 5], 
-    "type" => "scatter"
-  ], 
-  [
-    "x" => [0, 1, 2, 3, 4, 5, 6, 7, 8], 
-    "y" => [0, 4, 5, 1, 2, 2, 3, 4, 2], 
-    "type" => "scatter"
-  ]
+trace1 = [
+  "x" => [0, 1, 2, 3, 4, 5, 6, 7, 8], 
+  "y" => [0, 1, 3, 2, 4, 3, 4, 6, 5], 
+  "type" => "scatter"
 ]
+trace2 = [
+  "x" => [0, 1, 2, 3, 4, 5, 6, 7, 8], 
+  "y" => [0, 4, 5, 1, 2, 2, 3, 4, 2], 
+  "type" => "scatter"
+]
+data = [trace1, trace2]
 layout = [
   "showlegend" => false, 
   "annotations" => [

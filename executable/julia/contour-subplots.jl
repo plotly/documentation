@@ -7,44 +7,43 @@ t = linspace(-1, 1.2, 2000)
 x = t.^3+0.3*randn(2000)
 y = t.^6+0.3*randn(2000)
 
-data = [
-  [
-    "x" => x, 
-    "y" => y, 
-    "name" => "points", 
-    "mode" => "markers", 
-    "marker" => [
-      "size" => 2, 
-      "color" => "rgb(102,0,0)", 
-      "opacity" => 0.4
-    ], 
-    "type" => "scatter"
+trace1 = [
+  "x" => x, 
+  "y" => y, 
+  "name" => "points", 
+  "mode" => "markers", 
+  "marker" => [
+    "size" => 2, 
+    "color" => "rgb(102,0,0)", 
+    "opacity" => 0.4
   ], 
-  [
-    "x" => x, 
-    "y" => y, 
-    "name" => "density", 
-    "ncontours" => 20, 
-    "scl" => "Hot", 
-    "reversescl" => true, 
-    "showscale" => false, 
-    "type" => "histogram2dcontour"
-  ], 
-  [
-    "x" => x, 
-    "name" => "x density", 
-    "marker" => ["color" => "rgb(102,0,0)"], 
-    "yaxis" => "y2", 
-    "type" => "histogram"
-  ], 
-  [
-    "y" => y, 
-    "name" => "y density", 
-    "marker" => ["color" => "rgb(102,0,0)"], 
-    "xaxis" => "x2", 
-    "type" => "histogram"
-  ]
+  "type" => "scatter"
 ]
+trace2 = [
+  "x" => x, 
+  "y" => y, 
+  "name" => "density", 
+  "ncontours" => 20, 
+  "scl" => "Hot", 
+  "reversescl" => true, 
+  "showscale" => false, 
+  "type" => "histogram2dcontour"
+]
+trace3 = [
+  "x" => x, 
+  "name" => "x density", 
+  "marker" => ["color" => "rgb(102,0,0)"], 
+  "yaxis" => "y2", 
+  "type" => "histogram"
+]
+trace4 = [
+  "y" => y, 
+  "name" => "y density", 
+  "marker" => ["color" => "rgb(102,0,0)"], 
+  "xaxis" => "x2", 
+  "type" => "histogram"
+]
+data = [trace1, trace2, trace3, trace4]
 layout = [
   "xaxis" => [
     "domain" => [0, 0.85], 

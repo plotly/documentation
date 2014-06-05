@@ -28,7 +28,7 @@ trace4 <- list(
   yaxis = "y4", 
   type = "scatter"
 )
-
+data <- list(trace1, trace2, trace3, trace4)
 layout <- list(
   xaxis = list(domain = c(0, 0.45)), 
   yaxis = list(domain = c(0, 0.45)), 
@@ -52,8 +52,6 @@ layout <- list(
   )
 )
 
-
-
-response <- p$plotly(trace0, trace1, trace2, trace3, kwargs=list(layout=layout, filename="multiple-subplots", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="multiple-subplots", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

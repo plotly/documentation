@@ -14,7 +14,7 @@ trace2 <- list(
   yaxis = "y2", 
   type = "scatter"
 )
-
+data <- list(trace1, trace2)
 layout <- list(
   yaxis2 = list(
     domain = c(0.6, 0.95), 
@@ -26,8 +26,6 @@ layout <- list(
   )
 )
 
-
-
-response <- p$plotly(trace0, trace1, kwargs=list(layout=layout, filename="simple-inset", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="simple-inset", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

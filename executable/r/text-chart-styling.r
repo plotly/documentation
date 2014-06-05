@@ -30,11 +30,9 @@ trace2 <- list(
   ), 
   type = "scatter"
 )
-
+data <- list(trace1, trace2)
 layout <- list(showlegend = FALSE)
 
-
-
-response <- p$plotly(trace0, trace1, kwargs=list(layout=layout, filename="text-chart-styling", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="text-chart-styling", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename

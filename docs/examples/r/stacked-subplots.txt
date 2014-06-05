@@ -21,7 +21,7 @@ trace3 <- list(
   yaxis = "y3", 
   type = "scatter"
 )
-
+data <- list(trace1, trace2, trace3)
 layout <- list(
   yaxis = list(domain = c(0, 0.266)), 
   legend = list(traceorder = "reversed"), 
@@ -31,8 +31,6 @@ layout <- list(
   yaxis3 = list(domain = c(0.733, 1))
 )
 
-
-
-response <- p$plotly(trace0, trace1, trace2, kwargs=list(layout=layout, filename="stacked-subplots", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="stacked-subplots", fileopt="overwrite"))
 url <- response$url
 filename <- response$filename
