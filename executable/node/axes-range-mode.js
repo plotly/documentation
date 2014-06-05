@@ -19,6 +19,6 @@ var layout = {
   showlegend: false
 };
 
-plot_url = plotly.plot(data, layout, function (err, msg) {
+plotly.plot(data, layout, function (err, msg) {
     console.log(msg);
 });

@@ -12,6 +12,6 @@ var data = [
   }
 ];
 
-plot_url = plotly.plot(data, function (err, msg) {
+plotly.plot(data, function (err, msg) {
     console.log(msg);
 });

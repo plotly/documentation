@@ -18,6 +18,6 @@ var data = [
 ];
 var layout = {title: "Portland"};
 
-plot_url = plotly.plot(data, layout, function (err, msg) {
+plotly.plot(data, layout, function (err, msg) {
     console.log(msg);
 });

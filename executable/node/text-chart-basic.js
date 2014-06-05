@@ -1,6 +1,6 @@
 var plotly = require('plotly')('test-runner', '9h29fe3l0x')
 
-var trace0 = {
+var trace1 = {
   x: [0, 1, 2], 
   y: [1, 1, 1], 
   text: ["Text A", "Text B", "Text C"], 
@@ -9,7 +9,7 @@ var trace0 = {
   mode: "lines+markers+text", 
   type: "scatter"
 };
-var trace1 = {
+var trace2 = {
   x: [0, 1, 2], 
   y: [2, 2, 2], 
   text: ["Text D", "Text E", "Text F"], 
@@ -18,7 +18,7 @@ var trace1 = {
   mode: "markers+text", 
   type: "scatter"
 };
-var trace2 = {
+var trace3 = {
   x: [0, 1, 2], 
   y: [3, 3, 3], 
   text: ["Text G", "Text H", "Text I"], 
@@ -30,6 +30,6 @@ var trace2 = {
 var data = [trace1, trace2, trace3];
 var layout = {showlegend: false};
 
-plot_url = plotly.plot(data, layout, function (err, msg) {
+plotly.plot(data, layout, function (err, msg) {
     console.log(msg);
 });

@@ -1,25 +1,25 @@
 var plotly = require('plotly')('test-runner', '9h29fe3l0x')
 
-var trace0 = {
+var trace1 = {
   x: [1, 2, 3], 
   y: [4, 5, 6], 
   type: "scatter"
 };
-var trace1 = {
+var trace2 = {
   x: [20, 30, 40], 
   y: [50, 60, 70], 
   xaxis: "x2", 
   yaxis: "y2", 
   type: "scatter"
 };
-var trace2 = {
+var trace3 = {
   x: [300, 400, 500], 
   y: [600, 700, 800], 
   xaxis: "x3", 
   yaxis: "y3", 
   type: "scatter"
 };
-var trace3 = {
+var trace4 = {
   x: [4000, 5000, 6000], 
   y: [7000, 8000, 9000], 
   xaxis: "x4", 
@@ -50,6 +50,6 @@ var layout = {
   }
 };
 
-plot_url = plotly.plot(data, layout, function (err, msg) {
+plotly.plot(data, layout, function (err, msg) {
     console.log(msg);
 });

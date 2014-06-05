@@ -1,12 +1,12 @@
 var plotly = require('plotly')('test-runner', '9h29fe3l0x')
 
-var trace0 = {
+var trace1 = {
   x: ["giraffes", "orangutans", "monkeys"], 
   y: [20, 14, 23], 
   name: "SF Zoo", 
   type: "bar"
 };
-var trace1 = {
+var trace2 = {
   x: ["giraffes", "orangutans", "monkeys"], 
   y: [12, 18, 29], 
   name: "LA Zoo", 
@@ -19,6 +19,6 @@ var layout = {
   barmode: "group"
 };
 
-plot_url = plotly.plot(data, layout, function (err, msg) {
+plotly.plot(data, layout, function (err, msg) {
     console.log(msg);
 });
