@@ -331,10 +331,7 @@ def get_plot_call(language, example):
         string += '\nplot_url = response["url"]'
         return string
     elif language == 'r':
-        string = 'response <- p$plotly('
-        string += ', '.join(map(lambda i: 'trace{i}'.format(i=i),
-                                range(len(example['figure']['data']))))
-        string += ', kwargs=list('
+        string = 'response <- p$plotly(data, kwargs=list('
         if 'layout' in example['figure']:
             string += 'layout=layout, '
         string += 'filename="{}"'.format(example['examplename'])
