@@ -18,6 +18,7 @@ var data = [
 ];
 var layout = {title: "Electric"};
 
-plotly.plot(data, layout, function (err, msg) {
+var graph_options = {filename: "Electric-heatmap", fileopt: "overwrite", layout: layout}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

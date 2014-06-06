@@ -30,6 +30,7 @@ var trace3 = {
 var data = [trace1, trace2, trace3];
 var layout = {showlegend: false};
 
-plotly.plot(data, layout, function (err, msg) {
+var graph_options = {filename: "text-chart-basic", fileopt: "overwrite", layout: layout}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

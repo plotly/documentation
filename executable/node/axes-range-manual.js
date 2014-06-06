@@ -16,6 +16,7 @@ var layout = {
   yaxis: {range: [2, 5]}
 };
 
-plotly.plot(data, layout, function (err, msg) {
+var graph_options = {filename: "axes-range-manual", fileopt: "overwrite", layout: layout}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

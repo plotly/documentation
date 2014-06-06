@@ -18,6 +18,7 @@ var data = [
 ];
 var layout = {title: "Jet"};
 
-plotly.plot(data, layout, function (err, msg) {
+var graph_options = {filename: "Jet-heatmap", fileopt: "overwrite", layout: layout}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

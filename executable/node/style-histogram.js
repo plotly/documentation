@@ -47,6 +47,7 @@ var layout = {
   bardir: "v"
 };
 
-plotly.plot(data, layout, function (err, msg) {
+var graph_options = {filename: "style-histogram", fileopt: "overwrite", layout: layout}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

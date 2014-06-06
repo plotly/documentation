@@ -12,6 +12,7 @@ var trace2 = {
 };
 var data = [trace1, trace2];
 
-plotly.plot(data, function (err, msg) {
+var graph_options = {filename: "bar-line", fileopt: "overwrite"}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

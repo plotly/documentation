@@ -10,6 +10,6 @@ data <- list(
   )
 )
 
-response <- p$plotly(data, kwargs=list(filename="file-name", fileopt="overwrite"))
+response <- p$plotly(data, kwargs=list(filename="file-name", fileopt="overwrite", filename="myfolder/myplotlygraph"))
 url <- response$url
 filename <- response$filename

@@ -22,6 +22,7 @@ var layout = {
   plot_bgcolor: "#c7c7c7"
 };
 
-plotly.plot(data, layout, function (err, msg) {
+var graph_options = {filename: "size-margins", fileopt: "overwrite", layout: layout}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

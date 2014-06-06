@@ -19,6 +19,7 @@ var layout = {
   xaxis2: {domain: [0.55, 1]}
 };
 
-plotly.plot(data, layout, function (err, msg) {
+var graph_options = {filename: "simple-subplot", fileopt: "overwrite", layout: layout}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

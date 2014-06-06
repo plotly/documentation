@@ -16,6 +16,7 @@ var trace2 = {
 var data = [trace1, trace2];
 var layout = {barmode: "overlay"};
 
-plotly.plot(data, layout, function (err, msg) {
+var graph_options = {filename: "overlaid-histogram", fileopt: "overwrite", layout: layout}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

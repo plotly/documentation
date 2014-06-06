@@ -7,6 +7,7 @@ var data = [
   }
 ];
 
-plotly.plot(data, function (err, msg) {
+var graph_options = {filename: "basic-heatmap", fileopt: "overwrite"}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

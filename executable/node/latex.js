@@ -18,6 +18,7 @@ var layout = {
   yaxis: {title: "$d, r \text{ (solar radius)}$"}
 };
 
-plotly.plot(data, layout, function (err, msg) {
+var graph_options = {filename: "latex", fileopt: "overwrite", layout: layout}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

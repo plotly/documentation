@@ -9,6 +9,7 @@ var data = [
 ];
 var layout = {xaxis: {autorange: "reversed"}};
 
-plotly.plot(data, layout, function (err, msg) {
+var graph_options = {filename: "axes-reversed", fileopt: "overwrite", layout: layout}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

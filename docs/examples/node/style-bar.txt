@@ -35,6 +35,7 @@ var layout = {
   orientation: "v"
 };
 
-plotly.plot(data, layout, function (err, msg) {
+var graph_options = {filename: "style-bar", fileopt: "overwrite", layout: layout}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

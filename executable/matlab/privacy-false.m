@@ -7,5 +7,5 @@ data = {...
     'type', 'scatter')...
 };
 
-response = plotly(data, struct('filename', 'privacy-false', 'fileopt', 'overwrite'));
+response = plotly(data, struct('filename', 'privacy-false', 'fileopt', 'overwrite', 'world_readable', 'false'));
 plot_url = response.url

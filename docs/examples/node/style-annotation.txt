@@ -42,6 +42,7 @@ var layout = {
   ]
 };
 
-plotly.plot(data, layout, function (err, msg) {
+var graph_options = {filename: "style-annotation", fileopt: "overwrite", layout: layout}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

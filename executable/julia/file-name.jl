@@ -11,5 +11,5 @@ data = [
   ]
 ]
 
-response = Plotly.plot([data], ["filename" => "file-name", "fileopt" => "overwrite"])
+response = Plotly.plot([data], ["filename" => "file-name", "fileopt" => "overwrite", "filename" => "myfolder/myplotlygraph"])
 plot_url = response["url"]

@@ -17,6 +17,7 @@ var data = [
   }
 ];
 
-plotly.plot(data, function (err, msg) {
+var graph_options = {filename: "custom-colorscale", fileopt: "overwrite"}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

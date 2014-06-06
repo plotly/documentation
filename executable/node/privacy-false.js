@@ -8,6 +8,7 @@ var data = [
   }
 ];
 
-plotly.plot(data, function (err, msg) {
+var graph_options = {filename: "privacy-false", fileopt: "overwrite", world_readable: "false"}
+plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });
