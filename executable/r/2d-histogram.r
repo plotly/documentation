@@ -2,8 +2,8 @@ library(plotly)
 
 p <- plotly(username='test-runner', key='9h29fe3l0x')
 
-x &lt;- rnorm(500)
-y &lt;- rnorm(500)+1
+x <- rnorm(500)
+y <- rnorm(500)+1
 
 data <- list(
   list(
