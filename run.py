@@ -100,66 +100,6 @@ sign_in = {
     )
 }
 
-### define headers for docs and tests (plotly docs and executables) ###
-# header = {
-#     examples_dir: dict(
-#         python=(
-#             "import plotly.plotly as py\nfrom plotly.graph_objs import *\n\n"
-#             "py.sign_in({{% if username %}}\"{{{{username}}}}\""
-#             "{{% else %}}'{un}'{{% endif %}}, "
-#             "{{% if api_key %}}\"{{{{api_key}}}}\""
-#             "{{% else %}}'{ak}'{{% endif %}})".format(**users['python'])
-#         ),
-#         matlab=(
-#             "signin({{% if username %}}'{{{{username}}}}'"
-#             "{{% else %}}'{un}'{{% endif %}}, "
-#             "{{% if api_key %}}'{{{{api_key}}}}'"
-#             "{{% else %}}'{ak}'{{% endif %}})".format(**users['matlab'])
-#         ),
-#         r=(
-#             "library(plotly)\n"
-#             "p &lt;- plotly(username={{% if username %}}\"{{{{username}}}}\""
-#             "{{% else %}}'{un}'{{% endif %}}, "
-#             "key={{% if api_key %}}\"{{{{api_key}}}}\""
-#             "{{% else %}}'{ak}'{{% endif %}})".format(**users['r'])
-#         ),
-#         julia=(
-#             "using Plotly\n"
-#             "Plotly.signin({{% if username %}}\"{{{{username}}}}\""
-#             "{{% else %}}\"{un}\"{{% endif %}}, "
-#             "{{% if api_key %}}\"{{{{api_key}}}}\""
-#             "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia'])
-#         ),
-#         node=("var plotly = require('plotly')("
-#               "{{% if username %}}'{{{{username}}}}'"
-#               "{{% else %}}'{un}'{{% endif %}},"
-#               "{{% if api_key %}}'{{{{api_key}}}}'"
-#               "{{% else %}}'{ak}'{{% endif %}});".format(**users['node'])
-#         )
-#     ),
-#     exec_dir: dict(
-#         python=(
-#             "import plotly.plotly as py\nfrom plotly.graph_objs import *\n\n"
-#             "py.sign_in('{un}', '{ak}')".format(**users['tester'])
-#         ),
-#         matlab=(
-#             "signin('{un}', '{ak}')".format(**users['tester'])
-#         ),
-#         r=(
-#             "library(plotly)\n"
-#             "p <- plotly(username='{un}', key='{ak}')".format(**users['tester'])
-#         ),
-#         julia=(
-#             'using Plotly\nPlotly.signin("{un}", "{ak}")'
-#             ''.format(**users['tester'])
-#         ),
-#         node=(
-#             "var plotly = require('plotly')('{un}', '{ak}')"
-#             "".format(**users['tester'])
-#         )
-#     )
-# }
-
 
 def setup():
     if not os.path.exists(doc_dir):
@@ -634,7 +574,6 @@ def main():
             if res.status_code == 200:
                 string += res.content  # todo, text?
                 string = string.replace("<pre>", "").replace("</pre>", "")
-                string = string.replace("<br />", "\n")
             else:
                 print "\tskipping '{}', bad response from plotly translator!" \
                       "".format(language)
