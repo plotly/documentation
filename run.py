@@ -73,7 +73,7 @@ sign_in = {
             "{{% if api_key %}}'{{{{api_key}}}}'"
             "{{% else %}}'{ak}'{{% endif %}})".format(**users['matlab']),
         r=
-            "p &lt;- plotly(username={{% if username %}}\"{{{{username}}}}\""
+            "p <- plotly(username={{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "key={{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}'{ak}'{{% endif %}})".format(**users['r']),
