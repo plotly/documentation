@@ -1,4 +1,4 @@
-cd("~/plotlygithub/documentation/executable/julia")
+cd("/Users/chris/plotlygithub/documentation/executable/julia")
 a = filter!(r"jl$", readdir())
 
 for s in a
