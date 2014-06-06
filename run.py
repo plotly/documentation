@@ -552,10 +552,12 @@ def main():
 
 
 ### run them examples! ###
+    total = len(examples)
     for iii, example in enumerate(examples):
-        print "{} '{}' with command '{}'".format(iii,
-                                                 example['examplename'],
-                                                 command)
+        print "{}/{} '{}' with command '{}'".format(iii,
+                                                    total,
+                                                    example['examplename'],
+                                                    command)
         for language in languages:
             data, fig = None, None
             string = ""
