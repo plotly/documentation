@@ -303,6 +303,22 @@ def reformat_json():
 
 def get_plot_call(language, example):
     """define strings for actual plot calls"""
+    tf_dict = {
+        True: dict(
+            python='True',
+            matlab='true',
+            julia='true',
+            r='TRUE',
+            node='true'
+        ),
+        False: dict(
+            python='False',
+            matlab='false',
+            julia='false',
+            r='FALSE',
+            node='false'
+        )
+    }
     if language == 'python':
         string = "plot_url = py.plot("
         if 'layout' in example['figure']:
@@ -312,14 +328,24 @@ def get_plot_call(language, example):
         string += "filename='{}'".format(example['examplename'])
         if 'plot_options' in example:
             for key, val in example['plot_options'].items():
-                string += ", {}={}".format(key, val)
+                try:
+                    string += ", {}={}".format(key, tf_dict[val][language])
+                except KeyError:
+                    string += ", {}={}".format(key, val)
         return string + ")"
     elif language == 'matlab':
         string = "response = plotly(data, struct("
         if 'layout' in example['figure']:
             string += "'layout', layout, "
         string += "'filename', '{}'".format(example['examplename'])
-        string += ", 'fileopt', 'overwrite'));"
+        string += ", 'fileopt', 'overwrite'"
+        if 'plot_options' in example:
+            for key, val in example['plot_options'].items():
+                try:
+                    string += ", '{}', '{}'".format(key, tf_dict[val][language])
+                except KeyError:
+                    string += ", '{}', '{}'".format(key, val)
+        string += "));"
         string += "\nplot_url = response.url"
         return string
     elif language == 'julia':
@@ -327,7 +353,14 @@ def get_plot_call(language, example):
         if 'layout' in example['figure']:
             string += '"layout" => layout, '
         string += '"filename" => "{fn}"'.format(fn=example['examplename'])
-        string += ', "fileopt" => "overwrite"])'
+        string += ', "fileopt" => "overwrite"'
+        if 'plot_options' in example:
+            for key, val in example['plot_options'].items():
+                try:
+                    string += ', "{}" => "{}"'.format(key, tf_dict[val][language])
+                except KeyError:
+                    string += ', "{}" => "{}"'.format(key, val)
+        string += "])"
         string += '\nplot_url = response["url"]'
         return string
     elif language == 'r':
@@ -335,19 +368,35 @@ def get_plot_call(language, example):
         if 'layout' in example['figure']:
             string += 'layout=layout, '
         string += 'filename="{}"'.format(example['examplename'])
-        string += ', fileopt="overwrite"))'
+        string += ', fileopt="overwrite"'
+        if 'plot_options' in example:
+            for key, val in example['plot_options'].items():
+                try:
+                    string += ', {}="{}"'.format(key, tf_dict[val][language])
+                except KeyError:
+                    string += ', {}="{}"'.format(key, val)
+        string += "))"
         string += '\nurl <- response$url\n'
         string += 'filename <- response$filename'
         return string
     elif language == 'node':
-        string = "plotly.plot("
+        string = 'var graph_options = {{filename: "{}"'.format(example['examplename'])
+        string += ', fileopt: "overwrite"'
+        if 'layout' in example['figure']:
+            string += ', layout: layout'
+        if 'plot_options' in example:
+            for key, val in example['plot_options'].items():
+                try:
+                    string += ', {}: "{}"'.format(key, tf_dict[val][language])
+                except KeyError:
+                    string += ', {}: "{}"'.format(key, val)
+        string += '}'
+        string += "\nplotly.plot("
         if 'data' in example['figure'] and example['figure']['data']:
-            string += "data, "
+            string += "data"
         else:
             string += "[]"
-        if 'layout' in example['figure'] and example['figure']['layout']:
-            string += "layout, "
-        string += "function (err, msg) {"
+        string += ", graph_options, function (err, msg) {"
         string += "\n    console.log(msg);"
         string += "\n});"
         return string
