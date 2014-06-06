@@ -17,4 +17,4 @@ sourceEntireFolder <- function(folderName, verbose=FALSE, showWarnings=TRUE) {
   return(invisible(NULL))
 }
 
-sourceEntireFolder('r_examples', verbose=TRUE)
+sourceEntireFolder('/Users/chris/plotlygithub/documentation/executable/r', verbose=TRUE)
