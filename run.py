@@ -1,4 +1,4 @@
-import requests, json, os, sys, base64, time
+import requests, json, os, sys, base64, time, cgi
 from collections import OrderedDict
 import plotly.plotly as py
 import plotly.exceptions
@@ -369,6 +369,8 @@ def save_code(directory, language, body_string, example_number, example):
     sections = [file_import, file_sign_in, body_string, plot_call]
     sections = [sec for sec in sections if sec]
     code_string = ("\n" * lines_between_sections).join(sections)
+    if directory == examples_dir:
+        code_string = cgi.escape(code_string)
     with open(filename, 'w') as f:
         f.write(code_string)
 
