@@ -1,0 +1,21 @@
+using Plotly
+
+using Plotly
+Plotly.signin("theengineear", "o9zlr0hy6z")
+
+trace1 = [
+  "x" => [0, 1, 2, 3, 4, 5, 6, 7, 8], 
+  "y" => [0, 3, 6, 4, 5, 2, 3, 5, 4], 
+  "name" => "Orange Trace", 
+  "type" => "scatter"
+]
+trace2 = [
+  "x" => [0, 1, 2, 3, 4, 5, 6, 7, 8], 
+  "y" => [0, 4, 7, 8, 3, 6, 3, 3, 4], 
+  "name" => "Blue Trace", 
+  "type" => "scatter"
+]
+data = [trace1, trace2]
+
+response = Plotly.plot([data], ["filename" => "legend-labels", "fileopt" => "overwrite", "auto_open" => "false"])
+plot_url = response["url"]
