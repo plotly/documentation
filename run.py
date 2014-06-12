@@ -748,8 +748,33 @@ def save_pre_book(pre_book):
         os.makedirs(doc_dir)
     except OSError:
         pass
-    with open(pre_book_file, 'w') as f:
-        json.dump(pre_book, f, indent=4)
+    if os.path.exists(pre_book_file):
+        with open(pre_book_file) as f:
+            old_pre_book = json.load(f)
+        new_pre_book = nested_merge(old_pre_book, pre_book)
+        with open(pre_book_file, 'w') as f:
+            json.dump(new_pre_book, f, indent=4)
+    else:
+        with open(pre_book_file, 'w') as f:
+            json.dump(pre_book, f, indent=4)
+
+
+def nested_merge(old, update):
+    """
+    1. Assumes that branches are the same type!
+    2. Doesn't look inside lists! Treats them as a leaf/end/terminal/etc
+    """
+    new = dict()
+    new.update(old)
+    if isinstance(update, dict):
+        for key, val in update.items():
+            if key not in old:
+                new[key] = update[key]
+            elif isinstance(val, dict):
+                new[key] = nested_merge(old[key], val)
+            else:
+                new[key] = val
+    return new
 
 
 def main():
