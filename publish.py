@@ -212,6 +212,8 @@ def get_language_reference(section, language):
             'image' in section):
         rel_path = os.path.join(*section['path'].split(os.path.sep)[1:])
         reference_dict['code'] = os.path.join(rel_path, language, 'code.txt')
+        reference_dict['image'] = os.path.join(dirs['images'],
+                                               "{}.png".format(section["id"]))
         reference_dict['url'] = section['url']
         reference_dict['id'] = section['id']
         reference_dict['parent'] = section['path'].split(os.path.sep)[-2]
