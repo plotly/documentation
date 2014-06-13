@@ -70,11 +70,23 @@ requirements = dict(
 commands = ['code', 'urls', 'clean']
 
 ### define supported languages ###
-languages = ['python', 'julia', 'matlab', 'r', 'node']
+languages = ['python', 'julia', 'matlab', 'r', 'node', 'ggplot', 'matplotlib']
 
 ### define extensions for executable code ###
-lang_to_ext = dict(python='py', julia='jl', matlab='m', r='r', node='js')
-ext_to_lang = dict(py='python', jl='julia', m='matlab', r='r', js='node')
+lang_to_ext = dict(python='py',
+                   julia='jl',
+                   matlab='m',
+                   r='r',
+                   node='js',
+                   ggplot='r',
+                   matplotlib='py')
+ext_to_lang = dict(py='python',
+                   jl='julia',
+                   m='matlab',
+                   r='r',
+                   js='node',
+                   gg='ggplot',
+                   mpl='matplotlib')
 
 ### define imports ###
 imports = dict(
@@ -113,7 +125,17 @@ sign_in = {
             "{{% if username %}}'{{{{username}}}}'"
             "{{% else %}}'{un}'{{% endif %}},"
             "{{% if api_key %}}'{{{{api_key}}}}'"
-            "{{% else %}}'{ak}'{{% endif %}});".format(**users['node'])
+            "{{% else %}}'{ak}'{{% endif %}});".format(**users['node']),
+        ggplot=
+            "p <- plotly(username={{% if username %}}\"{{{{username}}}}\""
+            "{{% else %}}'{un}'{{% endif %}}, "
+            "key={{% if api_key %}}\"{{{{api_key}}}}\""
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r']),
+        matplotlib=
+            "py.sign_in({{% if username %}}\"{{{{username}}}}\""
+            "{{% else %}}'{un}'{{% endif %}}, "
+            "{{% if api_key %}}\"{{{{api_key}}}}\""
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python']),
     ),
     'execution': dict(
         python="py.sign_in('{un}', '{ak}')".format(**users['tester']),
@@ -122,7 +144,10 @@ sign_in = {
         julia='using Plotly\nPlotly.signin("{un}", "{ak}")'
               ''.format(**users['tester']),
         node="var plotly = require('plotly')('{un}', '{ak}')"
-             "".format(**users['tester'])
+             "".format(**users['tester']),
+        ggplot="p <- plotly(username='{un}', key='{ak}')"
+               "".format(**users['tester']),
+        matplotlib="py.sign_in('{un}', '{ak}')".format(**users['tester']),
     )
 }
 

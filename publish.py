@@ -38,7 +38,8 @@ pre_book_file = 'pre-book.json'
 meta_config_info = ['languages', 'name', 'description', 'tags', 'relative_url']
 
 ### define recognized languages ###
-languages = ['python', 'matlab', 'r', 'julia', 'node', 'json']
+languages = ['python', 'matlab', 'r', 'julia', 'node', 'json', 'ggplot',
+             'matplotlib']
 
 ### define extensions for executable code ###
 lang_to_ext = dict(python='py', julia='jl', matlab='m', r='r', node='js')
@@ -76,6 +77,7 @@ def set_total_examples(section):
 def fix_book(section):
     if section['is_leaf']:
         if not section['complete']:
+            print section['id']
             language = section['config']['languages'][0]
             if 'url' not in section:
                 filename = "{}.json".format(section['id'])
@@ -92,6 +94,7 @@ def fix_book(section):
                         print ("\t'url' key not in '{}' for exception handled "
                                "by language, '{}'".format(filename, language))
             mark_completeness(section)  # hopefully, False -> True!
+            print section
     else:
         for subsection in section['subsections'].values():
             fix_book(subsection)
@@ -134,7 +137,9 @@ def port_urls(section):
                     new_url = py.plot(fig, filename=section['id'], auto_open=False)
                 section['url'] = new_url
                 print "\t\tnew url: '{}'".format(section['url'])
-    else:
+    elif not section['is_leaf']:
+        if 'subsections' not in section:
+            print section
         for subsection in section['subsections'].values():
             port_urls(subsection)
 
@@ -171,13 +176,13 @@ def save_images(section):  # todo, appropriateley make incomplete if this fails
                 example_count, total_examples, section['id']
             )
             section['image'] = file_path
-    else:
+    elif not section['is_leaf']:
         for subsection in section['subsections'].values():
             save_images(subsection)
 
 
 def port_code(section):
-    if section['is_leaf']:
+    if section['is_leaf'] and section['complete']:
         # todo add nice std output note?
         for language in section['config']['languages']:
             rel_paths = section[language].split(os.path.sep)[1:]
@@ -191,7 +196,7 @@ def port_code(section):
                 with open(new_path, 'w') as fout:
                     fout.write(code)
                     section[language] = new_path
-    else:
+    elif not section['is_leaf']:
         for subsection in section['subsections'].values():
             port_code(subsection)
 
