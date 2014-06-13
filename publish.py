@@ -143,7 +143,7 @@ def save_images(section):  # todo, appropriateley make incomplete if this fails
     if section['is_leaf'] and section['complete']:
         global example_count
         example_count += 1
-        folder_path = os.path.join(root, dirs['images'])
+        folder_path = os.path.join(root, dirs['api'], dirs['images'])
         file_path = os.path.join(folder_path, "{}.png".format(section['id']))
         if not os.path.exists(file_path):
             print "\t{} of {}: saving image for '{}'".format(
