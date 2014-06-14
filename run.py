@@ -30,13 +30,9 @@ code_file = 'code.txt'
 
 ### keys that are OK to go into final pre_book save ###
 leaf_keys = ["config", "is_leaf", "image", "id", "url", "path", "exception",
-             "complete", "private"]
+             "complete", "private", "prepend", "append"]
 branch_keys = ["config", "is_leaf", "id", "path", "subsections",
                "has_thumbnail"]
-
-### meta-config information ###
-meta_config_info = ['languages', 'name', 'description', 'tags',
-                    'relative_url', 'order', 'private']
 
 ### define config_requirements ###
 requirements = dict(
@@ -63,7 +59,9 @@ allowable = dict(
         name=basestring,
         languages=list,
         description=basestring,
-        tags=list
+        tags=list,
+        prepend=basestring,
+        append=basestring
     )
 )
 
