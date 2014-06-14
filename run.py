@@ -53,6 +53,7 @@ allowable = dict(
         name=basestring,
         has_thumbnail=bool,
         relative_url=basestring,
+        description=basestring,
         order=list
     ),
     example=dict(
@@ -61,7 +62,8 @@ allowable = dict(
         description=basestring,
         tags=list,
         prepend=basestring,
-        append=basestring
+        append=basestring,
+        init=bool
     )
 )
 
