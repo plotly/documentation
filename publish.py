@@ -77,10 +77,9 @@ def set_total_examples(section):
 def fix_book(section):
     if section['is_leaf']:
         if not section['complete']:
-            print section['id']
             language = section['config']['languages'][0]
             if 'url' not in section:
-                filename = "{}.json".format(section['id'])
+                filename = "{}.json".format(section['id']).replace("-", "_")
                 path = os.path.join(dirs['exceptions'], language, filename)
                 if os.path.exists(path):
                     try:

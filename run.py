@@ -525,7 +525,7 @@ def save_code(code, example, language, mode):
     elif mode == 'exception':
         code_folder = os.path.join(dirs['exceptions'], language)
         filename = "{}.{}".format(example['id'], lang_to_ext[language])
-        code_path = os.path.join(code_folder, filename)
+        code_path = os.path.join(code_folder, filename.replace("-", "_"))
     else:
         raise Exception("mode: 'execution' | 'documentation' | 'exception'")
     if not os.path.exists(code_folder):
