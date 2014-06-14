@@ -38,6 +38,35 @@ branch_keys = ["config", "is_leaf", "id", "path", "subsections",
 meta_config_info = ['languages', 'name', 'description', 'tags',
                     'relative_url', 'order', 'private']
 
+### define config_requirements ###
+requirements = dict(
+    subsection=dict(
+        name=basestring,
+        has_thumbnail=bool
+    ),
+    example=dict(
+        name=basestring,
+        languages=list
+    )
+)
+
+### define allowable config entries ###
+
+allowable = dict(
+    subsection=dict(
+        name=basestring,
+        has_thumbnail=bool,
+        relative_url=basestring,
+        order=list
+    ),
+    example=dict(
+        name=basestring,
+        languages=list,
+        description=basestring,
+        tags=list
+    )
+)
+
 ### sign in stuff: each user has a 'un' and 'ak' ###
 ## users ##
 # tester, julia, matlab, python, r, node, publisher
@@ -62,18 +91,6 @@ translator_server = "https://plot.ly/translate_figure/"
 
 ### style stuff ###
 lines_between_sections = 2
-
-### define config_requirements ###
-requirements = dict(
-    subsection=dict(
-        name=basestring,
-        has_thumbnail=bool
-    ),
-    example=dict(
-        name=basestring,
-        languages=list
-    )
-)
 
 ### define commands to run with, can be combined with '+' (e.g., code+urls) ###
 commands = ['code', 'urls', 'clean']
@@ -282,6 +299,17 @@ def validate_and_get_config(config_path, is_leaf):
         elif not isinstance(config[key], val):
             raise ValueError(
                 "wrong value type for key '{}' in config at location '{}'"
+                "".format(key, config_path))
+    for key, val in allowable[section_type].items():
+        if key in config:
+            if not isinstance(config[key], val):
+                raise ValueError(
+                    "wrong value type for key '{}' in config at location '{}'"
+                    "".format(key, config_path))
+    for key in config:
+        if key not in allowable[section_type]:
+            raise KeyError(
+                "invalid key '{}' in config at location '{}'"
                 "".format(key, config_path))
     return config
 
