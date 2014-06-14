@@ -519,9 +519,8 @@ def save_code(code, example, language, mode):
         code_path = os.path.join(code_folder, code_file)
     elif mode == 'execution':
         code_folder = os.path.join(dirs['run'], dirs['executables'], language)
-        code_path = os.path.join(
-            code_folder, "{}.{}".format(example['id'], lang_to_ext[language])
-        )
+        filename = "{}.{}".format(example['id'], lang_to_ext[language])
+        code_path = os.path.join(code_folder, filename.replace("-", "_"))
     elif mode == 'exception':
         code_folder = os.path.join(dirs['exceptions'], language)
         filename = "{}.{}".format(example['id'], lang_to_ext[language])
@@ -533,35 +532,6 @@ def save_code(code, example, language, mode):
     with open(code_path, 'w') as f:
         f.write(code)
     return code_path
-
-
-# def save_image_with_python(fig, example):
-#     for attempt in range(2):
-#         try:
-#             headers = {'plotly-username': users['tester']['un'],
-#                        'plotly-apikey': users['tester']['ak'],
-#                        'plotly-version': '2.0',
-#                        'plotly-platform': 'python'}
-#             server = image_server
-#             res = requests.post(
-#                 server,
-#                 data=json.dumps(fig, cls=utils._plotlyJSONEncoder),
-#                 headers=headers
-#             )
-#             if res.status_code != 200:
-#                 raise plotly.exceptions.PlotlyError()
-#             image = base64.b64decode(json.loads(res.content)['payload'])
-#             file_path = os.path.join(image_dir, "{}.png".format(example['id']))
-#             if not os.path.exists(image_dir):
-#                 os.makedirs(image_dir)
-#             with open(file_path, 'w') as f:
-#                 f.write(image)
-#             return file_path
-#         except plotly.exceptions.PlotlyError:
-#             time.sleep(10)
-#             if attempt == 1:
-#                 print "\t\timage could not be saved, check the " \
-#                       "following figure object:\n\n{}\n"
 
 
 def exec_python_string(exec_string):
