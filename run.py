@@ -400,16 +400,6 @@ def process_model_example(example, command_list):
             continue
         code = code.replace('">>>', "").replace('<<<"', "")
         code = code.replace("'>>>", "").replace("<<<'", "")
-        if 'append' in example['config'] and example['config']['append']:
-            append_file = "append.{}".format(lang_to_ext[language])
-            if append_file in example['files']:
-                with open(example['files'][append_file]) as f:
-                    code += f.read() + "\n"
-            else:
-                raise Exception(
-                    "couldn't find '{}' in '{}'"
-                    "".format(append_file, example['path'])
-                )
         exec_string = format_code(code, language, example, model, 'execution')
         if language == 'python':
             example['python-exec'] = exec_string
