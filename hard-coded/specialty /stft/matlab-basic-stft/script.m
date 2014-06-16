@@ -26,6 +26,7 @@ freq= linspace(0,fs*maxFreq/N,size(S(1:maxFreq,:),1));
 clims = [-100 60]; 
 
 %plot the STFT heatmap 
+fig = figure; 
 imagesc(time,freq,20*log10(abs(S(1:maxFreq,:))),clims)
 colorbar
 axis xy
@@ -34,5 +35,5 @@ ylabel('FREQUENCY (Hz.)')
 title(['C4 GUITAR: MAGNITUDE SPECTROGRAM ANALYSIS']);
 
 %call Plotly 
-resp = fig2plotly(gcf, 'strip', 1); 
+resp = fig2plotly(fig, 'strip', 1); 
 plot_url = resp.url

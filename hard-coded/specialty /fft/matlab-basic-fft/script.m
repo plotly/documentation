@@ -20,6 +20,7 @@ F = fft(sig,N);
 maxFreq = N/16; %~2156 Hz. 
 
 %plot time domain waveform 
+fig = figure; 
 subplot(2,1,1)
 plot(t, sig)
 title('GUITAR C4 TEMPORAL/SPECTRAL VISUALIZATION'); 
@@ -33,5 +34,5 @@ ylabel('MAGNITUDE');
 xlabel('FREQUENCY(Hz.)'); 
 
 %PLOTLY
-response = fig2plotly(gcf,'strip',1);
+response = fig2plotly(fig,'strip',1);
 plotly_url = response.url;
