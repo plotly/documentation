@@ -14,4 +14,4 @@ plot(x, y0, 'r+', x, y1, 'go', x, y2, 'b*', x, y3, 'cx', ...
     x, y4, 'ms', x, y5, 'yd', x, y6, 'kv');
 
 response = fig2plotly();
-plotly_url = response.url;
+plot_url = response.url;
