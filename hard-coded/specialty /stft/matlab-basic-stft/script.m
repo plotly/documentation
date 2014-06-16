@@ -1,8 +1,11 @@
-%sign in 
-signin('theengineear', 'o9zlr0hy6z'); 
+signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
 
-%read audio 
-[sig fs] = wavread('/GTR_C4.wav'); 
+%read audio text file  
+sigtext = urlread('https://raw.githubusercontent.com/BRONSOLO/documentation/reorganization/aux/fft-matlab'); 
+%conver to audio samples 
+sig = str2num(sigtext); 
+%sampling frequency
+fs = 44100; 
 %desired signal duration 
 dur = 1;
 %signal truncation
