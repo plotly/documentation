@@ -5,4 +5,5 @@ e = std(y)*ones(size(x));
 figure
 errorbar(x,y,e)
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

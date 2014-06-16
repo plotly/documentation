@@ -234,7 +234,8 @@ def write_pre_book(section_dir, keepers=None):
                    if os.path.isdir(os.path.join(section_dir, child))]
     files = [child for child in os.listdir(section_dir)
              if not os.path.isdir(os.path.join(section_dir, child))
-             and child != config_file]
+             and child != config_file
+             and child != '.DS_Store']
     if subsections and files:
         raise Exception("found a directory that has BOTH subsections AND "
                         "files in '{}'".format(section_dir))

@@ -7,4 +7,5 @@ y = [1, 5, 3;
 figure
 area(y)
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;
