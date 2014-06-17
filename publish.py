@@ -288,13 +288,15 @@ def save_report(report, command):
     if incomplete_keys:
         string += "\n\nIncomplete examples:"
         print "\tthere are incomplete examples! check the report."
+    else:
+        print "\tyou're a super example-maker! you deserve a bagel!"
     for key in incomplete_keys:
         string += "\n\t{}".format(key)
     if command == 'test':
-        with open('test-publish-report.json', 'w') as f:
+        with open('test-publish-report.txt', 'w') as f:
             f.write(string)
-    elif command == 'publish-report':
-        with open('publish.json', 'w') as f:
+    elif command == 'publish':
+        with open('publish.txt', 'w') as f:
             f.write(string)
 
 
