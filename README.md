@@ -62,7 +62,6 @@ Config files for Examples require a *human-readable* name: "name" attribute and 
 ```json
 {
     "name": "This Is A Scatter Plot",
-    "description": "Note how the points are 'scattered' about!",
     "languages": ["python", "julia", "matlab", "etc…"],
     "plot-options": {"auto_open": false},
     "tags": ["a", "list", "of", "tags"],
@@ -77,8 +76,6 @@ Here's what those mean:
 
 * name [required]
  * a human-readable name that will show up for the example
-* description [optional]
- * this will accompany the example if given
 * languages [required]
  * the languages that the example should support
  * if using a ‘script.ext’ file, you may leave `"languages": []` (blank) as they’re inferred
@@ -103,8 +100,9 @@ Branch config files:
 ```json
 {
     "name": "Histogram Plots are Really Great",
+    "description": "Learn how to make histograms in plotly with these simple examples.",
     "has_thumbnail": true,
-    "relative_url": "e.g., 'histograms'",
+    "relative_url": "histograms",
     “order”: ["basic-histogram", "style-histogram", "overlaid-histogram"]
 }
 ```
@@ -112,11 +110,13 @@ Branch config files:
 Here's what those mean:
 
 * name [required]
- * a human-readable name that will show up for the example
+ * a human-readable name that will show up for the example section
+* description [required]
+ * description of the example section, as used in meta description tags
 * has_thumnail [required]
  * is a thumbnail image associated with this grouping?
-* relative_url [optional]
- * when a user clicks on this group, what url are they redirected to?
+* relative_url [required]
+ * when a user clicks on this group, what url are they redirected to
 * order [optional]
  * you can specify the order of none, some, or all the subdirectories of the branch
 
