@@ -64,11 +64,9 @@ Config files for Examples require a *human-readable* name: "name" attribute and 
     "name": "This Is A Scatter Plot",
     "languages": ["python", "julia", "matlab", "etc…"],
     "plot-options": {"auto_open": false},
-    "tags": ["a", "list", "of", "tags"],
     "init": true,
     "prepend": true,
-    "append": true,
-    “init”: true
+    "append": true
 }
 ```
 
@@ -83,8 +81,6 @@ Here's what those mean:
  * if using a ‘model.json’ file, writing in plot options will dictate additional options
  * note: filename and fileopt should NOT be included here, they’re always included
  * if using ‘script.ext’ or ‘url.json’, plot-options will have no effect (may raise exception?)
-* tags [optional]
- * words that will be associated with the plot
 * init [optional]
  * assumed ‘false’ if not included
  * if ‘true’ you NEED to have a ‘init.ext’ for EACH language in languages
@@ -92,6 +88,10 @@ Here's what those mean:
  * adds in the ‘init.ext’ content AFTER sign-in and BEFORE body-code
  * you’ll need this if you want to reference a variable, ‘x’, inside a model, but (1) just writing x (without quotes) is invalid JSON and (2) syntax for definitions varies between languages
  * Note, variable definitions originate from the definitions in ‘model.json’ where variables are in between ‘>>>’ and ‘<<<’, e.g., ‘>>>x<<<’. In this case, the prepend needs to define ‘x’ for the example to be valid.
+* prepend [optional]
+ * assumed `false` if not included. if `true` then a `prepend.html` file is required that will be included before the code block on the examples pages.
+* append [optional]
+ * assumed `false` if not included. if `true` then a `append.html` file is required that will be included before the code block on the examples pages.
 
 ### Config files for *branches*
 
