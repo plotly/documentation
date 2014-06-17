@@ -3,4 +3,5 @@ signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if ap
 [X,Y,Z] = peaks;
 contour(X,Y,Z,20)
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

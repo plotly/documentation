@@ -8,4 +8,5 @@ Y = [1.0 0.5 0.7
 
 bar(Y,'group');
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

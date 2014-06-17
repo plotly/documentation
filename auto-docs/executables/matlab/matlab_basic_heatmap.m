@@ -4,7 +4,8 @@ z = rand(50)*4+10;
 figure;
 
 colormap('hot');
-imagesc(z); 
+imagesc(z);
 colorbar;
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

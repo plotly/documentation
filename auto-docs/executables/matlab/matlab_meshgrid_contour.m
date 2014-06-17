@@ -6,4 +6,5 @@ Z = sin(X)+cos(Y);
 figure
 contour(X,Y,Z)
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

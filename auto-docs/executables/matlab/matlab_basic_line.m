@@ -7,4 +7,5 @@ y2 = cos(x);
 figure
 plot(x,y1,x,y2)
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

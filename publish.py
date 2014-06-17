@@ -4,23 +4,19 @@ The reason for the logical split is to allow language-specific examples to
 generate their images in between running 'run.py' and 'finalize.py'
 """
 
-import requests, json, os, sys, base64, time, cgi
-from collections import OrderedDict
+import requests, json, os, sys
 import plotly.plotly as py
 import plotly.exceptions
-from plotly.graph_objs import *  # for exec statements
-import plotly.utils as utils
-from exceptions import OSError
 
 ### sign in stuff: each user has a 'un' and 'ak' ###
 ## users ##
 # tester, julia, matlab, python, r, node, publisher
-with open('users.json') as f:
-    users = json.load(f)
+with open('users.json') as user_file:
+    users = json.load(user_file)
 
 ### directory information ###
-with open('dirs.json') as f:
-    dirs = json.load(f)
+with open('dirs.json') as dirs_file:
+    dirs = json.load(dirs_file)
 
 ### server stuff ###
 image_server = "https://plot.ly/apigenimage/"  # to be: "https://plot.ly/image/"
@@ -94,7 +90,6 @@ def fix_book(section):
                         print ("\t'url' key not in '{}' for exception handled "
                                "by language, '{}'".format(filename, language))
             mark_completeness(section)  # hopefully, False -> True!
-            print section
     else:
         for subsection in section['subsections'].values():
             fix_book(subsection)
@@ -104,9 +99,9 @@ def port_urls(section):
     if section['is_leaf'] and section['complete']:
         global example_count
         example_count += 1
-        print "\t{} of {}: porting '{}' with url '{}'".format(
+        print("\t{} of {}: example '{}' with url '{}'".format(
             example_count, total_examples, section['id'], section['url']
-        )
+        )),
         username = section['url'].replace("https://plot.ly/~", "").split('/')[0]
         fid = section['url'].replace("https://plot.ly/~", "").split('/')[1]
         if username.lower() != users[doc_user]['un'].lower():
@@ -136,10 +131,10 @@ def port_urls(section):
                 else:
                     new_url = py.plot(fig, filename=section['id'], auto_open=False)
                 section['url'] = new_url
-                print "\t\tnew url: '{}'".format(section['url'])
+                print ", new url: '{}'".format(section['url'])
+        else:
+            print ", already owned by '{}'".format(users[doc_user]['un'])
     elif not section['is_leaf']:
-        if 'subsections' not in section:
-            print section
         for subsection in section['subsections'].values():
             port_urls(subsection)
 
@@ -148,7 +143,7 @@ def save_images(section):  # todo, appropriateley make incomplete if this fails
     if section['is_leaf'] and section['complete']:
         global example_count
         example_count += 1
-        folder_path = os.path.join(root, dirs['api'], dirs['images'])
+        folder_path = os.path.join(root, dirs['images'])
         file_path = os.path.join(folder_path, "{}.png".format(section['id']))
         if not os.path.exists(file_path):
             print "\t{} of {}: saving image for '{}'".format(
@@ -170,12 +165,12 @@ def save_images(section):  # todo, appropriateley make incomplete if this fails
                 except plotly.exceptions.PlotlyError:
                     pass
                 else:
-                    section['image'] = file_path
+                    section['image'] = True
         else:
             print "\t{} of {}: image already exists for '{}'".format(
                 example_count, total_examples, section['id']
             )
-            section['image'] = file_path
+            section['image'] = True
     elif not section['is_leaf']:
         for subsection in section['subsections'].values():
             save_images(subsection)
@@ -214,11 +209,9 @@ def mark_completeness(example):
 def get_language_reference(section, language):
     reference_dict = dict()
     if (section['is_leaf'] and language in section and section['complete'] and
-            'image' in section):
+            'image' in section and section['image']):
         rel_path = os.path.join(*section['path'].split(os.path.sep)[1:])
         reference_dict['code'] = os.path.join(rel_path, language, 'code.txt')
-        reference_dict['image'] = os.path.join(dirs['images'],
-                                               "{}.png".format(section["id"]))
         reference_dict['url'] = section['url']
         reference_dict['id'] = section['id']
         reference_dict['parent'] = section['path'].split(os.path.sep)[-2]
@@ -260,13 +253,51 @@ def get_language_reference(section, language):
 
 
 def write_language_reference(reference, language):
-    print "writing language reference for '{}'".format(language)
+    print "\twriting language reference for '{}'".format(language)
     ref_folder = os.path.join(root, dirs['api'], dirs['ref'])
     if not os.path.exists(ref_folder):
         os.makedirs(ref_folder)
     ref_file = os.path.join(ref_folder, "{}.json".format(language))
     with open(ref_file, 'w') as f:
         json.dump(reference, f, indent=2)
+
+
+def get_report(section):
+    report = dict()
+    if section['is_leaf']:
+        if section['complete']:
+            return {section['id']: 'complete'}
+        else:
+            return {section['id']: 'INCOMPLETE'}
+    else:
+        for subsection in section['subsections'].values():
+            report.update(get_report(subsection))
+    return report
+
+
+def save_report(report, command):
+    complete_keys = [key for key in report if report[key] == 'complete']
+    incomplete_keys = [key for key in report if report[key] == 'INCOMPLETE']
+    complete_keys.sort()
+    incomplete_keys.sort()
+    string = ""
+    if complete_keys:
+        string += "Complete examples:"
+    for key in complete_keys:
+        string += "\n\t{}".format(key)
+    if incomplete_keys:
+        string += "\n\nIncomplete examples:"
+        print "\tthere are incomplete examples! check the report."
+    else:
+        print "\tyou're a super example-maker! you deserve a bagel!"
+    for key in incomplete_keys:
+        string += "\n\t{}".format(key)
+    if command == 'test':
+        with open('test-publish-report.txt', 'w') as f:
+            f.write(string)
+    elif command == 'publish':
+        with open('publish.txt', 'w') as f:
+            f.write(string)
 
 
 def main():
@@ -293,12 +324,16 @@ def main():
     save_images(pre_book)
     print "porting code"
     port_code(pre_book)
+    print "writing language references"
     for language in languages:
         language_reference = get_language_reference(pre_book, language)
         if language_reference:
             write_language_reference(language_reference, language)
         else:
-            print "language reference for '{}' NOT created".format(language)
+            print "\tNOT writing language reference for '{}'".format(language)
+    print "making the report file"
+    report = get_report(pre_book)
+    save_report(report, command)
 
 
 if __name__ == "__main__":

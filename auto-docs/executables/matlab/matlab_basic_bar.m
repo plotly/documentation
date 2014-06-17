@@ -7,4 +7,5 @@ y = [75.995,91.972,105.711,123.203,131.669,...
 figure;
 bar(x,y);
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;
