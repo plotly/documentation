@@ -1,4 +1,4 @@
-#Plotly's Automatically-Generated Docs!
+#Plotly's Auto-Docs!
 Text and images from this repo make up content served at https://plot.ly
 
 ##File Structure:
@@ -38,6 +38,13 @@ test-published/
 * `test-published` is a directory just like `published` except urls are not migrated to our official `PlotBot` user
 * `test-published/images`/`published/images` hold all the examples identified by corresponding `id` (hard-coded folder name)
 * `test-published/references`/`published/references` hold json objects which are used to generate web content for each langauge
+
+
+##user.json file:
+
+Since we need to make a lot of plots, we need a user to do so. However, we can't have username-api_key pairs for our official docs just floating around.
+
+If you need to use the `run.py` and `publish.py` programs, you'll need the *secret* `users.json` file.
 
 
 ## some philosophy
@@ -131,7 +138,7 @@ The `script.ext` files have the following guidelines
  * p <- pl* (ggplot), same as 'r'
  * py.sign* (matplotlib), same as 'python'
 
-Yes, that last requirement is annoying, but this line should be failry set by plotly convention at this point, so it shouldn't cause too much headache.
+Yes, that last requirement is annoying, but this line should be set by plotly convention at this point, so it shouldn't cause too much of a headache.
 
 Here's an example for a python `script.py` file:
 
@@ -177,38 +184,38 @@ Notes:
 
 ## Adding an Example (quick overview)
 
-1. Pick a unique name:
+* Pick a unique name:
 Each example folder needs to have a unique name, otherwise, you'll quickly get an error on compiling. The folder name is also called the *id*, which is also referred to as the *filename* here. There all the same, you write it once when you make the folder.
-2. Pick a method:
+* Pick a method:
 (*model*, *script*, or *url*)
-3. Fill out the config.json
-4. run `python run.py` (this will spit out information on how to *actually* run this program)
+* Fill out the config.json
+* run `python run.py` (this will spit out information on how to *actually* run this program)
 If you've just added one example, try `python run.py code+urls examplename` where examplename is the new example folder. If you've added a number of examples, try `python run.py code+urls new`, which will find all the unprocessed examples and run them.
 
 ## Adding an example by using a JSON model
 
-1. Pick a unique name, let's call it `unique-example`:
+* Pick a unique name, let's call it `unique-example`:
 Each example folder needs to have a unique name, otherwise, you'll quickly get an error on compiling. The folder name is also called the *id*, which is also referred to as the *filename* here. There all the same, you write it once when you make the folder.
-2. Add the `model.json` file. This file contains *only* the JSON figure representation used by plotly, e.g.,
+* Add the `model.json` file. This file contains *only* the JSON figure representation used by plotly, e.g.,
 ```json
 {
     "data": [],
     "layout": {}
 }
 ```
-3. Fill out the `config.json` file *inside* the new folder with a unique name that you just created (`unique-example`). Remember, it needs *at least* a `name` parameter and a `languages` parameter.
-4. Run `python run.py code+urls unique-example` (it'll spit out *helpful* messages if somethings off)
-5. (now you're ready for some publishing!)
+* Fill out the `config.json` file *inside* the new folder with a unique name that you just created (`unique-example`). Remember, it needs *at least* a `name` parameter and a `languages` parameter.
+* Run `python run.py code+urls unique-example` (it'll spit out *helpful* messages if somethings off)
+* (now you're ready for some publishing!)
 
 ## Adding an example by using a script.ext file
 
-1. Pick a unique name, let's call it `unique-example`:
+* Pick a unique name, let's call it `unique-example`:
 Each example folder needs to have a unique name, otherwise, you'll quickly get an error on compiling. The folder name is also called the *id*, which is also referred to as the *filename* here. There all the same, you write it once when you make the folder.
-2. Add the `script.ext` file. For example, if you're using Python, `script.py`. If you're using matlab, `script.m`. If you're using a plotting library within a programming language, you can specify that too, e.g. `script.gg` for a ggplot graph in `r`. There's only *one* real requirement for this file. You need to create a variable in the example called `plor_url` that contains a string with the newly created plotly url. If you don't, the next step just won't work. (see the Python example for a script.py file above)
-3. Fill out the `config.json` file *inside* the new folder with a unique name that you just created (`unique-example`). Remember, it needs *at least* a `name` parameter and a `languages` parameter. Here, you *need* the `languages` parameter, but it may be left blank, i.e., `"languages": []`
-4. Run `python run.py code+urls unique-example` (it'll spit out *helpful* messages if somethings off)
-5. Run run the `language_exceptions.ext` file (e.g. `python_exceptions.py` for Python). This program will capture and save the resulting `plot_url` variable to a special file (see `exepcitons scripts` for more info).
-6. (now you're ready for some publishing!)
+* Add the `script.ext` file. For example, if you're using Python, `script.py`. If you're using matlab, `script.m`. If you're using a plotting library within a programming language, you can specify that too, e.g. `script.gg` for a ggplot graph in `r`. There's only *one* real requirement for this file. You need to create a variable in the example called `plor_url` that contains a string with the newly created plotly url. If you don't, the next step just won't work. (see the Python example for a script.py file above)
+* Fill out the `config.json` file *inside* the new folder with a unique name that you just created (`unique-example`). Remember, it needs *at least* a `name` parameter and a `languages` parameter. Here, you *need* the `languages` parameter, but it may be left blank, i.e., `"languages": []`
+* Run `python run.py code+urls unique-example` (it'll spit out *helpful* messages if somethings off)
+* Run run the `language_exceptions.ext` file (e.g. `python_exceptions.py` for Python). This program will capture and save the resulting `plot_url` variable to a special file (see `exepcitons scripts` for more info).
+* (now you're ready for some publishing!)
 
 ## Adding an example by using a url.json file
 
@@ -216,17 +223,17 @@ Use with caution. You're hard-coding a url which points to a mutable plotly grap
 
 That said, cool, you can just throw in urls!
 
-1. Pick a unique name, let's call it `unique-example`:
+* Pick a unique name, let's call it `unique-example`:
 Each example folder needs to have a unique name, otherwise, you'll quickly get an error on compiling. The folder name is also called the *id*, which is also referred to as the *filename* here. There all the same, you write it once when you make the folder.
-2. Add the `url.json` file. It looks like this:
+* Add the `url.json` file. It looks like this:
 ```json
 {
     "url": "https://plot.ly/~dude-face/77"
 }
 ```
-3. Fill out the `config.json` file *inside* the new folder with a unique name that you just created (`unique-example`).
-4. Run `python run.py code+urls unique-example` (it'll spit out *helpful* messages if somethings off)
-5. (now you're ready for some publishing!)
+* Fill out the `config.json` file *inside* the new folder with a unique name that you just created (`unique-example`).
+* Run `python run.py code+urls unique-example` (it'll spit out *helpful* messages if somethings off)
+* (now you're ready for some publishing!)
 
 
 ## `run.py`
@@ -241,24 +248,73 @@ To see the available commands, enter this in a terminal program in the same dire
 ```bash
 python run.py
 ```
-Commands are separated by `+` signs and you may have as many `examples` as you wish. Examples match *entire* sections, e.g, `chart-types` or they may match a *single* example, e.g., `basic-bar`. However, they must be *exact* matches (`basic`, `basic-ba`, nor `basic-bear` will not--currently--match any examples). 
+Commands are separated by `+` signs and you may have as many `examples` as you wish. Examples match *entire* sections, e.g, `chart-types` or they may match a *single* example, e.g., `basic-bar`. However, they must be *exact* matches (`basic`, `basic-ba`, and `basic-bear` will not--currently--match any examples). 
 
 Output from `run.py` is stored (and overwritten) in a file called `pre-book.json`. The examples that have already been processed are listed in this file and leveraged so that the terminal line:
+
 ```bash
 python run.py code+urls new
 ```
 
 ... will process only examples found as leaves in the `hard-coded` directory tree, but *not yet* listed as `processed_ids`.
 
-When using `script.ext` files, `run.py` will out (come back to this!)
+When using `script.ext` files, `run.py` will output executable code in an `exceptions` directory that will be used by other programs--e.g., `python_exceptions.py`, `mpl_exceptions.py`, `matlab_exceptions.m`--to *complete* examples, i.e., give them plot urls.
+
+Ins and Outs of `run.py`:
+* input
+ * commands and examples from terminal (e.g., `python run.py code+urls basic-line1`)
+ * `hard-coded` file-structure
+ * config.json files
+ * model.json files
+ * script.ext files
+ * url.json files
+ * init.ext files
+* output
+ * `auto-docs` directory
+  * `auto-docs/executables`, solely for testing purposes
+ * `pre-book.json`, all the processed information so far
 
 
 ## `publish.py`
 
 Running `run.py` is the first step in this process. The break in processing allows us to abstract away the notion of *language-specific* examples before setting up our examples in django. I.e., we can *complete* the exceptional examples in between running `run.py` and `publish.py`.
 
+When you run the publishing program the following occurs:
+* check and see if *language-specific* examples have been updated (looks in the `exceptions` directory)
+* port urls from `test` user :space_invader: to `publish` user :computer:
+* save images using the static image server
+* create *book-of-things-esque* `references` for each language
+* make a report file to show complete/incomplete examples
 
+You have two options for running `publish.py`:
+1. `python publish.py test`
+This will use the `tester` user (stored in the `users.json` file you'll need to get outside of GitHub). It will port urls over (usually they don't need porting) to the `test` user, save images to the `test-published/images` directory, save templated code examples to the `test-published/api-docs` directory, create langauge *references* in the `test-published/api-docs` directory, and save a `test-publish-report.txt`.
+2. 'python publish.py publish`
+You guessed it, everything above but for realz. This will use the `publisher` user (stored in the `users.json` file you'll need to get outside of GitHub). It will port urls over to the `publisher` user, save images to the `published/images` directory, save templated code examples to the `published/api-docs` directory, create langauge *references* in the `published/api-docs` directory, and save a `publish-report.txt`.
 
+You *should not* run `publish` until all examples show up as *complete* in the `test-publish-report.txt` file (there will also be congratulatory output in the stdout if all examples are complete).
 
+Ins and Outs of `publish.py`:
+* input
+ * pre-book.json file
+ * command (`test` or `publish`)
+ * `auto-docs` directory
+ * `exceptions` directory
+* output
+ * `test-published` or `published` directory
+ * `test-published/api-docs/references` `published/api-docs/references` directory
+ * `test-publish-report.txt` or `publish-report.txt`
 
+## completing *language-specific* exmples
 
+Each language needs its own program to:
+
+1. Navigate to its language in the `exceptions` directory
+2. Run each script in that directory
+3. Save the resulting plot url as `example_id.json` with contents `{"url": "https://plot.ly/~some-user/13"}`
+
+`publish.py` anticipates these `*.json` files existing in this directory and will be able to properly add the example if it exists.
+
+## why all the trouble?
+
+The resulting `published` directory contains information that can be copied straight into the plotly backend and *just work*. The content is handled totally separately from the *look* of the examples, so we don't need to mess with one to change the other.
