@@ -4,12 +4,11 @@ D=dir([fldr, '*.m']);
 
 for i=1:size(D,1);
     run([fldr, D(i).name]);
-
     % write url to file
     [~, id] = fileparts(D(i).name);
-    fid = fopen([id, '.json', 'w');
+    fid = fopen([id '.json'], 'w');
     fprintf(fldr, fid, '%s', m2json(struct('url', plotly_url)));
     fclose(fid);
-
-    clearvars -except D, fldr, i
-end 
+    close all
+    clearvars -except D  fldr i
+end
