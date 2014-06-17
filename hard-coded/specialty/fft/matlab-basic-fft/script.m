@@ -1,7 +1,7 @@
 signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
 
 %read audio text file  
-sigtext = urlread('https://raw.githubusercontent.com/BRONSOLO/documentation/reorganization/aux/fft-matlab'); 
+sigtext = urlread('https://raw.githubusercontent.com/plotly/documentation/reorganization/aux/fft-matlab'); 
 %conver to audio samples 
 sig = str2num(sigtext); 
 %sampling frequency
