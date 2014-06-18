@@ -32,7 +32,7 @@ pre_book_file = 'pre-book.json'
 
 ### meta-config information ###
 meta_config_info = ['languages', 'name', 'description', 'tags',
-                    'relative_url', 'prepend', 'append']
+                    'relative_url', 'prepend', 'append', 'has_thumbnail']
 
 ### define recognized languages ###
 languages = ['python', 'matlab', 'r', 'julia', 'node', 'json', 'ggplot',
