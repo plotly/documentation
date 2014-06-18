@@ -8,4 +8,5 @@ for i=8:size(x,2)-8
 text(x(i), y(i), 'Text');
 end
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

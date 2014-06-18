@@ -15,4 +15,5 @@ title('Frequency Response');
 set(get(ax(1), 'Ylabel'), 'String', 'Low Frequency');
 set(get(ax(2), 'Ylabel'), 'String', 'High Frequency');
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

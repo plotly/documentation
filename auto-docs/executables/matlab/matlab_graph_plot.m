@@ -13,4 +13,5 @@ hold on;
 gplot(H, V, 'r-');
 axis off equal;
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

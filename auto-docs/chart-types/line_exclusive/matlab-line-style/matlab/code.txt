@@ -7,4 +7,6 @@ y3 = sin(x-0.5);
 
 figure
 plot(x,y1,'g',x,y2,'b--o',x,y3,'c*')
-fig2plotly()
+
+response = fig2plotly();
+plotly_url = response.url;

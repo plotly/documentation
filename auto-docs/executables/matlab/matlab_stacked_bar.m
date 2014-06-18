@@ -6,7 +6,7 @@ mumps = [20178 23536 34561 37395 36072 32237 18597 9408 6005 6268 8963 13882]';
 chickenPox = [37140 32169 37533 39103 33244 23269 16737 5411 3435 6052 12825 23332]';
 
 % Create a stacked bar chart using the bar function
-figure;
+fig = figure;
 bar(1:12, [measles mumps chickenPox], 0.5, 'stack');
 axis([0 13 0 100000]);
 title('Childhood diseases by month');
@@ -14,15 +14,5 @@ xlabel('Month');
 ylabel('Cases (in thousands)');
 legend('Measles', 'Mumps', 'Chicken pox');
 
-%%% simple-boxplots
-
-% some random points
-data1 = normrnd(5,1,100,1);
-data2 = normrnd(6,1,100,1);
-
-% a simple box plot with two boxes
-figure;
-boxplot([data1,data2])
-
-response = fig2plotly();
+response = fig2plotly(fig,'strip',1);
 plotly_url = response.url;

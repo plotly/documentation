@@ -36,4 +36,5 @@ plot(t, y.^3);
 set(handaxes3, 'box','off');
 xlabel('t'); ylabel('(sin(t))^3');
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

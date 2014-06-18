@@ -28,4 +28,5 @@ xlabel('Years');
 set(get(ax(1), 'Ylabel'), 'String', 'Cases');
 set(get(ax(2), 'Ylabel'), 'String', 'Infection rate in cases per thousand');
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;
