@@ -163,6 +163,7 @@ def save_images(section):  # todo, appropriateley make incomplete if this fails
                 try:
                     py.image.save_as(fig, file_path)
                 except plotly.exceptions.PlotlyError:
+                    print "\t\timage save failed..."
                     pass
                 else:
                     section['image'] = True
@@ -296,7 +297,7 @@ def save_report(report, command):
         with open('test-publish-report.txt', 'w') as f:
             f.write(string)
     elif command == 'publish':
-        with open('publish.txt', 'w') as f:
+        with open('publish-report.txt', 'w') as f:
             f.write(string)
 
 
