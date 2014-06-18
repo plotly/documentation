@@ -16,8 +16,9 @@ end
 axis([0.1 10 0.01 100]);
 
 % title and labels
-title('|G|(\omega) vs \omega');
-xlabel('\omega');
-ylabel('|G|(\omega)');
+title('$$|G|(\omega) \hbox{ vs } \omega$$','interpreter','latex');
+xlabel('$$\omega$$','interpreter','latex');
+ylabel('$$|G|(\omega)$$','interpreter','latex');
 
-fig2plotly()
+
+fig2plotly() 
