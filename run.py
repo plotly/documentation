@@ -3,6 +3,7 @@ import plotly.plotly as py
 import plotly.exceptions
 from plotly.graph_objs import *  # for exec statements
 from exceptions import OSError
+from requests.exceptions import RequestException
 
 total_examples = 0
 example_count = 0
@@ -578,7 +579,7 @@ def get_plotly_response(resource, data=None, attempts=2, sleep=5):
             else:
                 res = requests.get(resource)
             return res
-        except OSError:
+        except RequestException:
             if attempt < attempts:
                 print "\t\tcouldn't connect to plotly, trying again..."
             time.sleep(sleep)
