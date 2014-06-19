@@ -107,9 +107,11 @@ def port_urls(section, command):
         if (command == 'test' and 'test-url' not in section) or \
            (command == 'publish' and 'publish-url' not in section):
             if 'private' in section and section['private']:
-                user = [usr for usr in users.values()
-                        if usr['un'].lower() == username.lower()][0]
-                py.sign_in(user['un'], user['ak'])
+                match = [usr for usr in users.values()
+                        if usr['un'].lower() == username.lower()]
+                if match:
+                    user = match[0]
+                    py.sign_in(user['un'], user['ak'])
             try:
                 fig = py.get_figure(username, fid)
             except plotly.exceptions.PlotlyError:
