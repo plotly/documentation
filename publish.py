@@ -95,7 +95,7 @@ def fix_book(section):
             fix_book(subsection)
 
 
-def port_urls(section):
+def port_urls(section, command):
     if section['is_leaf'] and section['complete']:
         global example_count
         example_count += 1
@@ -104,7 +104,8 @@ def port_urls(section):
         )),
         username = section['url'].replace("https://plot.ly/~", "").split('/')[0]
         fid = section['url'].replace("https://plot.ly/~", "").split('/')[1]
-        if username.lower() != users[doc_user]['un'].lower():
+        if (command == 'test' and 'test-url' not in section) or \
+           (command == 'publish' and 'publish-url' not in section):
             if 'private' in section and section['private']:
                 user = [usr for usr in users.values()
                         if usr['un'].lower() == username.lower()][0]
@@ -130,13 +131,16 @@ def port_urls(section):
                         world_readable=False)
                 else:
                     new_url = py.plot(fig, filename=section['id'], auto_open=False)
-                section['url'] = new_url
-                print ", new url: '{}'".format(section['url'])
+                if command == 'test':
+                    section['test-url'] = new_url
+                elif command == 'publish':
+                    section['pubish-url'] = new_url
+                print ", new url: '{}'".format(new_url)
         else:
-            print ", already owned by '{}'".format(users[doc_user]['un'])
+            print ", already ported to '{}'".format(users[doc_user]['un'])
     elif not section['is_leaf']:
         for subsection in section['subsections'].values():
-            port_urls(subsection)
+            port_urls(subsection, command)
 
 
 def save_images(section):  # todo, appropriateley make incomplete if this fails
@@ -164,7 +168,7 @@ def save_images(section):  # todo, appropriateley make incomplete if this fails
                     py.image.save_as(fig, file_path)
                 except plotly.exceptions.PlotlyError:
                     print "\t\timage save failed..."
-                    pass
+                    section['image'] = False
                 else:
                     section['image'] = True
         else:
@@ -177,28 +181,33 @@ def save_images(section):  # todo, appropriateley make incomplete if this fails
             save_images(subsection)
 
 
-def port_code(section):
+def port_code(section, command):
     if section['is_leaf'] and section['complete']:
         # todo add nice std output note?
         for language in section['config']['languages']:
-            rel_paths = section[language].split(os.path.sep)[1:]
-            old_path = os.path.join(dirs['run'], *rel_paths)
-            new_path = os.path.join(root, dirs['api'], *rel_paths)
-            new_folder = os.path.join(*new_path.split(os.path.sep)[:-1])
-            if not os.path.exists(new_folder):
-                os.makedirs(new_folder)
-            with open(old_path) as fin:
-                code = fin.read()
-                with open(new_path, 'w') as fout:
-                    fout.write(code)
-                    section[language] = new_path
+            if (command == 'test' and 'test-' + language not in section) or \
+               (command == 'publish' and 'publish-' + language not in section):
+                rel_paths = section[language].split(os.path.sep)[1:]
+                old_path = os.path.join(dirs['run'], *rel_paths)
+                new_path = os.path.join(root, dirs['api'], *rel_paths)
+                new_folder = os.path.join(*new_path.split(os.path.sep)[:-1])
+                if not os.path.exists(new_folder):
+                    os.makedirs(new_folder)
+                with open(old_path) as fin:
+                    code = fin.read()
+                    with open(new_path, 'w') as fout:
+                        fout.write(code)
+                        if command == 'test':
+                            section['test-' + language] = new_path
+                        else:
+                            section['publish-' + language] = new_path
     elif not section['is_leaf']:
         for subsection in section['subsections'].values():
-            port_code(subsection)
+            port_code(subsection, command)
 
 
-def mark_completeness(example):
-    has_url = 'url' in example
+def mark_completeness(example):  # todo: remove function and write out!
+    has_url = 'url' in example   # (this is a conditional check!)
     has_all_languages = all([language in example
                              for language in example['config']['languages']])
     if has_url and has_all_languages:
@@ -207,13 +216,16 @@ def mark_completeness(example):
         example['complete'] = False
 
 
-def get_language_reference(section, language):
+def get_language_reference(section, language, command):
     reference_dict = dict()
     if (section['is_leaf'] and language in section and section['complete'] and
             'image' in section and section['image']):
         rel_path = os.path.join(*section['path'].split(os.path.sep)[1:])
         reference_dict['code'] = os.path.join(rel_path, language, 'code.txt')
-        reference_dict['url'] = section['url']
+        if command == 'test':
+            reference_dict['url'] = section['test-url']
+        elif command == 'publish':
+            reference_dict['url'] = section['publish-url']
         reference_dict['id'] = section['id']
         reference_dict['parent'] = section['path'].split(os.path.sep)[-2]
         for entry in meta_config_info:
@@ -223,7 +235,9 @@ def get_language_reference(section, language):
     elif not section['is_leaf']:
         subsections_list = list()
         for subsection in section['subsections'].values():
-            subsection_entry = get_language_reference(subsection, language)
+            subsection_entry = get_language_reference(
+                subsection, language, command
+            )
             if subsection_entry:
                 subsections_list += [subsection_entry]
         if subsections_list:
@@ -301,6 +315,11 @@ def save_report(report, command):
             f.write(string)
 
 
+def save_pre_book(pre_book):
+    with open(pre_book_file, 'w') as f:
+        json.dump(pre_book, f, indent=4)
+
+
 def main():
     command = get_command()
     global root, doc_user, example_count, total_examples
@@ -319,19 +338,21 @@ def main():
     print "setting up auto-generated structure"
     fix_book(pre_book)
     print "porting urls"
-    port_urls(pre_book)
+    port_urls(pre_book, command)
     example_count = 0
     print "saving images"
     save_images(pre_book)
     print "porting code"
-    port_code(pre_book)
+    port_code(pre_book, command)
     print "writing language references"
     for language in languages:
-        language_reference = get_language_reference(pre_book, language)
+        language_reference = get_language_reference(pre_book, language, command)
         if language_reference:
             write_language_reference(language_reference, language)
         else:
             print "\tNOT writing language reference for '{}'".format(language)
+    print "saving changes to the pre-book file"
+    save_pre_book(pre_book)
     print "making the report file"
     report = get_report(pre_book)
     save_report(report, command)
