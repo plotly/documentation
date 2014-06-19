@@ -1,4 +1,4 @@
-signin('theengineear', 'o9zlr0hy6z')
+signin('TestBot', 'r1neazxo9w')
 
 t = linspace(-1, 1.2, 2000);
 x = (t.^3)+(0.3.*randn(1, 2000));

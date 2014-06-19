@@ -1,7 +1,7 @@
 using Plotly
 
 using Plotly
-Plotly.signin("theengineear", "o9zlr0hy6z")
+Plotly.signin("TestBot", "r1neazxo9w")
 
 t = linspace(-1, 1.2, 2000)
 x = t.^3+0.3*randn(2000)

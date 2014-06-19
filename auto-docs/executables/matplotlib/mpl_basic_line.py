@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt # so we don't have to look at mpl's backend
 import numpy as np
 
 import plotly.plotly as py
-py.sign_in('theengineear', 'o9zlr0hy6z')
+py.sign_in('TestBot', 'r1neazxo9w')
 
 x = np.linspace(0, 10)
 line, = plt.plot(x, np.sin(x), '--', linewidth=2)

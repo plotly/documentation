@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 
 import plotly.plotly as py
-py.sign_in('theengineear', 'o9zlr0hy6z')
+py.sign_in('TestBot', 'r1neazxo9w')
 
 fig = plt.figure()
 gs = gridspec.GridSpec(3, 3)

@@ -801,14 +801,15 @@ def trim_pre_book(section):
 
 
 def clear_reprocessed_examples(section):
-    if section['is_leaf']:
-        if section['id'] in processed_ids:
-            keys = section.keys()
-            for key in keys:
-                del section[key]
-    else:
-        for subsection in section['subsections'].values():
-            clear_reprocessed_examples(subsection)
+    if section:
+        if section['is_leaf']:
+            if section['id'] in processed_ids:
+                keys = section.keys()
+                for key in keys:
+                    del section[key]
+        else:
+            for subsection in section['subsections'].values():
+                clear_reprocessed_examples(subsection)
 
 
 def save_pre_book(pre_book, previous_pre_book):
