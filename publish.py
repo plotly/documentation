@@ -114,8 +114,7 @@ def port_urls(section, command):
                 fig = py.get_figure(username, fid)
             except plotly.exceptions.PlotlyError:
                 print ("\tcouldn't port url over for example, '{}'."
-                       "\n\tis the plot private?\n\t'{}'"
-                       "".format(section['id'], section['url']))
+                       "The url was '{}'".format(section['id'], section['url']))
                 fig = None
             finally:
                 py.sign_in(users[doc_user]['un'], users[doc_user]['ak'])
@@ -128,16 +127,25 @@ def port_urls(section, command):
                     fig['layout']['margin']['t'] = 65
                 fig['layout'].update(autosize=False, width=500, height=500)
                 if 'private' in section and section['private']:
-                    new_url = py.plot(
-                        fig, filename=section['id'], auto_open=False,
-                        world_readable=False)
+                    try:  # todo clean up exception handling
+                        new_url = py.plot(
+                            fig, filename=section['id'], auto_open=False,
+                            world_readable=False)
+                    except:
+                        new_url = None
+                        print "\tcall to py.plot() failed"
                 else:
-                    new_url = py.plot(fig, filename=section['id'], auto_open=False)
-                if command == 'test':
+                    try:  # todo clean up exception handling
+                        new_url = py.plot(fig, filename=section['id'], auto_open=False)
+                    except:
+                        new_url = None
+                        print "\tcall to py.plot() failed"
+                if command == 'test' and new_url:
                     section['test-url'] = new_url
-                elif command == 'publish':
+                    print ", new url: '{}'".format(new_url)
+                elif command == 'publish' and new_url:
                     section['publish-url'] = new_url
-                print ", new url: '{}'".format(new_url)
+                    print ", new url: '{}'".format(new_url)
         else:
             print ", already ported to '{}'".format(users[doc_user]['un'])
     elif not section['is_leaf']:
@@ -146,7 +154,11 @@ def port_urls(section, command):
 
 
 def save_images(section, command):
-    if section['is_leaf'] and section['complete']:
+    if command == 'test':
+        has_url = 'test-url' in section
+    else:
+        has_url = 'publish-url' in section
+    if section['is_leaf'] and section['complete'] and has_url:
         global example_count
         example_count += 1
         folder_path = os.path.join(root, dirs['images'])
