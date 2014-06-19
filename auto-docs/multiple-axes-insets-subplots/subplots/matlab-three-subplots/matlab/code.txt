@@ -34,4 +34,5 @@ xlabel('t');
 ylabel('x_zoh(t)');
 title('Reconstruction at T=4e-6 ');
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

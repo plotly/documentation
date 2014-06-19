@@ -10,4 +10,4 @@ data = Data([
     )
 ])
 
-plot_url = py.plot(data, filename='privacy-false', auto_open=False)
+plot_url = py.plot(data, filename='privacy-false', auto_open=False, world_readable=False)

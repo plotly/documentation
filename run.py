@@ -3,6 +3,7 @@ import plotly.plotly as py
 import plotly.exceptions
 from plotly.graph_objs import *  # for exec statements
 from exceptions import OSError
+from requests.exceptions import RequestException
 
 total_examples = 0
 example_count = 0
@@ -383,6 +384,36 @@ def process_model_example(example, command_list):
         raise ValueError(
             "{} required and could not be opened in {}"
             "".format(model_file, example['path']))
+    if 'python' not in example['config']['languages']:
+        code = ""
+        if 'init' in example['config'] and example['config']['init']:
+            init_file = "init.{}".format(lang_to_ext['python'])
+            if init_file in example['files']:
+                with open(example['files'][init_file]) as f:
+                    code += f.read() + "\n"
+            else:
+                raise plotly.exceptions.PlotlyError(
+                    "couldn't find '{}' in '{}'"
+                    "".format(init_file, example['path'])
+                )
+        data = json.dumps({'json_figure': model,
+                           'language': 'python',
+                           'pretty': True})
+        res = get_plotly_response(translator_server, data=data)
+        if not res:
+            raise plotly.exceptions.PlotlyError(
+                "couldn't connect to plotly at resource. '{}'".format(translator_server)
+            )
+        elif res.status_code != 200:
+            raise plotly.exceptions.PlotlyError(
+                "unsuccessful request at resource. '{}'".format(translator_server)
+            )
+        code += res.content
+        code = code.replace("<pre>", "").replace("</pre>", "")
+        code = code.replace('">>>', "").replace('<<<"', "")
+        code = code.replace("'>>>", "").replace("<<<'", "")
+        exec_string = format_code(code, 'python', example, model, 'execution')
+        example['python-exec'] = exec_string
     for language in example['config']['languages']:
         code = ""
         if 'init' in example['config'] and example['config']['init']:
@@ -469,21 +500,6 @@ def process_script_example(example, command_list):
             exec_string += line
         exec_string += "\n"
     save_code(exec_string, example, language, 'exception')
-    # if language == 'python':
-    #     if 'urls' in command_list:
-    #         try:
-    #             exec_locals = exec_python_string(exec_string)
-    #         except Exception as err:
-    #             raise plotly.exceptions.PlotlyError(
-    #                 "exec of python string raised exception:"
-    #                 "\n\'{}'"
-    #                 "\nskipping...".format(err.message))
-    #         if 'plot_url' in exec_locals:
-    #             example['url'] = exec_locals['plot_url']
-    #         else:
-    #             raise plotly.exceptions.PlotlyError(
-    #                 "\t\t'plot_url' not in exec_locals, skipping..."
-    #             )
     if 'code' in command_list:
         code_string = exec_string.replace(sign_in['execution'][language],
                                           sign_in['documentation'][language])
@@ -527,6 +543,25 @@ def process_url_example(example, command_list):
     figure_str = figure_str.replace("<pre>", "").replace("</pre>", "")
     figure_str = figure_str.replace("<html>", "").replace("</html>", "")
     figure = json.loads(figure_str)
+    if 'python' not in example['config']['languages']:
+        code = ""
+        resource = "{}.{}".format(url, lang_to_ext['python'])
+        res = get_plotly_response(resource)
+        if not res:
+            raise plotly.exceptions.PlotlyError(
+                "couldn't connect to plotly at resource. '{}'".format(resource)
+            )
+        elif res.status_code != 200:
+            raise plotly.exceptions.PlotlyError(
+                "unsuccessful request at resource. '{}'".format(resource)
+            )
+        code += res.content
+        code = code.replace("<pre>", "").replace("</pre>", "")
+        code = code.replace("<html>", "").replace("</html>", "")
+        exec_string = format_code(
+            code, 'python', example, figure, 'execution'
+        )
+        example['python-exec'] = exec_string
     for language in example['config']['languages']:
         code = ""
         resource = "{}.{}".format(url, lang_to_ext[language])
@@ -554,20 +589,19 @@ def process_url_example(example, command_list):
             )
             example[language] = code_path
             save_code(exec_string, example, language, 'execution')
-        if 'urls' in command_list:
-            try:
-                exec_locals = exec_python_string(example['python-exec'])
-            except Exception as err:
-                raise plotly.exceptions.PlotlyError(
-                    "exec of python string raised exception:"
-                    "\n\'{}'"
-                    "\nskipping...".format(err.message))
-            if 'plot_url' in exec_locals:
-                example['url'] = exec_locals['plot_url']
-            else:
-                raise plotly.exceptions.PlotlyError(
-                    "\t\t'plot_url' not in exec_locals, skipping..."
-                )
+    if 'urls' in command_list:
+        try:
+            exec_locals = exec_python_string(example['python-exec'])
+        except Exception as err:
+            raise plotly.exceptions.PlotlyError(
+                "exec of python string raised exception:"
+                "\n\'{}'"
+                "\nskipping...".format(err.message))
+        if 'plot_url' in exec_locals:
+            example['url'] = exec_locals['plot_url']
+        else:
+            raise plotly.exceptions.PlotlyError(
+                "\t\t'plot_url' not in exec_locals, skipping...")
 
 
 def get_plotly_response(resource, data=None, attempts=2, sleep=5):
@@ -578,7 +612,7 @@ def get_plotly_response(resource, data=None, attempts=2, sleep=5):
             else:
                 res = requests.get(resource)
             return res
-        except OSError:
+        except RequestException:
             if attempt < attempts:
                 print "\t\tcouldn't connect to plotly, trying again..."
             time.sleep(sleep)

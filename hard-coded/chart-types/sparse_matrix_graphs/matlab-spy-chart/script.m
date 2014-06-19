@@ -1,4 +1,5 @@
 B = bucky;
 spy(B)
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

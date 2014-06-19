@@ -11,5 +11,5 @@ data = [
   ]
 ]
 
-response = Plotly.plot([data], ["filename" => "privacy-true", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot([data], ["filename" => "privacy-true", "fileopt" => "overwrite", "auto_open" => "false", "world_readable" => "true"])
 plot_url = response["url"]

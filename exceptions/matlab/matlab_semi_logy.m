@@ -18,4 +18,5 @@ title('Performance of Baseband QPSK');
 xlabel('EbNo (dB)');
 ylabel('SER and BER');
 
-fig2plotly();
+response = fig2plotly();
+plotly_url = response.url;

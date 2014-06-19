@@ -32,7 +32,7 @@ pre_book_file = 'pre-book.json'
 
 ### meta-config information ###
 meta_config_info = ['languages', 'name', 'description', 'tags',
-                    'relative_url', 'prepend', 'append']
+                    'relative_url', 'prepend', 'append', 'has_thumbnail']
 
 ### define recognized languages ###
 languages = ['python', 'matlab', 'r', 'julia', 'node', 'json', 'ggplot',
@@ -122,7 +122,7 @@ def port_urls(section):
                 if 'layout' not in fig:
                     fig['layout'] = dict()
                 if 'margin' not in fig['layout']:
-                    fig['layout']['margin'] = dict(t=65, b=50, r=50, l=65)
+                    fig['layout']['margin'] = dict(t=90, b=65, r=50, l=65)
                 fig['layout'].update(autosize=False, width=500, height=500)
                 if 'private' in section and section['private']:
                     new_url = py.plot(
@@ -163,6 +163,7 @@ def save_images(section):  # todo, appropriateley make incomplete if this fails
                 try:
                     py.image.save_as(fig, file_path)
                 except plotly.exceptions.PlotlyError:
+                    print "\t\timage save failed..."
                     pass
                 else:
                     section['image'] = True
@@ -296,7 +297,7 @@ def save_report(report, command):
         with open('test-publish-report.txt', 'w') as f:
             f.write(string)
     elif command == 'publish':
-        with open('publish.txt', 'w') as f:
+        with open('publish-report.txt', 'w') as f:
             f.write(string)
 
 

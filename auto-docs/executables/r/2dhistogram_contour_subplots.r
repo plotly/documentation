@@ -20,10 +20,10 @@ trace1 <- list(
 trace2 <- list(
   x = x, 
   y = y, 
-  name = "density", 
-  ncontours = 20, 
   scl = "Hot", 
   reversescl = TRUE, 
+  name = "density", 
+  ncontours = 20, 
   showscale = FALSE, 
   type = "histogram2dcontour"
 )
