@@ -1,3 +1,5 @@
+signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
+
 % Create some data for the two curves to be plotted
 x  = 0:0.01:20;
 y1 = 200*exp(-0.05*x).*sin(x);
@@ -15,5 +17,6 @@ title('Frequency Response');
 set(get(ax(1), 'Ylabel'), 'String', 'Low Frequency');
 set(get(ax(2), 'Ylabel'), 'String', 'High Frequency');
 
+% PLOTLY 
 response = fig2plotly();
 plotly_url = response.url;

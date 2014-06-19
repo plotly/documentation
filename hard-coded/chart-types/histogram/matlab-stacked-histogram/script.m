@@ -1,27 +1,30 @@
 signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
 
-%stacked histogram 
+% stacked histogram 
 sd1 = 0.1; 
 mu1 = 0; 
 data1 = mu1+ sd1.*randn(5000,1); 
 sd2 = 0.1; 
 mu2 = 0; 
 data2 = mu2+ sd2.*randn(5000,1); 
-%bin specs. 
+
+% bin specs. 
 nbins = 50; 
 bound = 1; 
 bins = linspace(-bound,bound,nbins); 
 
 fig = figure; 
-%first histogram
+
+% first histogram
 y1 = hist(data1, bins); 
-%second histogram
+
+% second histogram
 y2 = hist(data2, bins);
 
-%stacked histograms 
+% stacked histograms 
 bar([y1.' y2.'],'stacked')
 
-%relabelx-axis range/ticks 
+% relabelx-axis range/ticks 
 xd = findobj('-property','XData'); 
 
 for i=1:2
@@ -30,6 +33,6 @@ for i=1:2
     set(xd(i),'XData',dat); 
 end
 
-%PLOTLY 
+% PLOTLY 
 response = fig2plotly(fig,'strip',1);
 plotly_url = response.url;

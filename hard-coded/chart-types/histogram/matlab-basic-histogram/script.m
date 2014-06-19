@@ -7,5 +7,6 @@ x = normrnd(5,1,100,1);
 figure;
 hist(x)
 
+% PLOTLY 
 response = fig2plotly();
 plotly_url = response.url;

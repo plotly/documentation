@@ -29,6 +29,6 @@ set(cat(1),'FaceColor',[45 125 206]/255,'BarWidth',2);
 %set the axes style
 set(gca,'box','off');
 
-%PLOTLY
+% PLOTLY
 response = fig2plotly();
 plotly_url = response.url;

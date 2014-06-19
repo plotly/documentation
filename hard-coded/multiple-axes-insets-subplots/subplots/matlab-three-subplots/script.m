@@ -1,3 +1,5 @@
+signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
+
 % Calculate the data for the plots
 fm = 20e3;
 fc = 100e3;
@@ -34,5 +36,6 @@ xlabel('t');
 ylabel('x_zoh(t)');
 title('Reconstruction at T=4e-6 ');
 
+% PLOTLY 
 response = fig2plotly();
 plotly_url = response.url;

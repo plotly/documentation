@@ -1,3 +1,5 @@
+signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
+
 % Create some data
 eb = 0:5;
 SER = [0.1447 0.1112 0.0722 0.0438 0.0243 0.0122];
@@ -18,5 +20,6 @@ title('Performance of Baseband QPSK');
 xlabel('EbNo (dB)');
 ylabel('SER and BER');
 
+% PLOTLY
 response = fig2plotly();
 plotly_url = response.url;

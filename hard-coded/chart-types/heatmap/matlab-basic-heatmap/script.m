@@ -7,5 +7,6 @@ colormap('hot');
 imagesc(z);
 colorbar;
 
+% PLOTLY 
 response = fig2plotly();
 plotly_url = response.url;

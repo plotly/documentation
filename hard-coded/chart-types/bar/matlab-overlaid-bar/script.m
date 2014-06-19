@@ -23,5 +23,6 @@ bar(x, y2,'r');
 %add legend
 legend('group1','group2'); 
 
+% PLOTLY 
 response = fig2plotly(fig,'strip',1);
 plotly_url = response.url;

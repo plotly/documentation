@@ -1,3 +1,5 @@
+signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
+
 % Create the onnectivity graph of the Buckminster Fuller geodesic dome
 [B, V] = bucky;
 H = sparse(60, 60);
@@ -13,5 +15,6 @@ hold on;
 gplot(H, V, 'r-');
 axis off equal;
 
+% PLOTLY 
 response = fig2plotly();
 plotly_url = response.url;

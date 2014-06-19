@@ -1,4 +1,4 @@
-signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
+%signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
 
 %domain 
 x0 = -2; 
@@ -39,7 +39,7 @@ set(leg,'Interpreter','latex');
 %grid
 grid on 
 
-%PLOTLY 
+% PLOTLY 
 response = fig2plotly(fig);
 plotly_url = response.url;
 

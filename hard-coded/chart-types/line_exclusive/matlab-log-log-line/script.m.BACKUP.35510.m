@@ -1,5 +1,3 @@
-signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
-
 zeta = [0.01 .02 0.05 0.1 .2 .5 1 ];
 colors = ['r' 'g' 'b' 'c' 'm' 'y' 'k'];
 
@@ -18,10 +16,18 @@ end
 axis([0.1 10 0.01 100]);
 
 % title and labels
+<<<<<<< HEAD
+title('$$|G|(\omega) \hbox{ vs } \omega$$','interpreter','latex');
+xlabel('$$\omega$$','interpreter','latex');
+ylabel('$$|G|(\omega)$$','interpreter','latex');
+
+
+fig2plotly() 
+=======
 title('|G|[omega]  vs omega');
 xlabel('omega');
 ylabel('|G|[omega]');
 
-% PLOTLY 
 response = fig2plotly(gcf, 'name', 'log_log_line');
 plotly_url = response.url;
+>>>>>>> fdf48d742e7cb937d6fad92ceafe0c8ce482f10d
