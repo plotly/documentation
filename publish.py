@@ -134,7 +134,7 @@ def port_urls(section, command):
                 if command == 'test':
                     section['test-url'] = new_url
                 elif command == 'publish':
-                    section['pubish-url'] = new_url
+                    section['publish-url'] = new_url
                 print ", new url: '{}'".format(new_url)
         else:
             print ", already ported to '{}'".format(users[doc_user]['un'])
@@ -143,7 +143,7 @@ def port_urls(section, command):
             port_urls(subsection, command)
 
 
-def save_images(section):  # todo, appropriateley make incomplete if this fails
+def save_images(section, command):
     if section['is_leaf'] and section['complete']:
         global example_count
         example_count += 1
@@ -153,8 +153,12 @@ def save_images(section):  # todo, appropriateley make incomplete if this fails
             print "\t{} of {}: saving image for '{}'".format(
                 example_count, total_examples, section['id']
             )
-            username = section['url'].replace("https://plot.ly/~", "").split('/')[0]
-            fid = section['url'].replace("https://plot.ly/~", "").split('/')[1]
+            if command == 'test':
+                username = section['test-url'].replace("https://plot.ly/~", "").split('/')[0]
+                fid = section['test-url'].replace("https://plot.ly/~", "").split('/')[1]
+            else:
+                username = section['publish-url'].replace("https://plot.ly/~", "").split('/')[0]
+                fid = section['publish-url'].replace("https://plot.ly/~", "").split('/')[1]
             try:
                 fig = py.get_figure(username, fid)
             except plotly.exceptions.PlotlyError:
@@ -178,7 +182,7 @@ def save_images(section):  # todo, appropriateley make incomplete if this fails
             section['image'] = True
     elif not section['is_leaf']:
         for subsection in section['subsections'].values():
-            save_images(subsection)
+            save_images(subsection, command)
 
 
 def port_code(section, command):
@@ -341,7 +345,7 @@ def main():
     port_urls(pre_book, command)
     example_count = 0
     print "saving images"
-    save_images(pre_book)
+    save_images(pre_book, command)
     print "porting code"
     port_code(pre_book, command)
     print "writing language references"
