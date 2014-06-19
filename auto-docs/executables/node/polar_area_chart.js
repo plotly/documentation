@@ -1,4 +1,4 @@
-var plotly = require('plotly')('theengineear', 'o9zlr0hy6z')
+var plotly = require('plotly')('TestBot', 'r1neazxo9w')
 
 var trace1 = {
   r: [77.5, 72.5, 70.0, 45.0, 22.5, 42.5, 40.0, 62.5], 

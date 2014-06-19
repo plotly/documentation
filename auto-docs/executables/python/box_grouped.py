@@ -1,7 +1,7 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
 
-py.sign_in('theengineear', 'o9zlr0hy6z')
+py.sign_in('TestBot', 'r1neazxo9w')
 
 x = ['day 1', 'day 1', 'day 1', 'day 1', 'day 1', 'day 1',
      'day 2', 'day 2', 'day 2', 'day 2', 'day 2', 'day 2']

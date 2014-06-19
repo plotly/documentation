@@ -800,6 +800,18 @@ def trim_pre_book(section):
             trim_pre_book(subsection)
 
 
+def clear_reprocessed_examples(section):
+    if section:
+        if section['is_leaf']:
+            if section['id'] in processed_ids:
+                keys = section.keys()
+                for key in keys:
+                    del section[key]
+        else:
+            for subsection in section['subsections'].values():
+                clear_reprocessed_examples(subsection)
+
+
 def save_pre_book(pre_book, previous_pre_book):
     try:
         previously_processed_ids = set(previous_pre_book['processed_ids'])
@@ -807,19 +819,13 @@ def save_pre_book(pre_book, previous_pre_book):
         previously_processed_ids = set()
     pre_book['processed_ids'] = list(
         set.union(processed_ids, previously_processed_ids))
-    try:  # todo, where do we want the pre-book-file?
+    try:
         os.makedirs(dirs['run'])
     except OSError:
         pass
-    if os.path.exists(pre_book_file):
-        with open(pre_book_file) as f:
-            old_pre_book = json.load(f)
-        new_pre_book = nested_merge(old_pre_book, pre_book)
-        with open(pre_book_file, 'w') as f:
-            json.dump(new_pre_book, f, indent=4)
-    else:
-        with open(pre_book_file, 'w') as f:
-            json.dump(pre_book, f, indent=4)
+    new_pre_book = nested_merge(previous_pre_book, pre_book)
+    with open(pre_book_file, 'w') as f:
+        json.dump(new_pre_book, f, indent=4)
 
 
 def nested_merge(old, update):
@@ -858,6 +864,7 @@ def main():
             process_pre_book(pre_book, command_list)
             print "got it done, cleaning up!"
             trim_pre_book(pre_book)
+            clear_reprocessed_examples(previous_pre_book)
             print "saving pre_book"
             save_pre_book(pre_book, previous_pre_book)
         else:

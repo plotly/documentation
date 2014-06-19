@@ -1,7 +1,7 @@
 using Plotly
 
 using Plotly
-Plotly.signin("theengineear", "o9zlr0hy6z")
+Plotly.signin("TestBot", "r1neazxo9w")
 
 size = 100
 x = linspace(-2*pi, 2*pi, size)

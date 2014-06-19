@@ -1,6 +1,6 @@
 library(plotly)
 
-p <- plotly(username='theengineear', key='o9zlr0hy6z')
+p <- plotly(username='TestBot', key='r1neazxo9w')
 
 x_theo <- seq(-4,4,length=100)
 sinc <- function(x) {

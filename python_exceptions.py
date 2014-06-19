@@ -15,9 +15,10 @@ def main():
                 exec_locals = exec_python_string(f.read())
             if 'plot_url' not in exec_locals:
                 raise Exception("'plot_url' not defined in exec string!")
-            content = {"url": exec_locals['plot_url']}
-            with open(os.path.join(mpl_folder, "{}.json".format(id)), 'w') as f:
-                json.dump(content, f, indent=4)
+            if exec_locals['plot_url']:
+                content = {"url": exec_locals['plot_url']}
+                with open(os.path.join(mpl_folder, "{}.json".format(id)), 'w') as f:
+                    json.dump(content, f, indent=4)
 
 
 def exec_python_string(exec_string):

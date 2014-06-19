@@ -1,7 +1,7 @@
 using Plotly
 
 using Plotly
-Plotly.signin("theengineear", "o9zlr0hy6z")
+Plotly.signin("TestBot", "r1neazxo9w")
 
 trace1 = [
   "name" => "Figure8", 
