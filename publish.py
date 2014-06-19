@@ -124,6 +124,8 @@ def port_urls(section, command):
                     fig['layout'] = dict()
                 if 'margin' not in fig['layout']:
                     fig['layout']['margin'] = dict(t=90, b=65, r=50, l=65)
+                if 'title' not in fig['layout']:
+                    fig['layout']['margin']['t'] = 65
                 fig['layout'].update(autosize=False, width=500, height=500)
                 if 'private' in section and section['private']:
                     new_url = py.plot(
