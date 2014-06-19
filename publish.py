@@ -114,8 +114,8 @@ def port_urls(section, command):
                     py.sign_in(user['un'], user['ak'])
             try:
                 fig = py.get_figure(username, fid)
-            except plotly.exceptions.PlotlyError:
-                print ("\tcouldn't port url over for example, '{}'."
+            except:
+                print ("\n\t\tcouldn't port url over for example, '{}'."
                        "The url was '{}'".format(section['id'], section['url']))
                 fig = None
             finally:
