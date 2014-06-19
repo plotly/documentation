@@ -1,6 +1,6 @@
 library(plotly)
 
-p <- plotly(username='TestBot', key='r1neazxo9w')
+p <- plotly(username='theengineear', key='o9zlr0hy6z')
 
 x0 <- rnorm(100)/5. + 0.5
 y0 <- rnorm(100)/5. + 0.5

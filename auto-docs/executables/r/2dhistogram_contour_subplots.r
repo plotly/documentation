@@ -1,6 +1,6 @@
 library(plotly)
 
-p <- plotly(username='TestBot', key='r1neazxo9w')
+p <- plotly(username='theengineear', key='o9zlr0hy6z')
 
 t = seq(-1, 1.2, length=2000)
 x = t^3+0.3*rnorm(2000)

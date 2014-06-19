@@ -12,4 +12,5 @@ grid <- with(mtcars, expand.grid(
 grid$mpg <- stats::predict(model, newdata=grid)
 
 viz2 <- qplot(wt, mpg, data=mtcars, colour=factor(cyl)) + geom_line(data=grid)
-py$ggplotly(viz2)
+out <- py$ggplotly(viz2)
+plotly_url <- out$response$url

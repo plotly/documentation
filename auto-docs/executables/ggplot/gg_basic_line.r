@@ -10,4 +10,5 @@ orange <- qplot(
               colour = Tree,
               geom = "line")
 
-py$ggplotly(orange)
+out <- py$ggplotly(orange)
+plotly_url <- out$response$url

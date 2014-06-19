@@ -13,4 +13,5 @@ researchers <- data.frame(
 # Let us plot the number of papers (y) per name (x)
 plt <- ggplot(researchers, aes(x = name, y = papers)) + geom_bar(stat = "identity")
 
-py$ggplotly(plt)
+out <- py$ggplotly(plt)
+plotly_url <- out$response$url

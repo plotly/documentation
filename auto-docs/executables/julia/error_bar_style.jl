@@ -1,7 +1,7 @@
 using Plotly
 
 using Plotly
-Plotly.signin("TestBot", "r1neazxo9w")
+Plotly.signin("theengineear", "o9zlr0hy6z")
 
 x_theo = linspace(-4, 4, 100)
 sincx = sinc(x_theo)

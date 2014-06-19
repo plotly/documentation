@@ -1,4 +1,4 @@
-%signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
+signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
 
 %read audio text file  
 sigtext = urlread('https://raw.githubusercontent.com/plotly/documentation/reorganization/aux/fft-matlab'); 
@@ -47,4 +47,4 @@ title(['C4 GUITAR: MAGNITUDE SPECTROGRAM ANALYSIS']);
 
 % PLOTLY 
 response = fig2plotly(fig, 'strip', 1); 
-plotly_url = response.url
+plotly_url = response.url; 
