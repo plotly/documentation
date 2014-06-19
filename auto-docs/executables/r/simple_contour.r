@@ -1,6 +1,6 @@
 library(plotly)
 
-p <- plotly(username='TestBot', key='r1neazxo9w')
+p <- plotly(username='theengineear', key='o9zlr0hy6z')
 
 size <- 100
 x <- seq(-2*pi, 2*pi, length=size)

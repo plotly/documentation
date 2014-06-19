@@ -1,6 +1,6 @@
 library(plotly)
 
-p <- plotly(username='TestBot', key='r1neazxo9w')
+p <- plotly(username='theengineear', key='o9zlr0hy6z')
 
 x <- c('day 1', 'day 1', 'day 1', 'day 1', 'day 1', 'day 1', 
        'day 2', 'day 2', 'day 2', 'day 2', 'day 2', 'day 2')

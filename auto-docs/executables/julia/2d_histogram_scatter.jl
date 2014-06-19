@@ -1,7 +1,7 @@
 using Plotly
 
 using Plotly
-Plotly.signin("TestBot", "r1neazxo9w")
+Plotly.signin("theengineear", "o9zlr0hy6z")
 
 x0 = randn(100)/5. + 0.5
 y0 = randn(100)/5. + 0.5

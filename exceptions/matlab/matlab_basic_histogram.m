@@ -1,4 +1,4 @@
-signin('TestBot', 'r1neazxo9w')
+signin('theengineear', 'o9zlr0hy6z')
 
 % some random points
 x = normrnd(5,1,100,1);
@@ -7,5 +7,6 @@ x = normrnd(5,1,100,1);
 figure;
 hist(x)
 
+% PLOTLY 
 response = fig2plotly();
 plotly_url = response.url;

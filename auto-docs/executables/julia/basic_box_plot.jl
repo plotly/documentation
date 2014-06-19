@@ -1,7 +1,7 @@
 using Plotly
 
 using Plotly
-Plotly.signin("TestBot", "r1neazxo9w")
+Plotly.signin("theengineear", "o9zlr0hy6z")
 
 y0 = randn(50)
 y1 = randn(50)+1

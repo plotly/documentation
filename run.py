@@ -113,37 +113,65 @@ imports = dict(
 sign_in = {
     'documentation': dict(
         python=
+            "{{% if not username %}}"
+            "# Fill in with your personal username and API key\n"
+            "# or, use this public demo account\n"
+            "{{% endif %}}"
             "py.sign_in({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}'{ak}'{{% endif %}})".format(**users['python']),
         matlab=
+            "{{% if not username %}}"
+            "% Fill in with your personal username and API key\n"
+            "% or, use this public demo account\n"
+            "{{% endif %}}"
             "signin({{% if username %}}'{{{{username}}}}'"
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}'{{{{api_key}}}}'"
             "{{% else %}}'{ak}'{{% endif %}})".format(**users['matlab']),
         r=
+            "{{% if not username %}}"
+            "# Fill in with your personal username and API key\n"
+            "# or, use this public demo account\n"
+            "{{% endif %}}"
             "p <- plotly(username={{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "key={{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}'{ak}'{{% endif %}})".format(**users['r']),
         julia=
+            "{{% if not username %}}"
+            "# Fill in with your personal username and API key\n"
+            "# or, use this public demo account\n"
+            "{{% endif %}}"
             "Plotly.signin({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}\"{un}\"{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia']),
         node=
+            "{{% if not username %}}"
+            "// Fill in with your personal username and API key\n"
+            "// or, use this public demo account\n"
+            "{{% endif %}}"
             "var plotly = require('plotly')("
             "{{% if username %}}'{{{{username}}}}'"
             "{{% else %}}'{un}'{{% endif %}},"
             "{{% if api_key %}}'{{{{api_key}}}}'"
             "{{% else %}}'{ak}'{{% endif %}});".format(**users['node']),
         ggplot=
+            "{{% if not username %}}"
+            "# Fill in with your personal username and API key\n"
+            "# or, use this public demo account\n"
+            "{{% endif %}}"
             "p <- plotly(username={{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "key={{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}'{ak}'{{% endif %}})".format(**users['r']),
         matplotlib=
+            "{{% if not username %}}"
+            "# Fill in with your personal username and API key\n"
+            "# or, use this public demo account\n"
+            "{{% endif %}}"
             "py.sign_in({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
