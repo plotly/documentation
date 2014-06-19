@@ -63,7 +63,7 @@ allowable = dict(
 
 ### sign in stuff: each user has a 'un' and 'ak' ###
 ## users ##
-# tester, julia, matlab, python, r, node, publisher
+# tester, julia, matlab, python, r, nodejs, publisher
 with open('users.json') as users_file:
     users = json.load(users_file)
 
@@ -82,21 +82,21 @@ lines_between_sections = 2
 commands = ['code', 'urls', 'clean']
 
 ### define supported languages ###
-languages = ['python', 'julia', 'matlab', 'r', 'node', 'ggplot2', 'matplotlib']
+languages = ['python', 'julia', 'matlab', 'r', 'nodejs', 'ggplot2', 'matplotlib']
 
 ### define extensions for executable code ###
 lang_to_ext = dict(python='py',
                    julia='jl',
                    matlab='m',
                    r='r',
-                   node='js',
+                   nodejs='js',
                    ggplot2='r',
                    matplotlib='py')
 ext_to_lang = dict(py='python',
                    jl='julia',
                    m='matlab',
                    r='r',
-                   js='node',
+                   js='nodejs',
                    gg='ggplot2',
                    mpl='matplotlib')
 
@@ -106,7 +106,7 @@ imports = dict(
     matlab="",
     r="library(plotly)",
     julia="using Plotly",
-    node=""
+    nodejs=""
 )
 
 ### define sign in ###
@@ -148,7 +148,7 @@ sign_in = {
             "{{% else %}}\"{un}\"{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia']),
-        node=
+        nodejs=
             "{{% if not username %}}"
             "// Fill in with your personal username and API key\n"
             "// or, use this public demo account\n"
@@ -157,7 +157,7 @@ sign_in = {
             "{{% if username %}}'{{{{username}}}}'"
             "{{% else %}}'{un}'{{% endif %}},"
             "{{% if api_key %}}'{{{{api_key}}}}'"
-            "{{% else %}}'{ak}'{{% endif %}});".format(**users['node']),
+            "{{% else %}}'{ak}'{{% endif %}});".format(**users['nodejs']),
         ggplot2=
             "{{% if not username %}}"
             "# Fill in with your personal username and API key\n"
@@ -183,7 +183,7 @@ sign_in = {
         r="p <- plotly(username='{un}', key='{ak}')".format(**users['tester']),
         julia='using Plotly\nPlotly.signin("{un}", "{ak}")'
               ''.format(**users['tester']),
-        node="var plotly = require('plotly')('{un}', '{ak}')"
+        nodejs="var plotly = require('plotly')('{un}', '{ak}')"
              "".format(**users['tester']),
         ggplot2="p <- plotly(username='{un}', key='{ak}')"
                "".format(**users['tester']),
@@ -698,14 +698,14 @@ def get_plot_call(language, figure, example, mode):
             matlab='true',
             julia='true',
             r='TRUE',
-            node='true'
+            nodejs='true'
         ),
         False: dict(
             python='False',
             matlab='false',
             julia='false',
             r='FALSE',
-            node='false'
+            nodejs='false'
         )
     }
     filename = example['path'].split(os.path.sep)[-1]
@@ -779,7 +779,7 @@ def get_plot_call(language, figure, example, mode):
         string += '\nurl <- response$url\n'
         string += 'filename <- response$filename'
         return string
-    elif language == 'node':
+    elif language == 'nodejs':
         string = 'var graph_options = {{filename: "{}"'.format(filename)
         string += ', fileopt: "overwrite"'
         if 'layout' in figure:

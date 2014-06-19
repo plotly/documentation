@@ -10,7 +10,7 @@ import plotly.exceptions
 
 ### sign in stuff: each user has a 'un' and 'ak' ###
 ## users ##
-# tester, julia, matlab, python, r, node, publisher
+# tester, julia, matlab, python, r, nodejs, publisher
 with open('users.json') as user_file:
     users = json.load(user_file)
 
@@ -35,12 +35,12 @@ meta_config_info = ['languages', 'name', 'description', 'tags',
                     'relative_url', 'prepend', 'append', 'has_thumbnail']
 
 ### define recognized languages ###
-languages = ['python', 'matlab', 'r', 'julia', 'node', 'json', 'ggplot2',
+languages = ['python', 'matlab', 'r', 'julia', 'nodejs', 'json', 'ggplot2',
              'matplotlib']
 
 ### define extensions for executable code ###
-lang_to_ext = dict(python='py', julia='jl', matlab='m', r='r', node='js')
-ext_to_lang = dict(py='python', jl='julia', m='matlab', r='r', js='node')
+lang_to_ext = dict(python='py', julia='jl', matlab='m', r='r', nodejs='js')
+ext_to_lang = dict(py='python', jl='julia', m='matlab', r='r', js='nodejs')
 
 ### define commands ###
 commands = ['test', 'publish']
