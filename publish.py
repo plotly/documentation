@@ -35,7 +35,7 @@ meta_config_info = ['languages', 'name', 'description', 'tags',
                     'relative_url', 'prepend', 'append', 'has_thumbnail']
 
 ### define recognized languages ###
-languages = ['python', 'matlab', 'r', 'julia', 'node', 'json', 'ggplot',
+languages = ['python', 'matlab', 'r', 'julia', 'node', 'json', 'ggplot2',
              'matplotlib']
 
 ### define extensions for executable code ###

@@ -82,7 +82,7 @@ lines_between_sections = 2
 commands = ['code', 'urls', 'clean']
 
 ### define supported languages ###
-languages = ['python', 'julia', 'matlab', 'r', 'node', 'ggplot', 'matplotlib']
+languages = ['python', 'julia', 'matlab', 'r', 'node', 'ggplot2', 'matplotlib']
 
 ### define extensions for executable code ###
 lang_to_ext = dict(python='py',
@@ -90,14 +90,14 @@ lang_to_ext = dict(python='py',
                    matlab='m',
                    r='r',
                    node='js',
-                   ggplot='r',
+                   ggplot2='r',
                    matplotlib='py')
 ext_to_lang = dict(py='python',
                    jl='julia',
                    m='matlab',
                    r='r',
                    js='node',
-                   gg='ggplot',
+                   gg='ggplot2',
                    mpl='matplotlib')
 
 ### define imports ###
@@ -158,7 +158,7 @@ sign_in = {
             "{{% else %}}'{un}'{{% endif %}},"
             "{{% if api_key %}}'{{{{api_key}}}}'"
             "{{% else %}}'{ak}'{{% endif %}});".format(**users['node']),
-        ggplot=
+        ggplot2=
             "{{% if not username %}}"
             "# Fill in with your personal username and API key\n"
             "# or, use this public demo account\n"
@@ -185,7 +185,7 @@ sign_in = {
               ''.format(**users['tester']),
         node="var plotly = require('plotly')('{un}', '{ak}')"
              "".format(**users['tester']),
-        ggplot="p <- plotly(username='{un}', key='{ak}')"
+        ggplot2="p <- plotly(username='{un}', key='{ak}')"
                "".format(**users['tester']),
         matplotlib="py.sign_in('{un}', '{ak}')".format(**users['tester']),
     )
