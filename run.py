@@ -233,8 +233,10 @@ def clean():
             else:
                 os.remove(full_name)
     if os.path.exists(dirs['run']):
+        print "\ttotally deleting '{}'".format(dirs['run'])
         clean_directory(dirs['run'])
     if os.path.exists(pre_book_file):
+        print "\ttotally deleting '{}'".format(pre_book_file)
         os.remove(pre_book_file)
 
 
@@ -879,6 +881,7 @@ def main():
     keepers = get_keepers()
     print "\n\nrunning with commands: {}\n\n".format(command_list)
     if 'clean' in command_list:
+        print "doing a little clean up!"
         clean()
         command_list.pop(command_list.index('clean'))
     if command_list:
