@@ -9,7 +9,7 @@ sig = str2num(sigtext);
 % sampling frequency
 fs = 44100; 
 
-% desired signal duration 
+% signal duration 
 dur = 1;
 
 % time axis vector
@@ -25,7 +25,7 @@ freq = linspace(0,fs,N);
 F = fft(sig,N); 
 
 % Max frequency to visualize 
-maxFreq = N/16; %~2156 Hz. 
+maxFreq = N/16; %~2756 Hz. 
 
 % plot time domain waveform 
 fig = figure; 
@@ -35,7 +35,7 @@ title('GUITAR C4 TEMPORAL/SPECTRAL VISUALIZATION');
 ylabel('AMPLITUDE'); 
 xlabel('TIME(s.)')
 
-% plot frequency fomain waveform
+% plot frequency domain waveform
 subplot(2,1,2)
 plot(freq(1:maxFreq),abs(F(1:maxFreq))); 
 ylabel('MAGNITUDE'); 

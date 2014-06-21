@@ -1,4 +1,4 @@
-signin('theengineear', 'o9zlr0hy6z')
+%signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
 
 % some random points
 data1 = normrnd(5,1,100,1);

@@ -62,6 +62,18 @@ def get_command():
         return command
 
 
+def make_pre_book_valid(section):
+    if 'subsections' in section:
+        keys = section['subsections'].keys()
+        for key in keys:
+            if section['subsections'][key] == {}:
+                del section['subsections'][key]
+                print ("\tdeleted empty subsection with key '{}', "
+                       "from '{}'['subsections']".format(key, section['id']))
+        for subsection in section['subsections'].values():
+            make_pre_book_valid(subsection)
+
+
 def set_total_examples(section):
     if section['is_leaf']:
         global total_examples
@@ -354,6 +366,8 @@ def main():
     py.sign_in(users[doc_user]['un'], users[doc_user]['ak'])
     with open(pre_book_file) as f:
         pre_book = json.load(f)
+    print "running some checks/repairs on the pre-book..."
+    make_pre_book_valid(pre_book)
     set_total_examples(pre_book)
     print "setting up auto-generated structure"
     fix_book(pre_book)

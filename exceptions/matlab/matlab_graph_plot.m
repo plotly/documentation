@@ -1,4 +1,4 @@
-signin('theengineear', 'o9zlr0hy6z')
+signin('TestBot', 'r1neazxo9w')
 
 % Create the onnectivity graph of the Buckminster Fuller geodesic dome
 [B, V] = bucky;

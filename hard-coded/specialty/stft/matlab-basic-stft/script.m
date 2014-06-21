@@ -1,19 +1,16 @@
-%signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
+signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
 
 %read audio text file  
 sigtext = urlread('https://raw.githubusercontent.com/plotly/documentation/reorganization/aux/fft-matlab'); 
 
-%conver to audio samples 
+%convert to audio samples 
 sig = str2num(sigtext); 
 
 %sampling frequency
 fs = 44100; 
 
-%desired signal duration 
+%signal duration 
 dur = 1;
-
-%signal truncation
-sig = sig(1:dur*fs,1);  
 
 %time axis vector
 t = linspace(0,dur,fs); 
@@ -21,8 +18,14 @@ t = linspace(0,dur,fs);
 %fft length
 N = 4096; 
 
+%hop size
+hop = N/4; 
+
+%overlap
+overlap = N - hop; 
+
 %take the STFT of the signal 
-S = stft(sig,N-N/4); 
+S = stft(sig,overlap); 
 
 %Max frequency to visualize 
 maxFreq = N/8; 
@@ -47,4 +50,4 @@ title(['C4 GUITAR: MAGNITUDE SPECTROGRAM ANALYSIS']);
 
 % PLOTLY 
 response = fig2plotly(fig, 'strip', 1); 
-plotly_url = response.url
+plotly_url = response.url; 
