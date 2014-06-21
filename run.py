@@ -232,8 +232,6 @@ def clean():
                 os.remove(full_name)
     if os.path.exists(dirs['run']):
         clean_directory(dirs['run'])
-    if os.path.exists(dirs['exceptions']):
-        clean_directory(dirs['exceptions'])
     if os.path.exists(pre_book_file):
         os.remove(pre_book_file)
 
