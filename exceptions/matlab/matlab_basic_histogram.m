@@ -4,9 +4,9 @@ signin('TestBot', 'r1neazxo9w')
 x = normrnd(5,1,100,1);
 
 % a simple histogram
-figure;
+fig = figure;
 hist(x)
 
 % PLOTLY 
-response = fig2plotly();
+response = fig2plotly(fig,'strip',1);
 plotly_url = response.url;

@@ -1,6 +1,6 @@
-signin('TestBot', 'r1neazxo9w')
+%signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
 
-% stacked histogram
+% overlaid histogram
 sd1 = 0.1;
 mu1 = 0;
 data1 = mu1+ sd1.*randn(5000,1);
@@ -24,7 +24,7 @@ bar(y1.');
 hold on;
 bar(y2.','r');
 
-% relabelx-axis range/ticks
+% relabel x-axis range/ticks
 xd = findobj('-property','XData');
 
 for i=1:2

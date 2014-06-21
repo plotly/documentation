@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 import plotly.plotly as py
-py.sign_in('theengineear', 'o9zlr0hy6z')
+py.sign_in('TestBot', 'r1neazxo9w')
 
 y = [3, 10, 7, 5, 3, 4.5, 6, 8.1]
 N = len(y)

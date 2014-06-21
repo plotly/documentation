@@ -1,5 +1,5 @@
 library(RJSONIO)
-path = 'exceptions/ggplot'
+path = 'exceptions/ggplot2'
 trace = TRUE
 for (nm in list.files(path, pattern = "\\.[RrSsQq]$")) {
    if(trace) cat(nm,":")
