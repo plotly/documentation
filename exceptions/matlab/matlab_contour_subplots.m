@@ -5,4 +5,4 @@ contour(X,Y,Z,20)
 
 % PLOTLY 
 response = fig2plotly();
-plotly_url = response.url;
+plotly_url = response.url
