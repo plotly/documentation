@@ -1,12 +1,18 @@
 signin('TestBot', 'r1neazxo9w')
 
-z = rand(50)*4+10;
+size = 50;
+z = zeros(size, size);
+for r = 1:size
+    for c = 1:size
+        z(r,c) = r+c;
+    end
+end
 figure;
 
 colormap('hot');
 imagesc(z);
 colorbar;
 
-% PLOTLY 
+% PLOTLY
 response = fig2plotly();
 plotly_url = response.url;

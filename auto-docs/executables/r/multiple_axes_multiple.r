@@ -16,34 +16,20 @@ trace2 <- list(
   type = "scatter"
 )
 trace3 <- list(
-  x = c(3, 4, 5), 
-  y = c(400, 500, 600), 
+  x = c(4, 5, 6), 
+  y = c(40000, 50000, 60000), 
   name = "yaxis3 data", 
   yaxis = "y3", 
   type = "scatter"
 )
 trace4 <- list(
-  x = c(4, 5, 6), 
-  y = c(40000, 50000, 60000), 
+  x = c(5, 6, 7), 
+  y = c(400000, 500000, 600000), 
   name = "yaxis4 data", 
   yaxis = "y4", 
   type = "scatter"
 )
-trace5 <- list(
-  x = c(5, 6, 7), 
-  y = c(400000, 500000, 600000), 
-  name = "yaxis5 data", 
-  yaxis = "y5", 
-  type = "scatter"
-)
-trace6 <- list(
-  x = c(6, 7, 8), 
-  y = c(4000000, 5000000, 6000000), 
-  name = "yaxis6 data", 
-  yaxis = "y6", 
-  type = "scatter"
-)
-data <- list(trace1, trace2, trace3, trace4, trace5, trace6)
+data <- list(trace1, trace2, trace3, trace4)
 layout <- list(
   title = "multiple y-axes example", 
   xaxis = list(domain = c(0.3, 0.7)), 
@@ -63,15 +49,6 @@ layout <- list(
     overlaying = "y"
   ), 
   yaxis3 = list(
-    title = "yaxis3 title", 
-    titlefont = list(color = "#2ca02c"), 
-    tickfont = list(color = "#2ca02c"), 
-    position = 0, 
-    anchor = "free", 
-    side = "left", 
-    overlaying = "y"
-  ), 
-  yaxis4 = list(
     title = "yaxis4 title", 
     titlefont = list(color = "#d62728"), 
     tickfont = list(color = "#d62728"), 
@@ -79,20 +56,11 @@ layout <- list(
     side = "right", 
     overlaying = "y"
   ), 
-  yaxis5 = list(
+  yaxis4 = list(
     title = "yaxis5 title", 
     titlefont = list(color = "#9467bd"), 
     tickfont = list(color = "#9467bd"), 
     position = 0.85, 
-    anchor = "free", 
-    side = "right", 
-    overlaying = "y"
-  ), 
-  yaxis6 = list(
-    title = "yaxis6 title", 
-    titlefont = list(color = "#8c564b"), 
-    tickfont = list(color = "#8c564b"), 
-    position = 1.0, 
     anchor = "free", 
     side = "right", 
     overlaying = "y"
