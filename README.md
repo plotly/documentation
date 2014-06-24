@@ -29,6 +29,7 @@ test-published/
           language/
     references/
   /images
+reports/
 ```
 
 * `auto-docs` is the folder that holds all of the content automatically gerneated when you run `run.py`
@@ -38,6 +39,7 @@ test-published/
 * `test-published` is a directory just like `published` except urls are not migrated to our official `PlotBot` user
 * `test-published/images`/`published/images` hold all the examples identified by corresponding `id` (hard-coded folder name)
 * `test-published/references`/`published/references` hold json objects which are used to generate web content for each langauge
+* `reports` holds information about how the `publish.py` run went. complete/incomplete examples, etc.
 
 
 ##user.json file:
@@ -61,12 +63,14 @@ Config files for Examples require a *human-readable* name: "name" attribute and 
 
 ```json
 {
-    "name": "This Is A Scatter Plot",
+    "name": "Scatter Plot",
+    "description": "This is a nice plot you'll like viewing",
     "languages": ["python", "julia", "matlab", "etc…"],
     "plot-options": {"auto_open": false},
     "init": true,
     "prepend": true,
-    "append": true
+    "append": true,
+    "links": ["url1", "url2"]
 }
 ```
 
@@ -74,6 +78,8 @@ Here's what those mean:
 
 * name [required]
  * a human-readable name that will show up for the example
+* description [optional]
+ * a human-redable text description that will accompany the plot
 * languages [required]
  * the languages that the example should support
  * if using a ‘script.ext’ file, you may leave `"languages": []` (blank) as they’re inferred
@@ -92,6 +98,8 @@ Here's what those mean:
  * assumed `false` if not included. if `true` then a `prepend.html` file is required that will be included before the code block on the examples pages.
 * append [optional]
  * assumed `false` if not included. if `true` then a `append.html` file is required that will be included before the code block on the examples pages.
+* links [optional]
+ * links to be associated with the example, perhaps documentation links?
 
 ### Config files for *branches*
 
@@ -190,7 +198,7 @@ Each example folder needs to have a unique name, otherwise, you'll quickly get a
 (*model*, *script*, or *url*)
 * Fill out the config.json
 * run `python run.py` (this will spit out information on how to *actually* run this program)
-If you've just added one example, try `python run.py code+urls examplename` where examplename is the new example folder. If you've added a number of examples, try `python run.py code+urls new`, which will find all the unprocessed examples and run them.
+If you've just added one example, try `python run.py process examplename` where examplename is the new example folder. If you've added a number of examples, try `python run.py process new`, which will find all the unprocessed examples and run them.
 
 ## Adding an example by using a JSON model
 
@@ -204,7 +212,7 @@ Each example folder needs to have a unique name, otherwise, you'll quickly get a
 }
 ```
 * Fill out the `config.json` file *inside* the new folder with a unique name that you just created (`unique-example`). Remember, it needs *at least* a `name` parameter and a `languages` parameter.
-* Run `python run.py code+urls unique-example` (it'll spit out *helpful* messages if somethings off)
+* Run `python run.py process unique-example` (it'll spit out *helpful* messages if somethings off)
 * (now you're ready for some publishing!)
 
 ## Adding an example by using a script.ext file
@@ -213,7 +221,7 @@ Each example folder needs to have a unique name, otherwise, you'll quickly get a
 Each example folder needs to have a unique name, otherwise, you'll quickly get an error on compiling. The folder name is also called the *id*, which is also referred to as the *filename* here. There all the same, you write it once when you make the folder.
 * Add the `script.ext` file. For example, if you're using Python, `script.py`. If you're using matlab, `script.m`. If you're using a plotting library within a programming language, you can specify that too, e.g. `script.gg` for a ggplot graph in `r`. There's only *one* real requirement for this file. You need to create a variable in the example called `plor_url` that contains a string with the newly created plotly url. If you don't, the next step just won't work. (see the Python example for a script.py file above)
 * Fill out the `config.json` file *inside* the new folder with a unique name that you just created (`unique-example`). Remember, it needs *at least* a `name` parameter and a `languages` parameter. Here, you *need* the `languages` parameter, but it may be left blank, i.e., `"languages": []`
-* Run `python run.py code+urls unique-example` (it'll spit out *helpful* messages if somethings off)
+* Run `python run.py process unique-example` (it'll spit out *helpful* messages if somethings off)
 * Run run the `language_exceptions.ext` file (e.g. `python_exceptions.py` for Python). This program will capture and save the resulting `plot_url` variable to a special file (see `exepcitons scripts` for more info).
 * (now you're ready for some publishing!)
 
@@ -232,7 +240,7 @@ Each example folder needs to have a unique name, otherwise, you'll quickly get a
 }
 ```
 * Fill out the `config.json` file *inside* the new folder with a unique name that you just created (`unique-example`).
-* Run `python run.py code+urls unique-example` (it'll spit out *helpful* messages if somethings off)
+* Run `python run.py process unique-example` (it'll spit out *helpful* messages if somethings off)
 * (now you're ready for some publishing!)
 
 
@@ -241,24 +249,34 @@ Each example folder needs to have a unique name, otherwise, you'll quickly get a
 This is the first of two major processes that need to happen to prepare `hard-coded` examples to be used on plotly's site. You use this program as follows:
 
 ```bash
-python run.py command1+command2 example1 example2
+python run.py command option_1 option_2 ... option_n
 ```
 
-To see the available commands, enter this in a terminal program in the same directory as `run.py`:
+To see the available commands and options, enter this in a terminal program in the same directory as `run.py`:
 ```bash
 python run.py
 ```
-Commands are separated by `+` signs and you may have as many `examples` as you wish. Examples match *entire* sections, e.g, `chart-types` or they may match a *single* example, e.g., `basic-bar`. However, they must be *exact* matches (`basic`, `basic-ba`, and `basic-bear` will not--currently--match any examples). 
+You may have as many `options` as you wish. When an `option` is an example or section name, `options` match *entire* sections, e.g, `chart-types` or they may match a *single* example, e.g., `basic-bar`. However, they must be *exact* matches (`basic`, `basic-ba`, and `basic-bear` will not--currently--match any examples). You can usually access options like `all` or `new` to run `all` examples or the subset `new`.
 
-Output from `run.py` is stored (and overwritten) in a file called `pre-book.json`. The examples that have already been processed are listed in this file and leveraged so that the terminal line:
+Output from `run.py` is stored (and overwritten) in a file called `tree.json`. The examples that have already been processed are listed in `ids.json` and leveraged so that the terminal line:
 
 ```bash
-python run.py code+urls new
+python run.py process new
 ```
 
-... will process only examples found as leaves in the `hard-coded` directory tree, but *not yet* listed as `processed_ids`.
+... will process only examples found as leaves in the `hard-coded` directory tree, but *not yet* listed in `ids.json`.
 
 When using `script.ext` files, `run.py` will output executable code in an `exceptions` directory that will be used by other programs--e.g., `python_exceptions.py`, `mpl_exceptions.py`, `matlab_exceptions.m`--to *complete* examples, i.e., give them plot urls.
+
+You can also make `meta` adjustments by running the `meta` command. 
+
+```bash
+python run.py meta all
+```
+
+This will look at the intersection of the set of processed ids and the current set of all ids and only update meta information for this intersection. Otherwise, there could be meta information transferred for examples that haven't been run yet.
+
+The `meta` command exists to push through small changes in the config that don't require processing. Be careful though, if you change something like `languages` in the config file, you'll get an error when you run `publish.py`, that's because adding new langauges will require additional processing!
 
 Ins and Outs of `run.py`:
 * input
@@ -272,7 +290,8 @@ Ins and Outs of `run.py`:
 * output
  * `auto-docs` directory
   * `auto-docs/executables`, solely for testing purposes
- * `pre-book.json`, all the processed information so far
+ * `tree.json`, all the processed information so far
+ * `ids.json`, a list of the examples that have been processed
 
 
 ## `publish.py`
@@ -296,14 +315,14 @@ You *should not* run `publish` until all examples show up as *complete* in the `
 
 Ins and Outs of `publish.py`:
 * input
- * pre-book.json file
+ * tree.json file
  * command (`test` or `publish`)
  * `auto-docs` directory
  * `exceptions` directory
 * output
  * `test-published` or `published` directory
  * `test-published/api-docs/references` `published/api-docs/references` directory
- * `test-publish-report.txt` or `publish-report.txt`
+ * `report` directory
 
 ## completing *language-specific* exmples
 
