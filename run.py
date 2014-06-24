@@ -1,273 +1,732 @@
-import requests, json, os, sys, base64, time, cgi
-from collections import OrderedDict
+import requests, json, os, sys, time, cgi
 import plotly.plotly as py
 import plotly.exceptions
-from plotly.graph_objs import *  # for exec statement in 'save_code'
-import plotly.utils as utils
+from plotly.graph_objs import *  # for exec statements
+from exceptions import OSError
+from requests.exceptions import RequestException
 
-### command line stuff ###
-commands = ['all', 'clean', 'code', 'both', 'urls', 'reformat-json',
-            'exceptions']
+total_examples = 0
+example_count = 0
+ids = {}
+processed_ids = set()
 
 ### auto-generated file stuff ###
-doc_dir = 'docs'
-exec_dir = 'executable'
-examples_dir = os.path.join(doc_dir, 'examples')
-examples_exceptions_dir = os.path.join(examples_dir, 'exceptions')
-image_dir = os.path.join(examples_dir, 'images')
-
-graph_url_file = os.path.join(examples_dir, 'graph_urls.json')
+pre_book_file = 'pre-book.json'
 
 ### hard-coded file stuff ###
-# run.py EXPECTS THESE FOLDERS TO BE HERE!
 hard_coded_dir = 'hard-coded'
-json_dir = os.path.join(hard_coded_dir, 'json')
-exceptions_dir = os.path.join(hard_coded_dir, 'exceptions')
+config_file = 'config.json'
+model_file = 'model.json'
+url_file = 'url.json'
+image_file = 'image.png'
+code_file = 'code.txt'
 
-### sign in stuff ###
-users = dict(
-    tester=dict(un="test-runner", ak="9h29fe3l0x"),
-    julia=dict(un='JuliaAPI', ak='3bule2whyg'),
-    matlab=dict(un='MATLABAPI', ak='jzt0hr6tzv'),
-    python=dict(un="PythonAPI", ak="ubpiol2cve"),
-    r=dict(un='rAPI', ak='yu680v5eii'),
-    node=dict(un='nodeAPI', ak='1eobtyua4l')
+### keys that are OK to go into final pre_book save ###
+leaf_keys = ["config", "is_leaf", "image", "id", "url", "path", "exception",
+             "complete", "private", "prepend", "append"]
+branch_keys = ["config", "is_leaf", "id", "path", "subsections",
+               "has_thumbnail"]
+
+### define config_requirements ###
+requirements = dict(
+    subsection=dict(
+        name=basestring,
+        has_thumbnail=bool
+    ),
+    example=dict(
+        name=basestring,
+        languages=list
+    )
 )
+
+### define allowable config entries ###
+
+allowable = dict(
+    subsection={
+        'name': basestring,
+        'has_thumbnail': bool,
+        'relative_url': basestring,
+        'description': basestring,
+        'order': list
+    },
+    example={
+        'name': basestring,
+        'languages': list,
+        'description': basestring,
+        'tags': list,
+        'prepend': basestring,
+        'append': basestring,
+        'init': bool,
+        'plot-options': dict
+    }
+)
+
+### sign in stuff: each user has a 'un' and 'ak' ###
+## users ##
+# tester, julia, matlab, python, r, nodejs, publisher
+with open('users.json') as users_file:
+    users = json.load(users_file)
+
+with open('dirs.json') as dirs_file:
+    dirs = json.load(dirs_file)
 
 py.sign_in(users['tester']['un'], users['tester']['ak'])
 
 ### server stuff ###
 translator_server = "https://plot.ly/translate_figure/"
-image_server = "https://plot.ly/apigenimage/"  # to be: "https://plot.ly/image/"
 
 ### style stuff ###
 lines_between_sections = 2
 
-### supported languages ###
-languages = ['python', 'matlab', 'r', 'julia', 'node']
+### define commands to run with, can be combined with '+' (e.g., code+urls) ###
+commands = ['code', 'urls', 'clean']
+
+### define supported languages ###
+languages = ['python', 'julia', 'matlab', 'r', 'nodejs', 'ggplot2', 'matplotlib']
 
 ### define extensions for executable code ###
-lang_to_ext = dict(python='py', julia='jl', matlab='m', r='r', node='js')
-ext_to_lang = dict(py='python', jl='julia', m='matlab', r='r', js='node')
+lang_to_ext = dict(python='py',
+                   julia='jl',
+                   matlab='m',
+                   r='r',
+                   nodejs='js',
+                   ggplot2='r',
+                   matplotlib='py')
+ext_to_lang = dict(py='python',
+                   jl='julia',
+                   m='matlab',
+                   r='r',
+                   js='nodejs',
+                   gg='ggplot2',
+                   mpl='matplotlib')
 
 ### define imports ###
 imports = dict(
     python="import plotly.plotly as py\nfrom plotly.graph_objs import *",
     matlab="",
     r="library(plotly)",
+    ggplot2="",
+    matplotlib="",
     julia="using Plotly",
-    node=""
+    nodejs=""
 )
 
 ### define sign in ###
 sign_in = {
-    examples_dir: dict(
+    'documentation': dict(
         python=
+            "{{% if not username %}}"
+            "# Fill in with your personal username and API key\n"
+            "# or, use this public demo account\n"
+            "{{% endif %}}"
             "py.sign_in({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}'{ak}'{{% endif %}})".format(**users['python']),
         matlab=
+            "{{% if not username %}}"
+            "% Fill in with your personal username and API key\n"
+            "% or, use this public demo account\n"
+            "{{% endif %}}"
             "signin({{% if username %}}'{{{{username}}}}'"
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}'{{{{api_key}}}}'"
             "{{% else %}}'{ak}'{{% endif %}})".format(**users['matlab']),
         r=
+            "{{% if not username %}}"
+            "# Fill in with your personal username and API key\n"
+            "# or, use this public demo account\n"
+            "{{% endif %}}"
             "p <- plotly(username={{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "key={{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}'{ak}'{{% endif %}})".format(**users['r']),
         julia=
+            "{{% if not username %}}"
+            "# Fill in with your personal username and API key\n"
+            "# or, use this public demo account\n"
+            "{{% endif %}}"
             "Plotly.signin({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}\"{un}\"{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia']),
-        node=
+        nodejs=
+            "{{% if not username %}}"
+            "// Fill in with your personal username and API key\n"
+            "// or, use this public demo account\n"
+            "{{% endif %}}"
             "var plotly = require('plotly')("
             "{{% if username %}}'{{{{username}}}}'"
             "{{% else %}}'{un}'{{% endif %}},"
             "{{% if api_key %}}'{{{{api_key}}}}'"
-            "{{% else %}}'{ak}'{{% endif %}});".format(**users['node'])
+            "{{% else %}}'{ak}'{{% endif %}});".format(**users['nodejs']),
+        ggplot2=
+            "{{% if not username %}}"
+            "# Fill in with your personal username and API key\n"
+            "# or, use this public demo account\n"
+            "{{% endif %}}"
+            "p <- plotly(username={{% if username %}}\"{{{{username}}}}\""
+            "{{% else %}}'{un}'{{% endif %}}, "
+            "key={{% if api_key %}}\"{{{{api_key}}}}\""
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r']),
+        matplotlib=
+            "{{% if not username %}}"
+            "# Fill in with your personal username and API key\n"
+            "# or, use this public demo account\n"
+            "{{% endif %}}"
+            "py.sign_in({{% if username %}}\"{{{{username}}}}\""
+            "{{% else %}}'{un}'{{% endif %}}, "
+            "{{% if api_key %}}\"{{{{api_key}}}}\""
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python']),
     ),
-    exec_dir: dict(
+    'execution': dict(
         python="py.sign_in('{un}', '{ak}')".format(**users['tester']),
         matlab="signin('{un}', '{ak}')".format(**users['tester']),
         r="p <- plotly(username='{un}', key='{ak}')".format(**users['tester']),
         julia='using Plotly\nPlotly.signin("{un}", "{ak}")'
               ''.format(**users['tester']),
-        node="var plotly = require('plotly')('{un}', '{ak}')"
-             "".format(**users['tester'])
+        nodejs="var plotly = require('plotly')('{un}', '{ak}')"
+             "".format(**users['tester']),
+        ggplot2="p <- plotly(username='{un}', key='{ak}')"
+               "".format(**users['tester']),
+        matplotlib="py.sign_in('{un}', '{ak}')".format(**users['tester']),
     )
 }
 
 
-def setup():
-    if not os.path.exists(doc_dir):
-        os.mkdir(doc_dir)
-    if not os.path.exists(examples_dir):
-        os.mkdir(examples_dir)
-    if not os.path.exists(examples_exceptions_dir):
-        os.mkdir(examples_exceptions_dir)
-    if not os.path.exists(exec_dir):
-        os.mkdir(exec_dir)
-    if not os.path.exists(image_dir):
-        os.mkdir(image_dir)
-    for directory in [examples_dir, exec_dir]:
-        for language in languages:
-            if not os.path.exists(os.path.join(directory, language)):
-                os.mkdir(os.path.join(directory, language))
-
-
-def get_command():
+def get_command_list():
     try:
-        command = sys.argv[1]
-        if command not in commands:
-            raise Exception()
+        arg1 = sys.argv[1]
+        command_list = arg1.split('+')
+        for command in command_list:
+            if command not in commands:
+                raise Exception()
     except:
-        return None
-    return command
+        command_list = None
+    if not command_list:
+        print "usage:\n"\
+              "python run.py command examplename\n"\
+              "python run.py command\n",\
+              "python run.py command1+command2+command3 examplename\n"\
+              "python run.py command1+command2+command3\n"
+        print 'commands:', commands
+        sys.exit(0)
+    else:
+        return command_list
 
 
-def get_run_list():
-    run_list = []
+def get_keepers():
+    keepers = []
     while len(sys.argv) > 2:
-        run_list += [sys.argv.pop()]
-    return run_list
+        keepers += [sys.argv.pop()]
+    return keepers
 
 
 def clean():
-    """removes ENTIRE examples_dir directory and exec_dir directory! careful!"""
-    def clean_dir(directory):
+    """removes ENTIRE doc_dir directory, careful!"""
+    def clean_directory(directory):
         for name in os.listdir(directory):
             full_name = os.path.join(directory, name)
             if os.path.isdir(full_name):
-                clean_dir(full_name)
+                clean_directory(full_name)
                 os.rmdir(full_name)
             else:
                 os.remove(full_name)
-    clean_dir(examples_dir)
-    clean_dir(exec_dir)
-    setup()
+    if os.path.exists(dirs['run']):
+        clean_directory(dirs['run'])
+    if os.path.exists(pre_book_file):
+        os.remove(pre_book_file)
 
 
-def get_filenames(directory, dot_extension):
-    filenames = []
-    for name in os.listdir(directory):
-        full_name = os.path.join(directory, name)
-        if os.path.isdir(full_name):
-            filenames += get_filenames(full_name, dot_extension)
-        elif dot_extension in full_name:
-            filenames += [full_name]
+def load_previous_pre_book():
+    if os.path.exists(pre_book_file):
+        with open(pre_book_file) as f:
+            return json.load(f)
+    else:
+        return {}
+
+
+def write_pre_book(section_dir, keepers, previous_pre_book):
+    """
+    1. for each directory, if there are sub-directories: recurse
+    2. if no sub-directories, and name in keepers, keep!
+    """
+    section_dict = dict()
+    subsections = [child for child in os.listdir(section_dir)
+                   if os.path.isdir(os.path.join(section_dir, child))]
+    files = [child for child in os.listdir(section_dir)
+             if not os.path.isdir(os.path.join(section_dir, child))
+             and child != config_file
+             and child != '.DS_Store']
+    if subsections and files:
+        raise Exception("found a directory that has BOTH subsections AND "
+                        "files in '{}'."
+                        "\n\tsubsections: {}"
+                        "\n\tfiles: {}"
+                        "".format(section_dir, subsections, files))
+    elif subsections:
+        subsections_dict = dict()
+        for subsection_name in subsections:
+            subsection_dir = os.path.join(section_dir, subsection_name)
+            subsection_dict = write_pre_book(
+                subsection_dir, keepers, previous_pre_book)
+            if subsection_dict:
+                subsections_dict[subsection_name] = subsection_dict
+        if subsections_dict:
+            section_dict['subsections'] = subsections_dict
+            section_dict['is_leaf'] = False
+    elif files:
+        id = section_dir.split(os.path.sep)[-1]
+        if id in ids:
+            raise Exception(
+                "identical ids found in '{}' and '{}'. Example folders must "
+                "have unique names.".format(ids[id], section_dir)
+            )
         else:
-            pass # forgettaboutit
-    return filenames
+            ids[id] = section_dir
+        if keepers:
+            names = section_dir.split(os.path.sep)
+            keep = any([True for keeper in keepers if keeper in names])
+            if 'new' in keepers:
+                if 'processed_ids' not in previous_pre_book:
+                    keep = True
+                elif id not in previous_pre_book['processed_ids']:
+                    keep = True
+        else:
+            keep = True
+        if keep:
+            section_dict['files'] = {f: os.path.join(section_dir, f)
+                                     for f in os.listdir(section_dir)
+                                     if f != config_file}
+            section_dict['is_leaf'] = True
+            global total_examples
+            total_examples += 1
+    if 'files' in section_dict or 'subsections' in section_dict:
+        config_path = os.path.join(section_dir, config_file)
+        config = validate_and_get_config(config_path, section_dict['is_leaf'])
+        section_dict['config'] = config
+        section_dict['path'] = section_dir
+        section_dict['id'] = section_dir.split(os.path.sep)[-1]
+        return section_dict
 
 
-def load_exceptional_examples(filenames):
-    example_dict = {}
-    for fn in filenames:
-        with open(fn) as f:
-            name = "-".join(fn.replace(exceptions_dir, "").split(os.path.sep))[1:]
-            name, ext = name.split('.')
-            example_dict[name] = {}
-            example_dict[name]['code'] = f.read()
-            example_dict[name]['ext'] = ext
-    return example_dict
-
-
-def get_json_filenames():
-    filenames = []
-    for dn in os.listdir(json_dir):
-        try:
-            dir_files = os.listdir(os.path.join(json_dir, dn))
-            for filename in dir_files:
-                file_path = os.path.join(json_dir, dn, filename)
-                if '.json' in filename:
-                    filenames.append(file_path)
-        except OSError:
-            pass
-    return filenames
-
-
-def load_json_examples(filenames):
-    examples = []
-    for fn in filenames:
-        try:
-            with open(fn) as f:
-                examples += json.load(f, object_pairs_hook=OrderedDict)
-        except:
-            print 'error from this file:', fn
-            raise
-    return examples
-    # example_dict = {}
-    # for fn in filenames:
-    #     try:
-    #         with open(fn) as f:
-    #             examples = json.load(f, object_pairs_hook=OrderedDict)
-    #             for example in examples:
-    #                 name = example['examplename'] + '.json'
-    #                 example_dict[name] = example
-    #     except:
-    #         print 'error from this file:', fn
-    #         raise
-    # return example_dict
-
-
-def filter_examples(ex_dict, run_list):
-    if run_list:
-        return {name: ex for name, ex in ex_dict.items()
-                if name.split('.')[0] in run_list} # remove extension
+def validate_and_get_config(config_path, is_leaf):
+    try:
+        with open(config_path) as f:
+            config = json.load(f)
+    except ValueError:
+        raise ValueError("invalid json in '{}'".format(config_path))
+    if is_leaf:
+        section_type = 'example'
     else:
-        return ex_dict
+        section_type = 'subsection'
+    for key, val in requirements[section_type].items():
+        if key not in config:
+            raise KeyError(
+                "missing key '{}' in config at location '{}'"
+                "".format(key, config_path))
+        elif not isinstance(config[key], val):
+            raise ValueError(
+                "wrong value type for key '{}' in config at location '{}'"
+                "".format(key, config_path))
+    for key, val in allowable[section_type].items():
+        if key in config:
+            if not isinstance(config[key], val):
+                raise ValueError(
+                    "wrong value type for key '{}' in config at location '{}'"
+                    "".format(key, config_path))
+    for key in config:
+        if key not in allowable[section_type]:
+            raise KeyError(
+                "invalid key '{}' in config at location '{}'"
+                "".format(key, config_path))
+    return config
 
 
-def filter_json_examples(examples, run_list):
-    if run_list:
-        return [ex for ex in examples if ex['examplename'] in run_list]
-    else:
-        return examples
+def validate_example_structure(section):
+    if 'subsections' in section:
+        for subsection in section['subsections'].values():
+            validate_example_structure(subsection)
+    elif 'files' in section:
+        scripts = [filename for filename in section['files']
+                   if filename.split('.')[0] == 'script']
+        if len(scripts) > 1:
+            raise Exception("more than one script.ext found in '{}'"
+                            "".format(section['path']))
+        elif scripts and model_file in section:
+            raise Exception("script.ext file and model.json found in '{}'"
+                            "".format(section['path']))
+        elif scripts and url_file in section:
+            raise Exception("script.ext file and url.json found in '{}'"
+                            "".format(section['path']))
+        elif model_file in section and url_file in section:
+            raise Exception("model.json and url.json found in '{}'"
+                            "".format(section['path']))
 
 
-def reformat_json():
-    filenames = get_filenames(json_dir, '.json')
-    for filename in filenames:
+def process_pre_book(section, command_list):
+    if section['is_leaf']:
+        global example_count, processed_ids
+        example_count += 1
+        print("\t{} of {}".format(example_count, total_examples)),
         try:
-            with open(filename) as fin:
-                examples = json.load(fin, object_pairs_hook=OrderedDict)
-            with open(filename, 'w') as fout:
-                json.dump(examples, fout, indent=2)
-        except:
-            print 'error from this file:', filename
-            raise
+            if model_file in section['files']:
+                process_model_example(section, command_list)
+            elif any(['script' in filename for filename in section['files']]):
+                process_script_example(section, command_list)
+            elif url_file in section['files']:
+                process_url_example(section, command_list)
+            else:
+                print("\t\texample '{}' cannot be processed"
+                      "".format(section))
+        except plotly.exceptions.PlotlyError as err:
+            print "\t\t" + "\n\t\t\t".join(err.message.splitlines())
+            section['complete'] = False
+        else:
+            processed_ids.add(section['id'])
+            mark_completeness(section)
+    else:
+        for subsection in section['subsections'].values():
+            process_pre_book(subsection, command_list)
 
 
-def get_plot_call(language, example):
-    """define strings for actual plot calls"""
+def process_model_example(example, command_list):
+    """
+    1. load model.json file
+    2. for each language with 'model' as the *source*...
+    3. translate model to language with translator
+    4. if save image: save image
+    5. if save code: save code
+    6. if save url: save url
+    """
+    print "\tprocessing {} in {}".format(model_file, example['path'])
+    example['type'] = 'model'
+    try:
+        with open(example['files'][model_file]) as f:
+            model = json.load(f)
+    except KeyError:
+        raise KeyError(
+            "{} required and could not be found in {}"
+            "".format(model_file, example['path']))
+    except ValueError:
+        raise ValueError(
+            "{} required and could not be opened in {}"
+            "".format(model_file, example['path']))
+    if 'python' not in example['config']['languages']:
+        code = ""
+        if 'init' in example['config'] and example['config']['init']:
+            init_file = "init.{}".format(lang_to_ext['python'])
+            if init_file in example['files']:
+                with open(example['files'][init_file]) as f:
+                    code += f.read() + "\n"
+            else:
+                raise plotly.exceptions.PlotlyError(
+                    "couldn't find '{}' in '{}'"
+                    "".format(init_file, example['path'])
+                )
+        data = json.dumps({'json_figure': model,
+                           'language': 'python',
+                           'pretty': True})
+        res = get_plotly_response(translator_server, data=data)
+        if not res:
+            raise plotly.exceptions.PlotlyError(
+                "couldn't connect to plotly at resource. '{}'".format(translator_server)
+            )
+        elif res.status_code != 200:
+            raise plotly.exceptions.PlotlyError(
+                "unsuccessful request at resource. '{}'".format(translator_server)
+            )
+        code += res.content
+        code = code.replace("<pre>", "").replace("</pre>", "")
+        code = code.replace('">>>', "").replace('<<<"', "")
+        code = code.replace("'>>>", "").replace("<<<'", "")
+        exec_string = format_code(code, 'python', example, model, 'execution')
+        example['python-exec'] = exec_string
+    for language in example['config']['languages']:
+        code = ""
+        if 'init' in example['config'] and example['config']['init']:
+            init_file = "init.{}".format(lang_to_ext[language])
+            if init_file in example['files']:
+                with open(example['files'][init_file]) as f:
+                    code += f.read() + "\n"
+            else:
+                raise plotly.exceptions.PlotlyError(
+                    "couldn't find '{}' in '{}'"
+                    "".format(init_file, example['path'])
+                )
+        data = json.dumps({'json_figure': model,
+                           'language': language,
+                           'pretty': True})
+        res = get_plotly_response(translator_server, data=data)
+        if not res:
+            raise plotly.exceptions.PlotlyError(
+                "couldn't connect to plotly at resource. '{}'".format(translator_server)
+            )
+        elif res.status_code != 200:
+            raise plotly.exceptions.PlotlyError(
+                "unsuccessful request at resource. '{}'".format(translator_server)
+            )
+        code += res.content
+        code = code.replace("<pre>", "").replace("</pre>", "")
+        code = code.replace('">>>', "").replace('<<<"', "")
+        code = code.replace("'>>>", "").replace("<<<'", "")
+        exec_string = format_code(code, language, example, model, 'execution')
+        if language == 'python':
+            example['python-exec'] = exec_string
+        if 'code' in command_list:
+            code_string = format_code(code, language, example, model)
+            code_path = save_code(
+                code_string, example, language, 'documentation'
+            )
+            example[language] = code_path
+            save_code(exec_string, example, language, 'execution')
+    if 'urls' in command_list:
+        if 'python-exec' in example:
+            try:
+                exec_locals = exec_python_string(example['python-exec'])
+            except Exception as err:
+                raise plotly.exceptions.PlotlyError(
+                    "exec of python string raised exception:"
+                    "\n\'{}'"
+                    "\nskipping...".format(err.message))
+            if 'plot_url' in exec_locals:
+                example['url'] = exec_locals['plot_url']
+            else:
+                raise plotly.exceptions.PlotlyError(
+                    "\t\t'plot_url' not in exec_locals, skipping..."
+                )
+    mark_completeness(example)
+
+
+def process_script_example(example, command_list):
+    """
+    1. for each language with 'model' as the *source*...
+    2. load script.ext file
+    3. if save image: save image
+    4. if save code: save code
+    5. if save url: save url
+    """
+    print "\tprocessing scripts in {}".format(example['path'])
+    example['type'] = 'script'
+    script_file = [fn for fn in example['files'] if 'script' in fn][0]
+    language = ext_to_lang[script_file.split('.')[-1]]
+    example['config']['languages'] = [language]
+    try:
+        with open(example['files'][script_file]) as f:
+            script = f.read()
+    except KeyError:
+        raise plotly.exceptions.PlotlyError(
+            "'{}' not found in '{}'".format(script_file, example['path'])
+        )
+    exec_string = ""
+    for line in script.splitlines():
+        if line[:6] == sign_in['execution'][language][:6]:  # TODO, better way?
+            exec_string += sign_in['execution'][language]
+        elif '>>>filename<<<' in line:
+            exec_string += line.replace('>>>filename<<<', example['id'])
+        else:
+            exec_string += line
+        exec_string += "\n"
+    save_code(exec_string, example, language, 'exception')
+    if 'code' in command_list:
+        code_string = exec_string.replace(sign_in['execution'][language],
+                                          sign_in['documentation'][language])
+        code_string = cgi.escape(code_string)
+        code_path = save_code(code_string, example, language, 'documentation')
+        example[language] = code_path
+        save_code(exec_string, example, language, 'execution')
+
+
+def process_url_example(example, command_list):
+    """
+    1. for each language with 'url' as the *source*...
+    2. translate model to language with translator
+    3. if save image: save image
+    4. if save code: save code
+    """
+    print "\tprocessing {} in {}".format(url_file, example['path'])
+    example['type'] = 'url'
+    try:
+        with open(example['files'][url_file]) as f:
+            url = json.load(f)['url']
+    except ValueError:
+        raise plotly.exceptions.PlotlyError(
+            "{} required and could not be opened in {}"
+            "".format(url_file, example['path']))
+    except KeyError:
+        raise plotly.exceptions.PlotlyError(
+            "{} required and could not be found in {}"
+            "".format(url_file, example['path']))
+    json_resource = "{}.json".format(url)
+    res = get_plotly_response(json_resource)
+    if not res:
+        raise plotly.exceptions.PlotlyError(
+            "couldn't connect to plotly at resource. '{}'".format(json_resource)
+        )
+    elif res.status_code != 200:
+        raise plotly.exceptions.PlotlyError(
+            "unsuccessful request at resource. '{}'".format(json_resource)
+        )
+    figure_str = res.content
+    figure_str = figure_str.replace("<pre>", "").replace("</pre>", "")
+    figure_str = figure_str.replace("<html>", "").replace("</html>", "")
+    figure = json.loads(figure_str)
+    if 'python' not in example['config']['languages']:
+        code = ""
+        resource = "{}.{}".format(url, lang_to_ext['python'])
+        res = get_plotly_response(resource)
+        if not res:
+            raise plotly.exceptions.PlotlyError(
+                "couldn't connect to plotly at resource. '{}'".format(resource)
+            )
+        elif res.status_code != 200:
+            raise plotly.exceptions.PlotlyError(
+                "unsuccessful request at resource. '{}'".format(resource)
+            )
+        code += res.content
+        code = code.replace("<pre>", "").replace("</pre>", "")
+        code = code.replace("<html>", "").replace("</html>", "")
+        exec_string = format_code(
+            code, 'python', example, figure, 'execution'
+        )
+        example['python-exec'] = exec_string
+    for language in example['config']['languages']:
+        code = ""
+        resource = "{}.{}".format(url, lang_to_ext[language])
+        res = get_plotly_response(resource)
+        if not res:
+            raise plotly.exceptions.PlotlyError(
+                "couldn't connect to plotly at resource. '{}'".format(resource)
+            )
+        elif res.status_code != 200:
+            raise plotly.exceptions.PlotlyError(
+                "unsuccessful request at resource. '{}'".format(resource)
+            )
+        code += res.content
+        code = code.replace("<pre>", "").replace("</pre>", "")
+        code = code.replace("<html>", "").replace("</html>", "")
+        exec_string = format_code(
+            code, language, example, figure, 'execution'
+        )
+        if language == 'python':
+            example['python-exec'] = exec_string
+        if 'code' in command_list:
+            code_string = format_code(code, language, example, figure)
+            code_path = save_code(
+                code_string, example, language, 'documentation'
+            )
+            example[language] = code_path
+            save_code(exec_string, example, language, 'execution')
+    if 'urls' in command_list:
+        try:
+            exec_locals = exec_python_string(example['python-exec'])
+        except Exception as err:
+            raise plotly.exceptions.PlotlyError(
+                "exec of python string raised exception:"
+                "\n\'{}'"
+                "\nskipping...".format(err.message))
+        if 'plot_url' in exec_locals:
+            example['url'] = exec_locals['plot_url']
+        else:
+            raise plotly.exceptions.PlotlyError(
+                "\t\t'plot_url' not in exec_locals, skipping...")
+
+
+def get_plotly_response(resource, data=None, attempts=2, sleep=5):
+    for attempt in range(1, attempts+1):
+        try:
+            if data:
+                res = requests.get(resource, data=data)
+            else:
+                res = requests.get(resource)
+            return res
+        except RequestException:
+            if attempt < attempts:
+                print "\t\tcouldn't connect to plotly, trying again..."
+            time.sleep(sleep)
+
+
+def save_code(code, example, language, mode):
+    if mode == 'documentation':
+        example_folder = os.path.join(dirs['run'],
+                                      *example['path'].split(os.path.sep)[1:])
+        code_folder = os.path.join(example_folder, language)
+        code_path = os.path.join(code_folder, code_file)
+    elif mode == 'execution':
+        code_folder = os.path.join(dirs['run'], dirs['executables'], language)
+        filename = "{}.{}".format(example['id'], lang_to_ext[language])
+        code_path = os.path.join(code_folder, filename.replace("-", "_"))
+    elif mode == 'exception':
+        code_folder = os.path.join(dirs['exceptions'], language)
+        filename = "{}.{}".format(example['id'], lang_to_ext[language])
+        code_path = os.path.join(code_folder, filename.replace("-", "_"))
+    else:
+        raise Exception("mode: 'execution' | 'documentation' | 'exception'")
+    if not os.path.exists(code_folder):
+        os.makedirs(code_folder)
+    with open(code_path, 'w') as f:
+        f.write(code)
+    return code_path
+
+
+def exec_python_string(exec_string):
+    """save image to directory by executing python code-string and saving"""
+    exec exec_string
+    return locals()
+
+
+def format_code(body_string, language, example, figure, mode='documentation'):
+    file_import = imports[language]
+    file_sign_in = sign_in[mode][language]
+    plot_call = get_plot_call(language, figure, example, mode=mode)
+    sections = [file_import, file_sign_in, body_string, plot_call]
+    sections = [sec for sec in sections if sec]
+    code_string = ("\n" * lines_between_sections).join(sections)
+    if mode == 'documentation':
+        code_string = cgi.escape(code_string)
+    return code_string
+
+
+def get_plot_call(language, figure, example, mode):
+    """define strings for actual plot calls
+
+    :rtype : str
+    """
     tf_dict = {
         True: dict(
             python='True',
             matlab='true',
             julia='true',
             r='TRUE',
-            node='true'
+            nodejs='true'
         ),
         False: dict(
             python='False',
             matlab='false',
             julia='false',
             r='FALSE',
-            node='false'
+            nodejs='false'
         )
     }
+    filename = example['path'].split(os.path.sep)[-1]
+    try:
+        plot_options = example['config']['plot-options']
+    except KeyError:
+        plot_options = {}
+    else:
+        if 'world_readable' in plot_options and not plot_options['world_readable']:
+            example['private'] = True
+    if mode == 'execution':
+        plot_options['auto_open'] = False
     if language == 'python':
         string = "plot_url = py.plot("
-        if 'layout' in example['figure']:
+        if 'layout' in figure:
             string += 'fig, '
         else:
             string += 'data, '
-        string += "filename='{}'".format(example['examplename'])
-        if 'plot_options' in example:
-            for key, val in example['plot_options'].items():
+        string += "filename='{}'".format(filename)
+        if plot_options:
+            for key, val in plot_options.items():
                 try:
                     string += ", {}={}".format(key, tf_dict[val][language])
                 except KeyError:
@@ -275,12 +734,12 @@ def get_plot_call(language, example):
         return string + ")"
     elif language == 'matlab':
         string = "response = plotly(data, struct("
-        if 'layout' in example['figure']:
+        if 'layout' in figure:
             string += "'layout', layout, "
-        string += "'filename', '{}'".format(example['examplename'])
+        string += "'filename', '{}'".format(filename)
         string += ", 'fileopt', 'overwrite'"
-        if 'plot_options' in example:
-            for key, val in example['plot_options'].items():
+        if plot_options:
+            for key, val in plot_options.items():
                 try:
                     string += ", '{}', '{}'".format(key, tf_dict[val][language])
                 except KeyError:
@@ -290,14 +749,15 @@ def get_plot_call(language, example):
         return string
     elif language == 'julia':
         string = "response = Plotly.plot([data], ["
-        if 'layout' in example['figure']:
+        if 'layout' in figure:
             string += '"layout" => layout, '
-        string += '"filename" => "{fn}"'.format(fn=example['examplename'])
+        string += '"filename" => "{}"'.format(filename)
         string += ', "fileopt" => "overwrite"'
-        if 'plot_options' in example:
-            for key, val in example['plot_options'].items():
+        if plot_options:
+            for key, val in plot_options.items():
                 try:
-                    string += ', "{}" => "{}"'.format(key, tf_dict[val][language])
+                    string += ', "{}" => "{}"'.format(key,
+                                                      tf_dict[val][language])
                 except KeyError:
                     string += ', "{}" => "{}"'.format(key, val)
         string += "])"
@@ -305,12 +765,12 @@ def get_plot_call(language, example):
         return string
     elif language == 'r':
         string = 'response <- p$plotly(data, kwargs=list('
-        if 'layout' in example['figure']:
+        if 'layout' in figure:
             string += 'layout=layout, '
-        string += 'filename="{}"'.format(example['examplename'])
+        string += 'filename="{}"'.format(filename)
         string += ', fileopt="overwrite"'
-        if 'plot_options' in example:
-            for key, val in example['plot_options'].items():
+        if plot_options:
+            for key, val in plot_options.items():
                 try:
                     string += ', {}="{}"'.format(key, tf_dict[val][language])
                 except KeyError:
@@ -319,20 +779,20 @@ def get_plot_call(language, example):
         string += '\nurl <- response$url\n'
         string += 'filename <- response$filename'
         return string
-    elif language == 'node':
-        string = 'var graph_options = {{filename: "{}"'.format(example['examplename'])
+    elif language == 'nodejs':
+        string = 'var graph_options = {{filename: "{}"'.format(filename)
         string += ', fileopt: "overwrite"'
-        if 'layout' in example['figure']:
+        if 'layout' in figure:
             string += ', layout: layout'
-        if 'plot_options' in example:
-            for key, val in example['plot_options'].items():
+        if plot_options:
+            for key, val in plot_options.items():
                 try:
                     string += ', {}: "{}"'.format(key, tf_dict[val][language])
                 except KeyError:
                     string += ', {}: "{}"'.format(key, val)
         string += '}'
         string += "\nplotly.plot("
-        if 'data' in example['figure'] and example['figure']['data']:
+        if 'data' in figure and figure['data']:
             string += "data"
         else:
             string += "[]"
@@ -344,267 +804,99 @@ def get_plot_call(language, example):
         return ''
 
 
-def save_code(directory, language, body_string, example_number, example):
-    """saves code to directory, options for which are the the top of this file
-    """
-    filename = os.path.join(directory, language, example['examplename'])
-    if directory == examples_dir:
-        filename += '.txt'
-    elif directory == exec_dir:
-        filename += "." + lang_to_ext[language]
-    file_import = imports[language]
-    file_sign_in = sign_in[directory][language]
-    plot_call = get_plot_call(language, example)
-    sections = [file_import, file_sign_in, body_string, plot_call]
-    sections = [sec for sec in sections if sec]
-    code_string = ("\n" * lines_between_sections).join(sections)
-    if directory == examples_dir:
-        code_string = cgi.escape(code_string)
-    with open(filename, 'w') as f:
-        f.write(code_string)
+def mark_completeness(example):
+    has_url = 'url' in example
+    has_all_languages = all([language in example
+                             for language in example['config']['languages']])
+    if has_url and has_all_languages:
+        example['complete'] = True
+    else:
+        example['complete'] = False
 
 
-def save_image(exec_string, example_number, example):
-    """save image to directory by executing python code-string and saving
-    """
-    fig, data = None, None
+def trim_pre_book(section):
+    section_keys = section.keys()
+    if section['is_leaf']:
+        for key in section_keys:
+            if key not in leaf_keys and key not in languages:
+                del section[key]
+    else:
+        for key in section_keys:
+            if key not in branch_keys:
+                del section[key]
+        for subsection in section['subsections'].values():
+            trim_pre_book(subsection)
+
+
+def clear_reprocessed_examples(section):
+    if section:
+        if section['is_leaf']:
+            if section['id'] in processed_ids:
+                keys = section.keys()
+                for key in keys:
+                    del section[key]
+        else:
+            for subsection in section['subsections'].values():
+                clear_reprocessed_examples(subsection)
+
+
+def save_pre_book(pre_book, previous_pre_book):
     try:
-        exec exec_string
-    except:
-        print exec_string
-        raise
-    if not fig:
-        if not data:
-            print exec_string
-            raise Exception("no data OR figure!!")
-        fig = dict(data=data)  # assumes fig or data
-    if 'layout' not in fig:
-        fig['layout'] = dict()
-    if 'margin' not in fig['layout']:
-        fig['layout']['margin'] = dict(t=50, b=50, r=50, l=50)
-    fig['layout'].update(autosize=False, width=500, height=500)
-    filename = os.path.join(image_dir, example["examplename"] + '.png')
-    for attempt in range(2):
-        try:
-            headers = {'plotly-username': users['tester']['un'],
-                       'plotly-apikey': users['tester']['ak'],
-                       'plotly-version': '2.0',
-                       'plotly-platform': 'python'}
-            server = image_server
-            res = requests.post(
-                server,
-                data=json.dumps(fig, cls=utils._plotlyJSONEncoder),
-                headers=headers
-            )
-            if res.status_code != 200:
-                raise plotly.exceptions.PlotlyError()
-            image = base64.b64decode(json.loads(res.content)['payload'])
-            with open(filename, 'w') as f:
-                f.write(image)
-            break
-        except plotly.exceptions.PlotlyError:
-            time.sleep(10)
-            if attempt == 1:
-                print ("\timage could not be saved, check json and the "
-                       "following python executable:\n\n{}\n"
-                       "".format(exec_string))
+        previously_processed_ids = set(previous_pre_book['processed_ids'])
+    except KeyError:
+        previously_processed_ids = set()
+    pre_book['processed_ids'] = list(
+        set.union(processed_ids, previously_processed_ids))
+    try:
+        os.makedirs(dirs['run'])
+    except OSError:
+        pass
+    new_pre_book = nested_merge(previous_pre_book, pre_book)
+    with open(pre_book_file, 'w') as f:
+        json.dump(new_pre_book, f, indent=4)
 
 
-def save_url(exec_string, example_number, example):
-    """save image to directory by executing python code-string and saving
+def nested_merge(old, update):
     """
-    # TODO, this can be put in with save_image for efficiency soon!
-    fig, data = None, None
-    try:
-        exec exec_string
-    except:
-        print exec_string
-        raise
-    if not fig:
-        if not data:
-            print exec_string
-            raise Exception("no data OR figure!!")
-        fig = dict(data=data)  # assumes fig or data
-    if 'layout' not in fig:
-        fig['layout'] = dict()
-    if 'margin' not in fig['layout']:
-        fig['layout']['margin'] = dict(t=50, b=50, r=50, l=50)
-    fig['layout'].update(autosize=False, width=500, height=500)
-    url = py.plot(fig, filename=example['examplename'], auto_open=False)
-    try:
-        with open(graph_url_file) as fin:
-            urls = json.load(fin)
-    except (IOError, ValueError):
-        urls = {}
-    urls[example['examplename']] = url
-    with open(graph_url_file, 'w') as fout:
-        json.dump(urls, fout, indent=4)
+    1. Assumes that branches are the same type!
+    2. Doesn't look inside lists! Treats them as a leaf/end/terminal/etc
+    """
+    new = dict()
+    new.update(old)
+    if isinstance(update, dict):
+        for key, val in update.items():
+            if key not in old:
+                new[key] = update[key]
+            elif isinstance(val, dict):
+                new[key] = nested_merge(old[key], val)
+            else:
+                new[key] = val
+    return new
 
 
 def main():
-    """compile all examples, optionally save code and images 'code' or 'both'"""
-
-### ensure all paths exist ###
-    setup()
-
-### grab command-line arguments ###
-    command = get_command()
-    if not command or command not in commands:
-        print ("usage:\n"
-               "python run.py command examplename\n"
-               "python run.py command\n")
-        print 'commands:', commands
-        sys.exit(0)
-    elif command == 'clean':
+    command_list = get_command_list()
+    keepers = get_keepers()
+    print "\n\nrunning with commands: {}\n\n".format(command_list)
+    if 'clean' in command_list:
         clean()
-        sys.exit(0)
-    elif command == 'reformat-json':
-        reformat_json()
-        sys.exit(0)
-
-### graph specific examples if they exist ###
-    run_list = get_run_list()
-
-### run exceptional examples if that's what you want ###
-    if command == 'exceptions':
-        exceptional_examples = {}
-        for language in languages:
-            filenames = get_filenames(exceptions_dir, "." + lang_to_ext[language])
-            exceptional_examples.update(load_exceptional_examples(filenames))
-
-    ### format exceptional examples ###
-        formatted_examples = {}
-        image_examples = {}
-        for name, example in exceptional_examples.items():
-            formatted_examples[name] = {}
-            image_examples[name] = {}
-            language = ext_to_lang[example['ext']]  # throws KeyError if bad
-            formatted_code = ""
-            image_code = ""
-            for line in example['code'].splitlines():
-                if users['tester']['ak'] in line:
-                    formatted_code += sign_in[examples_dir][language] + "\n"
-                    image_code += line + "\n"
-                elif '$$$' in line:
-                    formatted_code += line.replace("$$$", name) + "\n"
-                    image_code += line + "\n"
-                else:
-                    formatted_code += line + "\n"
-                    image_code += line + "\n"
-            formatted_examples[name]['code'] = formatted_code
-            formatted_examples[name]['ext'] = example['ext']
-            image_examples[name]['code'] = image_code
-            image_examples[name]['ext'] = example['ext']
-        for name, example in formatted_examples.items():
-            output_name = os.path.join(examples_exceptions_dir, name + '.txt')
-            with open(output_name, 'w') as f:
-                f.write(example['code'])
-
-        for name, example in image_examples.items():
-            if example['ext'] != 'py':
-                print example['ext']
-                continue
-            fig, data = None, None
-            try:
-                exec example['code']
-            except:
-                print example['code']
-                raise
-            time.sleep(3)
-            fig = py.get_figure('test-runner', 153)
-            if 'layout' not in fig:
-                fig['layout'] = dict()
-            if 'margin' not in fig['layout']:
-                fig['layout']['margin'] = dict()
-            fig['layout']['margin'] = dict(t=50, b=50, r=50, l=50)
-            fig['layout'].update(autosize=False, width=500, height=500)
-            filename = os.path.join(image_dir, name + '.png')
-            for attempt in range(2):
-                try:
-                    headers = {'plotly-username': users['tester']['un'],
-                               'plotly-apikey': users['tester']['ak'],
-                               'plotly-version': '2.0',
-                               'plotly-platform': 'python'}
-                    server = image_server
-                    res = requests.post(
-                        server,
-                        data=json.dumps(fig, cls=utils._plotlyJSONEncoder),
-                        headers=headers
-                    )
-                    if res.status_code != 200:
-                        raise plotly.exceptions.PlotlyError()
-                    image = base64.b64decode(json.loads(res.content)['payload'])
-                    with open(filename, 'w') as f:
-                        f.write(image)
-                    break
-                except plotly.exceptions.PlotlyError:
-                    time.sleep(10)
-                    if attempt == 1:
-                        print ("\timage could not be saved, check json and the "
-                               "following python executable:\n\n{}\n"
-                               "".format(example['code']))
-        sys.exit(0)
-
-### compile all examples (name, prepend, append, figure) ###
-    filenames = get_filenames(json_dir, ".json")
-    json_examples = load_json_examples(filenames)
-    examples = filter_json_examples(json_examples, run_list)
-
-
-### run them examples! ###
-    total = len(examples)
-    for iii, example in enumerate(examples):
-        print "{}/{} '{}' with command '{}'".format(iii,
-                                                    total,
-                                                    example['examplename'],
-                                                    command)
-        for language in languages:
-            data, fig = None, None
-            string = ""
-            if 'prepend' in example:
-                try:
-                    string += "\n".join(example['prepend'][language])
-                    string += "\n\n"
-                except KeyError:
-                    print "\tno prepend, skipping '{}'".format(
-                        language)
-                    continue
-            data = {'json_figure': example['figure'],
-                    'language': language,
-                    'pretty': True}
-            res = requests.get(translator_server, data=json.dumps(data))
-            if res.status_code == 200:
-                string += res.content  # todo, text?
-                string = string.replace("<pre>", "").replace("</pre>", "")
-            else:
-                print "\tskipping '{}', bad response from plotly translator!" \
-                      "".format(language)
-                continue
-            if 'append' in example:
-                try:
-                    string += "\n"
-                    string += "\n".join(example['append'][language])
-                except KeyError:
-                    print "\tno append, skipping '{}'".format(language)
-                    continue
-            string = string.replace('">>>', "").replace('<<<"', "")
-            string = string.replace("'>>>", "").replace("<<<'", "")
-            if command == 'code':
-                save_code(examples_dir, language, string, iii, example)
-                save_code(exec_dir, language, string, iii, example)
-            elif command == 'both':
-                save_code(examples_dir, language, string, iii, example)
-                if language == 'python':
-                    save_image(string, iii, example)
-            elif command == 'urls':
-                if language == 'python':
-                    save_url(string, iii, example)
-            elif command == 'all':
-                save_code(examples_dir, language, string, iii, example)
-                save_code(exec_dir, language, string, iii, example)
-                if language == 'python':
-                    save_image(string, iii, example)
-                    save_url(string, iii, example)
+        command_list.pop(command_list.index('clean'))
+    if command_list:
+        previous_pre_book = load_previous_pre_book()
+        print "compiling pre-book"
+        pre_book = write_pre_book(hard_coded_dir, keepers, previous_pre_book)
+        if pre_book:
+            print "validating file structure in examples"
+            validate_example_structure(pre_book)
+            print "about to get it done."
+            process_pre_book(pre_book, command_list)
+            print "got it done, cleaning up!"
+            trim_pre_book(pre_book)
+            clear_reprocessed_examples(previous_pre_book)
+            print "saving pre_book"
+            save_pre_book(pre_book, previous_pre_book)
+        else:
+            print "you're filter didn't match a section OR an example. bummer!"
 
 if __name__ == "__main__":
     main()
