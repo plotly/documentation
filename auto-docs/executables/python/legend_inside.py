@@ -13,11 +13,11 @@ trace2 = Scatter(
 )
 data = Data([trace1, trace2])
 layout = Layout(
+    showlegend=True,
     legend=Legend(
         x=1,
         y=1
-    ),
-    showlegend=True
+    )
 )
 fig = Figure(data=data, layout=layout)
 

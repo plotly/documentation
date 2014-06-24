@@ -16,38 +16,38 @@ trace2 = [
 data = [trace1, trace2]
 layout = [
   "xaxis" => [
-    "title" => "AXIS TITLE", 
-    "showticklabels" => true, 
-    "tickangle" => 45, 
-    "exponentformat" => "e", 
-    "showexponent" => "All", 
-    "titlefont" => [
-      "family" => "Arial, sans-serif", 
-      "size" => 18, 
-      "color" => "lightgrey"
-    ], 
     "tickfont" => [
+      "color" => "black", 
       "family" => "Old Standard TT, serif", 
-      "size" => 14, 
-      "color" => "black"
-    ]
+      "size" => 14
+    ], 
+    "showexponent" => "All", 
+    "showticklabels" => true, 
+    "title" => "AXIS TITLE", 
+    "tickangle" => 45, 
+    "titlefont" => [
+      "color" => "lightgrey", 
+      "family" => "Arial, sans-serif", 
+      "size" => 18
+    ], 
+    "exponentformat" => "e"
   ], 
   "yaxis" => [
-    "title" => "AXIS TITLE", 
-    "showticklabels" => true, 
-    "tickangle" => 45, 
-    "exponentformat" => "e", 
-    "showexponent" => "All", 
-    "titlefont" => [
-      "family" => "Arial, sans-serif", 
-      "size" => 18, 
-      "color" => "lightgrey"
-    ], 
     "tickfont" => [
+      "color" => "black", 
       "family" => "Old Standard TT, serif", 
-      "size" => 14, 
-      "color" => "black"
-    ]
+      "size" => 14
+    ], 
+    "showexponent" => "All", 
+    "showticklabels" => true, 
+    "title" => "AXIS TITLE", 
+    "tickangle" => 45, 
+    "titlefont" => [
+      "color" => "lightgrey", 
+      "family" => "Arial, sans-serif", 
+      "size" => 18
+    ], 
+    "exponentformat" => "e"
   ]
 ]
 

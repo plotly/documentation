@@ -16,27 +16,27 @@ trace1 = [
 trace2 = [
   "x" => x, 
   "y" => y, 
-  "name" => "measured", 
   "mode" => "markers", 
-  "marker" => [
-    "size" => 8, 
-    "color" => "#85144B"
-  ], 
+  "name" => "measured", 
   "error_y" => [
-    "value" => 0.1, 
     "type" => "constant", 
+    "value" => 0.1, 
     "color" => "#85144B", 
-    "opacity" => 1, 
     "thickness" => 1.5, 
-    "width" => 3
+    "width" => 3, 
+    "opacity" => 1
   ], 
   "error_x" => [
-    "value" => 0.2, 
     "type" => "constant", 
+    "value" => 0.2, 
     "color" => "#85144B", 
-    "opacity" => 1, 
     "thickness" => 1.5, 
-    "width" => 3
+    "width" => 3, 
+    "opacity" => 1
+  ], 
+  "marker" => [
+    "color" => "#85144B", 
+    "size" => 8
   ], 
   "type" => "scatter"
 ]

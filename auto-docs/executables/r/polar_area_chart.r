@@ -33,10 +33,10 @@ trace4 <- list(
 data <- list(trace1, trace2, trace3, trace4)
 layout <- list(
   title = "Wind Speed Distribution in Laurel, NE", 
-  legend = list(font = list(size = 16)), 
   font = list(size = 16), 
-  orientation = 270, 
-  radialaxis = list(ticksuffix = "%")
+  legend = list(font = list(size = 16)), 
+  radialaxis = list(ticksuffix = "%"), 
+  orientation = 270
 )
 
 response <- p$plotly(data, kwargs=list(layout=layout, filename="polar-area-chart", fileopt="overwrite", auto_open="FALSE"))

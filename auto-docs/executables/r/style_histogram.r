@@ -6,35 +6,35 @@ x0 = rnorm(500)
 x1 = rnorm(500)+1
 trace1 <- list(
   x = x0, 
+  histnorm = "count", 
   name = "control", 
-  marker = list(
-    line = list(
-      color = "grey", 
-      width = 0
-    ), 
-    color = "fuchsia", 
-    opacity = 0.75
-  ), 
   autobinx = FALSE, 
   xbins = list(
     start = -3.2, 
     end = 2.8, 
     size = 0.2
   ), 
-  histnorm = "count", 
+  marker = list(
+    color = "fuchsia", 
+    line = list(
+      color = "grey", 
+      width = 0
+    ), 
+    opacity = 0.75
+  ), 
   type = "histogram"
 )
 trace2 <- list(
   x = x1, 
   name = "experimental", 
-  marker = list(color = "rgb(255, 217, 102)"), 
-  opacity = 0.75, 
   autobinx = FALSE, 
   xbins = list(
     start = -1.8, 
     end = 4.2, 
     size = 0.2
   ), 
+  marker = list(color = "rgb(255, 217, 102)"), 
+  opacity = 0.75, 
   type = "histogram"
 )
 data <- list(trace1, trace2)

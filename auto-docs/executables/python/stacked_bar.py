@@ -15,11 +15,9 @@ trace2 = Bar(
 )
 data = Data([trace1, trace2])
 layout = Layout(
-    xaxis=XAxis(
-        type='category'
-    ),
-    categories=['giraffes', 'orangutans', 'monkeys'],
-    barmode='stack'
+    xaxis={'type': 'category'},
+    barmode='stack',
+    categories=['giraffes', 'orangutans', 'monkeys']
 )
 fig = Figure(data=data, layout=layout)
 

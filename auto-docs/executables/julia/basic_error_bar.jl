@@ -8,8 +8,8 @@ data = [
     "x" => [0, 1, 2], 
     "y" => [6, 10, 2], 
     "error_y" => [
-      "array" => [1, 2, 3], 
       "type" => "data", 
+      "array" => [1, 2, 3], 
       "visible" => true
     ], 
     "type" => "scatter"

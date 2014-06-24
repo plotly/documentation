@@ -17,14 +17,10 @@ trace2 = Scatter(
 data = Data([trace1, trace2])
 layout = Layout(
     title='Double Y Axis Example',
-    yaxis=YAxis(
-        title='yaxis title'
-    ),
+    yaxis={'title': 'yaxis title'},
     yaxis2=YAxis(
         title='yaxis2 title',
-        titlefont=Font(
-            color='rgb(148, 103, 189)'
-        ),
+        titlefont={'color': 'rgb(148, 103, 189)'},
         tickfont=Font(
             color='rgb(148, 103, 189)'
         ),

@@ -7,9 +7,9 @@ data <- list(
     x = c(1, 2, 3, 4), 
     y = c(2, 1, 3, 4), 
     error_y = list(
-      value = 15, 
       type = "percent", 
       symmetric = FALSE, 
+      value = 15, 
       valueminus = 25
     ), 
     type = "scatter"

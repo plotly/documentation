@@ -7,8 +7,8 @@ trace1 <- list(
   y = c(10, 11, 12, 13), 
   mode = "markers", 
   marker = list(
-    size = c(12, 22, 32, 42), 
     color = c("hsl(0,100,40)", "hsl(33,100,40)", "hsl(66,100,40)", "hsl(99,100,40)"), 
+    size = c(12, 22, 32, 42), 
     opacity = c(0.6, 0.7, 0.8, 0.9)
   ), 
   type = "scatter"
@@ -18,9 +18,9 @@ trace2 <- list(
   y = c(11, 12, 13, 14), 
   mode = "markers", 
   marker = list(
-    symbol = c("circle", "square", "diamond", "cross"), 
+    color = "rgb(31, 119, 180)", 
     size = 18, 
-    color = "rgb(31, 119, 180)"
+    symbol = c("circle", "square", "diamond", "cross")
   ), 
   type = "scatter"
 )
@@ -29,11 +29,11 @@ trace3 <- list(
   y = c(12, 13, 14, 15), 
   mode = "markers", 
   marker = list(
+    size = 18, 
     line = list(
       color = c("rgb(120,120,120)", "rgb(120,120,120)", "red", "rgb(120,120,120)"), 
       width = c(2, 2, 6, 2)
-    ), 
-    size = 18
+    )
   ), 
   type = "scatter"
 )

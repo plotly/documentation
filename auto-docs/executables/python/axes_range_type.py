@@ -13,14 +13,8 @@ trace2 = Scatter(
 )
 data = Data([trace1, trace2])
 layout = Layout(
-    xaxis=XAxis(
-        type='log',
-        autorange=True
-    ),
-    yaxis=YAxis(
-        type='log',
-        autorange=True
-    )
+    xaxis={'type': 'log', 'autorange': True},
+    yaxis={'type': 'log', 'autorange': True}
 )
 fig = Figure(data=data, layout=layout)
 

@@ -32,20 +32,20 @@ trace4 <- list(
 data <- list(trace1, trace2, trace3, trace4)
 layout <- list(
   title = "multiple y-axes example", 
+  width = 800, 
   xaxis = list(domain = c(0.3, 0.7)), 
   yaxis = list(
-    title = "yaxis title", 
+    tickfont = list(color = "#1f77b4"), 
     titlefont = list(color = "#1f77b4"), 
-    tickfont = list(color = "#1f77b4")
+    title = "yaxis title"
   ), 
-  width = 800, 
   yaxis2 = list(
     title = "yaxis2 title", 
     titlefont = list(color = "#ff7f0e"), 
     tickfont = list(color = "#ff7f0e"), 
-    position = 0.15, 
     anchor = "free", 
     side = "left", 
+    position = 0.15, 
     overlaying = "y"
   ), 
   yaxis3 = list(
@@ -60,9 +60,9 @@ layout <- list(
     title = "yaxis5 title", 
     titlefont = list(color = "#9467bd"), 
     tickfont = list(color = "#9467bd"), 
-    position = 0.85, 
     anchor = "free", 
     side = "right", 
+    position = 0.85, 
     overlaying = "y"
   )
 )

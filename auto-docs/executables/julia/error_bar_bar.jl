@@ -8,8 +8,8 @@ trace1 = [
   "y" => [3, 6, 4], 
   "name" => "Control", 
   "error_y" => [
-    "array" => [1, 0.5, 1.5], 
     "type" => "data", 
+    "array" => [1, 0.5, 1.5], 
     "visible" => true
   ], 
   "type" => "bar"
@@ -19,8 +19,8 @@ trace2 = [
   "y" => [4, 7, 3], 
   "name" => "Experimental", 
   "error_y" => [
-    "array" => [0.5, 1, 2], 
     "type" => "data", 
+    "array" => [0.5, 1, 2], 
     "visible" => true
   ], 
   "type" => "bar"

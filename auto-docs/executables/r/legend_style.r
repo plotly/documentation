@@ -16,16 +16,16 @@ data <- list(trace1, trace2)
 layout <- list(legend = list(
     x = 0, 
     y = 1, 
-    bgcolor = "#E2E2E2", 
-    bordercolor = "#FFFFFF", 
-    borderwidth = 2, 
+    traceorder = "normal", 
     font = list(
       family = "sans-serif", 
       size = 12, 
       color = "#000"
     ), 
-    showlegend = TRUE, 
-    traceorder = "normal"
+    bgcolor = "#E2E2E2", 
+    bordercolor = "#FFFFFF", 
+    borderwidth = 2, 
+    showlegend = TRUE
   ))
 
 response <- p$plotly(data, kwargs=list(layout=layout, filename="legend-style", fileopt="overwrite", auto_open="FALSE"))

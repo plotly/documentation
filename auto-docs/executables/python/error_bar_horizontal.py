@@ -8,8 +8,8 @@ data = Data([
         x=[1, 2, 3, 4],
         y=[2, 1, 3, 4],
         error_x=ErrorX(
-            value=10,
-            type='percent'
+            type='percent',
+            value=10
         )
     )
 ])

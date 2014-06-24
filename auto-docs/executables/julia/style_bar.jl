@@ -21,19 +21,19 @@ data = [trace1, trace2]
 layout = [
   "title" => "US Export of Plastic Scrap", 
   "xaxis" => ["tickfont" => [
-      "size" => 14, 
-      "color" => "rgb(107, 107, 107)"
+      "color" => "rgb(107, 107, 107)", 
+      "size" => 14
     ]], 
   "yaxis" => [
-    "title" => "USD (millions)", 
-    "titlefont" => [
-      "size" => 16, 
-      "color" => "rgb(107, 107, 107)"
-    ], 
     "tickfont" => [
-      "size" => 14, 
-      "color" => "rgb(107, 107, 107)"
-    ]
+      "color" => "rgb(107, 107, 107)", 
+      "size" => 14
+    ], 
+    "titlefont" => [
+      "color" => "rgb(107, 107, 107)", 
+      "size" => 16
+    ], 
+    "title" => "USD (millions)"
   ], 
   "legend" => [
     "x" => 0, 

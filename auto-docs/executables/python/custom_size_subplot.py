@@ -15,9 +15,7 @@ trace2 = Scatter(
 )
 data = Data([trace1, trace2])
 layout = Layout(
-    xaxis=XAxis(
-        domain=[0, 0.7]
-    ),
+    xaxis={'domain': [0, 0.7]},
     xaxis2=XAxis(
         domain=[0.8, 1]
     ),

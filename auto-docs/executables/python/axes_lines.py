@@ -13,30 +13,8 @@ trace2 = Scatter(
 )
 data = Data([trace1, trace2])
 layout = Layout(
-    xaxis=XAxis(
-        showline=True,
-        linecolor='#636363',
-        linewidth=6,
-        showgrid=True,
-        gridcolor='#bdbdbd',
-        gridwidth=2,
-        zeroline=True,
-        zerolinecolor='#969696',
-        zerolinewidth=4,
-        mirror='ticks'
-    ),
-    yaxis=YAxis(
-        showline=True,
-        linecolor='#636363',
-        linewidth=6,
-        showgrid=True,
-        gridcolor='#bdbdbd',
-        gridwidth=2,
-        zeroline=True,
-        zerolinecolor='#969696',
-        zerolinewidth=4,
-        mirror='ticks'
-    )
+    xaxis={'zerolinewidth': 4, 'gridwidth': 2, 'showgrid': True, 'zerolinecolor': '#969696', 'gridcolor': '#bdbdbd', 'linecolor': '#636363', 'mirror': 'ticks', 'zeroline': True, 'showline': True, 'linewidth': 6},
+    yaxis={'zerolinewidth': 4, 'gridwidth': 2, 'showgrid': True, 'zerolinecolor': '#969696', 'gridcolor': '#bdbdbd', 'linecolor': '#636363', 'mirror': 'ticks', 'zeroline': True, 'showline': True, 'linewidth': 6}
 )
 fig = Figure(data=data, layout=layout)
 

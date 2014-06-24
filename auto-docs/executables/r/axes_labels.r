@@ -15,38 +15,38 @@ trace2 <- list(
 data <- list(trace1, trace2)
 layout <- list(
   xaxis = list(
-    title = "AXIS TITLE", 
-    showticklabels = TRUE, 
-    tickangle = 45, 
-    exponentformat = "e", 
-    showexponent = "All", 
-    titlefont = list(
-      family = "Arial, sans-serif", 
-      size = 18, 
-      color = "lightgrey"
-    ), 
     tickfont = list(
+      color = "black", 
       family = "Old Standard TT, serif", 
-      size = 14, 
-      color = "black"
-    )
+      size = 14
+    ), 
+    showexponent = "All", 
+    showticklabels = TRUE, 
+    title = "AXIS TITLE", 
+    tickangle = 45, 
+    titlefont = list(
+      color = "lightgrey", 
+      family = "Arial, sans-serif", 
+      size = 18
+    ), 
+    exponentformat = "e"
   ), 
   yaxis = list(
-    title = "AXIS TITLE", 
-    showticklabels = TRUE, 
-    tickangle = 45, 
-    exponentformat = "e", 
-    showexponent = "All", 
-    titlefont = list(
-      family = "Arial, sans-serif", 
-      size = 18, 
-      color = "lightgrey"
-    ), 
     tickfont = list(
+      color = "black", 
       family = "Old Standard TT, serif", 
-      size = 14, 
-      color = "black"
-    )
+      size = 14
+    ), 
+    showexponent = "All", 
+    showticklabels = TRUE, 
+    title = "AXIS TITLE", 
+    tickangle = 45, 
+    titlefont = list(
+      color = "lightgrey", 
+      family = "Arial, sans-serif", 
+      size = 18
+    ), 
+    exponentformat = "e"
   )
 )
 

@@ -17,8 +17,8 @@ trace2 <- list(
 data <- list(trace1, trace2)
 layout <- list(
   xaxis = list(type = "category"), 
-  categories = c("giraffes", "orangutans", "monkeys"), 
-  barmode = "stack"
+  barmode = "stack", 
+  categories = c("giraffes", "orangutans", "monkeys")
 )
 
 response <- p$plotly(data, kwargs=list(layout=layout, filename="stacked-bar", fileopt="overwrite", auto_open="FALSE"))

@@ -7,8 +7,8 @@ data <- list(
     x = c(0, 1, 2), 
     y = c(6, 10, 2), 
     error_y = list(
-      value = 50, 
       type = "percent", 
+      value = 50, 
       visible = TRUE
     ), 
     type = "scatter"

@@ -7,8 +7,8 @@ data <- list(
     x = c(0, 1, 2), 
     y = c(6, 10, 2), 
     error_y = list(
-      array = c(1, 2, 3), 
       type = "data", 
+      array = c(1, 2, 3), 
       visible = TRUE
     ), 
     type = "scatter"

@@ -27,12 +27,8 @@ trace4 = Scatter(
 )
 data = Data([trace1, trace2, trace3, trace4])
 layout = Layout(
-    xaxis=XAxis(
-        domain=[0, 0.45]
-    ),
-    yaxis=YAxis(
-        domain=[0, 0.45]
-    ),
+    xaxis={'domain': [0, 0.45]},
+    yaxis={'domain': [0, 0.45]},
     xaxis2=XAxis(
         domain=[0.55, 1]
     ),

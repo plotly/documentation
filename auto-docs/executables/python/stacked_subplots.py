@@ -21,9 +21,7 @@ trace3 = Scatter(
 )
 data = Data([trace1, trace2, trace3])
 layout = Layout(
-    yaxis=YAxis(
-        domain=[0, 0.266]
-    ),
+    yaxis={'domain': [0, 0.266]},
     legend=Legend(
         traceorder='reversed'
     ),

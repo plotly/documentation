@@ -27,13 +27,10 @@ trace3 = [
   "type" => "box"
 ]
 data = [trace1, trace2, trace3]
-layout = [
-  "yaxis" => [
-    "title" => "normalized moisture", 
-    "zeroline" => false
-  ], 
-  "boxmode" => "group"
-]
+layout = ["yaxis" => [
+    "zeroline" => false, 
+    "title" => "normalized moisture"
+  ]]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "box-grouped", "fileopt" => "overwrite", "auto_open" => "false"])
 plot_url = response["url"]

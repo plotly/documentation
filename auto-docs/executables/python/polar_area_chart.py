@@ -38,18 +38,18 @@ trace4 = Area(
 data = Data([trace1, trace2, trace3, trace4])
 layout = Layout(
     title='Wind Speed Distribution in Laurel, NE',
+    font=Font(
+        size=16
+    ),
     legend=Legend(
         font=Font(
             size=16
         )
     ),
-    font=Font(
-        size=16
-    ),
-    orientation=270,
     radialaxis=RadialAxis(
         ticksuffix='%'
-    )
+    ),
+    orientation=270
 )
 fig = Figure(data=data, layout=layout)
 

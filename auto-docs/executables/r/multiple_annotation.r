@@ -19,24 +19,24 @@ layout <- list(
     list(
       x = 2, 
       y = 5, 
-      text = "Annotation Text", 
       xref = "x", 
       yref = "y", 
+      text = "Annotation Text", 
       showarrow = TRUE, 
       arrowhead = 7, 
-      ay = -40, 
-      ax = 0
+      ax = 0, 
+      ay = -40
     ), 
     list(
       x = 4, 
       y = 4, 
-      text = "Annotation Text 2", 
       xref = "x", 
       yref = "y", 
+      text = "Annotation Text 2", 
       showarrow = TRUE, 
       arrowhead = 7, 
-      ay = -40, 
-      ax = 0
+      ax = 0, 
+      ay = -40
     )
   )
 )

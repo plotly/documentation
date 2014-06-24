@@ -8,8 +8,8 @@ trace1 = Bar(
     y=[3, 6, 4],
     name='Control',
     error_y=ErrorY(
-        array=[1, 0.5, 1.5],
         type='data',
+        array=[1, 0.5, 1.5],
         visible=True
     )
 )
@@ -18,8 +18,8 @@ trace2 = Bar(
     y=[4, 7, 3],
     name='Experimental',
     error_y=ErrorY(
-        array=[0.5, 1, 2],
         type='data',
+        array=[0.5, 1, 2],
         visible=True
     )
 )

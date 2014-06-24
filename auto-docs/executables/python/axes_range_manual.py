@@ -13,12 +13,8 @@ trace2 = Scatter(
 )
 data = Data([trace1, trace2])
 layout = Layout(
-    xaxis=XAxis(
-        range=[2, 5]
-    ),
-    yaxis=YAxis(
-        range=[2, 5]
-    )
+    xaxis={'range': [2, 5]},
+    yaxis={'range': [2, 5]}
 )
 fig = Figure(data=data, layout=layout)
 

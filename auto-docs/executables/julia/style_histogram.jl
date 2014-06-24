@@ -7,35 +7,35 @@ x0 = randn(500)
 x1 = randn(500)+1
 trace1 = [
   "x" => x0, 
+  "histnorm" => "count", 
   "name" => "control", 
-  "marker" => [
-    "line" => [
-      "color" => "grey", 
-      "width" => 0
-    ], 
-    "color" => "fuchsia", 
-    "opacity" => 0.75
-  ], 
   "autobinx" => false, 
   "xbins" => [
     "start" => -3.2, 
     "end" => 2.8, 
     "size" => 0.2
   ], 
-  "histnorm" => "count", 
+  "marker" => [
+    "color" => "fuchsia", 
+    "line" => [
+      "color" => "grey", 
+      "width" => 0
+    ], 
+    "opacity" => 0.75
+  ], 
   "type" => "histogram"
 ]
 trace2 = [
   "x" => x1, 
   "name" => "experimental", 
-  "marker" => ["color" => "rgb(255, 217, 102)"], 
-  "opacity" => 0.75, 
   "autobinx" => false, 
   "xbins" => [
     "start" => -1.8, 
     "end" => 4.2, 
     "size" => 0.2
   ], 
+  "marker" => ["color" => "rgb(255, 217, 102)"], 
+  "opacity" => 0.75, 
   "type" => "histogram"
 ]
 data = [trace1, trace2]

@@ -105,6 +105,8 @@ imports = dict(
     python="import plotly.plotly as py\nfrom plotly.graph_objs import *",
     matlab="",
     r="library(plotly)",
+    ggplot2="",
+    matplotlib="",
     julia="using Plotly",
     nodejs=""
 )

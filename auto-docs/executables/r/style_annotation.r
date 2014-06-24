@@ -19,27 +19,27 @@ layout <- list(
     list(
       x = 2, 
       y = 5, 
-      text = "max=5", 
-      bordercolor = "#c7c7c7", 
-      borderwidth = 2, 
-      borderpad = 4, 
-      bgcolor = "#ff7f0e", 
       xref = "x", 
       yref = "y", 
-      showarrow = TRUE, 
-      arrowwidth = 2, 
-      arrowcolor = "#636363", 
-      arrowhead = 2, 
-      arrowsize = 1, 
+      text = "max=5", 
       font = list(
         family = "Courier New, monospace", 
         size = 16, 
         color = "#ffffff"
       ), 
-      opacity = 0.8, 
       align = "center", 
+      showarrow = TRUE, 
+      arrowhead = 2, 
+      arrowsize = 1, 
+      arrowwidth = 2, 
+      arrowcolor = "#636363", 
+      ax = 20, 
       ay = -30, 
-      ax = 20
+      bordercolor = "#c7c7c7", 
+      borderwidth = 2, 
+      borderpad = 4, 
+      bgcolor = "#ff7f0e", 
+      opacity = 0.8
     )
   )
 )

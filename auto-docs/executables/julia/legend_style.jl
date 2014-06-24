@@ -17,16 +17,16 @@ data = [trace1, trace2]
 layout = ["legend" => [
     "x" => 0, 
     "y" => 1, 
-    "bgcolor" => "#E2E2E2", 
-    "bordercolor" => "#FFFFFF", 
-    "borderwidth" => 2, 
+    "traceorder" => "normal", 
     "font" => [
       "family" => "sans-serif", 
       "size" => 12, 
       "color" => "#000"
     ], 
-    "showlegend" => true, 
-    "traceorder" => "normal"
+    "bgcolor" => "#E2E2E2", 
+    "bordercolor" => "#FFFFFF", 
+    "borderwidth" => 2, 
+    "showlegend" => true
   ]]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "legend-style", "fileopt" => "overwrite", "auto_open" => "false"])

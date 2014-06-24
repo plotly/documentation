@@ -26,13 +26,10 @@ trace3 <- list(
   type = "box"
 )
 data <- list(trace1, trace2, trace3)
-layout <- list(
-  yaxis = list(
-    title = "normalized moisture", 
-    zeroline = FALSE
-  ), 
-  boxmode = "group"
-)
+layout <- list(yaxis = list(
+    zeroline = FALSE, 
+    title = "normalized moisture"
+  ))
 
 response <- p$plotly(data, kwargs=list(layout=layout, filename="box-grouped", fileopt="overwrite", auto_open="FALSE"))
 url <- response$url

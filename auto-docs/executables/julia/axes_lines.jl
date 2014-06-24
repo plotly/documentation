@@ -16,28 +16,28 @@ trace2 = [
 data = [trace1, trace2]
 layout = [
   "xaxis" => [
-    "showline" => true, 
-    "linecolor" => "#636363", 
-    "linewidth" => 6, 
-    "showgrid" => true, 
-    "gridcolor" => "#bdbdbd", 
-    "gridwidth" => 2, 
-    "zeroline" => true, 
-    "zerolinecolor" => "#969696", 
     "zerolinewidth" => 4, 
-    "mirror" => "ticks"
+    "gridwidth" => 2, 
+    "showgrid" => true, 
+    "zerolinecolor" => "#969696", 
+    "gridcolor" => "#bdbdbd", 
+    "linecolor" => "#636363", 
+    "mirror" => "ticks", 
+    "zeroline" => true, 
+    "showline" => true, 
+    "linewidth" => 6
   ], 
   "yaxis" => [
-    "showline" => true, 
-    "linecolor" => "#636363", 
-    "linewidth" => 6, 
-    "showgrid" => true, 
-    "gridcolor" => "#bdbdbd", 
-    "gridwidth" => 2, 
-    "zeroline" => true, 
-    "zerolinecolor" => "#969696", 
     "zerolinewidth" => 4, 
-    "mirror" => "ticks"
+    "gridwidth" => 2, 
+    "showgrid" => true, 
+    "zerolinecolor" => "#969696", 
+    "gridcolor" => "#bdbdbd", 
+    "linecolor" => "#636363", 
+    "mirror" => "ticks", 
+    "zeroline" => true, 
+    "showline" => true, 
+    "linewidth" => 6
   ]
 ]
 

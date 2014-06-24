@@ -20,27 +20,27 @@ trace1 <- list(
 trace2 <- list(
   x = x, 
   y = y, 
-  name = "measured", 
   mode = "markers", 
-  marker = list(
-    size = 8, 
-    color = "#85144B"
-  ), 
+  name = "measured", 
   error_y = list(
-    value = 0.1, 
     type = "constant", 
+    value = 0.1, 
     color = "#85144B", 
-    opacity = 1, 
     thickness = 1.5, 
-    width = 3
+    width = 3, 
+    opacity = 1
   ), 
   error_x = list(
-    value = 0.2, 
     type = "constant", 
+    value = 0.2, 
     color = "#85144B", 
-    opacity = 1, 
     thickness = 1.5, 
-    width = 3
+    width = 3, 
+    opacity = 1
+  ), 
+  marker = list(
+    color = "#85144B", 
+    size = 8
   ), 
   type = "scatter"
 )

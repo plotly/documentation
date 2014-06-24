@@ -10,15 +10,9 @@ data = Data([
     )
 ])
 layout = Layout(
-    xaxis=XAxis(
-        autorange=True,
-        rangemode='tozero'
-    ),
-    yaxis=YAxis(
-        autorange=True,
-        rangemode='nonnegative'
-    ),
-    showlegend=False
+    showlegend=False,
+    xaxis={'autorange': True, 'rangemode': 'tozero'},
+    yaxis={'autorange': True, 'rangemode': 'nonnegative'}
 )
 fig = Figure(data=data, layout=layout)
 

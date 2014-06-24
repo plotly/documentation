@@ -11,9 +11,9 @@ data = [
   ]
 ]
 layout = [
+  "autosize" => false, 
   "width" => 500, 
   "height" => 500, 
-  "autosize" => false, 
   "margin" => [
     "l" => 50, 
     "r" => 50, 

@@ -10,9 +10,9 @@ data <- list(
   )
 )
 layout <- list(
+  autosize = FALSE, 
   width = 500, 
   height = 500, 
-  autosize = FALSE, 
   margin = list(
     l = 50, 
     r = 50, 

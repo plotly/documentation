@@ -14,11 +14,11 @@ trace2 <- list(
 )
 data <- list(trace1, trace2)
 layout <- list(
+  showlegend = TRUE, 
   legend = list(
     x = 1, 
     y = 1
-  ), 
-  showlegend = TRUE
+  )
 )
 
 response <- p$plotly(data, kwargs=list(layout=layout, filename="legend-inside", fileopt="overwrite", auto_open="FALSE"))

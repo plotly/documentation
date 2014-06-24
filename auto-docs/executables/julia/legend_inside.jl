@@ -15,11 +15,11 @@ trace2 = [
 ]
 data = [trace1, trace2]
 layout = [
+  "showlegend" => true, 
   "legend" => [
     "x" => 1, 
     "y" => 1
-  ], 
-  "showlegend" => true
+  ]
 ]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "legend-inside", "fileopt" => "overwrite", "auto_open" => "false"])

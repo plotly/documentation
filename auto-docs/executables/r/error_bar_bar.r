@@ -7,8 +7,8 @@ trace1 <- list(
   y = c(3, 6, 4), 
   name = "Control", 
   error_y = list(
-    array = c(1, 0.5, 1.5), 
     type = "data", 
+    array = c(1, 0.5, 1.5), 
     visible = TRUE
   ), 
   type = "bar"
@@ -18,8 +18,8 @@ trace2 <- list(
   y = c(4, 7, 3), 
   name = "Experimental", 
   error_y = list(
-    array = c(0.5, 1, 2), 
     type = "data", 
+    array = c(0.5, 1, 2), 
     visible = TRUE
   ), 
   type = "bar"

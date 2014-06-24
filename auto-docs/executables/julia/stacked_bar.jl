@@ -18,8 +18,8 @@ trace2 = [
 data = [trace1, trace2]
 layout = [
   "xaxis" => ["type" => "category"], 
-  "categories" => ["giraffes", "orangutans", "monkeys"], 
-  "barmode" => "stack"
+  "barmode" => "stack", 
+  "categories" => ["giraffes", "orangutans", "monkeys"]
 ]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "stacked-bar", "fileopt" => "overwrite", "auto_open" => "false"])

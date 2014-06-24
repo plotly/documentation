@@ -10,9 +10,9 @@ data = Data([
     )
 ])
 layout = Layout(
+    autosize=False,
     width=500,
     height=500,
-    autosize=False,
     margin=Margin(
         l=50,
         r=50,

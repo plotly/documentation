@@ -10,6 +10,7 @@ data <- list(
   )
 )
 layout <- list(
+  showlegend = FALSE, 
   xaxis = list(
     autorange = TRUE, 
     rangemode = "tozero"
@@ -17,8 +18,7 @@ layout <- list(
   yaxis = list(
     autorange = TRUE, 
     rangemode = "nonnegative"
-  ), 
-  showlegend = FALSE
+  )
 )
 
 response <- p$plotly(data, kwargs=list(layout=layout, filename="axes-range-mode", fileopt="overwrite", auto_open="FALSE"))

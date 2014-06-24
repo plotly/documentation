@@ -20,13 +20,13 @@ layout = [
     [
       "x" => 2, 
       "y" => 5, 
-      "text" => "Annotation Text", 
       "xref" => "x", 
       "yref" => "y", 
+      "text" => "Annotation Text", 
       "showarrow" => true, 
       "arrowhead" => 7, 
-      "ay" => -40, 
-      "ax" => 0
+      "ax" => 0, 
+      "ay" => -40
     ]
   ]
 ]

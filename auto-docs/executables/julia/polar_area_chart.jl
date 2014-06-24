@@ -34,10 +34,10 @@ trace4 = [
 data = [trace1, trace2, trace3, trace4]
 layout = [
   "title" => "Wind Speed Distribution in Laurel, NE", 
-  "legend" => ["font" => ["size" => 16]], 
   "font" => ["size" => 16], 
-  "orientation" => 270, 
-  "radialaxis" => ["ticksuffix" => "%"]
+  "legend" => ["font" => ["size" => 16]], 
+  "radialaxis" => ["ticksuffix" => "%"], 
+  "orientation" => 270
 ]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "polar-area-chart", "fileopt" => "overwrite", "auto_open" => "false"])
