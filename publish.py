@@ -384,12 +384,11 @@ def save_report(report, command):
         string += "details..."
     else:
         print "\tyou're a super example-maker! you deserve a bagel!"
-    if command == 'test':
-        with open('test-publish-report.txt', 'w') as f:
-            f.write(string)
-    elif command == 'publish':
-        with open('publish-report.txt', 'w') as f:
-            f.write(string)
+    report_file = os.path.join(dirs['reports'], '{}-report.txt'.format(command))
+    if not os.path.exists(dirs['reports']):
+        os.makedirs(dirs['reports'])
+    with open(report_file, 'w') as f:
+        f.write(string)
 
 
 def save_tree(tree):
