@@ -1,65 +1,20 @@
 import requests, json, os, sys, time, cgi
 import plotly.plotly as py
-import plotly.exceptions
 from plotly.graph_objs import *  # for exec statements
+import plotly.exceptions
 from exceptions import OSError
 from requests.exceptions import RequestException
 
 total_examples = 0
 example_count = 0
-ids = {}
-processed_ids = set()
 
-### auto-generated file stuff ###
-pre_book_file = 'pre-book.json'
+# holds special references to 'files' like 'pre-book' shared with publish.py
+with open("files.json") as files_file:
+    files = json.load(files_file)
 
-### hard-coded file stuff ###
-hard_coded_dir = 'hard-coded'
-config_file = 'config.json'
-model_file = 'model.json'
-url_file = 'url.json'
-image_file = 'image.png'
-code_file = 'code.txt'
-
-### keys that are OK to go into final pre_book save ###
-leaf_keys = ["config", "is_leaf", "image", "id", "url", "path", "exception",
-             "complete", "private", "prepend", "append"]
-branch_keys = ["config", "is_leaf", "id", "path", "subsections",
-               "has_thumbnail"]
-
-### define config_requirements ###
-requirements = dict(
-    subsection=dict(
-        name=basestring,
-        has_thumbnail=bool
-    ),
-    example=dict(
-        name=basestring,
-        languages=list
-    )
-)
-
-### define allowable config entries ###
-
-allowable = dict(
-    subsection={
-        'name': basestring,
-        'has_thumbnail': bool,
-        'relative_url': basestring,
-        'description': basestring,
-        'order': list
-    },
-    example={
-        'name': basestring,
-        'languages': list,
-        'description': basestring,
-        'tags': list,
-        'prepend': basestring,
-        'append': basestring,
-        'init': bool,
-        'plot-options': dict
-    }
-)
+# holds special references to 'directories' shared with publish.py
+with open("dirs.json") as dirs_file:
+    dirs = json.load(dirs_file)
 
 ### sign in stuff: each user has a 'un' and 'ak' ###
 ## users ##
@@ -67,19 +22,80 @@ allowable = dict(
 with open('users.json') as users_file:
     users = json.load(users_file)
 
-with open('dirs.json') as dirs_file:
-    dirs = json.load(dirs_file)
-
 py.sign_in(users['tester']['un'], users['tester']['ak'])
 
+### keys that are OK to go into final pre_book save ###
+tree_keys = dict(
+    all=[
+        "config",
+        "is_leaf",
+        "id",
+        "path"
+    ],
+    leaf=[
+        "type",
+        "image",
+        "url",
+        "exception",
+        "complete",  # todo: remove?
+        "private",
+        "prepend",
+        "append"
+    ],
+    branch=[
+        "branches"
+    ]
+)
+
+### define config_requirements ###
+requirements = dict(
+    branch=dict(
+        name=basestring,
+        has_thumbnail=bool
+    ),
+    leaf=dict(
+        name=basestring,
+        languages=list
+    )
+)
+
+### define allowable config entries ###
+allowable = dict(
+    branch={
+        'name': basestring,
+        'has_thumbnail': bool,
+        'relative_url': basestring,
+        'description': basestring,
+        'order': list
+    },
+    leaf={
+        'name': basestring,
+        'languages': list,
+        'description': basestring,
+        'tags': list,
+        'prepend': basestring,
+        'append': basestring,
+        'init': bool,
+        'plot-options': dict,
+        'exempt': bool,
+        'links': list
+    }
+)
+
 ### server stuff ###
-translator_server = "https://plot.ly/translate_figure/"
+translator_server = "https://plot.ly/translate_figure/"  # todo: put elsewhere.
 
 ### style stuff ###
-lines_between_sections = 2
+lines_between_sections = 2  # todo: delete?
 
 ### define commands to run with, can be combined with '+' (e.g., code+urls) ###
-commands = ['code', 'urls', 'clean']
+commands = dict(
+    process=['all', 'new', 'example_id'],
+    obliterate=[dirs['run'], dirs['exceptions'], files['tree'], dirs['test'],
+                dirs['publish'], files['tree'], 'all'],  # todo, more?
+    clear=['example_id'],
+    meta=['example_id', 'all']
+)
 
 ### define supported languages ###
 languages = ['python', 'julia', 'matlab', 'r', 'nodejs', 'ggplot2', 'matplotlib']
@@ -194,117 +210,154 @@ sign_in = {
 }
 
 
-def get_command_list():
+def get_command():
     try:
-        arg1 = sys.argv[1]
-        command_list = arg1.split('+')
-        for command in command_list:
-            if command not in commands:
-                raise Exception()
-    except:
-        command_list = None
-    if not command_list:
-        print "usage:\n"\
-              "python run.py command examplename\n"\
-              "python run.py command\n",\
-              "python run.py command1+command2+command3 examplename\n"\
-              "python run.py command1+command2+command3\n"
-        print 'commands:', commands
+        command = sys.argv[1]
+    except IndexError:
+        command = None
+    if command not in commands:
+        print ("usage:\n"
+               "python run.py command option\n"
+               "python run.py command option_1 option_2 ... option_n\n")
+        print 'commands:'
+        for command in commands:
+            print '\t', command, "options: {}".format(commands[command])
         sys.exit(0)
     else:
-        return command_list
+        return command
 
 
-def get_keepers():
-    keepers = []
+def get_options():
+    options = []
     while len(sys.argv) > 2:
-        keepers += [sys.argv.pop()]
-    return keepers
+        options += [sys.argv.pop()]
+    if not options:
+        print ("usage:\n"
+               "python run.py command option\n"
+               "python run.py command option_1 option_2 ... option_n\n")
+        print 'commands:'
+        for command in commands:
+            print '\t', command, "options: {}".format(commands[command])
+        sys.exit(0)
+    return options
 
 
-def clean():
-    """removes ENTIRE doc_dir directory, careful!"""
-    def clean_directory(directory):
-        for name in os.listdir(directory):
-            full_name = os.path.join(directory, name)
-            if os.path.isdir(full_name):
-                clean_directory(full_name)
-                os.rmdir(full_name)
-            else:
-                os.remove(full_name)
-    if os.path.exists(dirs['run']):
-        print "\ttotally deleting '{}'".format(dirs['run'])
-        clean_directory(dirs['run'])
-    if os.path.exists(pre_book_file):
-        print "\ttotally deleting '{}'".format(pre_book_file)
-        os.remove(pre_book_file)
+def obliterate(path):
+    """see ya!"""
+    if os.path.exists(path):
+        if os.path.isfile(path):
+            os.remove(path)
+        else:
+            for child in os.listdir(path):
+                obliterate(os.path.join(path, child))
+            os.rmdir(path)
 
 
-def load_previous_pre_book():
-    if os.path.exists(pre_book_file):
-        with open(pre_book_file) as f:
+def clear(section, options, previous_leaf_ids):
+    if section['is_leaf']:
+        if section['id'] in options:
+            previous_leaf_ids.discard(section['id'])
+            keys = section.keys()
+            for key in keys:
+                del section[key]
+    else:
+        keys = section['branches'].keys()
+        for key in keys:
+            clear(section[key], options, previous_leaf_ids)
+            if not section[key]:
+                del section[key]
+
+
+
+# def clean():
+#     """removes ENTIRE doc_dir directory, careful!"""
+#     def clean_directory(directory):
+#         for name in os.listdir(directory):
+#             full_name = os.path.join(directory, name)
+#             if os.path.isdir(full_name):
+#                 clean_directory(full_name)
+#                 os.rmdir(full_name)
+#             else:
+#                 os.remove(full_name)
+#     if os.path.exists(dirs['run']):
+#         print "\ttotally deleting '{}'".format(dirs['run'])
+#         clean_directory(dirs['run'])
+#     if os.path.exists(files['tree']):
+#         print "\ttotally deleting '{}'".format(files['tree'])
+#         os.remove(files['tree'])
+
+
+def load_previous_tree():
+    if os.path.exists(files['tree']):
+        with open(files['tree']) as f:
             return json.load(f)
     else:
         return {}
 
 
-def write_pre_book(section_dir, keepers, previous_pre_book):
+def load_previous_leaf_ids():
+    if os.path.exists(files['ids']):
+        with open(files['ids']) as f:
+            return set(json.load(f))
+    else:
+        return set()
+
+
+
+def grow_tree(section_dir, options, previous_leaf_ids, leaf_ids):
     """
     1. for each directory, if there are sub-directories: recurse
-    2. if no sub-directories, and name in keepers, keep!
+    2. if no sub-directories, and name in options, keep!
     """
     section_dict = dict()
-    subsections = [child for child in os.listdir(section_dir)
-                   if os.path.isdir(os.path.join(section_dir, child))]
-    files = [child for child in os.listdir(section_dir)
-             if not os.path.isdir(os.path.join(section_dir, child))
-             and child != config_file
-             and child != '.DS_Store']
-    if subsections and files:
-        raise Exception("found a directory that has BOTH subsections AND "
+    branches = [child for child in os.listdir(section_dir)
+                if os.path.isdir(os.path.join(section_dir, child))]
+    leaf_files = {child: os.path.join(section_dir, child) for child in os.listdir(section_dir)
+                  if not os.path.isdir(os.path.join(section_dir, child))
+                  and child != files['config']
+                  and child[0] != '.'}
+    if branches and leaf_files:
+        raise Exception("found a directory that has BOTH folders AND "
                         "files in '{}'."
-                        "\n\tsubsections: {}"
+                        "\n\tfolders: {}"
                         "\n\tfiles: {}"
-                        "".format(section_dir, subsections, files))
-    elif subsections:
-        subsections_dict = dict()
-        for subsection_name in subsections:
-            subsection_dir = os.path.join(section_dir, subsection_name)
-            subsection_dict = write_pre_book(
-                subsection_dir, keepers, previous_pre_book)
-            if subsection_dict:
-                subsections_dict[subsection_name] = subsection_dict
-        if subsections_dict:
-            section_dict['subsections'] = subsections_dict
+                        "".format(section_dir, branches, leaf_files))
+    elif branches:
+        branches_dict = dict()
+        for branch_name in branches:
+            branch_dir = os.path.join(section_dir, branch_name)
+            branch_dict = grow_tree(
+                branch_dir, options, previous_leaf_ids, leaf_ids)
+            if branch_dict:
+                branches_dict[branch_name] = branch_dict
+        if branches_dict:
+            section_dict['branches'] = branches_dict
             section_dict['is_leaf'] = False
-    elif files:
-        id = section_dir.split(os.path.sep)[-1]
-        if id in ids:
+    elif leaf_files:
+        leaf_id = section_dir.split(os.path.sep)[-1]
+        if leaf_id in leaf_ids:
             raise Exception(
                 "identical ids found in '{}' and '{}'. Example folders must "
-                "have unique names.".format(ids[id], section_dir)
+                "have unique names.".format(leaf_ids[leaf_id], section_dir)
             )
         else:
-            ids[id] = section_dir
-        if keepers:
-            names = section_dir.split(os.path.sep)
-            keep = any([True for keeper in keepers if keeper in names])
-            if 'new' in keepers:
-                if 'processed_ids' not in previous_pre_book:
-                    keep = True
-                elif id not in previous_pre_book['processed_ids']:
-                    keep = True
+            leaf_ids[leaf_id] = section_dir
+        names = section_dir.split(os.path.sep)
+        if 'all' in options:
+            process_leaf = True
+        elif bool([option for option in options if option in names]):
+            process_leaf = True
+        elif 'new' in options and leaf_id not in previous_leaf_ids:
+            process_leaf = True
         else:
-            keep = True
-        if keep:
-            section_dict['files'] = {f: os.path.join(section_dir, f)
-                                     for f in os.listdir(section_dir)
-                                     if f != config_file}
+            process_leaf = False
+        if process_leaf:
             section_dict['is_leaf'] = True
+            section_dict['files'] = leaf_files
             global total_examples
             total_examples += 1
-    if 'files' in section_dict or 'subsections' in section_dict:
-        config_path = os.path.join(section_dir, config_file)
+    if 'files' in section_dict or 'branches' in section_dict:
+        config_path = os.path.join(section_dir, files['config'])
         config = validate_and_get_config(config_path, section_dict['is_leaf'])
         section_dict['config'] = config
         section_dict['path'] = section_dir
@@ -318,11 +371,13 @@ def validate_and_get_config(config_path, is_leaf):
             config = json.load(f)
     except ValueError:
         raise ValueError("invalid json in '{}'".format(config_path))
+    except IOError:
+        raise IOError("no config.json found at '{}'".format(config_path))
     if is_leaf:
-        section_type = 'example'
+        switch = 'leaf'
     else:
-        section_type = 'subsection'
-    for key, val in requirements[section_type].items():
+        switch = 'branch'
+    for key, val in requirements[switch].items():
         if key not in config:
             raise KeyError(
                 "missing key '{}' in config at location '{}'"
@@ -331,100 +386,100 @@ def validate_and_get_config(config_path, is_leaf):
             raise ValueError(
                 "wrong value type for key '{}' in config at location '{}'"
                 "".format(key, config_path))
-    for key, val in allowable[section_type].items():
+    for key, val in allowable[switch].items():
         if key in config:
             if not isinstance(config[key], val):
                 raise ValueError(
                     "wrong value type for key '{}' in config at location '{}'"
                     "".format(key, config_path))
     for key in config:
-        if key not in allowable[section_type]:
+        if key not in allowable[switch]:
             raise KeyError(
                 "invalid key '{}' in config at location '{}'"
                 "".format(key, config_path))
     return config
 
 
-def validate_example_structure(section):
-    if 'subsections' in section:
-        for subsection in section['subsections'].values():
-            validate_example_structure(subsection)
+def validate_leaf_structure(section):
+    if 'branches' in section:
+        for branch in section['branches'].values():
+            validate_leaf_structure(branch)
     elif 'files' in section:
         scripts = [filename for filename in section['files']
                    if filename.split('.')[0] == 'script']
         if len(scripts) > 1:
             raise Exception("more than one script.ext found in '{}'"
                             "".format(section['path']))
-        elif scripts and model_file in section:
+        elif scripts and files['model'] in section:
             raise Exception("script.ext file and model.json found in '{}'"
                             "".format(section['path']))
-        elif scripts and url_file in section:
+        elif scripts and files['url'] in section:
             raise Exception("script.ext file and url.json found in '{}'"
                             "".format(section['path']))
-        elif model_file in section and url_file in section:
+        elif files['model'] in section and files['url'] in section:
             raise Exception("model.json and url.json found in '{}'"
                             "".format(section['path']))
 
 
-def process_pre_book(section, command_list):
+def process_tree(section, processed_ids):
     if section['is_leaf']:
-        global example_count, processed_ids
+        global example_count
         example_count += 1
         print("\t{} of {}".format(example_count, total_examples)),
         try:
-            if model_file in section['files']:
-                process_model_example(section, command_list)
+            if files['model'] in section['files']:
+                process_model_leaf(section)
             elif any(['script' in filename for filename in section['files']]):
-                process_script_example(section, command_list)
-            elif url_file in section['files']:
-                process_url_example(section, command_list)
+                process_script_leaf(section)
+            elif files['url'] in section['files']:
+                process_url_leaf(section)
+            # todo: add exempt. just copies over config...
             else:
-                print("\t\texample '{}' cannot be processed"
+                print("\t\tleaf '{}' cannot be processed"
                       "".format(section))
         except plotly.exceptions.PlotlyError as err:
             print "\t\t" + "\n\t\t\t".join(err.message.splitlines())
-            section['complete'] = False
+            # section['complete'] = False
         else:
             processed_ids.add(section['id'])
-            mark_completeness(section)
+            # mark_completeness(section)
     else:
-        for subsection in section['subsections'].values():
-            process_pre_book(subsection, command_list)
+        for branch in section['branches'].values():
+            process_tree(branch, processed_ids)
 
 
-def process_model_example(example, command_list):
+def process_model_leaf(leaf):
     """
     1. load model.json file
     2. for each language with 'model' as the *source*...
     3. translate model to language with translator
-    4. if save image: save image
-    5. if save code: save code
-    6. if save url: save url
+    4. save code
+    5. save url
     """
-    print "\tprocessing {} in {}".format(model_file, example['path'])
-    example['type'] = 'model'
+    print "\tprocessing {} in {}".format(files['model'], leaf['path'])
+    leaf['type'] = 'model'
     try:
-        with open(example['files'][model_file]) as f:
+        with open(leaf['files'][files['model']]) as f:
             model = json.load(f)
     except KeyError:
         raise KeyError(
             "{} required and could not be found in {}"
-            "".format(model_file, example['path']))
+            "".format(files['model'], leaf['path']))
     except ValueError:
         raise ValueError(
             "{} required and could not be opened in {}"
-            "".format(model_file, example['path']))
-    if 'python' not in example['config']['languages']:
+            "".format(files['model'], leaf['path']))
+    if 'python' not in leaf['config']['languages']:
         code = ""
-        if 'init' in example['config'] and example['config']['init']:
+        if 'init' in leaf['config'] and leaf['config']['init']:
             init_file = "init.{}".format(lang_to_ext['python'])
-            if init_file in example['files']:
-                with open(example['files'][init_file]) as f:
+            if init_file in leaf['files']:
+                with open(leaf['files'][init_file]) as f:
                     code += f.read() + "\n"
             else:
                 raise plotly.exceptions.PlotlyError(
                     "couldn't find '{}' in '{}'"
-                    "".format(init_file, example['path'])
+                    "".format(init_file, leaf['path'])
                 )
         data = json.dumps({'json_figure': model,
                            'language': 'python',
@@ -442,19 +497,19 @@ def process_model_example(example, command_list):
         code = code.replace("<pre>", "").replace("</pre>", "")
         code = code.replace('">>>', "").replace('<<<"', "")
         code = code.replace("'>>>", "").replace("<<<'", "")
-        exec_string = format_code(code, 'python', example, model, 'execution')
-        example['python-exec'] = exec_string
-    for language in example['config']['languages']:
+        exec_string = format_code(code, 'python', leaf, model, 'execution')
+        leaf['python-exec'] = exec_string
+    for language in leaf['config']['languages']:
         code = ""
-        if 'init' in example['config'] and example['config']['init']:
+        if 'init' in leaf['config'] and leaf['config']['init']:
             init_file = "init.{}".format(lang_to_ext[language])
-            if init_file in example['files']:
-                with open(example['files'][init_file]) as f:
+            if init_file in leaf['files']:
+                with open(leaf['files'][init_file]) as f:
                     code += f.read() + "\n"
             else:
                 raise plotly.exceptions.PlotlyError(
                     "couldn't find '{}' in '{}'"
-                    "".format(init_file, example['path'])
+                    "".format(init_file, leaf['path'])
                 )
         data = json.dumps({'json_figure': model,
                            'language': language,
@@ -472,93 +527,85 @@ def process_model_example(example, command_list):
         code = code.replace("<pre>", "").replace("</pre>", "")
         code = code.replace('">>>', "").replace('<<<"', "")
         code = code.replace("'>>>", "").replace("<<<'", "")
-        exec_string = format_code(code, language, example, model, 'execution')
+        exec_string = format_code(code, language, leaf, model, 'execution')
         if language == 'python':
-            example['python-exec'] = exec_string
-        if 'code' in command_list:
-            code_string = format_code(code, language, example, model)
-            code_path = save_code(
-                code_string, example, language, 'documentation'
+            leaf['python-exec'] = exec_string
+        code_string = format_code(code, language, leaf, model)
+        code_path = save_code(code_string, leaf, language, 'documentation')
+        leaf[language] = code_path
+        save_code(exec_string, leaf, language, 'execution')
+    if 'python-exec' in leaf:
+        try:
+            exec_locals = exec_python_string(leaf['python-exec'])
+        except Exception as err:
+            raise plotly.exceptions.PlotlyError(
+                "exec of python string raised exception:"
+                "\n\'{}'"
+                "\nskipping...".format(err.message))
+        if 'plot_url' in exec_locals:
+            leaf['url'] = exec_locals['plot_url']
+        else:
+            raise plotly.exceptions.PlotlyError(
+                "\t\t'plot_url' not in exec_locals, skipping..."
             )
-            example[language] = code_path
-            save_code(exec_string, example, language, 'execution')
-    if 'urls' in command_list:
-        if 'python-exec' in example:
-            try:
-                exec_locals = exec_python_string(example['python-exec'])
-            except Exception as err:
-                raise plotly.exceptions.PlotlyError(
-                    "exec of python string raised exception:"
-                    "\n\'{}'"
-                    "\nskipping...".format(err.message))
-            if 'plot_url' in exec_locals:
-                example['url'] = exec_locals['plot_url']
-            else:
-                raise plotly.exceptions.PlotlyError(
-                    "\t\t'plot_url' not in exec_locals, skipping..."
-                )
-    mark_completeness(example)
+    # mark_completeness(leaf)
 
 
-def process_script_example(example, command_list):
+def process_script_leaf(leaf):
     """
     1. for each language with 'model' as the *source*...
     2. load script.ext file
-    3. if save image: save image
-    4. if save code: save code
-    5. if save url: save url
+    3. save code
     """
-    print "\tprocessing scripts in {}".format(example['path'])
-    example['type'] = 'script'
-    script_file = [fn for fn in example['files'] if 'script' in fn][0]
+    print "\tprocessing scripts in {}".format(leaf['path'])
+    leaf['type'] = 'script'
+    script_file = [fn for fn in leaf['files'] if 'script' in fn][0]
     language = ext_to_lang[script_file.split('.')[-1]]
-    example['config']['languages'] = [language]
+    leaf['config']['languages'] = [language]
     try:
-        with open(example['files'][script_file]) as f:
+        with open(leaf['files'][script_file]) as f:
             script = f.read()
     except KeyError:
         raise plotly.exceptions.PlotlyError(
-            "'{}' not found in '{}'".format(script_file, example['path'])
+            "'{}' not found in '{}'".format(script_file, leaf['path'])
         )
     exec_string = ""
     for line in script.splitlines():
         if line[:6] == sign_in['execution'][language][:6]:  # TODO, better way?
             exec_string += sign_in['execution'][language]
         elif '>>>filename<<<' in line:
-            exec_string += line.replace('>>>filename<<<', example['id'])
+            exec_string += line.replace('>>>filename<<<', leaf['id'])
         else:
             exec_string += line
         exec_string += "\n"
-    save_code(exec_string, example, language, 'exception')
-    if 'code' in command_list:
-        code_string = exec_string.replace(sign_in['execution'][language],
-                                          sign_in['documentation'][language])
-        code_string = cgi.escape(code_string)
-        code_path = save_code(code_string, example, language, 'documentation')
-        example[language] = code_path
-        save_code(exec_string, example, language, 'execution')
+    save_code(exec_string, leaf, language, 'exception')
+    code_string = exec_string.replace(sign_in['execution'][language],
+                                      sign_in['documentation'][language])
+    code_string = cgi.escape(code_string)
+    code_path = save_code(code_string, leaf, language, 'documentation')
+    leaf[language] = code_path
+    save_code(exec_string, leaf, language, 'execution')
 
 
-def process_url_example(example, command_list):
+def process_url_leaf(leaf):
     """
     1. for each language with 'url' as the *source*...
     2. translate model to language with translator
-    3. if save image: save image
-    4. if save code: save code
+    3. save code
     """
-    print "\tprocessing {} in {}".format(url_file, example['path'])
-    example['type'] = 'url'
+    print "\tprocessing {} in {}".format(files['url'], leaf['path'])
+    leaf['type'] = 'url'
     try:
-        with open(example['files'][url_file]) as f:
+        with open(leaf['files'][files['url']]) as f:
             url = json.load(f)['url']
     except ValueError:
         raise plotly.exceptions.PlotlyError(
             "{} required and could not be opened in {}"
-            "".format(url_file, example['path']))
+            "".format(files['url'], leaf['path']))
     except KeyError:
         raise plotly.exceptions.PlotlyError(
             "{} required and could not be found in {}"
-            "".format(url_file, example['path']))
+            "".format(files['url'], leaf['path']))
     json_resource = "{}.json".format(url)
     res = get_plotly_response(json_resource)
     if not res:
@@ -573,7 +620,7 @@ def process_url_example(example, command_list):
     figure_str = figure_str.replace("<pre>", "").replace("</pre>", "")
     figure_str = figure_str.replace("<html>", "").replace("</html>", "")
     figure = json.loads(figure_str)
-    if 'python' not in example['config']['languages']:
+    if 'python' not in leaf['config']['languages']:
         code = ""
         resource = "{}.{}".format(url, lang_to_ext['python'])
         res = get_plotly_response(resource)
@@ -589,10 +636,10 @@ def process_url_example(example, command_list):
         code = code.replace("<pre>", "").replace("</pre>", "")
         code = code.replace("<html>", "").replace("</html>", "")
         exec_string = format_code(
-            code, 'python', example, figure, 'execution'
+            code, 'python', leaf, figure, 'execution'
         )
-        example['python-exec'] = exec_string
-    for language in example['config']['languages']:
+        leaf['python-exec'] = exec_string
+    for language in leaf['config']['languages']:
         code = ""
         resource = "{}.{}".format(url, lang_to_ext[language])
         res = get_plotly_response(resource)
@@ -608,30 +655,26 @@ def process_url_example(example, command_list):
         code = code.replace("<pre>", "").replace("</pre>", "")
         code = code.replace("<html>", "").replace("</html>", "")
         exec_string = format_code(
-            code, language, example, figure, 'execution'
+            code, language, leaf, figure, 'execution'
         )
         if language == 'python':
-            example['python-exec'] = exec_string
-        if 'code' in command_list:
-            code_string = format_code(code, language, example, figure)
-            code_path = save_code(
-                code_string, example, language, 'documentation'
-            )
-            example[language] = code_path
-            save_code(exec_string, example, language, 'execution')
-    if 'urls' in command_list:
-        try:
-            exec_locals = exec_python_string(example['python-exec'])
-        except Exception as err:
-            raise plotly.exceptions.PlotlyError(
-                "exec of python string raised exception:"
-                "\n\'{}'"
-                "\nskipping...".format(err.message))
-        if 'plot_url' in exec_locals:
-            example['url'] = exec_locals['plot_url']
-        else:
-            raise plotly.exceptions.PlotlyError(
-                "\t\t'plot_url' not in exec_locals, skipping...")
+            leaf['python-exec'] = exec_string
+        code_string = format_code(code, language, leaf, figure)
+        code_path = save_code(code_string, leaf, language, 'documentation')
+        leaf[language] = code_path
+        save_code(exec_string, leaf, language, 'execution')
+    try:
+        exec_locals = exec_python_string(leaf['python-exec'])
+    except Exception as err:
+        raise plotly.exceptions.PlotlyError(
+            "exec of python string raised exception:"
+            "\n\'{}'"
+            "\nskipping...".format(err.message))
+    if 'plot_url' in exec_locals:
+        leaf['url'] = exec_locals['plot_url']
+    else:
+        raise plotly.exceptions.PlotlyError(
+            "\t\t'plot_url' not in exec_locals, skipping...")
 
 
 def get_plotly_response(resource, data=None, attempts=2, sleep=5):
@@ -648,19 +691,19 @@ def get_plotly_response(resource, data=None, attempts=2, sleep=5):
             time.sleep(sleep)
 
 
-def save_code(code, example, language, mode):
+def save_code(code, leaf, language, mode):
     if mode == 'documentation':
-        example_folder = os.path.join(dirs['run'],
-                                      *example['path'].split(os.path.sep)[1:])
-        code_folder = os.path.join(example_folder, language)
-        code_path = os.path.join(code_folder, code_file)
+        leaf_folder = os.path.join(dirs['run'],
+                                      *leaf['path'].split(os.path.sep)[1:])
+        code_folder = os.path.join(leaf_folder, language)
+        code_path = os.path.join(code_folder, files['code'])
     elif mode == 'execution':
         code_folder = os.path.join(dirs['run'], dirs['executables'], language)
-        filename = "{}.{}".format(example['id'], lang_to_ext[language])
+        filename = "{}.{}".format(leaf['id'], lang_to_ext[language])
         code_path = os.path.join(code_folder, filename.replace("-", "_"))
     elif mode == 'exception':
         code_folder = os.path.join(dirs['exceptions'], language)
-        filename = "{}.{}".format(example['id'], lang_to_ext[language])
+        filename = "{}.{}".format(leaf['id'], lang_to_ext[language])
         code_path = os.path.join(code_folder, filename.replace("-", "_"))
     else:
         raise Exception("mode: 'execution' | 'documentation' | 'exception'")
@@ -677,10 +720,10 @@ def exec_python_string(exec_string):
     return locals()
 
 
-def format_code(body_string, language, example, figure, mode='documentation'):
+def format_code(body_string, language, leaf, figure, mode='documentation'):
     file_import = imports[language]
     file_sign_in = sign_in[mode][language]
-    plot_call = get_plot_call(language, figure, example, mode=mode)
+    plot_call = get_plot_call(language, figure, leaf, mode=mode)
     sections = [file_import, file_sign_in, body_string, plot_call]
     sections = [sec for sec in sections if sec]
     code_string = ("\n" * lines_between_sections).join(sections)
@@ -689,7 +732,7 @@ def format_code(body_string, language, example, figure, mode='documentation'):
     return code_string
 
 
-def get_plot_call(language, figure, example, mode):
+def get_plot_call(language, figure, leaf, mode):
     """define strings for actual plot calls
 
     :rtype : str
@@ -710,14 +753,14 @@ def get_plot_call(language, figure, example, mode):
             nodejs='false'
         )
     }
-    filename = example['path'].split(os.path.sep)[-1]
+    filename = leaf['path'].split(os.path.sep)[-1]
     try:
-        plot_options = example['config']['plot-options']
+        plot_options = leaf['config']['plot-options']
     except KeyError:
         plot_options = {}
     else:
         if 'world_readable' in plot_options and not plot_options['world_readable']:
-            example['private'] = True
+            leaf['private'] = True
     if mode == 'execution':
         plot_options['auto_open'] = False
     if language == 'python':
@@ -806,31 +849,31 @@ def get_plot_call(language, figure, example, mode):
         return ''
 
 
-def mark_completeness(example):
-    has_url = 'url' in example
-    has_all_languages = all([language in example
-                             for language in example['config']['languages']])
-    if has_url and has_all_languages:
-        example['complete'] = True
-    else:
-        example['complete'] = False
+# def mark_completeness(leaf):
+#     has_url = 'url' in leaf
+#     has_all_languages = all([language in leaf
+#                              for language in leaf['config']['languages']])
+#     if has_url and has_all_languages:
+#         leaf['complete'] = True
+#     else:
+#         leaf['complete'] = False
 
 
-def trim_pre_book(section):
+def trim_tree(section):
     section_keys = section.keys()
     if section['is_leaf']:
         for key in section_keys:
-            if key not in leaf_keys and key not in languages:
+            if key not in tree_keys['leaf'] and key not in languages:
                 del section[key]
     else:
         for key in section_keys:
-            if key not in branch_keys:
+            if key not in tree_keys['branch']:
                 del section[key]
-        for subsection in section['subsections'].values():
-            trim_pre_book(subsection)
+        for branch in section['branches'].values():
+            trim_tree(branch)
 
 
-def clear_reprocessed_examples(section):
+def reset_reprocessed_leaves(section, processed_ids):
     if section:
         if section['is_leaf']:
             if section['id'] in processed_ids:
@@ -838,24 +881,24 @@ def clear_reprocessed_examples(section):
                 for key in keys:
                     del section[key]
         else:
-            for subsection in section['subsections'].values():
-                clear_reprocessed_examples(subsection)
+            for branch in section['branches'].values():
+                reset_reprocessed_leaves(branch, processed_ids)
 
 
-def save_pre_book(pre_book, previous_pre_book):
-    try:
-        previously_processed_ids = set(previous_pre_book['processed_ids'])
-    except KeyError:
-        previously_processed_ids = set()
-    pre_book['processed_ids'] = list(
-        set.union(processed_ids, previously_processed_ids))
+def save_tree(tree, previous_tree):
     try:
         os.makedirs(dirs['run'])
     except OSError:
         pass
-    new_pre_book = nested_merge(previous_pre_book, pre_book)
-    with open(pre_book_file, 'w') as f:
-        json.dump(new_pre_book, f, indent=4)
+    new_tree = nested_merge(previous_tree, tree)
+    with open(files['tree'], 'w') as f:
+        json.dump(new_tree, f, indent=4)
+
+
+def save_processed_ids(processed_ids, previous_leaf_ids):
+    ids = set.union(processed_ids, previous_leaf_ids)
+    with open(files['ids']) as f:
+        json.dumps(list(ids), f)
 
 
 def nested_merge(old, update):
@@ -877,29 +920,42 @@ def nested_merge(old, update):
 
 
 def main():
-    command_list = get_command_list()
-    keepers = get_keepers()
-    print "\n\nrunning with commands: {}\n\n".format(command_list)
-    if 'clean' in command_list:
-        print "doing a little clean up!"
-        clean()
-        command_list.pop(command_list.index('clean'))
-    if command_list:
-        previous_pre_book = load_previous_pre_book()
-        print "compiling pre-book"
-        pre_book = write_pre_book(hard_coded_dir, keepers, previous_pre_book)
-        if pre_book:
-            print "validating file structure in examples"
-            validate_example_structure(pre_book)
-            print "about to get it done."
-            process_pre_book(pre_book, command_list)
-            print "got it done, cleaning up!"
-            trim_pre_book(pre_book)
-            clear_reprocessed_examples(previous_pre_book)
-            print "saving pre_book"
-            save_pre_book(pre_book, previous_pre_book)
-        else:
-            print "you're filter didn't match a section OR an example. bummer!"
+    command = get_command()
+    options = get_options()
+    leaf_ids = dict()
+    print "\n\nrunning with command: {}\n\n".format(command)
+    if command == 'obliterate':
+        print "wholly obliterating the following: {}".format(options)
+        for option in options:
+            obliterate(option)
+        sys.exit(0)
+    previous_tree = load_previous_tree()
+    previous_leaf_ids = load_previous_leaf_ids()
+    print "compiling pre-book"
+    tree = grow_tree(dirs['hard'], options, previous_leaf_ids, leaf_ids)
+    print "validating file structure in examples"
+    validate_leaf_structure(tree)
+    if command == 'process':
+        print "about to get it done."
+        processed_ids = set()
+        process_tree(tree, processed_ids)
+        print "got it done, cleaning up!"
+        trim_tree(tree)
+        reset_reprocessed_leaves(previous_tree, processed_ids)
+        save_tree(tree, previous_tree)
+        save_processed_ids(processed_ids, previous_leaf_ids)
+        sys.exit(0)
+    if command == 'clear':
+        remaining_ids = previous_leaf_ids - set(options)
+        clear(tree, options, previous_tree)
+        save_tree(tree, previous_tree)
+        save_processed_ids(remaining_ids, set())
+        sys.exit(0)
+    if command == 'meta':
+        save_tree(tree, previous_tree)  # todo: if never processed, there may
+        #  be junk here...
+        sys.exit(0)
+    print "hmmm, something went wrong... this should never happen."
 
 if __name__ == "__main__":
     main()
