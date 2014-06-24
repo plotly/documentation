@@ -405,51 +405,53 @@ def validate_and_get_config(config_path, is_leaf):
 
 
 def validate_leaf_structure(section):
-    if 'branches' in section:
-        for branch in section['branches'].values():
-            validate_leaf_structure(branch)
-    elif 'files' in section:
-        scripts = [filename for filename in section['files']
-                   if filename.split('.')[0] == 'script']
-        if len(scripts) > 1:
-            raise Exception("more than one script.ext found in '{}'"
-                            "".format(section['path']))
-        elif scripts and files['model'] in section:
-            raise Exception("script.ext file and model.json found in '{}'"
-                            "".format(section['path']))
-        elif scripts and files['url'] in section:
-            raise Exception("script.ext file and url.json found in '{}'"
-                            "".format(section['path']))
-        elif files['model'] in section and files['url'] in section:
-            raise Exception("model.json and url.json found in '{}'"
-                            "".format(section['path']))
+    if section:
+        if 'branches' in section:
+            for branch in section['branches'].values():
+                validate_leaf_structure(branch)
+        elif 'files' in section:
+            scripts = [filename for filename in section['files']
+                       if filename.split('.')[0] == 'script']
+            if len(scripts) > 1:
+                raise Exception("more than one script.ext found in '{}'"
+                                "".format(section['path']))
+            elif scripts and files['model'] in section:
+                raise Exception("script.ext file and model.json found in '{}'"
+                                "".format(section['path']))
+            elif scripts and files['url'] in section:
+                raise Exception("script.ext file and url.json found in '{}'"
+                                "".format(section['path']))
+            elif files['model'] in section and files['url'] in section:
+                raise Exception("model.json and url.json found in '{}'"
+                                "".format(section['path']))
 
 
 def process_tree(section, processed_ids):
-    if section['is_leaf']:
-        global example_count
-        example_count += 1
-        print("\t{} of {}".format(example_count, total_examples)),
-        try:
-            if files['model'] in section['files']:
-                process_model_leaf(section)
-            elif any(['script' in filename for filename in section['files']]):
-                process_script_leaf(section)
-            elif files['url'] in section['files']:
-                process_url_leaf(section)
-            # todo: add exempt. just copies over config...
+    if section:
+        if section['is_leaf']:
+            global example_count
+            example_count += 1
+            print("\t{} of {}".format(example_count, total_examples)),
+            try:
+                if files['model'] in section['files']:
+                    process_model_leaf(section)
+                elif any(['script' in filename for filename in section['files']]):
+                    process_script_leaf(section)
+                elif files['url'] in section['files']:
+                    process_url_leaf(section)
+                # todo: add exempt. just copies over config...
+                else:
+                    print("\t\tleaf '{}' cannot be processed"
+                          "".format(section))
+            except plotly.exceptions.PlotlyError as err:
+                print "\t\t" + "\n\t\t\t".join(err.message.splitlines())
+                # section['complete'] = False
             else:
-                print("\t\tleaf '{}' cannot be processed"
-                      "".format(section))
-        except plotly.exceptions.PlotlyError as err:
-            print "\t\t" + "\n\t\t\t".join(err.message.splitlines())
-            # section['complete'] = False
+                processed_ids.add(section['id'])
+                # mark_completeness(section)
         else:
-            processed_ids.add(section['id'])
-            # mark_completeness(section)
-    else:
-        for branch in section['branches'].values():
-            process_tree(branch, processed_ids)
+            for branch in section['branches'].values():
+                process_tree(branch, processed_ids)
 
 
 def process_model_leaf(leaf):
@@ -864,18 +866,19 @@ def get_plot_call(language, figure, leaf, mode):
 
 
 def trim_tree(section):
-    section_keys = section.keys()
-    if section['is_leaf']:
-        for key in section_keys:
-            if key not in tree_keys['all'] and key not in tree_keys['leaf']:
-                if key not in languages:
+    if section:
+        section_keys = section.keys()
+        if section['is_leaf']:
+            for key in section_keys:
+                if key not in tree_keys['all'] and key not in tree_keys['leaf']:
+                    if key not in languages:
+                        del section[key]
+        else:
+            for key in section_keys:
+                if key not in tree_keys['all'] and key not in tree_keys['branch']:
                     del section[key]
-    else:
-        for key in section_keys:
-            if key not in tree_keys['all'] and key not in tree_keys['branch']:
-                del section[key]
-        for branch in section['branches'].values():
-            trim_tree(branch)
+            for branch in section['branches'].values():
+                trim_tree(branch)
 
 
 def reset_reprocessed_leaves(section, processed_ids):
@@ -901,9 +904,10 @@ def save_tree(tree, previous_tree):
 
 
 def save_processed_ids(processed_ids, previous_leaf_ids):
-    ids = set.union(processed_ids, previous_leaf_ids)
+    ids = list(set.union(processed_ids, previous_leaf_ids))
+    ids.sort()
     with open(files['ids'], 'w') as f:
-        json.dump(list(ids), f, indent=4)
+        json.dump(ids, f, indent=4)
 
 
 def nested_merge(old, update):

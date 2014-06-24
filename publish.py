@@ -272,7 +272,8 @@ def check_if_complete(leaf, command):
 def get_language_reference(section, language, command):  # todo, stopped
 # here, write a SOLID check to pass leaves into references.
     reference_dict = dict()
-    if section['is_leaf'] and check_if_complete(section, command):
+    if section['is_leaf'] and check_if_complete(section, command)\
+            and language in section['config']['languages']:
         if section['type'] == 'exempt':
             pass  # todo exempt stuff here...
         else:
@@ -332,29 +333,20 @@ def write_language_reference(reference, language):
     ref_file = os.path.join(ref_folder, "{}.json".format(language))
     with open(ref_file, 'w') as f:
         json.dump(reference, f, indent=2)
+    if not reference:
+        print "\t\treference is empty, cuttin' this dead weight!"
+        os.remove(ref_file)
 
 
 def get_report(section, command):
     report = dict()
     if section['is_leaf']:
-        try:
-            if not section['complete']:
-                raise Exception
-            if 'image' not in section:
-                raise Exception
-            if 'image' in section and not section['image']:
-                raise Exception
-            for language in section['config']['languages']:
-                if '{}-{}'.format(command, language) not in section:
-                    raise Exception
-            if '{}-url'.format(command) not in section:
-                raise Exception
-            if '{}-url'.format(command) in section and not section['{}-url'.format(command)]:
-                raise Exception
-        except:
-            return {section['id']: {'status': 'incomplete', 'section': section}}
-        else:
+        if check_if_complete(section, command):
+            if section['type'] == 'exempt':
+                pass  # todo, what to do?
             return {section['id']: {'status': 'complete', 'section': section}}
+        else:
+            return {section['id']: {'status': 'incomplete', 'section': section}}
     else:
         for branch in section['branches'].values():
             report.update(get_report(branch, command))
@@ -362,8 +354,10 @@ def get_report(section, command):
 
 
 def save_report(report, command):
-    complete_keys = [key for key in report if report[key]['status'] == 'complete']
-    incomplete_keys = [key for key in report if report[key]['status'] == 'INCOMPLETE']
+    complete_keys = [key for key in report
+                     if report[key]['status'] == 'complete']
+    incomplete_keys = [key for key in report
+                       if report[key]['status'] == 'incomplete']
     complete_keys.sort()
     incomplete_keys.sort()
     string = ""
@@ -379,9 +373,13 @@ def save_report(report, command):
             if '{}-url'.format(command) in report[key]['section']:
                 string += "\n\t\turl={}".format(report[key]['section']['{}-url'.format(command)])
             if 'image' in report[key]['section']:
-                string += "image"
-            string += "\n\t\t{}".format()
-        string += "details..."
+                string += "\n\t\timage={}".format(report[key]['section']['image'])
+            for language in report[key]['section']['config']['languages']:
+                if '{}-{}'.format(command, language) in report[key]['section']:
+                    string += "\n\t\t{}={}".format(
+                        language,
+                        report[key]['section']['{}-{}'.format(command, language)]
+                    )
     else:
         print "\tyou're a super example-maker! you deserve a bagel!"
     report_file = os.path.join(dirs['reports'], '{}-report.txt'.format(command))
@@ -425,10 +423,7 @@ def main():
     print "writing language references"
     for language in languages:
         language_reference = get_language_reference(tree, language, command)
-        if language_reference:
-            write_language_reference(language_reference, language)
-        else:
-            print "\tNOT writing language reference for '{}'".format(language)
+        write_language_reference(language_reference, language)
     print "saving changes to the tree file"
     save_tree(tree)
     print "making the report file"
