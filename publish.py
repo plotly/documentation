@@ -309,22 +309,36 @@ def write_language_reference(reference, language):
         json.dump(reference, f, indent=2)
 
 
-def get_report(section):
+def get_report(section, command):
     report = dict()
     if section['is_leaf']:
-        if section['complete']:
-            return {section['id']: 'complete'}
+        try:
+            if not section['complete']:
+                raise Exception
+            if 'image' not in section:
+                raise Exception
+            if 'image' in section and not section['image']:
+                raise Exception
+            for language in section['config']['languages']:
+                if '{}-{}'.format(command, language) not in section:
+                    raise Exception
+            if '{}-url'.format(command) not in section:
+                raise Exception
+            if '{}-url'.format(command) in section and not section['{}-url'.format(command)]:
+                raise Exception
+        except:
+            return {section['id']: {'status': 'incomplete', 'section': section}}
         else:
-            return {section['id']: 'INCOMPLETE'}
+            return {section['id']: {'status': 'complete', 'section': section}}
     else:
         for subsection in section['subsections'].values():
-            report.update(get_report(subsection))
+            report.update(get_report(subsection, command))
     return report
 
 
 def save_report(report, command):
-    complete_keys = [key for key in report if report[key] == 'complete']
-    incomplete_keys = [key for key in report if report[key] == 'INCOMPLETE']
+    complete_keys = [key for key in report if report[key]['status'] == 'complete']
+    incomplete_keys = [key for key in report if report[key]['status'] == 'INCOMPLETE']
     complete_keys.sort()
     incomplete_keys.sort()
     string = ""
@@ -335,10 +349,16 @@ def save_report(report, command):
     if incomplete_keys:
         string += "\n\nIncomplete examples:"
         print "\tthere are incomplete examples! check the report."
+        for key in incomplete_keys:
+            string += "\n\t{}".format(key)
+            if '{}-url'.format(command) in report[key]['section']:
+                string += "\n\t\turl={}".format(report[key]['section']['{}-url'.format(command)])
+            if 'image' in report[key]['section']:
+                string += "image"
+            string += "\n\t\t{}".format()
+        string += "details..."
     else:
         print "\tyou're a super example-maker! you deserve a bagel!"
-    for key in incomplete_keys:
-        string += "\n\t{}".format(key)
     if command == 'test':
         with open('test-publish-report.txt', 'w') as f:
             f.write(string)
@@ -388,7 +408,7 @@ def main():
     print "saving changes to the pre-book file"
     save_pre_book(pre_book)
     print "making the report file"
-    report = get_report(pre_book)
+    report = get_report(pre_book, command)
     save_report(report, command)
 
 
