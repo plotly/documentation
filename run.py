@@ -263,8 +263,12 @@ def clear(section, options, previous_leaf_ids):
     else:
         keys = section['branches'].keys()
         for key in keys:
-            clear(section[key], options, previous_leaf_ids)
-            if not section[key]:
+            clear(section['branches'][key], options, previous_leaf_ids)
+            if not section['branches'][key]:
+                del section['branches'][key]
+        if not section['branches']:
+            keys = section.keys()
+            for key in keys:
                 del section[key]
 
 
@@ -863,11 +867,12 @@ def trim_tree(section):
     section_keys = section.keys()
     if section['is_leaf']:
         for key in section_keys:
-            if key not in tree_keys['leaf'] and key not in languages:
-                del section[key]
+            if key not in tree_keys['all'] and key not in tree_keys['leaf']:
+                if key not in languages:
+                    del section[key]
     else:
         for key in section_keys:
-            if key not in tree_keys['branch']:
+            if key not in tree_keys['all'] and key not in tree_keys['branch']:
                 del section[key]
         for branch in section['branches'].values():
             trim_tree(branch)
@@ -897,8 +902,8 @@ def save_tree(tree, previous_tree):
 
 def save_processed_ids(processed_ids, previous_leaf_ids):
     ids = set.union(processed_ids, previous_leaf_ids)
-    with open(files['ids']) as f:
-        json.dumps(list(ids), f)
+    with open(files['ids'], 'w') as f:
+        json.dump(list(ids), f, indent=4)
 
 
 def nested_merge(old, update):
@@ -947,13 +952,14 @@ def main():
         sys.exit(0)
     if command == 'clear':
         remaining_ids = previous_leaf_ids - set(options)
-        clear(tree, options, previous_tree)
-        save_tree(tree, previous_tree)
+        clear(previous_tree, options, previous_leaf_ids)
+        save_tree({}, previous_tree)
         save_processed_ids(remaining_ids, set())
         sys.exit(0)
     if command == 'meta':
-        save_tree(tree, previous_tree)  # todo: if never processed, there may
-        #  be junk here...
+        crud = set(leaf_ids.keys()) - previous_leaf_ids
+        clear(tree, crud, set())  # don't save things in unprocessed leaves!
+        save_tree(tree, previous_tree)
         sys.exit(0)
     print "hmmm, something went wrong... this should never happen."
 

@@ -32,8 +32,15 @@ total_examples = 0
 example_count = 0
 
 ### meta-config information ###
-meta_config_info = ['languages', 'name', 'description', 'tags',
-                    'relative_url', 'prepend', 'append', 'has_thumbnail']
+meta_config_info = ['languages',
+                    'name',
+                    'description',
+                    'tags',
+                    'relative_url',
+                    'prepend',
+                    'append',
+                    'has_thumbnail',
+                    'links']
 
 ### define recognized languages ###
 languages = ['python', 'matlab', 'r', 'julia', 'nodejs', 'json', 'ggplot2',
@@ -277,6 +284,7 @@ def get_language_reference(section, language, command):  # todo, stopped
                 reference_dict['url'] = section['publish-url']
             reference_dict['id'] = section['id']
             reference_dict['parent'] = section['path'].split(os.path.sep)[-2]
+            reference_dict['type'] = section['type']
             for entry in meta_config_info:
                 if entry in section['config']:
                     reference_dict[entry] = section['config'][entry]
