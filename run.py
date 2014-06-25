@@ -559,7 +559,6 @@ def process_model_leaf(leaf):
             raise plotly.exceptions.PlotlyError(
                 "\t\t'plot_url' not in exec_locals, skipping..."
             )
-    # mark_completeness(leaf)
 
 
 def process_script_leaf(leaf):
@@ -936,17 +935,28 @@ def nested_merge(old, update):
 def main():
     command = get_command()
     options = get_options()
-    leaf_ids = dict()
     print "\n\nrunning with command: {}\n\n".format(command)
     if command == 'obliterate':
         print "wholly obliterating the following: {}".format(options)
         for option in options:
             obliterate(option)
         sys.exit(0)
+    leaf_ids = dict()
     previous_tree = load_previous_tree()
     previous_leaf_ids = load_previous_leaf_ids()
     print "compiling pre-book"
     tree = grow_tree(dirs['hard'], options, previous_leaf_ids, leaf_ids)
+    print "checking to see if hard-coded examples were removed"
+    crud = previous_leaf_ids - set(leaf_ids.keys())
+    if crud:
+        print "\tcleaning up these now-obsolete examples:"
+        for leaf_id in crud:
+            print "\t\t{}".format(leaf_id)
+        clear(previous_tree, crud, previous_leaf_ids)
+        save_tree({}, previous_tree)
+        save_processed_ids(set(), previous_leaf_ids)
+        previous_tree = load_previous_tree()
+        previous_leaf_ids = load_previous_leaf_ids()
     print "validating file structure in examples"
     validate_leaf_structure(tree)
     if command == 'process':
