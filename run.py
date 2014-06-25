@@ -37,7 +37,6 @@ tree_keys = dict(
         "image",
         "url",
         "exception",
-        "complete",  # todo: remove?
         "private",
         "prepend",
         "append"
@@ -272,25 +271,6 @@ def clear(section, options, previous_leaf_ids):
                 del section[key]
 
 
-
-# def clean():
-#     """removes ENTIRE doc_dir directory, careful!"""
-#     def clean_directory(directory):
-#         for name in os.listdir(directory):
-#             full_name = os.path.join(directory, name)
-#             if os.path.isdir(full_name):
-#                 clean_directory(full_name)
-#                 os.rmdir(full_name)
-#             else:
-#                 os.remove(full_name)
-#     if os.path.exists(dirs['run']):
-#         print "\ttotally deleting '{}'".format(dirs['run'])
-#         clean_directory(dirs['run'])
-#     if os.path.exists(files['tree']):
-#         print "\ttotally deleting '{}'".format(files['tree'])
-#         os.remove(files['tree'])
-
-
 def load_previous_tree():
     if os.path.exists(files['tree']):
         with open(files['tree']) as f:
@@ -305,7 +285,6 @@ def load_previous_leaf_ids():
             return set(json.load(f))
     else:
         return set()
-
 
 
 def grow_tree(section_dir, options, previous_leaf_ids, leaf_ids):
@@ -445,10 +424,8 @@ def process_tree(section, processed_ids):
                           "".format(section))
             except plotly.exceptions.PlotlyError as err:
                 print "\t\t" + "\n\t\t\t".join(err.message.splitlines())
-                # section['complete'] = False
             else:
                 processed_ids.add(section['id'])
-                # mark_completeness(section)
         else:
             for branch in section['branches'].values():
                 process_tree(branch, processed_ids)
@@ -857,16 +834,6 @@ def get_plot_call(language, figure, leaf, mode):
         return string
     else:
         return ''
-
-
-# def mark_completeness(leaf):
-#     has_url = 'url' in leaf
-#     has_all_languages = all([language in leaf
-#                              for language in leaf['config']['languages']])
-#     if has_url and has_all_languages:
-#         leaf['complete'] = True
-#     else:
-#         leaf['complete'] = False
 
 
 def trim_tree(section):
