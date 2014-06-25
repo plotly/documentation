@@ -9,7 +9,14 @@ var z = unpack(fill(zeros([size, size]), function(c,r) {
   return r+c;
 }));
 
-{}
+var data = [
+  {
+    z: z, 
+    scl: "YIOrRd", 
+    type: "heatmap"
+  }
+];
+var layout = {title: "YIOrRd"};
 
 var graph_options = {filename: "YIOrRd-heatmap", fileopt: "overwrite", layout: layout, auto_open: "false"}
 plotly.plot(data, graph_options, function (err, msg) {

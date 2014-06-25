@@ -9,7 +9,14 @@ var z = unpack(fill(zeros([size, size]), function(c,r) {
   return r+c;
 }));
 
-{}
+var data = [
+  {
+    z: z, 
+    scl: "Electric", 
+    type: "heatmap"
+  }
+];
+var layout = {title: "Electric"};
 
 var graph_options = {filename: "Electric-heatmap", fileopt: "overwrite", layout: layout, auto_open: "false"}
 plotly.plot(data, graph_options, function (err, msg) {

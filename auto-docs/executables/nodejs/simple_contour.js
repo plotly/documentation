@@ -15,7 +15,14 @@ for (var i = 0; i < size; i++) {
       z[i][j] = Math.sin(x * i) * Math.cos(y * j) * Math.sin(r2) / Math.log(r2+1)
   }
 }
-{}
+var data = [
+  {
+    z: z, 
+    x: x, 
+    y: y, 
+    type: "contour"
+  }
+];
 
 var graph_options = {filename: "simple-contour", fileopt: "overwrite", auto_open: "false"}
 plotly.plot(data, graph_options, function (err, msg) {
