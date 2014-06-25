@@ -1,22 +1,28 @@
 """
-Takes the input from pre_book and outputs the final 'book-of-things'
+Takes the input from tree and outputs the final 'references'
 The reason for the logical split is to allow language-specific examples to
-generate their images in between running 'run.py' and 'finalize.py'
+generate their urls between running 'run.py' and 'publish.py'
 """
 
-import requests, json, os, sys
+import json
+import os
+import sys
 import plotly.plotly as py
 import plotly.exceptions
+
+# holds special references to 'files' like 'tree' shared with publish.py
+with open("files.json") as files_file:
+    files = json.load(files_file)
+
+# holds special references to 'directories' shared with publish.py
+with open("dirs.json") as dirs_file:
+    dirs = json.load(dirs_file)
 
 ### sign in stuff: each user has a 'un' and 'ak' ###
 ## users ##
 # tester, julia, matlab, python, r, nodejs, publisher
-with open('users.json') as user_file:
-    users = json.load(user_file)
-
-### directory information ###
-with open('dirs.json') as dirs_file:
-    dirs = json.load(dirs_file)
+with open('users.json') as users_file:
+    users = json.load(users_file)
 
 ### server stuff ###
 image_server = "https://plot.ly/apigenimage/"  # to be: "https://plot.ly/image/"
@@ -27,12 +33,16 @@ doc_user = ''
 total_examples = 0
 example_count = 0
 
-### file names ###
-pre_book_file = 'pre-book.json'
-
 ### meta-config information ###
-meta_config_info = ['languages', 'name', 'description', 'tags',
-                    'relative_url', 'prepend', 'append', 'has_thumbnail']
+meta_config_info = ['languages',
+                    'name',
+                    'description',
+                    'tags',
+                    'relative_url',
+                    'prepend',
+                    'append',
+                    'has_thumbnail',
+                    'links']
 
 ### define recognized languages ###
 languages = ['python', 'matlab', 'r', 'julia', 'nodejs', 'json', 'ggplot2',
@@ -50,8 +60,8 @@ def get_command():
     try:
         command = sys.argv[1]
         if command not in commands:
-            raise Exception()
-    except:
+            raise ValueError()
+    except (IndexError, ValueError):
         command = None
     if not command:
         print "usage:\n"\
@@ -62,16 +72,16 @@ def get_command():
         return command
 
 
-def make_pre_book_valid(section):
-    if 'subsections' in section:
-        keys = section['subsections'].keys()
+def make_tree_valid(section):
+    if 'branches' in section:
+        keys = section['branches'].keys()
         for key in keys:
-            if section['subsections'][key] == {}:
-                del section['subsections'][key]
-                print ("\tdeleted empty subsection with key '{}', "
-                       "from '{}'['subsections']".format(key, section['id']))
-        for subsection in section['subsections'].values():
-            make_pre_book_valid(subsection)
+            if section['branches'][key] == {}:
+                del section['branches'][key]
+                print ("\tdeleted empty branch with key '{}', "
+                       "from '{}'['branches']".format(key, section['id']))
+        for branch in section['branches'].values():
+            make_tree_valid(branch)
 
 
 def set_total_examples(section):
@@ -79,56 +89,52 @@ def set_total_examples(section):
         global total_examples
         total_examples += 1
     else:
-        for subsection in section['subsections'].values():
-            set_total_examples(subsection)
+        for branch in section['branches'].values():
+            set_total_examples(branch)
 
 
-def fix_book(section):
-    if section['is_leaf']:
-        if not section['complete']:
-            language = section['config']['languages'][0]
-            if 'url' not in section:
-                filename = "{}.json".format(section['id']).replace("-", "_")
-                path = os.path.join(dirs['exceptions'], language, filename)
-                if os.path.exists(path):
-                    try:
-                        with open(path) as f:
-                            content = json.load(f)
-                            section['url'] = content['url']
-                    except ValueError:
-                        print ("\tcouldn't open '{}' for exception handled by "
-                               "language, '{}'".format(filename, language))
-                    except KeyError:
-                        print ("\t'url' key not in '{}' for exception handled "
-                               "by language, '{}'".format(filename, language))
-            mark_completeness(section)  # hopefully, False -> True!
-    else:
-        for subsection in section['subsections'].values():
-            fix_book(subsection)
+def fix_tree(section):  # todo rename? has to do with exceptions...
+    if section['is_leaf'] and section['type'] == 'script':
+        language = section['config']['languages'][0]
+        if 'url' not in section:
+            filename = "{}.json".format(section['id']).replace("-", "_")
+            path = os.path.join(dirs['exceptions'], language, filename)
+            if os.path.exists(path):
+                try:
+                    with open(path) as f:
+                        content = json.load(f)
+                        section['url'] = content['url']
+                except ValueError:
+                    print ("\tcouldn't open '{}' for exception handled by "
+                           "language, '{}'".format(filename, language))
+                except KeyError:
+                    print ("\t'url' key not in '{}' for exception handled "
+                           "by language, '{}'".format(filename, language))
+    elif not section['is_leaf']:
+        for branch in section['branches'].values():
+            fix_tree(branch)
 
 
 def port_urls(section, command):
-    if section['is_leaf'] and section['complete']:
+    if section['is_leaf'] and 'url' in section:
         global example_count
         example_count += 1
-        print("\t{} of {}: example '{}' with url '{}'".format(
-            example_count, total_examples, section['id'], section['url']
-        )),
+        print("\t{} of {}: ".format(example_count, total_examples)),
         username = section['url'].replace("https://plot.ly/~", "").split('/')[0]
         fid = section['url'].replace("https://plot.ly/~", "").split('/')[1]
         if (command == 'test' and 'test-url' not in section) or \
            (command == 'publish' and 'publish-url' not in section):
             if 'private' in section and section['private']:
                 match = [usr for usr in users.values()
-                        if usr['un'].lower() == username.lower()]
+                         if usr['un'].lower() == username.lower()]
                 if match:
                     user = match[0]
                     py.sign_in(user['un'], user['ak'])
             try:
                 fig = py.get_figure(username, fid)
-            except:
-                print ("\n\t\tcouldn't port url over for example, '{}'."
-                       "The url was '{}'".format(section['id'], section['url']))
+            except:  # todo, too broad exception clause
+                print ("couldn't port url over for '{}'."
+                       "".format(section['id']))
                 fig = None
             finally:
                 py.sign_in(users[doc_user]['un'], users[doc_user]['ak'])
@@ -147,24 +153,28 @@ def port_urls(section, command):
                             world_readable=False)
                     except:
                         new_url = None
-                        print "\tcall to py.plot() failed"
+                        print "\t\tcall to py.plot() failed"
                 else:
                     try:  # todo clean up exception handling
-                        new_url = py.plot(fig, filename=section['id'], auto_open=False)
+                        new_url = py.plot(fig,
+                                          filename=section['id'],
+                                          auto_open=False)
                     except:
                         new_url = None
-                        print "\tcall to py.plot() failed"
+                        print "\t\tcall to py.plot() failed"
                 if command == 'test' and new_url:
                     section['test-url'] = new_url
-                    print ", new url: '{}'".format(new_url)
+                    print "new url: '{}'".format(new_url)
                 elif command == 'publish' and new_url:
                     section['publish-url'] = new_url
-                    print ", new url: '{}'".format(new_url)
+                    print "new url: ({})".format(new_url)
         else:
-            print ", already ported to '{}'".format(users[doc_user]['un'])
+            print ("already ported to '{}' ({})"
+                   "".format(users[doc_user]['un'],
+                             section["{}-url".format(command)]))
     elif not section['is_leaf']:
-        for subsection in section['subsections'].values():
-            port_urls(subsection, command)
+        for branch in section['branches'].values():
+            port_urls(branch, command)
 
 
 def save_images(section, command):
@@ -172,7 +182,7 @@ def save_images(section, command):
         has_url = 'test-url' in section
     else:
         has_url = 'publish-url' in section
-    if section['is_leaf'] and section['complete'] and has_url:
+    if section['is_leaf'] and has_url:
         global example_count
         example_count += 1
         folder_path = os.path.join(root, dirs['images'])
@@ -181,12 +191,9 @@ def save_images(section, command):
             print "\t{} of {}: saving image for '{}'".format(
                 example_count, total_examples, section['id']
             )
-            if command == 'test':
-                username = section['test-url'].replace("https://plot.ly/~", "").split('/')[0]
-                fid = section['test-url'].replace("https://plot.ly/~", "").split('/')[1]
-            else:
-                username = section['publish-url'].replace("https://plot.ly/~", "").split('/')[0]
-                fid = section['publish-url'].replace("https://plot.ly/~", "").split('/')[1]
+            url = section["{}-url".format(command)]
+            username = url.replace("https://plot.ly/~", "").split('/')[0]
+            fid = url.replace("https://plot.ly/~", "").split('/')[1]
             try:
                 fig = py.get_figure(username, fid)
             except plotly.exceptions.PlotlyError:
@@ -209,13 +216,23 @@ def save_images(section, command):
             )
             section['image'] = True
     elif not section['is_leaf']:
-        for subsection in section['subsections'].values():
-            save_images(subsection, command)
+        for branch in section['branches'].values():
+            save_images(branch, command)
+
+
+def check_languages(leaf):
+    for language in leaf['config']['languages']:
+        if language not in leaf:
+            return False
+    return True
 
 
 def port_code(section, command):
-    if section['is_leaf'] and section['complete']:
-        # todo add nice std output note?
+    if section['is_leaf'] and check_languages(section):
+        global example_count
+        example_count += 1
+        print("\t{} of {}: '{}'"
+              "".format(example_count, total_examples, section['id']))
         for language in section['config']['languages']:
             if (command == 'test' and 'test-' + language not in section) or \
                (command == 'publish' and 'publish-' + language not in section):
@@ -234,60 +251,75 @@ def port_code(section, command):
                         else:
                             section['publish-' + language] = new_path
     elif not section['is_leaf']:
-        for subsection in section['subsections'].values():
-            port_code(subsection, command)
+        for branch in section['branches'].values():
+            port_code(branch, command)
 
 
-def mark_completeness(example):  # todo: remove function and write out!
-    has_url = 'url' in example   # (this is a conditional check!)
-    has_all_languages = all([language in example
-                             for language in example['config']['languages']])
-    if has_url and has_all_languages:
-        example['complete'] = True
+def check_if_complete(leaf, command):
+    try:
+        if leaf['type'] in ['model', 'url', 'script']:
+            if not leaf['image']:
+                raise ValueError()
+            if not leaf['{}-url'.format(command)]:
+                raise ValueError()
+            for language in leaf['config']['languages']:
+                if not leaf['{}-{}'.format(command, language)]:
+                    raise ValueError()
+        elif leaf['type'] == 'exempt':
+            pass
+    except (ValueError, KeyError):
+        return False
     else:
-        example['complete'] = False
+        return True
 
 
 def get_language_reference(section, language, command):
+# here, write a SOLID check to pass leaves into references.
     reference_dict = dict()
-    if (section['is_leaf'] and language in section and section['complete'] and
-            'image' in section and section['image']):
-        rel_path = os.path.join(*section['path'].split(os.path.sep)[1:])
-        reference_dict['code'] = os.path.join(rel_path, language, 'code.txt')
-        if command == 'test':
-            reference_dict['url'] = section['test-url']
-        elif command == 'publish':
-            reference_dict['url'] = section['publish-url']
-        reference_dict['id'] = section['id']
-        reference_dict['parent'] = section['path'].split(os.path.sep)[-2]
-        for entry in meta_config_info:
-            if entry in section['config']:
-                reference_dict[entry] = section['config'][entry]
-        return reference_dict
+    if section['is_leaf'] and check_if_complete(section, command)\
+            and language in section['config']['languages']:
+        if section['type'] == 'exempt':
+            pass  # todo exempt stuff here...
+        else:
+            rel_path = os.path.join(*section['path'].split(os.path.sep)[1:])
+            reference_dict['code'] = os.path.join(rel_path,
+                                                  language,
+                                                  'code.txt')
+            if command == 'test':
+                reference_dict['url'] = section['test-url']
+            elif command == 'publish':
+                reference_dict['url'] = section['publish-url']
+            reference_dict['id'] = section['id']
+            reference_dict['parent'] = section['path'].split(os.path.sep)[-2]
+            reference_dict['type'] = section['type']
+            for entry in meta_config_info:
+                if entry in section['config']:
+                    reference_dict[entry] = section['config'][entry]
+            return reference_dict
     elif not section['is_leaf']:
-        subsections_list = list()
-        for subsection in section['subsections'].values():
-            subsection_entry = get_language_reference(
-                subsection, language, command
+        branches_list = list()
+        for branch in section['branches'].values():
+            branch_entry = get_language_reference(
+                branch, language, command
             )
-            if subsection_entry:
-                subsections_list += [subsection_entry]
-        if subsections_list:
+            if branch_entry:
+                branches_list += [branch_entry]
+        if branches_list:
             indices = list()
             if 'order' in section['config']:
                 for sub_id in section['config']['order']:
-                    index = [iii for iii, entry in enumerate(subsections_list)
+                    index = [iii for iii, entry in enumerate(branches_list)
                              if entry['id'] == sub_id]  # list with one entry
                     if index:
                         indices += index
-                for iii in range(len(subsections_list)):  # add whatever isn't there
+                for iii in range(len(branches_list)):
                     if iii not in indices:
                         indices += [iii]
-                reference_dict['subsections'] = []
+                reference_dict['branches'] = []
                 for index in indices:
-                    reference_dict['subsections'] += [subsections_list[index]]
+                    reference_dict['branches'] += [branches_list[index]]
             else:
-                reference_dict['subsections'] = subsections_list
+                reference_dict['branches'] = branches_list
             reference_dict['id'] = section['path'].split(os.path.sep)[-1]
             if len(section['path'].split(os.path.sep)) > 1:
                 reference_dict['parent'] = section['path'].split(os.path.sep)[-2]
@@ -307,24 +339,34 @@ def write_language_reference(reference, language):
     ref_file = os.path.join(ref_folder, "{}.json".format(language))
     with open(ref_file, 'w') as f:
         json.dump(reference, f, indent=2)
+    if not reference:
+        print "\t\treference is empty, cuttin' this dead weight!"
+        os.remove(ref_file)
 
 
-def get_report(section):
+def get_report(section, command):
     report = dict()
     if section['is_leaf']:
-        if section['complete']:
-            return {section['id']: 'complete'}
+        if check_if_complete(section, command):
+            if section['type'] == 'exempt':
+                pass  # todo, what to do?
+            return {section['id']: {'status': 'complete', 'section': section}}
         else:
-            return {section['id']: 'INCOMPLETE'}
+            return {section['id']: {'status': 'incomplete', 'section': section}}
     else:
-        for subsection in section['subsections'].values():
-            report.update(get_report(subsection))
+        for branch in section['branches'].values():
+            report.update(get_report(branch, command))
     return report
 
 
 def save_report(report, command):
-    complete_keys = [key for key in report if report[key] == 'complete']
-    incomplete_keys = [key for key in report if report[key] == 'INCOMPLETE']
+    complete_keys = [key for key in report
+                     if report[key]['status'] == 'complete']
+    incomplete_keys = [key for key in report
+                       if report[key]['status'] == 'incomplete']
+    completed = len(complete_keys)
+    total = completed + len(incomplete_keys)
+    print "\t{} of {} examples, completed".format(completed, total)
     complete_keys.sort()
     incomplete_keys.sort()
     string = ""
@@ -335,21 +377,33 @@ def save_report(report, command):
     if incomplete_keys:
         string += "\n\nIncomplete examples:"
         print "\tthere are incomplete examples! check the report."
+        for key in incomplete_keys:
+            string += "\n\t{}".format(key)
+            if '{}-url'.format(command) in report[key]['section']:
+                string += "\n\t\turl={}".format(
+                    report[key]['section']['{}-url'.format(command)])
+            if 'image' in report[key]['section']:
+                string += "\n\t\timage={}".format(
+                    report[key]['section']['image'])
+            for language in report[key]['section']['config']['languages']:
+                if '{}-{}'.format(command, language) in report[key]['section']:
+                    string += "\n\t\t{}={}".format(
+                        language,
+                        report[key]['section']['{}-{}'.format(command,
+                                                              language)]
+                    )
     else:
         print "\tyou're a super example-maker! you deserve a bagel!"
-    for key in incomplete_keys:
-        string += "\n\t{}".format(key)
-    if command == 'test':
-        with open('test-publish-report.txt', 'w') as f:
-            f.write(string)
-    elif command == 'publish':
-        with open('publish-report.txt', 'w') as f:
-            f.write(string)
+    report_file = os.path.join(dirs['reports'], '{}-report.txt'.format(command))
+    if not os.path.exists(dirs['reports']):
+        os.makedirs(dirs['reports'])
+    with open(report_file, 'w') as f:
+        f.write(string)
 
 
-def save_pre_book(pre_book):
-    with open(pre_book_file, 'w') as f:
-        json.dump(pre_book, f, indent=4)
+def save_tree(tree):
+    with open(files['tree'], 'w') as f:
+        json.dump(tree, f, indent=4)
 
 
 def main():
@@ -364,31 +418,29 @@ def main():
     else:
         raise Exception("command didn't match up with a username assignment")
     py.sign_in(users[doc_user]['un'], users[doc_user]['ak'])
-    with open(pre_book_file) as f:
-        pre_book = json.load(f)
-    print "running some checks/repairs on the pre-book..."
-    make_pre_book_valid(pre_book)
-    set_total_examples(pre_book)
+    with open(files['tree']) as f:
+        tree = json.load(f)
+    print "running some checks/repairs on the tree..."
+    make_tree_valid(tree)
+    set_total_examples(tree)
     print "setting up auto-generated structure"
-    fix_book(pre_book)
+    fix_tree(tree)
     print "porting urls"
-    port_urls(pre_book, command)
+    port_urls(tree, command)
     example_count = 0
     print "saving images"
-    save_images(pre_book, command)
+    save_images(tree, command)
+    example_count = 0
     print "porting code"
-    port_code(pre_book, command)
+    port_code(tree, command)
     print "writing language references"
     for language in languages:
-        language_reference = get_language_reference(pre_book, language, command)
-        if language_reference:
-            write_language_reference(language_reference, language)
-        else:
-            print "\tNOT writing language reference for '{}'".format(language)
-    print "saving changes to the pre-book file"
-    save_pre_book(pre_book)
+        language_reference = get_language_reference(tree, language, command)
+        write_language_reference(language_reference, language)
+    print "saving changes to the tree file"
+    save_tree(tree)
     print "making the report file"
-    report = get_report(pre_book)
+    report = get_report(tree, command)
     save_report(report, command)
 
 

@@ -1,6 +1,36 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
 
-{}
+var trace1 = {
+  x: [0, 1, 2, 3, 4, 5, 6, 7, 8], 
+  y: [8, 7, 6, 5, 4, 3, 2, 1, 0], 
+  type: "scatter"
+};
+var trace2 = {
+  x: [0, 1, 2, 3, 4, 5, 6, 7, 8], 
+  y: [0, 1, 2, 3, 4, 5, 6, 7, 8], 
+  type: "scatter"
+};
+var data = [trace1, trace2];
+var layout = {
+  xaxis: {
+    ticks: "outside", 
+    tickwidth: 4, 
+    tick0: 0, 
+    ticklen: 8, 
+    dtick: 0.25, 
+    tickcolor: "#000", 
+    autotick: false
+  }, 
+  yaxis: {
+    ticks: "outside", 
+    tickwidth: 4, 
+    tick0: 0, 
+    ticklen: 8, 
+    dtick: 0.25, 
+    tickcolor: "#000", 
+    autotick: false
+  }
+};
 
 var graph_options = {filename: "axes-ticks", fileopt: "overwrite", layout: layout, auto_open: "false"}
 plotly.plot(data, graph_options, function (err, msg) {
