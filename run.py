@@ -517,9 +517,14 @@ def process_model_leaf(leaf):
                     "couldn't find '{}' in '{}'"
                     "".format(init_file, leaf['path'])
                 )
-        data = json.dumps({'json_figure': model,
-                           'language': language,
-                           'pretty': True})
+        if language == 'nodejs':  # todo, temporary fix!
+            data = json.dumps({'json_figure': model,
+                               'language': 'node',
+                               'pretty': True})
+        else:
+            data = json.dumps({'json_figure': model,
+                               'language': language,
+                               'pretty': True})
         res = get_plotly_response(translator_server, data=data)
         if not res:
             raise plotly.exceptions.PlotlyError(
