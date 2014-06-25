@@ -117,9 +117,7 @@ def port_urls(section, command):
     if section['is_leaf'] and 'url' in section:
         global example_count
         example_count += 1
-        print("\t{} of {}: example '{}' with url '{}'".format(
-            example_count, total_examples, section['id'], section['url']
-        )),
+        print("\t{} of {}: ".format(example_count, total_examples)),
         username = section['url'].replace("https://plot.ly/~", "").split('/')[0]
         fid = section['url'].replace("https://plot.ly/~", "").split('/')[1]
         if (command == 'test' and 'test-url' not in section) or \
@@ -133,8 +131,8 @@ def port_urls(section, command):
             try:
                 fig = py.get_figure(username, fid)
             except:
-                print ("\n\t\tcouldn't port url over for example, '{}'."
-                       "The url was '{}'".format(section['id'], section['url']))
+                print ("couldn't port url over for '{}'."
+                       "".format(section['id']))
                 fig = None
             finally:
                 py.sign_in(users[doc_user]['un'], users[doc_user]['ak'])
@@ -153,21 +151,23 @@ def port_urls(section, command):
                             world_readable=False)
                     except:
                         new_url = None
-                        print "\tcall to py.plot() failed"
+                        print "\t\tcall to py.plot() failed"
                 else:
                     try:  # todo clean up exception handling
                         new_url = py.plot(fig, filename=section['id'], auto_open=False)
                     except:
                         new_url = None
-                        print "\tcall to py.plot() failed"
+                        print "\t\tcall to py.plot() failed"
                 if command == 'test' and new_url:
                     section['test-url'] = new_url
-                    print ", new url: '{}'".format(new_url)
+                    print "new url: '{}'".format(new_url)
                 elif command == 'publish' and new_url:
                     section['publish-url'] = new_url
-                    print ", new url: '{}'".format(new_url)
+                    print "new url: ({})".format(new_url)
         else:
-            print ", already ported to '{}'".format(users[doc_user]['un'])
+            print ("already ported to '{}' ({})"
+                   "".format(users[doc_user]['un'],
+                             section["{}-url".format(command)]))
     elif not section['is_leaf']:
         for branch in section['branches'].values():
             port_urls(branch, command)
