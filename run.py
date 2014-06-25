@@ -1,4 +1,9 @@
-import requests, json, os, sys, time, cgi
+import requests
+import json
+import os
+import sys
+import time
+import cgi
 import plotly.plotly as py
 from plotly.graph_objs import *  # for exec statements
 import plotly.exceptions
@@ -24,7 +29,7 @@ with open('users.json') as users_file:
 
 py.sign_in(users['tester']['un'], users['tester']['ak'])
 
-### keys that are OK to go into final pre_book save ###
+### keys that are OK to go into final tree save ###
 tree_keys = dict(
     all=[
         "config",
@@ -82,22 +87,25 @@ allowable = dict(
 )
 
 ### server stuff ###
-translator_server = "https://plot.ly/translate_figure/"  # todo: put elsewhere.
-
-### style stuff ###
-lines_between_sections = 2  # todo: delete?
+translator_server = "https://plot.ly/translate_figure/"
 
 ### define commands to run with, can be combined with '+' (e.g., code+urls) ###
 commands = dict(
     process=['all', 'new', 'example_id'],
     obliterate=[dirs['run'], dirs['exceptions'], files['tree'], dirs['test'],
-                dirs['publish'], files['tree'], 'all'],  # todo, more?
+                dirs['publish'], files['tree']],
     clear=['example_id'],
     meta=['example_id', 'all']
 )
 
 ### define supported languages ###
-languages = ['python', 'julia', 'matlab', 'r', 'nodejs', 'ggplot2', 'matplotlib']
+languages = ['python',
+             'julia',
+             'matlab',
+             'r',
+             'nodejs',
+             'ggplot2',
+             'matplotlib']
 
 ### define extensions for executable code ###
 lang_to_ext = dict(python='py',
@@ -127,9 +135,9 @@ imports = dict(
 )
 
 ### define sign in ###
-sign_in = {
-    'documentation': dict(
-        python=
+sign_in = dict(
+    documentation=dict(
+        python=(
             "{{% if not username %}}"
             "# Fill in with your personal username and API key\n"
             "# or, use this public demo account\n"
@@ -137,8 +145,8 @@ sign_in = {
             "py.sign_in({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python']),
-        matlab=
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python'])),
+        matlab=(
             "{{% if not username %}}"
             "% Fill in with your personal username and API key\n"
             "% or, use this public demo account\n"
@@ -146,8 +154,8 @@ sign_in = {
             "signin({{% if username %}}'{{{{username}}}}'"
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}'{{{{api_key}}}}'"
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['matlab']),
-        r=
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['matlab'])),
+        r=(
             "{{% if not username %}}"
             "# Fill in with your personal username and API key\n"
             "# or, use this public demo account\n"
@@ -155,8 +163,8 @@ sign_in = {
             "p <- plotly(username={{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "key={{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r']),
-        julia=
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r'])),
+        julia=(
             "{{% if not username %}}"
             "# Fill in with your personal username and API key\n"
             "# or, use this public demo account\n"
@@ -164,8 +172,8 @@ sign_in = {
             "Plotly.signin({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}\"{un}\"{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia']),
-        nodejs=
+            "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia'])),
+        nodejs=(
             "{{% if not username %}}"
             "// Fill in with your personal username and API key\n"
             "// or, use this public demo account\n"
@@ -174,8 +182,8 @@ sign_in = {
             "{{% if username %}}'{{{{username}}}}'"
             "{{% else %}}'{un}'{{% endif %}},"
             "{{% if api_key %}}'{{{{api_key}}}}'"
-            "{{% else %}}'{ak}'{{% endif %}});".format(**users['nodejs']),
-        ggplot2=
+            "{{% else %}}'{ak}'{{% endif %}});".format(**users['nodejs'])),
+        ggplot2=(
             "{{% if not username %}}"
             "# Fill in with your personal username and API key\n"
             "# or, use this public demo account\n"
@@ -183,8 +191,8 @@ sign_in = {
             "p <- plotly(username={{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "key={{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r']),
-        matplotlib=
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r'])),
+        matplotlib=(
             "{{% if not username %}}"
             "# Fill in with your personal username and API key\n"
             "# or, use this public demo account\n"
@@ -192,21 +200,21 @@ sign_in = {
             "py.sign_in({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python']),
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python']))
     ),
-    'execution': dict(
+    execution=dict(
         python="py.sign_in('{un}', '{ak}')".format(**users['tester']),
         matlab="signin('{un}', '{ak}')".format(**users['tester']),
         r="p <- plotly(username='{un}', key='{ak}')".format(**users['tester']),
         julia='using Plotly\nPlotly.signin("{un}", "{ak}")'
               ''.format(**users['tester']),
         nodejs="var plotly = require('plotly')('{un}', '{ak}')"
-             "".format(**users['tester']),
-        ggplot2="p <- plotly(username='{un}', key='{ak}')"
                "".format(**users['tester']),
+        ggplot2="p <- plotly(username='{un}', key='{ak}')"
+                "".format(**users['tester']),
         matplotlib="py.sign_in('{un}', '{ak}')".format(**users['tester']),
     )
-}
+)
 
 
 def get_command():
@@ -295,7 +303,8 @@ def grow_tree(section_dir, options, previous_leaf_ids, leaf_ids):
     section_dict = dict()
     branches = [child for child in os.listdir(section_dir)
                 if os.path.isdir(os.path.join(section_dir, child))]
-    leaf_files = {child: os.path.join(section_dir, child) for child in os.listdir(section_dir)
+    leaf_files = {child: os.path.join(section_dir, child)
+                  for child in os.listdir(section_dir)
                   if not os.path.isdir(os.path.join(section_dir, child))
                   and child != files['config']
                   and child[0] != '.'}
@@ -414,7 +423,7 @@ def process_tree(section, processed_ids):
             try:
                 if files['model'] in section['files']:
                     process_model_leaf(section)
-                elif any(['script' in filename for filename in section['files']]):
+                elif any(['script' in fn for fn in section['files']]):
                     process_script_leaf(section)
                 elif files['url'] in section['files']:
                     process_url_leaf(section)
@@ -470,12 +479,12 @@ def process_model_leaf(leaf):
         res = get_plotly_response(translator_server, data=data)
         if not res:
             raise plotly.exceptions.PlotlyError(
-                "couldn't connect to plotly at resource. '{}'".format(translator_server)
-            )
+                "couldn't connect to plotly at resource. '{}'"
+                "".format(translator_server))
         elif res.status_code != 200:
             raise plotly.exceptions.PlotlyError(
-                "unsuccessful request at resource. '{}'".format(translator_server)
-            )
+                "unsuccessful request at resource. '{}'"
+                "".format(translator_server))
         code += res.content
         code = code.replace("<pre>", "").replace("</pre>", "")
         code = code.replace('">>>', "").replace('<<<"', "")
@@ -505,12 +514,12 @@ def process_model_leaf(leaf):
         res = get_plotly_response(translator_server, data=data)
         if not res:
             raise plotly.exceptions.PlotlyError(
-                "couldn't connect to plotly at resource. '{}'".format(translator_server)
-            )
+                "couldn't connect to plotly at resource. '{}'"
+                "".format(translator_server))
         elif res.status_code != 200:
             raise plotly.exceptions.PlotlyError(
-                "unsuccessful request at resource. '{}'".format(translator_server)
-            )
+                "unsuccessful request at resource. '{}'"
+                "".format(translator_server))
         code += res.content
         code = code.replace("<pre>", "").replace("</pre>", "")
         code = code.replace('">>>', "").replace('<<<"', "")
@@ -681,7 +690,7 @@ def get_plotly_response(resource, data=None, attempts=2, sleep=5):
 def save_code(code, leaf, language, mode):
     if mode == 'documentation':
         leaf_folder = os.path.join(dirs['run'],
-                                      *leaf['path'].split(os.path.sep)[1:])
+                                   *leaf['path'].split(os.path.sep)[1:])
         code_folder = os.path.join(leaf_folder, language)
         code_path = os.path.join(code_folder, files['code'])
     elif mode == 'execution':
@@ -708,6 +717,7 @@ def exec_python_string(exec_string):
 
 
 def format_code(body_string, language, leaf, figure, mode='documentation'):
+    lines_between_sections = 2
     file_import = imports[language]
     file_sign_in = sign_in[mode][language]
     plot_call = get_plot_call(language, figure, leaf, mode=mode)
@@ -746,8 +756,9 @@ def get_plot_call(language, figure, leaf, mode):
     except KeyError:
         plot_options = {}
     else:
-        if 'world_readable' in plot_options and not plot_options['world_readable']:
-            leaf['private'] = True
+        if 'world_readable' in plot_options:
+            if not plot_options['world_readable']:
+                leaf['private'] = True
     if mode == 'execution':
         plot_options['auto_open'] = False
     if language == 'python':
@@ -841,13 +852,15 @@ def trim_tree(section):
         section_keys = section.keys()
         if section['is_leaf']:
             for key in section_keys:
-                if key not in tree_keys['all'] and key not in tree_keys['leaf']:
-                    if key not in languages:
-                        del section[key]
+                if key not in tree_keys['all']:
+                    if key not in tree_keys['leaf']:
+                        if key not in languages:
+                            del section[key]
         else:
             for key in section_keys:
-                if key not in tree_keys['all'] and key not in tree_keys['branch']:
-                    del section[key]
+                if key not in tree_keys['all']:
+                    if key not in tree_keys['branch']:
+                        del section[key]
             for branch in section['branches'].values():
                 trim_tree(branch)
 

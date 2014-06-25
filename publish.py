@@ -1,10 +1,12 @@
 """
-Takes the input from tree and outputs the final 'book-of-things'
+Takes the input from tree and outputs the final 'references'
 The reason for the logical split is to allow language-specific examples to
-generate their images in between running 'run.py' and 'finalize.py'
+generate their urls between running 'run.py' and 'publish.py'
 """
 
-import requests, json, os, sys
+import json
+import os
+import sys
 import plotly.plotly as py
 import plotly.exceptions
 
@@ -58,8 +60,8 @@ def get_command():
     try:
         command = sys.argv[1]
         if command not in commands:
-            raise Exception()
-    except:
+            raise ValueError()
+    except (IndexError, ValueError):
         command = None
     if not command:
         print "usage:\n"\
@@ -124,13 +126,13 @@ def port_urls(section, command):
            (command == 'publish' and 'publish-url' not in section):
             if 'private' in section and section['private']:
                 match = [usr for usr in users.values()
-                        if usr['un'].lower() == username.lower()]
+                         if usr['un'].lower() == username.lower()]
                 if match:
                     user = match[0]
                     py.sign_in(user['un'], user['ak'])
             try:
                 fig = py.get_figure(username, fid)
-            except:
+            except:  # todo, too broad exception clause
                 print ("couldn't port url over for '{}'."
                        "".format(section['id']))
                 fig = None
@@ -154,7 +156,9 @@ def port_urls(section, command):
                         print "\t\tcall to py.plot() failed"
                 else:
                     try:  # todo clean up exception handling
-                        new_url = py.plot(fig, filename=section['id'], auto_open=False)
+                        new_url = py.plot(fig,
+                                          filename=section['id'],
+                                          auto_open=False)
                     except:
                         new_url = None
                         print "\t\tcall to py.plot() failed"
@@ -187,12 +191,9 @@ def save_images(section, command):
             print "\t{} of {}: saving image for '{}'".format(
                 example_count, total_examples, section['id']
             )
-            if command == 'test':
-                username = section['test-url'].replace("https://plot.ly/~", "").split('/')[0]
-                fid = section['test-url'].replace("https://plot.ly/~", "").split('/')[1]
-            else:
-                username = section['publish-url'].replace("https://plot.ly/~", "").split('/')[0]
-                fid = section['publish-url'].replace("https://plot.ly/~", "").split('/')[1]
+            url = section["{}-url".format(command)]
+            username = url.replace("https://plot.ly/~", "").split('/')[0]
+            fid = url.replace("https://plot.ly/~", "").split('/')[1]
             try:
                 fig = py.get_figure(username, fid)
             except plotly.exceptions.PlotlyError:
@@ -228,7 +229,10 @@ def check_languages(leaf):
 
 def port_code(section, command):
     if section['is_leaf'] and check_languages(section):
-        # todo add nice std output note?
+        global example_count
+        example_count += 1
+        print("\t{} of {}: '{}'"
+              "".format(example_count, total_examples, section['id']))
         for language in section['config']['languages']:
             if (command == 'test' and 'test-' + language not in section) or \
                (command == 'publish' and 'publish-' + language not in section):
@@ -269,7 +273,7 @@ def check_if_complete(leaf, command):
         return True
 
 
-def get_language_reference(section, language, command):  # todo, stopped
+def get_language_reference(section, language, command):
 # here, write a SOLID check to pass leaves into references.
     reference_dict = dict()
     if section['is_leaf'] and check_if_complete(section, command)\
@@ -278,7 +282,9 @@ def get_language_reference(section, language, command):  # todo, stopped
             pass  # todo exempt stuff here...
         else:
             rel_path = os.path.join(*section['path'].split(os.path.sep)[1:])
-            reference_dict['code'] = os.path.join(rel_path, language, 'code.txt')
+            reference_dict['code'] = os.path.join(rel_path,
+                                                  language,
+                                                  'code.txt')
             if command == 'test':
                 reference_dict['url'] = section['test-url']
             elif command == 'publish':
@@ -306,7 +312,7 @@ def get_language_reference(section, language, command):  # todo, stopped
                              if entry['id'] == sub_id]  # list with one entry
                     if index:
                         indices += index
-                for iii in range(len(branches_list)):  # add whatever isn't there
+                for iii in range(len(branches_list)):
                     if iii not in indices:
                         indices += [iii]
                 reference_dict['branches'] = []
@@ -358,6 +364,9 @@ def save_report(report, command):
                      if report[key]['status'] == 'complete']
     incomplete_keys = [key for key in report
                        if report[key]['status'] == 'incomplete']
+    completed = len(complete_keys)
+    total = completed + len(incomplete_keys)
+    print "\t{} of {} examples, completed".format(completed, total)
     complete_keys.sort()
     incomplete_keys.sort()
     string = ""
@@ -371,14 +380,17 @@ def save_report(report, command):
         for key in incomplete_keys:
             string += "\n\t{}".format(key)
             if '{}-url'.format(command) in report[key]['section']:
-                string += "\n\t\turl={}".format(report[key]['section']['{}-url'.format(command)])
+                string += "\n\t\turl={}".format(
+                    report[key]['section']['{}-url'.format(command)])
             if 'image' in report[key]['section']:
-                string += "\n\t\timage={}".format(report[key]['section']['image'])
+                string += "\n\t\timage={}".format(
+                    report[key]['section']['image'])
             for language in report[key]['section']['config']['languages']:
                 if '{}-{}'.format(command, language) in report[key]['section']:
                     string += "\n\t\t{}={}".format(
                         language,
-                        report[key]['section']['{}-{}'.format(command, language)]
+                        report[key]['section']['{}-{}'.format(command,
+                                                              language)]
                     )
     else:
         print "\tyou're a super example-maker! you deserve a bagel!"
@@ -418,6 +430,7 @@ def main():
     example_count = 0
     print "saving images"
     save_images(tree, command)
+    example_count = 0
     print "porting code"
     port_code(tree, command)
     print "writing language references"
