@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt # so we don't have to look at mpl's backend
+import matplotlib.pyplot as plt
 import numpy as np
 
 import plotly.plotly as py
