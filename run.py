@@ -878,6 +878,7 @@ def reset_reprocessed_leaves(section, processed_ids):
 
 
 def save_tree(tree, previous_tree):
+    print "saving tree"
     try:
         os.makedirs(dirs['run'])
     except OSError:
@@ -888,6 +889,7 @@ def save_tree(tree, previous_tree):
 
 
 def save_processed_ids(processed_ids, previous_leaf_ids):
+    print "saving processed ids list"
     ids = list(set.union(processed_ids, previous_leaf_ids))
     ids.sort()
     with open(files['ids'], 'w') as f:
@@ -946,6 +948,7 @@ def main():
         print "got it done, cleaning up!"
         trim_tree(tree)
         reset_reprocessed_leaves(previous_tree, processed_ids)
+        print "saving tree"
         save_tree(tree, previous_tree)
         save_processed_ids(processed_ids, previous_leaf_ids)
         sys.exit(0)
