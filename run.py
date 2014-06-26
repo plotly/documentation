@@ -384,6 +384,22 @@ def validate_and_get_config(config_path, is_leaf):
                 raise ValueError(
                     "wrong value type for key '{}' in config at location '{}'"
                     "".format(key, config_path))
+            # elif not config[key]:  # todo, enforce later?
+            #     raise ValueError(
+            #         "empty value found for key '{}' in config at location '{}'"
+            #         "".format(key, config_path))
+            elif key == 'languages':
+                if not config[key]:
+                    raise ValueError(
+                        "empty 'languages' list in config at location '{}'"
+                        "".format(config_path))
+                bad_languages = [l for l in config[key] if l not in languages]
+                if bad_languages:
+                    raise ValueError(
+                        "language '{}' in the config 'languages' list is not "
+                        "supported. Location: '{}'."
+                        "\nsupported languages: {}"
+                        "".format(bad_languages[0], config_path, languages))
     for key in config:
         if key not in allowable[switch]:
             raise KeyError(
