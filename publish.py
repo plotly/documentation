@@ -119,7 +119,9 @@ def port_urls(section, command):
     if section['is_leaf'] and 'url' in section:
         global example_count
         example_count += 1
-        print("\t{} of {}: ".format(example_count, total_examples)),
+        print("\t{} of {} ({}): ".format(example_count,
+                                         total_examples,
+                                         section['id'])),
         username = section['url'].replace("https://plot.ly/~", "").split('/')[0]
         fid = section['url'].replace("https://plot.ly/~", "").split('/')[1]
         if (command == 'test' and 'test-url' not in section) or \
@@ -231,8 +233,9 @@ def port_code(section, command):
     if section['is_leaf'] and check_languages(section):
         global example_count
         example_count += 1
-        print("\t{} of {}: '{}'"
-              "".format(example_count, total_examples, section['id']))
+        print("\t{} of {} ({}): ".format(example_count,
+                                         total_examples,
+                                         section['id']))
         for language in section['config']['languages']:
             if (command == 'test' and 'test-' + language not in section) or \
                (command == 'publish' and 'publish-' + language not in section):
