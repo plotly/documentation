@@ -105,7 +105,8 @@ languages = ['python',
              'r',
              'nodejs',
              'ggplot2',
-             'matplotlib']
+             'matplotlib',
+             'js']
 
 ### define extensions for executable code ###
 lang_to_ext = dict(python='py',
@@ -114,14 +115,16 @@ lang_to_ext = dict(python='py',
                    r='r',
                    nodejs='js',
                    ggplot2='r',
-                   matplotlib='py')
+                   matplotlib='py',
+                   js='html')
 ext_to_lang = dict(py='python',
                    jl='julia',
                    m='matlab',
                    r='r',
                    js='nodejs',
                    gg='ggplot2',
-                   mpl='matplotlib')
+                   mpl='matplotlib',
+                   html='js')
 
 ### define imports ###
 imports = dict(
@@ -131,7 +134,8 @@ imports = dict(
     ggplot2="",
     matplotlib="",
     julia="using Plotly",
-    nodejs=""
+    nodejs="",
+    js=""
 )
 
 ### define sign in ###
@@ -200,7 +204,8 @@ sign_in = dict(
             "py.sign_in({{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python']))
+            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python'])),
+        js=""
     ),
     execution=dict(
         python="py.sign_in('{un}', '{ak}')".format(**users['tester']),
@@ -213,6 +218,7 @@ sign_in = dict(
         ggplot2="p <- plotly(username='{un}', key='{ak}')"
                 "".format(**users['tester']),
         matplotlib="py.sign_in('{un}', '{ak}')".format(**users['tester']),
+        js=""
     )
 )
 
@@ -859,6 +865,11 @@ def get_plot_call(language, figure, leaf, mode):
         string += "\n    console.log(msg);"
         string += "\n});"
         return string
+    elif language == 'js':
+        string = 'Plotly.plot(divid, data'
+        if 'layout' in figure:
+            string += ', layout'
+        string += ');'
     else:
         return ''
 
