@@ -7,6 +7,7 @@ generate their urls between running 'run.py' and 'publish.py'
 import json
 import os
 import sys
+from collections import OrderedDict
 import plotly.plotly as py
 import plotly.exceptions
 
@@ -340,11 +341,33 @@ def write_language_reference(reference, language):
     if not os.path.exists(ref_folder):
         os.makedirs(ref_folder)
     ref_file = os.path.join(ref_folder, "{}.json".format(language))
-    with open(ref_file, 'w') as f:
-        json.dump(reference, f, indent=2)
+    if reference:
+        ordered_referece = get_ordered_dict_with_lists(reference)
+        with open(ref_file, 'w') as f:
+            json.dump(ordered_referece, f, indent=2)
     if not reference:
         print "\t\treference is empty, cuttin' this dead weight!"
-        os.remove(ref_file)
+        if os.path.exists(ref_file):
+            os.remove(ref_file)
+
+def get_ordered_dict_with_lists(d):
+    od = OrderedDict()
+    keys = d.keys()
+    keys.sort()
+    for key in keys:
+        if isinstance(d[key], dict):
+            od[key] = get_ordered_dict_with_lists(d[key])
+        elif isinstance(d[key], list):
+            ol = [get_ordered_dict_with_lists(d[key][iii])
+                  for iii in range(len(d[key]))
+                  if isinstance(d[key][iii], dict)]
+            if len(ol) == len(d[key]):
+                od[key] = ol
+            else:
+                od[key] = d[key]
+        else:
+            od[key] = d[key]
+    return od
 
 
 def get_report(section, command):
