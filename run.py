@@ -4,6 +4,7 @@ import os
 import sys
 import time
 import cgi
+from collections import OrderedDict
 import plotly.plotly as py
 from plotly.graph_objs import *  # for exec statements
 import plotly.exceptions
@@ -39,12 +40,12 @@ tree_keys = dict(
     ],
     leaf=[
         "type",
-        "image",
+        "image", # todo, remove this
         "url",
         "exception",
         "private",
-        "prepend",
-        "append"
+        "prepend", # todo, remove
+        "append"  # todo, remove
     ],
     branch=[
         "branches"
@@ -288,7 +289,7 @@ def clear(section, options, previous_leaf_ids):
 def load_previous_tree():
     if os.path.exists(files['tree']):
         with open(files['tree']) as f:
-            return json.load(f)
+            return json.load(f, object_pairs_hook=OrderedDict)
     else:
         return {}
 
@@ -321,6 +322,8 @@ def grow_tree(section_dir, options, previous_leaf_ids, leaf_ids):
                         "\n\tfiles: {}"
                         "".format(section_dir, branches, leaf_files))
     elif branches:
+        config_path = os.path.join(section_dir, files['config'])
+        config = validate_and_get_config(config_path, is_leaf=False)
         branches_dict = dict()
         for branch_name in branches:
             branch_dir = os.path.join(section_dir, branch_name)
@@ -332,6 +335,8 @@ def grow_tree(section_dir, options, previous_leaf_ids, leaf_ids):
             section_dict['branches'] = branches_dict
             section_dict['is_leaf'] = False
     elif leaf_files:
+        config_path = os.path.join(section_dir, files['config'])
+        config = validate_and_get_config(config_path, is_leaf=True)
         leaf_id = section_dir.split(os.path.sep)[-1]
         if leaf_id in leaf_ids:
             raise Exception(
@@ -347,6 +352,16 @@ def grow_tree(section_dir, options, previous_leaf_ids, leaf_ids):
             process_leaf = True
         elif 'new' in options and leaf_id not in previous_leaf_ids:
             process_leaf = True
+        elif 'models' in options and files['model'] in leaf_files:
+            process_leaf = True
+        elif 'urls' in options and files['url'] in leaf_files:
+            process_leaf = True
+        elif 'scripts' in options and bool([fn for fn in leaf_files if 'script' in fn]):
+            process_leaf = True
+        elif bool([language for language in languages
+                   if language in options
+                   and language in config['languages']]):
+            process_leaf = True
         else:
             process_leaf = False
         if process_leaf:
@@ -355,8 +370,6 @@ def grow_tree(section_dir, options, previous_leaf_ids, leaf_ids):
             global total_examples
             total_examples += 1
     if 'files' in section_dict or 'branches' in section_dict:
-        config_path = os.path.join(section_dir, files['config'])
-        config = validate_and_get_config(config_path, section_dict['is_leaf'])
         section_dict['config'] = config
         section_dict['path'] = section_dir
         section_dict['id'] = section_dir.split(os.path.sep)[-1]
@@ -436,7 +449,7 @@ def validate_leaf_structure(section):
                                 "".format(section['path']))
 
 
-def process_tree(section, processed_ids):
+def process_tree(section, processed_ids, options):
     if section:
         if section['is_leaf']:
             global example_count
@@ -444,11 +457,11 @@ def process_tree(section, processed_ids):
             print("\t{} of {}".format(example_count, total_examples)),
             try:
                 if files['model'] in section['files']:
-                    process_model_leaf(section)
+                    process_model_leaf(section, options)
                 elif any(['script' in fn for fn in section['files']]):
-                    process_script_leaf(section)
+                    process_script_leaf(section, options)
                 elif files['url'] in section['files']:
-                    process_url_leaf(section)
+                    process_url_leaf(section, options)
                 # todo: add exempt. just copies over config...
                 else:
                     print("\t\tleaf '{}' cannot be processed"
@@ -459,10 +472,10 @@ def process_tree(section, processed_ids):
                 processed_ids.add(section['id'])
         else:
             for branch in section['branches'].values():
-                process_tree(branch, processed_ids)
+                process_tree(branch, processed_ids, options)
 
 
-def process_model_leaf(leaf):
+def process_model_leaf(leaf, options):
     """
     1. load model.json file
     2. for each language with 'model' as the *source*...
@@ -483,7 +496,11 @@ def process_model_leaf(leaf):
         raise ValueError(
             "{} required and could not be opened in {}"
             "".format(files['model'], leaf['path']))
-    if 'python' not in leaf['config']['languages']:
+    model_languages = [language for language in languages
+                        if language in options]
+    if not model_languages:
+        model_languages = leaf['config']['languages']
+    if 'python' not in model_languages:
         code = ""
         if 'init' in leaf['config'] and leaf['config']['init']:
             init_file = "init.{}".format(lang_to_ext['python'])
@@ -513,7 +530,7 @@ def process_model_leaf(leaf):
         code = code.replace("'>>>", "").replace("<<<'", "")
         exec_string = format_code(code, 'python', leaf, model, 'execution')
         leaf['python-exec'] = exec_string
-    for language in leaf['config']['languages']:
+    for language in model_languages:
         code = ""
         if 'init' in leaf['config'] and leaf['config']['init']:
             init_file = "init.{}".format(lang_to_ext[language])
@@ -569,7 +586,7 @@ def process_model_leaf(leaf):
             )
 
 
-def process_script_leaf(leaf):
+def process_script_leaf(leaf, options):
     """
     1. for each language with 'model' as the *source*...
     2. load script.ext file
@@ -605,7 +622,7 @@ def process_script_leaf(leaf):
     save_code(exec_string, leaf, language, 'execution')
 
 
-def process_url_leaf(leaf):
+def process_url_leaf(leaf, options):
     """
     1. for each language with 'url' as the *source*...
     2. translate model to language with translator
@@ -638,7 +655,11 @@ def process_url_leaf(leaf):
     figure_str = figure_str.replace("<pre>", "").replace("</pre>", "")
     figure_str = figure_str.replace("<html>", "").replace("</html>", "")
     figure = json.loads(figure_str)
-    if 'python' not in leaf['config']['languages']:
+    url_languages = [language for language in languages
+                        if language in options]
+    if not url_languages:
+        url_languages = leaf['config']['languages']
+    if 'python' not in url_languages:
         code = ""
         resource = "{}.{}".format(url, lang_to_ext['python'])
         res = get_plotly_response(resource)
@@ -657,7 +678,7 @@ def process_url_leaf(leaf):
             code, 'python', leaf, figure, 'execution'
         )
         leaf['python-exec'] = exec_string
-    for language in leaf['config']['languages']:
+    for language in url_languages:
         code = ""
         resource = "{}.{}".format(url, lang_to_ext[language])
         res = get_plotly_response(resource)
@@ -898,7 +919,8 @@ def reset_reprocessed_leaves(section, processed_ids):
             if section['id'] in processed_ids:
                 keys = section.keys()
                 for key in keys:
-                    del section[key]
+                    if key not in tree_keys['leaf'] and key not in languages:
+                        del section[key]
         else:
             for branch in section['branches'].values():
                 reset_reprocessed_leaves(branch, processed_ids)
@@ -911,8 +933,9 @@ def save_tree(tree, previous_tree):
     except OSError:
         pass
     new_tree = nested_merge(previous_tree, tree)
+    sorted_new_tree = get_ordered_dict(new_tree)
     with open(files['tree'], 'w') as f:
-        json.dump(new_tree, f, indent=4)
+        json.dump(sorted_new_tree, f, indent=4)
 
 
 def save_processed_ids(processed_ids, previous_leaf_ids):
@@ -939,6 +962,18 @@ def nested_merge(old, update):
             else:
                 new[key] = val
     return new
+
+
+def get_ordered_dict(d):
+    od = OrderedDict()
+    keys = d.keys()
+    keys.sort()
+    for key in keys:
+        if isinstance(d[key], dict):
+            od[key] = get_ordered_dict(d[key])
+        else:
+            od[key] = d[key]
+    return od
 
 
 def main():
@@ -971,7 +1006,7 @@ def main():
     if command == 'process':
         print "about to get it done."
         processed_ids = set()
-        process_tree(tree, processed_ids)
+        process_tree(tree, processed_ids, options)
         print "got it done, cleaning up!"
         trim_tree(tree)
         reset_reprocessed_leaves(previous_tree, processed_ids)
