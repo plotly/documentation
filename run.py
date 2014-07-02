@@ -4,6 +4,7 @@ import os
 import sys
 import time
 import cgi
+from collections import OrderedDict
 import plotly.plotly as py
 from plotly.graph_objs import *  # for exec statements
 import plotly.exceptions
@@ -282,7 +283,7 @@ def clear(section, options, previous_leaf_ids):
 def load_previous_tree():
     if os.path.exists(files['tree']):
         with open(files['tree']) as f:
-            return json.load(f)
+            return json.load(f, object_pairs_hook=OrderedDict)
     else:
         return {}
 
@@ -358,7 +359,6 @@ def grow_tree(section_dir, options, previous_leaf_ids, leaf_ids):
         else:
             process_leaf = False
         if process_leaf:
-            print leaf_id
             section_dict['is_leaf'] = True
             section_dict['files'] = leaf_files
             global total_examples
@@ -922,8 +922,9 @@ def save_tree(tree, previous_tree):
     except OSError:
         pass
     new_tree = nested_merge(previous_tree, tree)
+    sorted_new_tree = get_ordered_dict(new_tree)
     with open(files['tree'], 'w') as f:
-        json.dump(new_tree, f, indent=4)
+        json.dump(sorted_new_tree, f, indent=4)
 
 
 def save_processed_ids(processed_ids, previous_leaf_ids):
@@ -950,6 +951,18 @@ def nested_merge(old, update):
             else:
                 new[key] = val
     return new
+
+
+def get_ordered_dict(d):
+    od = OrderedDict()
+    keys = d.keys()
+    keys.sort()
+    for key in keys:
+        if isinstance(d[key], dict):
+            od[key] = get_ordered_dict(d[key])
+        else:
+            od[key] = d[key]
+    return od
 
 
 def main():
