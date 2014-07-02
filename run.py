@@ -525,6 +525,7 @@ def process_model_leaf(leaf, options):
         exec_string = format_code(code, 'python', leaf, model, 'execution')
         leaf['python-exec'] = exec_string
     for language in model_languages:
+        time.sleep(.2)  # added to help with connection errors
         code = ""
         if 'init' in leaf['config'] and leaf['config']['init']:
             init_file = "init.{}".format(lang_to_ext[language])
