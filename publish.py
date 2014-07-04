@@ -47,11 +47,11 @@ meta_config_info = ['languages',
 
 ### define recognized languages ###
 languages = ['python', 'matlab', 'r', 'julia', 'nodejs', 'json', 'ggplot2',
-             'matplotlib']
+             'matplotlib', 'js']
 
 ### define extensions for executable code ###
-lang_to_ext = dict(python='py', julia='jl', matlab='m', r='r', nodejs='js')
-ext_to_lang = dict(py='python', jl='julia', m='matlab', r='r', js='nodejs')
+lang_to_ext = dict(python='py', julia='jl', matlab='m', r='r', nodejs='js', js='html')
+ext_to_lang = dict(py='python', jl='julia', m='matlab', r='r', js='nodejs', html='js')
 
 ### define commands ###
 commands = ['test', 'publish']

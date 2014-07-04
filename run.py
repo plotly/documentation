@@ -542,7 +542,7 @@ def process_model_leaf(leaf, options):
                     "couldn't find '{}' in '{}'"
                     "".format(init_file, leaf['path'])
                 )
-        if language == 'nodejs':  # todo, temporary fix!
+        if language == 'nodejs' or language == 'js':  # todo, temporary fix!
             data = json.dumps({'json_figure': model,
                                'language': 'node',
                                'pretty': True})
@@ -891,6 +891,7 @@ def get_plot_call(language, figure, leaf, mode):
         if 'layout' in figure:
             string += ', layout'
         string += ');'
+        return string
     else:
         return ''
 
