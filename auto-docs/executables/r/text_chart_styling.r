@@ -8,12 +8,12 @@ trace1 <- list(
   mode = "lines+markers+text", 
   name = "Lines, Markers and Text", 
   text = c("Text A", "Text B", "Text C"), 
+  textposition = "top right", 
   textfont = list(
     family = "sans serif", 
     size = 18, 
     color = "#1f77b4"
   ), 
-  textposition = "top right", 
   type = "scatter"
 )
 trace2 <- list(
@@ -22,12 +22,12 @@ trace2 <- list(
   mode = "lines+markers+text", 
   name = "Lines and Text", 
   text = c("Text G", "Text H", "Text I"), 
+  textposition = "bottom", 
   textfont = list(
     family = "sans serif", 
     size = 18, 
     color = "#ff7f0e"
   ), 
-  textposition = "bottom", 
   type = "scatter"
 )
 data <- list(trace1, trace2)

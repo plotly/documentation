@@ -22,8 +22,20 @@ trace2 = Bar(
 data = Data([trace1, trace2])
 layout = Layout(
     title='US Export of Plastic Scrap',
-    xaxis={'tickfont': {'color': 'rgb(107, 107, 107)', 'size': 14}},
-    yaxis={'tickfont': {'color': 'rgb(107, 107, 107)', 'size': 14}, 'titlefont': {'color': 'rgb(107, 107, 107)', 'size': 16}, 'title': 'USD (millions)'},
+    xaxis=XAxis(
+        tickfont=Font(
+            size=14,
+            color='rgb(107, 107, 107)'
+        )
+    ),
+    yaxis=YAxis(
+        title='USD (millions)',
+        titlefont={'color': 'rgb(107, 107, 107)', 'size': 16},
+        tickfont=Font(
+            size=14,
+            color='rgb(107, 107, 107)'
+        )
+    ),
     legend=Legend(
         x=0,
         y=1.0,
