@@ -36,9 +36,9 @@ layout = [
   "width" => 800, 
   "xaxis" => ["domain" => [0.3, 0.7]], 
   "yaxis" => [
-    "tickfont" => ["color" => "#1f77b4"], 
+    "title" => "yaxis title", 
     "titlefont" => ["color" => "#1f77b4"], 
-    "title" => "yaxis title"
+    "tickfont" => ["color" => "#1f77b4"]
   ], 
   "yaxis2" => [
     "title" => "yaxis2 title", 

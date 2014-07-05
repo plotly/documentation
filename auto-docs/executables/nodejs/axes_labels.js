@@ -13,38 +13,38 @@ var trace2 = {
 var data = [trace1, trace2];
 var layout = {
   xaxis: {
-    tickfont: {
-      color: "black", 
-      family: "Old Standard TT, serif", 
-      size: 14
-    }, 
-    showexponent: "All", 
-    showticklabels: true, 
     title: "AXIS TITLE", 
-    tickangle: 45, 
     titlefont: {
       color: "lightgrey", 
       family: "Arial, sans-serif", 
       size: 18
     }, 
-    exponentformat: "e"
+    showticklabels: true, 
+    tickangle: 45, 
+    tickfont: {
+      family: "Old Standard TT, serif", 
+      size: 14, 
+      color: "black"
+    }, 
+    exponentformat: "e", 
+    showexponent: "All"
   }, 
   yaxis: {
-    tickfont: {
-      color: "black", 
-      family: "Old Standard TT, serif", 
-      size: 14
-    }, 
-    showexponent: "All", 
-    showticklabels: true, 
     title: "AXIS TITLE", 
-    tickangle: 45, 
     titlefont: {
       color: "lightgrey", 
       family: "Arial, sans-serif", 
       size: 18
     }, 
-    exponentformat: "e"
+    showticklabels: true, 
+    tickangle: 45, 
+    tickfont: {
+      family: "Old Standard TT, serif", 
+      size: 14, 
+      color: "black"
+    }, 
+    exponentformat: "e", 
+    showexponent: "All"
   }
 };
 

@@ -18,19 +18,19 @@ var data = [trace1, trace2];
 var layout = {
   title: "US Export of Plastic Scrap", 
   xaxis: {tickfont: {
-      color: "rgb(107, 107, 107)", 
-      size: 14
+      size: 14, 
+      color: "rgb(107, 107, 107)"
     }}, 
   yaxis: {
-    tickfont: {
-      color: "rgb(107, 107, 107)", 
-      size: 14
-    }, 
+    title: "USD (millions)", 
     titlefont: {
       color: "rgb(107, 107, 107)", 
       size: 16
     }, 
-    title: "USD (millions)"
+    tickfont: {
+      size: 14, 
+      color: "rgb(107, 107, 107)"
+    }
   }, 
   legend: {
     x: 0, 

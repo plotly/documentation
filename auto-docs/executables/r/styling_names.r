@@ -18,20 +18,20 @@ data <- list(trace1, trace2)
 layout <- list(
   title = "Plot Title", 
   xaxis = list(
+    title = "x Axis", 
     titlefont = list(
       color = "#7f7f7f", 
       family = "Courier New, monospace", 
       size = 18
-    ), 
-    title = "x Axis"
+    )
   ), 
   yaxis = list(
+    title = "y Axis", 
     titlefont = list(
       color = "#7f7f7f", 
       family = "Courier New, monospace", 
       size = 18
-    ), 
-    title = "y Axis"
+    )
   )
 )
 
