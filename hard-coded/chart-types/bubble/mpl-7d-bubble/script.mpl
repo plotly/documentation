@@ -23,4 +23,4 @@ sc = ax.scatter(x,
                 linewidth=ew*width_scale)
 ax.grid()
 
-plotly_url = py.plot_mpl(fig, filename='>>>filename<<<')
+plot_url = py.plot_mpl(fig, filename='>>>filename<<<')
