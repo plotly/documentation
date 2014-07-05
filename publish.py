@@ -428,8 +428,26 @@ def save_report(report, command):
 
 
 def save_tree(tree):
+    print "saving tree"
+    try:
+        os.makedirs(dirs['run'])
+    except OSError:
+        pass
+    sorted_new_tree = get_ordered_dict(tree)
     with open(files['tree'], 'w') as f:
-        json.dump(tree, f, indent=4)
+        json.dump(sorted_new_tree, f, indent=4)
+
+
+def get_ordered_dict(d):
+    od = OrderedDict()
+    keys = d.keys()
+    keys.sort()
+    for key in keys:
+        if isinstance(d[key], dict):
+            od[key] = get_ordered_dict(d[key])
+        else:
+            od[key] = d[key]
+    return od
 
 
 def main():
