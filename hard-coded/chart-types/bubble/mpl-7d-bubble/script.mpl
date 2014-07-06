@@ -4,23 +4,12 @@ import plotly.plotly as py
 py.sign_in('-', '-')
 
 n = 50
-x = np.random.rand(n)
-y = np.random.rand(n)
-c = np.random.rand(n,4)  # rgba
-z = np.random.rand(n)
-s = np.random.rand(n)
-ew = np.random.rand(n)
-ec = np.random.rand(n,4)  # rgba
-area_scale = 500
-width_scale = 5
+x, y, z, s, ew = np.random.rand(5, n)
+c, ec = np.random.rand(2, n, 4)
+area_scale, width_scale = 500, 5
 
 fig, ax = plt.subplots()
-sc = ax.scatter(x,
-                y,
-                s=np.square(s)*area_scale,
-                c=c,
-                edgecolor=ec,
-                linewidth=ew*width_scale)
+sc = ax.scatter(x, y, s=np.square(s)*area_scale, c=c, edgecolor=ec, linewidth=ew*width_scale)
 ax.grid()
 
 plot_url = py.plot_mpl(fig, filename='>>>filename<<<')
