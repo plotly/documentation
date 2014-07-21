@@ -31,7 +31,11 @@ trace3 = Box(
 )
 data = Data([trace1, trace2, trace3])
 layout = Layout(
-    yaxis={'zeroline': False, 'title': 'normalized moisture'}
+    yaxis=YAxis(
+        title='normalized moisture',
+        zeroline=False
+    ),
+    boxmode='group'
 )
 fig = Figure(data=data, layout=layout)
 

@@ -13,28 +13,28 @@ var trace2 = {
 var data = [trace1, trace2];
 var layout = {
   xaxis: {
-    zerolinewidth: 4, 
-    gridwidth: 2, 
     showgrid: true, 
-    zerolinecolor: "#969696", 
-    gridcolor: "#bdbdbd", 
-    linecolor: "#636363", 
-    mirror: "ticks", 
     zeroline: true, 
     showline: true, 
-    linewidth: 6
+    gridcolor: "#bdbdbd", 
+    gridwidth: 2, 
+    zerolinecolor: "#969696", 
+    zerolinewidth: 4, 
+    linecolor: "#636363", 
+    linewidth: 6, 
+    mirror: "ticks"
   }, 
   yaxis: {
-    zerolinewidth: 4, 
-    gridwidth: 2, 
     showgrid: true, 
-    zerolinecolor: "#969696", 
-    gridcolor: "#bdbdbd", 
-    linecolor: "#636363", 
-    mirror: "ticks", 
     zeroline: true, 
     showline: true, 
-    linewidth: 6
+    gridcolor: "#bdbdbd", 
+    gridwidth: 2, 
+    zerolinecolor: "#969696", 
+    zerolinewidth: 4, 
+    linecolor: "#636363", 
+    linewidth: 6, 
+    mirror: "ticks"
   }
 };
 

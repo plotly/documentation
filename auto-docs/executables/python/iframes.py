@@ -15,8 +15,12 @@ trace2 = Scatter(
 )
 data = Data([trace1, trace2])
 layout = Layout(
-    xaxis={'title': '$\\sqrt{(n_\\text{c}(t|{T_\\text{early}}))}$'},
-    yaxis={'title': '$d, r \\text{ (solar radius)}$'}
+    xaxis=XAxis(
+        title='$\\sqrt{(n_\\text{c}(t|{T_\\text{early}}))}$'
+    ),
+    yaxis=YAxis(
+        title='$d, r \\text{ (solar radius)}$'
+    )
 )
 fig = Figure(data=data, layout=layout)
 
