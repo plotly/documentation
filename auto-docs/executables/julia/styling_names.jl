@@ -19,20 +19,20 @@ data = [trace1, trace2]
 layout = [
   "title" => "Plot Title", 
   "xaxis" => [
+    "title" => "x Axis", 
     "titlefont" => [
       "color" => "#7f7f7f", 
       "family" => "Courier New, monospace", 
       "size" => 18
-    ], 
-    "title" => "x Axis"
+    ]
   ], 
   "yaxis" => [
+    "title" => "y Axis", 
     "titlefont" => [
       "color" => "#7f7f7f", 
       "family" => "Courier New, monospace", 
       "size" => 18
-    ], 
-    "title" => "y Axis"
+    ]
   ]
 ]
 

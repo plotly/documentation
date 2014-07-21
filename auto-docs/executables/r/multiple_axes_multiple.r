@@ -35,9 +35,9 @@ layout <- list(
   width = 800, 
   xaxis = list(domain = c(0.3, 0.7)), 
   yaxis = list(
-    tickfont = list(color = "#1f77b4"), 
+    title = "yaxis title", 
     titlefont = list(color = "#1f77b4"), 
-    title = "yaxis title"
+    tickfont = list(color = "#1f77b4")
   ), 
   yaxis2 = list(
     title = "yaxis2 title", 

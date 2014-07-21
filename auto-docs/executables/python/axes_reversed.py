@@ -10,7 +10,9 @@ data = Data([
     )
 ])
 layout = Layout(
-    xaxis={'autorange': 'reversed'}
+    xaxis=XAxis(
+        autorange='reversed'
+    )
 )
 fig = Figure(data=data, layout=layout)
 

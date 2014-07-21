@@ -12,12 +12,12 @@ data <- list(
 layout <- list(
   showlegend = FALSE, 
   xaxis = list(
-    autorange = TRUE, 
-    rangemode = "tozero"
+    rangemode = "tozero", 
+    autorange = TRUE
   ), 
   yaxis = list(
-    autorange = TRUE, 
-    rangemode = "nonnegative"
+    rangemode = "nonnegative", 
+    autorange = TRUE
   )
 )
 

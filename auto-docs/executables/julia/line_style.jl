@@ -71,13 +71,13 @@ data = [trace1, trace2, trace3, trace4]
 layout = [
   "title" => "Quarter 1 Growth", 
   "xaxis" => [
-    "zeroline" => false, 
+    "title" => "GDP per Capita", 
     "showgrid" => false, 
-    "title" => "GDP per Capita"
+    "zeroline" => false
   ], 
   "yaxis" => [
-    "showline" => false, 
-    "title" => "Percent"
+    "title" => "Percent", 
+    "showline" => false
   ]
 ]
 
