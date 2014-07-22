@@ -1,1 +1,5 @@
-var y = Math.random() * 50
+var y = [];
+
+for (var i = 0; i < 500; i ++) {
+	y[i] = Math.random();
+}

@@ -1,1 +1,5 @@
-var x = Math.random() * 500
+var x = [];
+
+for (var i = 0; i < 500; i ++) {
+	x[i] = Math.random();
+}
