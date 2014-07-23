@@ -13,12 +13,12 @@ data = [
 layout = [
   "showlegend" => false, 
   "xaxis" => [
-    "autorange" => true, 
-    "rangemode" => "tozero"
+    "rangemode" => "tozero", 
+    "autorange" => true
   ], 
   "yaxis" => [
-    "autorange" => true, 
-    "rangemode" => "nonnegative"
+    "rangemode" => "nonnegative", 
+    "autorange" => true
   ]
 ]
 

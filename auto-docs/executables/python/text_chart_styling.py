@@ -9,12 +9,12 @@ trace1 = Scatter(
     mode='lines+markers+text',
     name='Lines, Markers and Text',
     text=['Text A', 'Text B', 'Text C'],
+    textposition='top right',
     textfont=Font(
         family='sans serif',
         size=18,
         color='#1f77b4'
-    ),
-    textposition='top right'
+    )
 )
 trace2 = Scatter(
     x=[0, 1, 2],
@@ -22,12 +22,12 @@ trace2 = Scatter(
     mode='lines+markers+text',
     name='Lines and Text',
     text=['Text G', 'Text H', 'Text I'],
+    textposition='bottom',
     textfont=Font(
         family='sans serif',
         size=18,
         color='#ff7f0e'
-    ),
-    textposition='bottom'
+    )
 )
 data = Data([trace1, trace2])
 layout = Layout(

@@ -23,8 +23,8 @@ trace2 = [
   "y" => y, 
   "name" => "density", 
   "ncontours" => 20, 
-  "scl" => "Hot", 
-  "reversescl" => true, 
+  "colorscale" => "Hot", 
+  "reversescale" => true, 
   "showscale" => false, 
   "type" => "histogram2dcontour"
 ]
@@ -49,14 +49,14 @@ layout = [
   "width" => 600, 
   "height" => 550, 
   "xaxis" => [
-    "zeroline" => false, 
     "domain" => [0, 0.85], 
-    "showgrid" => false
+    "showgrid" => false, 
+    "zeroline" => false
   ], 
   "yaxis" => [
-    "zeroline" => false, 
     "domain" => [0, 0.85], 
-    "showgrid" => false
+    "showgrid" => false, 
+    "zeroline" => false
   ], 
   "margin" => ["t" => 50], 
   "hovermode" => "closest", 

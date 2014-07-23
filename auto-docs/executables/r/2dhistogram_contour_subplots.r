@@ -22,8 +22,8 @@ trace2 <- list(
   y = y, 
   name = "density", 
   ncontours = 20, 
-  scl = "Hot", 
-  reversescl = TRUE, 
+  colorscale = "Hot", 
+  reversescale = TRUE, 
   showscale = FALSE, 
   type = "histogram2dcontour"
 )
@@ -48,14 +48,14 @@ layout <- list(
   width = 600, 
   height = 550, 
   xaxis = list(
-    zeroline = FALSE, 
     domain = c(0, 0.85), 
-    showgrid = FALSE
+    showgrid = FALSE, 
+    zeroline = FALSE
   ), 
   yaxis = list(
-    zeroline = FALSE, 
     domain = c(0, 0.85), 
-    showgrid = FALSE
+    showgrid = FALSE, 
+    zeroline = FALSE
   ), 
   margin = list(t = 50), 
   hovermode = "closest", 

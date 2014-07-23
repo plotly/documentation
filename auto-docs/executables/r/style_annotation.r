@@ -22,13 +22,13 @@ layout <- list(
       xref = "x", 
       yref = "y", 
       text = "max=5", 
+      showarrow = TRUE, 
       font = list(
         family = "Courier New, monospace", 
         size = 16, 
         color = "#ffffff"
       ), 
       align = "center", 
-      showarrow = TRUE, 
       arrowhead = 2, 
       arrowsize = 1, 
       arrowwidth = 2, 

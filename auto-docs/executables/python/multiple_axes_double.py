@@ -17,15 +17,19 @@ trace2 = Scatter(
 data = Data([trace1, trace2])
 layout = Layout(
     title='Double Y Axis Example',
-    yaxis={'title': 'yaxis title'},
+    yaxis=YAxis(
+        title='yaxis title'
+    ),
     yaxis2=YAxis(
         title='yaxis2 title',
-        titlefont={'color': 'rgb(148, 103, 189)'},
+        titlefont=Font(
+            color='rgb(148, 103, 189)'
+        ),
         tickfont=Font(
             color='rgb(148, 103, 189)'
         ),
-        side='right',
-        overlaying='y'
+        overlaying='y',
+        side='right'
     )
 )
 fig = Figure(data=data, layout=layout)

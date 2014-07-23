@@ -15,27 +15,27 @@ trace2 <- list(
 data <- list(trace1, trace2)
 layout <- list(
   xaxis = list(
-    zerolinewidth = 4, 
-    gridwidth = 2, 
     showgrid = TRUE, 
-    zerolinecolor = "#969696", 
-    gridcolor = "#bdbdbd", 
-    linecolor = "#636363", 
-    mirror = "ticks", 
     zeroline = TRUE, 
     showline = TRUE, 
+    mirror = "ticks", 
+    gridcolor = "#bdbdbd", 
+    gridwidth = 2, 
+    zerolinecolor = "#969696", 
+    zerolinewidth = 4, 
+    linecolor = "#636363", 
     linewidth = 6
   ), 
   yaxis = list(
-    zerolinewidth = 4, 
-    gridwidth = 2, 
     showgrid = TRUE, 
-    zerolinecolor = "#969696", 
-    gridcolor = "#bdbdbd", 
-    linecolor = "#636363", 
-    mirror = "ticks", 
     zeroline = TRUE, 
     showline = TRUE, 
+    mirror = "ticks", 
+    gridcolor = "#bdbdbd", 
+    gridwidth = 2, 
+    zerolinecolor = "#969696", 
+    zerolinewidth = 4, 
+    linecolor = "#636363", 
     linewidth = 6
   )
 )

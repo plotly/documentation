@@ -15,11 +15,7 @@ trace2 <- list(
   type = "bar"
 )
 data <- list(trace1, trace2)
-layout <- list(
-  xaxis = list(type = "category"), 
-  barmode = "stack", 
-  categories = c("giraffes", "orangutans", "monkeys")
-)
+layout <- list(barmode = "stack")
 
 response <- p$plotly(data, kwargs=list(layout=layout, filename="stacked-bar", fileopt="overwrite", auto_open="FALSE"))
 url <- response$url

@@ -13,8 +13,40 @@ trace2 = Scatter(
 )
 data = Data([trace1, trace2])
 layout = Layout(
-    xaxis={'tickfont': {'color': 'black', 'family': 'Old Standard TT, serif', 'size': 14}, 'showexponent': 'All', 'showticklabels': True, 'title': 'AXIS TITLE', 'tickangle': 45, 'titlefont': {'color': 'lightgrey', 'family': 'Arial, sans-serif', 'size': 18}, 'exponentformat': 'e'},
-    yaxis={'tickfont': {'color': 'black', 'family': 'Old Standard TT, serif', 'size': 14}, 'showexponent': 'All', 'showticklabels': True, 'title': 'AXIS TITLE', 'tickangle': 45, 'titlefont': {'color': 'lightgrey', 'family': 'Arial, sans-serif', 'size': 18}, 'exponentformat': 'e'}
+    xaxis=XAxis(
+        title='AXIS TITLE',
+        titlefont=Font(
+            family='Arial, sans-serif',
+            size=18,
+            color='lightgrey'
+        ),
+        showticklabels=True,
+        tickangle=45,
+        tickfont=Font(
+            family='Old Standard TT, serif',
+            size=14,
+            color='black'
+        ),
+        exponentformat='e',
+        showexponent='All'
+    ),
+    yaxis=YAxis(
+        title='AXIS TITLE',
+        titlefont=Font(
+            family='Arial, sans-serif',
+            size=18,
+            color='lightgrey'
+        ),
+        showticklabels=True,
+        tickangle=45,
+        tickfont=Font(
+            family='Old Standard TT, serif',
+            size=14,
+            color='black'
+        ),
+        exponentformat='e',
+        showexponent='All'
+    )
 )
 fig = Figure(data=data, layout=layout)
 

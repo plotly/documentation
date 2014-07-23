@@ -70,13 +70,13 @@ data <- list(trace1, trace2, trace3, trace4)
 layout <- list(
   title = "Quarter 1 Growth", 
   xaxis = list(
-    zeroline = FALSE, 
+    title = "GDP per Capita", 
     showgrid = FALSE, 
-    title = "GDP per Capita"
+    zeroline = FALSE
   ), 
   yaxis = list(
-    showline = FALSE, 
-    title = "Percent"
+    title = "Percent", 
+    showline = FALSE
   )
 )
 

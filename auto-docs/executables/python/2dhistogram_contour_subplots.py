@@ -24,8 +24,8 @@ trace2 = Histogram2dContour(
     y=y,
     name='density',
     ncontours=20,
-    scl='Hot',
-    reversescl=True,
+    colorscale='Hot',
+    reversescale=True,
     showscale=False
 )
 trace3 = Histogram(
@@ -50,8 +50,16 @@ layout = Layout(
     autosize=False,
     width=600,
     height=550,
-    xaxis={'zeroline': False, 'domain': [0, 0.85], 'showgrid': False},
-    yaxis={'zeroline': False, 'domain': [0, 0.85], 'showgrid': False},
+    xaxis=XAxis(
+        domain=[0, 0.85],
+        showgrid=False,
+        zeroline=False
+    ),
+    yaxis=YAxis(
+        domain=[0, 0.85],
+        showgrid=False,
+        zeroline=False
+    ),
     margin=Margin(
         t=50
     ),

@@ -16,11 +16,7 @@ trace2 = [
   "type" => "bar"
 ]
 data = [trace1, trace2]
-layout = [
-  "xaxis" => ["type" => "category"], 
-  "barmode" => "group", 
-  "categories" => ["giraffes", "orangutans", "monkeys"]
-]
+layout = ["barmode" => "group"]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "grouped-bar", "fileopt" => "overwrite", "auto_open" => "false"])
 plot_url = response["url"]
