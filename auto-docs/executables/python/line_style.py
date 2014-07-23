@@ -66,8 +66,15 @@ trace4 = Scatter(
 data = Data([trace1, trace2, trace3, trace4])
 layout = Layout(
     title='Quarter 1 Growth',
-    xaxis={'zeroline': False, 'showgrid': False, 'title': 'GDP per Capita'},
-    yaxis={'showline': False, 'title': 'Percent'}
+    xaxis=XAxis(
+        title='GDP per Capita',
+        showgrid=False,
+        zeroline=False
+    ),
+    yaxis=YAxis(
+        title='Percent',
+        showline=False
+    )
 )
 fig = Figure(data=data, layout=layout)
 

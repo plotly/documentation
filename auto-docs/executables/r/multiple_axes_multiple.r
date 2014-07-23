@@ -35,35 +35,35 @@ layout <- list(
   width = 800, 
   xaxis = list(domain = c(0.3, 0.7)), 
   yaxis = list(
-    tickfont = list(color = "#1f77b4"), 
+    title = "yaxis title", 
     titlefont = list(color = "#1f77b4"), 
-    title = "yaxis title"
+    tickfont = list(color = "#1f77b4")
   ), 
   yaxis2 = list(
     title = "yaxis2 title", 
     titlefont = list(color = "#ff7f0e"), 
     tickfont = list(color = "#ff7f0e"), 
     anchor = "free", 
+    overlaying = "y", 
     side = "left", 
-    position = 0.15, 
-    overlaying = "y"
+    position = 0.15
   ), 
   yaxis3 = list(
     title = "yaxis4 title", 
     titlefont = list(color = "#d62728"), 
     tickfont = list(color = "#d62728"), 
     anchor = "x", 
-    side = "right", 
-    overlaying = "y"
+    overlaying = "y", 
+    side = "right"
   ), 
   yaxis4 = list(
     title = "yaxis5 title", 
     titlefont = list(color = "#9467bd"), 
     tickfont = list(color = "#9467bd"), 
     anchor = "free", 
+    overlaying = "y", 
     side = "right", 
-    position = 0.85, 
-    overlaying = "y"
+    position = 0.85
   )
 )
 

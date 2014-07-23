@@ -16,22 +16,22 @@ trace2 = [
 data = [trace1, trace2]
 layout = [
   "xaxis" => [
-    "showticklabels" => false, 
-    "ticks" => "", 
+    "autorange" => true, 
     "showgrid" => false, 
     "zeroline" => false, 
     "showline" => false, 
     "autotick" => true, 
-    "autorange" => true
+    "ticks" => "", 
+    "showticklabels" => false
   ], 
   "yaxis" => [
-    "showticklabels" => false, 
-    "ticks" => "", 
+    "autorange" => true, 
     "showgrid" => false, 
     "zeroline" => false, 
     "showline" => false, 
     "autotick" => true, 
-    "autorange" => true
+    "ticks" => "", 
+    "showticklabels" => false
   ]
 ]
 

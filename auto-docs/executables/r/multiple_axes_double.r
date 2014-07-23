@@ -23,8 +23,8 @@ layout <- list(
     title = "yaxis2 title", 
     titlefont = list(color = "rgb(148, 103, 189)"), 
     tickfont = list(color = "rgb(148, 103, 189)"), 
-    side = "right", 
-    overlaying = "y"
+    overlaying = "y", 
+    side = "right"
   )
 )
 

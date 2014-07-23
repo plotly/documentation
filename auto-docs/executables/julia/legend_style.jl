@@ -25,8 +25,7 @@ layout = ["legend" => [
     ], 
     "bgcolor" => "#E2E2E2", 
     "bordercolor" => "#FFFFFF", 
-    "borderwidth" => 2, 
-    "showlegend" => true
+    "borderwidth" => 2
   ]]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "legend-style", "fileopt" => "overwrite", "auto_open" => "false"])

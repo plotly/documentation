@@ -21,7 +21,7 @@ data <- list(
       end = 4, 
       size = 0.1
     ), 
-    scl = list(c(0, "rgb(12,51,131)"),list(0.25, "rgb(10,136,186)"),list(0.5, "rgb(242,211,56)"),list(0.75, "rgb(242,143,56)"),list(1, "rgb(217,30,30)")), 
+    colorscale = list(c(0, "rgb(12,51,131)"),list(0.25, "rgb(10,136,186)"),list(0.5, "rgb(242,211,56)"),list(0.75, "rgb(242,143,56)"),list(1, "rgb(217,30,30)")), 
     type = "histogram2d"
   )
 )
