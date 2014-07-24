@@ -828,7 +828,7 @@ def get_plot_call(language, figure, leaf, mode):
         if plot_options:
             for key, val in plot_options.items():
                 try:
-                    string += ", '{}', '{}'".format(key, tf_dict[val][language])
+                    string += ", '{}', {}".format(key, tf_dict[val][language])
                 except KeyError:
                     string += ", '{}', '{}'".format(key, val)
         string += "));"
@@ -843,7 +843,7 @@ def get_plot_call(language, figure, leaf, mode):
         if plot_options:
             for key, val in plot_options.items():
                 try:
-                    string += ', "{}" => "{}"'.format(key,
+                    string += ', "{}" => {}'.format(key,
                                                       tf_dict[val][language])
                 except KeyError:
                     string += ', "{}" => "{}"'.format(key, val)
@@ -859,7 +859,7 @@ def get_plot_call(language, figure, leaf, mode):
         if plot_options:
             for key, val in plot_options.items():
                 try:
-                    string += ', {}="{}"'.format(key, tf_dict[val][language])
+                    string += ', {}={}'.format(key, tf_dict[val][language])
                 except KeyError:
                     string += ', {}="{}"'.format(key, val)
         string += "))"
@@ -874,7 +874,7 @@ def get_plot_call(language, figure, leaf, mode):
         if plot_options:
             for key, val in plot_options.items():
                 try:
-                    string += ', {}: "{}"'.format(key, tf_dict[val][language])
+                    string += ', {}: {}'.format(key, tf_dict[val][language])
                 except KeyError:
                     string += ', {}: "{}"'.format(key, val)
         string += '}'
