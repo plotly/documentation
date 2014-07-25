@@ -15,5 +15,5 @@ trace2 = [
 ]
 data = [trace1, trace2]
 
-response = Plotly.plot([data], ["filename" => "basic-box-plot", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot([data], ["filename" => "basic-box-plot", "fileopt" => "overwrite", "auto_open" => false])
 plot_url = response["url"]

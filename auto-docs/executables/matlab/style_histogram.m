@@ -38,5 +38,5 @@ layout = struct(...
     'bargap', 0.25, ...
     'bargroupgap', 0.3);
 
-response = plotly(data, struct('layout', layout, 'filename', 'style-histogram', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('layout', layout, 'filename', 'style-histogram', 'fileopt', 'overwrite', 'auto_open', false));
 plot_url = response.url

@@ -47,6 +47,6 @@ layout <- list(
   bargroupgap = 0.3
 )
 
-response <- p$plotly(data, kwargs=list(layout=layout, filename="style-histogram", fileopt="overwrite", auto_open="FALSE"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="style-histogram", fileopt="overwrite", auto_open=FALSE))
 url <- response$url
 filename <- response$filename

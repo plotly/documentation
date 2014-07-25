@@ -17,6 +17,6 @@ trace2 <- list(
 data <- list(trace1, trace2)
 layout <- list(barmode = "overlay")
 
-response <- p$plotly(data, kwargs=list(layout=layout, filename="overlaid-histogram", fileopt="overwrite", auto_open="FALSE"))
+response <- p$plotly(data, kwargs=list(layout=layout, filename="overlaid-histogram", fileopt="overwrite", auto_open=FALSE))
 url <- response$url
 filename <- response$filename

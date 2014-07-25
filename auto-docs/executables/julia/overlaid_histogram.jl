@@ -18,5 +18,5 @@ trace2 = [
 data = [trace1, trace2]
 layout = ["barmode" => "overlay"]
 
-response = Plotly.plot([data], ["layout" => layout, "filename" => "overlaid-histogram", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot([data], ["layout" => layout, "filename" => "overlaid-histogram", "fileopt" => "overwrite", "auto_open" => false])
 plot_url = response["url"]
