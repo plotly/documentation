@@ -1,7 +1,13 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
 
-var x = Math.random() * 50
-var y = Math.random() * 50 + 1
+var x = [];
+var y = [];
+
+for (var i = 0; i < 500; i ++) {
+	x[i] = Math.random();
+	y[i] = Math.random() + 1;
+}
+
 var data = [
   {
     x: x, 

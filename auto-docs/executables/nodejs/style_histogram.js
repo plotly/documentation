@@ -1,7 +1,13 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
 
-var x0 = Math.random() * 500
-var x1 = Math.random() * 500 + 1
+var x0 = [];
+var x1 = [];
+
+for (var i = 0; i < 500; i ++) {
+	x0[i] = Math.random();
+	x1[i] = Math.random() + 1;
+}
+
 var trace1 = {
   x: x0, 
   histnorm: "count", 

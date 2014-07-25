@@ -1,13 +1,23 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
 
-var x0 = (Math.random() * 100) / 5 + 0.5
-var y0 = (Math.random() * 100) / 5 + 0.5
-var x1 = Math.random() * 50
-var y1 = Math.random() * 50 + 1.0
+var x0 = [];
+var y0 = [];
+var x1 = [];
+var y1 = [];
 
+for (var i = 0; i < 500; i ++) {
+	x0[i] = Math.random() / 5 * 0.5;
+	y0[i] = Math.random() / 5 * 0.5;
+}
+
+for (var i = 0; i < 50; i ++) {
+	x1[i] = Math.random();
+	y1[i] = Math.random() + 1;
+}
 
 var x = [x0, x1]
 var y = [y0, y1]
+
 var trace1 = {
   x: x0, 
   y: y0, 
