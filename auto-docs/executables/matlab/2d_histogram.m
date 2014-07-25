@@ -9,5 +9,5 @@ data = {...
     'type', 'histogram2d')...
 };
 
-response = plotly(data, struct('filename', '2d-histogram', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('filename', '2d-histogram', 'fileopt', 'overwrite', 'auto_open', false));
 plot_url = response.url

@@ -13,5 +13,5 @@ trace2 = struct(...
 data = {trace1, trace2};
 layout = struct('barmode', 'overlay');
 
-response = plotly(data, struct('layout', layout, 'filename', 'overlaid-histogram', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('layout', layout, 'filename', 'overlaid-histogram', 'fileopt', 'overwrite', 'auto_open', false));
 plot_url = response.url

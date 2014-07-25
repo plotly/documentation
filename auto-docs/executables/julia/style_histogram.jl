@@ -48,5 +48,5 @@ layout = [
   "bargroupgap" => 0.3
 ]
 
-response = Plotly.plot([data], ["layout" => layout, "filename" => "style-histogram", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot([data], ["layout" => layout, "filename" => "style-histogram", "fileopt" => "overwrite", "auto_open" => false])
 plot_url = response["url"]

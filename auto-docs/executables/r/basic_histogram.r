@@ -10,6 +10,6 @@ data <- list(
   )
 )
 
-response <- p$plotly(data, kwargs=list(filename="basic-histogram", fileopt="overwrite", auto_open="FALSE"))
+response <- p$plotly(data, kwargs=list(filename="basic-histogram", fileopt="overwrite", auto_open=FALSE))
 url <- response$url
 filename <- response$filename

@@ -37,6 +37,6 @@ trace3 <- list(
 )
 data <- list(trace1, trace2, trace3)
 
-response <- p$plotly(data, kwargs=list(filename="2d-histogram-scatter", fileopt="overwrite", auto_open="FALSE"))
+response <- p$plotly(data, kwargs=list(filename="2d-histogram-scatter", fileopt="overwrite", auto_open=FALSE))
 url <- response$url
 filename <- response$filename

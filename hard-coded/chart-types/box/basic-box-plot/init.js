@@ -1,2 +1,4 @@
-y0 = Math.random() * 50
-y1 = Math.random() * 50 + 1
+for (var i = 0; i < 50; i ++) {
+	y0[i] = Math.random();
+	y1[i] = Math.random() + 1;
+}
