@@ -16,11 +16,7 @@ trace2 = [
   "type" => "bar"
 ]
 data = [trace1, trace2]
-layout = [
-  "xaxis" => ["type" => "category"], 
-  "barmode" => "stack", 
-  "categories" => ["giraffes", "orangutans", "monkeys"]
-]
+layout = ["barmode" => "stack"]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "stacked-bar", "fileopt" => "overwrite", "auto_open" => "false"])
 plot_url = response["url"]

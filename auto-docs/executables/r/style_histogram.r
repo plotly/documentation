@@ -44,8 +44,7 @@ layout <- list(
   yaxis = list(title = "Count"), 
   barmode = "overlay", 
   bargap = 0.25, 
-  bargroupgap = 0.3, 
-  bardir = "v"
+  bargroupgap = 0.3
 )
 
 response <- p$plotly(data, kwargs=list(layout=layout, filename="style-histogram", fileopt="overwrite", auto_open="FALSE"))

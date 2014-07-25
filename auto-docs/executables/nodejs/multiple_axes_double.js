@@ -21,8 +21,8 @@ var layout = {
     title: "yaxis2 title", 
     titlefont: {color: "rgb(148, 103, 189)"}, 
     tickfont: {color: "rgb(148, 103, 189)"}, 
-    side: "right", 
-    overlaying: "y"
+    overlaying: "y", 
+    side: "right"
   }
 };
 

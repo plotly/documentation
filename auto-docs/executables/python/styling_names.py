@@ -16,8 +16,22 @@ trace2 = Scatter(
 data = Data([trace1, trace2])
 layout = Layout(
     title='Plot Title',
-    xaxis={'titlefont': {'color': '#7f7f7f', 'family': 'Courier New, monospace', 'size': 18}, 'title': 'x Axis'},
-    yaxis={'titlefont': {'color': '#7f7f7f', 'family': 'Courier New, monospace', 'size': 18}, 'title': 'y Axis'}
+    xaxis=XAxis(
+        title='x Axis',
+        titlefont=Font(
+            family='Courier New, monospace',
+            size=18,
+            color='#7f7f7f'
+        )
+    ),
+    yaxis=YAxis(
+        title='y Axis',
+        titlefont=Font(
+            family='Courier New, monospace',
+            size=18,
+            color='#7f7f7f'
+        )
+    )
 )
 fig = Figure(data=data, layout=layout)
 

@@ -15,9 +15,7 @@ trace2 = Bar(
 )
 data = Data([trace1, trace2])
 layout = Layout(
-    xaxis={'type': 'category'},
-    barmode='group',
-    categories=['giraffes', 'orangutans', 'monkeys']
+    barmode='group'
 )
 fig = Figure(data=data, layout=layout)
 

@@ -15,22 +15,22 @@ trace2 <- list(
 data <- list(trace1, trace2)
 layout <- list(
   xaxis = list(
-    showticklabels = FALSE, 
-    ticks = "", 
+    autorange = TRUE, 
     showgrid = FALSE, 
     zeroline = FALSE, 
     showline = FALSE, 
     autotick = TRUE, 
-    autorange = TRUE
+    ticks = "", 
+    showticklabels = FALSE
   ), 
   yaxis = list(
-    showticklabels = FALSE, 
-    ticks = "", 
+    autorange = TRUE, 
     showgrid = FALSE, 
     zeroline = FALSE, 
     showline = FALSE, 
     autotick = TRUE, 
-    autorange = TRUE
+    ticks = "", 
+    showticklabels = FALSE
   )
 )
 

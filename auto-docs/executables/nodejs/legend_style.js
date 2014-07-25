@@ -22,8 +22,7 @@ var layout = {legend: {
     }, 
     bgcolor: "#E2E2E2", 
     bordercolor: "#FFFFFF", 
-    borderwidth: 2, 
-    showlegend: true
+    borderwidth: 2
   }};
 
 var graph_options = {filename: "legend-style", fileopt: "overwrite", layout: layout, auto_open: "false"}

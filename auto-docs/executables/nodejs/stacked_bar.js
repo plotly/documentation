@@ -13,11 +13,7 @@ var trace2 = {
   type: "bar"
 };
 var data = [trace1, trace2];
-var layout = {
-  xaxis: {type: "category"}, 
-  barmode: "stack", 
-  categories: ["giraffes", "orangutans", "monkeys"]
-};
+var layout = {barmode: "stack"};
 
 var graph_options = {filename: "stacked-bar", fileopt: "overwrite", layout: layout, auto_open: "false"}
 plotly.plot(data, graph_options, function (err, msg) {

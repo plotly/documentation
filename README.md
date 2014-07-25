@@ -190,59 +190,204 @@ Notes:
 * notice the malarkey in the sign in line. `run.py` does a language-dependent replacement of the sign-in line to create that nice django templating we're all accostomed to at this point. It also fills in an appropriate username, like 'Python-API' for `script.py` examples and the appropriate api-key. This is the small caveat, strictly, you need a valid username and api-key to run *any* of the `script.ext` files, but since we just replace this line, as long as `run.py` can match the first 7 characters of the sign in, the rest of the line doesn't really matter. E.g., you could write, `sign_in!!!!!!!!!!!!HHHSSDHSDFHSDFHS!!!` and everything would be totally indifferent.
 * note the use of '>>>filename<<<'. This is some quick templating that happens to make sure the 'id' for the folders is indeed the filame used in the `script.ext` files. Bottom-line, don't write `this-cool-example-i-just-wrote`. Instead write `>>>filename<<<`, and `run.py` will fill the appropriate exmaple name in for you.
 
-## Adding an Example (quick overview)
+## Adding an Example
 
-* Pick a unique name:
-Each example folder needs to have a unique name, otherwise, you'll quickly get an error on compiling. The folder name is also called the *id*, which is also referred to as the *filename* here. There all the same, you write it once when you make the folder.
-* Pick a method:
-(*model*, *script*, or *url*)
-* Fill out the config.json
-* run `python run.py` (this will spit out information on how to *actually* run this program)
-If you've just added one example, try `python run.py process examplename` where examplename is the new example folder. If you've added a number of examples, try `python run.py process new`, which will find all the unprocessed examples and run them.
+### Begin!
 
-## Adding an example by using a JSON model
+You add an example by making a *new* subdirectory in `hard-coded/some-section/some-sub-section/`. Let's add a new example called `rad-bar-example` to `hard-coded/chart-types/bar/`. Note that the name `rad-bar-example` must be *unique*. If it's not you'll get an error early on bringing it to your attention. This is because examples have urls under the same user with filenames corresponding to the example name.
 
-* Pick a unique name, let's call it `unique-example`:
-Each example folder needs to have a unique name, otherwise, you'll quickly get an error on compiling. The folder name is also called the *id*, which is also referred to as the *filename* here. There all the same, you write it once when you make the folder.
-* Add the `model.json` file. This file contains *only* the JSON figure representation used by plotly, e.g.,
+#### Step One:
+
+```bash
+$ mkdir hard-coded/chart-types/bar/rad-bar-example
+```
+
+Now, we need to decide *how* we'll add the example in. Does it require generation via a langauge-specific script? Or, does it apply to many different languages? Skip to the appropirate subsection below!
+
+### Adding Examples for language-specific scripts
+
+This is only for when you need to run a *specific* script that's language specific. Let's add a script to make a Plotly plot from matplotlylib.
+
+#### Step Two: 
+
+```bash
+$ touch hard-coded/chart-types/bar/rad-bar-example/script.mpl
+```
+
+The reason for the `.mpl` extension is to let the `run.py` program know it's specifically for matplotlib. If you were doing `ggplot2`, you would need `.gg` and `r` needs `.r` and so on.
+
+#### Step Three, save the following to `script.mpl`:
+
+```python
+import plotly.plotly as py
+import matplotlib.pyplot as plt
+
+py.sign_in('-', '-')  # this line will be replaced
+
+fig, ax = plt.subplots()
+ax.plot([1,2,3])
+
+py.plot_mpl(fig, filename=">>>filename<<<")
+
+```
+
+Notes:
+* Each language has a very specific sign_in signature that needs to be obeyed. Basically, `run.py` only knows to check for a specific sign-in line and replace it with the proper credentials. Why can't we hardcode this? Then we're publically showing keys in the repo! Plus, if the example keys change, that information shouldn't require hard-coded switching. You can see these here: https://github.com/plotly/documentation/blob/master/run.py#L211.
+* The `>>>filename<<<` string is found and replaced with the example name. That way if we change the examplename, this changes with it. Remember all of these are saving to a *single* user's profile, so we need to make sure all filenames are unique, otherwise we'd risk overwriting examples or having incorrect plots show up in our examples.
+
+#### Step Four, add the `config.json` file:
+
+```bash
+$ touch hard-coded/chart-types/bar/rad-bar-example/config.json
+```
+
+Every example needs a corresponding `config.json` file. See above for content requirements.
+
+#### Step Five, save the following to the `config.json` file:
+
 ```json
 {
-    "data": [],
-    "layout": {}
+    "name": "A Rad Bar Example That Only Runs in<br>Matplotlib",
+    "languages": ["matplotlib"]
 }
 ```
-* Fill out the `config.json` file *inside* the new folder with a unique name that you just created (`unique-example`). Remember, it needs *at least* a `name` parameter and a `languages` parameter.
-* Run `python run.py process unique-example` (it'll spit out *helpful* messages if somethings off)
-* (now you're ready for some publishing!)
 
-## Adding an example by using a script.ext file
+Those two are the only actual requirements in the file, and that's usually all you'll be including there.
 
-* Pick a unique name, let's call it `unique-example`:
-Each example folder needs to have a unique name, otherwise, you'll quickly get an error on compiling. The folder name is also called the *id*, which is also referred to as the *filename* here. There all the same, you write it once when you make the folder.
-* Add the `script.ext` file. For example, if you're using Python, `script.py`. If you're using matlab, `script.m`. If you're using a plotting library within a programming language, you can specify that too, e.g. `script.gg` for a ggplot graph in `r`. There's only *one* real requirement for this file. You need to create a variable in the example called `plor_url` that contains a string with the newly created plotly url. If you don't, the next step just won't work. (see the Python example for a script.py file above)
-* Fill out the `config.json` file *inside* the new folder with a unique name that you just created (`unique-example`). Remember, it needs *at least* a `name` parameter and a `languages` parameter. Here, you *need* the `languages` parameter, but it may be left blank, i.e., `"languages": []`
-* Run `python run.py process unique-example` (it'll spit out *helpful* messages if somethings off)
-* Run run the `language_exceptions.ext` file (e.g. `python_exceptions.py` for Python). This program will capture and save the resulting `plot_url` variable to a special file (see `exepcitons scripts` for more info).
-* (now you're ready for some publishing!)
+#### Step Six:
 
-## Adding an example by using a url.json file
+```bash
+$ python run.py process rad-bar-example
+```
+
+Here, `process` is the command and `rad-bar-example` is the *what-to-process*. Optionally, since this should be the only new example added, you can just use the `new` command.
+
+```bash
+$ python run.py process new
+```
+
+Either way, once you've run one of these commands, the script has YET TO BE RUN! Only the skeleton of the example has been added to our example `tree`. Now we have to actually generate a url for the example.
+
+#### Step Seven, run the appropriate exception script:
+
+```bash
+$ python mpl_exceptions.py
+```
+
+This is specific to matplotlib, there are corresponding `ggplot_exceptions.r`, `matlab_exceptions.m`, and `python_exceptions.py` for other languages.
+
+Alright, from here on out, all examples are treated the exact same! See the end of the section
+
+### Adding Examples with `model.json`, a json figure description
+
+This option is when you've got a general Plotly figure description in json. It can yield multiple examples for multiple languages from one json example.
+
+#### Step Two: 
+
+```bash
+$ touch hard-coded/chart-types/bar/rad-bar-example/model.json
+```
+
+#### Step Three, save this in `model.json`:
+
+```json
+{
+    "data": [
+        {
+            "type": "scatter",
+            "x": [0, 1, 2],
+            "y": [2, 1, 3]
+        }
+    ],
+    "layout":{
+        "title": "i <3 json"
+    }
+}
+```
+
+Don't worry about the order of any of these things, that's taken care of for you.
+
+#### Step Four:
+
+```bash
+$ touch hard-coded/chart-types/bar/rad-bar-example/config.json
+```
+
+#### Step Five, save this in the `config.json` file you just made:
+
+```json
+{
+    "name": "A Rad Bar Example That Runs in<br>R, Python, Julia, and Matlab",
+    "languages": ["r", "python", "julia", "matlab"]
+}
+```
+
+Those two are the only actual requirements in the file, and that's usually all you'll be including there. Note, you can't enter `matplotlib` or `ggplot2` as lanugages... we're not there quite yet!
+
+#### Step Six:
+
+```bash
+$ python run.py process rad-bar-example
+```
+
+Here, `process` is the command and `rad-bar-example` is the *what-to-process*. Optionally, since this should be the only new example added, you can just use the `new` command.
+
+```bash
+$ python run.py process new
+```
+
+Either way, once you've run one of these commands, the script has YET TO BE RUN! Only the skeleton of the example has been added to our example `tree`. Now we have to actually generate a url for the example.
+
+#### Step Seven: celebrate.
+
+Alright! You did it, this is in the `tree` and you're ready to publish. See the end of this section!
+
+### Adding examples via url
 
 Use with caution. You're hard-coding a url which points to a mutable plotly graph. I.e., if you make an example in plotly and the resulting url is `https://plot.ly/~you/100023`, if you *change* your 100023rd plot, though the *current* examples page will not change, *future* pages that re-process your `https://plot.ly/~you/100023` file *will* change.
 
-That said, cool, you can just throw in urls!
+That said, cool, you can just throw urls into a `url.json` file!
 
-* Pick a unique name, let's call it `unique-example`:
-Each example folder needs to have a unique name, otherwise, you'll quickly get an error on compiling. The folder name is also called the *id*, which is also referred to as the *filename* here. There all the same, you write it once when you make the folder.
-* Add the `url.json` file. It looks like this:
 ```json
 {
     "url": "https://plot.ly/~dude-face/77"
 }
 ```
-* Fill out the `config.json` file *inside* the new folder with a unique name that you just created (`unique-example`).
-* Run `python run.py process unique-example` (it'll spit out *helpful* messages if somethings off)
-* (now you're ready for some publishing!)
 
+Not heavily used, walkthrough coming soon!
+
+#### Steps One - Seven: TBD
+
+### Publish!
+
+These final steps are in common for all examples.
+
+#### Step Eight, test (optional):
+
+```bash
+$ python publish.py test
+```
+
+This will give you a ton of output that should be fairly readable. You should check the file, `reports/test-report.txt`. If `rad-bar-example` is listed as a `Complete Example`, woohoo! Otherwise, (a) the script you wrote broke somewhere (unlikely, you're a pro), (b) the exceptions script didn't generate a url, (c) the image server wasn't able to generate a static image, (d) hmmm well, you're on your own. Do note that there should be some helpful information in the `reports/test-report.txt` file, even for failed examples.
+
+The reason there's a publish step is to (a) be able to test the `test` directory on a streambed branch without any side-effects and (b) to especially prevent making changes to `PlotBot` files before they're ready to be published! When you're running in `test` mode, all the urls are ported to the `TestBot` user.
+
+#### Step Nine, the real deal! Publish:
+
+```bash
+$ python publish.py publish
+```
+
+Same deal as step seven, but now check out the `reports/publish-report.txt` file.
+
+#### Step Ten, lookin' good. Port those files to Streambed:
+
+Assuming that you've got the following directory structure. That is, both the documentation and streambed share the same repo...
+
+```
+$ cp published/images/* ../streambed/shelly/api_docs/static/api_docs/image/examples/
+$ cp -R published/api-docs/* ../streambed/shelly/api_docs/templates/api_docs/examples/
+```
 
 ## `run.py`
 

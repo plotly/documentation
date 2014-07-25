@@ -20,13 +20,13 @@ var layout = {
       xref: "x", 
       yref: "y", 
       text: "max=5", 
+      showarrow: true, 
       font: {
         family: "Courier New, monospace", 
         size: 16, 
         color: "#ffffff"
       }, 
       align: "center", 
-      showarrow: true, 
       arrowhead: 2, 
       arrowsize: 1, 
       arrowwidth: 2, 

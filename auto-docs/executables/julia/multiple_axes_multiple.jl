@@ -36,35 +36,35 @@ layout = [
   "width" => 800, 
   "xaxis" => ["domain" => [0.3, 0.7]], 
   "yaxis" => [
-    "tickfont" => ["color" => "#1f77b4"], 
+    "title" => "yaxis title", 
     "titlefont" => ["color" => "#1f77b4"], 
-    "title" => "yaxis title"
+    "tickfont" => ["color" => "#1f77b4"]
   ], 
   "yaxis2" => [
     "title" => "yaxis2 title", 
     "titlefont" => ["color" => "#ff7f0e"], 
     "tickfont" => ["color" => "#ff7f0e"], 
     "anchor" => "free", 
+    "overlaying" => "y", 
     "side" => "left", 
-    "position" => 0.15, 
-    "overlaying" => "y"
+    "position" => 0.15
   ], 
   "yaxis3" => [
     "title" => "yaxis4 title", 
     "titlefont" => ["color" => "#d62728"], 
     "tickfont" => ["color" => "#d62728"], 
     "anchor" => "x", 
-    "side" => "right", 
-    "overlaying" => "y"
+    "overlaying" => "y", 
+    "side" => "right"
   ], 
   "yaxis4" => [
     "title" => "yaxis5 title", 
     "titlefont" => ["color" => "#9467bd"], 
     "tickfont" => ["color" => "#9467bd"], 
     "anchor" => "free", 
+    "overlaying" => "y", 
     "side" => "right", 
-    "position" => 0.85, 
-    "overlaying" => "y"
+    "position" => 0.85
   ]
 ]
 

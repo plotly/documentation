@@ -15,11 +15,7 @@ trace2 <- list(
   type = "bar"
 )
 data <- list(trace1, trace2)
-layout <- list(
-  xaxis = list(type = "category"), 
-  barmode = "group", 
-  categories = c("giraffes", "orangutans", "monkeys")
-)
+layout <- list(barmode = "group")
 
 response <- p$plotly(data, kwargs=list(layout=layout, filename="grouped-bar", fileopt="overwrite", auto_open="FALSE"))
 url <- response$url

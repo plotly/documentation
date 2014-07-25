@@ -24,8 +24,7 @@ layout <- list(legend = list(
     ), 
     bgcolor = "#E2E2E2", 
     bordercolor = "#FFFFFF", 
-    borderwidth = 2, 
-    showlegend = TRUE
+    borderwidth = 2
   ))
 
 response <- p$plotly(data, kwargs=list(layout=layout, filename="legend-style", fileopt="overwrite", auto_open="FALSE"))
