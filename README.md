@@ -32,17 +32,17 @@ test-published/
 reports/
 ```
 
-* `auto-docs` is the folder that holds all of the content automatically gerneated when you run `run.py`
+* `auto-docs` is the folder that holds all of the content automatically generated when you run `run.py`
 * `exceptions` are the examples that couldn't be handled in `run.py` they require `id.json` files to be made which hold a url
 * `hard-coded` is where you're actually allowed to make manual changes :) 
 * `published` is the directory which holds content ready for migrating to plotly's site
 * `test-published` is a directory just like `published` except urls are not migrated to our official `PlotBot` user
 * `test-published/images`/`published/images` hold all the examples identified by corresponding `id` (hard-coded folder name)
-* `test-published/references`/`published/references` hold json objects which are used to generate web content for each langauge
+* `test-published/api-docs/references` and `published/api-docs/references` hold json objects which are used to generate web content for each language
 * `reports` holds information about how the `publish.py` run went. complete/incomplete examples, etc.
 
 
-##user.json file:
+## `user.json` file:
 
 Since we need to make a lot of plots, we need a user to do so. However, we can't have username-api_key pairs for our official docs just floating around.
 
@@ -51,15 +51,15 @@ If you need to use the `run.py` and `publish.py` programs, you'll need the *secr
 
 ## some philosophy
 
-Examples are found by clicking through links until you get to a terminal. Therefore, examples are just directories that *have no sub-directories*. I.e., examples are the *leaves* of the directory tree. If it's not an example, *leaf*, it's a  *branch*.
+Examples are found by clicking through links until you get to a terminal. Therefore, examples are just directories that *have no sub-directories*. I.e., examples are the *leaves* of the directory tree. If it's not an example, *leaf*, it's a *branch*.
 
-## config.json files
+## `config.json` files
 
 Each folder (for *branches* and *leaves*) in `hard-coded` has an associated `config.json` file. This holds both meta-information that plotly will use on the website and also information about organizing and running the examples.
 
-### config.json files for examples *leaves*
+### `config.json` files for examples *leaves*
 
-Config files for Examples require a *human-readable* name: "name" attribute and a list of supported *languages*: "languages" attribute to be considered valid. Here's what you can currently put into the config.json files for examples:
+Config files for Examples require a *human-readable* name, `"name"`, attribute and a list of supported *languages*, `"languages"` attribute to be considered valid. Here's what you can currently put into the `config.json` files for examples:
 
 ```json
 {
@@ -76,29 +76,29 @@ Config files for Examples require a *human-readable* name: "name" attribute and 
 
 Here's what those mean:
 
-* name [required]
+* `"name"` [required]
  * a human-readable name that will show up for the example
-* description [optional]
- * a human-redable text description that will accompany the plot
-* languages [required]
+* `"description"` [optional]
+ * a human-readable text description that will accompany the plot
+* `"languages"` [required]
  * the languages that the example should support
  * if using a ‘script.ext’ file, you may leave `"languages": []` (blank) as they’re inferred
-* plot-options [conditionally-optional]
+* `"plot-options"` [conditionally-optional]
  * if using a ‘model.json’ file, writing in plot options will dictate additional options
- * note: filename and fileopt should NOT be included here, they’re always included
- * if using ‘script.ext’ or ‘url.json’, plot-options will have no effect (may raise exception?)
-* init [optional]
- * assumed ‘false’ if not included
+ * note: `"filename"` and `"fileopt"` should NOT be included here, they’re always included
+ * if using `script.ext` or `url.json`, `"plot-options"` will have no effect
+* `"init"` [optional]
+ * assumed `False` if not included
  * if ‘true’ you NEED to have a ‘init.ext’ for EACH language in languages
  * this is only valid when using model.json
  * adds in the ‘init.ext’ content AFTER sign-in and BEFORE body-code
  * you’ll need this if you want to reference a variable, ‘x’, inside a model, but (1) just writing x (without quotes) is invalid JSON and (2) syntax for definitions varies between languages
  * Note, variable definitions originate from the definitions in ‘model.json’ where variables are in between ‘>>>’ and ‘<<<’, e.g., ‘>>>x<<<’. In this case, the prepend needs to define ‘x’ for the example to be valid.
-* prepend [optional]
+* `"prepend"` [optional]
  * assumed `false` if not included. if `true` then a `prepend.html` file is required that will be included before the code block on the examples pages.
-* append [optional]
+* `"append"` [optional]
  * assumed `false` if not included. if `true` then a `append.html` file is required that will be included before the code block on the examples pages.
-* links [optional]
+* `"links"` [optional]
  * links to be associated with the example, perhaps documentation links?
 
 ### Config files for *branches*
@@ -117,19 +117,19 @@ Branch config files:
 
 Here's what those mean:
 
-* name [required]
+* `"name"` [required]
  * a human-readable name that will show up for the example section
-* description [required]
+* `"description"` [required]
  * description of the example section, as used in meta description tags
-* has_thumnail [required]
+* `"has_thumnail"` [required]
  * is a thumbnail image associated with this grouping?
-* relative_url [required]
+* `"relative_url"` [required]
  * when a user clicks on this group, what url are they redirected to
-* order [optional]
+* `"order"` [optional]
  * you can specify the order of none, some, or all the subdirectories of the branch
 
 
-## script.ext files
+## `script.ext` files
 
 The `script.ext` files are used to create urls from executable code-strings that are language-specific. For example, the python api for plotly has a method called `get_subplots` that returns a figure object pre-filled with a subplot grid. Since there is no way to translate this functionality into other languages, it must be added as a *language-specific* example or and *exception*.
 
@@ -138,13 +138,13 @@ The `script.ext` files have the following guidelines
 * should *not* refer to a filename, but rather a "variable" filename, ">>>filename<<<" (explained later)
 * must define a variable called `plot_url` that contains a string holding the created plotly plot url
 * if using a sign in line, you *must* match the first 7 characters of each of the following sign ins:
- * py.sign* (python)
- * signin(* (matlab)
- * p <- pl* (r)
- * Plotly.* (julia)
- * var plo* (node)
- * p <- pl* (ggplot), same as 'r'
- * py.sign* (matplotlib), same as 'python'
+ * `py.sign`* (python)
+ * `signin(`* (matlab)
+ * `p <- pl`* (r)
+ * `Plotly.`* (julia)
+ * `var plo`* (node)
+ * `p <- pl`* (ggplot), same as 'r'
+ * `py.sign`* (matplotlib), same as 'python'
 
 Yes, that last requirement is annoying, but this line should be set by plotly convention at this point, so it shouldn't cause too much of a headache.
 
@@ -187,8 +187,8 @@ plot_url = py.plot(fig, filename='>>>filename<<<')
 ```
 
 Notes:
-* notice the malarkey in the sign in line. `run.py` does a language-dependent replacement of the sign-in line to create that nice django templating we're all accostomed to at this point. It also fills in an appropriate username, like 'Python-API' for `script.py` examples and the appropriate api-key. This is the small caveat, strictly, you need a valid username and api-key to run *any* of the `script.ext` files, but since we just replace this line, as long as `run.py` can match the first 7 characters of the sign in, the rest of the line doesn't really matter. E.g., you could write, `sign_in!!!!!!!!!!!!HHHSSDHSDFHSDFHS!!!` and everything would be totally indifferent.
-* note the use of '>>>filename<<<'. This is some quick templating that happens to make sure the 'id' for the folders is indeed the filame used in the `script.ext` files. Bottom-line, don't write `this-cool-example-i-just-wrote`. Instead write `>>>filename<<<`, and `run.py` will fill the appropriate exmaple name in for you.
+* notice the malarkey in the sign in line. `run.py` does a language-dependent replacement of the sign-in line to create that nice django templating we're all accustomed to at this point. It also fills in an appropriate username, like 'Python-API' for `script.py` examples and the appropriate api-key. This is the small caveat, strictly, you need a valid username and api-key to run *any* of the `script.ext` files, but since we just replace this line, as long as `run.py` can match the first 7 characters of the sign in, the rest of the line doesn't really matter. E.g., you could write, `sign_in!!!!!!!!!!!!HHHSSDHSDFHSDFHS!!!` and everything would be totally indifferent.
+* note the use of '>>>filename<<<'. This is some quick templating that happens to make sure the 'id' for the folders is indeed the filname used in the `script.ext` files. Bottom-line, don't write `this-cool-example-i-just-wrote`. Instead write `>>>filename<<<`, and `run.py` will fill the appropriate example name in for you.
 
 ## Adding an Example
 
@@ -421,7 +421,7 @@ python run.py meta all
 
 This will look at the intersection of the set of processed ids and the current set of all ids and only update meta information for this intersection. Otherwise, there could be meta information transferred for examples that haven't been run yet.
 
-The `meta` command exists to push through small changes in the config that don't require processing. Be careful though, if you change something like `languages` in the config file, you'll get an error when you run `publish.py`, that's because adding new langauges will require additional processing!
+The `meta` command exists to push through small changes in the config that don't require processing. Be careful though, if you change something like `languages` in the config file, you'll get an error when you run `publish.py`, that's because adding new languages will require additional processing!
 
 Ins and Outs of `run.py`:
 * input
