@@ -389,6 +389,169 @@ $ cp published/images/* ../streambed/shelly/api_docs/static/api_docs/image/examp
 $ cp -R published/api-docs/* ../streambed/shelly/api_docs/templates/api_docs/examples/
 ```
 
+## Editing an Example
+
+Frequently, you'll want to edit an existing example. Depending on what changes you're making, you will be required to do different things. For instance, you might just need to make some changes in the `config.json` file, which likely won't require any reprocessing. However, if you're changing a `model.json`, `script.ext`, or `url.json` file, you *will* need to do different processing procedures.
+
+Let's stick with the same example name and edit `rad-bar-example`.
+
+### Begin!
+
+#### Step One, make your changes:
+
+A no-brainer, but probably a good idea to have a separate commit in git for *just* the changes to the hard-coded things. That'll make it easy to `git checkout --force your-current-branch` to discard stuff.
+
+Of course, if you find yourself needing to edit the hard-coded changes, you can always do this:
+
+```bash
+$ git add that-file-you-were-working-on.txt
+$ git commit --amend
+```
+
+Okay, if you're happy with your changes, you can move on to one of the subsections below depending on what sort of changes you made.
+
+### Updating `meta` information (simple things in `config.json`)
+
+This is a pretty frequent one, so it has a handy shortcut. You can use this to update anything in the `config.json` file *except* for `languages`. For obvious reasons, that will require processing the example again.
+
+#### Step Two, `meta` command:
+
+```bash
+$ python run.py meta rad-bar-example
+```
+
+This will update the `tree` but will not set the example as having been *reprocessed*. You can also just run:
+
+```bash
+$ python run.py meta all
+```
+
+This is idempotent and should always be up to date, it also doesn't do any processing, so it'll be quick. You shouldn't fear entering `all` as the command option.
+
+#### Step Three and Four: celebrate
+
+Alright, everything else is in common with the other procedures, skip below to check out how to publish again.
+
+### Updating a `model.json` file (and possibly it's `config.json` file)
+
+This one *does* require some processing since urls, html-escaped code for multiple languages, and executables for multiple languages need to be updated.
+
+#### Step Two, `process`:
+
+```bash
+$ python run.py process rad-bar-example
+```
+
+This will clear all the `publishing` information from the `tree` for the example and reprocess it as if it has never seen the example before.
+
+Also note, that meta information from the `config.json` file is automatically transferred during processing, so there's no need for the `meta` command in this instance.
+
+**NOTE**: this does *not* remove the static image automatically from the `test/images` or `published/images` directories. That means that a call to `publish.py` will not replace those images! We've kept this behavior because we're not actually using the static images yet. If you'd like to be *complete*, you should run the following from the `documentation` directory:
+
+```bash
+$ rm published/images/rad-bar-example.png
+$ rm test/images/rad-bar-example.png
+```
+
+... Just removing those auto-generated images
+
+#### Step Three and Four: celebrate
+
+Alright, skip below to get along with publishing!
+
+### Updating a `script.ext` file (and possibly it's `config.json` file)
+
+This requires additional steps... you have to both update the tree *and* re-run the exceptional code that pop out of this processing.
+
+#### Step Two, `process` (again):
+
+Just like for updates to a `model.json` file. You'll need to reprocess the example:
+
+```bash
+$ python run.py process rad-bar-example
+```
+
+#### Step Three, delete the exceptional example output!
+
+This is important. This is at least true for the Python exception-running-code. It doesn't rerun examples if it sees the accompanying `.json` file. To be positive, you might as well run this:
+
+```bash
+$ rm exceptions/ggplot2/rad_bar_example.json
+```
+
+Ha! Yes. some programs don't deal with hyphens, `-`. I know, that's annoying... so it goes. *Only* in the `exceptions/` and `executables/` directories are the hyphens turned into underscores, `_`. 
+
+Again, if `rad-bar-example` happens to be a different language, the general pattern is, you guessed it:
+
+```bash
+$ rm exceptions/language/rad_bar_example.json
+```
+
+Where you replace `language` with `ggplot2`, `python`, `matlab`, or `matplotlib`. Currently there haven't been any exceptions created for `r`, `julia`, or `nodejs`. So you won't find yourself here *editing* one, will you?
+
+#### Step Four, re-run the exceptional code
+
+So, since this is a script, it requires running in its native language. If you're updating a pure python example, you'll need to do this:
+
+For python:
+
+```bash
+$ python python_exceptions.py
+```
+
+For matplotlib:
+
+```bash
+$ python mpl_exceptions.py
+```
+
+For matlab:
+
+For ggplot2:
+
+For r:
+
+For julia:
+
+Alright! Back in business and ready to publish! Skip ahead!
+
+### Updating a `url.json` file (and possibly its `config.json` file)
+
+I'll revisit this later. Not requiring documentation for now.
+
+#### Step One - Four: figure it out :)
+
+### Finish up!
+
+Now you're ready to publish again (these next steps are just repeated from above)
+
+#### Step Five, test (optional):
+
+```bash
+$ python publish.py test
+```
+
+This will give you a ton of output that should be fairly readable. You should check the file, `reports/test-report.txt`. If `rad-bar-example` is listed as a `Complete Example`, woohoo! Otherwise, (a) the script you wrote broke somewhere (unlikely, you're a pro), (b) the exceptions script didn't generate a url, (c) the image server wasn't able to generate a static image, (d) hmmm well, you're on your own. Do note that there should be some helpful information in the `reports/test-report.txt` file, even for failed examples.
+
+The reason there's a publish step is to (a) be able to test the `test` directory on a streambed branch without any side-effects and (b) to especially prevent making changes to `PlotBot` files before they're ready to be published! When you're running in `test` mode, all the urls are ported to the `TestBot` user.
+
+#### Step Six, the real deal! Publish:
+
+```bash
+$ python publish.py publish
+```
+
+Same deal as step seven, but now check out the `reports/publish-report.txt` file.
+
+#### Step Seven, lookin' good. Port those files to Streambed:
+
+Assuming that you've got the following directory structure. That is, both the documentation and streambed share the same repo...
+
+```
+$ cp published/images/* ../streambed/shelly/api_docs/static/api_docs/image/examples/
+$ cp -R published/api-docs/* ../streambed/shelly/api_docs/templates/api_docs/examples/
+```
+
 ## `run.py`
 
 This is the first of two major processes that need to happen to prepare `hard-coded` examples to be used on plotly's site. You use this program as follows:
