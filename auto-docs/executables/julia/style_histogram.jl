@@ -45,8 +45,7 @@ layout = [
   "yaxis" => ["title" => "Count"], 
   "barmode" => "overlay", 
   "bargap" => 0.25, 
-  "bargroupgap" => 0.3, 
-  "bardir" => "v"
+  "bargroupgap" => 0.3
 ]
 
 response = Plotly.plot([data], ["layout" => layout, "filename" => "style-histogram", "fileopt" => "overwrite", "auto_open" => "false"])
