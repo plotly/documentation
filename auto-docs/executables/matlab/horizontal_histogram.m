@@ -7,5 +7,5 @@ data = {...
     'type', 'histogram')...
 };
 
-response = plotly(data, struct('filename', 'horizontal-histogram', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('filename', 'horizontal-histogram', 'fileopt', 'overwrite', 'auto_open', false));
 plot_url = response.url

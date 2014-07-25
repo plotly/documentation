@@ -38,5 +38,5 @@ trace3 = [
 ]
 data = [trace1, trace2, trace3]
 
-response = Plotly.plot([data], ["filename" => "2d-histogram-scatter", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot([data], ["filename" => "2d-histogram-scatter", "fileopt" => "overwrite", "auto_open" => false])
 plot_url = response["url"]

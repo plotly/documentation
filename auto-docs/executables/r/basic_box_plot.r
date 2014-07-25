@@ -14,6 +14,6 @@ trace2 <- list(
 )
 data <- list(trace1, trace2)
 
-response <- p$plotly(data, kwargs=list(filename="basic-box-plot", fileopt="overwrite", auto_open="FALSE"))
+response <- p$plotly(data, kwargs=list(filename="basic-box-plot", fileopt="overwrite", auto_open=FALSE))
 url <- response$url
 filename <- response$filename

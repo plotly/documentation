@@ -11,5 +11,5 @@ data = [
   ]
 ]
 
-response = Plotly.plot([data], ["filename" => "horizontal-histogram", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot([data], ["filename" => "horizontal-histogram", "fileopt" => "overwrite", "auto_open" => false])
 plot_url = response["url"]
