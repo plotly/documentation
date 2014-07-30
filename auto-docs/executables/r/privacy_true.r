@@ -10,6 +10,6 @@ data <- list(
   )
 )
 
-response <- p$plotly(data, kwargs=list(filename="privacy-true", fileopt="overwrite", auto_open="FALSE", world_readable="TRUE"))
+response <- p$plotly(data, kwargs=list(filename="privacy-true", fileopt="overwrite", auto_open=FALSE, world_readable=TRUE))
 url <- response$url
 filename <- response$filename
