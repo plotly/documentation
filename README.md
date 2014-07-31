@@ -378,16 +378,32 @@ The reason there's a publish step is to (a) be able to test the `test` directory
 $ python publish.py publish
 ```
 
-Same deal as step seven, but now check out the `reports/publish-report.txt` file.
+Same deal as the previous step, but now check out the `reports/publish-report.txt` file.
 
-#### Step Ten, lookin' good. Port those files to Streambed:
+#### Step Ten, prep your streambed repo
 
-Assuming that you've got the following directory structure. That is, both the documentation and streambed share the same repo...
+Checkout a new branch in the streambed repository on your local machine (`cd` into the streambed repo first, of course).
+
+```bash
+$ git checkout -b rad-example-branch
+```
+
+#### Step Eleven, lookin' good. Port those files to Streambed:
+
+The following assumes both your local copies of the documentation and streambed repositories share the same directory.
 
 ```
 $ cp published/images/* ../streambed/shelly/api_docs/static/api_docs/image/examples/
 $ cp -R published/api-docs/* ../streambed/shelly/api_docs/templates/api_docs/examples/
 ```
+
+#### Step Twelve. Commit/Push those changes:
+
+You should have unstaged changes on your new branch in your local version of streambed. Commit them!
+
+Then, push those changes to the remote version of streambed.
+
+Finally, you'll need to deploy, that's definitely beyond the scope of this readme!
 
 ## Editing an Example
 
@@ -525,6 +541,8 @@ I'll revisit this later. Not requiring documentation for now.
 
 Now you're ready to publish again (these next steps are just repeated from above)
 
+These final steps are in common for all examples.
+
 #### Step Five, test (optional):
 
 ```bash
@@ -541,16 +559,32 @@ The reason there's a publish step is to (a) be able to test the `test` directory
 $ python publish.py publish
 ```
 
-Same deal as step seven, but now check out the `reports/publish-report.txt` file.
+Same deal as the previous step, but now check out the `reports/publish-report.txt` file.
 
-#### Step Seven, lookin' good. Port those files to Streambed:
+#### Step Seven, prep your streambed repo
 
-Assuming that you've got the following directory structure. That is, both the documentation and streambed share the same repo...
+Checkout a new branch in the streambed repository on your local machine (`cd` into the streambed repo first, of course).
+
+```bash
+$ git checkout -b rad-example-branch
+```
+
+#### Step Eight, lookin' good. Port those files to Streambed:
+
+The following assumes both your local copies of the documentation and streambed repositories share the same directory.
 
 ```
 $ cp published/images/* ../streambed/shelly/api_docs/static/api_docs/image/examples/
 $ cp -R published/api-docs/* ../streambed/shelly/api_docs/templates/api_docs/examples/
 ```
+
+#### Step Nine. Commit/Push those changes:
+
+You should have unstaged changes on your new branch in your local version of streambed. Commit them!
+
+Then, push those changes to the remote version of streambed.
+
+Finally, you'll need to deploy, that's definitely beyond the scope of this readme!
 
 ## `run.py`
 
