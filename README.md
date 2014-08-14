@@ -394,7 +394,7 @@ The following assumes both your local copies of the documentation and streambed 
 
 ```
 $ cp published/images/* ../streambed/shelly/api_docs/static/api_docs/image/examples/
-$ cp -R published/api-docs/* ../streambed/shelly/api_docs/templates/api_docs/examples/
+$ cp -R published/api-docs/* ../streambed/shelly/templates/api_docs/templates/includes/examples/
 ```
 
 #### Step Twelve. Commit/Push those changes:
@@ -575,7 +575,7 @@ The following assumes both your local copies of the documentation and streambed 
 
 ```
 $ cp published/images/* ../streambed/shelly/api_docs/static/api_docs/image/examples/
-$ cp -R published/api-docs/* ../streambed/shelly/api_docs/templates/api_docs/examples/
+$ cp -R published/api-docs/* ../streambed/shelly/templates/api_docs/templates/includes/examples/
 ```
 
 #### Step Nine. Commit/Push those changes:
