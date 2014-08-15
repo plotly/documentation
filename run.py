@@ -507,10 +507,10 @@ def process_model_leaf(leaf, options):
         except KeyError:
             plot_options = {}
         plot_options['filename'] = leaf['id']
-        data = json.dumps({'json_figure': model,
-                           'language': 'python',
-                           'pretty': True,
-                           'plot_options': plot_options})
+        data = {'json_figure': model,
+                'language': 'python',
+                'pretty': True,
+                'plot_options': plot_options}
         data['un'] = users['tester']['un']
         data['ak'] = users['tester']['ak']
         data['plot_options']['auto_open'] = False
