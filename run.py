@@ -507,7 +507,6 @@ def process_model_leaf(leaf, options):
         except KeyError:
             plot_options = {}
         plot_options['filename'] = leaf['id']
-        plot_options['fileopt'] = 'overwrite'
         data = json.dumps({'json_figure': model,
                            'language': 'python',
                            'pretty': True,
@@ -538,7 +537,8 @@ def process_model_leaf(leaf, options):
         except KeyError:
             plot_options = {}
         plot_options['filename'] = leaf['id']
-        plot_options['fileopt'] = 'overwrite'
+        if language != 'python':
+            plot_options['fileopt'] = 'overwrite'
         data = {'json_figure': model,
                 'pretty': True,
                 'plot_options': plot_options}
