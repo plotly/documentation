@@ -543,7 +543,7 @@ def process_model_leaf(leaf, options):
                 'pretty': True,
                 'plot_options': plot_options}
         if language == 'nodejs' or language == 'js':  # todo, temporary fix!
-            data['language'] = 'not_node'  # TODO change to 'node' later
+            data['language'] = 'node'
         else:
             data['language'] = language
         # get documentation code...
