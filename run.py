@@ -501,21 +501,20 @@ def process_model_leaf(leaf, options):
     if not model_languages:
         model_languages = leaf['config']['languages']
     if 'python' not in model_languages:
-        code = ""
-        if 'init' in leaf['config'] and leaf['config']['init']:
-            init_file = "init.{}".format(lang_to_ext['python'])
-            if init_file in leaf['files']:
-                with open(leaf['files'][init_file]) as f:
-                    code += f.read() + "\n"
-            else:
-                raise plotly.exceptions.PlotlyError(
-                    "couldn't find '{}' in '{}'"
-                    "".format(init_file, leaf['path'])
-                )
-        data = json.dumps({'json_figure': model,
-                           'language': 'python',
-                           'pretty': True})
-        res = get_plotly_response(translator_server, data=data)
+        init = get_init_code(leaf)
+        try:
+            plot_options = leaf['config']['plot-options']
+        except KeyError:
+            plot_options = {}
+        plot_options['filename'] = leaf['id']
+        data = {'json_figure': model,
+                'language': 'python',
+                'pretty': True,
+                'plot_options': plot_options}
+        data['un'] = users['tester']['un']
+        data['ak'] = users['tester']['ak']
+        data['plot_options']['auto_open'] = False
+        res = get_plotly_response(translator_server, data=json.dumps(data))
         if not res:
             raise plotly.exceptions.PlotlyError(
                 "couldn't connect to plotly at resource. '{}'"
@@ -524,34 +523,31 @@ def process_model_leaf(leaf, options):
             raise plotly.exceptions.PlotlyError(
                 "unsuccessful request at resource. '{}'"
                 "".format(translator_server))
-        code += res.content
+        code = res.content
         code = code.replace("<pre>", "").replace("</pre>", "")
         code = code.replace('">>>', "").replace('<<<"', "")
         code = code.replace("'>>>", "").replace("<<<'", "")
-        exec_string = format_code(code, 'python', leaf, model, 'execution')
-        leaf['python-exec'] = exec_string
+        raw_exec_code = init + remove_header(code)
+        leaf['python-exec'] = raw_exec_code
     for language in model_languages:
         time.sleep(.2)  # added to help with connection errors
-        code = ""
-        if 'init' in leaf['config'] and leaf['config']['init']:
-            init_file = "init.{}".format(lang_to_ext[language])
-            if init_file in leaf['files']:
-                with open(leaf['files'][init_file]) as f:
-                    code += f.read() + "\n"
-            else:
-                raise plotly.exceptions.PlotlyError(
-                    "couldn't find '{}' in '{}'"
-                    "".format(init_file, leaf['path'])
-                )
+        init = get_init_code(leaf)
+        try:
+            plot_options = leaf['config']['plot-options']
+        except KeyError:
+            plot_options = {}
+        plot_options['filename'] = leaf['id']
+        if language != 'python':
+            plot_options['fileopt'] = 'overwrite'
+        data = {'json_figure': model,
+                'pretty': True,
+                'plot_options': plot_options}
         if language == 'nodejs' or language == 'js':  # todo, temporary fix!
-            data = json.dumps({'json_figure': model,
-                               'language': 'node',
-                               'pretty': True})
+            data['language'] = 'node'
         else:
-            data = json.dumps({'json_figure': model,
-                               'language': language,
-                               'pretty': True})
-        res = get_plotly_response(translator_server, data=data)
+            data['language'] = language
+        # get documentation code...
+        res = get_plotly_response(translator_server, data=json.dumps(data))
         if not res:
             raise plotly.exceptions.PlotlyError(
                 "couldn't connect to plotly at resource. '{}'"
@@ -560,17 +556,34 @@ def process_model_leaf(leaf, options):
             raise plotly.exceptions.PlotlyError(
                 "unsuccessful request at resource. '{}'"
                 "".format(translator_server))
-        code += res.content
+        code = res.content
         code = code.replace("<pre>", "").replace("</pre>", "")
         code = code.replace('">>>', "").replace('<<<"', "")
         code = code.replace("'>>>", "").replace("<<<'", "")
-        exec_string = format_code(code, language, leaf, model, 'execution')
-        if language == 'python':
-            leaf['python-exec'] = exec_string
-        code_string = format_code(code, language, leaf, model)
-        code_path = save_code(code_string, leaf, language, 'documentation')
+        raw_doc_code = init + remove_header(code)
+        doc_code = format_code(raw_doc_code, language, leaf)
+        code_path = save_code(doc_code, leaf, language, 'documentation')
         leaf[language] = code_path
-        save_code(exec_string, leaf, language, 'execution')
+        # get exec code...
+        time.sleep(.2)  # added to help with connection errors
+        data['un'] = users['tester']['un']
+        data['ak'] = users['tester']['ak']
+        data['plot_options']['auto_open'] = False
+        res = get_plotly_response(translator_server, data=json.dumps(data))
+        if not res:
+            raise plotly.exceptions.PlotlyError(
+                "couldn't connect to plotly at resource. '{}'"
+                "".format(translator_server))
+        elif res.status_code != 200:
+            raise plotly.exceptions.PlotlyError(
+                "unsuccessful request at resource. '{}'"
+                "".format(translator_server))
+        code = res.content
+        code = code.replace("<pre>", "").replace("</pre>", "")
+        code = code.replace('">>>', "").replace('<<<"', "")
+        code = code.replace("'>>>", "").replace("<<<'", "")
+        raw_exec_code = init + remove_header(code)
+        save_code(raw_exec_code, leaf, language, 'execution')
     if 'python-exec' in leaf:
         try:
             exec_locals = exec_python_string(leaf['python-exec'])
@@ -629,6 +642,8 @@ def process_url_leaf(leaf, options):
     2. translate model to language with translator
     3. save code
     """
+    print "\tskipping {} in {}".format(files['url'], leaf['path'])
+    return
     print "\tprocessing {} in {}".format(files['url'], leaf['path'])
     leaf['type'] = 'url'
     try:
@@ -731,6 +746,28 @@ def get_plotly_response(resource, data=None, attempts=2, sleep=5):
             time.sleep(sleep)
 
 
+def remove_header(string):
+    lines = string.splitlines()
+    while not lines[0] or lines[0][0] in ['#', '%', '/']:
+        lines.pop(0)
+    return '\n'.join(lines)
+
+
+def get_init_code(leaf):
+    if 'init' in leaf['config'] and leaf['config']['init']:
+        init_file = "init.{}".format(lang_to_ext['python'])
+        if init_file in leaf['files']:
+            with open(leaf['files'][init_file]) as f:
+                return f.read() + "\n"
+        else:
+            raise plotly.exceptions.PlotlyError(
+                "couldn't find '{}' in '{}'"
+                "".format(init_file, leaf['path'])
+            )
+    else:
+        return ""
+
+
 def save_code(code, leaf, language, mode):
     if mode == 'documentation':
         leaf_folder = os.path.join(dirs['run'],
@@ -760,141 +797,12 @@ def exec_python_string(exec_string):
     return locals()
 
 
-def format_code(body_string, language, leaf, figure, mode='documentation'):
-    lines_between_sections = 2
-    file_import = imports[language]
-    file_sign_in = sign_in[mode][language]
-    plot_call = get_plot_call(language, figure, leaf, mode=mode)
-    sections = [file_import, file_sign_in, body_string, plot_call]
-    sections = [sec for sec in sections if sec]
-    code_string = ("\n" * lines_between_sections).join(sections)
-    if mode == 'documentation':
-        code_string = cgi.escape(code_string)
-    return code_string
-
-
-def get_plot_call(language, figure, leaf, mode):
-    """define strings for actual plot calls
-
-    :rtype : str
-    """
-    tf_dict = {
-        True: dict(
-            python='True',
-            matlab='true',
-            julia='true',
-            r='TRUE',
-            nodejs='true'
-        ),
-        False: dict(
-            python='False',
-            matlab='false',
-            julia='false',
-            r='FALSE',
-            nodejs='false'
-        )
-    }
-    filename = leaf['path'].split(os.path.sep)[-1]
-    try:
-        plot_options = leaf['config']['plot-options']
-    except KeyError:
-        plot_options = {}
-    else:
-        if 'world_readable' in plot_options:
-            if not plot_options['world_readable']:
-                leaf['private'] = True
-    if mode == 'execution':
-        plot_options['auto_open'] = False
-    if language == 'python':
-        string = "plot_url = py.plot("
-        if 'layout' in figure:
-            string += 'fig, '
-        else:
-            string += 'data, '
-        string += "filename='{}'".format(filename)
-        if plot_options:
-            for key, val in plot_options.items():
-                try:
-                    string += ", {}={}".format(key, tf_dict[val][language])
-                except KeyError:
-                    string += ", {}={}".format(key, val)
-        return string + ")"
-    elif language == 'matlab':
-        string = "response = plotly(data, struct("
-        if 'layout' in figure:
-            string += "'layout', layout, "
-        string += "'filename', '{}'".format(filename)
-        string += ", 'fileopt', 'overwrite'"
-        if plot_options:
-            for key, val in plot_options.items():
-                try:
-                    string += ", '{}', {}".format(key, tf_dict[val][language])
-                except KeyError:
-                    string += ", '{}', '{}'".format(key, val)
-        string += "));"
-        string += "\nplot_url = response.url"
-        return string
-    elif language == 'julia':
-        string = "response = Plotly.plot([data], ["
-        if 'layout' in figure:
-            string += '"layout" => layout, '
-        string += '"filename" => "{}"'.format(filename)
-        string += ', "fileopt" => "overwrite"'
-        if plot_options:
-            for key, val in plot_options.items():
-                try:
-                    string += ', "{}" => {}'.format(key,
-                                                      tf_dict[val][language])
-                except KeyError:
-                    string += ', "{}" => "{}"'.format(key, val)
-        string += "])"
-        string += '\nplot_url = response["url"]'
-        return string
-    elif language == 'r':
-        string = 'response <- p$plotly(data, kwargs=list('
-        if 'layout' in figure:
-            string += 'layout=layout, '
-        string += 'filename="{}"'.format(filename)
-        string += ', fileopt="overwrite"'
-        if plot_options:
-            for key, val in plot_options.items():
-                try:
-                    string += ', {}={}'.format(key, tf_dict[val][language])
-                except KeyError:
-                    string += ', {}="{}"'.format(key, val)
-        string += "))"
-        string += '\nurl <- response$url\n'
-        string += 'filename <- response$filename'
-        return string
-    elif language == 'nodejs':
-        string = 'var graph_options = {{filename: "{}"'.format(filename)
-        string += ', fileopt: "overwrite"'
-        if 'layout' in figure:
-            string += ', layout: layout'
-        if plot_options:
-            for key, val in plot_options.items():
-                try:
-                    string += ', {}: {}'.format(key, tf_dict[val][language])
-                except KeyError:
-                    string += ', {}: "{}"'.format(key, val)
-        string += '}'
-        string += "\nplotly.plot("
-        if 'data' in figure and figure['data']:
-            string += "data"
-        else:
-            string += "[]"
-        string += ", graph_options, function (err, msg) {"
-        string += "\n    console.log(msg);"
-        string += "\n});"
-        return string
-    elif language == 'js':
-        string = 'Plotly.plot(divid, data'
-        if 'layout' in figure:
-            string += ', layout'
-        string += ');'
-        return string
-    else:
-        return ''
+def format_code(code, language, leaf):
+    lines = code.splitlines()
+    for lino, line in enumerate(lines):
+        if line[:6] == sign_in['execution'][language][:6]:
+            lines[lino] = sign_in['documentation'][language]
+    return cgi.escape('\n'.join(lines))
 
 
 def trim_tree(section):
