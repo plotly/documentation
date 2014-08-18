@@ -770,7 +770,6 @@ def get_plotly_response(resource, data=None, attempts=2, sleep=5):
                 print "\t\tcouldn't connect to plotly, trying again..."
             time.sleep(sleep)
 
-
 def remove_header(string):
     lines = string.splitlines()
     while not lines[0] or lines[0][0] in ['#', '%', '/']:
