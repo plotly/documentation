@@ -510,7 +510,7 @@ def process_model_leaf(leaf, options):
             "{} required and could not be opened in {}"
             "".format(files['model'], leaf['path']))
     model_languages = [language for language in languages
-                        if language in options]
+                       if language in options]
     if not model_languages:
         model_languages = leaf['config']['languages']
     if 'python' not in model_languages:
@@ -769,6 +769,7 @@ def get_plotly_response(resource, data=None, attempts=2, sleep=5):
             if attempt < attempts:
                 print "\t\tcouldn't connect to plotly, trying again..."
             time.sleep(sleep)
+
 
 def remove_header(string):
     lines = string.splitlines()
