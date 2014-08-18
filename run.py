@@ -457,9 +457,10 @@ def process_tree(section, processed_ids, options, threads):
             example_count += 1
             try:
                 if files['model'] in section['files']:
-                    threads += [threading.Thread(name="model-thread",
-                                                 target=process_model_leaf,
-                                                 args=(section, options))]
+                    threads += [threading.Thread(
+                        name="model-thread-{}".format(section['id']),
+                        target=process_model_leaf,
+                        args=(section, options))]
                     threads[-1].setDaemon(True)
                     print(
                         "\tstarting {} of {}: {} (model)"
@@ -528,14 +529,16 @@ def process_model_leaf(leaf, options):
         data['ak'] = users['tester']['ak']
         data['plot_options']['auto_open'] = False
         res = get_plotly_response(translator_server, data=json.dumps(data))
-        if not res:
-            raise plotly.exceptions.PlotlyError(
-                "couldn't connect to plotly at resource. '{}'"
-                "".format(translator_server))
-        elif res.status_code != 200:
-            raise plotly.exceptions.PlotlyError(
-                "unsuccessful request at resource. '{}'"
-                "".format(translator_server))
+        if not res or res.status_code != 200:
+            leaf[language] = None
+            return
+            # raise plotly.exceptions.PlotlyError(
+            #     "couldn't connect to plotly at resource. '{}'"
+            #     "".format(translator_server))
+        # elif res.status_code != 200:
+            # raise plotly.exceptions.PlotlyError(
+            #     "unsuccessful request at resource. '{}'"
+            #     "".format(translator_server))
         code = res.content
         code = code.replace("<pre>", "").replace("</pre>", "")
         code = code.replace('">>>', "").replace('<<<"', "")
@@ -544,7 +547,9 @@ def process_model_leaf(leaf, options):
         leaf['python-exec'] = raw_exec_code
     threads = []
     for iii, language in enumerate(model_languages):
-        threads += [threading.Thread(name="sub-thread-{}".format(language),
+        name = "sub-thread-{}-{}".format(language,
+                                         threading.current_thread().name)
+        threads += [threading.Thread(name=name,
                                      target=process_model_worker,
                                      args=(leaf, language, model))]
         threads[iii].setDaemon(True)
@@ -609,14 +614,16 @@ def process_model_worker(leaf, language, model):
     data['ak'] = users['tester']['ak']
     data['plot_options']['auto_open'] = False
     res = get_plotly_response(translator_server, data=json.dumps(data))
-    if not res:
-        raise plotly.exceptions.PlotlyError(
-            "couldn't connect to plotly at resource. '{}'"
-            "".format(translator_server))
-    elif res.status_code != 200:
-        raise plotly.exceptions.PlotlyError(
-            "unsuccessful request at resource. '{}'"
-            "".format(translator_server))
+    if not res or res.status_code != 200:
+        leaf[language] = None
+        return
+        # raise plotly.exceptions.PlotlyError(
+        #     "couldn't connect to plotly at resource. '{}'"
+        #     "".format(translator_server))
+    # elif res.status_code != 200:
+        # raise plotly.exceptions.PlotlyError(
+        #     "unsuccessful request at resource. '{}'"
+        #     "".format(translator_server))
     code = res.content
     code = code.replace("<pre>", "").replace("</pre>", "")
     code = code.replace('">>>', "").replace('<<<"', "")
@@ -767,7 +774,9 @@ def get_plotly_response(resource, data=None, attempts=2, sleep=5):
             return res
         except RequestException:
             if attempt < attempts:
-                print "\t\tcouldn't connect to plotly, trying again..."
+                print("\t\tcouldn't connect to plotly, trying again with "
+                      "thread: {thread_id}"
+                      "".format(thread_id=threading.current_thread().name))
             time.sleep(sleep)
 
 
