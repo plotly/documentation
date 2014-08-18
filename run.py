@@ -1,3 +1,4 @@
+import threading
 import requests
 import json
 import os
@@ -449,16 +450,28 @@ def validate_leaf_structure(section):
                                 "".format(section['path']))
 
 
-def process_tree(section, processed_ids, options):
+def process_tree(section, processed_ids, options, threads):
     if section:
         if section['is_leaf']:
             global example_count
             example_count += 1
-            print("\t{} of {}".format(example_count, total_examples)),
             try:
                 if files['model'] in section['files']:
-                    process_model_leaf(section, options)
+                    threads += [threading.Thread(name="model-thread",
+                                                 target=process_model_leaf,
+                                                 args=(section, options))]
+                    threads[-1].setDaemon(True)
+                    print(
+                        "\tstarting {} of {}: {} (model)"
+                        "".format(example_count, total_examples, section['id'])
+                    )
+                    threads[-1].start()
+                    # process_model_leaf(section, options)
                 elif any(['script' in fn for fn in section['files']]):
+                    print(
+                        "\tstarting {} of {}: {} (script)"
+                        "".format(example_count, total_examples, section['id'])
+                    )
                     process_script_leaf(section, options)
                 elif files['url'] in section['files']:
                     process_url_leaf(section, options)
@@ -472,7 +485,7 @@ def process_tree(section, processed_ids, options):
                 processed_ids.add(section['id'])
         else:
             for branch in section['branches'].values():
-                process_tree(branch, processed_ids, options)
+                process_tree(branch, processed_ids, options, threads)
 
 
 def process_model_leaf(leaf, options):
@@ -483,7 +496,7 @@ def process_model_leaf(leaf, options):
     4. save code
     5. save url
     """
-    print "\tprocessing {} in {}".format(files['model'], leaf['path'])
+    # print "\tprocessing {} in {}".format(files['model'], leaf['path'])
     leaf['type'] = 'model'
     try:
         with open(leaf['files'][files['model']]) as f:
@@ -497,7 +510,7 @@ def process_model_leaf(leaf, options):
             "{} required and could not be opened in {}"
             "".format(files['model'], leaf['path']))
     model_languages = [language for language in languages
-                        if language in options]
+                       if language in options]
     if not model_languages:
         model_languages = leaf['config']['languages']
     if 'python' not in model_languages:
@@ -529,61 +542,15 @@ def process_model_leaf(leaf, options):
         code = code.replace("'>>>", "").replace("<<<'", "")
         raw_exec_code = init + remove_header(code)
         leaf['python-exec'] = raw_exec_code
-    for language in model_languages:
-        time.sleep(.2)  # added to help with connection errors
-        init = get_init_code(leaf)
-        try:
-            plot_options = leaf['config']['plot-options']
-        except KeyError:
-            plot_options = {}
-        plot_options['filename'] = leaf['id']
-        if language != 'python':
-            plot_options['fileopt'] = 'overwrite'
-        data = {'json_figure': model,
-                'pretty': True,
-                'plot_options': plot_options}
-        if language == 'nodejs' or language == 'js':  # todo, temporary fix!
-            data['language'] = 'node'
-        else:
-            data['language'] = language
-        # get documentation code...
-        res = get_plotly_response(translator_server, data=json.dumps(data))
-        if not res:
-            raise plotly.exceptions.PlotlyError(
-                "couldn't connect to plotly at resource. '{}'"
-                "".format(translator_server))
-        elif res.status_code != 200:
-            raise plotly.exceptions.PlotlyError(
-                "unsuccessful request at resource. '{}'"
-                "".format(translator_server))
-        code = res.content
-        code = code.replace("<pre>", "").replace("</pre>", "")
-        code = code.replace('">>>', "").replace('<<<"', "")
-        code = code.replace("'>>>", "").replace("<<<'", "")
-        raw_doc_code = init + remove_header(code)
-        doc_code = format_code(raw_doc_code, language, leaf)
-        code_path = save_code(doc_code, leaf, language, 'documentation')
-        leaf[language] = code_path
-        # get exec code...
-        time.sleep(.2)  # added to help with connection errors
-        data['un'] = users['tester']['un']
-        data['ak'] = users['tester']['ak']
-        data['plot_options']['auto_open'] = False
-        res = get_plotly_response(translator_server, data=json.dumps(data))
-        if not res:
-            raise plotly.exceptions.PlotlyError(
-                "couldn't connect to plotly at resource. '{}'"
-                "".format(translator_server))
-        elif res.status_code != 200:
-            raise plotly.exceptions.PlotlyError(
-                "unsuccessful request at resource. '{}'"
-                "".format(translator_server))
-        code = res.content
-        code = code.replace("<pre>", "").replace("</pre>", "")
-        code = code.replace('">>>', "").replace('<<<"', "")
-        code = code.replace("'>>>", "").replace("<<<'", "")
-        raw_exec_code = init + remove_header(code)
-        save_code(raw_exec_code, leaf, language, 'execution')
+    threads = []
+    for iii, language in enumerate(model_languages):
+        threads += [threading.Thread(name="sub-thread-{}".format(language),
+                                     target=process_model_worker,
+                                     args=(leaf, language, model))]
+        threads[iii].setDaemon(True)
+        threads[iii].start()
+    for thread in threads:
+        thread.join()
     if 'python-exec' in leaf:
         try:
             exec_locals = exec_python_string(leaf['python-exec'])
@@ -600,13 +567,71 @@ def process_model_leaf(leaf, options):
             )
 
 
+def process_model_worker(leaf, language, model):
+    # time.sleep(.2)  # added to help with connection errors
+    init = get_init_code(leaf)
+    try:
+        plot_options = leaf['config']['plot-options']
+    except KeyError:
+        plot_options = {}
+    plot_options['filename'] = leaf['id']
+    plot_options['fileopt'] = 'overwrite'
+    data = {'json_figure': model,
+            'pretty': True,
+            'plot_options': plot_options}
+    if language == 'nodejs' or language == 'js':  # todo, temporary fix!
+        data['language'] = 'node'
+    else:
+        data['language'] = language
+    # get documentation code...
+    res = get_plotly_response(translator_server, data=json.dumps(data))
+    if not res or res.status_code != 200:
+        leaf[language] = None
+        return
+        # raise plotly.exceptions.PlotlyError(
+        #     "couldn't connect to plotly at resource. '{}'"
+        #     "".format(translator_server))
+    # elif res.status_code != 200:
+        # raise plotly.exceptions.PlotlyError(
+        #     "unsuccessful request at resource. '{}'"
+        #     "".format(translator_server))
+    code = res.content
+    code = code.replace("<pre>", "").replace("</pre>", "")
+    code = code.replace('">>>', "").replace('<<<"', "")
+    code = code.replace("'>>>", "").replace("<<<'", "")
+    raw_doc_code = init + remove_header(code)
+    doc_code = format_code(raw_doc_code, language, leaf)
+    code_path = save_code(doc_code, leaf, language, 'documentation')
+    leaf[language] = code_path
+    # get exec code...
+    # time.sleep(.2)  # added to help with connection errors
+    data['un'] = users['tester']['un']
+    data['ak'] = users['tester']['ak']
+    data['plot_options']['auto_open'] = False
+    res = get_plotly_response(translator_server, data=json.dumps(data))
+    if not res:
+        raise plotly.exceptions.PlotlyError(
+            "couldn't connect to plotly at resource. '{}'"
+            "".format(translator_server))
+    elif res.status_code != 200:
+        raise plotly.exceptions.PlotlyError(
+            "unsuccessful request at resource. '{}'"
+            "".format(translator_server))
+    code = res.content
+    code = code.replace("<pre>", "").replace("</pre>", "")
+    code = code.replace('">>>', "").replace('<<<"', "")
+    code = code.replace("'>>>", "").replace("<<<'", "")
+    raw_exec_code = init + remove_header(code)
+    save_code(raw_exec_code, leaf, language, 'execution')
+
+
 def process_script_leaf(leaf, options):
     """
     1. for each language with 'model' as the *source*...
     2. load script.ext file
     3. save code
     """
-    print "\tprocessing scripts in {}".format(leaf['path'])
+    # print "\tprocessing scripts in {}".format(leaf['path'])
     leaf['type'] = 'script'
     script_file = [fn for fn in leaf['files'] if 'script' in fn][0]
     language = ext_to_lang[script_file.split('.')[-1]]
@@ -823,6 +848,26 @@ def trim_tree(section):
                 trim_tree(branch)
 
 
+def remove_broken_branches(section, processed_ids, previous_leaf_ids):
+    if section:
+        if section['is_leaf']:
+            languages = section['config']['languages']
+            if not all((section[language] for language in languages)):
+                processed_ids.remove(section['id'])
+                try:
+                    previous_leaf_ids.remove(section['id'])
+                except KeyError:
+                    pass
+                return True
+        else:
+            for branch_key, branch in section['branches'].items():
+                remove = remove_broken_branches(branch,
+                                                processed_ids,
+                                                previous_leaf_ids)
+                if remove:
+                    section['branches'][branch_key] = None
+
+
 def reset_reprocessed_leaves(section, processed_ids):
     if section:
         if section['is_leaf']:
@@ -864,13 +909,16 @@ def nested_merge(old, update):
     new = dict()
     new.update(old)
     if isinstance(update, dict):
-        for key, val in update.items():
+        keys = update.keys()
+        for key in keys:
             if key not in old:
                 new[key] = update[key]
-            elif isinstance(val, dict):
-                new[key] = nested_merge(old[key], val)
+            elif isinstance(update[key], dict):
+                new[key] = nested_merge(old[key], update[key])
             else:
-                new[key] = val
+                new[key] = update[key]
+            if update[key] is None:
+                del new[key]
     return new
 
 
@@ -916,10 +964,14 @@ def main():
     if command == 'process':
         print "about to get it done."
         processed_ids = set()
-        process_tree(tree, processed_ids, options)
+        threads = []
+        process_tree(tree, processed_ids, options, threads)
+        for thread in threads:
+            thread.join()
         print "got it done, cleaning up!"
         trim_tree(tree)
         reset_reprocessed_leaves(previous_tree, processed_ids)
+        remove_broken_branches(tree, processed_ids, previous_leaf_ids)
         print "saving tree"
         save_tree(tree, previous_tree)
         save_processed_ids(processed_ids, previous_leaf_ids)

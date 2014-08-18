@@ -7,6 +7,8 @@ generate their urls between running 'run.py' and 'publish.py'
 import json
 import os
 import sys
+import threading
+import time
 from collections import OrderedDict
 import plotly.plotly as py
 import plotly.exceptions
@@ -116,71 +118,86 @@ def fix_tree(section):  # todo rename? has to do with exceptions...
             fix_tree(branch)
 
 
-def port_urls(section, command):
+def port_urls(section, command, threads):
     if section['is_leaf'] and 'url' in section:
         global example_count
         example_count += 1
-        print("\t{} of {} ({}): ".format(example_count,
-                                         total_examples,
-                                         section['id'])),
-        username = section['url'].replace("https://plot.ly/~", "").split('/')[0]
-        fid = section['url'].replace("https://plot.ly/~", "").split('/')[1]
         if (command == 'test' and 'test-url' not in section) or \
            (command == 'publish' and 'publish-url' not in section):
-            if 'private' in section and section['private']:
-                match = [usr for usr in users.values()
-                         if usr['un'].lower() == username.lower()]
-                if match:
-                    user = match[0]
-                    py.sign_in(user['un'], user['ak'])
-            try:
-                fig = py.get_figure(username, fid)
-            except:  # todo, too broad exception clause
-                print ("couldn't port url over for '{}'."
-                       "".format(section['id']))
-                fig = None
-            finally:
-                py.sign_in(users[doc_user]['un'], users[doc_user]['ak'])
-            if fig:
-                if 'layout' not in fig:
-                    fig['layout'] = dict()
-                if 'margin' not in fig['layout']:
-                    fig['layout']['margin'] = dict(t=90, b=65, r=50, l=65)
-                if 'title' not in fig['layout']:
-                    fig['layout']['margin']['t'] = 65
-                fig['layout'].update(autosize=False, width=500, height=500)
-                if 'private' in section and section['private']:
-                    try:  # todo clean up exception handling
-                        new_url = py.plot(
-                            fig, filename=section['id'], auto_open=False,
-                            world_readable=False)
-                    except:
-                        new_url = None
-                        print "\t\tcall to py.plot() failed"
-                else:
-                    try:  # todo clean up exception handling
-                        new_url = py.plot(fig,
-                                          filename=section['id'],
-                                          auto_open=False)
-                    except:
-                        new_url = None
-                        print "\t\tcall to py.plot() failed"
-                if command == 'test' and new_url:
-                    section['test-url'] = new_url
-                    print "new url: '{}'".format(new_url)
-                elif command == 'publish' and new_url:
-                    section['publish-url'] = new_url
-                    print "new url: ({})".format(new_url)
+            threads += [threading.Thread(
+                name="port-url-thread-{}".format(example_count),
+                target=url_worker,
+                args=(section, command))]
+            threads[-1].setDaemon(True)
+            print(
+                "\tstarting {} of {} ({})"
+                "".format(example_count, total_examples, section['id'])
+            )
+            threads[-1].start()
         else:
-            print ("already ported to '{}' ({})"
-                   "".format(users[doc_user]['un'],
-                             section["{}-url".format(command)]))
+            print(
+                "\t{} of {} ({}) is already ported..."
+                "".format(example_count, total_examples, section['id'])
+            )
     elif not section['is_leaf']:
         for branch in section['branches'].values():
-            port_urls(branch, command)
+            port_urls(branch, command, threads)
 
 
-def save_images(section, command):
+def url_worker(section, command):
+    username = section['url'].replace("https://plot.ly/~", "").split('/')[0]
+    fid = section['url'].replace("https://plot.ly/~", "").split('/')[1]
+    if 'private' in section and section['private']:
+        time.sleep(1)  # thread issues if we're singing in differently...
+        match = [usr for usr in users.values()
+                 if usr['un'].lower() == username.lower()]
+        if match:
+            user = match[0]
+            py.sign_in(user['un'], user['ak'])
+    try:
+        fig = py.get_figure(username, fid)
+    except:  # todo, too broad exception clause
+        pass
+        # print ("couldn't port url over for '{}'."
+        #        "".format(section['id']))
+        fig = None
+    finally:
+        py.sign_in(users[doc_user]['un'], users[doc_user]['ak'])
+    if fig:
+        if 'layout' not in fig:
+            fig['layout'] = dict()
+        if 'margin' not in fig['layout']:
+            fig['layout']['margin'] = dict(t=90, b=65, r=50, l=65)
+        if 'title' not in fig['layout']:
+            fig['layout']['margin']['t'] = 65
+        fig['layout'].update(autosize=False, width=500, height=500)
+        if 'private' in section and section['private']:
+            try:  # todo clean up exception handling
+                new_url = py.plot(
+                    fig, filename=section['id'], auto_open=False,
+                    world_readable=False)
+            except:
+                new_url = None
+                # print "\t\tcall to py.plot() failed"
+        else:
+            try:  # todo clean up exception handling
+                # sign in again here to reduce chance of collision...
+                py.sign_in(users[doc_user]['un'], users[doc_user]['ak'])
+                new_url = py.plot(fig,
+                                  filename=section['id'],
+                                  auto_open=False)
+            except:
+                new_url = None
+                # print "\t\tcall to py.plot() failed"
+        if command == 'test' and new_url:
+            section['test-url'] = new_url
+            print "\tnew url for ({}): '{}'".format(section['id'], new_url)
+        elif command == 'publish' and new_url:
+            section['publish-url'] = new_url
+            print "\tnew url for ({}): '{}'".format(section['id'], new_url)
+
+
+def save_images(section, command, threads):
     if command == 'test':
         has_url = 'test-url' in section
     else:
@@ -191,28 +208,16 @@ def save_images(section, command):
         folder_path = os.path.join(root, dirs['images'])
         file_path = os.path.join(folder_path, "{}.png".format(section['id']))
         if not os.path.exists(file_path):
-            print "\t{} of {}: saving image for '{}'".format(
+            threads += [threading.Thread(name="image-{}".format(example_count),
+                                         target=image_worker,
+                                         args=(section, command,
+                                               folder_path, file_path))
+            ]
+            threads[-1].setDaemon(True)
+            print "\tstarting {} of {}: saving image for '{}'".format(
                 example_count, total_examples, section['id']
             )
-            url = section["{}-url".format(command)]
-            username = url.replace("https://plot.ly/~", "").split('/')[0]
-            fid = url.replace("https://plot.ly/~", "").split('/')[1]
-            try:
-                fig = py.get_figure(username, fid)
-            except plotly.exceptions.PlotlyError:
-                print ("\tcouldn't get figure to save image for example, '{}'."
-                       "\n\tis the plot private?\n\t'{}'"
-                       "".format(section['id'], section['url']))
-            else:
-                if not os.path.exists(folder_path):
-                    os.makedirs(folder_path)
-                try:
-                    py.image.save_as(fig, file_path)
-                except plotly.exceptions.PlotlyError:
-                    print "\t\timage save failed..."
-                    section['image'] = False
-                else:
-                    section['image'] = True
+            threads[-1].start()
         else:
             print "\t{} of {}: image already exists for '{}'".format(
                 example_count, total_examples, section['id']
@@ -220,7 +225,29 @@ def save_images(section, command):
             section['image'] = True
     elif not section['is_leaf']:
         for branch in section['branches'].values():
-            save_images(branch, command)
+            save_images(branch, command, threads)
+
+
+def image_worker(section, command, folder_path, file_path):
+    url = section["{}-url".format(command)]
+    username = url.replace("https://plot.ly/~", "").split('/')[0]
+    fid = url.replace("https://plot.ly/~", "").split('/')[1]
+    try:
+        fig = py.get_figure(username, fid)
+    except plotly.exceptions.PlotlyError:
+        print ("\tcouldn't get figure to save image for example, '{}'."
+               "\n\tis the plot private?\n\t'{}'"
+               "".format(section['id'], section['url']))
+    else:
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        try:
+            py.image.save_as(fig, file_path)
+        except plotly.exceptions.PlotlyError:
+            print "\t\timage save failed..."
+            section['image'] = False
+        else:
+            section['image'] = True
 
 
 def check_languages(leaf):
@@ -470,10 +497,18 @@ def main():
     print "setting up auto-generated structure"
     fix_tree(tree)
     print "porting urls"
-    port_urls(tree, command)
+    url_threads = []
+    port_urls(tree, command, url_threads)
+    print "waiting for url-threads to complete"
+    for thread in url_threads:
+        thread.join()
     example_count = 0
     print "saving images"
-    save_images(tree, command)
+    image_threads = []
+    save_images(tree, command, image_threads)
+    print "waiting for image-threads to complete"
+    for thread in image_threads:
+        thread.join()
     example_count = 0
     print "porting code"
     port_code(tree, command)
