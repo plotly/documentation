@@ -371,7 +371,7 @@ def write_language_reference(reference, language):
     if reference:
         ordered_referece = get_ordered_dict_with_lists(reference)
         with open(ref_file, 'w') as f:
-            json.dump(ordered_referece, f, indent=2)
+            json.dump(ordered_referece, f, indent=2, separators=(',', ': '))
     if not reference:
         print "\t\treference is empty, cuttin' this dead weight!"
         if os.path.exists(ref_file):
@@ -462,7 +462,7 @@ def save_tree(tree):
         pass
     sorted_new_tree = get_ordered_dict(tree)
     with open(files['tree'], 'w') as f:
-        json.dump(sorted_new_tree, f, indent=4)
+        json.dump(sorted_new_tree, f, indent=4, separators=(',', ': '))
 
 
 def get_ordered_dict(d):

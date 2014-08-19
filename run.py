@@ -900,7 +900,7 @@ def save_tree(tree, previous_tree):
     new_tree = nested_merge(previous_tree, tree)
     sorted_new_tree = get_ordered_dict(new_tree)
     with open(files['tree'], 'w') as f:
-        json.dump(sorted_new_tree, f, indent=4)
+        json.dump(sorted_new_tree, f, indent=4, separators=(',', ': '))
 
 
 def save_processed_ids(processed_ids, previous_leaf_ids):
@@ -908,7 +908,7 @@ def save_processed_ids(processed_ids, previous_leaf_ids):
     ids = list(set.union(processed_ids, previous_leaf_ids))
     ids.sort()
     with open(files['ids'], 'w') as f:
-        json.dump(ids, f, indent=4)
+        json.dump(ids, f, indent=4, separators=(',', ': '))
 
 
 def nested_merge(old, update):
