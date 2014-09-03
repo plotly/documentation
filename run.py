@@ -540,7 +540,6 @@ def process_model_leaf(leaf, options):
             #     "unsuccessful request at resource. '{}'"
             #     "".format(translator_server))
         code = res.content
-        code = code.replace("<pre>", "").replace("</pre>", "")
         code = code.replace('">>>', "").replace('<<<"', "")
         code = code.replace("'>>>", "").replace("<<<'", "")
         raw_exec_code = init + remove_header(code)
