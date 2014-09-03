@@ -1,7 +1,7 @@
 library(plotly)
 library(ggplot2)
 
-py <- plotly("R-demos", "p9g4f35ytd")
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 m <- ggplot(movies, aes(x=rating))
 out <- py$ggplotly(m + geom_histogram(aes(weight = votes)))

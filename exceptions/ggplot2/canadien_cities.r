@@ -1,7 +1,7 @@
 library(plotly)
 library(ggplot2)
 
-py <- plotly("R-demos", "p9g4f35ytd")
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 data(canada.cities, package="maps")
 viz <- ggplot(canada.cities, aes(long, lat)) +

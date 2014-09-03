@@ -1,7 +1,7 @@
 library(plotly)
 library(ggplot2)
 
-py <- plotly("R-demos", "p9g4f35ytd")
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 # Consider the following data frame
 researchers <- data.frame(

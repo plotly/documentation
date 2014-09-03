@@ -2,7 +2,7 @@ library(plotly)
 library(ggplot2)
 library("ggthemes")
 
-py <- plotly("R-demos", "p9g4f35ytd")
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 tableau <- (qplot(carat, price, data = dsamp, colour = cut) +

@@ -2,7 +2,7 @@ library(plotly)
 library(ggplot2)
 library(plyr)
 
-py <- plotly("R-demos", "p9g4f35ytd")
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 mry <- do.call(rbind, by(movies, round(movies$rating), function(df) {
   nums <- tapply(df$length, df$year, length)

@@ -1,7 +1,7 @@
 library(plotly)
 require(lattice)
 
-py <- plotly("R-demos", "p9g4f35ytd")
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 w <- ggplot(data=barley, aes(x=yield, y=variety, color=year)) +
   geom_point() +

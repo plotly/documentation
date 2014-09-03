@@ -1,7 +1,7 @@
 library(plotly)
 library(ggplot2)
 
-py <- plotly("RgraphingAPI", "ektgzomjbx")
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 ids <- factor(c("1.1", "2.1", "1.2", "2.2", "1.3", "2.3"))
 
