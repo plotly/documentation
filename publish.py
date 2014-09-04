@@ -124,20 +124,26 @@ def port_urls(section, command, threads):
         example_count += 1
         if (command == 'test' and 'test-url' not in section) or \
            (command == 'publish' and 'publish-url' not in section):
-            threads += [threading.Thread(
-                name="port-url-thread-{}".format(example_count),
+
+            name = section['id']
+            thread = threading.Thread(
+                name=name,
                 target=url_worker,
-                args=(section, command))]
-            threads[-1].setDaemon(True)
-            print(
-                "\tstarting {} of {} ({})"
-                "".format(example_count, total_examples, section['id'])
+                args=(section, command))
+            thread.setDaemon(True)
+            start_msg = (
+                "\tstarting {} of {}: ({})"
+                .format(example_count, total_examples, section['id'])
             )
-            threads[-1].start()
-        else:
-            print(
-                "\t{} of {} ({}) is already ported..."
-                "".format(example_count, total_examples, section['id'])
+            finish_msg = (
+                "\tfinished {} of {}: ({})"
+                .format(example_count, total_examples, section['id'])
+            )
+            messages = {'start': start_msg,
+                        'finish': finish_msg,
+                        'error': ''}
+            threads.append(
+                {'name': name, 'thread': thread, 'messages': messages}
             )
     elif not section['is_leaf']:
         for branch in section['branches'].values():
@@ -208,20 +214,28 @@ def save_images(section, command, threads):
         folder_path = os.path.join(root, dirs['images'])
         file_path = os.path.join(folder_path, "{}.png".format(section['id']))
         if not os.path.exists(file_path):
-            threads += [threading.Thread(name="image-{}".format(example_count),
-                                         target=image_worker,
-                                         args=(section, command,
-                                               folder_path, file_path))
-            ]
-            threads[-1].setDaemon(True)
-            print "\tstarting {} of {}: saving image for '{}'".format(
-                example_count, total_examples, section['id']
+            name = "model-thread-{}".format(section['id'])
+            thread = threading.Thread(
+                name=name,
+                target=image_worker,
+                args=(section, command, folder_path, file_path)
             )
-            threads[-1].start()
+            thread.setDaemon(True)
+            start_msg = (
+                "\tstarting {} of {}: ({})"
+                .format(example_count, total_examples, section['id'])
+            )
+            finish_msg = (
+                "\tfinished {} of {}: ({})"
+                .format(example_count, total_examples, section['id'])
+            )
+            messages = {'start': start_msg,
+                        'finish': finish_msg,
+                        'error': ''}
+            threads.append(
+                {'name': name, 'thread': thread, 'messages': messages}
+            )
         else:
-            print "\t{} of {}: image already exists for '{}'".format(
-                example_count, total_examples, section['id']
-            )
             section['image'] = True
     elif not section['is_leaf']:
         for branch in section['branches'].values():
@@ -477,6 +491,17 @@ def get_ordered_dict(d):
     return od
 
 
+def thread_space(thread_list, max_threads):
+    """Return the (t)head space, number of new threads that can be started.
+
+    This effectively throttles the number of threads which can be alive at
+    once.
+
+    """
+    living = sum((1 for t in thread_list if t['thread'].isAlive()))
+    return max_threads - living
+
+
 def main():
     command = get_command()
     global root, doc_user, example_count, total_examples
@@ -496,19 +521,53 @@ def main():
     set_total_examples(tree)
     print "setting up auto-generated structure"
     fix_tree(tree)
-    print "porting urls"
+    print "compling url porting threads"
     url_threads = []
     port_urls(tree, command, url_threads)
+    print "starting url threads"
+    index = 0
+    max_thread_ct = 20
+    while True:
+        num_new_threads = thread_space(url_threads, max_thread_ct)
+        for i in range(0, num_new_threads):
+            if index < len(url_threads):
+                print url_threads[index]['messages']['start']
+                url_threads[index]['thread'].start()
+                index += 1
+        if index == len(url_threads):
+            break
+        time.sleep(.01)
+    for index in range(len(url_threads)):
+        url_threads[index]['thread'].join()
+
     print "waiting for url-threads to complete"
-    for thread in url_threads:
-        thread.join()
+    for index in range(len(url_threads)):
+        url_threads[index]['thread'].join()
+
     example_count = 0
     print "saving images"
     image_threads = []
     save_images(tree, command, image_threads)
+
+    index = 0
+    max_thread_ct = 20
+    while True:
+        num_new_threads = thread_space(image_threads, max_thread_ct)
+        for i in range(0, num_new_threads):
+            if index < len(image_threads):
+                print image_threads[index]['messages']['start']
+                image_threads[index]['thread'].start()
+                index += 1
+        if index == len(image_threads):
+            break
+        time.sleep(.01)
+    for index in range(len(image_threads)):
+        image_threads[index]['thread'].join()
+
     print "waiting for image-threads to complete"
-    for thread in image_threads:
-        thread.join()
+    for index in range(len(image_threads)):
+        image_threads[index]['thread'].join()
+
     example_count = 0
     print "porting code"
     port_code(tree, command)
