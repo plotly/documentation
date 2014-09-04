@@ -1,8 +1,5 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
 data = [
   [
     "x" => ["giraffes", "orangutans", "monkeys"], 
@@ -10,6 +7,5 @@ data = [
     "type" => "bar"
   ]
 ]
-
-response = Plotly.plot([data], ["filename" => "basic-bar", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["auto_open" => false, "fileopt" => "overwrite", "filename" => "basic-bar"])
 plot_url = response["url"]

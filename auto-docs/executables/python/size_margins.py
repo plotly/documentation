@@ -1,8 +1,6 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
-
 data = Data([
     Scatter(
         x=[0, 1, 2, 3, 4, 5, 6, 7, 8],
@@ -24,5 +22,4 @@ layout = Layout(
     plot_bgcolor='#c7c7c7'
 )
 fig = Figure(data=data, layout=layout)
-
-plot_url = py.plot(fig, filename='size-margins', auto_open=False)
+plot_url = py.plot(fig, auto_open=False, filename='size-margins')

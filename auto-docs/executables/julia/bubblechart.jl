@@ -1,8 +1,5 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
 trace1 = [
   "x" => [1, 2, 3, 4], 
   "y" => [10, 11, 12, 13], 
@@ -40,6 +37,5 @@ trace3 = [
 ]
 data = [trace1, trace2, trace3]
 layout = ["showlegend" => false]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "bubblechart", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "bubblechart"])
 plot_url = response["url"]

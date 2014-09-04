@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var data = [
   {
     x: [0, 2, 4], 
@@ -7,8 +6,7 @@ var data = [
     type: "scatter"
   }
 ];
-
-var graph_options = {filename: "privacy-false", fileopt: "overwrite", auto_open: false, world_readable: false}
+var graph_options = {auto_open: false, fileopt: "overwrite", world_readable: false, filename: "privacy-false"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

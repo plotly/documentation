@@ -1,11 +1,10 @@
+import numpy as np
+x = np.random.randn(500)
 signin('TestBot', 'r1neazxo9w')
-
-x = randn(500,1);
 data = {...
   struct(...
     'x', x, ...
     'type', 'histogram')...
 };
-
-response = plotly(data, struct('filename', 'basic-histogram', 'fileopt', 'overwrite', 'auto_open', false));
+response = plotly(data, struct('auto_open', false, 'fileopt', 'overwrite', 'filename', 'basic-histogram'));
 plot_url = response.url

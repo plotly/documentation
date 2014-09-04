@@ -1,10 +1,10 @@
+import numpy as np
+
+t = np.linspace(-1,1.2,2000)
+x = (t**3)+(0.3*np.random.randn(2000))
+y = (t**6)+(0.3*np.random.randn(2000))
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
-
-t = seq(-1, 1.2, length=2000)
-x = t^3+0.3*rnorm(2000)
-y = t^6+0.3*rnorm(2000)
+py <- plotly(username='TestBot', key='r1neazxo9w')
 trace1 <- list(
   x = x, 
   y = y, 
@@ -71,7 +71,5 @@ layout <- list(
     zeroline = FALSE
   )
 )
-
-response <- p$plotly(data, kwargs=list(layout=layout, filename="2dhistogram-contour-subplots", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="2dhistogram-contour-subplots"))
 url <- response$url
-filename <- response$filename

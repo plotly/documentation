@@ -1,8 +1,6 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
-
 trace1 = Bar(
     x=['Trial 1', 'Trial 2', 'Trial 3'],
     y=[3, 6, 4],
@@ -28,5 +26,4 @@ layout = Layout(
     barmode='group'
 )
 fig = Figure(data=data, layout=layout)
-
-plot_url = py.plot(fig, filename='error-bar-bar', auto_open=False)
+plot_url = py.plot(fig, auto_open=False, filename='error-bar-bar')

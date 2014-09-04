@@ -1,8 +1,5 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
 data = [
   [
     "x" => [0, 1, 2, 3, 4, 5, 6, 7, 8], 
@@ -24,6 +21,5 @@ layout = [
   "paper_bgcolor" => "#7f7f7f", 
   "plot_bgcolor" => "#c7c7c7"
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "size-margins", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "size-margins"])
 plot_url = response["url"]

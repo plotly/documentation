@@ -1,10 +1,8 @@
-import plotly.plotly as py
-from plotly.graph_objs import *
-
-py.sign_in('TestBot', 'r1neazxo9w')
-
 x = ['day 1', 'day 1', 'day 1', 'day 1', 'day 1', 'day 1',
      'day 2', 'day 2', 'day 2', 'day 2', 'day 2', 'day 2']
+import plotly.plotly as py
+from plotly.graph_objs import *
+py.sign_in('TestBot', 'r1neazxo9w')
 trace1 = Box(
     y=[0.2, 0.2, 0.6, 1.0, 0.5, 0.4, 0.2, 0.7, 0.9, 0.1, 0.5, 0.3],
     x=x,
@@ -38,5 +36,4 @@ layout = Layout(
     boxmode='group'
 )
 fig = Figure(data=data, layout=layout)
-
-plot_url = py.plot(fig, filename='box-grouped', auto_open=False)
+plot_url = py.plot(fig, auto_open=False, filename='box-grouped')

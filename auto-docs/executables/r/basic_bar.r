@@ -1,7 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
-
+py <- plotly(username='TestBot', key='r1neazxo9w')
 data <- list(
   list(
     x = c("giraffes", "orangutans", "monkeys"), 
@@ -9,7 +7,5 @@ data <- list(
     type = "bar"
   )
 )
-
-response <- p$plotly(data, kwargs=list(filename="basic-bar", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(auto_open=FALSE, fileopt="overwrite", filename="basic-bar"))
 url <- response$url
-filename <- response$filename

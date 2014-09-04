@@ -1,7 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
-
+py <- plotly(username='TestBot', key='r1neazxo9w')
 trace1 <- list(
   x = c(0, 1, 2, 3, 4, 5, 6, 7, 8), 
   y = c(0, 1, 3, 2, 4, 3, 4, 6, 5), 
@@ -43,7 +41,5 @@ layout <- list(
     )
   )
 )
-
-response <- p$plotly(data, kwargs=list(layout=layout, filename="style-annotation", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="style-annotation"))
 url <- response$url
-filename <- response$filename

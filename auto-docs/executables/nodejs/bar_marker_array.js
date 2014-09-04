@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var data = [
   {
     x: [1, 2, 3, 4], 
@@ -8,8 +7,7 @@ var data = [
     type: "bar"
   }
 ];
-
-var graph_options = {filename: "bar-marker-array", fileopt: "overwrite", auto_open: "false"}
+var graph_options = {auto_open: false, fileopt: "overwrite", filename: "bar-marker-array"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

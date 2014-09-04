@@ -1,8 +1,5 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
 trace1 = [
   "x" => [0, 1, 2], 
   "y" => [1, 2, 3], 
@@ -18,6 +15,5 @@ trace2 = [
   "type" => "scatter"
 ]
 data = [trace1, trace2]
-
-response = Plotly.plot([data], ["filename" => "show-legend", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["auto_open" => false, "fileopt" => "overwrite", "filename" => "show-legend"])
 plot_url = response["url"]

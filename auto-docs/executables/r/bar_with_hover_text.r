@@ -1,7 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
-
+py <- plotly(username='TestBot', key='r1neazxo9w')
 data <- list(
   list(
     x = c("Liam", "Sophie", "Jacob", "Mia", "William", "Olivia"), 
@@ -22,7 +20,5 @@ layout <- list(
   ), 
   bargap = 0.05
 )
-
-response <- p$plotly(data, kwargs=list(layout=layout, filename="bar-with-hover-text", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="bar-with-hover-text"))
 url <- response$url
-filename <- response$filename

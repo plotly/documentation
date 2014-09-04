@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var trace1 = {
   x: [0, 1, 2, 3, 4, 5, 6, 7, 8], 
   y: [0, 1, 2, 3, 4, 5, 6, 7, 8], 
@@ -32,8 +31,7 @@ var layout = {
     }
   }
 };
-
-var graph_options = {filename: "styling-names", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "styling-names"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

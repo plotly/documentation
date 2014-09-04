@@ -1,10 +1,8 @@
-using Plotly
-
+import numpy as np
+x0 = np.random.randn(500)
+x1 = np.random.randn(500)+1
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
-x0 = randn(500)
-x1 = randn(500)+1
 trace1 = [
   "x" => x0, 
   "histnorm" => "count", 
@@ -47,6 +45,5 @@ layout = [
   "bargap" => 0.25, 
   "bargroupgap" => 0.3
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "style-histogram", "fileopt" => "overwrite", "auto_open" => false])
+response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "style-histogram"])
 plot_url = response["url"]

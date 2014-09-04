@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var trace1 = {
   x: [1, 2, 3], 
   y: [4, 5, 6], 
@@ -49,8 +48,7 @@ var layout = {
     anchor: "x4"
   }
 };
-
-var graph_options = {filename: "multiple-subplots", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "multiple-subplots"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

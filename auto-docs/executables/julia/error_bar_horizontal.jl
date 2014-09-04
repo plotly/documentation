@@ -1,8 +1,5 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
 data = [
   [
     "x" => [1, 2, 3, 4], 
@@ -14,6 +11,5 @@ data = [
     "type" => "scatter"
   ]
 ]
-
-response = Plotly.plot([data], ["filename" => "error-bar-horizontal", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["auto_open" => false, "fileopt" => "overwrite", "filename" => "error-bar-horizontal"])
 plot_url = response["url"]

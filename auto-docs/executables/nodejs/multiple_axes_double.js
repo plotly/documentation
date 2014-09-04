@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var trace1 = {
   x: [1, 2, 3], 
   y: [40, 50, 60], 
@@ -25,8 +24,7 @@ var layout = {
     side: "right"
   }
 };
-
-var graph_options = {filename: "multiple-axes-double", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "multiple-axes-double"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

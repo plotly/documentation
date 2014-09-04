@@ -1,5 +1,4 @@
 signin('TestBot', 'r1neazxo9w')
-
 trace1 = struct(...
   'x', [0, 1, 2, 3, 4, 5, 6, 7, 8], ...
   'y', [0, 3, 6, 4, 5, 2, 3, 5, 4], ...
@@ -10,6 +9,5 @@ trace2 = struct(...
   'type', 'scatter');
 data = {trace1, trace2};
 layout = struct('showlegend', false);
-
-response = plotly(data, struct('layout', layout, 'filename', 'legend-visibility', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('layout', layout, 'auto_open', false, 'fileopt', 'overwrite', 'filename', 'legend-visibility'));
 plot_url = response.url

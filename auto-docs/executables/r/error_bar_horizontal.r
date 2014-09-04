@@ -1,7 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
-
+py <- plotly(username='TestBot', key='r1neazxo9w')
 data <- list(
   list(
     x = c(1, 2, 3, 4), 
@@ -13,7 +11,5 @@ data <- list(
     type = "scatter"
   )
 )
-
-response <- p$plotly(data, kwargs=list(filename="error-bar-horizontal", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(auto_open=FALSE, fileopt="overwrite", filename="error-bar-horizontal"))
 url <- response$url
-filename <- response$filename

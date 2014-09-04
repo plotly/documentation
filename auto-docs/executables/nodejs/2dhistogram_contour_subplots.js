@@ -1,10 +1,9 @@
+import numpy as np
+
+t = np.linspace(-1,1.2,2000)
+x = (t**3)+(0.3*np.random.randn(2000))
+y = (t**6)+(0.3*np.random.randn(2000))
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
-var linspace = require('linspace');
-
-var t = linspace(-1,1.2,2000);
-var x = (Math.pow(t, 3)) + (0.3 * (Math.random() * 2000));
-var y = (Math.pow(t, 6)) + (0.3 * (Math.random() * 2000));
 var trace1 = {
   x: x, 
   y: y, 
@@ -71,8 +70,7 @@ var layout = {
     zeroline: false
   }
 };
-
-var graph_options = {filename: "2dhistogram-contour-subplots", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "2dhistogram-contour-subplots"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

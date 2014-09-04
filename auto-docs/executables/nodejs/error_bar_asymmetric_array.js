@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var data = [
   {
     x: [1, 2, 3, 4], 
@@ -13,8 +12,7 @@ var data = [
     type: "scatter"
   }
 ];
-
-var graph_options = {filename: "error-bar-asymmetric-array", fileopt: "overwrite", auto_open: "false"}
+var graph_options = {auto_open: false, fileopt: "overwrite", filename: "error-bar-asymmetric-array"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });
