@@ -601,7 +601,6 @@ def process_model_leaf(leaf, options, processed_ids):
 
 def process_model_worker(leaf, language, model):
     # time.sleep(.2)  # added to help with connection errors
-    raise plotly.exceptions.PlotlyError("whoa!")
     init = get_init_code(leaf)
     try:
         plot_options = leaf['config']['plot-options']
