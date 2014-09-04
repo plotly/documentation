@@ -1,5 +1,4 @@
 library(plotly)
-library(ggplot2)
 library("ggthemes")
 
 py <- plotly(username='TestBot', key='r1neazxo9w')

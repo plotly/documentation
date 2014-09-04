@@ -1,5 +1,4 @@
 library(plotly)
-library(ggplot2)
 library(plyr)
 
 py <- plotly(username='TestBot', key='r1neazxo9w')
