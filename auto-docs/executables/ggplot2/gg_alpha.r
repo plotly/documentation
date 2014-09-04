@@ -1,7 +1,6 @@
 library(plotly)
-library(ggplot2)
 
-py <- plotly("R-demos", "p9g4f35ytd")
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 prettyPlot <- ggplot(data=diamonds, aes(x=carat, y=price, colour=clarity))
 prettyPlot <- prettyPlot + geom_point(alpha = 1/10)

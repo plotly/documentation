@@ -1,4 +1,4 @@
-%signin({% if username %}'{{username}}'{% else %}'MATLABAPI'{% endif %}, {% if api_key %}'{{api_key}}'{% else %}'jzt0hr6tzv'{% endif %})
+signin('', '')
 
 % overlaid histogram
 sd1 = 0.1;

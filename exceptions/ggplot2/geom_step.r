@@ -1,7 +1,6 @@
 library(plotly)
-library(ggplot2)
 
-py <- plotly("R-demos", "p9g4f35ytd")
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 df <- data.frame(x=sort(rnorm(47)))
 p <- ggplot(df, aes(seq_along(x), x))

@@ -1,8 +1,7 @@
 library(plotly)
-library(ggplot2)
 library(plyr)
 
-py <- plotly("R-demos", "p9g4f35ytd")
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 myear <- ddply(movies, .(year), colwise(mean, .(length, rating)))
 p <- ggplot(myear, aes(length, rating))

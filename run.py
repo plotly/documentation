@@ -166,7 +166,7 @@ sign_in = dict(
             "# Fill in with your personal username and API key\n"
             "# or, use this public demo account\n"
             "{{% endif %}}"
-            "p <- plotly(username={{% if username %}}\"{{{{username}}}}\""
+            "py <- plotly(username={{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "key={{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}'{ak}'{{% endif %}})".format(**users['r'])),
@@ -194,7 +194,7 @@ sign_in = dict(
             "# Fill in with your personal username and API key\n"
             "# or, use this public demo account\n"
             "{{% endif %}}"
-            "p <- plotly(username={{% if username %}}\"{{{{username}}}}\""
+            "py <- plotly(username={{% if username %}}\"{{{{username}}}}\""
             "{{% else %}}'{un}'{{% endif %}}, "
             "key={{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}'{ak}'{{% endif %}})".format(**users['r'])),
@@ -212,12 +212,13 @@ sign_in = dict(
     execution=dict(
         python="py.sign_in('{un}', '{ak}')".format(**users['tester']),
         matlab="signin('{un}', '{ak}')".format(**users['tester']),
-        r="p <- plotly(username='{un}', key='{ak}')".format(**users['tester']),
+        r="py <- plotly(username='{un}', key='{ak}')".format(**users[
+            'tester']),
         julia='using Plotly\nPlotly.signin("{un}", "{ak}")'
               ''.format(**users['tester']),
         nodejs="var plotly = require('plotly')('{un}', '{ak}')"
                "".format(**users['tester']),
-        ggplot2="p <- plotly(username='{un}', key='{ak}')"
+        ggplot2="py <- plotly(username='{un}', key='{ak}')"
                 "".format(**users['tester']),
         matplotlib="py.sign_in('{un}', '{ak}')".format(**users['tester']),
         js=""
@@ -651,14 +652,24 @@ def process_script_leaf(leaf, options):
             "'{}' not found in '{}'".format(script_file, leaf['path'])
         )
     exec_string = ""
+    found_sign_in = False
     for line in script.splitlines():
         if line[:6] == sign_in['execution'][language][:6]:  # TODO, better way?
             exec_string += sign_in['execution'][language]
+            found_sign_in = True
         elif '>>>filename<<<' in line:
             exec_string += line.replace('>>>filename<<<', leaf['id'])
         else:
             exec_string += line
         exec_string += "\n"
+    if not found_sign_in:
+        raise Exception(
+            "You need to have the first 6 characters of the following "
+            "line in the script for this to work:"
+            "\n{sign_in}\n\nThe offending file is here:"
+            "\n{path}"
+            .format(sign_in=sign_in['execution'][language], path=leaf['path'])
+        )
     save_code(exec_string, leaf, language, 'exception')
     code_string = exec_string.replace(sign_in['execution'][language],
                                       sign_in['documentation'][language])
