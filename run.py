@@ -456,41 +456,60 @@ def process_tree(section, processed_ids, options, threads):
         if section['is_leaf']:
             global example_count
             example_count += 1
-            try:
-                if files['model'] in section['files']:
-                    threads += [threading.Thread(
-                        name="model-thread-{}".format(section['id']),
-                        target=process_model_leaf,
-                        args=(section, options))]
-                    threads[-1].setDaemon(True)
-                    print(
-                        "\tstarting {} of {}: {} (model)"
-                        "".format(example_count, total_examples, section['id'])
-                    )
-                    threads[-1].start()
-                    # process_model_leaf(section, options)
-                elif any(['script' in fn for fn in section['files']]):
-                    print(
-                        "\tstarting {} of {}: {} (script)"
-                        "".format(example_count, total_examples, section['id'])
-                    )
-                    process_script_leaf(section, options)
-                elif files['url'] in section['files']:
-                    process_url_leaf(section, options)
-                # todo: add exempt. just copies over config...
-                else:
-                    print("\t\tleaf '{}' cannot be processed"
-                          "".format(section))
-            except plotly.exceptions.PlotlyError as err:
-                print "\t\t" + "\n\t\t\t".join(err.message.splitlines())
+            if files['model'] in section['files']:
+                name = "model-thread-{}".format(section['id'])
+                thread = threading.Thread(
+                    name=name,
+                    target=process_model_leaf,
+                    args=(section, options, processed_ids))
+                thread.setDaemon(True)
+                start_msg = (
+                    "\tstarting {} of {}: {} (model)"
+                    .format(example_count, total_examples, section['id'])
+                )
+                finish_msg = (
+                    "\tfinished {} of {}: {} (model)"
+                    .format(example_count, total_examples, section['id'])
+                )
+                messages = {'start': start_msg,
+                            'finish': finish_msg,
+                            'error': ''}
+                threads.append(
+                    {'name': name, 'thread': thread, 'messages': messages}
+                )
+            elif any(['script' in fn for fn in section['files']]):
+                name = "script-thread-{}".format(section['id'])
+                thread = threading.Thread(
+                    name=name,
+                    target=process_script_leaf,
+                    args=(section, options, processed_ids))
+                thread.setDaemon(True)
+                start_msg = (
+                    "\tstarting {} of {}: {} (script)"
+                    .format(example_count, total_examples, section['id'])
+                )
+                finish_msg = (
+                    "\tfinished {} of {}: {} (script)"
+                    .format(example_count, total_examples, section['id'])
+                )
+                messages = {'start': start_msg,
+                            'finish': finish_msg,
+                            'error': ''}
+                threads.append(
+                    {'name': name, 'thread': thread, 'messages': messages}
+                )
+            # elif files['url'] in section['files']:
+            #     process_url_leaf(section, options)
+            # # todo: add exempt. just copies over config...
             else:
-                processed_ids.add(section['id'])
+                print("\t\tleaf '{}' cannot be processed"
+                      "".format(section))
         else:
             for branch in section['branches'].values():
                 process_tree(branch, processed_ids, options, threads)
 
 
-def process_model_leaf(leaf, options):
+def process_model_leaf(leaf, options, processed_ids):
     """
     1. load model.json file
     2. for each language with 'model' as the *source*...
@@ -530,16 +549,14 @@ def process_model_leaf(leaf, options):
         data['ak'] = users['tester']['ak']
         data['plot_options']['auto_open'] = False
         res = get_plotly_response(translator_server, data=json.dumps(data))
-        if not res or res.status_code != 200:
-            leaf[language] = None
-            return
-            # raise plotly.exceptions.PlotlyError(
-            #     "couldn't connect to plotly at resource. '{}'"
-            #     "".format(translator_server))
-        # elif res.status_code != 200:
-            # raise plotly.exceptions.PlotlyError(
-            #     "unsuccessful request at resource. '{}'"
-            #     "".format(translator_server))
+        if not res:
+            raise plotly.exceptions.PlotlyError(
+                "couldn't connect to plotly at resource. '{}'"
+                "".format(translator_server))
+        elif res.status_code != 200:
+            raise plotly.exceptions.PlotlyError(
+                "unsuccessful request at resource. '{}'"
+                "".format(translator_server))
         code = res.content
         code = code.replace('">>>', "").replace('<<<"', "")
         code = code.replace("'>>>", "").replace("<<<'", "")
@@ -570,10 +587,21 @@ def process_model_leaf(leaf, options):
             raise plotly.exceptions.PlotlyError(
                 "\t\t'plot_url' not in exec_locals, skipping..."
             )
+    if not all((language in leaf for language in leaf['config']['languages'])):
+        raise plotly.exceptions.PlotlyError(
+            "looking for these languages to be complete: {expected}\n"
+            "missing: {missing}"
+            .format(
+                expected=leaf['config']['languages'],
+                missing=[lang for lang in leaf['config']['languages']
+                         if lang not in leaf])
+        )
+    processed_ids.add(leaf['id'])
 
 
 def process_model_worker(leaf, language, model):
     # time.sleep(.2)  # added to help with connection errors
+    raise plotly.exceptions.PlotlyError("whoa!")
     init = get_init_code(leaf)
     try:
         plot_options = leaf['config']['plot-options']
@@ -591,16 +619,14 @@ def process_model_worker(leaf, language, model):
         data['language'] = language
     # get documentation code...
     res = get_plotly_response(translator_server, data=json.dumps(data))
-    if not res or res.status_code != 200:
-        leaf[language] = None
-        return
-        # raise plotly.exceptions.PlotlyError(
-        #     "couldn't connect to plotly at resource. '{}'"
-        #     "".format(translator_server))
-    # elif res.status_code != 200:
-        # raise plotly.exceptions.PlotlyError(
-        #     "unsuccessful request at resource. '{}'"
-        #     "".format(translator_server))
+    if not res:
+        raise plotly.exceptions.PlotlyError(
+            "couldn't connect to plotly at resource. '{}'"
+            "".format(translator_server))
+    elif res.status_code != 200:
+        raise plotly.exceptions.PlotlyError(
+            "unsuccessful request at resource. '{}'"
+            "".format(translator_server))
     code = res.content
     code = code.replace("<pre>", "").replace("</pre>", "")
     code = code.replace('">>>', "").replace('<<<"', "")
@@ -633,7 +659,7 @@ def process_model_worker(leaf, language, model):
     save_code(raw_exec_code, leaf, language, 'execution')
 
 
-def process_script_leaf(leaf, options):
+def process_script_leaf(leaf, options, processed_ids):
     """
     1. for each language with 'model' as the *source*...
     2. load script.ext file
@@ -677,6 +703,7 @@ def process_script_leaf(leaf, options):
     code_path = save_code(code_string, leaf, language, 'documentation')
     leaf[language] = code_path
     save_code(exec_string, leaf, language, 'execution')
+    processed_ids.add(leaf['id'])
 
 
 def process_url_leaf(leaf, options):
@@ -869,13 +896,19 @@ def trim_tree(section):
 
 
 def remove_broken_branches(section, processed_ids, previous_leaf_ids):
+    """Use this to unset examples that didn't complete during processing.
+
+    This is important because we want to make sure broken examples appear as
+    if they've never been run. (else, we might accidentally publish them!)
+
+    """
     if section:
         if section['is_leaf']:
-            languages = section['config']['languages']
-            if not all((section[language] for language in languages)):
-                processed_ids.remove(section['id'])
+            langs = section['config']['languages']
+            if not all((language in section for language in langs)):
                 try:
                     previous_leaf_ids.remove(section['id'])
+                    print 'actually removed a previous_leaf_id'
                 except KeyError:
                     pass
                 return True
@@ -954,6 +987,17 @@ def get_ordered_dict(d):
     return od
 
 
+def thread_space(thread_list, max_threads):
+    """Return the (t)head space, number of new threads that can be started.
+
+    This effectively throttles the number of threads which can be alive at
+    once.
+
+    """
+    living = sum((1 for t in thread_list if t['thread'].isAlive()))
+    return max_threads - living
+
+
 def main():
     command = get_command()
     options = get_options()
@@ -982,12 +1026,25 @@ def main():
     print "validating file structure in examples"
     validate_leaf_structure(tree)
     if command == 'process':
-        print "about to get it done."
+        print "compiling a whole bunch of threads to run momentarily"
         processed_ids = set()
-        threads = []
+        threads = []  # [{'name': '', 'thread': t, 'messages': {}}], ... ]
         process_tree(tree, processed_ids, options, threads)
-        for thread in threads:
-            thread.join()
+        print "about to get it done. (about to run start the threads)"
+        index = 0
+        max_thread_ct = 20
+        while True:
+            num_new_threads = thread_space(threads, max_thread_ct)
+            for i in range(0, num_new_threads):
+                if index < len(threads):
+                    print threads[index]['messages']['start']
+                    threads[index]['thread'].start()
+                    index += 1
+            if index == len(threads):
+                break
+            time.sleep(.01)
+        for index in range(len(threads)):
+            threads[index]['thread'].join()
         print "got it done, cleaning up!"
         trim_tree(tree)
         reset_reprocessed_leaves(previous_tree, processed_ids)
