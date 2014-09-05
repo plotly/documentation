@@ -1,0 +1,81 @@
+library(plotly)
+p <- plotly(username='TestBot', key='r1neazxo9w')
+trace1 <- list(
+  x = c(52698, 43117), 
+  y = c(53, 31), 
+  mode = "markers", 
+  name = "North America", 
+  text = c("United States", "Canada"), 
+  marker = list(
+    color = "rgb(164, 194, 244)", 
+    size = 12, 
+    line = list(
+      color = "white", 
+      width = 0.5
+    )
+  ), 
+  type = "scatter"
+)
+trace2 <- list(
+  x = c(39317, 37236, 35650, 30066, 29570, 27159, 23557, 21046, 18007), 
+  y = c(33, 20, 13, 19, 27, 19, 49, 44, 38), 
+  mode = "markers", 
+  name = "Europe", 
+  text = c("Germany", "Britain", "France", "Spain", "Italy", "Czech Rep.", "Greece", "Poland"), 
+  marker = list(
+    color = "rgb(255, 217, 102)", 
+    size = 12, 
+    line = list(
+      color = "white", 
+      width = 0.5
+    )
+  ), 
+  type = "scatter"
+)
+trace3 <- list(
+  x = c(42952, 37037, 33106, 17478, 9813, 5253, 4692, 3899), 
+  y = c(23, 42, 54, 89, 14, 99, 93, 70), 
+  mode = "markers", 
+  name = "Asia/Pacific", 
+  text = c("Australia", "Japan", "South Korea", "Malaysia", "China", "Indonesia", "Philippines", "India"), 
+  marker = list(
+    color = "rgb(234, 153, 153)", 
+    size = 12, 
+    line = list(
+      color = "white", 
+      width = 0.5
+    )
+  ), 
+  type = "scatter"
+)
+trace4 <- list(
+  x = c(19097, 18601, 15595, 13546, 12026, 7434, 5419), 
+  y = c(43, 47, 56, 80, 86, 93, 80), 
+  mode = "markers", 
+  name = "Latin America", 
+  text = c("Chile", "Argentina", "Mexico", "Venezuela", "Venezuela", "El Salvador", "Bolivia"), 
+  marker = list(
+    color = "rgb(142, 124, 195)", 
+    size = 12, 
+    line = list(
+      color = "white", 
+      width = 0.5
+    )
+  ), 
+  type = "scatter"
+)
+data <- list(trace1, trace2, trace3, trace4)
+layout <- list(
+  title = "Quarter 1 Growth", 
+  xaxis = list(
+    title = "GDP per Capita", 
+    showgrid = FALSE, 
+    zeroline = FALSE
+  ), 
+  yaxis = list(
+    title = "Percent", 
+    showline = FALSE
+  )
+)
+response <- p$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="line-style"))
+url <- response$url
