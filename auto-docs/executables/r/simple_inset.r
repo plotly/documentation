@@ -1,7 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
-
+py <- plotly(username='TestBot', key='r1neazxo9w')
 trace1 <- list(
   x = c(1, 2, 3), 
   y = c(4, 3, 2), 
@@ -25,7 +23,5 @@ layout <- list(
     anchor = "y2"
   )
 )
-
-response <- p$plotly(data, kwargs=list(layout=layout, filename="simple-inset", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="simple-inset"))
 url <- response$url
-filename <- response$filename

@@ -1,8 +1,3 @@
-import plotly.plotly as py
-from plotly.graph_objs import *
-
-py.sign_in('TestBot', 'r1neazxo9w')
-
 import numpy as np
 
 
@@ -14,6 +9,9 @@ y1 = np.random.rand(50) + 1.0
 
 x = np.concatenate([x0, x1])
 y = np.concatenate([y0, y1])
+import plotly.plotly as py
+from plotly.graph_objs import *
+py.sign_in('TestBot', 'r1neazxo9w')
 trace1 = Scatter(
     x=x0,
     y=y0,
@@ -37,5 +35,4 @@ trace3 = Histogram2d(
     y=y
 )
 data = Data([trace1, trace2, trace3])
-
-plot_url = py.plot(data, filename='2d-histogram-scatter', auto_open=False)
+plot_url = py.plot(data, auto_open=False, filename='2d-histogram-scatter')

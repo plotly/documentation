@@ -1,5 +1,4 @@
 signin('TestBot', 'r1neazxo9w')
-
 trace1 = struct(...
   'x', [0, 1, 2], ...
   'y', [1, 1, 1], ...
@@ -26,6 +25,5 @@ trace2 = struct(...
   'type', 'scatter');
 data = {trace1, trace2};
 layout = struct('showlegend', false);
-
-response = plotly(data, struct('layout', layout, 'filename', 'text-chart-styling', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('layout', layout, 'auto_open', false, 'fileopt', 'overwrite', 'filename', 'text-chart-styling'));
 plot_url = response.url

@@ -1,13 +1,13 @@
-signin('TestBot', 'r1neazxo9w')
+import numpy as np
 
-x = randn(500,1);
-y = randn(500,1)+1;
+x = np.random.randn(500)
+y = np.random.randn(500)+1
+signin('TestBot', 'r1neazxo9w')
 data = {...
   struct(...
     'x', x, ...
     'y', y, ...
     'type', 'histogram2d')...
 };
-
-response = plotly(data, struct('filename', '2d-histogram', 'fileopt', 'overwrite', 'auto_open', false));
+response = plotly(data, struct('auto_open', false, 'fileopt', 'overwrite', 'filename', '2d-histogram'));
 plot_url = response.url

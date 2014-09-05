@@ -1,8 +1,5 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
 trace1 = [
   "x" => [1, 2, 3, 4], 
   "y" => [1, 4, 9, 16], 
@@ -20,6 +17,5 @@ layout = [
   "xaxis" => ["title" => "$\sqrt{(n_\text{c}(t|{T_\text{early}}))}$"], 
   "yaxis" => ["title" => "$d, r \text{ (solar radius)}$"]
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "latex", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "latex"])
 plot_url = response["url"]

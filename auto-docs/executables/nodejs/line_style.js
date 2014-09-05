@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var trace1 = {
   x: [52698, 43117], 
   y: [53, 31], 
@@ -77,8 +76,7 @@ var layout = {
     showline: false
   }
 };
-
-var graph_options = {filename: "line-style", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "line-style"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

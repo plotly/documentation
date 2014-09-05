@@ -1,7 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
-
+py <- plotly(username='TestBot', key='r1neazxo9w')
 trace1 <- list(
   x = c(1, 2, 3), 
   y = c(4, 5, 6), 
@@ -20,7 +18,5 @@ layout <- list(
   yaxis2 = list(anchor = "x2"), 
   xaxis2 = list(domain = c(0.8, 1))
 )
-
-response <- p$plotly(data, kwargs=list(layout=layout, filename="custom-size-subplot", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="custom-size-subplot"))
 url <- response$url
-filename <- response$filename

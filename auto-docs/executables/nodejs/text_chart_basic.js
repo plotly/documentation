@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var trace1 = {
   x: [0, 1, 2], 
   y: [1, 1, 1], 
@@ -29,8 +28,7 @@ var trace3 = {
 };
 var data = [trace1, trace2, trace3];
 var layout = {showlegend: false};
-
-var graph_options = {filename: "text-chart-basic", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "text-chart-basic"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

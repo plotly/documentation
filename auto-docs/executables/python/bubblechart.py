@@ -1,8 +1,6 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
-
 trace1 = Scatter(
     x=[1, 2, 3, 4],
     y=[10, 11, 12, 13],
@@ -40,5 +38,4 @@ layout = Layout(
     showlegend=False
 )
 fig = Figure(data=data, layout=layout)
-
-plot_url = py.plot(fig, filename='bubblechart', auto_open=False)
+plot_url = py.plot(fig, auto_open=False, filename='bubblechart')

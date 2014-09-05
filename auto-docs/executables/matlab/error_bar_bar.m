@@ -1,5 +1,4 @@
 signin('TestBot', 'r1neazxo9w')
-
 trace1 = struct(...
   'x', { {'Trial 1', 'Trial 2', 'Trial 3'} }, ...
   'y', [3, 6, 4], ...
@@ -20,6 +19,5 @@ trace2 = struct(...
   'type', 'bar');
 data = {trace1, trace2};
 layout = struct('barmode', 'group');
-
-response = plotly(data, struct('layout', layout, 'filename', 'error-bar-bar', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('layout', layout, 'auto_open', false, 'fileopt', 'overwrite', 'filename', 'error-bar-bar'));
 plot_url = response.url

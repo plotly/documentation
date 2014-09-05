@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var trace1 = {
   x: [1, 2, 3, 4], 
   y: [10, 11, 12, 13], 
@@ -37,8 +36,7 @@ var trace3 = {
 };
 var data = [trace1, trace2, trace3];
 var layout = {showlegend: false};
-
-var graph_options = {filename: "bubblechart", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "bubblechart"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

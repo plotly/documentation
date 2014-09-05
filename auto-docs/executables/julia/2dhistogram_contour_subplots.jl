@@ -1,11 +1,10 @@
-using Plotly
+import numpy as np
 
+t = np.linspace(-1,1.2,2000)
+x = (t**3)+(0.3*np.random.randn(2000))
+y = (t**6)+(0.3*np.random.randn(2000))
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
-t = linspace(-1, 1.2, 2000)
-x = t.^3+0.3*randn(2000)
-y = t.^6+0.3*randn(2000)
 trace1 = [
   "x" => x, 
   "y" => y, 
@@ -72,6 +71,5 @@ layout = [
     "zeroline" => false
   ]
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "2dhistogram-contour-subplots", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "2dhistogram-contour-subplots"])
 plot_url = response["url"]

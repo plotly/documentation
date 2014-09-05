@@ -1,7 +1,8 @@
-signin('TestBot', 'r1neazxo9w')
+import numpy as np
 
-x = randn(500,1);
-y = randn(500,1)+1;
+x = np.random.randn(500)
+y = np.random.randn(500)+1
+signin('TestBot', 'r1neazxo9w')
 data = {...
   struct(...
     'x', x, ...
@@ -20,6 +21,5 @@ data = {...
     'colorscale', { { {0, 'rgb(12,51,131)'},{0.25, 'rgb(10,136,186)'},{0.5, 'rgb(242,211,56)'},{0.75, 'rgb(242,143,56)'},{1, 'rgb(217,30,30)'} } }, ...
     'type', 'histogram2d')...
 };
-
-response = plotly(data, struct('filename', '2d-histogram-options', 'fileopt', 'overwrite', 'auto_open', false));
+response = plotly(data, struct('auto_open', false, 'fileopt', 'overwrite', 'filename', '2d-histogram-options'));
 plot_url = response.url

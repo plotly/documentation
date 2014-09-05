@@ -1,9 +1,10 @@
-signin('TestBot', 'r1neazxo9w')
+import numpy as np
 
-x_theo = linspace(-4, 4, 100);
-sincx = sinc(x_theo);
-x = [-3.8, -3.03, -1.91, -1.46, -0.89, -0.24, -0.0, 0.41, 0.89, 1.01, 1.91, 2.28, 2.79, 3.56];
+x_theo = np.linspace(-4, 4, 100)
+sincx = np.sinc(x_theo)
+x = [-3.8, -3.03, -1.91, -1.46, -0.89, -0.24, -0.0, 0.41, 0.89, 1.01, 1.91, 2.28, 2.79, 3.56]
 y = [-0.02, 0.04, -0.01, -0.27, 0.36, 0.75, 1.03, 0.65, 0.28, 0.02, -0.11, 0.16, 0.04, -0.15]
+signin('TestBot', 'r1neazxo9w')
 trace1 = struct(...
   'x', x_theo, ...
   'y', sincx, ...
@@ -33,6 +34,5 @@ trace2 = struct(...
     'size', 8), ...
   'type', 'scatter');
 data = {trace1, trace2};
-
-response = plotly(data, struct('filename', 'error-bar-style', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('auto_open', false, 'fileopt', 'overwrite', 'filename', 'error-bar-style'));
 plot_url = response.url

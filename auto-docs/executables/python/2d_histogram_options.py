@@ -1,12 +1,10 @@
-import plotly.plotly as py
-from plotly.graph_objs import *
-
-py.sign_in('TestBot', 'r1neazxo9w')
-
 import numpy as np
 
 x = np.random.randn(500)
 y = np.random.randn(500)+1
+import plotly.plotly as py
+from plotly.graph_objs import *
+py.sign_in('TestBot', 'r1neazxo9w')
 data = Data([
     Histogram2d(
         x=x,
@@ -27,5 +25,4 @@ data = Data([
         colorscale=[[0, 'rgb(12,51,131)'], [0.25, 'rgb(10,136,186)'], [0.5, 'rgb(242,211,56)'], [0.75, 'rgb(242,143,56)'], [1, 'rgb(217,30,30)']]
     )
 ])
-
-plot_url = py.plot(data, filename='2d-histogram-options', auto_open=False)
+plot_url = py.plot(data, auto_open=False, filename='2d-histogram-options')

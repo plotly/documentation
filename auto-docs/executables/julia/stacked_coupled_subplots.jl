@@ -1,8 +1,5 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
 trace1 = [
   "x" => [0, 1, 2], 
   "y" => [10, 11, 12], 
@@ -27,6 +24,5 @@ layout = [
   "yaxis2" => ["domain" => [0.33, 0.66]], 
   "yaxis3" => ["domain" => [0.66, 1]]
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "stacked-coupled-subplots", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "stacked-coupled-subplots"])
 plot_url = response["url"]

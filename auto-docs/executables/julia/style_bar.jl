@@ -1,8 +1,5 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
 trace1 = [
   "x" => [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012], 
   "y" => [219, 146, 112, 127, 124, 180, 236, 207, 236, 263, 350, 430, 474, 526, 488, 537, 500, 439], 
@@ -45,6 +42,5 @@ layout = [
   "bargap" => 0.15, 
   "bargroupgap" => 0.1
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "style-bar", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "style-bar"])
 plot_url = response["url"]

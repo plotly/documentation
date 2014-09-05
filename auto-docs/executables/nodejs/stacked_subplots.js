@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var trace1 = {
   x: [0, 1, 2], 
   y: [10, 11, 12], 
@@ -28,8 +27,7 @@ var layout = {
   yaxis2: {domain: [0.366, 0.633]}, 
   yaxis3: {domain: [0.733, 1]}
 };
-
-var graph_options = {filename: "stacked-subplots", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "stacked-subplots"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

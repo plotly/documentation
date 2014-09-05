@@ -1,15 +1,16 @@
+import numpy as np
+
+
+x0 = np.random.randn(100)/5. + 0.5  # 5. enforces float division
+y0 = np.random.randn(100)/5. + 0.5
+x1 = np.random.rand(50)
+y1 = np.random.rand(50) + 1.0
+
+
+x = np.concatenate([x0, x1])
+y = np.concatenate([y0, y1])
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
-
-x0 <- rnorm(100)/5. + 0.5
-y0 <- rnorm(100)/5. + 0.5
-x1 <- runif(50)
-y1 <- runif(50) + 1.0
-
-
-x <- c(x0, x1)
-y <- c(y0, y1)
+py <- plotly(username='TestBot', key='r1neazxo9w')
 trace1 <- list(
   x = x0, 
   y = y0, 
@@ -36,7 +37,5 @@ trace3 <- list(
   type = "histogram2d"
 )
 data <- list(trace1, trace2, trace3)
-
-response <- p$plotly(data, kwargs=list(filename="2d-histogram-scatter", fileopt="overwrite", auto_open=FALSE))
+response <- py$plotly(data, kwargs=list(auto_open=FALSE, fileopt="overwrite", filename="2d-histogram-scatter"))
 url <- response$url
-filename <- response$filename

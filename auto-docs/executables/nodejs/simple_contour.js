@@ -1,20 +1,14 @@
+import numpy as np
+
+size = 100
+x = np.linspace(-2*np.pi, 2*np.pi, size)
+y = np.linspace(-2*np.pi, 2*np.pi, size)
+z = np.empty((size, size))
+for i, xi in enumerate(x):
+    for j, yj in enumerate(y):
+        r2 = (xi**2+yj**2)
+        z[i][j] = np.sin(xi)*np.cos(yj)*np.sin(r2)/(np.log(r2+1))
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
-var linspace = require('linspace');
-var unpack = require('ndarray-unpack');
-var zeros = require('zeros');
-var fill = require('ndarray-fill');
-
-var size = 100
-var x = linspace(-2 * Math.PI, 2 * Math.PI, size)
-var y = linspace(-2 * Math.PI, 2 * Math.PI, size)
-var z = unpack(zeros([size,size]))
-for (var i = 0; i < size; i++) {
-  for (var j = 0; j < size; j++) {
-    r2 = (x * (i * i) + y * (j * j))
-      z[i][j] = Math.sin(x * i) * Math.cos(y * j) * Math.sin(r2) / Math.log(r2+1)
-  }
-}
 var data = [
   {
     z: z, 
@@ -23,8 +17,7 @@ var data = [
     type: "contour"
   }
 ];
-
-var graph_options = {filename: "simple-contour", fileopt: "overwrite", auto_open: "false"}
+var graph_options = {auto_open: false, fileopt: "overwrite", filename: "simple-contour"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

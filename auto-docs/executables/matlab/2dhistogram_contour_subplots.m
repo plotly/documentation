@@ -1,8 +1,9 @@
-signin('TestBot', 'r1neazxo9w')
+import numpy as np
 
-t = linspace(-1, 1.2, 2000);
-x = (t.^3)+(0.3.*randn(1, 2000));
-y = (t.^6)+(0.3.*randn(1, 2000));
+t = np.linspace(-1,1.2,2000)
+x = (t**3)+(0.3*np.random.randn(2000))
+y = (t**6)+(0.3*np.random.randn(2000))
+signin('TestBot', 'r1neazxo9w')
 trace1 = struct(...
   'x', x, ...
   'y', y, ...
@@ -59,6 +60,5 @@ layout = struct(...
       'domain', [0.85, 1], ...
       'showgrid', false, ...
       'zeroline', false));
-
-response = plotly(data, struct('layout', layout, 'filename', '2dhistogram-contour-subplots', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('layout', layout, 'auto_open', false, 'fileopt', 'overwrite', 'filename', '2dhistogram-contour-subplots'));
 plot_url = response.url

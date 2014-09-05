@@ -1,15 +1,12 @@
-using Plotly
-
+import numpy as np
+y = np.random.randn(500)
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
-y = randn(500)
 data = [
   [
     "y" => y, 
     "type" => "histogram"
   ]
 ]
-
-response = Plotly.plot([data], ["filename" => "horizontal-histogram", "fileopt" => "overwrite", "auto_open" => false])
+response = Plotly.plot(data, ["auto_open" => false, "fileopt" => "overwrite", "filename" => "horizontal-histogram"])
 plot_url = response["url"]

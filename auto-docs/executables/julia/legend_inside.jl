@@ -1,8 +1,5 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
 trace1 = [
   "x" => [0, 1, 2, 3, 4, 5, 6, 7, 8], 
   "y" => [0, 3, 6, 4, 5, 2, 3, 5, 4], 
@@ -21,6 +18,5 @@ layout = [
     "y" => 1
   ]
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "legend-inside", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "legend-inside"])
 plot_url = response["url"]

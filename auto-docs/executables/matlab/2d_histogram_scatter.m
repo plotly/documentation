@@ -1,13 +1,15 @@
+import numpy as np
+
+
+x0 = np.random.randn(100)/5. + 0.5  # 5. enforces float division
+y0 = np.random.randn(100)/5. + 0.5
+x1 = np.random.rand(50)
+y1 = np.random.rand(50) + 1.0
+
+
+x = np.concatenate([x0, x1])
+y = np.concatenate([y0, y1])
 signin('TestBot', 'r1neazxo9w')
-
-x0 = randn(100,1)./5. + 0.5;
-y0 = randn(100,1)./5. + 0.5;
-x1 = rand(50,1);
-y1 = rand(50,1) + 1.0;
-
-
-x = [x0; x1];
-y = [y0; y1];
 trace1 = struct(...
   'x', x0, ...
   'y', y0, ...
@@ -29,6 +31,5 @@ trace3 = struct(...
   'y', y, ...
   'type', 'histogram2d');
 data = {trace1, trace2, trace3};
-
-response = plotly(data, struct('filename', '2d-histogram-scatter', 'fileopt', 'overwrite', 'auto_open', false));
+response = plotly(data, struct('auto_open', false, 'fileopt', 'overwrite', 'filename', '2d-histogram-scatter'));
 plot_url = response.url

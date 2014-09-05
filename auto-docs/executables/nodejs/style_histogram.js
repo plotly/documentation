@@ -1,13 +1,7 @@
+import numpy as np
+x0 = np.random.randn(500)
+x1 = np.random.randn(500)+1
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
-var x0 = [];
-var x1 = [];
-
-for (var i = 0; i < 500; i ++) {
-	x0[i] = Math.random();
-	x1[i] = Math.random() + 1;
-}
-
 var trace1 = {
   x: x0, 
   histnorm: "count", 
@@ -50,8 +44,7 @@ var layout = {
   bargap: 0.25, 
   bargroupgap: 0.3
 };
-
-var graph_options = {filename: "style-histogram", fileopt: "overwrite", layout: layout, auto_open: false}
+var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "style-histogram"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });
