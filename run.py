@@ -949,6 +949,7 @@ def save_tree(tree, previous_tree):
     except OSError:
         pass
     new_tree = nested_merge(previous_tree, tree)
+    remove_none_values(new_tree)
     sorted_new_tree = get_ordered_dict(new_tree)
     with open(files['tree'], 'w') as f:
         json.dump(sorted_new_tree, f, indent=4, separators=(',', ': '))
@@ -979,9 +980,16 @@ def nested_merge(old, update):
                 new[key] = nested_merge(old[key], update[key])
             else:
                 new[key] = update[key]
-            if update[key] is None:
-                del new[key]
     return new
+
+
+def remove_none_values(tree):
+    keys = tree.keys()
+    for key in keys:
+        if isinstance(tree[key], dict):
+            remove_none_values(tree[key])
+        elif tree[key] is None:
+            del tree[key]
 
 
 def get_ordered_dict(d):
