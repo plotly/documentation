@@ -1,0 +1,23 @@
+var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+var data = [
+  {
+    x: [2, 4, 6], 
+    y: [-3, 0, 3], 
+    type: "scatter"
+  }
+];
+var layout = {
+  showlegend: false, 
+  xaxis: {
+    rangemode: "tozero", 
+    autorange: true
+  }, 
+  yaxis: {
+    rangemode: "nonnegative", 
+    autorange: true
+  }
+};
+var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "axes-range-mode"}
+plotly.plot(data, graph_options, function (err, msg) {
+    console.log(msg);
+});
