@@ -1037,7 +1037,8 @@ def main():
             print "\t\t{}".format(leaf_id)
         clear(previous_tree, crud, previous_leaf_ids)
         save_tree({}, previous_tree)
-        save_processed_ids(set(), previous_leaf_ids)
+        id_dict = {"complete": set(), "queued": set()}
+        save_processed_ids(id_dict, previous_leaf_ids)
         previous_tree = load_previous_tree()
         previous_leaf_ids = load_previous_leaf_ids()
     print "validating file structure in examples"
@@ -1080,10 +1081,11 @@ def main():
         save_processed_ids(id_dict, previous_leaf_ids)
         sys.exit(0)
     if command == 'clear':
-        remaining_ids = previous_leaf_ids - set(options)
+        print "\nclearing:\n\t{}\n".format("\n\t".join(options))
         clear(previous_tree, options, previous_leaf_ids)
         save_tree({}, previous_tree)
-        save_processed_ids(remaining_ids, set())
+        id_dict = {"complete": set(), "queued": set(options)}
+        save_processed_ids(id_dict, previous_leaf_ids)
         sys.exit(0)
     if command == 'meta':
         crud = set(leaf_ids.keys()) - previous_leaf_ids
