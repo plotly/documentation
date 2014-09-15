@@ -1,8 +1,8 @@
-import numpy as np
-x0 = np.random.randn(500)
-x1 = np.random.randn(500)+1
 library(plotly)
 p <- plotly(username='TestBot', key='r1neazxo9w')
+x0 = rnorm(500)
+x1 = rnorm(500)+1
+
 trace1 <- list(
   x = x0, 
   opacity = 0.75, 
@@ -15,5 +15,5 @@ trace2 <- list(
 )
 data <- list(trace1, trace2)
 layout <- list(barmode = "overlay")
-response <- p$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="overlaid-histogram"))
+response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="overlaid-histogram"))
 url <- response$url

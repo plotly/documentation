@@ -1,4 +1,5 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var trace1 = {
   x: ["giraffes", "orangutans", "monkeys"], 
   y: [20, 14, 23], 
@@ -13,7 +14,7 @@ var trace2 = {
 };
 var data = [trace1, trace2];
 var layout = {barmode: "group"};
-var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "grouped-bar"}
+var graph_options = {layout: layout, fileopt: "overwrite", filename: "grouped-bar"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

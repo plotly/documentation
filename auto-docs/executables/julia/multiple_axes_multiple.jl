@@ -1,5 +1,6 @@
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
+
 trace1 = [
   "x" => [1, 2, 3], 
   "y" => [4, 5, 6], 
@@ -64,5 +65,5 @@ layout = [
     "position" => 0.85
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "multiple-axes-multiple"])
+response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "multiple-axes-multiple"])
 plot_url = response["url"]

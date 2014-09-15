@@ -1,4 +1,5 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var trace1 = {
   x: [1, 2, 3], 
   y: [4, 3, 2], 
@@ -22,7 +23,7 @@ var layout = {
     anchor: "y2"
   }
 };
-var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "simple-inset"}
+var graph_options = {layout: layout, fileopt: "overwrite", filename: "simple-inset"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

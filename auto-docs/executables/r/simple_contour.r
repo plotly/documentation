@@ -1,15 +1,16 @@
-import numpy as np
-
-size = 100
-x = np.linspace(-2*np.pi, 2*np.pi, size)
-y = np.linspace(-2*np.pi, 2*np.pi, size)
-z = np.empty((size, size))
-for i, xi in enumerate(x):
-    for j, yj in enumerate(y):
-        r2 = (xi**2+yj**2)
-        z[i][j] = np.sin(xi)*np.cos(yj)*np.sin(r2)/(np.log(r2+1))
 library(plotly)
 p <- plotly(username='TestBot', key='r1neazxo9w')
+size <- 100
+x <- seq(-2*pi, 2*pi, length=size)
+y <- seq(-2*pi, 2*pi, length=size)
+z <- matrix(0, size, size)
+for(i in 1:size) {
+    for(j in 1:size) {
+        r2 <- x[i]^2 + y[j]^2
+        z[i, j] <- sin(x[i])*cos(y[j])*sin(r2)/log(r2+1)
+    }
+}
+
 data <- list(
   list(
     z = z, 
@@ -18,5 +19,5 @@ data <- list(
     type = "contour"
   )
 )
-response <- p$plotly(data, kwargs=list(auto_open=FALSE, fileopt="overwrite", filename="simple-contour"))
+response <- p$plotly(data, kwargs=list(fileopt="overwrite", filename="simple-contour"))
 url <- response$url

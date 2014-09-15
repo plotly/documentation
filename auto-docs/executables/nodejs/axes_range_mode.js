@@ -1,4 +1,5 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var data = [
   {
     x: [2, 4, 6], 
@@ -17,7 +18,7 @@ var layout = {
     autorange: true
   }
 };
-var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "axes-range-mode"}
+var graph_options = {layout: layout, fileopt: "overwrite", filename: "axes-range-mode"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

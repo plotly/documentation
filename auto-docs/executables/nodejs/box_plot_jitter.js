@@ -1,4 +1,5 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var data = [
   {
     y: [0, 1, 1, 2, 3, 5, 8, 13, 21], 
@@ -8,7 +9,7 @@ var data = [
     type: "box"
   }
 ];
-var graph_options = {auto_open: false, fileopt: "overwrite", filename: "box-plot-jitter"}
+var graph_options = {fileopt: "overwrite", filename: "box-plot-jitter"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

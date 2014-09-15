@@ -1,8 +1,8 @@
-import numpy as np
-x0 = np.random.randn(500)
-x1 = np.random.randn(500)+1
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
+x0 = randn(500)
+x1 = randn(500)+1
+
 trace1 = [
   "x" => x0, 
   "opacity" => 0.75, 
@@ -15,5 +15,5 @@ trace2 = [
 ]
 data = [trace1, trace2]
 layout = ["barmode" => "overlay"]
-response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "overlaid-histogram"])
+response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "overlaid-histogram"])
 plot_url = response["url"]

@@ -1,5 +1,6 @@
 library(plotly)
 p <- plotly(username='TestBot', key='r1neazxo9w')
+
 data <- list(
   list(
     x = c(0, 1, 2, 3, 4, 5, 6, 7, 8), 
@@ -15,5 +16,5 @@ layout <- list(
     color = "#7f7f7f"
   )
 )
-response <- p$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="global-font"))
+response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="global-font"))
 url <- response$url

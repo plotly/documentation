@@ -1,4 +1,5 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var data = [
   {
     x: ["giraffes", "orangutans", "monkeys"], 
@@ -6,7 +7,7 @@ var data = [
     type: "bar"
   }
 ];
-var graph_options = {auto_open: false, fileopt: "overwrite", filename: "basic-bar"}
+var graph_options = {fileopt: "overwrite", filename: "basic-bar"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

@@ -1,5 +1,6 @@
 library(plotly)
 p <- plotly(username='TestBot', key='r1neazxo9w')
+
 trace1 <- list(
   x = c(0, 1, 2, 3, 4, 5, 6, 7, 8), 
   y = c(0, 3, 6, 4, 5, 2, 3, 5, 4), 
@@ -18,5 +19,5 @@ layout <- list(
     y = 1
   )
 )
-response <- p$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="legend-inside"))
+response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="legend-inside"))
 url <- response$url

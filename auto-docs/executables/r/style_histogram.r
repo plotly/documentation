@@ -1,8 +1,8 @@
-import numpy as np
-x0 = np.random.randn(500)
-x1 = np.random.randn(500)+1
 library(plotly)
 p <- plotly(username='TestBot', key='r1neazxo9w')
+x0 = rnorm(500)
+x1 = rnorm(500)+1
+
 trace1 <- list(
   x = x0, 
   histnorm = "count", 
@@ -45,5 +45,5 @@ layout <- list(
   bargap = 0.25, 
   bargroupgap = 0.3
 )
-response <- p$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="style-histogram"))
+response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="style-histogram"))
 url <- response$url

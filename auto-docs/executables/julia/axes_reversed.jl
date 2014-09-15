@@ -1,5 +1,6 @@
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
+
 data = [
   [
     "x" => [1, 2], 
@@ -8,5 +9,5 @@ data = [
   ]
 ]
 layout = ["xaxis" => ["autorange" => "reversed"]]
-response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "axes-reversed"])
+response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "axes-reversed"])
 plot_url = response["url"]

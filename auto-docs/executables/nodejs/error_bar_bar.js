@@ -1,4 +1,5 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var trace1 = {
   x: ["Trial 1", "Trial 2", "Trial 3"], 
   y: [3, 6, 4], 
@@ -23,7 +24,7 @@ var trace2 = {
 };
 var data = [trace1, trace2];
 var layout = {barmode: "group"};
-var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "error-bar-bar"}
+var graph_options = {layout: layout, fileopt: "overwrite", filename: "error-bar-bar"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

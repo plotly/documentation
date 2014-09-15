@@ -1,9 +1,8 @@
-import numpy as np
-
-x = np.random.randn(500)
-y = np.random.randn(500)+1
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
+x = randn(500)
+y = randn(500)+1
+
 data = [
   [
     "x" => x, 
@@ -25,5 +24,5 @@ data = [
     "type" => "histogram2d"
   ]
 ]
-response = Plotly.plot(data, ["auto_open" => false, "fileopt" => "overwrite", "filename" => "2d-histogram-options"])
+response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "2d-histogram-options"])
 plot_url = response["url"]

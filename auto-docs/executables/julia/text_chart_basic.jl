@@ -1,5 +1,6 @@
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
+
 trace1 = [
   "x" => [0, 1, 2], 
   "y" => [1, 1, 1], 
@@ -29,5 +30,5 @@ trace3 = [
 ]
 data = [trace1, trace2, trace3]
 layout = ["showlegend" => false]
-response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "text-chart-basic"])
+response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "text-chart-basic"])
 plot_url = response["url"]

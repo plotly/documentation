@@ -1,5 +1,6 @@
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
+
 trace1 = [
   "x" => ["giraffes", "orangutans", "monkeys"], 
   "y" => [20, 14, 23], 
@@ -14,5 +15,5 @@ trace2 = [
 ]
 data = [trace1, trace2]
 layout = ["barmode" => "stack"]
-response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "stacked-bar"])
+response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "stacked-bar"])
 plot_url = response["url"]

@@ -1,5 +1,6 @@
 library(plotly)
 p <- plotly(username='TestBot', key='r1neazxo9w')
+
 trace1 <- list(
   x = c(1, 2, 3, 4), 
   y = c(1, 4, 9, 16), 
@@ -17,5 +18,5 @@ layout <- list(
   xaxis = list(title = "$\sqrt{(n_\text{c}(t|{T_\text{early}}))}$"), 
   yaxis = list(title = "$d, r \text{ (solar radius)}$")
 )
-response <- p$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="latex"))
+response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="latex"))
 url <- response$url

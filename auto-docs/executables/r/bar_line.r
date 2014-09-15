@@ -1,5 +1,6 @@
 library(plotly)
 p <- plotly(username='TestBot', key='r1neazxo9w')
+
 trace1 <- list(
   x = c(0, 1, 2, 3, 4, 5), 
   y = c(1.5, 1, 1.3, 0.7, 0.8, 0.9), 
@@ -11,5 +12,5 @@ trace2 <- list(
   type = "bar"
 )
 data <- list(trace1, trace2)
-response <- p$plotly(data, kwargs=list(auto_open=FALSE, fileopt="overwrite", filename="bar-line"))
+response <- p$plotly(data, kwargs=list(fileopt="overwrite", filename="bar-line"))
 url <- response$url

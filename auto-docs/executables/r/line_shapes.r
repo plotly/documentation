@@ -1,5 +1,6 @@
 library(plotly)
 p <- plotly(username='TestBot', key='r1neazxo9w')
+
 trace1 <- list(
   x = c(1, 2, 3, 4, 5), 
   y = c(1, 3, 2, 3, 1), 
@@ -56,5 +57,5 @@ layout <- list(legend = list(
     font = list(size = 16), 
     yref = "paper"
   ))
-response <- p$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="line-shapes"))
+response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="line-shapes"))
 url <- response$url

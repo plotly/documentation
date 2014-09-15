@@ -1,4 +1,5 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var trace1 = {
   x: [1, 2, 3, 4, 5], 
   y: [1, 3, 2, 3, 1], 
@@ -55,7 +56,7 @@ var layout = {legend: {
     font: {size: 16}, 
     yref: "paper"
   }};
-var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "line-shapes"}
+var graph_options = {layout: layout, fileopt: "overwrite", filename: "line-shapes"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

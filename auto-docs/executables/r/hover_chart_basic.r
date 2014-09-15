@@ -1,5 +1,6 @@
 library(plotly)
 p <- plotly(username='TestBot', key='r1neazxo9w')
+
 data <- list(
   list(
     x = c(0, 1, 2), 
@@ -10,5 +11,5 @@ data <- list(
   )
 )
 layout <- list(title = "Hover over the points to see the text")
-response <- p$plotly(data, kwargs=list(layout=layout, auto_open=FALSE, fileopt="overwrite", filename="hover-chart-basic"))
+response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="hover-chart-basic"))
 url <- response$url

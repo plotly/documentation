@@ -1,4 +1,5 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var data = [
   {
     x: [1, 2], 
@@ -7,7 +8,7 @@ var data = [
   }
 ];
 var layout = {xaxis: {autorange: "reversed"}};
-var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "axes-reversed"}
+var graph_options = {layout: layout, fileopt: "overwrite", filename: "axes-reversed"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

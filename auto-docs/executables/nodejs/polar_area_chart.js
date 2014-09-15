@@ -1,4 +1,5 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var trace1 = {
   r: [77.5, 72.5, 70.0, 45.0, 22.5, 42.5, 40.0, 62.5], 
   t: ["North", "N-E", "East", "S-E", "South", "S-W", "West", "N-W"], 
@@ -35,7 +36,7 @@ var layout = {
   radialaxis: {ticksuffix: "%"}, 
   orientation: 270
 };
-var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "polar-area-chart"}
+var graph_options = {layout: layout, fileopt: "overwrite", filename: "polar-area-chart"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

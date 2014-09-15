@@ -1,5 +1,6 @@
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
+
 trace1 = [
   "x" => ["Trial 1", "Trial 2", "Trial 3"], 
   "y" => [3, 6, 4], 
@@ -24,5 +25,5 @@ trace2 = [
 ]
 data = [trace1, trace2]
 layout = ["barmode" => "group"]
-response = Plotly.plot(data, ["layout" => layout, "auto_open" => false, "fileopt" => "overwrite", "filename" => "error-bar-bar"])
+response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "error-bar-bar"])
 plot_url = response["url"]

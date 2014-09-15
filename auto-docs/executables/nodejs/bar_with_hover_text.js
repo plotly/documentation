@@ -1,4 +1,5 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var data = [
   {
     x: ["Liam", "Sophie", "Jacob", "Mia", "William", "Olivia"], 
@@ -19,7 +20,7 @@ var layout = {
   }, 
   bargap: 0.05
 };
-var graph_options = {layout: layout, auto_open: false, fileopt: "overwrite", filename: "bar-with-hover-text"}
+var graph_options = {layout: layout, fileopt: "overwrite", filename: "bar-with-hover-text"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

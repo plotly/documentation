@@ -1,4 +1,5 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var trace1 = {
   x: [1, 2, 3, 4], 
   y: [0, 2, 3, 5], 
@@ -12,7 +13,7 @@ var trace2 = {
   type: "scatter"
 };
 var data = [trace1, trace2];
-var graph_options = {auto_open: false, fileopt: "overwrite", filename: "basic-area"}
+var graph_options = {fileopt: "overwrite", filename: "basic-area"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

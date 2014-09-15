@@ -1,17 +1,18 @@
-import numpy as np
-
-size = 100
-x = np.linspace(-2*np.pi, 2*np.pi, size)
-y = np.linspace(-2*np.pi, 2*np.pi, size)
-z = np.empty((size, size))
-for i, xi in enumerate(x):
-    for j, yj in enumerate(y):
-        r2 = (xi**2+yj**2)
-        z[i][j] = np.sin(xi)*np.cos(yj)*np.sin(r2)/(np.log(r2+1))
 library(plotly)
 {% if not username %}# Fill in with your personal username and API key
 # or, use this public demo account
 {% endif %}py &lt;- plotly(username={% if username %}"{{username}}"{% else %}'R-Demo-Account'{% endif %}, key={% if api_key %}"{{api_key}}"{% else %}'yu680v5eii'{% endif %})
+size &lt;- 100
+x &lt;- seq(-2*pi, 2*pi, length=size)
+y &lt;- seq(-2*pi, 2*pi, length=size)
+z &lt;- matrix(0, size, size)
+for(i in 1:size) {
+    for(j in 1:size) {
+        r2 &lt;- x[i]^2 + y[j]^2
+        z[i, j] &lt;- sin(x[i])*cos(y[j])*sin(r2)/log(r2+1)
+    }
+}
+
 data &lt;- list(
   list(
     z = z, 
@@ -20,5 +21,5 @@ data &lt;- list(
     type = "contour"
   )
 )
-response &lt;- p$plotly(data, kwargs=list(auto_open=FALSE, fileopt="overwrite", filename="simple-contour"))
+response &lt;- p$plotly(data, kwargs=list(fileopt="overwrite", filename="simple-contour"))
 url &lt;- response$url

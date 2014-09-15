@@ -1,6 +1,7 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
 py.sign_in('TestBot', 'r1neazxo9w')
+
 trace1 = Bar(
     x=['giraffes', 'orangutans', 'monkeys'],
     y=[20, 14, 23],

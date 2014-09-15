@@ -1,5 +1,6 @@
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
+
 data = [
   [
     "x" => [1, 2, 3, 4], 
@@ -8,5 +9,5 @@ data = [
     "type" => "bar"
   ]
 ]
-response = Plotly.plot(data, ["auto_open" => false, "fileopt" => "overwrite", "filename" => "bar-marker-array"])
+response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "bar-marker-array"])
 plot_url = response["url"]
