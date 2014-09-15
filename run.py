@@ -649,7 +649,8 @@ def process_model_worker(leaf, language, model):
     code = code.replace("<pre>", "").replace("</pre>", "")
     code = code.replace('">>>', "").replace('<<<"', "")
     code = code.replace("'>>>", "").replace("<<<'", "")
-    raw_exec_code = init + remove_header(code)
+    headless_exec_code = remove_header(code)
+    raw_exec_code = insert_init(headless_exec_code, init, language)
     save_code(raw_exec_code, leaf, language, 'execution')
     if language == 'python':
         leaf['python-exec'] = raw_exec_code
@@ -667,11 +668,27 @@ def process_model_worker(leaf, language, model):
     code = code.replace("<pre>", "").replace("</pre>", "")
     code = code.replace('">>>', "").replace('<<<"', "")
     code = code.replace("'>>>", "").replace("<<<'", "")
-    raw_doc_code = init + remove_header(code)
+    headless_doc_code = remove_header(code)
+    raw_doc_code = insert_init(headless_doc_code, init, language)
     doc_code = format_code(raw_doc_code, language, leaf)
     code_path = save_code(doc_code, leaf, language, 'documentation')
     # do this last so we know it worked!
     leaf[language] = code_path
+
+
+def insert_init(code, init, language):
+    lines = code.splitlines()
+    sign_in_lino = -1
+    for lino, line in enumerate(lines):
+        if line[:6] == sign_in['execution'][language][:6]:
+            sign_in_lino = lino
+            break
+        # FIXME: HACK! needs updating in streambed...
+        elif language == 'r' and line[:6] == 'p <- plotly('[:6]:
+            sign_in_lino = lino
+            break
+    new_lines = lines[:sign_in_lino+1] + [init] + lines[sign_in_lino+1:]
+    return '\n'.join(new_lines)
 
 
 def process_script_leaf(leaf, options, id_dict):
