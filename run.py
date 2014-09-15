@@ -214,7 +214,7 @@ sign_in = dict(
         matlab="signin('{un}', '{ak}')".format(**users['tester']),
         r="py <- plotly(username='{un}', key='{ak}')".format(**users[
             'tester']),
-        julia='using Plotly\nPlotly.signin("{un}", "{ak}")'
+        julia='Plotly.signin("{un}", "{ak}")'
               ''.format(**users['tester']),
         nodejs="var plotly = require('plotly')('{un}', '{ak}')"
                "".format(**users['tester']),
