@@ -540,7 +540,7 @@ def process_model_leaf(leaf, options, id_dict):
     #     model_languages = leaf['config']['languages']
     model_languages = leaf['config']['languages']
     if 'python' not in model_languages:
-        init = get_init_code(leaf)
+        init = get_init_code(leaf, 'python')
         try:
             plot_options = leaf['config']['plot-options']
         except KeyError:
@@ -613,7 +613,7 @@ def process_model_worker(leaf, language, model):
     # todo: handle this better (remove it first so that we can use it to check)
     if language in leaf:
         del leaf[language]
-    init = get_init_code(leaf)
+    init = get_init_code(leaf, language)
     try:
         plot_options = leaf['config']['plot-options']
     except KeyError:
@@ -631,7 +631,9 @@ def process_model_worker(leaf, language, model):
     # get exec code...
     data['un'] = users['tester']['un']
     data['ak'] = users['tester']['ak']
-    data['plot_options']['auto_open'] = False
+    keep_auto_open = 'auto_open' in data['plot_options']
+    if language == 'python':
+        data['plot_options']['auto_open'] = False
     res = get_plotly_response(translator_server, data=json.dumps(data))
     if not res:
         raise plotly.exceptions.PlotlyError(
@@ -641,6 +643,8 @@ def process_model_worker(leaf, language, model):
         raise plotly.exceptions.PlotlyError(
             "unsuccessful request at resource. '{}'"
             "".format(translator_server))
+    if not keep_auto_open:
+        data['plot_options'].pop('auto_open', None)
     code = res.content
     code = code.replace("<pre>", "").replace("</pre>", "")
     code = code.replace('">>>', "").replace('<<<"', "")
@@ -836,9 +840,9 @@ def remove_header(string):
     return '\n'.join(lines)
 
 
-def get_init_code(leaf):
+def get_init_code(leaf, language):
     if 'init' in leaf['config'] and leaf['config']['init']:
-        init_file = "init.{}".format(lang_to_ext['python'])
+        init_file = "init.{}".format(lang_to_ext[language])
         if init_file in leaf['files']:
             with open(leaf['files'][init_file]) as f:
                 return f.read() + "\n"
