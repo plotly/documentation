@@ -534,10 +534,11 @@ def process_model_leaf(leaf, options, id_dict):
         raise ValueError(
             "{} required and could not be opened in {}"
             "".format(files['model'], leaf['path']))
-    model_languages = [language for language in languages
-                       if language in options]
-    if not model_languages:
-        model_languages = leaf['config']['languages']
+    # model_languages = [language for language in languages
+    #                    if language in options]
+    # if not model_languages:
+    #     model_languages = leaf['config']['languages']
+    model_languages = leaf['config']['languages']
     if 'python' not in model_languages:
         init = get_init_code(leaf)
         try:
@@ -883,6 +884,9 @@ def format_code(code, language, leaf):
     lines = code.splitlines()
     for lino, line in enumerate(lines):
         if line[:6] == sign_in['execution'][language][:6]:
+            lines[lino] = sign_in['documentation'][language]
+        # FIXME: HACK! needs updating in streambed...
+        elif language == 'r' and line[:6] == 'p <- plotly('[:6]:
             lines[lino] = sign_in['documentation'][language]
     return cgi.escape('\n'.join(lines))
 
