@@ -683,10 +683,6 @@ def insert_init(code, init, language):
         if line[:6] == sign_in['execution'][language][:6]:
             sign_in_lino = lino
             break
-        # FIXME: HACK! needs updating in streambed...
-        elif language == 'r' and line[:6] == 'p <- plotly('[:6]:
-            sign_in_lino = lino
-            break
     new_lines = lines[:sign_in_lino+1] + [init] + lines[sign_in_lino+1:]
     return '\n'.join(new_lines)
 
