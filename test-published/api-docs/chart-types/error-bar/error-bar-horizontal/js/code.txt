@@ -11,7 +11,7 @@ var data = [
     type: "scatter"
   }
 ];
-var graph_options = {fileopt: "overwrite", filename: "error-bar-horizontal"}
+var graph_options = {filename: "error-bar-horizontal", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });
