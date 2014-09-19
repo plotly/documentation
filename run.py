@@ -214,7 +214,7 @@ sign_in = dict(
         matlab="signin('{un}', '{ak}')".format(**users['tester']),
         r="py <- plotly(username='{un}', key='{ak}')".format(**users[
             'tester']),
-        julia='using Plotly\nPlotly.signin("{un}", "{ak}")'
+        julia='Plotly.signin("{un}", "{ak}")'
               ''.format(**users['tester']),
         nodejs="var plotly = require('plotly')('{un}', '{ak}')"
                "".format(**users['tester']),
@@ -534,12 +534,13 @@ def process_model_leaf(leaf, options, id_dict):
         raise ValueError(
             "{} required and could not be opened in {}"
             "".format(files['model'], leaf['path']))
-    model_languages = [language for language in languages
-                       if language in options]
-    if not model_languages:
-        model_languages = leaf['config']['languages']
+    # model_languages = [language for language in languages
+    #                    if language in options]
+    # if not model_languages:
+    #     model_languages = leaf['config']['languages']
+    model_languages = leaf['config']['languages']
     if 'python' not in model_languages:
-        init = get_init_code(leaf)
+        init = get_init_code(leaf, 'python')
         try:
             plot_options = leaf['config']['plot-options']
         except KeyError:
@@ -612,9 +613,9 @@ def process_model_worker(leaf, language, model):
     # todo: handle this better (remove it first so that we can use it to check)
     if language in leaf:
         del leaf[language]
-    init = get_init_code(leaf)
+    init = get_init_code(leaf, language)
     try:
-        plot_options = leaf['config']['plot-options']
+        plot_options = dict(leaf['config']['plot-options'])
     except KeyError:
         plot_options = {}
     plot_options['filename'] = leaf['id']
@@ -630,7 +631,9 @@ def process_model_worker(leaf, language, model):
     # get exec code...
     data['un'] = users['tester']['un']
     data['ak'] = users['tester']['ak']
-    data['plot_options']['auto_open'] = False
+    keep_auto_open = 'auto_open' in data['plot_options']
+    if language == 'python':
+        data['plot_options']['auto_open'] = False
     res = get_plotly_response(translator_server, data=json.dumps(data))
     if not res:
         raise plotly.exceptions.PlotlyError(
@@ -640,11 +643,14 @@ def process_model_worker(leaf, language, model):
         raise plotly.exceptions.PlotlyError(
             "unsuccessful request at resource. '{}'"
             "".format(translator_server))
+    if not keep_auto_open:
+        data['plot_options'].pop('auto_open', None)
     code = res.content
     code = code.replace("<pre>", "").replace("</pre>", "")
     code = code.replace('">>>', "").replace('<<<"', "")
     code = code.replace("'>>>", "").replace("<<<'", "")
-    raw_exec_code = init + remove_header(code)
+    headless_exec_code = remove_header(code)
+    raw_exec_code = insert_init(headless_exec_code, init, language)
     save_code(raw_exec_code, leaf, language, 'execution')
     if language == 'python':
         leaf['python-exec'] = raw_exec_code
@@ -662,11 +668,23 @@ def process_model_worker(leaf, language, model):
     code = code.replace("<pre>", "").replace("</pre>", "")
     code = code.replace('">>>', "").replace('<<<"', "")
     code = code.replace("'>>>", "").replace("<<<'", "")
-    raw_doc_code = init + remove_header(code)
+    headless_doc_code = remove_header(code)
+    raw_doc_code = insert_init(headless_doc_code, init, language)
     doc_code = format_code(raw_doc_code, language, leaf)
     code_path = save_code(doc_code, leaf, language, 'documentation')
     # do this last so we know it worked!
     leaf[language] = code_path
+
+
+def insert_init(code, init, language):
+    lines = code.splitlines()
+    sign_in_lino = -1
+    for lino, line in enumerate(lines):
+        if line[:6] == sign_in['execution'][language][:6]:
+            sign_in_lino = lino
+            break
+    new_lines = lines[:sign_in_lino+1] + [init] + lines[sign_in_lino+1:]
+    return '\n'.join(new_lines)
 
 
 def process_script_leaf(leaf, options, id_dict):
@@ -835,9 +853,9 @@ def remove_header(string):
     return '\n'.join(lines)
 
 
-def get_init_code(leaf):
+def get_init_code(leaf, language):
     if 'init' in leaf['config'] and leaf['config']['init']:
-        init_file = "init.{}".format(lang_to_ext['python'])
+        init_file = "init.{}".format(lang_to_ext[language])
         if init_file in leaf['files']:
             with open(leaf['files'][init_file]) as f:
                 return f.read() + "\n"
@@ -883,6 +901,9 @@ def format_code(code, language, leaf):
     lines = code.splitlines()
     for lino, line in enumerate(lines):
         if line[:6] == sign_in['execution'][language][:6]:
+            lines[lino] = sign_in['documentation'][language]
+        # FIXME: HACK! needs updating in streambed...
+        elif language == 'r' and line[:6] == 'p <- plotly('[:6]:
             lines[lino] = sign_in['documentation'][language]
     return cgi.escape('\n'.join(lines))
 

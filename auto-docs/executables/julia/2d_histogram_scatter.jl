@@ -1,8 +1,5 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
-
 x0 = randn(100)/5. + 0.5
 y0 = randn(100)/5. + 0.5
 x1 = rand(50)
@@ -11,6 +8,7 @@ y1 = rand(50) + 1.0
 
 x = [x0; x1]
 y = [y0; y1]
+
 trace1 = [
   "x" => x0, 
   "y" => y0, 
@@ -37,6 +35,5 @@ trace3 = [
   "type" => "histogram2d"
 ]
 data = [trace1, trace2, trace3]
-
-response = Plotly.plot([data], ["filename" => "2d-histogram-scatter", "fileopt" => "overwrite", "auto_open" => false])
+response = Plotly.plot(data, ["filename" => "2d-histogram-scatter", "fileopt" => "overwrite"])
 plot_url = response["url"]

@@ -24,8 +24,7 @@ var trace2 = {
 };
 var data = [trace1, trace2];
 var layout = {barmode: "group"};
-
-var graph_options = {filename: "error-bar-bar", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "error-bar-bar", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

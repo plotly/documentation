@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 data = Data([
@@ -13,5 +12,4 @@ layout = Layout(
     title='Greens'
 )
 fig = Figure(data=data, layout=layout)
-
 plot_url = py.plot(fig, filename='Greens-heatmap', auto_open=False)

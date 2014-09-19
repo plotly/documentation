@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 data = [
@@ -11,6 +9,5 @@ data = [
     "type" => "bar"
   ]
 ]
-
-response = Plotly.plot([data], ["filename" => "bar-marker-array", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["filename" => "bar-marker-array", "fileopt" => "overwrite"])
 plot_url = response["url"]

@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 trace1 = [
@@ -21,6 +19,5 @@ layout = [
     "y" => 1
   ]
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "legend-inside", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "legend-inside", "fileopt" => "overwrite"])
 plot_url = response["url"]

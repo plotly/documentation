@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 trace1 = [
@@ -32,6 +30,5 @@ trace3 = [
 ]
 data = [trace1, trace2, trace3]
 layout = ["showlegend" => false]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "text-chart-basic", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "text-chart-basic", "fileopt" => "overwrite"])
 plot_url = response["url"]

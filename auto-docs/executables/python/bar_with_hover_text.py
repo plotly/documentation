@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 data = Data([
@@ -29,5 +28,4 @@ layout = Layout(
     bargap=0.05
 )
 fig = Figure(data=data, layout=layout)
-
 plot_url = py.plot(fig, filename='bar-with-hover-text', auto_open=False)

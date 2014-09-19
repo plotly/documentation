@@ -12,8 +12,7 @@ var trace2 = {
 };
 var data = [trace1, trace2];
 var layout = {showlegend: false};
-
-var graph_options = {filename: "legend-visibility", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "legend-visibility", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 trace1 = Scatter(
@@ -86,5 +85,4 @@ layout = Layout(
     orientation=-90
 )
 fig = Figure(data=data, layout=layout)
-
 plot_url = py.plot(fig, filename='polar-line', auto_open=False)

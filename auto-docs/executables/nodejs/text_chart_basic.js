@@ -29,8 +29,7 @@ var trace3 = {
 };
 var data = [trace1, trace2, trace3];
 var layout = {showlegend: false};
-
-var graph_options = {filename: "text-chart-basic", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "text-chart-basic", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

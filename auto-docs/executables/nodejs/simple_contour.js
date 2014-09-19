@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var linspace = require('linspace');
 var unpack = require('ndarray-unpack');
 var zeros = require('zeros');
@@ -15,6 +14,7 @@ for (var i = 0; i < size; i++) {
       z[i][j] = Math.sin(x * i) * Math.cos(y * j) * Math.sin(r2) / Math.log(r2+1)
   }
 }
+
 var data = [
   {
     z: z, 
@@ -23,8 +23,7 @@ var data = [
     type: "contour"
   }
 ];
-
-var graph_options = {filename: "simple-contour", fileopt: "overwrite", auto_open: "false"}
+var graph_options = {filename: "simple-contour", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

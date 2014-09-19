@@ -1,6 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 trace1 <- list(
   x = c(1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012), 
@@ -44,7 +43,5 @@ layout <- list(
   bargap = 0.15, 
   bargroupgap = 0.1
 )
-
-response <- p$plotly(data, kwargs=list(layout=layout, filename="style-bar", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="style-bar", fileopt="overwrite"))
 url <- response$url
-filename <- response$filename

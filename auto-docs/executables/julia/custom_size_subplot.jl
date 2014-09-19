@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 trace1 = [
@@ -21,6 +19,5 @@ layout = [
   "yaxis2" => ["anchor" => "x2"], 
   "xaxis2" => ["domain" => [0.8, 1]]
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "custom-size-subplot", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "custom-size-subplot", "fileopt" => "overwrite"])
 plot_url = response["url"]

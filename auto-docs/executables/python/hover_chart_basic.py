@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 data = Data([
@@ -15,5 +14,4 @@ layout = Layout(
     title='Hover over the points to see the text'
 )
 fig = Figure(data=data, layout=layout)
-
 plot_url = py.plot(fig, filename='hover-chart-basic', auto_open=False)

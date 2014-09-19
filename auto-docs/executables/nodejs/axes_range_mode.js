@@ -18,8 +18,7 @@ var layout = {
     autorange: true
   }
 };
-
-var graph_options = {filename: "axes-range-mode", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "axes-range-mode", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

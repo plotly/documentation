@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 trace1 = [
@@ -44,6 +42,5 @@ layout = [
     "anchor" => "x4"
   ]
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "shared-axes-subplots", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "shared-axes-subplots", "fileopt" => "overwrite"])
 plot_url = response["url"]

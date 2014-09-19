@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 data = [
@@ -11,6 +9,5 @@ data = [
   ]
 ]
 layout = ["title" => "Greys"]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "Greys-heatmap", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "Greys-heatmap", "fileopt" => "overwrite"])
 plot_url = response["url"]

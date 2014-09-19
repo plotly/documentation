@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 trace1 = [
@@ -28,6 +26,5 @@ layout = [
     "side" => "right"
   ]
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "multiple-axes-double", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "multiple-axes-double", "fileopt" => "overwrite"])
 plot_url = response["url"]

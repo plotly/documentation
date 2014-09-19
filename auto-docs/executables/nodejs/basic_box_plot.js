@@ -1,9 +1,9 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 for (var i = 0; i < 50; i ++) {
 	y0[i] = Math.random();
 	y1[i] = Math.random() + 1;
 }
+
 
 var trace1 = {
   y: y0, 
@@ -14,8 +14,7 @@ var trace2 = {
   type: "box"
 };
 var data = [trace1, trace2];
-
-var graph_options = {filename: "basic-box-plot", fileopt: "overwrite", auto_open: false}
+var graph_options = {filename: "basic-box-plot", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

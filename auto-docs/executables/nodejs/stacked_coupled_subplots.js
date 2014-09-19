@@ -24,8 +24,7 @@ var layout = {
   yaxis2: {domain: [0.33, 0.66]}, 
   yaxis3: {domain: [0.66, 1]}
 };
-
-var graph_options = {filename: "stacked-coupled-subplots", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "stacked-coupled-subplots", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

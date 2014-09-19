@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 data = [
@@ -10,6 +8,5 @@ data = [
     "type" => "scatter"
   ]
 ]
-
-response = Plotly.plot([data], ["filename" => "privacy-false", "fileopt" => "overwrite", "auto_open" => false, "world_readable" => false])
+response = Plotly.plot(data, ["filename" => "privacy-false", "world_readable" => false, "fileopt" => "overwrite"])
 plot_url = response["url"]

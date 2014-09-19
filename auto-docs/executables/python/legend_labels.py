@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 trace1 = Scatter(
@@ -14,5 +13,4 @@ trace2 = Scatter(
     name='Orange Trace'
 )
 data = Data([trace1, trace2])
-
 plot_url = py.plot(data, filename='legend-labels', auto_open=False)

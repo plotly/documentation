@@ -30,6 +30,5 @@ trace3 = struct(...
   'type', 'scatter');
 data = {trace1, trace2, trace3};
 layout = struct('showlegend', false);
-
-response = plotly(data, struct('layout', layout, 'filename', 'bubblechart', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('layout', layout, 'filename', 'bubblechart', 'fileopt', 'overwrite'));
 plot_url = response.url

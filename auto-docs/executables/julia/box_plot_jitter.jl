@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 data = [
@@ -12,6 +10,5 @@ data = [
     "type" => "box"
   ]
 ]
-
-response = Plotly.plot([data], ["filename" => "box-plot-jitter", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["filename" => "box-plot-jitter", "fileopt" => "overwrite"])
 plot_url = response["url"]

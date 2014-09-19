@@ -1,9 +1,8 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
-
+py <- plotly(username='TestBot', key='r1neazxo9w')
 x <- rnorm(500)
 y <- rnorm(500)+1
+
 data <- list(
   list(
     x = x, 
@@ -25,7 +24,5 @@ data <- list(
     type = "histogram2d"
   )
 )
-
-response <- p$plotly(data, kwargs=list(filename="2d-histogram-options", fileopt="overwrite", auto_open=FALSE))
+response <- py$plotly(data, kwargs=list(filename="2d-histogram-options", fileopt="overwrite"))
 url <- response$url
-filename <- response$filename

@@ -7,8 +7,7 @@ var data = [
     type: "bar"
   }
 ];
-
-var graph_options = {filename: "basic-bar", fileopt: "overwrite", auto_open: "false"}
+var graph_options = {filename: "basic-bar", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

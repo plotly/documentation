@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 trace1 = [
@@ -22,6 +20,5 @@ trace3 = [
   "type" => "scatter"
 ]
 data = [trace1, trace2, trace3]
-
-response = Plotly.plot([data], ["filename" => "line-scatter", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["filename" => "line-scatter", "fileopt" => "overwrite"])
 plot_url = response["url"]

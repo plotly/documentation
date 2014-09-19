@@ -1,6 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 data <- list(
   list(
@@ -20,7 +19,5 @@ layout <- list(
     autorange = TRUE
   )
 )
-
-response <- p$plotly(data, kwargs=list(layout=layout, filename="axes-range-mode", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="axes-range-mode", fileopt="overwrite"))
 url <- response$url
-filename <- response$filename

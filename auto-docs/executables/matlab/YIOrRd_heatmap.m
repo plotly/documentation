@@ -7,6 +7,5 @@ data = {...
     'type', 'heatmap')...
 };
 layout = struct('title', 'YIOrRd');
-
-response = plotly(data, struct('layout', layout, 'filename', 'YIOrRd-heatmap', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('layout', layout, 'filename', 'YIOrRd-heatmap', 'fileopt', 'overwrite'));
 plot_url = response.url

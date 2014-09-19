@@ -1,6 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 data <- list(
   list(
@@ -10,7 +9,5 @@ data <- list(
     type = "bar"
   )
 )
-
-response <- p$plotly(data, kwargs=list(filename="bar-marker-array", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(filename="bar-marker-array", fileopt="overwrite"))
 url <- response$url
-filename <- response$filename

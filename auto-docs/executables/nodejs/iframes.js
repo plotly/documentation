@@ -17,8 +17,7 @@ var layout = {
   xaxis: {title: "$\sqrt{(n_\text{c}(t|{T_\text{early}}))}$"}, 
   yaxis: {title: "$d, r \text{ (solar radius)}$"}
 };
-
-var graph_options = {filename: "iframes", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "iframes", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

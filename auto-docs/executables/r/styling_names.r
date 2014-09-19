@@ -1,6 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 trace1 <- list(
   x = c(0, 1, 2, 3, 4, 5, 6, 7, 8), 
@@ -34,7 +33,5 @@ layout <- list(
     )
   )
 )
-
-response <- p$plotly(data, kwargs=list(layout=layout, filename="styling-names", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="styling-names", fileopt="overwrite"))
 url <- response$url
-filename <- response$filename

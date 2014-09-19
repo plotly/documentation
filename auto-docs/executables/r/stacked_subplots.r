@@ -1,6 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 trace1 <- list(
   x = c(0, 1, 2), 
@@ -30,7 +29,5 @@ layout <- list(
   yaxis2 = list(domain = c(0.366, 0.633)), 
   yaxis3 = list(domain = c(0.733, 1))
 )
-
-response <- p$plotly(data, kwargs=list(layout=layout, filename="stacked-subplots", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="stacked-subplots", fileopt="overwrite"))
 url <- response$url
-filename <- response$filename

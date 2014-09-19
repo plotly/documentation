@@ -8,8 +8,7 @@ var data = [
   }
 ];
 var layout = {title: "Greys"};
-
-var graph_options = {filename: "Greys-heatmap", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "Greys-heatmap", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

@@ -1,7 +1,7 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var x = ['day 1', 'day 1', 'day 1', 'day 1', 'day 1', 'day 1',
          'day 2', 'day 2', 'day 2', 'day 2', 'day 2', 'day 2']
+
 var trace1 = {
   y: [0.2, 0.2, 0.6, 1.0, 0.5, 0.4, 0.2, 0.7, 0.9, 0.1, 0.5, 0.3], 
   x: x, 
@@ -31,8 +31,7 @@ var layout = {
   }, 
   boxmode: "group"
 };
-
-var graph_options = {filename: "box-grouped", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "box-grouped", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

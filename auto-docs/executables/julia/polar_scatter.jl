@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 trace1 = [
@@ -88,6 +86,5 @@ layout = [
   "plot_bgcolor" => "rgb(223, 223, 223)", 
   "angularaxis" => ["tickcolor" => "rgb(253,253,253)"]
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "polar-scatter", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "polar-scatter", "fileopt" => "overwrite"])
 plot_url = response["url"]

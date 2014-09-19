@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 data = Data([
@@ -11,5 +10,4 @@ data = Data([
         pointpos=-1.8
     )
 ])
-
 plot_url = py.plot(data, filename='box-plot-jitter', auto_open=False)

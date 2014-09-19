@@ -14,6 +14,5 @@ data = {trace1, trace2};
 layout = struct(...
     'xaxis', struct('title', '$\sqrt{(n_\text{c}(t|{T_\text{early}}))}$'), ...
     'yaxis', struct('title', '$d, r \text{ (solar radius)}$'));
-
-response = plotly(data, struct('layout', layout, 'filename', 'latex', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('layout', layout, 'filename', 'latex', 'fileopt', 'overwrite'));
 plot_url = response.url

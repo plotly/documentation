@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 trace1 = [
@@ -41,6 +39,5 @@ layout = [
     ]
   ]
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "multiple-annotation", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "multiple-annotation", "fileopt" => "overwrite"])
 plot_url = response["url"]
