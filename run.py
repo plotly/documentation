@@ -888,6 +888,7 @@ def save_code(code, leaf, language, mode):
         os.makedirs(code_folder)
     with open(code_path, 'w') as f:
         f.write(code)
+        f.write("\n")
     return code_path
 
 
@@ -974,6 +975,7 @@ def save_tree(tree, previous_tree):
     sorted_new_tree = get_ordered_dict(new_tree)
     with open(files['tree'], 'w') as f:
         json.dump(sorted_new_tree, f, indent=4, separators=(',', ': '))
+        f.write('\n')
 
 
 def save_processed_ids(id_dict, previous_leaf_ids):
@@ -983,6 +985,7 @@ def save_processed_ids(id_dict, previous_leaf_ids):
     complete_ids.sort()
     with open(files['ids'], 'w') as f:
         json.dump(complete_ids, f, indent=4, separators=(',', ': '))
+        f.write('\n')
 
 
 def nested_merge(old, update):
