@@ -615,7 +615,7 @@ def process_model_worker(leaf, language, model):
         del leaf[language]
     init = get_init_code(leaf, language)
     try:
-        plot_options = leaf['config']['plot-options']
+        plot_options = dict(leaf['config']['plot-options'])
     except KeyError:
         plot_options = {}
     plot_options['filename'] = leaf['id']
