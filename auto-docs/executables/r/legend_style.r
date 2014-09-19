@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 trace1 <- list(
   x = c(0, 1, 2, 3, 4, 5, 6, 7, 8), 
@@ -25,5 +25,5 @@ layout <- list(legend = list(
     bordercolor = "#FFFFFF", 
     borderwidth = 2
   ))
-response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="legend-style"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="legend-style", fileopt="overwrite"))
 url <- response$url

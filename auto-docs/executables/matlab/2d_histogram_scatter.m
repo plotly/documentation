@@ -29,5 +29,5 @@ trace3 = struct(...
   'y', y, ...
   'type', 'histogram2d');
 data = {trace1, trace2, trace3};
-response = plotly(data, struct('fileopt', 'overwrite', 'filename', '2d-histogram-scatter'));
+response = plotly(data, struct('filename', '2d-histogram-scatter', 'fileopt', 'overwrite'));
 plot_url = response.url

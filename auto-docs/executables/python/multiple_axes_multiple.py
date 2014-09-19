@@ -81,4 +81,4 @@ layout = Layout(
     )
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='multiple-axes-multiple')
+plot_url = py.plot(fig, filename='multiple-axes-multiple', auto_open=False)

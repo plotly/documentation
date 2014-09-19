@@ -64,7 +64,7 @@ var layout = {
     position: 0.85
   }
 };
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "multiple-axes-multiple"}
+var graph_options = {layout: layout, filename: "multiple-axes-multiple", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

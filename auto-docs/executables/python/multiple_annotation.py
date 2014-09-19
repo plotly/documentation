@@ -39,4 +39,4 @@ layout = Layout(
     ])
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='multiple-annotation')
+plot_url = py.plot(fig, filename='multiple-annotation', auto_open=False)

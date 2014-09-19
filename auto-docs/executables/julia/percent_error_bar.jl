@@ -13,5 +13,5 @@ data = [
     "type" => "scatter"
   ]
 ]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "percent-error-bar"])
+response = Plotly.plot(data, ["filename" => "percent-error-bar", "fileopt" => "overwrite"])
 plot_url = response["url"]

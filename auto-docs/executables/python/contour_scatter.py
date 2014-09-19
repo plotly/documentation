@@ -19,4 +19,4 @@ trace2 = Scatter(
     )
 )
 data = Data([trace1, trace2])
-plot_url = py.plot(data, auto_open=False, filename='contour-scatter')
+plot_url = py.plot(data, filename='contour-scatter', auto_open=False)

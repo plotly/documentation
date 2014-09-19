@@ -36,4 +36,4 @@ trace3 = Histogram2d(
     y=y
 )
 data = Data([trace1, trace2, trace3])
-plot_url = py.plot(data, auto_open=False, filename='2d-histogram-scatter')
+plot_url = py.plot(data, filename='2d-histogram-scatter', auto_open=False)

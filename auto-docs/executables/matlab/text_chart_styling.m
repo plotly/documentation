@@ -26,5 +26,5 @@ trace2 = struct(...
   'type', 'scatter');
 data = {trace1, trace2};
 layout = struct('showlegend', false);
-response = plotly(data, struct('layout', layout, 'fileopt', 'overwrite', 'filename', 'text-chart-styling'));
+response = plotly(data, struct('layout', layout, 'filename', 'text-chart-styling', 'fileopt', 'overwrite'));
 plot_url = response.url

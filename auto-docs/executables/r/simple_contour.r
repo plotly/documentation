@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 size <- 100
 x <- seq(-2*pi, 2*pi, length=size)
 y <- seq(-2*pi, 2*pi, length=size)
@@ -19,5 +19,5 @@ data <- list(
     type = "contour"
   )
 )
-response <- p$plotly(data, kwargs=list(fileopt="overwrite", filename="simple-contour"))
+response <- py$plotly(data, kwargs=list(filename="simple-contour", fileopt="overwrite"))
 url <- response$url

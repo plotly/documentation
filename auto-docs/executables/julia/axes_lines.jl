@@ -38,5 +38,5 @@ layout = [
     "linewidth" => 6
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "axes-lines"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "axes-lines", "fileopt" => "overwrite"])
 plot_url = response["url"]

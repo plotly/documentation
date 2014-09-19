@@ -12,4 +12,4 @@ layout = Layout(
     title='Greys'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='Greys-heatmap')
+plot_url = py.plot(fig, filename='Greys-heatmap', auto_open=False)

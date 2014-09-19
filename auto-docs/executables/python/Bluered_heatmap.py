@@ -12,4 +12,4 @@ layout = Layout(
     title='Bluered'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='Bluered-heatmap')
+plot_url = py.plot(fig, filename='Bluered-heatmap', auto_open=False)

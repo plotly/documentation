@@ -25,5 +25,5 @@ layout = ["legend" => [
     "bordercolor" => "#FFFFFF", 
     "borderwidth" => 2
   ]]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "legend-style"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "legend-style", "fileopt" => "overwrite"])
 plot_url = response["url"]

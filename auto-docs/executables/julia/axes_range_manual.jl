@@ -16,5 +16,5 @@ layout = [
   "xaxis" => ["range" => [2, 5]], 
   "yaxis" => ["range" => [2, 5]]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "axes-range-manual"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "axes-range-manual", "fileopt" => "overwrite"])
 plot_url = response["url"]

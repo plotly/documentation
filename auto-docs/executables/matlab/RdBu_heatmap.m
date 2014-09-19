@@ -7,5 +7,5 @@ data = {...
     'type', 'heatmap')...
 };
 layout = struct('title', 'RdBu');
-response = plotly(data, struct('layout', layout, 'fileopt', 'overwrite', 'filename', 'RdBu-heatmap'));
+response = plotly(data, struct('layout', layout, 'filename', 'RdBu-heatmap', 'fileopt', 'overwrite'));
 plot_url = response.url

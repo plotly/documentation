@@ -32,5 +32,5 @@ layout = [
     "showticklabels" => false
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "axes-booleans"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "axes-booleans", "fileopt" => "overwrite"])
 plot_url = response["url"]

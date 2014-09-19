@@ -33,4 +33,4 @@ layout = Layout(
     showlegend=False
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='text-chart-styling')
+plot_url = py.plot(fig, filename='text-chart-styling', auto_open=False)

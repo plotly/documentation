@@ -52,4 +52,4 @@ layout = Layout(
     bargroupgap=0.3
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='style-histogram')
+plot_url = py.plot(fig, filename='style-histogram', auto_open=False)

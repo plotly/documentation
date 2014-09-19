@@ -9,4 +9,4 @@ data = Data([
         y=y
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='horizontal-histogram')
+plot_url = py.plot(data, filename='horizontal-histogram', auto_open=False)

@@ -12,4 +12,4 @@ data = Data([
         y=y
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='2d-histogram')
+plot_url = py.plot(data, filename='2d-histogram', auto_open=False)

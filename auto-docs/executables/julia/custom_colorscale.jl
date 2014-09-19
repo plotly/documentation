@@ -8,5 +8,5 @@ data = [
     "type" => "heatmap"
   ]
 ]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "custom-colorscale"])
+response = Plotly.plot(data, ["filename" => "custom-colorscale", "fileopt" => "overwrite"])
 plot_url = response["url"]

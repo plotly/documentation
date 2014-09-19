@@ -12,4 +12,4 @@ layout = Layout(
     title='Picnic'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='Picnic-heatmap')
+plot_url = py.plot(fig, filename='Picnic-heatmap', auto_open=False)

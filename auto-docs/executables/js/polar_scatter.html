@@ -85,7 +85,7 @@ var layout = {
   plot_bgcolor: "rgb(223, 223, 223)", 
   angularaxis: {tickcolor: "rgb(253,253,253)"}
 };
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "polar-scatter"}
+var graph_options = {layout: layout, filename: "polar-scatter", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

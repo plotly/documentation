@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 trace1 <- list(
   x = c(1, 2, 3, 4), 
@@ -38,5 +38,5 @@ trace3 <- list(
 )
 data <- list(trace1, trace2, trace3)
 layout <- list(showlegend = FALSE)
-response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="bubblechart"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="bubblechart", fileopt="overwrite"))
 url <- response$url

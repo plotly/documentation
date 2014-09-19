@@ -32,5 +32,5 @@ layout = [
   ], 
   "boxmode" => "group"
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "box-grouped"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "box-grouped", "fileopt" => "overwrite"])
 plot_url = response["url"]

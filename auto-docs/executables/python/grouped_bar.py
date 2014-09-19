@@ -17,4 +17,4 @@ layout = Layout(
     barmode='group'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='grouped-bar')
+plot_url = py.plot(fig, filename='grouped-bar', auto_open=False)

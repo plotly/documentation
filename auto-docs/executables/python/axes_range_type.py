@@ -22,4 +22,4 @@ layout = Layout(
     )
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='axes-range-type')
+plot_url = py.plot(fig, filename='axes-range-type', auto_open=False)

@@ -33,5 +33,5 @@ trace2 = struct(...
     'size', 8), ...
   'type', 'scatter');
 data = {trace1, trace2};
-response = plotly(data, struct('fileopt', 'overwrite', 'filename', 'error-bar-style'));
+response = plotly(data, struct('filename', 'error-bar-style', 'fileopt', 'overwrite'));
 plot_url = response.url

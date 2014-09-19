@@ -9,4 +9,4 @@ data = Data([
         x=x
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='basic-histogram')
+plot_url = py.plot(data, filename='basic-histogram', auto_open=False)

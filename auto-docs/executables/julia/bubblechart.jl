@@ -38,5 +38,5 @@ trace3 = [
 ]
 data = [trace1, trace2, trace3]
 layout = ["showlegend" => false]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "bubblechart"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "bubblechart", "fileopt" => "overwrite"])
 plot_url = response["url"]

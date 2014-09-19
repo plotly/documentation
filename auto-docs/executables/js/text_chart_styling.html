@@ -30,7 +30,7 @@ var trace2 = {
 };
 var data = [trace1, trace2];
 var layout = {showlegend: false};
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "text-chart-styling"}
+var graph_options = {layout: layout, filename: "text-chart-styling", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

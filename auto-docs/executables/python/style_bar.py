@@ -49,4 +49,4 @@ layout = Layout(
     bargroupgap=0.1
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='style-bar')
+plot_url = py.plot(fig, filename='style-bar', auto_open=False)

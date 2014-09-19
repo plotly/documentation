@@ -25,7 +25,7 @@ var layout = {
     side: "right"
   }
 };
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "multiple-axes-double"}
+var graph_options = {layout: layout, filename: "multiple-axes-double", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

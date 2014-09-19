@@ -85,4 +85,4 @@ layout = Layout(
     orientation=-90
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='polar-line')
+plot_url = py.plot(fig, filename='polar-line', auto_open=False)

@@ -76,4 +76,4 @@ layout = Layout(
     )
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='2dhistogram-contour-subplots')
+plot_url = py.plot(fig, filename='2dhistogram-contour-subplots', auto_open=False)

@@ -20,5 +20,5 @@ trace3 = [
   "type" => "scatter"
 ]
 data = [trace1, trace2, trace3]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "line-scatter"])
+response = Plotly.plot(data, ["filename" => "line-scatter", "fileopt" => "overwrite"])
 plot_url = response["url"]

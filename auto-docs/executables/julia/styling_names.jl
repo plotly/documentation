@@ -33,5 +33,5 @@ layout = [
     ]
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "styling-names"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "styling-names", "fileopt" => "overwrite"])
 plot_url = response["url"]

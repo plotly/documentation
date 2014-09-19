@@ -11,4 +11,4 @@ trace2 = Bar(
     y=[1, 0.5, 0.7, -1.2, 0.3, 0.4]
 )
 data = Data([trace1, trace2])
-plot_url = py.plot(data, auto_open=False, filename='bar-line')
+plot_url = py.plot(data, filename='bar-line', auto_open=False)

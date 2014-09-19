@@ -25,5 +25,5 @@ layout = [
   "yaxis2" => ["domain" => [0.33, 0.66]], 
   "yaxis3" => ["domain" => [0.66, 1]]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "stacked-coupled-subplots"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "stacked-coupled-subplots", "fileopt" => "overwrite"])
 plot_url = response["url"]

@@ -32,7 +32,7 @@ var layout = {
     }
   }
 };
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "styling-names"}
+var graph_options = {layout: layout, filename: "styling-names", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

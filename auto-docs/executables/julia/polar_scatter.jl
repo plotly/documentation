@@ -86,5 +86,5 @@ layout = [
   "plot_bgcolor" => "rgb(223, 223, 223)", 
   "angularaxis" => ["tickcolor" => "rgb(253,253,253)"]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "polar-scatter"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "polar-scatter", "fileopt" => "overwrite"])
 plot_url = response["url"]

@@ -8,5 +8,5 @@ data = [
     "type" => "scatter"
   ]
 ]
-response = Plotly.plot(data, ["auto_open" => false, "fileopt" => "overwrite", "world_readable" => false, "filename" => "privacy-false"])
+response = Plotly.plot(data, ["filename" => "privacy-false", "world_readable" => false, "fileopt" => "overwrite"])
 plot_url = response["url"]

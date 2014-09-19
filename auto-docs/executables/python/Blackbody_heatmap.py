@@ -12,4 +12,4 @@ layout = Layout(
     title='Blackbody'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='Blackbody-heatmap')
+plot_url = py.plot(fig, filename='Blackbody-heatmap', auto_open=False)

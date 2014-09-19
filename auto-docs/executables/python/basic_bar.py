@@ -8,4 +8,4 @@ data = Data([
         y=[20, 14, 23]
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='basic-bar')
+plot_url = py.plot(data, filename='basic-bar', auto_open=False)

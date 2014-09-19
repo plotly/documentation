@@ -37,7 +37,7 @@ var trace3 = {
 };
 var data = [trace1, trace2, trace3];
 var layout = {showlegend: false};
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "bubblechart"}
+var graph_options = {layout: layout, filename: "bubblechart", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

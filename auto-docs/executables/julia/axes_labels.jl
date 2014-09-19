@@ -48,5 +48,5 @@ layout = [
     "showexponent" => "All"
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "axes-labels"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "axes-labels", "fileopt" => "overwrite"])
 plot_url = response["url"]

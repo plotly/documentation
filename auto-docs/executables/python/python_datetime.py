@@ -15,4 +15,4 @@ data = Data([
         y=[1, 3, 6]
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='python-datetime')
+plot_url = py.plot(data, filename='python-datetime', auto_open=False)

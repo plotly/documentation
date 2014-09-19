@@ -10,5 +10,5 @@ data = [
     "type" => "box"
   ]
 ]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "box-plot-jitter"])
+response = Plotly.plot(data, ["filename" => "box-plot-jitter", "fileopt" => "overwrite"])
 plot_url = response["url"]

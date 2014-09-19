@@ -42,4 +42,4 @@ layout = Layout(
     ])
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='style-annotation')
+plot_url = py.plot(fig, filename='style-annotation', auto_open=False)

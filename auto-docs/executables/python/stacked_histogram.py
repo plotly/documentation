@@ -16,4 +16,4 @@ layout = Layout(
     barmode='stacked'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='stacked-histogram')
+plot_url = py.plot(fig, filename='stacked-histogram', auto_open=False)

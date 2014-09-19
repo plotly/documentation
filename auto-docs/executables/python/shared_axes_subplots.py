@@ -48,4 +48,4 @@ layout = Layout(
     )
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='shared-axes-subplots')
+plot_url = py.plot(fig, filename='shared-axes-subplots', auto_open=False)

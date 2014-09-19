@@ -12,5 +12,5 @@ trace2 = struct(...
   'type', 'bar');
 data = {trace1, trace2};
 layout = struct('barmode', 'stack');
-response = plotly(data, struct('layout', layout, 'fileopt', 'overwrite', 'filename', 'stacked-bar'));
+response = plotly(data, struct('layout', layout, 'filename', 'stacked-bar', 'fileopt', 'overwrite'));
 plot_url = response.url

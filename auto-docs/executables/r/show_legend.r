@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 trace1 <- list(
   x = c(0, 1, 2), 
@@ -16,5 +16,5 @@ trace2 <- list(
   type = "scatter"
 )
 data <- list(trace1, trace2)
-response <- p$plotly(data, kwargs=list(fileopt="overwrite", filename="show-legend"))
+response <- py$plotly(data, kwargs=list(filename="show-legend", fileopt="overwrite"))
 url <- response$url

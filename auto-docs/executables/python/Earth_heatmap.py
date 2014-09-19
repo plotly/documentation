@@ -12,4 +12,4 @@ layout = Layout(
     title='Earth'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='Earth-heatmap')
+plot_url = py.plot(fig, filename='Earth-heatmap', auto_open=False)

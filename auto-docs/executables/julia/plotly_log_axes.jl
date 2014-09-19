@@ -22,5 +22,5 @@ layout = [
     "autorange" => true
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "plotly-log-axes"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "plotly-log-axes", "fileopt" => "overwrite"])
 plot_url = response["url"]

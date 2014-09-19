@@ -25,5 +25,5 @@ trace2 = [
 ]
 data = [trace1, trace2]
 layout = ["barmode" => "group"]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "error-bar-bar"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "error-bar-bar", "fileopt" => "overwrite"])
 plot_url = response["url"]

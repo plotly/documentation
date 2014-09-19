@@ -12,5 +12,5 @@ data = {trace1, trace2};
 layout = struct(...
     'xaxis', struct('range', [2, 5]), ...
     'yaxis', struct('range', [2, 5]));
-response = plotly(data, struct('layout', layout, 'fileopt', 'overwrite', 'filename', 'axes-range-manual'));
+response = plotly(data, struct('layout', layout, 'filename', 'axes-range-manual', 'fileopt', 'overwrite'));
 plot_url = response.url

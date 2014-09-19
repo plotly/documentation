@@ -42,7 +42,7 @@ var layout = {
   bargap: 0.15, 
   bargroupgap: 0.1
 };
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "style-bar"}
+var graph_options = {layout: layout, filename: "style-bar", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

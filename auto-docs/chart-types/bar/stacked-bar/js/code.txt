@@ -14,7 +14,7 @@ var trace2 = {
 };
 var data = [trace1, trace2];
 var layout = {barmode: "stack"};
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "stacked-bar"}
+var graph_options = {layout: layout, filename: "stacked-bar", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

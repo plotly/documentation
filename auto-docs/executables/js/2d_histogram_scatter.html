@@ -44,7 +44,7 @@ var trace3 = {
   type: "histogram2d"
 };
 var data = [trace1, trace2, trace3];
-var graph_options = {fileopt: "overwrite", filename: "2d-histogram-scatter"}
+var graph_options = {filename: "2d-histogram-scatter", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

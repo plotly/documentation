@@ -9,5 +9,5 @@ data = [
     "type" => "bar"
   ]
 ]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "bar-marker-array"])
+response = Plotly.plot(data, ["filename" => "bar-marker-array", "fileopt" => "overwrite"])
 plot_url = response["url"]

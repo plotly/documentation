@@ -12,4 +12,4 @@ layout = Layout(
     title='Electric'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='Electric-heatmap')
+plot_url = py.plot(fig, filename='Electric-heatmap', auto_open=False)

@@ -50,5 +50,5 @@ layout = [
     "anchor" => "x4"
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "multiple-subplots"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "multiple-subplots", "fileopt" => "overwrite"])
 plot_url = response["url"]

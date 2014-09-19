@@ -12,4 +12,4 @@ data = Data([
         )
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='error-bar-horizontal')
+plot_url = py.plot(data, filename='error-bar-horizontal', auto_open=False)

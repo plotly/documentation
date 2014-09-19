@@ -69,4 +69,4 @@ layout = Layout(
     )
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='line-shapes')
+plot_url = py.plot(fig, filename='line-shapes', auto_open=False)

@@ -37,7 +37,7 @@ var layout = {
     linewidth: 6
   }
 };
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "axes-lines"}
+var graph_options = {layout: layout, filename: "axes-lines", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

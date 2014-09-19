@@ -15,5 +15,5 @@ trace2 = [
 ]
 data = [trace1, trace2]
 layout = ["barmode" => "stack"]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "stacked-bar"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "stacked-bar", "fileopt" => "overwrite"])
 plot_url = response["url"]

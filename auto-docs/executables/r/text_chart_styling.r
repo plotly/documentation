@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 trace1 <- list(
   x = c(0, 1, 2), 
@@ -31,5 +31,5 @@ trace2 <- list(
 )
 data <- list(trace1, trace2)
 layout <- list(showlegend = FALSE)
-response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="text-chart-styling"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="text-chart-styling", fileopt="overwrite"))
 url <- response$url

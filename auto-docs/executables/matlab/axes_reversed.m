@@ -7,5 +7,5 @@ data = {...
     'type', 'scatter')...
 };
 layout = struct('xaxis', struct('autorange', 'reversed'));
-response = plotly(data, struct('layout', layout, 'fileopt', 'overwrite', 'filename', 'axes-reversed'));
+response = plotly(data, struct('layout', layout, 'filename', 'axes-reversed', 'fileopt', 'overwrite'));
 plot_url = response.url

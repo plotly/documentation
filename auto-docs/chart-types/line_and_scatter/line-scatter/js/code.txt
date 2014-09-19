@@ -19,7 +19,7 @@ var trace3 = {
   type: "scatter"
 };
 var data = [trace1, trace2, trace3];
-var graph_options = {fileopt: "overwrite", filename: "line-scatter"}
+var graph_options = {filename: "line-scatter", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

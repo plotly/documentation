@@ -10,4 +10,4 @@ data = Data([
         pointpos=-1.8
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='box-plot-jitter')
+plot_url = py.plot(data, filename='box-plot-jitter', auto_open=False)

@@ -8,7 +8,7 @@ var data = [
     type: "heatmap"
   }
 ];
-var graph_options = {fileopt: "overwrite", filename: "labelled-heatmap"}
+var graph_options = {filename: "labelled-heatmap", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

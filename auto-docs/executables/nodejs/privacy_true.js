@@ -7,7 +7,7 @@ var data = [
     type: "scatter"
   }
 ];
-var graph_options = {auto_open: false, fileopt: "overwrite", world_readable: true, filename: "privacy-true"}
+var graph_options = {filename: "privacy-true", world_readable: true, fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

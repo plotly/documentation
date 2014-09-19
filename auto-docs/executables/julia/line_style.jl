@@ -78,5 +78,5 @@ layout = [
     "showline" => false
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "line-style"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "line-style", "fileopt" => "overwrite"])
 plot_url = response["url"]

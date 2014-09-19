@@ -18,7 +18,7 @@ var layout = {
     y: 1
   }
 };
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "legend-outside"}
+var graph_options = {layout: layout, filename: "legend-outside", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

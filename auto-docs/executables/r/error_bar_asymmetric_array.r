@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 data <- list(
   list(
@@ -14,5 +14,5 @@ data <- list(
     type = "scatter"
   )
 )
-response <- p$plotly(data, kwargs=list(fileopt="overwrite", filename="error-bar-asymmetric-array"))
+response <- py$plotly(data, kwargs=list(filename="error-bar-asymmetric-array", fileopt="overwrite"))
 url <- response$url

@@ -16,5 +16,5 @@ layout = [
     "color" => "#7f7f7f"
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "global-font"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "global-font", "fileopt" => "overwrite"])
 plot_url = response["url"]

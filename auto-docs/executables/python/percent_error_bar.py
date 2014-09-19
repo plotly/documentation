@@ -13,4 +13,4 @@ data = Data([
         )
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='percent-error-bar')
+plot_url = py.plot(data, filename='percent-error-bar', auto_open=False)

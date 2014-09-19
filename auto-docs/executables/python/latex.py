@@ -22,4 +22,4 @@ layout = Layout(
     )
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='latex')
+plot_url = py.plot(fig, filename='latex', auto_open=False)

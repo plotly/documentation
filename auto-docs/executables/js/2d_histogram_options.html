@@ -29,7 +29,7 @@ var data = [
     type: "histogram2d"
   }
 ];
-var graph_options = {fileopt: "overwrite", filename: "2d-histogram-options"}
+var graph_options = {filename: "2d-histogram-options", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

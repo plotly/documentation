@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 trace1 <- list(
   x = c(1, 2, 3), 
@@ -26,5 +26,5 @@ layout <- list(
     side = "right"
   )
 )
-response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="multiple-axes-double"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="multiple-axes-double", fileopt="overwrite"))
 url <- response$url

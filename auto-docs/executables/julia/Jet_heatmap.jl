@@ -9,5 +9,5 @@ data = [
   ]
 ]
 layout = ["title" => "Jet"]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "Jet-heatmap"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "Jet-heatmap", "fileopt" => "overwrite"])
 plot_url = response["url"]

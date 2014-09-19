@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 x <- c('day 1', 'day 1', 'day 1', 'day 1', 'day 1', 'day 1', 
        'day 2', 'day 2', 'day 2', 'day 2', 'day 2', 'day 2')
 
@@ -32,5 +32,5 @@ layout <- list(
   ), 
   boxmode = "group"
 )
-response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="box-grouped"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="box-grouped", fileopt="overwrite"))
 url <- response$url

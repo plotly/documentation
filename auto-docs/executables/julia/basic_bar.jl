@@ -8,5 +8,5 @@ data = [
     "type" => "bar"
   ]
 ]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "basic-bar"])
+response = Plotly.plot(data, ["filename" => "basic-bar", "fileopt" => "overwrite"])
 plot_url = response["url"]

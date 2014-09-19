@@ -12,4 +12,4 @@ layout = Layout(
     title='RdBu'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='RdBu-heatmap')
+plot_url = py.plot(fig, filename='RdBu-heatmap', auto_open=False)

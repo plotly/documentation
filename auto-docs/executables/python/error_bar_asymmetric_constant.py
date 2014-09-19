@@ -14,4 +14,4 @@ data = Data([
         )
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='error-bar-asymmetric-constant')
+plot_url = py.plot(data, filename='error-bar-asymmetric-constant', auto_open=False)

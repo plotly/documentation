@@ -17,4 +17,4 @@ layout = Layout(
     barmode='stack'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='stacked-bar')
+plot_url = py.plot(fig, filename='stacked-bar', auto_open=False)

@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 trace1 <- list(
   x = c("giraffes", "orangutans", "monkeys"), 
@@ -15,5 +15,5 @@ trace2 <- list(
 )
 data <- list(trace1, trace2)
 layout <- list(barmode = "group")
-response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="grouped-bar"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="grouped-bar", fileopt="overwrite"))
 url <- response$url

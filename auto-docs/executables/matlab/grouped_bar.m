@@ -12,5 +12,5 @@ trace2 = struct(...
   'type', 'bar');
 data = {trace1, trace2};
 layout = struct('barmode', 'group');
-response = plotly(data, struct('layout', layout, 'fileopt', 'overwrite', 'filename', 'grouped-bar'));
+response = plotly(data, struct('layout', layout, 'filename', 'grouped-bar', 'fileopt', 'overwrite'));
 plot_url = response.url

@@ -18,4 +18,4 @@ trace3 = Scatter(
     mode='lines+markers'
 )
 data = Data([trace1, trace2, trace3])
-plot_url = py.plot(data, auto_open=False, filename='line-scatter')
+plot_url = py.plot(data, filename='line-scatter', auto_open=False)

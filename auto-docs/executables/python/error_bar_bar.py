@@ -27,4 +27,4 @@ layout = Layout(
     barmode='group'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='error-bar-bar')
+plot_url = py.plot(fig, filename='error-bar-bar', auto_open=False)

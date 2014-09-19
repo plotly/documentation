@@ -9,5 +9,5 @@ data = [
   ]
 ]
 layout = ["xaxis" => ["autorange" => "reversed"]]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "axes-reversed"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "axes-reversed", "fileopt" => "overwrite"])
 plot_url = response["url"]

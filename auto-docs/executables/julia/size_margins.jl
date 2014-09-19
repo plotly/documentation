@@ -22,5 +22,5 @@ layout = [
   "paper_bgcolor" => "#7f7f7f", 
   "plot_bgcolor" => "#c7c7c7"
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "size-margins"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "size-margins", "fileopt" => "overwrite"])
 plot_url = response["url"]

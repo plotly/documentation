@@ -12,5 +12,5 @@ trace2 = [
   "type" => "bar"
 ]
 data = [trace1, trace2]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "bar-line"])
+response = Plotly.plot(data, ["filename" => "bar-line", "fileopt" => "overwrite"])
 plot_url = response["url"]

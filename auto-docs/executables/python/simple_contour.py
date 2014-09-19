@@ -19,4 +19,4 @@ data = Data([
         y=y
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='simple-contour')
+plot_url = py.plot(data, filename='simple-contour', auto_open=False)

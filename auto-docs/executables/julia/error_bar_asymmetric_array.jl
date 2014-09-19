@@ -14,5 +14,5 @@ data = [
     "type" => "scatter"
   ]
 ]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "error-bar-asymmetric-array"])
+response = Plotly.plot(data, ["filename" => "error-bar-asymmetric-array", "fileopt" => "overwrite"])
 plot_url = response["url"]

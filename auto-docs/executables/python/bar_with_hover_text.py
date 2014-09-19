@@ -28,4 +28,4 @@ layout = Layout(
     bargap=0.05
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='bar-with-hover-text')
+plot_url = py.plot(fig, filename='bar-with-hover-text', auto_open=False)

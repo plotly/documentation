@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 trace1 <- list(
   x = c(1, 2, 3, 4), 
@@ -18,5 +18,5 @@ layout <- list(
   xaxis = list(title = "$\sqrt{(n_\text{c}(t|{T_\text{early}}))}$"), 
   yaxis = list(title = "$d, r \text{ (solar radius)}$")
 )
-response <- p$plotly(data, kwargs=list(layout=layout, fileopt="overwrite", filename="iframes"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="iframes", fileopt="overwrite"))
 url <- response$url

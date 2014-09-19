@@ -42,5 +42,5 @@ layout = [
     "anchor" => "x4"
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "shared-axes-subplots"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "shared-axes-subplots", "fileopt" => "overwrite"])
 plot_url = response["url"]

@@ -8,5 +8,5 @@ data = [
     "type" => "histogram"
   ]
 ]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "horizontal-histogram"])
+response = Plotly.plot(data, ["filename" => "horizontal-histogram", "fileopt" => "overwrite"])
 plot_url = response["url"]

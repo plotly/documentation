@@ -11,4 +11,4 @@ data = Data([
         )
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='bar-marker-array')
+plot_url = py.plot(data, filename='bar-marker-array', auto_open=False)

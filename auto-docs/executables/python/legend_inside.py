@@ -19,4 +19,4 @@ layout = Layout(
     )
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='legend-inside')
+plot_url = py.plot(fig, filename='legend-inside', auto_open=False)

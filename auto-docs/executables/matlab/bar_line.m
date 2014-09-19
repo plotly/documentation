@@ -9,5 +9,5 @@ trace2 = struct(...
   'y', [1, 0.5, 0.7, -1.2, 0.3, 0.4], ...
   'type', 'bar');
 data = {trace1, trace2};
-response = plotly(data, struct('fileopt', 'overwrite', 'filename', 'bar-line'));
+response = plotly(data, struct('filename', 'bar-line', 'fileopt', 'overwrite'));
 plot_url = response.url

@@ -8,5 +8,5 @@ data = [
     "type" => "scatter"
   ]
 ]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "date-axes"])
+response = Plotly.plot(data, ["filename" => "date-axes", "fileopt" => "overwrite"])
 plot_url = response["url"]

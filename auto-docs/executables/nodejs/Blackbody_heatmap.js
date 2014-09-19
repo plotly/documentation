@@ -8,7 +8,7 @@ var data = [
   }
 ];
 var layout = {title: "Blackbody"};
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "Blackbody-heatmap"}
+var graph_options = {layout: layout, filename: "Blackbody-heatmap", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

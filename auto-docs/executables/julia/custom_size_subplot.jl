@@ -19,5 +19,5 @@ layout = [
   "yaxis2" => ["anchor" => "x2"], 
   "xaxis2" => ["domain" => [0.8, 1]]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "custom-size-subplot"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "custom-size-subplot", "fileopt" => "overwrite"])
 plot_url = response["url"]

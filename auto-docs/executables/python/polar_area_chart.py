@@ -51,4 +51,4 @@ layout = Layout(
     orientation=270
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='polar-area-chart')
+plot_url = py.plot(fig, filename='polar-area-chart', auto_open=False)

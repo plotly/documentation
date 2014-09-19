@@ -32,4 +32,4 @@ layout = Layout(
     )
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='multiple-axes-double')
+plot_url = py.plot(fig, filename='multiple-axes-double', auto_open=False)

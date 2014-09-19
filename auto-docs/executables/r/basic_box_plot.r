@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 y0 = rnorm(50)
 y1 = rnorm(50)+1
 
@@ -12,5 +12,5 @@ trace2 <- list(
   type = "box"
 )
 data <- list(trace1, trace2)
-response <- p$plotly(data, kwargs=list(fileopt="overwrite", filename="basic-box-plot"))
+response <- py$plotly(data, kwargs=list(filename="basic-box-plot", fileopt="overwrite"))
 url <- response$url

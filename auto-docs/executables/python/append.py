@@ -11,4 +11,4 @@ trace2 = Scatter(
     y=[16, 5, 11, 9]
 )
 data = Data([trace1, trace2])
-plot_url = py.plot(data, auto_open=False, filename='append')
+plot_url = py.plot(data, filename='append', auto_open=False)

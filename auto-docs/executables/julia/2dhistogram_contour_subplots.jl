@@ -70,5 +70,5 @@ layout = [
     "zeroline" => false
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "2dhistogram-contour-subplots"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "2dhistogram-contour-subplots", "fileopt" => "overwrite"])
 plot_url = response["url"]

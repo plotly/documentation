@@ -27,4 +27,4 @@ layout = Layout(
     )
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='legend-style')
+plot_url = py.plot(fig, filename='legend-style', auto_open=False)

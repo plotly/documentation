@@ -12,4 +12,4 @@ layout = Layout(
     title='Jet'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='Jet-heatmap')
+plot_url = py.plot(fig, filename='Jet-heatmap', auto_open=False)

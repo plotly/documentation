@@ -13,4 +13,4 @@ data = Data([
         )
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='basic-error-bar')
+plot_url = py.plot(data, filename='basic-error-bar', auto_open=False)

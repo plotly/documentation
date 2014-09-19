@@ -26,5 +26,5 @@ layout = [
     "side" => "right"
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "multiple-axes-double"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "multiple-axes-double", "fileopt" => "overwrite"])
 plot_url = response["url"]

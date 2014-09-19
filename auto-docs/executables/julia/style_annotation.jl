@@ -42,5 +42,5 @@ layout = [
     ]
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "style-annotation"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "style-annotation", "fileopt" => "overwrite"])
 plot_url = response["url"]

@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 x = rnorm(500)
 
 data <- list(
@@ -8,5 +8,5 @@ data <- list(
     type = "histogram"
   )
 )
-response <- p$plotly(data, kwargs=list(fileopt="overwrite", filename="basic-histogram"))
+response <- py$plotly(data, kwargs=list(filename="basic-histogram", fileopt="overwrite"))
 url <- response$url

@@ -14,4 +14,4 @@ layout = Layout(
     title='Hover over the points to see the text'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='hover-chart-basic')
+plot_url = py.plot(fig, filename='hover-chart-basic', auto_open=False)

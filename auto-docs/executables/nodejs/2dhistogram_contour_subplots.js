@@ -71,7 +71,7 @@ var layout = {
     zeroline: false
   }
 };
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "2dhistogram-contour-subplots"}
+var graph_options = {layout: layout, filename: "2dhistogram-contour-subplots", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

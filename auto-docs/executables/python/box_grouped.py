@@ -37,4 +37,4 @@ layout = Layout(
     boxmode='group'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='box-grouped')
+plot_url = py.plot(fig, filename='box-grouped', auto_open=False)

@@ -24,5 +24,5 @@ layout = [
     "anchor" => "y2"
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "simple-inset"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "simple-inset", "fileopt" => "overwrite"])
 plot_url = response["url"]

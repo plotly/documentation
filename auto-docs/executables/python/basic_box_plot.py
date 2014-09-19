@@ -12,4 +12,4 @@ trace2 = Box(
     y=y1
 )
 data = Data([trace1, trace2])
-plot_url = py.plot(data, auto_open=False, filename='basic-box-plot')
+plot_url = py.plot(data, filename='basic-box-plot', auto_open=False)

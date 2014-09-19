@@ -23,4 +23,4 @@ layout = Layout(
     plot_bgcolor='#c7c7c7'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='size-margins')
+plot_url = py.plot(fig, filename='size-margins', auto_open=False)

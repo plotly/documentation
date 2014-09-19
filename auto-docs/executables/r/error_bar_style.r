@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 x_theo <- seq(-4,4,length=100)
 sinc <- function(x) {
     y <- sin(x) / x
@@ -44,5 +44,5 @@ trace2 <- list(
   type = "scatter"
 )
 data <- list(trace1, trace2)
-response <- p$plotly(data, kwargs=list(fileopt="overwrite", filename="error-bar-style"))
+response <- py$plotly(data, kwargs=list(filename="error-bar-style", fileopt="overwrite"))
 url <- response$url

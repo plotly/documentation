@@ -7,7 +7,7 @@ var data = [
     type: "heatmap"
   }
 ];
-var graph_options = {fileopt: "overwrite", filename: "custom-colorscale"}
+var graph_options = {filename: "custom-colorscale", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

@@ -11,7 +11,7 @@ var trace2 = {
   type: "scatter"
 };
 var data = [trace1, trace2];
-var graph_options = {fileopt: "overwrite", filename: "new-graph"}
+var graph_options = {filename: "new-graph", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

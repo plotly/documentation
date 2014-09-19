@@ -18,4 +18,4 @@ layout = Layout(
     barmode='overlay'
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='overlaid-histogram')
+plot_url = py.plot(fig, filename='overlaid-histogram', auto_open=False)

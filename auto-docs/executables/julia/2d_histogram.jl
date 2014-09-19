@@ -10,5 +10,5 @@ data = [
     "type" => "histogram2d"
   ]
 ]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "2d-histogram"])
+response = Plotly.plot(data, ["filename" => "2d-histogram", "fileopt" => "overwrite"])
 plot_url = response["url"]

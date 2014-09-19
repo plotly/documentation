@@ -31,4 +31,4 @@ layout = Layout(
     showlegend=False
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='text-chart-basic')
+plot_url = py.plot(fig, filename='text-chart-basic', auto_open=False)

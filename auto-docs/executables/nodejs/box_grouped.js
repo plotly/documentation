@@ -31,7 +31,7 @@ var layout = {
   }, 
   boxmode: "group"
 };
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "box-grouped"}
+var graph_options = {layout: layout, filename: "box-grouped", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

@@ -9,5 +9,5 @@ trace2 = struct(...
   'y', [16, 5, 11, 9], ...
   'type', 'scatter');
 data = {trace1, trace2};
-response = plotly(data, struct('fileopt', 'overwrite', 'filename', 'static-image-example-matlab'));
+response = plotly(data, struct('filename', 'static-image-example-matlab', 'fileopt', 'overwrite'));
 plot_url = response.url

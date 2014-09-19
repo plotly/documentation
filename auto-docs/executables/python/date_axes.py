@@ -8,4 +8,4 @@ data = Data([
         y=[1, 3, 6]
     )
 ])
-plot_url = py.plot(data, auto_open=False, filename='date-axes')
+plot_url = py.plot(data, filename='date-axes', auto_open=False)

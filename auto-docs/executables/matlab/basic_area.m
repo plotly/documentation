@@ -11,5 +11,5 @@ trace2 = struct(...
   'fill', 'tonexty', ...
   'type', 'scatter');
 data = {trace1, trace2};
-response = plotly(data, struct('fileopt', 'overwrite', 'filename', 'basic-area'));
+response = plotly(data, struct('filename', 'basic-area', 'fileopt', 'overwrite'));
 plot_url = response.url

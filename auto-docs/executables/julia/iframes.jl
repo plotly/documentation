@@ -18,5 +18,5 @@ layout = [
   "xaxis" => ["title" => "$\sqrt{(n_\text{c}(t|{T_\text{early}}))}$"], 
   "yaxis" => ["title" => "$d, r \text{ (solar radius)}$"]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "iframes"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "iframes", "fileopt" => "overwrite"])
 plot_url = response["url"]

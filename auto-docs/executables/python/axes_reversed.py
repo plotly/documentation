@@ -14,4 +14,4 @@ layout = Layout(
     )
 )
 fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, auto_open=False, filename='axes-reversed')
+plot_url = py.plot(fig, filename='axes-reversed', auto_open=False)

@@ -19,5 +19,5 @@ layout = [
     "y" => 1
   ]
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "legend-inside"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "legend-inside", "fileopt" => "overwrite"])
 plot_url = response["url"]

@@ -15,4 +15,4 @@ trace2 = Scatter(
     showlegend=True
 )
 data = Data([trace1, trace2])
-plot_url = py.plot(data, auto_open=False, filename='show-legend')
+plot_url = py.plot(data, filename='show-legend', auto_open=False)

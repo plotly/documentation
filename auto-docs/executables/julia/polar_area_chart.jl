@@ -37,5 +37,5 @@ layout = [
   "radialaxis" => ["ticksuffix" => "%"], 
   "orientation" => 270
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "polar-area-chart"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "polar-area-chart", "fileopt" => "overwrite"])
 plot_url = response["url"]

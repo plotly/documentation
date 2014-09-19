@@ -8,7 +8,7 @@ var data = [
   }
 ];
 var layout = {title: "YIGnBu"};
-var graph_options = {layout: layout, fileopt: "overwrite", filename: "YIGnBu-heatmap"}
+var graph_options = {layout: layout, filename: "YIGnBu-heatmap", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

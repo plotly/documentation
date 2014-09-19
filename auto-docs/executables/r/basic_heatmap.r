@@ -1,5 +1,5 @@
 library(plotly)
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 data <- list(
   list(
@@ -7,5 +7,5 @@ data <- list(
     type = "heatmap"
   )
 )
-response <- p$plotly(data, kwargs=list(fileopt="overwrite", filename="basic-heatmap"))
+response <- py$plotly(data, kwargs=list(filename="basic-heatmap", fileopt="overwrite"))
 url <- response$url

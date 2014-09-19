@@ -21,5 +21,5 @@ layout = [
   ], 
   "bargap" => 0.05
 ]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "bar-with-hover-text"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "bar-with-hover-text", "fileopt" => "overwrite"])
 plot_url = response["url"]

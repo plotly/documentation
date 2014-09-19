@@ -12,5 +12,5 @@ trace2 = [
   "type" => "scatter"
 ]
 data = [trace1, trace2]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "extend"])
+response = Plotly.plot(data, ["filename" => "extend", "fileopt" => "overwrite"])
 plot_url = response["url"]

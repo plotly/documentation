@@ -17,5 +17,5 @@ data = [
     "type" => "contour"
   ]
 ]
-response = Plotly.plot(data, ["fileopt" => "overwrite", "filename" => "simple-contour"])
+response = Plotly.plot(data, ["filename" => "simple-contour", "fileopt" => "overwrite"])
 plot_url = response["url"]

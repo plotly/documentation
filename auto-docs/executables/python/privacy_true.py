@@ -8,4 +8,4 @@ data = Data([
         y=[0, 4, 2]
     )
 ])
-plot_url = py.plot(data, auto_open=False, world_readable=True, filename='privacy-true')
+plot_url = py.plot(data, filename='privacy-true', world_readable=True, auto_open=False)

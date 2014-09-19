@@ -13,5 +13,5 @@ trace2 = [
 ]
 data = [trace1, trace2]
 layout = ["showlegend" => false]
-response = Plotly.plot(data, ["layout" => layout, "fileopt" => "overwrite", "filename" => "legend-visibility"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "legend-visibility", "fileopt" => "overwrite"])
 plot_url = response["url"]
