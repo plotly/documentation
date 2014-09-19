@@ -705,17 +705,19 @@ def process_script_leaf(leaf, options, id_dict):
         raise plotly.exceptions.PlotlyError(
             "'{}' not found in '{}'".format(script_file, leaf['path'])
         )
-    exec_string = ""
+    exec_lines = []
     found_sign_in = False
     for line in script.splitlines():
         if line[:6] == sign_in['execution'][language][:6]:  # TODO, better way?
-            exec_string += sign_in['execution'][language]
+            exec_lines.append(sign_in['execution'][language])
             found_sign_in = True
         elif '>>>filename<<<' in line:
-            exec_string += line.replace('>>>filename<<<', leaf['id'])
+            exec_lines.append(line.replace('>>>filename<<<', leaf['id']))
         else:
-            exec_string += line
-        exec_string += "\n"
+            exec_lines.append(line)
+    while exec_lines[-1] == '\n':
+        exec_lines.pop()
+    exec_string = '\n'.join(exec_lines)
     if not found_sign_in:
         raise Exception(
             "You need to have the first 6 characters of the following "
@@ -868,7 +870,7 @@ def get_init_code(leaf, language):
         return ""
 
 
-def save_code(code, leaf, language, mode):
+def save_code(code, leaf, language, mode, newline=True):
     if mode == 'documentation':
         leaf_folder = os.path.join(dirs['run'],
                                    *leaf['path'].split(os.path.sep)[1:])
