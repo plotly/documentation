@@ -19,5 +19,5 @@ plot(x, y0, 'r+', x, y1, 'go', x, y2, 'b*', x, y3, 'cx', ...
 
 % strip = false => preserve MATLAB style! 
 
-response = fig2plotly(fig, 'strip', false); 
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false); 
 plotly_url = response.url;

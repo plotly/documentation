@@ -16,5 +16,5 @@ plot(x,y3,'Color',[201 24 50]/255,'LineWidth',2,'LineStyle','o');
 
 % strip = false => preserve MATLAB style! 
 
-response = fig2plotly(fig, 'strip', false); 
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false); 
 plotly_url = response.url;

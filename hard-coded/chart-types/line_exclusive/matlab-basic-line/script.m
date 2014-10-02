@@ -8,5 +8,5 @@ fig = figure;
 plot(x,y1,x,y2);
 
 %--PLOTLY--%
-response = fig2plotly(fig); 
+response = fig2plotly(fig, 'filename', '>>>filename<<<'); 
 plotly_url = response.url; 

@@ -16,5 +16,5 @@ ylabel('Latitude');
 
 % strip = false => preserve MATLAB style! 
 
-response = fig2plotly(fig, 'strip', false);
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url;
