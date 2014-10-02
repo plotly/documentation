@@ -13,5 +13,8 @@ xlabel('Longitude');
 ylabel('Latitude');
 
 %--PLOTLY--% 
-response = fig2plotly(fig, 'strip', false); %<----- preserve MATLAB style! 
+
+% strip = false => preserve MATLAB style! 
+
+response = fig2plotly(fig, 'filename', 'matlab-scatter-plot', 'strip', false);
 plotly_url = response.url;

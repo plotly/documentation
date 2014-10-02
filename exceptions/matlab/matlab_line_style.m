@@ -8,11 +8,13 @@ y3 = sin(x-0.5);
 fig = figure;
 hold on
 
-plot(x,y1,'Color',[150 244 100]/255,'LineWidth',3,'LineStyle','-.');
-plot(x,y2,'Color',[201 24 100]/255,'LineWidth',3,'LineStyle','--');
-plot(x,y3,'Color',[21 24 250]/255,'LineWidth',2,'LineStyle','o');
-
+plot(x,y1,'Color',[50 204 10]/255,'LineWidth',3,'LineStyle','-.');
+plot(x,y2,'Color',[21 24 100]/255,'LineWidth',3,'LineStyle','--');
+plot(x,y3,'Color',[201 24 50]/255,'LineWidth',2,'LineStyle','o');
 
 %--PLOTLY--%
-response = fig2plotly(fig, 'strip', false); % <----- preserve MATLAB style!
+
+% strip = false => preserve MATLAB style! 
+
+response = fig2plotly(fig, 'filename', 'matlab-line-style', 'strip', false); 
 plotly_url = response.url;

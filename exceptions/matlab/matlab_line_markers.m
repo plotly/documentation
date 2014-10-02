@@ -16,5 +16,8 @@ plot(x, y0, 'r+', x, y1, 'go', x, y2, 'b*', x, y3, 'cx', ...
     x, y4, 'ms', x, y5, 'yd', x, y6, 'kv');
 
 %--PLOTLY--%   
-response = fig2plotly(fig, 'strip', false); % <----- preserve MATLAB style! 
+
+% strip = false => preserve MATLAB style! 
+
+response = fig2plotly(fig, 'filename', 'matlab-line-markers', 'strip', false); 
 plotly_url = response.url;
