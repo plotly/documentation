@@ -42,7 +42,6 @@ tree_keys = dict(
     leaf=[
         "type",
         "image", # todo, remove this
-        "url",
         "exception",
         "private",
         "prepend", # todo, remove
