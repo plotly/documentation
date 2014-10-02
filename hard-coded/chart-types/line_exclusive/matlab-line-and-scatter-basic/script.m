@@ -26,6 +26,6 @@ title('Singal Noise');
 xlabel('Time (s.)'); 
 ylabel('Amplitude'); 
 
-% PLOTLY 
-response = fig2plotly(fig,'strip',1);
-plotly_url = response.url;
+%--PLOTLY--% 
+response = fig2plotly(fig, 'filename', '>>>filename<<<');
+plotly_url = response.url; 

@@ -11,10 +11,13 @@ y5 = besselj(5,x);
 y6 = besselj(6,x);
 
 % Plot the points from the Bessel functions using standard marker types
-figure;
+fig = figure;
 plot(x, y0, 'r+', x, y1, 'go', x, y2, 'b*', x, y3, 'cx', ...
     x, y4, 'ms', x, y5, 'yd', x, y6, 'kv');
 
-% PLOTLY     
-response = fig2plotly();
+%--PLOTLY--%   
+
+% strip = false => preserve MATLAB style! 
+
+response = fig2plotly(fig, 'filename', 'matlab-line-markers', 'strip', false); 
 plotly_url = response.url;
