@@ -8,5 +8,5 @@ scatter(x,y,s,c)
 zoom(2)
 
 %--PLOTLY--% 
-response = fig2plotly(fig, 'strip', false); %<----- preserve MATLAB style! 
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false); 
 plotly_url = response.url;
