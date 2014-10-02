@@ -9,5 +9,5 @@ fig = figure;
 boxplot([data1,data2])
 
 %--PLOTLY--%  
-response = fig2plotly(fig);
+response = fig2plotly(fig, 'filename', 'matlab-basic-box-plot');
 plotly_url = response.url;
