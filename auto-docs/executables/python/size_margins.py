@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 data = Data([
@@ -24,5 +23,4 @@ layout = Layout(
     plot_bgcolor='#c7c7c7'
 )
 fig = Figure(data=data, layout=layout)
-
 plot_url = py.plot(fig, filename='size-margins', auto_open=False)

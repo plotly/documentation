@@ -1,6 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 trace1 <- list(
   r = c(77.5, 72.5, 70.0, 45.0, 22.5, 42.5, 40.0, 62.5), 
@@ -38,7 +37,5 @@ layout <- list(
   radialaxis = list(ticksuffix = "%"), 
   orientation = 270
 )
-
-response <- p$plotly(data, kwargs=list(layout=layout, filename="polar-area-chart", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="polar-area-chart", fileopt="overwrite"))
 url <- response$url
-filename <- response$filename

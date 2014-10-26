@@ -20,8 +20,7 @@ var layout = {
   }, 
   bargap: 0.05
 };
-
-var graph_options = {filename: "bar-with-hover-text", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "bar-with-hover-text", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

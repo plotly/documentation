@@ -1,6 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 trace1 <- list(
   x = c(52698, 43117), 
@@ -79,7 +78,5 @@ layout <- list(
     showline = FALSE
   )
 )
-
-response <- p$plotly(data, kwargs=list(layout=layout, filename="line-style", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="line-style", fileopt="overwrite"))
 url <- response$url
-filename <- response$filename

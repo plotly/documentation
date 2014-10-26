@@ -7,8 +7,7 @@ var data = [
     type: "scatter"
   }
 ];
-
-var graph_options = {filename: "date-axes", fileopt: "overwrite", auto_open: "false"}
+var graph_options = {filename: "date-axes", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

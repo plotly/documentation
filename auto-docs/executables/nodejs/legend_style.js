@@ -24,8 +24,7 @@ var layout = {legend: {
     bordercolor: "#FFFFFF", 
     borderwidth: 2
   }};
-
-var graph_options = {filename: "legend-style", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "legend-style", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

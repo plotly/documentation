@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var x = [];
 var y = [];
 
@@ -7,6 +6,7 @@ for (var i = 0; i < 500; i ++) {
 	x[i] = Math.random();
 	y[i] = Math.random() + 1;
 }
+
 
 var data = [
   {
@@ -29,8 +29,7 @@ var data = [
     type: "histogram2d"
   }
 ];
-
-var graph_options = {filename: "2d-histogram-options", fileopt: "overwrite", auto_open: false}
+var graph_options = {filename: "2d-histogram-options", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

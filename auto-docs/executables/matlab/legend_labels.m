@@ -11,6 +11,5 @@ trace2 = struct(...
   'name', 'Orange Trace', ...
   'type', 'scatter');
 data = {trace1, trace2};
-
-response = plotly(data, struct('filename', 'legend-labels', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('filename', 'legend-labels', 'fileopt', 'overwrite'));
 plot_url = response.url

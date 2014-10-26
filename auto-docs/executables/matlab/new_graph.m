@@ -9,6 +9,5 @@ trace2 = struct(...
   'y', [16, 5, 11, 9], ...
   'type', 'scatter');
 data = {trace1, trace2};
-
-response = plotly(data, struct('filename', 'new-graph', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('filename', 'new-graph', 'fileopt', 'overwrite'));
 plot_url = response.url

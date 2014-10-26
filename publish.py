@@ -386,6 +386,7 @@ def write_language_reference(reference, language):
         ordered_referece = get_ordered_dict_with_lists(reference)
         with open(ref_file, 'w') as f:
             json.dump(ordered_referece, f, indent=2, separators=(',', ': '))
+            f.write('\n')
     if not reference:
         print "\t\treference is empty, cuttin' this dead weight!"
         if os.path.exists(ref_file):
@@ -466,6 +467,7 @@ def save_report(report, command):
         os.makedirs(dirs['reports'])
     with open(report_file, 'w') as f:
         f.write(string)
+        f.write("\n")
 
 
 def save_tree(tree):
@@ -477,6 +479,7 @@ def save_tree(tree):
     sorted_new_tree = get_ordered_dict(tree)
     with open(files['tree'], 'w') as f:
         json.dump(sorted_new_tree, f, indent=4, separators=(',', ': '))
+        f.write('\n')
 
 
 def get_ordered_dict(d):

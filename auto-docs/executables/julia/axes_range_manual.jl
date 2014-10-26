@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 trace1 = [
@@ -18,6 +16,5 @@ layout = [
   "xaxis" => ["range" => [2, 5]], 
   "yaxis" => ["range" => [2, 5]]
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "axes-range-manual", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "axes-range-manual", "fileopt" => "overwrite"])
 plot_url = response["url"]

@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 data = Data([
@@ -15,5 +14,4 @@ layout = Layout(
     )
 )
 fig = Figure(data=data, layout=layout)
-
 plot_url = py.plot(fig, filename='axes-reversed', auto_open=False)

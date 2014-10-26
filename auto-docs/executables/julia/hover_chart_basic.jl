@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 data = [
@@ -13,6 +11,5 @@ data = [
   ]
 ]
 layout = ["title" => "Hover over the points to see the text"]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "hover-chart-basic", "fileopt" => "overwrite", "auto_open" => false])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "hover-chart-basic", "fileopt" => "overwrite"])
 plot_url = response["url"]

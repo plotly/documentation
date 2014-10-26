@@ -38,8 +38,7 @@ var layout = {
     }
   ]
 };
-
-var graph_options = {filename: "multiple-annotation", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "multiple-annotation", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

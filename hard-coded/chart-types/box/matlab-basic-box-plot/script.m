@@ -8,6 +8,6 @@ data2 = normrnd(6,1,100,1);
 fig = figure;
 boxplot([data1,data2])
 
-% PLOTLY 
-response = fig2plotly(fig);
+%--PLOTLY--%  
+response = fig2plotly(fig, 'filename', '>>>filename<<<');
 plotly_url = response.url;

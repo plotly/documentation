@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 trace1 = Contour(
@@ -20,5 +19,4 @@ trace2 = Scatter(
     )
 )
 data = Data([trace1, trace2])
-
 plot_url = py.plot(data, filename='contour-scatter', auto_open=False)

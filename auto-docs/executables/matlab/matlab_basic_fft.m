@@ -1,7 +1,7 @@
 signin('TestBot', 'r1neazxo9w')
 
 % read audio text file  
-sigtext = urlread('https://raw.githubusercontent.com/plotly/documentation/reorganization/aux/fft-matlab'); 
+sigtext = urlread('https://raw.githubusercontent.com/plotly/documentation/master/aux/fft-matlab');
 
 % conver to audio samples 
 sig = str2num(sigtext); 

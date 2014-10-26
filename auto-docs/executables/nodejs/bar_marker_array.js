@@ -8,8 +8,7 @@ var data = [
     type: "bar"
   }
 ];
-
-var graph_options = {filename: "bar-marker-array", fileopt: "overwrite", auto_open: "false"}
+var graph_options = {filename: "bar-marker-array", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

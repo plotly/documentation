@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 data = [
@@ -18,6 +16,5 @@ layout = [
     "color" => "#7f7f7f"
   ]
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "global-font", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "global-font", "fileopt" => "overwrite"])
 plot_url = response["url"]

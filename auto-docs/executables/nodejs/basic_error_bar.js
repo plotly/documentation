@@ -12,8 +12,7 @@ var data = [
     type: "scatter"
   }
 ];
-
-var graph_options = {filename: "basic-error-bar", fileopt: "overwrite", auto_open: "false"}
+var graph_options = {filename: "basic-error-bar", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

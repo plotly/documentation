@@ -77,8 +77,7 @@ var layout = {
   plot_bgcolor: "rgb(255, 255, 255)", 
   orientation: -90
 };
-
-var graph_options = {filename: "polar-line", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "polar-line", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

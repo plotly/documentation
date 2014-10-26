@@ -15,6 +15,5 @@ trace2 = struct(...
   'line', struct('color', 'black'), ...
   'type', 'scatter');
 data = {trace1, trace2};
-
-response = plotly(data, struct('filename', 'contour-scatter', 'fileopt', 'overwrite', 'auto_open', 'false'));
+response = plotly(data, struct('filename', 'contour-scatter', 'fileopt', 'overwrite'));
 plot_url = response.url

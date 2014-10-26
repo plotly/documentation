@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 data = Data([
@@ -14,5 +13,4 @@ data = Data([
         )
     )
 ])
-
 plot_url = py.plot(data, filename='basic-error-bar', auto_open=False)

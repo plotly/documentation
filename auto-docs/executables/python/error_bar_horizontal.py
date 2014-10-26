@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 data = Data([
@@ -13,5 +12,4 @@ data = Data([
         )
     )
 ])
-
 plot_url = py.plot(data, filename='error-bar-horizontal', auto_open=False)

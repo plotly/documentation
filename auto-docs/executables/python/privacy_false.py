@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 data = Data([
@@ -9,5 +8,4 @@ data = Data([
         y=[0, 4, 2]
     )
 ])
-
-plot_url = py.plot(data, filename='privacy-false', auto_open=False, world_readable=False)
+plot_url = py.plot(data, filename='privacy-false', world_readable=False, auto_open=False)

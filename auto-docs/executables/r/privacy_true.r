@@ -1,6 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
+py <- plotly(username='TestBot', key='r1neazxo9w')
 
 data <- list(
   list(
@@ -9,7 +8,5 @@ data <- list(
     type = "scatter"
   )
 )
-
-response <- p$plotly(data, kwargs=list(filename="privacy-true", fileopt="overwrite", auto_open=FALSE, world_readable=TRUE))
+response <- py$plotly(data, kwargs=list(filename="privacy-true", world_readable=TRUE, fileopt="overwrite"))
 url <- response$url
-filename <- response$filename

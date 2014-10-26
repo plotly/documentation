@@ -77,8 +77,7 @@ var layout = {
     showline: false
   }
 };
-
-var graph_options = {filename: "line-style", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "line-style", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

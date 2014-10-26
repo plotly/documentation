@@ -21,8 +21,7 @@ var layout = {
     autorange: true
   }
 };
-
-var graph_options = {filename: "plotly-log-axes", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "plotly-log-axes", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

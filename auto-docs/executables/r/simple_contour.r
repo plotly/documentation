@@ -1,7 +1,5 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
-
+py <- plotly(username='TestBot', key='r1neazxo9w')
 size <- 100
 x <- seq(-2*pi, 2*pi, length=size)
 y <- seq(-2*pi, 2*pi, length=size)
@@ -12,6 +10,7 @@ for(i in 1:size) {
         z[i, j] <- sin(x[i])*cos(y[j])*sin(r2)/log(r2+1)
     }
 }
+
 data <- list(
   list(
     z = z, 
@@ -20,7 +19,5 @@ data <- list(
     type = "contour"
   )
 )
-
-response <- p$plotly(data, kwargs=list(filename="simple-contour", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(filename="simple-contour", fileopt="overwrite"))
 url <- response$url
-filename <- response$filename

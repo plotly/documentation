@@ -10,8 +10,7 @@ var data = [
   }
 ];
 var layout = {title: "Hover over the points to see the text"};
-
-var graph_options = {filename: "hover-chart-basic", fileopt: "overwrite", layout: layout, auto_open: false}
+var graph_options = {layout: layout, filename: "hover-chart-basic", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

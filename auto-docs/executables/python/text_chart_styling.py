@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 trace1 = Scatter(
@@ -34,5 +33,4 @@ layout = Layout(
     showlegend=False
 )
 fig = Figure(data=data, layout=layout)
-
 plot_url = py.plot(fig, filename='text-chart-styling', auto_open=False)

@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 trace1 = [
@@ -39,6 +37,5 @@ layout = [
   "radialaxis" => ["ticksuffix" => "%"], 
   "orientation" => 270
 ]
-
-response = Plotly.plot([data], ["layout" => layout, "filename" => "polar-area-chart", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["layout" => layout, "filename" => "polar-area-chart", "fileopt" => "overwrite"])
 plot_url = response["url"]

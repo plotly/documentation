@@ -9,8 +9,7 @@ var data = [
     type: "box"
   }
 ];
-
-var graph_options = {filename: "box-plot-jitter", fileopt: "overwrite", auto_open: "false"}
+var graph_options = {filename: "box-plot-jitter", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

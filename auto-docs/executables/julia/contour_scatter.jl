@@ -1,6 +1,4 @@
 using Plotly
-
-using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
 
 trace1 = [
@@ -20,6 +18,5 @@ trace2 = [
   "type" => "scatter"
 ]
 data = [trace1, trace2]
-
-response = Plotly.plot([data], ["filename" => "contour-scatter", "fileopt" => "overwrite", "auto_open" => "false"])
+response = Plotly.plot(data, ["filename" => "contour-scatter", "fileopt" => "overwrite"])
 plot_url = response["url"]

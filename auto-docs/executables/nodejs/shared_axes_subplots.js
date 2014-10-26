@@ -41,8 +41,7 @@ var layout = {
     anchor: "x4"
   }
 };
-
-var graph_options = {filename: "shared-axes-subplots", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "shared-axes-subplots", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

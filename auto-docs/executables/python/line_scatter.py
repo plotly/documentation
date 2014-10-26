@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 trace1 = Scatter(
@@ -19,5 +18,4 @@ trace3 = Scatter(
     mode='lines+markers'
 )
 data = Data([trace1, trace2, trace3])
-
 plot_url = py.plot(data, filename='line-scatter', auto_open=False)

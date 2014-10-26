@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 trace1 = Scatter(
@@ -12,5 +11,4 @@ trace2 = Scatter(
     y=[16, 5, 11, 9]
 )
 data = Data([trace1, trace2])
-
 plot_url = py.plot(data, filename='static-image-example', auto_open=False)

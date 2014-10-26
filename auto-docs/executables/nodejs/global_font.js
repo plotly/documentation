@@ -15,8 +15,7 @@ var layout = {
     color: "#7f7f7f"
   }
 };
-
-var graph_options = {filename: "global-font", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "global-font", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

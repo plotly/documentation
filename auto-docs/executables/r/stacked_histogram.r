@@ -1,9 +1,8 @@
 library(plotly)
-
-p <- plotly(username='TestBot', key='r1neazxo9w')
-
+py <- plotly(username='TestBot', key='r1neazxo9w')
 x0 = rnorm(500)
 x1 = rnorm(500)+1
+
 trace1 <- list(
   x = x0, 
   type = "histogram"
@@ -14,7 +13,5 @@ trace2 <- list(
 )
 data <- list(trace1, trace2)
 layout <- list(barmode = "stacked")
-
-response <- p$plotly(data, kwargs=list(layout=layout, filename="stacked-histogram", fileopt="overwrite", auto_open="FALSE"))
+response <- py$plotly(data, kwargs=list(layout=layout, filename="stacked-histogram", fileopt="overwrite"))
 url <- response$url
-filename <- response$filename

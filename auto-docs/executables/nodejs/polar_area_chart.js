@@ -36,8 +36,7 @@ var layout = {
   radialaxis: {ticksuffix: "%"}, 
   orientation: 270
 };
-
-var graph_options = {filename: "polar-area-chart", fileopt: "overwrite", layout: layout, auto_open: "false"}
+var graph_options = {layout: layout, filename: "polar-area-chart", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

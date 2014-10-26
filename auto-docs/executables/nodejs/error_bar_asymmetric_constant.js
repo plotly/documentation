@@ -13,8 +13,7 @@ var data = [
     type: "scatter"
   }
 ];
-
-var graph_options = {filename: "error-bar-asymmetric-constant", fileopt: "overwrite", auto_open: "false"}
+var graph_options = {filename: "error-bar-asymmetric-constant", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

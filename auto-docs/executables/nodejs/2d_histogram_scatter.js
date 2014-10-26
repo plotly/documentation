@@ -1,5 +1,4 @@
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
-
 var x0 = [];
 var y0 = [];
 var x1 = [];
@@ -17,6 +16,7 @@ for (var i = 0; i < 50; i ++) {
 
 var x = [x0, x1]
 var y = [y0, y1]
+
 
 var trace1 = {
   x: x0, 
@@ -44,8 +44,7 @@ var trace3 = {
   type: "histogram2d"
 };
 var data = [trace1, trace2, trace3];
-
-var graph_options = {filename: "2d-histogram-scatter", fileopt: "overwrite", auto_open: false}
+var graph_options = {filename: "2d-histogram-scatter", fileopt: "overwrite"}
 plotly.plot(data, graph_options, function (err, msg) {
     console.log(msg);
 });

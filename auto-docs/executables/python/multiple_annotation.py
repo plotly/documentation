@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 trace1 = Scatter(
@@ -40,5 +39,4 @@ layout = Layout(
     ])
 )
 fig = Figure(data=data, layout=layout)
-
 plot_url = py.plot(fig, filename='multiple-annotation', auto_open=False)

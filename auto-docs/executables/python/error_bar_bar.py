@@ -1,6 +1,5 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
 
 trace1 = Bar(
@@ -28,5 +27,4 @@ layout = Layout(
     barmode='group'
 )
 fig = Figure(data=data, layout=layout)
-
 plot_url = py.plot(fig, filename='error-bar-bar', auto_open=False)

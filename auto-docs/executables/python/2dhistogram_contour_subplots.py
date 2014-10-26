@@ -1,13 +1,12 @@
 import plotly.plotly as py
 from plotly.graph_objs import *
-
 py.sign_in('TestBot', 'r1neazxo9w')
-
 import numpy as np
 
 t = np.linspace(-1,1.2,2000)
 x = (t**3)+(0.3*np.random.randn(2000))
 y = (t**6)+(0.3*np.random.randn(2000))
+
 trace1 = Scatter(
     x=x,
     y=y,
@@ -77,5 +76,4 @@ layout = Layout(
     )
 )
 fig = Figure(data=data, layout=layout)
-
 plot_url = py.plot(fig, filename='2dhistogram-contour-subplots', auto_open=False)
