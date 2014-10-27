@@ -44,6 +44,7 @@ tree_keys = dict(
         "image", # todo, remove this
         "exception",
         "private",
+        "url",
         "prepend", # todo, remove
         "append"  # todo, remove
     ],
@@ -732,6 +733,10 @@ def process_script_leaf(leaf, options, id_dict):
     code_path = save_code(code_string, leaf, language, 'documentation')
     leaf[language] = code_path
     save_code(exec_string, leaf, language, 'execution')
+
+    # if this is being re-processed we need to make sure the url is cleared.
+    leaf.pop('url', None)
+
     id_dict['complete'].add(leaf['id'])
 
 
