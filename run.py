@@ -44,6 +44,7 @@ tree_keys = dict(
         "image", # todo, remove this
         "exception",
         "private",
+        "url",
         "prepend", # todo, remove
         "append"  # todo, remove
     ],
@@ -956,6 +957,8 @@ def reset_reprocessed_leaves(section, processed_ids):
     if section:
         if section['is_leaf']:
             if section['id'] in processed_ids:
+                if section['type'] == 'script':
+                    section.pop('url', None)
                 keys = section.keys()
                 for key in keys:
                     if key not in tree_keys['leaf'] and key not in languages:
