@@ -23,5 +23,5 @@ xlabel('omega');
 ylabel('|G|[omega]');
 
 % PLOTLY 
-response = fig2plotly(gcf, 'name', 'log_log_line');
+response = fig2plotly(gcf, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url;

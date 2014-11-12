@@ -8,5 +8,5 @@ fig = figure;
 bar(x,y);
 
 % PLOTLY 
-response = fig2plotly(fig,'strip',1);
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url;

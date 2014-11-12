@@ -27,5 +27,5 @@ xlabel('Time (s.)');
 ylabel('Amplitude'); 
 
 %--PLOTLY--% 
-response = fig2plotly(fig, 'filename', '>>>filename<<<');
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url; 

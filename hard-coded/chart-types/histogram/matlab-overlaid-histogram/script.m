@@ -34,5 +34,5 @@ for i=1:2
 end
 
 % PLOTLY
-response = fig2plotly(fig,'strip',1);
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url;

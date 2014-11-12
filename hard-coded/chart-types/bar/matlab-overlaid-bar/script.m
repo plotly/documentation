@@ -24,5 +24,5 @@ bar(x, y2,'r');
 legend('group1','group2'); 
 
 % PLOTLY 
-response = fig2plotly(fig,'strip',1);
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url;

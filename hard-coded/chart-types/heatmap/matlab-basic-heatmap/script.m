@@ -7,12 +7,12 @@ for r = 1:size
         z(r,c) = r+c;
     end
 end
-figure;
+fig = figure;
 
 colormap('hot');
 imagesc(z);
 colorbar;
 
 % PLOTLY
-response = fig2plotly();
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url;

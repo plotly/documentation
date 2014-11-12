@@ -13,7 +13,7 @@ rate  = TBdata(:,3);
 
 % Create a plot with 2 y axes using the plotyy function
 % Cases are represented by a bar chart ; Infection rate is represented by an xy plot
-figure;
+fig = figure;
 [ax, h1, h2] = plotyy(years, cases, years, rate, 'bar', 'plot');
 
 % Change the bar colors to light gray
@@ -31,5 +31,5 @@ set(get(ax(1), 'Ylabel'), 'String', 'Cases');
 set(get(ax(2), 'Ylabel'), 'String', 'Infection rate in cases per thousand');
 
 % PLOTLY 
-response = fig2plotly();
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url;

@@ -9,5 +9,5 @@ fig = figure;
 boxplot([data1,data2])
 
 %--PLOTLY--%  
-response = fig2plotly(fig, 'filename', '>>>filename<<<');
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url;

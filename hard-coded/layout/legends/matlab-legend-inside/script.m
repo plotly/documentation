@@ -7,5 +7,5 @@ plot([1 2 3 4 5 6 7 8],[1 6 2 3 4 7 7 8]);
 legend('blue trace','orange trace'); 
  
 % PLOTLY 
-response = fig2plotly(fig,'strip',1,'name','legend_inside');
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url;

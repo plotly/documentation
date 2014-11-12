@@ -15,5 +15,5 @@ ylabel('Cases (in thousands)');
 legend('Measles', 'Mumps', 'Chicken pox');
 
 % PLOTLY 
-response = fig2plotly(fig,'strip',1);
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url;

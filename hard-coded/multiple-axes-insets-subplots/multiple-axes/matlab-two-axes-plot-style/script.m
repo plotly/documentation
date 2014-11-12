@@ -40,7 +40,7 @@ set(leg,'Interpreter','latex');
 grid on 
 
 % PLOTLY 
-response = fig2plotly(fig);
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url;
 
 

@@ -30,5 +30,5 @@ set(cat(1),'FaceColor',[45 125 206]/255,'BarWidth',2);
 set(gca,'box','off');
 
 % PLOTLY
-response = fig2plotly();
+response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
 plotly_url = response.url;
