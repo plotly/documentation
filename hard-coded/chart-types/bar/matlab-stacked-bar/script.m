@@ -14,6 +14,8 @@ xlabel('Month');
 ylabel('Cases (in thousands)');
 legend('Measles', 'Mumps', 'Chicken pox');
 
-% PLOTLY 
-response = fig2plotly(fig,'strip',1);
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', '>>>filename<<<');
 plotly_url = response.url;

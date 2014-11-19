@@ -7,6 +7,8 @@ x = normrnd(5,1,100,1);
 fig = figure;
 hist(x)
 
-% PLOTLY 
-response = fig2plotly(fig,'strip',1);
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', '>>>filename<<<');
 plotly_url = response.url;

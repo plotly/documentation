@@ -7,7 +7,7 @@ BER = [0.0753 0.0574 0.0370 0.0222 0.0122 0.0061];
 
 % Create a y-axis semilog plot using the semilogy function
 % Plot SER data in blue and BER data in red
-figure;
+fig = figure;
 semilogy(eb, SER, 'bo-');
 hold on;
 semilogy(eb, BER, 'r^-');
@@ -20,6 +20,8 @@ title('Performance of Baseband QPSK');
 xlabel('EbNo (dB)');
 ylabel('SER and BER');
 
-% PLOTLY
-response = fig2plotly();
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', '>>>filename<<<');
 plotly_url = response.url;
