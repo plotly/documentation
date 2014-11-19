@@ -17,6 +17,8 @@ title('Frequency Response');
 set(get(ax(1), 'Ylabel'), 'String', 'Low Frequency');
 set(get(ax(2), 'Ylabel'), 'String', 'High Frequency');
 
-% PLOTLY 
-response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', '>>>filename<<<');
 plotly_url = response.url;

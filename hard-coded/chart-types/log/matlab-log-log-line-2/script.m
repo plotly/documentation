@@ -22,6 +22,8 @@ title('|G|[omega]  vs omega');
 xlabel('omega');
 ylabel('|G|[omega]');
 
-% PLOTLY 
-response = fig2plotly(gcf, 'filename', '>>>filename<<<', 'strip', false);
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(gcf, 'filename', '>>>filename<<<');
 plotly_url = response.url;

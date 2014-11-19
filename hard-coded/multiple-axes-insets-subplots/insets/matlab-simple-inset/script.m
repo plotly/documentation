@@ -36,6 +36,8 @@ plot(t, y.^3);
 set(handaxes3, 'box','off');
 xlabel('t'); ylabel('(sin(t))^3');
 
-% PLOTLY 
-response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', '>>>filename<<<');
 plotly_url = response.url;

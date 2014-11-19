@@ -7,5 +7,8 @@ y = [1, 5, 3;
 fig = figure
 area(y)
 
-response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', '>>>filename<<<');
 plotly_url = response.url;

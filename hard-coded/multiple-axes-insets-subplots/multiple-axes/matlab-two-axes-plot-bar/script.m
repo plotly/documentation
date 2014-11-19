@@ -30,6 +30,8 @@ xlabel('Years');
 set(get(ax(1), 'Ylabel'), 'String', 'Cases');
 set(get(ax(2), 'Ylabel'), 'String', 'Infection rate in cases per thousand');
 
-% PLOTLY 
-response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', '>>>filename<<<');
 plotly_url = response.url;

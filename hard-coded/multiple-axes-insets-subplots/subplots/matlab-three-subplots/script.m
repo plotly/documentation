@@ -36,6 +36,8 @@ xlabel('t');
 ylabel('x_zoh(t)');
 title('Reconstruction at T=4e-6 ');
 
-% PLOTLY 
-response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', '>>>filename<<<');
 plotly_url = response.url;

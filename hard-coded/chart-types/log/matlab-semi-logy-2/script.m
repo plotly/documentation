@@ -20,6 +20,8 @@ title('Performance of Baseband QPSK');
 xlabel('EbNo (dB)');
 ylabel('SER and BER');
 
-% PLOTLY
-response = fig2plotly(fig, 'filename', '>>>filename<<<', 'strip', false);
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', '>>>filename<<<');
 plotly_url = response.url;
