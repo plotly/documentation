@@ -524,7 +524,7 @@ def main():
     set_total_examples(tree)
     print "setting up auto-generated structure"
     fix_tree(tree)
-    print "compling url porting threads"
+    print "compiling url porting threads"
     url_threads = []
     port_urls(tree, command, url_threads)
     print "starting url threads"

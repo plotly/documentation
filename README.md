@@ -509,8 +509,6 @@ Where you replace `language` with `ggplot2`, `python`, `matlab`, or `matplotlib`
 
 So, since this is a script, it requires running in its native language. If you're updating a pure python example, you'll need to do this:
 
-For python:
-
 ```bash
 $ python python_exceptions.py
 ```
@@ -521,11 +519,13 @@ For matplotlib:
 $ python mpl_exceptions.py
 ```
 
-For matlab:
-
 For ggplot2:
 
-For r:
+```bash
+$ R -f ggplot_exceptions.r
+```
+
+For matlab:
 
 For julia:
 
@@ -650,7 +650,7 @@ When you run the publishing program the following occurs:
 You have two options for running `publish.py`:
 1. `python publish.py test`
 This will use the `tester` user (stored in the `users.json` file you'll need to get outside of GitHub). It will port urls over (usually they don't need porting) to the `test` user, save images to the `test-published/images` directory, save templated code examples to the `test-published/api-docs` directory, create langauge *references* in the `test-published/api-docs` directory, and save a `test-publish-report.txt`.
-2. 'python publish.py publish`
+2. `python publish.py publish`
 You guessed it, everything above but for realz. This will use the `publisher` user (stored in the `users.json` file you'll need to get outside of GitHub). It will port urls over to the `publisher` user, save images to the `published/images` directory, save templated code examples to the `published/api-docs` directory, create langauge *references* in the `published/api-docs` directory, and save a `publish-report.txt`.
 
 You *should not* run `publish` until all examples show up as *complete* in the `test-publish-report.txt` file (there will also be congratulatory output in the stdout if all examples are complete).
@@ -666,7 +666,7 @@ Ins and Outs of `publish.py`:
  * `test-published/api-docs/references` `published/api-docs/references` directory
  * `report` directory
 
-## completing *language-specific* exmples
+## Completing *language-specific* examples
 
 Each language needs its own program to:
 
@@ -676,6 +676,6 @@ Each language needs its own program to:
 
 `publish.py` anticipates these `*.json` files existing in this directory and will be able to properly add the example if it exists.
 
-## why all the trouble?
+## Why all the trouble?
 
 The resulting `published` directory contains information that can be copied straight into the plotly backend and *just work*. The content is handled totally separately from the *look* of the examples, so we don't need to mess with one to change the other.
