@@ -105,7 +105,8 @@ languages = ['python',
              'julia',
              'matlab',
              'r',
-             'nodejs',
+             'node_js',
+             'plotly_js',
              'ggplot2',
              'matplotlib',
              'js']
@@ -115,7 +116,8 @@ lang_to_ext = dict(python='py',
                    julia='jl',
                    matlab='m',
                    r='r',
-                   nodejs='js',
+                   node_js='js',
+                   plotly_js='js',
                    ggplot2='r',
                    matplotlib='py',
                    js='html')
@@ -123,7 +125,7 @@ ext_to_lang = dict(py='python',
                    jl='julia',
                    m='matlab',
                    r='r',
-                   js='nodejs',
+                   js='node_js',
                    gg='ggplot2',
                    mpl='matplotlib',
                    html='js')
@@ -179,7 +181,7 @@ sign_in = dict(
             "{{% else %}}\"{un}\"{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia'])),
-        nodejs=(
+        node_js=(
             "{{% if not username %}}"
             "// Fill in with your personal username and API key\n"
             "// or, use this public demo account\n"
@@ -207,7 +209,7 @@ sign_in = dict(
             "{{% else %}}'{un}'{{% endif %}}, "
             "{{% if api_key %}}\"{{{{api_key}}}}\""
             "{{% else %}}'{ak}'{{% endif %}})".format(**users['python'])),
-        js=""
+        plotly_js=""
     ),
     execution=dict(
         python="py.sign_in('{un}', '{ak}')".format(**users['tester']),
@@ -216,12 +218,12 @@ sign_in = dict(
             'tester']),
         julia='Plotly.signin("{un}", "{ak}")'
               ''.format(**users['tester']),
-        nodejs="var plotly = require('plotly')('{un}', '{ak}')"
+        node_js="var plotly = require('plotly')('{un}', '{ak}')"
                "".format(**users['tester']),
         ggplot2="py <- plotly(username='{un}', key='{ak}')"
                 "".format(**users['tester']),
         matplotlib="py.sign_in('{un}', '{ak}')".format(**users['tester']),
-        js=""
+        plotly_js=""
     )
 )
 
@@ -624,10 +626,6 @@ def process_model_worker(leaf, language, model):
     data = {'json_figure': model,
             'pretty': True,
             'plot_options': plot_options}
-    if language == 'nodejs' or language == 'js':  # todo, temporary fix!
-        data['language'] = 'node'
-    else:
-        data['language'] = language
     # get exec code...
     data['un'] = users['tester']['un']
     data['ak'] = users['tester']['ak']
