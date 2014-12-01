@@ -628,6 +628,7 @@ def process_model_worker(leaf, language, model):
     if language != 'python':
         plot_options['fileopt'] = 'overwrite'
     data = {'json_figure': model,
+            'language': language,
             'pretty': True,
             'plot_options': plot_options}
     # get exec code...
