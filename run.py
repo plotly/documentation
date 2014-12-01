@@ -662,7 +662,7 @@ def process_model_worker(leaf, language, model):
     code = code.replace('">>>', "").replace('<<<"', "")
     code = code.replace("'>>>", "").replace("<<<'", "")
     raw_doc_code = insert_init(code, init, language)
-    doc_code = format_code(raw_doc_code, language, leaf)
+    doc_code = cgi.escape(raw_doc_code)
     code_path = save_code(doc_code, leaf, language, 'documentation')
     # do this last so we know it worked!
     leaf[language] = code_path
@@ -888,17 +888,6 @@ def exec_python_string(exec_string):
     """save image to directory by executing python code-string and saving"""
     exec exec_string
     return locals()
-
-
-def format_code(code, language, leaf):
-    lines = code.splitlines()
-    for lino, line in enumerate(lines):
-        if line[:6] == sign_in['execution'][language][:6]:
-            lines[lino] = sign_in['documentation'][language]
-        # FIXME: HACK! needs updating in streambed...
-        elif language == 'r' and line[:6] == 'p <- plotly('[:6]:
-            lines[lino] = sign_in['documentation'][language]
-    return cgi.escape('\n'.join(lines))
 
 
 def trim_tree(section):
