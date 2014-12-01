@@ -1030,7 +1030,7 @@ def get_ordered_dict(d):
 
 
 def thread_space(thread_list, max_threads):
-    """Return the (t)head space, number of new threads that can be started.
+    """Return the (t)h(r)ead space, number of new threads that can be started.
 
     This effectively throttles the number of threads which can be alive at
     once.
