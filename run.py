@@ -568,6 +568,11 @@ def process_model_leaf(leaf, options, id_dict):
         raw_exec_code = init + code
         leaf['python-exec'] = raw_exec_code
     threads = []
+        raw_exec_code = raw_exec_code.replace(
+            "'username'", "'{}'".format(users['tester']['un'])
+        ).replace(
+            "'api_key'", "'{}'".format(users['tester']['ak'])
+        )
     for iii, language in enumerate(model_languages):
         name = "sub-thread-{}-{}".format(language,
                                          threading.current_thread().name)
@@ -649,6 +654,12 @@ def process_model_worker(leaf, language, model):
         leaf['python-exec'] = raw_exec_code
     # get documentation code...
     res = get_plotly_response(translator_server, data=json.dumps(data))
+    raw_exec_code = raw_exec_code.replace(
+        "'username'", "'{}'".format(users['tester']['un'])).replace(
+        "'api_key'", "'{}'".format(users['tester']['ak'])).replace(
+        '"username"', '"{}"'.format(users['tester']['un'])).replace(
+        '"api_key"', '"{}"'.format(users['tester']['ak'])
+    )
     if not res:
         raise plotly.exceptions.PlotlyError(
             "couldn't connect to plotly at resource. '{}'"
