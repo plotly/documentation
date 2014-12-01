@@ -552,8 +552,6 @@ def process_model_leaf(leaf, options, id_dict):
                 'language': 'python',
                 'pretty': True,
                 'plot_options': plot_options}
-        data['un'] = users['tester']['un']
-        data['ak'] = users['tester']['ak']
         data['plot_options']['auto_open'] = False
         res = get_plotly_response(translator_server, data=json.dumps(data))
         if not res:
@@ -627,8 +625,6 @@ def process_model_worker(leaf, language, model):
             'pretty': True,
             'plot_options': plot_options}
     # get exec code...
-    data['un'] = users['tester']['un']
-    data['ak'] = users['tester']['ak']
     keep_auto_open = 'auto_open' in data['plot_options']
     if language == 'python':
         data['plot_options']['auto_open'] = False
