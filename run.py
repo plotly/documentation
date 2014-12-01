@@ -565,7 +565,7 @@ def process_model_leaf(leaf, options, id_dict):
         code = res.content
         code = code.replace('">>>', "").replace('<<<"', "")
         code = code.replace("'>>>", "").replace("<<<'", "")
-        raw_exec_code = init + remove_header(code)
+        raw_exec_code = init + code
         leaf['python-exec'] = raw_exec_code
     threads = []
     for iii, language in enumerate(model_languages):
@@ -643,8 +643,7 @@ def process_model_worker(leaf, language, model):
     code = code.replace("<pre>", "").replace("</pre>", "")
     code = code.replace('">>>', "").replace('<<<"', "")
     code = code.replace("'>>>", "").replace("<<<'", "")
-    headless_exec_code = remove_header(code)
-    raw_exec_code = insert_init(headless_exec_code, init, language)
+    raw_exec_code = insert_init(code, init, language)
     save_code(raw_exec_code, leaf, language, 'execution')
     if language == 'python':
         leaf['python-exec'] = raw_exec_code
@@ -662,8 +661,7 @@ def process_model_worker(leaf, language, model):
     code = code.replace("<pre>", "").replace("</pre>", "")
     code = code.replace('">>>', "").replace('<<<"', "")
     code = code.replace("'>>>", "").replace("<<<'", "")
-    headless_doc_code = remove_header(code)
-    raw_doc_code = insert_init(headless_doc_code, init, language)
+    raw_doc_code = insert_init(code, init, language)
     doc_code = format_code(raw_doc_code, language, leaf)
     code_path = save_code(doc_code, leaf, language, 'documentation')
     # do this last so we know it worked!
@@ -827,26 +825,24 @@ def process_url_leaf(leaf, options):
 
 
 def get_plotly_response(resource, data=None, attempts=2, sleep=5):
-    for attempt in range(1, attempts+1):
-        try:
-            if data:
-                res = requests.get(resource, data=data)
-            else:
-                res = requests.get(resource)
-            return res
-        except RequestException:
-            if attempt < attempts:
-                print("\t\tcouldn't connect to plotly, trying again with "
-                      "thread: {thread_id}"
-                      "".format(thread_id=threading.current_thread().name))
-            time.sleep(sleep)
-
-
-def remove_header(string):
-    lines = string.splitlines()
-    while not lines[0] or lines[0][0] in ['#', '%', '/']:
-        lines.pop(0)
-    return '\n'.join(lines)
+    if data is None:
+        raise plotly.exceptions.PlotlyError("Data argument was not supplied.")
+    elif not data:
+        raise plotly.exceptions.PlotlyError("Data argument was falsy.")
+    else:
+        data = json.loads(data)
+        data['remove_header'] = True
+        data = json.dumps(data)
+        for attempt in range(1, attempts+1):
+            try:
+                res = requests.request('post', resource, data=data)
+                return res
+            except RequestException:
+                if attempt < attempts:
+                    print("\t\tcouldn't connect to plotly, trying again with "
+                          "thread: {thread_id}"
+                          "".format(thread_id=threading.current_thread().name))
+                time.sleep(sleep)
 
 
 def get_init_code(leaf, language):
