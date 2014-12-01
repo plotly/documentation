@@ -583,8 +583,9 @@ def process_model_leaf(leaf, options, id_dict):
         threads[iii].start()
     for thread in threads:
         thread.join()
+    python_exec_string = leaf['python-exec']
     try:
-        exec_locals = exec_python_string(leaf['python-exec'])
+        exec_locals = exec_python_string(python_exec_string)
     except Exception as err:
         raise plotly.exceptions.PlotlyError(
             "exec of python string raised exception:"
