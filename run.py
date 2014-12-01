@@ -683,12 +683,17 @@ def process_model_worker(leaf, language, model):
 
 def insert_init(code, init, language):
     lines = code.splitlines()
-    sign_in_lino = -1
-    for lino, line in enumerate(lines):
-        if line[:6] == sign_in['execution'][language][:6]:
-            sign_in_lino = lino
-            break
-    new_lines = lines[:sign_in_lino+1] + [init] + lines[sign_in_lino+1:]
+    if language == 'plotly_js':
+        new_lines = [init] + lines
+    else:
+        sign_in_lino = -1
+        for lino, line in enumerate(lines):
+            if line[:6] == sign_in['execution'][language][:6]:
+                sign_in_lino = lino
+                break
+        new_lines = (lines[:sign_in_lino+1] +
+                     ['\n' + init] +
+                     lines[sign_in_lino+1:])
     return '\n'.join(new_lines)
 
 
