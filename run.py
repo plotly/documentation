@@ -700,7 +700,7 @@ def process_script_leaf(leaf, options, id_dict):
     # print "\tprocessing scripts in {}".format(leaf['path'])
     leaf['type'] = 'script'
     script_file = [fn for fn in leaf['files'] if 'script' in fn][0]
-    language = ext_to_lang[script_file.split('.')[-1]]
+    language = leaf['config']['languages'][0]
     leaf['config']['languages'] = [language]
     try:
         with open(leaf['files'][script_file]) as f:
