@@ -854,11 +854,17 @@ def get_plotly_response(resource, data=None, attempts=2, sleep=5):
         for attempt in range(1, attempts+1):
             try:
                 res = requests.request('post', resource, data=data)
+                if not res:
+                    raise RequestException
                 return res
             except RequestException:
                 if attempt < attempts:
                     print("\t\tcouldn't connect to plotly, trying again with "
                           "thread: {thread_id}"
+                          "".format(thread_id=threading.current_thread().name))
+                else:
+                    print("\t\tstill couldn't connect to plotly...\n"
+                          "\t\tthread: {thread_id} failed!"
                           "".format(thread_id=threading.current_thread().name))
                 time.sleep(sleep)
 
