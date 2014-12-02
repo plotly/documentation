@@ -46,15 +46,36 @@ meta_config_info = ['languages',
                     'has_thumbnail',
                     'links']
 
-### define recognized languages ###
-languages = ['python', 'matlab', 'r', 'julia', 'nodejs', 'json', 'ggplot2',
-             'matplotlib', 'js']
+# define supported languages
+languages = ['python',
+             'julia',
+             'matlab',
+             'r',
+             'node_js',
+             'plotly_js',
+             'ggplot2',
+             'matplotlib']
 
-### define extensions for executable code ###
-lang_to_ext = dict(python='py', julia='jl', matlab='m', r='r', nodejs='js', js='html')
-ext_to_lang = dict(py='python', jl='julia', m='matlab', r='r', js='nodejs', html='js')
+# define extensions for executable code
+lang_to_ext = dict(python='py',
+                   julia='jl',
+                   matlab='m',
+                   r='r',
+                   node_js='js',
+                   plotly_js='js',
+                   ggplot2='r',
+                   matplotlib='py',
+                   js='html')
+ext_to_lang = dict(py='python',
+                   jl='julia',
+                   m='matlab',
+                   r='r',
+                   js='node_js',
+                   gg='ggplot2',
+                   mpl='matplotlib',
+                   html='js')
 
-### define commands ###
+# define commands
 commands = ['test', 'publish']
 
 
