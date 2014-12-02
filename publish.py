@@ -21,22 +21,21 @@ with open("files.json") as files_file:
 with open("dirs.json") as dirs_file:
     dirs = json.load(dirs_file)
 
-### sign in stuff: each user has a 'un' and 'ak' ###
-## users ##
+# users
 # tester, julia, matlab, python, r, nodejs, publisher
 with open('users.json') as users_file:
     users = json.load(users_file)
 
-### server stuff ###
+# server stuff
 image_server = "https://plot.ly/apigenimage/"  # to be: "https://plot.ly/image/"
 
-### globals ###
+# globals
 root = ''
 doc_user = ''
 total_examples = 0
 example_count = 0
 
-### meta-config information ###
+# meta-config information
 meta_config_info = ['languages',
                     'name',
                     'description',
