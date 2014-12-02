@@ -1,4 +1,8 @@
+// Learn about API authentication here: plot.ly/nodejs/getting-started
+// Find your api_key here: plot.ly/settings/api
+
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var x = [];
 var y = [];
 
@@ -29,7 +33,7 @@ var data = [
     type: "histogram2d"
   }
 ];
-var graph_options = {filename: "2d-histogram-options", fileopt: "overwrite"}
-plotly.plot(data, graph_options, function (err, msg) {
+var graphOptions = {filename: "2d-histogram-options", fileopt: "overwrite"};
+plotly.plot(data, graphOptions, function (err, msg) {
     console.log(msg);
 });

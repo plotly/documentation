@@ -1,4 +1,8 @@
+// Learn about API authentication here: plot.ly/nodejs/getting-started
+// Find your api_key here: plot.ly/settings/api
+
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 
 var trace1 = {
   x: [1, 2, 3, 4], 
@@ -37,7 +41,7 @@ var trace3 = {
 };
 var data = [trace1, trace2, trace3];
 var layout = {showlegend: false};
-var graph_options = {layout: layout, filename: "bubblechart", fileopt: "overwrite"}
-plotly.plot(data, graph_options, function (err, msg) {
+var graphOptions = {layout: layout, filename: "bubblechart", fileopt: "overwrite"};
+plotly.plot(data, graphOptions, function (err, msg) {
     console.log(msg);
 });

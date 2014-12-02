@@ -1,4 +1,8 @@
+// Learn about API authentication here: plot.ly/nodejs/getting-started
+// Find your api_key here: plot.ly/settings/api
+
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 
 var trace1 = {
   x: [1, 2, 3, 4], 
@@ -17,7 +21,7 @@ var layout = {
   xaxis: {title: "$\sqrt{(n_\text{c}(t|{T_\text{early}}))}$"}, 
   yaxis: {title: "$d, r \text{ (solar radius)}$"}
 };
-var graph_options = {layout: layout, filename: "latex", fileopt: "overwrite"}
-plotly.plot(data, graph_options, function (err, msg) {
+var graphOptions = {layout: layout, filename: "latex", fileopt: "overwrite"};
+plotly.plot(data, graphOptions, function (err, msg) {
     console.log(msg);
 });

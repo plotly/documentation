@@ -1,5 +1,9 @@
+# Learn about API authentication here: plot.ly/julia/getting-started
+# Find your api_key here: plot.ly/settings/api
+
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
+
 x_theo = linspace(-4, 4, 100)
 sincx = sinc(x_theo)
 x = [-3.8, -3.03, -1.91, -1.46, -0.89, -0.24, -0.0, 0.41, 0.89, 1.01, 1.91, 2.28, 2.79, 3.56]

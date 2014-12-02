@@ -1,4 +1,8 @@
+// Learn about API authentication here: plot.ly/nodejs/getting-started
+// Find your api_key here: plot.ly/settings/api
+
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 
 var trace1 = {
   r: [77.5, 72.5, 70.0, 45.0, 22.5, 42.5, 40.0, 62.5], 
@@ -36,7 +40,7 @@ var layout = {
   radialaxis: {ticksuffix: "%"}, 
   orientation: 270
 };
-var graph_options = {layout: layout, filename: "polar-area-chart", fileopt: "overwrite"}
-plotly.plot(data, graph_options, function (err, msg) {
+var graphOptions = {layout: layout, filename: "polar-area-chart", fileopt: "overwrite"};
+plotly.plot(data, graphOptions, function (err, msg) {
     console.log(msg);
 });

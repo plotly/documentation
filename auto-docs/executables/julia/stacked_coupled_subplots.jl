@@ -1,5 +1,9 @@
+# Learn about API authentication here: plot.ly/julia/getting-started
+# Find your api_key here: plot.ly/settings/api
+
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
+
 
 trace1 = [
   "x" => [0, 1, 2], 

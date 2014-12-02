@@ -1,4 +1,8 @@
+// Learn about API authentication here: plot.ly/nodejs/getting-started
+// Find your api_key here: plot.ly/settings/api
+
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var x = ['day 1', 'day 1', 'day 1', 'day 1', 'day 1', 'day 1',
          'day 2', 'day 2', 'day 2', 'day 2', 'day 2', 'day 2']
 
@@ -31,7 +35,7 @@ var layout = {
   }, 
   boxmode: "group"
 };
-var graph_options = {layout: layout, filename: "box-grouped", fileopt: "overwrite"}
-plotly.plot(data, graph_options, function (err, msg) {
+var graphOptions = {layout: layout, filename: "box-grouped", fileopt: "overwrite"};
+plotly.plot(data, graphOptions, function (err, msg) {
     console.log(msg);
 });

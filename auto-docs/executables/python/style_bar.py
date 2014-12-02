@@ -1,6 +1,10 @@
+# Learn about API authentication here: plot.ly/python/getting-started
+# Find your api_key here: plot.ly/settings/api
+
 import plotly.plotly as py
 from plotly.graph_objs import *
 py.sign_in('TestBot', 'r1neazxo9w')
+
 
 trace1 = Bar(
     x=[1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012],

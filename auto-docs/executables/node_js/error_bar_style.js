@@ -1,4 +1,8 @@
+// Learn about API authentication here: plot.ly/nodejs/getting-started
+// Find your api_key here: plot.ly/settings/api
+
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 var linspace = require('linspace')
 
 x_theo = linspace(-4, 4, 100)
@@ -40,7 +44,7 @@ var trace2 = {
   type: "scatter"
 };
 var data = [trace1, trace2];
-var graph_options = {filename: "error-bar-style", fileopt: "overwrite"}
-plotly.plot(data, graph_options, function (err, msg) {
+var graphOptions = {filename: "error-bar-style", fileopt: "overwrite"};
+plotly.plot(data, graphOptions, function (err, msg) {
     console.log(msg);
 });

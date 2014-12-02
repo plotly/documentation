@@ -1,4 +1,8 @@
+// Learn about API authentication here: plot.ly/nodejs/getting-started
+// Find your api_key here: plot.ly/settings/api
+
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 
 var data = [
   {
@@ -13,7 +17,7 @@ var data = [
     type: "scatter"
   }
 ];
-var graph_options = {filename: "error-bar-asymmetric-array", fileopt: "overwrite"}
-plotly.plot(data, graph_options, function (err, msg) {
+var graphOptions = {filename: "error-bar-asymmetric-array", fileopt: "overwrite"};
+plotly.plot(data, graphOptions, function (err, msg) {
     console.log(msg);
 });

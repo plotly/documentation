@@ -1,4 +1,8 @@
+// Learn about API authentication here: plot.ly/nodejs/getting-started
+// Find your api_key here: plot.ly/settings/api
+
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 
 var trace1 = {
   r: [1, 0.995, 0.978, 0.951, 0.914, 0.866, 0.809, 0.743, 0.669, 0.588, 0.5, 0.407, 0.309, 0.208, 0.105, 0, 0.105, 0.208, 0.309, 0.407, 0.5, 0.588, 0.669, 0.743, 0.809, 0.866, 0.914, 0.951, 0.978, 0.995, 1, 0.995, 0.978, 0.951, 0.914, 0.866, 0.809, 0.743, 0.669, 0.588, 0.5, 0.407, 0.309, 0.208, 0.105, 0, 0.105, 0.208, 0.309, 0.407, 0.5, 0.588, 0.669, 0.743, 0.809, 0.866, 0.914, 0.951, 0.978, 0.995, 1], 
@@ -77,7 +81,7 @@ var layout = {
   plot_bgcolor: "rgb(255, 255, 255)", 
   orientation: -90
 };
-var graph_options = {layout: layout, filename: "polar-line", fileopt: "overwrite"}
-plotly.plot(data, graph_options, function (err, msg) {
+var graphOptions = {layout: layout, filename: "polar-line", fileopt: "overwrite"};
+plotly.plot(data, graphOptions, function (err, msg) {
     console.log(msg);
 });

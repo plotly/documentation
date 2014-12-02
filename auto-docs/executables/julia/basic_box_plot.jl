@@ -1,5 +1,9 @@
+# Learn about API authentication here: plot.ly/julia/getting-started
+# Find your api_key here: plot.ly/settings/api
+
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
+
 y0 = randn(50)
 y1 = randn(50)+1
 

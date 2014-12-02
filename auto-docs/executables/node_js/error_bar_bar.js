@@ -1,4 +1,8 @@
+// Learn about API authentication here: plot.ly/nodejs/getting-started
+// Find your api_key here: plot.ly/settings/api
+
 var plotly = require('plotly')('TestBot', 'r1neazxo9w')
+
 
 var trace1 = {
   x: ["Trial 1", "Trial 2", "Trial 3"], 
@@ -24,7 +28,7 @@ var trace2 = {
 };
 var data = [trace1, trace2];
 var layout = {barmode: "group"};
-var graph_options = {layout: layout, filename: "error-bar-bar", fileopt: "overwrite"}
-plotly.plot(data, graph_options, function (err, msg) {
+var graphOptions = {layout: layout, filename: "error-bar-bar", fileopt: "overwrite"};
+plotly.plot(data, graphOptions, function (err, msg) {
     console.log(msg);
 });

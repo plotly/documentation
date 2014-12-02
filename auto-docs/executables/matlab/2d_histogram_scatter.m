@@ -1,4 +1,8 @@
+% Learn about API authentication here: plot.ly/matlab/getting-started
+% Find your api_key here: plot.ly/settings/api
+
 signin('TestBot', 'r1neazxo9w')
+
 x0 = randn(100,1)./5. + 0.5;
 y0 = randn(100,1)./5. + 0.5;
 x1 = rand(50,1);

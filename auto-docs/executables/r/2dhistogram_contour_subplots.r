@@ -1,5 +1,9 @@
+# Learn about API authentication here: plot.ly/r/getting-started
+# Find your api_key here: plot.ly/settings/api
+
 library(plotly)
 py <- plotly(username='TestBot', key='r1neazxo9w')
+
 t = seq(-1, 1.2, length=2000)
 x = t^3+0.3*rnorm(2000)
 y = t^6+0.3*rnorm(2000)

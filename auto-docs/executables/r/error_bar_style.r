@@ -1,5 +1,9 @@
+# Learn about API authentication here: plot.ly/r/getting-started
+# Find your api_key here: plot.ly/settings/api
+
 library(plotly)
 py <- plotly(username='TestBot', key='r1neazxo9w')
+
 x_theo <- seq(-4,4,length=100)
 sinc <- function(x) {
     y <- sin(x) / x

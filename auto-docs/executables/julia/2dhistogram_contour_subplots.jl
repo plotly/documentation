@@ -1,5 +1,9 @@
+# Learn about API authentication here: plot.ly/julia/getting-started
+# Find your api_key here: plot.ly/settings/api
+
 using Plotly
 Plotly.signin("TestBot", "r1neazxo9w")
+
 t = linspace(-1, 1.2, 2000)
 x = t.^3+0.3*randn(2000)
 y = t.^6+0.3*randn(2000)

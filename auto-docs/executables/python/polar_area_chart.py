@@ -1,6 +1,10 @@
+# Learn about API authentication here: plot.ly/python/getting-started
+# Find your api_key here: plot.ly/settings/api
+
 import plotly.plotly as py
 from plotly.graph_objs import *
 py.sign_in('TestBot', 'r1neazxo9w')
+
 
 trace1 = Area(
     r=[77.5, 72.5, 70.0, 45.0, 22.5, 42.5, 40.0, 62.5],
