@@ -303,8 +303,8 @@ def port_code(section, command):
 def check_if_complete(leaf, command):
     try:
         if leaf['type'] in ['model', 'url', 'script']:
-            if not leaf['image']:
-                raise ValueError()
+#            if not leaf['image']:
+#                raise ValueError()
             if not leaf['{}-url'.format(command)]:
                 raise ValueError()
             for language in leaf['config']['languages']:
@@ -524,7 +524,7 @@ def main():
     set_total_examples(tree)
     print "setting up auto-generated structure"
     fix_tree(tree)
-    print "compling url porting threads"
+    print "compiling url porting threads"
     url_threads = []
     port_urls(tree, command, url_threads)
     print "starting url threads"

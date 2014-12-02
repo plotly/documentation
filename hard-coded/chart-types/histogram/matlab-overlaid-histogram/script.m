@@ -33,6 +33,8 @@ for i=1:2
     set(xd(i),'XData',dat);
 end
 
-% PLOTLY
-response = fig2plotly(fig,'strip',1);
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', '>>>filename<<<');
 plotly_url = response.url;
