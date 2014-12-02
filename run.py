@@ -108,8 +108,7 @@ languages = ['python',
              'node_js',
              'plotly_js',
              'ggplot2',
-             'matplotlib',
-             'js']
+             'matplotlib']
 
 ### define extensions for executable code ###
 lang_to_ext = dict(python='py',
