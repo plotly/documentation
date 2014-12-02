@@ -14,7 +14,7 @@ nT = 0:T:N*T;
 xn = (1 + cos(2*pi*fm*nT)).*cos(2*pi*fc*nT);
 
 % Create the stem plot for the Sampled Signal spanning positions 1 & 3 of a 2x2 grid
-figure;
+fig = figure;
 subplot(2, 2, [1 3]);
 stem(nT,xn);
 xlabel('t');
@@ -36,6 +36,8 @@ xlabel('t');
 ylabel('x_zoh(t)');
 title('Reconstruction at T=4e-6 ');
 
-% PLOTLY 
-response = fig2plotly();
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', 'matlab-three-subplots');
 plotly_url = response.url;

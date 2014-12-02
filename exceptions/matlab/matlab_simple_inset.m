@@ -6,7 +6,7 @@ t(1) = eps;
 y = sin(t);
 
 % Place axes at (0.1,0.1) with width and height of 0.8
-figure;
+fig = figure;
 handaxes1 = axes('position', [0.1 0.1 0.8 0.8]);
 
 % Main plot
@@ -36,6 +36,8 @@ plot(t, y.^3);
 set(handaxes3, 'box','off');
 xlabel('t'); ylabel('(sin(t))^3');
 
-% PLOTLY 
-response = fig2plotly();
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', 'matlab-simple-inset');
 plotly_url = response.url;

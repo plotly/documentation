@@ -1,6 +1,6 @@
 signin('TestBot', 'r1neazxo9w')
 
-% horizontal histogram 
+% horizontal histogram
 sd = 0.1;
 mu = 1;
 data = mu + sd*randn(1,5000);
@@ -9,10 +9,12 @@ data = mu + sd*randn(1,5000);
 nbins = 50;
 
 % make/plot histogram of data
-fig = figure; 
+fig = figure;
 [h1 bins]= hist(data,nbins);
-barh(bins,h1); 
+barh(bins,h1);
 
-% PLOTLY
-response = fig2plotly(fig,'strip',1);
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', 'matlab-horizontal-histogram');
 plotly_url = response.url;
