@@ -144,83 +144,23 @@ imports = dict(
 ### define sign in ###
 sign_in = dict(
     documentation=dict(
-        python=(
-            "{{% if not username %}}"
-            "# Fill in with your personal username and API key\n"
-            "# or, use this public demo account\n"
-            "{{% endif %}}"
-            "py.sign_in({{% if username %}}\"{{{{username}}}}\""
-            "{{% else %}}'{un}'{{% endif %}}, "
-            "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python'])),
-        matlab=(
-            "{{% if not username %}}"
-            "% Fill in with your personal username and API key\n"
-            "% or, use this public demo account\n"
-            "{{% endif %}}"
-            "signin({{% if username %}}'{{{{username}}}}'"
-            "{{% else %}}'{un}'{{% endif %}}, "
-            "{{% if api_key %}}'{{{{api_key}}}}'"
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['matlab'])),
-        r=(
-            "{{% if not username %}}"
-            "# Fill in with your personal username and API key\n"
-            "# or, use this public demo account\n"
-            "{{% endif %}}"
-            "py <- plotly(username={{% if username %}}\"{{{{username}}}}\""
-            "{{% else %}}'{un}'{{% endif %}}, "
-            "key={{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r'])),
-        julia=(
-            "{{% if not username %}}"
-            "# Fill in with your personal username and API key\n"
-            "# or, use this public demo account\n"
-            "{{% endif %}}"
-            "Plotly.signin({{% if username %}}\"{{{{username}}}}\""
-            "{{% else %}}\"{un}\"{{% endif %}}, "
-            "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia'])),
-        node_js=(
-            "{{% if not username %}}"
-            "// Fill in with your personal username and API key\n"
-            "// or, use this public demo account\n"
-            "{{% endif %}}"
-            "var plotly = require('plotly')("
-            "{{% if username %}}'{{{{username}}}}'"
-            "{{% else %}}'{un}'{{% endif %}},"
-            "{{% if api_key %}}'{{{{api_key}}}}'"
-            "{{% else %}}'{ak}'{{% endif %}});".format(**users['nodejs'])),
-        ggplot2=(
-            "{{% if not username %}}"
-            "# Fill in with your personal username and API key\n"
-            "# or, use this public demo account\n"
-            "{{% endif %}}"
-            "py <- plotly(username={{% if username %}}\"{{{{username}}}}\""
-            "{{% else %}}'{un}'{{% endif %}}, "
-            "key={{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r'])),
-        matplotlib=(
-            "{{% if not username %}}"
-            "# Fill in with your personal username and API key\n"
-            "# or, use this public demo account\n"
-            "{{% endif %}}"
-            "py.sign_in({{% if username %}}\"{{{{username}}}}\""
-            "{{% else %}}'{un}'{{% endif %}}, "
-            "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python'])),
+        python="py.sign_in(\"username\", \"api_key\")",
+        matlab="signin('username', 'api_key')",
+        r="py <- plotly(username=\"username\", key=\"api_key\")",
+        julia="Plotly.signin(\"username\", \"api_key\")",
+        node_js="var plotly = require('plotly')('username', 'api_key');",
+        ggplot2="py <- plotly(username=\"username\", key=\"api_key\")",
+        matplotlib="py.sign_in(\"username\", \"api_key\")",
         plotly_js=""
     ),
     execution=dict(
         python="py.sign_in('{un}', '{ak}')".format(**users['tester']),
         matlab="signin('{un}', '{ak}')".format(**users['tester']),
-        r="py <- plotly(username='{un}', key='{ak}')".format(**users[
-            'tester']),
-        julia='Plotly.signin("{un}", "{ak}")'
-              ''.format(**users['tester']),
-        node_js="var plotly = require('plotly')('{un}', '{ak}')"
-               "".format(**users['tester']),
-        ggplot2="py <- plotly(username='{un}', key='{ak}')"
-                "".format(**users['tester']),
+        r="py <- plotly(username='{un}', key='{ak}')".format(**users['tester']),
+        julia='Plotly.signin("{un}", "{ak}")'.format(**users['tester']),
+        node_js="var plotly = require('plotly')('{un}', '{ak}');"
+                .format(**users['tester']),
+        ggplot2="py <- plotly(username='{un}', key='{ak}')".format(**users['tester']),
         matplotlib="py.sign_in('{un}', '{ak}')".format(**users['tester']),
         plotly_js=""
     )
