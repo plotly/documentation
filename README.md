@@ -42,9 +42,9 @@ reports/
 * `reports` holds information about how the `publish.py` run went. complete/incomplete examples, etc.
 
 
-## `user.json` file:
+## `users.json` file:
 
-Since we need to make a lot of plots, we need a user to do so. However, we can't have username-api_key pairs for our official docs just floating around.
+Since we need to make a lot of plots, we need an account to do so. However, we can't have username--api_key pairs just floating around in our official docs.
 
 If you need to use the `run.py` and `publish.py` programs, you'll need the *secret* `users.json` file.
 
