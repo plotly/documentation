@@ -10,5 +10,5 @@ var trace2 = {
   type: "histogram"
 };
 var data = [trace1, trace2];
-var layout = {barmode: "stacked"};
+var layout = {barmode: "stack"};
 Plotly.plot(divid, data, layout);

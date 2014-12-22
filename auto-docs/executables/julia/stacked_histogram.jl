@@ -16,6 +16,6 @@ trace2 = [
   "type" => "histogram"
 ]
 data = [trace1, trace2]
-layout = ["barmode" => "stacked"]
+layout = ["barmode" => "stack"]
 response = Plotly.plot(data, ["layout" => layout, "filename" => "stacked-histogram", "fileopt" => "overwrite"])
 plot_url = response["url"]
