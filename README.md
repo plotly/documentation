@@ -140,10 +140,10 @@ The `script.ext` files have the following guidelines
 * if using a sign in line, you *must* match the first 7 characters of each of the following sign ins:
  * `py.sign`* (python)
  * `signin(`* (matlab)
- * `p <- pl`* (r)
+ * `py <- p`* (r)
  * `Plotly.`* (julia)
  * `var plo`* (node)
- * `p <- pl`* (ggplot), same as 'r'
+ * `py <- p`* (ggplot), same as 'r'
  * `py.sign`* (matplotlib), same as 'python'
 
 Yes, that last requirement is annoying, but this line should be set by plotly convention at this point, so it shouldn't cause too much of a headache.
