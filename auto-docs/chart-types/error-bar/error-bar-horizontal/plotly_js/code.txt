@@ -1,0 +1,13 @@
+
+var data = [
+  {
+    x: [1, 2, 3, 4], 
+    y: [2, 1, 3, 4], 
+    error_x: {
+      type: "percent", 
+      value: 10
+    }, 
+    type: "scatter"
+  }
+];
+Plotly.plot(divid, data);

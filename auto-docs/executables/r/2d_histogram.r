@@ -1,5 +1,9 @@
+# Learn about API authentication here: plot.ly/r/getting-started
+# Find your api_key here: plot.ly/settings/api
+
 library(plotly)
 py <- plotly(username='TestBot', key='r1neazxo9w')
+
 x <- rnorm(500)
 y <- rnorm(500)+1
 

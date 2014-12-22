@@ -1,5 +1,9 @@
+# Learn about API authentication here: plot.ly/r/getting-started
+# Find your api_key here: plot.ly/settings/api
+
 library(plotly)
 py <- plotly(username='TestBot', key='r1neazxo9w')
+
 
 trace1 <- list(
   x = c(1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012), 

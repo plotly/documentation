@@ -105,17 +105,18 @@ languages = ['python',
              'julia',
              'matlab',
              'r',
-             'nodejs',
+             'node_js',
+             'plotly_js',
              'ggplot2',
-             'matplotlib',
-             'js']
+             'matplotlib']
 
 ### define extensions for executable code ###
 lang_to_ext = dict(python='py',
                    julia='jl',
                    matlab='m',
                    r='r',
-                   nodejs='js',
+                   node_js='js',
+                   plotly_js='js',
                    ggplot2='r',
                    matplotlib='py',
                    js='html')
@@ -123,7 +124,7 @@ ext_to_lang = dict(py='python',
                    jl='julia',
                    m='matlab',
                    r='r',
-                   js='nodejs',
+                   js='node_js',
                    gg='ggplot2',
                    mpl='matplotlib',
                    html='js')
@@ -143,85 +144,25 @@ imports = dict(
 ### define sign in ###
 sign_in = dict(
     documentation=dict(
-        python=(
-            "{{% if not username %}}"
-            "# Fill in with your personal username and API key\n"
-            "# or, use this public demo account\n"
-            "{{% endif %}}"
-            "py.sign_in({{% if username %}}\"{{{{username}}}}\""
-            "{{% else %}}'{un}'{{% endif %}}, "
-            "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python'])),
-        matlab=(
-            "{{% if not username %}}"
-            "% Fill in with your personal username and API key\n"
-            "% or, use this public demo account\n"
-            "{{% endif %}}"
-            "signin({{% if username %}}'{{{{username}}}}'"
-            "{{% else %}}'{un}'{{% endif %}}, "
-            "{{% if api_key %}}'{{{{api_key}}}}'"
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['matlab'])),
-        r=(
-            "{{% if not username %}}"
-            "# Fill in with your personal username and API key\n"
-            "# or, use this public demo account\n"
-            "{{% endif %}}"
-            "py <- plotly(username={{% if username %}}\"{{{{username}}}}\""
-            "{{% else %}}'{un}'{{% endif %}}, "
-            "key={{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r'])),
-        julia=(
-            "{{% if not username %}}"
-            "# Fill in with your personal username and API key\n"
-            "# or, use this public demo account\n"
-            "{{% endif %}}"
-            "Plotly.signin({{% if username %}}\"{{{{username}}}}\""
-            "{{% else %}}\"{un}\"{{% endif %}}, "
-            "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia'])),
-        nodejs=(
-            "{{% if not username %}}"
-            "// Fill in with your personal username and API key\n"
-            "// or, use this public demo account\n"
-            "{{% endif %}}"
-            "var plotly = require('plotly')("
-            "{{% if username %}}'{{{{username}}}}'"
-            "{{% else %}}'{un}'{{% endif %}},"
-            "{{% if api_key %}}'{{{{api_key}}}}'"
-            "{{% else %}}'{ak}'{{% endif %}});".format(**users['nodejs'])),
-        ggplot2=(
-            "{{% if not username %}}"
-            "# Fill in with your personal username and API key\n"
-            "# or, use this public demo account\n"
-            "{{% endif %}}"
-            "py <- plotly(username={{% if username %}}\"{{{{username}}}}\""
-            "{{% else %}}'{un}'{{% endif %}}, "
-            "key={{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['r'])),
-        matplotlib=(
-            "{{% if not username %}}"
-            "# Fill in with your personal username and API key\n"
-            "# or, use this public demo account\n"
-            "{{% endif %}}"
-            "py.sign_in({{% if username %}}\"{{{{username}}}}\""
-            "{{% else %}}'{un}'{{% endif %}}, "
-            "{{% if api_key %}}\"{{{{api_key}}}}\""
-            "{{% else %}}'{ak}'{{% endif %}})".format(**users['python'])),
-        js=""
+        python="py.sign_in(\"username\", \"api_key\")",
+        matlab="signin('username', 'api_key')",
+        r="py <- plotly(username=\"username\", key=\"api_key\")",
+        julia="Plotly.signin(\"username\", \"api_key\")",
+        node_js="var plotly = require('plotly')('username', 'api_key');",
+        ggplot2="py <- plotly(username=\"username\", key=\"api_key\")",
+        matplotlib="py.sign_in(\"username\", \"api_key\")",
+        plotly_js=""
     ),
     execution=dict(
         python="py.sign_in('{un}', '{ak}')".format(**users['tester']),
         matlab="signin('{un}', '{ak}')".format(**users['tester']),
-        r="py <- plotly(username='{un}', key='{ak}')".format(**users[
-            'tester']),
-        julia='Plotly.signin("{un}", "{ak}")'
-              ''.format(**users['tester']),
-        nodejs="var plotly = require('plotly')('{un}', '{ak}')"
-               "".format(**users['tester']),
-        ggplot2="py <- plotly(username='{un}', key='{ak}')"
-                "".format(**users['tester']),
+        r="py <- plotly(username='{un}', key='{ak}')".format(**users['tester']),
+        julia='Plotly.signin("{un}", "{ak}")'.format(**users['tester']),
+        node_js="var plotly = require('plotly')('{un}', '{ak}');"
+                .format(**users['tester']),
+        ggplot2="py <- plotly(username='{un}', key='{ak}')".format(**users['tester']),
         matplotlib="py.sign_in('{un}', '{ak}')".format(**users['tester']),
-        js=""
+        plotly_js=""
     )
 )
 
@@ -550,8 +491,6 @@ def process_model_leaf(leaf, options, id_dict):
                 'language': 'python',
                 'pretty': True,
                 'plot_options': plot_options}
-        data['un'] = users['tester']['un']
-        data['ak'] = users['tester']['ak']
         data['plot_options']['auto_open'] = False
         res = get_plotly_response(translator_server, data=json.dumps(data))
         if not res:
@@ -565,7 +504,12 @@ def process_model_leaf(leaf, options, id_dict):
         code = res.content
         code = code.replace('">>>', "").replace('<<<"', "")
         code = code.replace("'>>>", "").replace("<<<'", "")
-        raw_exec_code = init + remove_header(code)
+        raw_exec_code = init + code
+        raw_exec_code = raw_exec_code.replace(
+            "'username'", "'{}'".format(users['tester']['un'])
+        ).replace(
+            "'api_key'", "'{}'".format(users['tester']['ak'])
+        )
         leaf['python-exec'] = raw_exec_code
     threads = []
     for iii, language in enumerate(model_languages):
@@ -578,8 +522,9 @@ def process_model_leaf(leaf, options, id_dict):
         threads[iii].start()
     for thread in threads:
         thread.join()
+    python_exec_string = leaf['python-exec']
     try:
-        exec_locals = exec_python_string(leaf['python-exec'])
+        exec_locals = exec_python_string(python_exec_string)
     except Exception as err:
         raise plotly.exceptions.PlotlyError(
             "exec of python string raised exception:"
@@ -622,15 +567,10 @@ def process_model_worker(leaf, language, model):
     if language != 'python':
         plot_options['fileopt'] = 'overwrite'
     data = {'json_figure': model,
+            'language': language,
             'pretty': True,
             'plot_options': plot_options}
-    if language == 'nodejs' or language == 'js':  # todo, temporary fix!
-        data['language'] = 'node'
-    else:
-        data['language'] = language
     # get exec code...
-    data['un'] = users['tester']['un']
-    data['ak'] = users['tester']['ak']
     keep_auto_open = 'auto_open' in data['plot_options']
     if language == 'python':
         data['plot_options']['auto_open'] = False
@@ -649,8 +589,13 @@ def process_model_worker(leaf, language, model):
     code = code.replace("<pre>", "").replace("</pre>", "")
     code = code.replace('">>>', "").replace('<<<"', "")
     code = code.replace("'>>>", "").replace("<<<'", "")
-    headless_exec_code = remove_header(code)
-    raw_exec_code = insert_init(headless_exec_code, init, language)
+    raw_exec_code = insert_init(code, init, language)
+    raw_exec_code = raw_exec_code.replace(
+        "'username'", "'{}'".format(users['tester']['un'])).replace(
+        "'api_key'", "'{}'".format(users['tester']['ak'])).replace(
+        '"username"', '"{}"'.format(users['tester']['un'])).replace(
+        '"api_key"', '"{}"'.format(users['tester']['ak'])
+    )
     save_code(raw_exec_code, leaf, language, 'execution')
     if language == 'python':
         leaf['python-exec'] = raw_exec_code
@@ -668,9 +613,8 @@ def process_model_worker(leaf, language, model):
     code = code.replace("<pre>", "").replace("</pre>", "")
     code = code.replace('">>>', "").replace('<<<"', "")
     code = code.replace("'>>>", "").replace("<<<'", "")
-    headless_doc_code = remove_header(code)
-    raw_doc_code = insert_init(headless_doc_code, init, language)
-    doc_code = format_code(raw_doc_code, language, leaf)
+    raw_doc_code = insert_init(code, init, language)
+    doc_code = cgi.escape(raw_doc_code)
     code_path = save_code(doc_code, leaf, language, 'documentation')
     # do this last so we know it worked!
     leaf[language] = code_path
@@ -678,12 +622,17 @@ def process_model_worker(leaf, language, model):
 
 def insert_init(code, init, language):
     lines = code.splitlines()
-    sign_in_lino = -1
-    for lino, line in enumerate(lines):
-        if line[:6] == sign_in['execution'][language][:6]:
-            sign_in_lino = lino
-            break
-    new_lines = lines[:sign_in_lino+1] + [init] + lines[sign_in_lino+1:]
+    if language == 'plotly_js':
+        new_lines = [init] + lines
+    else:
+        sign_in_lino = -1
+        for lino, line in enumerate(lines):
+            if line[:6] == sign_in['execution'][language][:6]:
+                sign_in_lino = lino
+                break
+        new_lines = (lines[:sign_in_lino+1] +
+                     ['\n' + init] +
+                     lines[sign_in_lino+1:])
     return '\n'.join(new_lines)
 
 
@@ -696,7 +645,7 @@ def process_script_leaf(leaf, options, id_dict):
     # print "\tprocessing scripts in {}".format(leaf['path'])
     leaf['type'] = 'script'
     script_file = [fn for fn in leaf['files'] if 'script' in fn][0]
-    language = ext_to_lang[script_file.split('.')[-1]]
+    language = leaf['config']['languages'][0]
     leaf['config']['languages'] = [language]
     try:
         with open(leaf['files'][script_file]) as f:
@@ -833,26 +782,30 @@ def process_url_leaf(leaf, options):
 
 
 def get_plotly_response(resource, data=None, attempts=2, sleep=5):
-    for attempt in range(1, attempts+1):
-        try:
-            if data:
-                res = requests.get(resource, data=data)
-            else:
-                res = requests.get(resource)
-            return res
-        except RequestException:
-            if attempt < attempts:
-                print("\t\tcouldn't connect to plotly, trying again with "
-                      "thread: {thread_id}"
-                      "".format(thread_id=threading.current_thread().name))
-            time.sleep(sleep)
-
-
-def remove_header(string):
-    lines = string.splitlines()
-    while not lines[0] or lines[0][0] in ['#', '%', '/']:
-        lines.pop(0)
-    return '\n'.join(lines)
+    if data is None:
+        raise plotly.exceptions.PlotlyError("Data argument was not supplied.")
+    elif not data:
+        raise plotly.exceptions.PlotlyError("Data argument was falsy.")
+    else:
+        data = json.loads(data)
+        data['remove_header'] = True
+        data = json.dumps(data)
+        for attempt in range(1, attempts+1):
+            try:
+                res = requests.request('post', resource, data=data)
+                if not res:
+                    raise RequestException
+                return res
+            except RequestException:
+                if attempt < attempts:
+                    print("\t\tcouldn't connect to plotly, trying again with "
+                          "thread: {thread_id}"
+                          "".format(thread_id=threading.current_thread().name))
+                else:
+                    print("\t\tstill couldn't connect to plotly...\n"
+                          "\t\tthread: {thread_id} failed!"
+                          "".format(thread_id=threading.current_thread().name))
+                time.sleep(sleep)
 
 
 def get_init_code(leaf, language):
@@ -898,17 +851,6 @@ def exec_python_string(exec_string):
     """save image to directory by executing python code-string and saving"""
     exec exec_string
     return locals()
-
-
-def format_code(code, language, leaf):
-    lines = code.splitlines()
-    for lino, line in enumerate(lines):
-        if line[:6] == sign_in['execution'][language][:6]:
-            lines[lino] = sign_in['documentation'][language]
-        # FIXME: HACK! needs updating in streambed...
-        elif language == 'r' and line[:6] == 'p <- plotly('[:6]:
-            lines[lino] = sign_in['documentation'][language]
-    return cgi.escape('\n'.join(lines))
 
 
 def trim_tree(section):
@@ -1033,7 +975,7 @@ def get_ordered_dict(d):
 
 
 def thread_space(thread_list, max_threads):
-    """Return the (t)head space, number of new threads that can be started.
+    """Return the (t)h(r)ead space, number of new threads that can be started.
 
     This effectively throttles the number of threads which can be alive at
     once.

@@ -21,22 +21,21 @@ with open("files.json") as files_file:
 with open("dirs.json") as dirs_file:
     dirs = json.load(dirs_file)
 
-### sign in stuff: each user has a 'un' and 'ak' ###
-## users ##
+# users
 # tester, julia, matlab, python, r, nodejs, publisher
 with open('users.json') as users_file:
     users = json.load(users_file)
 
-### server stuff ###
+# server stuff
 image_server = "https://plot.ly/apigenimage/"  # to be: "https://plot.ly/image/"
 
-### globals ###
+# globals
 root = ''
 doc_user = ''
 total_examples = 0
 example_count = 0
 
-### meta-config information ###
+# meta-config information
 meta_config_info = ['languages',
                     'name',
                     'description',
@@ -47,15 +46,36 @@ meta_config_info = ['languages',
                     'has_thumbnail',
                     'links']
 
-### define recognized languages ###
-languages = ['python', 'matlab', 'r', 'julia', 'nodejs', 'json', 'ggplot2',
-             'matplotlib', 'js']
+# define supported languages
+languages = ['python',
+             'julia',
+             'matlab',
+             'r',
+             'node_js',
+             'plotly_js',
+             'ggplot2',
+             'matplotlib']
 
-### define extensions for executable code ###
-lang_to_ext = dict(python='py', julia='jl', matlab='m', r='r', nodejs='js', js='html')
-ext_to_lang = dict(py='python', jl='julia', m='matlab', r='r', js='nodejs', html='js')
+# define extensions for executable code
+lang_to_ext = dict(python='py',
+                   julia='jl',
+                   matlab='m',
+                   r='r',
+                   node_js='js',
+                   plotly_js='js',
+                   ggplot2='r',
+                   matplotlib='py',
+                   js='html')
+ext_to_lang = dict(py='python',
+                   jl='julia',
+                   m='matlab',
+                   r='r',
+                   js='node_js',
+                   gg='ggplot2',
+                   mpl='matplotlib',
+                   html='js')
 
-### define commands ###
+# define commands
 commands = ['test', 'publish']
 
 

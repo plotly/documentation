@@ -1,4 +1,8 @@
+% Learn about API authentication here: plot.ly/matlab/getting-started
+% Find your api_key here: plot.ly/settings/api
+
 signin('TestBot', 'r1neazxo9w')
+
 
 trace1 = struct(...
   'r', [77.5, 72.5, 70.0, 45.0, 22.5, 42.5, 40.0, 62.5], ...

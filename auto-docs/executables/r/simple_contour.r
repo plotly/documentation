@@ -1,5 +1,9 @@
+# Learn about API authentication here: plot.ly/r/getting-started
+# Find your api_key here: plot.ly/settings/api
+
 library(plotly)
 py <- plotly(username='TestBot', key='r1neazxo9w')
+
 size <- 100
 x <- seq(-2*pi, 2*pi, length=size)
 y <- seq(-2*pi, 2*pi, length=size)

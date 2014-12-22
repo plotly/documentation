@@ -7,7 +7,7 @@ k = 31:60;
 H(k, k) = B(k, k);
 
 % Visualize the graph using the gplot function (blue)
-figure;
+fig = figure;
 gplot(B - H, V, 'b-');
 hold on;
 
@@ -15,6 +15,8 @@ hold on;
 gplot(H, V, 'r-');
 axis off equal;
 
-% PLOTLY 
-response = fig2plotly();
+%--PLOTLY--%
+
+% Strip MATLAB style by default!
+response = fig2plotly(fig, 'filename', 'matlab-graph-plot');
 plotly_url = response.url;
