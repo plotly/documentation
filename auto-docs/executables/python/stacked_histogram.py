@@ -17,7 +17,7 @@ trace2 = Histogram(
 )
 data = Data([trace1, trace2])
 layout = Layout(
-    barmode='stacked'
+    barmode='stack'
 )
 fig = Figure(data=data, layout=layout)
 plot_url = py.plot(fig, filename='stacked-histogram', auto_open=False)

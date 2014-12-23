@@ -13,6 +13,6 @@ trace2 = struct(...
   'x', x1, ...
   'type', 'histogram');
 data = {trace1, trace2};
-layout = struct('barmode', 'stacked');
+layout = struct('barmode', 'stack');
 response = plotly(data, struct('layout', layout, 'filename', 'stacked-histogram', 'fileopt', 'overwrite'));
 plot_url = response.url

@@ -16,6 +16,6 @@ trace2 <- list(
   type = "histogram"
 )
 data <- list(trace1, trace2)
-layout <- list(barmode = "stacked")
+layout <- list(barmode = "stack")
 response <- py$plotly(data, kwargs=list(layout=layout, filename="stacked-histogram", fileopt="overwrite"))
 url <- response$url

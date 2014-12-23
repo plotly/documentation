@@ -15,7 +15,7 @@ var trace2 = {
   type: "histogram"
 };
 var data = [trace1, trace2];
-var layout = {barmode: "stacked"};
+var layout = {barmode: "stack"};
 var graphOptions = {layout: layout, filename: "stacked-histogram", fileopt: "overwrite"};
 plotly.plot(data, graphOptions, function (err, msg) {
     console.log(msg);
