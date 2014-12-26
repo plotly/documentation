@@ -865,6 +865,31 @@ def get_init_code(leaf, language):
         return ""
 
 
+def fix_line_spacing(code):
+    """
+    Removing beginning/trailing blank lines and allow max of two blank lines.
+
+    :param code:
+    :return:
+    """
+    code_lines = code.splitlines()
+
+    # remove beginning blank lines
+    while not code_lines[0]:
+        code_lines.pop(0)
+
+    # remove ending blank lines
+    while not code_lines[-1]:
+        code_lines.pop()
+
+    # allow max of two consecutive blank lines
+    code = '\n'.join(code_lines)
+    while '\n\n\n' in code:
+        code = code.replace('\n\n\n', '\n\n')
+
+    return code
+
+
 def save_code(code, leaf, language, mode, newline=True):
     if mode == 'documentation':
         leaf_folder = os.path.join(dirs['run'],
@@ -881,12 +906,7 @@ def save_code(code, leaf, language, mode, newline=True):
         code_path = os.path.join(code_folder, filename.replace("-", "_"))
     else:
         raise Exception("mode: 'execution' | 'documentation' | 'exception'")
-    code_lines = code.splitlines()
-    while not code_lines[0]:
-        code_lines.pop(0)
-    while not code_lines[-1]:
-        code_lines.pop()
-    code = '\n'.join(code_lines)
+    code = fix_line_spacing(code)
     if not os.path.exists(code_folder):
         os.makedirs(code_folder)
     with open(code_path, 'w') as f:
