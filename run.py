@@ -881,6 +881,12 @@ def save_code(code, leaf, language, mode, newline=True):
         code_path = os.path.join(code_folder, filename.replace("-", "_"))
     else:
         raise Exception("mode: 'execution' | 'documentation' | 'exception'")
+    code_lines = code.splitlines()
+    while not code_lines[0]:
+        code_lines.pop(0)
+    while not code_lines[-1]:
+        code_lines.pop()
+    code = '\n'.join(code_lines)
     if not os.path.exists(code_folder):
         os.makedirs(code_folder)
     with open(code_path, 'w') as f:
