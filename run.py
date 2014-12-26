@@ -185,6 +185,37 @@ sign_in = dict(
     )
 )
 
+# authentication
+authentication = (
+    "{{comment}} Learn about API authentication here: "
+    "{plotly_domain}/{{api_path}}/getting-started\n"
+    "{{comment}} Find your api_key here: {plotly_domain}/settings/api\n"
+    .format(plotly_domain="https://plot.ly")
+)
+
+# define comment strings for each language
+comment = {
+    "julia": "#",
+    "matlab": "%",
+    "python": "#",
+    "matplotlib": '#',
+    "r": "#",
+    "ggplot2": "#",
+    "node_js": "//",
+    "plotly_js": "//"
+}
+
+api_path = {
+    "julia": "julia",
+    "matlab": "matlab",
+    "python": "python",
+    "matplotlib": "python",
+    "r": "r",
+    "ggplot2": "r",
+    "node_js": "nodejs",
+    "plotly_js": "javascript-graphing-library"
+}
+
 
 def get_command():
     try:
@@ -696,20 +727,10 @@ def process_script_leaf(leaf, options, id_dict):
         raise plotly.exceptions.PlotlyError(
             "'{}' not found in '{}'".format(script_file, leaf['path'])
         )
-    exec_lines = []
-    found_sign_in = False
-    for line in script.splitlines():
-        if line[:6] == sign_in['execution'][language][:6]:  # TODO, better way?
-            exec_lines.append(sign_in['execution'][language])
-            found_sign_in = True
-        elif '>>>filename<<<' in line:
-            exec_lines.append(line.replace('>>>filename<<<', leaf['id']))
-        else:
-            exec_lines.append(line)
-    while exec_lines[-1] == '\n':
-        exec_lines.pop()
-    exec_string = '\n'.join(exec_lines)
-    if not found_sign_in:
+
+    # find sign in line and raise error if DNE
+    sign_in_lino = find_sign_in_line(script, language)
+    if sign_in_lino < 0:
         raise Exception(
             "You need to have the first 6 characters of the following "
             "line in the script for this to work:"
@@ -717,13 +738,30 @@ def process_script_leaf(leaf, options, id_dict):
             "\n{path}"
             .format(sign_in=sign_in['execution'][language], path=leaf['path'])
         )
+
+    # remove templated things from script file
+    script = script.replace('>>>filename<<<', leaf['id'])
+    script_lines = script.splitlines()
+    script_lines.pop(sign_in_lino)
+
+    # save execution and exception files
+    exec_lines = list(script_lines)
+    exec_lines.insert(sign_in_lino, sign_in['execution'][language])
+    exec_string = '\n'.join(exec_lines)
     save_code(exec_string, leaf, language, 'exception')
-    code_string = exec_string.replace(sign_in['execution'][language],
-                                      sign_in['documentation'][language])
-    code_string = cgi.escape(code_string)
-    code_path = save_code(code_string, leaf, language, 'documentation')
-    leaf[language] = code_path
     save_code(exec_string, leaf, language, 'execution')
+
+    # save documentation file
+    doc_lines = list(script_lines)
+    auth = authentication.format(
+        api_path=api_path[language], comment=comment[language]
+    )
+    doc_lines.insert(sign_in_lino, auth)
+    code_string = '\n'.join(doc_lines)
+    code_string = cgi.escape(code_string)
+    leaf[language] = save_code(code_string, leaf, language, 'documentation')
+
+    # mark as complete!
     id_dict['complete'].add(leaf['id'])
 
 
