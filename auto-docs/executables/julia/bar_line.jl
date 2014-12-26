@@ -2,9 +2,8 @@
 # Find your api_key here: plot.ly/settings/api
 
 using Plotly
+
 Plotly.signin("TestBot", "r1neazxo9w")
-
-
 trace1 = [
   "x" => [0, 1, 2, 3, 4, 5], 
   "y" => [1.5, 1, 1.3, 0.7, 0.8, 0.9], 

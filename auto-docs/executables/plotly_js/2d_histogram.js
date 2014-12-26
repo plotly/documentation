@@ -6,7 +6,6 @@ for (var i = 0; i < 500; i ++) {
 	y[i] = Math.random() + 1;
 }
 
-
 var data = [
   {
     x: x, 

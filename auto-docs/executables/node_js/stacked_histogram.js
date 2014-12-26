@@ -1,11 +1,10 @@
 // Learn about API authentication here: plot.ly/nodejs/getting-started
 // Find your api_key here: plot.ly/settings/api
 
-var plotly = require('plotly')('TestBot', 'r1neazxo9w');
-
 var x0 = Math.random() * 500
 var x1 = Math.random() * 500 + 1
 
+var plotly = require('plotly')('TestBot', 'r1neazxo9w');
 var trace1 = {
   x: x0, 
   type: "histogram"

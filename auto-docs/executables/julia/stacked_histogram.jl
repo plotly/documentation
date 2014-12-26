@@ -2,11 +2,11 @@
 # Find your api_key here: plot.ly/settings/api
 
 using Plotly
-Plotly.signin("TestBot", "r1neazxo9w")
 
 x0 = randn(500)
 x1 = randn(500)+1
 
+Plotly.signin("TestBot", "r1neazxo9w")
 trace1 = [
   "x" => x0, 
   "type" => "histogram"

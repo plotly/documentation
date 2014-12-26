@@ -1,14 +1,12 @@
 // Learn about API authentication here: plot.ly/nodejs/getting-started
 // Find your api_key here: plot.ly/settings/api
 
-var plotly = require('plotly')('TestBot', 'r1neazxo9w');
-
 for (var i = 0; i < 50; i ++) {
 	y0[i] = Math.random();
 	y1[i] = Math.random() + 1;
 }
 
-
+var plotly = require('plotly')('TestBot', 'r1neazxo9w');
 var trace1 = {
   y: y0, 
   type: "box"

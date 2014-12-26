@@ -2,17 +2,16 @@
 # Find your api_key here: plot.ly/settings/api
 
 using Plotly
-Plotly.signin("TestBot", "r1neazxo9w")
 
 x0 = randn(100)/5. + 0.5
 y0 = randn(100)/5. + 0.5
 x1 = rand(50)
 y1 = rand(50) + 1.0
 
-
 x = [x0; x1]
 y = [y0; y1]
 
+Plotly.signin("TestBot", "r1neazxo9w")
 trace1 = [
   "x" => x0, 
   "y" => y0, 

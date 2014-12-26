@@ -2,11 +2,11 @@
 # Find your api_key here: plot.ly/settings/api
 
 using Plotly
-Plotly.signin("TestBot", "r1neazxo9w")
 
 x = randn(500)
 y = randn(500)+1
 
+Plotly.signin("TestBot", "r1neazxo9w")
 data = [
   [
     "x" => x, 

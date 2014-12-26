@@ -2,8 +2,6 @@
 // Find your api_key here: plot.ly/settings/api
 
 var plotly = require('plotly')('TestBot', 'r1neazxo9w');
-
-
 var trace1 = {
   x: ["giraffes", "orangutans", "monkeys"], 
   y: [20, 14, 23], 

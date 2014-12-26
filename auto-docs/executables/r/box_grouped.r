@@ -2,11 +2,11 @@
 # Find your api_key here: plot.ly/settings/api
 
 library(plotly)
-py <- plotly(username='TestBot', key='r1neazxo9w')
 
 x <- c('day 1', 'day 1', 'day 1', 'day 1', 'day 1', 'day 1', 
        'day 2', 'day 2', 'day 2', 'day 2', 'day 2', 'day 2')
 
+py <- plotly(username='TestBot', key='r1neazxo9w')
 trace1 <- list(
   y = c(0.2, 0.2, 0.6, 1.0, 0.5, 0.4, 0.2, 0.7, 0.9, 0.1, 0.5, 0.3), 
   x = x, 

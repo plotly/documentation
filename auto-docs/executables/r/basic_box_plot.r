@@ -2,11 +2,11 @@
 # Find your api_key here: plot.ly/settings/api
 
 library(plotly)
-py <- plotly(username='TestBot', key='r1neazxo9w')
 
 y0 = rnorm(50)
 y1 = rnorm(50)+1
 
+py <- plotly(username='TestBot', key='r1neazxo9w')
 trace1 <- list(
   y = y0, 
   type = "box"

@@ -1,14 +1,13 @@
 // Learn about API authentication here: plot.ly/nodejs/getting-started
 // Find your api_key here: plot.ly/settings/api
 
-var plotly = require('plotly')('TestBot', 'r1neazxo9w');
-
 var linspace = require('linspace');
 
 var t = linspace(-1,1.2,2000);
 var x = (Math.pow(t, 3)) + (0.3 * (Math.random() * 2000));
 var y = (Math.pow(t, 6)) + (0.3 * (Math.random() * 2000));
 
+var plotly = require('plotly')('TestBot', 'r1neazxo9w');
 var trace1 = {
   x: x, 
   y: y, 

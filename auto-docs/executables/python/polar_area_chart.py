@@ -3,9 +3,8 @@
 
 import plotly.plotly as py
 from plotly.graph_objs import *
+
 py.sign_in('TestBot', 'r1neazxo9w')
-
-
 trace1 = Area(
     r=[77.5, 72.5, 70.0, 45.0, 22.5, 42.5, 40.0, 62.5],
     t=['North', 'N-E', 'East', 'S-E', 'South', 'S-W', 'West', 'N-W'],

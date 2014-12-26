@@ -2,9 +2,8 @@
 # Find your api_key here: plot.ly/settings/api
 
 library(plotly)
+
 py <- plotly(username='TestBot', key='r1neazxo9w')
-
-
 data <- list(
   list(
     x = c("Liam", "Sophie", "Jacob", "Mia", "William", "Olivia"), 
