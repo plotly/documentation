@@ -614,6 +614,7 @@ def process_model_worker(leaf, language, model):
     code = code.replace('">>>', "").replace('<<<"', "")
     code = code.replace("'>>>", "").replace("<<<'", "")
     raw_doc_code = insert_init(code, init, language)
+    raw_doc_code = format_doc_code_sign_in(raw_doc_code, language)
     doc_code = cgi.escape(raw_doc_code)
     code_path = save_code(doc_code, leaf, language, 'documentation')
     # do this last so we know it worked!
@@ -639,6 +640,19 @@ def insert_init(code, init, language):
         lines.insert(sign_in_lino, '\n' + init)
     return '\n'.join(lines)
 
+
+def format_doc_code_sign_in(code, language):
+    """
+    Replace current sign in line with appropriate documentation sing in line.
+
+    """
+    sign_in_lino = find_sign_in_line(code, language)
+    if sign_in_lino > -1:
+        lines = code.splitlines()
+        lines[sign_in_lino] = sign_in['documentation'][language]
+        return '\n'.join(lines)
+    else:
+        return code
 
 
 def process_script_leaf(leaf, options, id_dict):
