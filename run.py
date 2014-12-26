@@ -668,7 +668,11 @@ def format_doc_code_sign_in(code, language):
     sign_in_lino = find_sign_in_line(code, language)
     if sign_in_lino > -1:
         lines = code.splitlines()
-        lines[sign_in_lino] = sign_in['documentation'][language]
+        sign_in_line = sign_in['documentation'][language]
+        if sign_in_line:
+            lines[sign_in_lino] = sign_in_line
+        else:
+            lines.pop(sign_in_lino)
         return '\n'.join(lines)
     else:
         return code
