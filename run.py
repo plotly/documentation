@@ -620,20 +620,25 @@ def process_model_worker(leaf, language, model):
     leaf[language] = code_path
 
 
+def find_sign_in_line(code, language):
+    """Get line number that sign in line is on (or -1 if not found)."""
+    lines = code.splitlines()
+    for lino, line in enumerate(lines):
+        if line[:6] == sign_in['execution'][language][:6]:
+            return lino
+    return -1
+
+
 def insert_init(code, init, language):
+    """Insert init code above sign in line."""
     lines = code.splitlines()
     if language == 'plotly_js':
-        new_lines = [init] + lines
+        lines = [init] + lines
     else:
-        sign_in_lino = -1
-        for lino, line in enumerate(lines):
-            if line[:6] == sign_in['execution'][language][:6]:
-                sign_in_lino = lino
-                break
-        new_lines = (lines[:sign_in_lino+1] +
-                     ['\n' + init] +
-                     lines[sign_in_lino+1:])
-    return '\n'.join(new_lines)
+        sign_in_lino = find_sign_in_line(code, language)
+        lines.insert(sign_in_lino, '\n' + init)
+    return '\n'.join(lines)
+
 
 
 def process_script_leaf(leaf, options, id_dict):
