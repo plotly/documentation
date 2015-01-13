@@ -1,4 +1,3 @@
-
 var trace1 = {
   x: ["giraffes", "orangutans", "monkeys"], 
   y: [20, 14, 23], 
