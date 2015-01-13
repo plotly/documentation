@@ -188,8 +188,8 @@ sign_in = dict(
 # authentication
 authentication = (
     "{comment} Learn about API authentication here: "
-    "{{BASE_URL}}/{api_path}/getting-started\n"
-    "{comment} Find your api_key here: {{BASE_URL}}/settings/api\n"
+    "{{{{BASE_URL}}}}/{api_path}/getting-started\n"
+    "{comment} Find your api_key here: {{{{BASE_URL}}}}/settings/api\n"
 )
 
 # define comment strings for each language

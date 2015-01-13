@@ -1,5 +1,5 @@
-% Learn about API authentication here: plot.ly/matlab/getting-started
-% Find your api_key here: plot.ly/settings/api
+% Learn about API authentication here: {{BASE_URL}}/matlab/getting-started
+% Find your api_key here: {{BASE_URL}}/settings/api
 
 t = linspace(-1, 1.2, 2000);
 x = (t.^3)+(0.3.*randn(1, 2000));
