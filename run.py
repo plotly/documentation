@@ -187,10 +187,9 @@ sign_in = dict(
 
 # authentication
 authentication = (
-    "{{comment}} Learn about API authentication here: "
-    "{plotly_domain}/{{api_path}}/getting-started\n"
-    "{{comment}} Find your api_key here: {plotly_domain}/settings/api\n"
-    .format(plotly_domain="https://plot.ly")
+    "{comment} Learn about API authentication here: "
+    "{{BASE_URL}}/{api_path}/getting-started\n"
+    "{comment} Find your api_key here: {{BASE_URL}}/settings/api\n"
 )
 
 # define comment strings for each language
