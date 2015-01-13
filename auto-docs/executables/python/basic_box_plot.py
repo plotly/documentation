@@ -3,12 +3,12 @@
 
 import plotly.plotly as py
 from plotly.graph_objs import *
-py.sign_in('TestBot', 'r1neazxo9w')
 
 import numpy as np
 y0 = np.random.randn(50)
 y1 = np.random.randn(50)+1
 
+py.sign_in('TestBot', 'r1neazxo9w')
 trace1 = Box(
     y=y0
 )

@@ -1,11 +1,10 @@
 // Learn about API authentication here: plot.ly/nodejs/getting-started
 // Find your api_key here: plot.ly/settings/api
 
-var plotly = require('plotly')('TestBot', 'r1neazxo9w');
-
 var x = ['day 1', 'day 1', 'day 1', 'day 1', 'day 1', 'day 1',
          'day 2', 'day 2', 'day 2', 'day 2', 'day 2', 'day 2']
 
+var plotly = require('plotly')('TestBot', 'r1neazxo9w');
 var trace1 = {
   y: [0.2, 0.2, 0.6, 1.0, 0.5, 0.4, 0.2, 0.7, 0.9, 0.1, 0.5, 0.3], 
   x: x, 

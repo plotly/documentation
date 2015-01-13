@@ -1,8 +1,6 @@
 // Learn about API authentication here: plot.ly/nodejs/getting-started
 // Find your api_key here: plot.ly/settings/api
 
-var plotly = require('plotly')('TestBot', 'r1neazxo9w');
-
 var x0 = [];
 var x1 = [];
 
@@ -11,7 +9,7 @@ for (var i = 0; i < 500; i ++) {
 	x1[i] = Math.random() + 1;
 }
 
-
+var plotly = require('plotly')('TestBot', 'r1neazxo9w');
 var trace1 = {
   x: x0, 
   histnorm: "count", 

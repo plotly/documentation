@@ -3,7 +3,6 @@
 
 import plotly.plotly as py
 from plotly.graph_objs import *
-py.sign_in('TestBot', 'r1neazxo9w')
 
 from datetime import datetime
 x = [
@@ -12,7 +11,7 @@ x = [
     datetime(year=2013, month=12, day=06)
 ]
 
-
+py.sign_in('TestBot', 'r1neazxo9w')
 data = Data([
     Scatter(
         x=x,

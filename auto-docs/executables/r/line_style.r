@@ -2,9 +2,8 @@
 # Find your api_key here: plot.ly/settings/api
 
 library(plotly)
+
 py <- plotly(username='TestBot', key='r1neazxo9w')
-
-
 trace1 <- list(
   x = c(52698, 43117), 
   y = c(53, 31), 

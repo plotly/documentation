@@ -6,7 +6,6 @@ for (var i = 0; i < 500; i ++) {
 	x1[i] = Math.random() + 1;
 }
 
-
 var trace1 = {
   x: x0, 
   histnorm: "count", 

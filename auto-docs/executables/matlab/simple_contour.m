@@ -1,8 +1,6 @@
 % Learn about API authentication here: plot.ly/matlab/getting-started
 % Find your api_key here: plot.ly/settings/api
 
-signin('TestBot', 'r1neazxo9w')
-
 size = 100;
 x = linspace(-2*pi, 2*pi, size);
 y = linspace(-2*pi, 2*pi, size);
@@ -14,6 +12,7 @@ for n = 1:size
     end
 end
 
+signin('TestBot', 'r1neazxo9w')
 data = {...
   struct(...
     'z', z, ...

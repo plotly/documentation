@@ -16,7 +16,6 @@ for (var i = 0; i < 50; i ++) {
 var x = [x0, x1]
 var y = [y0, y1]
 
-
 var trace1 = {
   x: x0, 
   y: y0, 

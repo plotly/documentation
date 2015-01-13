@@ -144,13 +144,32 @@ imports = dict(
 ### define sign in ###
 sign_in = dict(
     documentation=dict(
-        python="py.sign_in(\"username\", \"api_key\")",
-        matlab="signin('username', 'api_key')",
-        r="py <- plotly(username=\"username\", key=\"api_key\")",
-        julia="Plotly.signin(\"username\", \"api_key\")",
-        node_js="var plotly = require('plotly')('username', 'api_key');",
-        ggplot2="py <- plotly(username=\"username\", key=\"api_key\")",
-        matplotlib="py.sign_in(\"username\", \"api_key\")",
+        python="",
+        matlab="",
+        r="",
+        julia=(
+            "{{% if not username %}}"
+            "# Fill in with your personal username and API key\n"
+            "# or, use this public demo account\n"
+            "{{% endif %}}"
+            "Plotly.signin({{% if username %}}\"{{{{username}}}}\""
+            "{{% else %}}\"{un}\"{{% endif %}}, "
+            "{{% if api_key %}}\"{{{{api_key}}}}\""
+            "{{% else %}}\"{ak}\"{{% endif %}})".format(**users['julia'])
+        ),
+        node_js=(
+            "{{% if not username %}}"
+            "// Fill in with your personal username and API key\n"
+            "// or, use this public demo account\n"
+            "{{% endif %}}"
+            "var plotly = require('plotly')("
+            "{{% if username %}}'{{{{username}}}}'"
+            "{{% else %}}'{un}'{{% endif %}},"
+            "{{% if api_key %}}'{{{{api_key}}}}'"
+            "{{% else %}}'{ak}'{{% endif %}});".format(**users['nodejs'])
+        ),
+        ggplot2="",
+        matplotlib="",
         plotly_js=""
     ),
     execution=dict(
@@ -165,6 +184,36 @@ sign_in = dict(
         plotly_js=""
     )
 )
+
+# authentication
+authentication = (
+    "{comment} Learn about API authentication here: "
+    "{{BASE_URL}}/{api_path}/getting-started\n"
+    "{comment} Find your api_key here: {{BASE_URL}}/settings/api\n"
+)
+
+# define comment strings for each language
+comment = {
+    "julia": "#",
+    "matlab": "%",
+    "python": "#",
+    "matplotlib": '#',
+    "r": "#",
+    "ggplot2": "#",
+    "node_js": "//",
+    "plotly_js": "//"
+}
+
+api_path = {
+    "julia": "julia",
+    "matlab": "matlab",
+    "python": "python",
+    "matplotlib": "python",
+    "r": "r",
+    "ggplot2": "r",
+    "node_js": "nodejs",
+    "plotly_js": "javascript-graphing-library"
+}
 
 
 def get_command():
@@ -614,26 +663,49 @@ def process_model_worker(leaf, language, model):
     code = code.replace('">>>', "").replace('<<<"', "")
     code = code.replace("'>>>", "").replace("<<<'", "")
     raw_doc_code = insert_init(code, init, language)
+    raw_doc_code = format_doc_code_sign_in(raw_doc_code, language)
     doc_code = cgi.escape(raw_doc_code)
     code_path = save_code(doc_code, leaf, language, 'documentation')
     # do this last so we know it worked!
     leaf[language] = code_path
 
 
+def find_sign_in_line(code, language):
+    """Get line number that sign in line is on (or -1 if not found)."""
+    lines = code.splitlines()
+    for lino, line in enumerate(lines):
+        if line[:6] == sign_in['execution'][language][:6]:
+            return lino
+    return -1
+
+
 def insert_init(code, init, language):
+    """Insert init code above sign in line."""
     lines = code.splitlines()
     if language == 'plotly_js':
-        new_lines = [init] + lines
+        lines = [init] + lines
     else:
-        sign_in_lino = -1
-        for lino, line in enumerate(lines):
-            if line[:6] == sign_in['execution'][language][:6]:
-                sign_in_lino = lino
-                break
-        new_lines = (lines[:sign_in_lino+1] +
-                     ['\n' + init] +
-                     lines[sign_in_lino+1:])
-    return '\n'.join(new_lines)
+        sign_in_lino = find_sign_in_line(code, language)
+        lines.insert(sign_in_lino, '\n' + init)
+    return '\n'.join(lines)
+
+
+def format_doc_code_sign_in(code, language):
+    """
+    Replace current sign in line with appropriate documentation sing in line.
+
+    """
+    sign_in_lino = find_sign_in_line(code, language)
+    if sign_in_lino > -1:
+        lines = code.splitlines()
+        sign_in_line = sign_in['documentation'][language]
+        if sign_in_line:
+            lines[sign_in_lino] = sign_in_line
+        else:
+            lines.pop(sign_in_lino)
+        return '\n'.join(lines)
+    else:
+        return code
 
 
 def process_script_leaf(leaf, options, id_dict):
@@ -654,20 +726,10 @@ def process_script_leaf(leaf, options, id_dict):
         raise plotly.exceptions.PlotlyError(
             "'{}' not found in '{}'".format(script_file, leaf['path'])
         )
-    exec_lines = []
-    found_sign_in = False
-    for line in script.splitlines():
-        if line[:6] == sign_in['execution'][language][:6]:  # TODO, better way?
-            exec_lines.append(sign_in['execution'][language])
-            found_sign_in = True
-        elif '>>>filename<<<' in line:
-            exec_lines.append(line.replace('>>>filename<<<', leaf['id']))
-        else:
-            exec_lines.append(line)
-    while exec_lines[-1] == '\n':
-        exec_lines.pop()
-    exec_string = '\n'.join(exec_lines)
-    if not found_sign_in:
+
+    # find sign in line and raise error if DNE
+    sign_in_lino = find_sign_in_line(script, language)
+    if sign_in_lino < 0:
         raise Exception(
             "You need to have the first 6 characters of the following "
             "line in the script for this to work:"
@@ -675,13 +737,30 @@ def process_script_leaf(leaf, options, id_dict):
             "\n{path}"
             .format(sign_in=sign_in['execution'][language], path=leaf['path'])
         )
+
+    # remove templated things from script file
+    script = script.replace('>>>filename<<<', leaf['id'])
+    script_lines = script.splitlines()
+    script_lines.pop(sign_in_lino)
+
+    # save execution and exception files
+    exec_lines = list(script_lines)
+    exec_lines.insert(sign_in_lino, sign_in['execution'][language])
+    exec_string = '\n'.join(exec_lines)
     save_code(exec_string, leaf, language, 'exception')
-    code_string = exec_string.replace(sign_in['execution'][language],
-                                      sign_in['documentation'][language])
-    code_string = cgi.escape(code_string)
-    code_path = save_code(code_string, leaf, language, 'documentation')
-    leaf[language] = code_path
     save_code(exec_string, leaf, language, 'execution')
+
+    # save documentation file
+    doc_lines = list(script_lines)
+    auth = authentication.format(
+        api_path=api_path[language], comment=comment[language]
+    )
+    doc_lines.insert(sign_in_lino, auth)
+    code_string = '\n'.join(doc_lines)
+    code_string = cgi.escape(code_string)
+    leaf[language] = save_code(code_string, leaf, language, 'documentation')
+
+    # mark as complete!
     id_dict['complete'].add(leaf['id'])
 
 
@@ -823,6 +902,31 @@ def get_init_code(leaf, language):
         return ""
 
 
+def fix_line_spacing(code):
+    """
+    Removing beginning/trailing blank lines and allow max of two blank lines.
+
+    :param code:
+    :return:
+    """
+    code_lines = code.splitlines()
+
+    # remove beginning blank lines
+    while not code_lines[0]:
+        code_lines.pop(0)
+
+    # remove ending blank lines
+    while not code_lines[-1]:
+        code_lines.pop()
+
+    # allow max of two consecutive blank lines
+    code = '\n'.join(code_lines)
+    while '\n\n\n' in code:
+        code = code.replace('\n\n\n', '\n\n')
+
+    return code
+
+
 def save_code(code, leaf, language, mode, newline=True):
     if mode == 'documentation':
         leaf_folder = os.path.join(dirs['run'],
@@ -839,6 +943,7 @@ def save_code(code, leaf, language, mode, newline=True):
         code_path = os.path.join(code_folder, filename.replace("-", "_"))
     else:
         raise Exception("mode: 'execution' | 'documentation' | 'exception'")
+    code = fix_line_spacing(code)
     if not os.path.exists(code_folder):
         os.makedirs(code_folder)
     with open(code_path, 'w') as f:

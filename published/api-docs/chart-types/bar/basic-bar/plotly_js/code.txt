@@ -1,4 +1,3 @@
-
 var data = [
   {
     x: ["giraffes", "orangutans", "monkeys"], 

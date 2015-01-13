@@ -2,8 +2,6 @@
 // Find your api_key here: plot.ly/settings/api
 
 var plotly = require('plotly')('TestBot', 'r1neazxo9w');
-
-
 var data = [
   {
     y: [0, 1, 1, 2, 3, 5, 8, 13, 21], 

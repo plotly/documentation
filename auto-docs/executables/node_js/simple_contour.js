@@ -1,8 +1,6 @@
 // Learn about API authentication here: plot.ly/nodejs/getting-started
 // Find your api_key here: plot.ly/settings/api
 
-var plotly = require('plotly')('TestBot', 'r1neazxo9w');
-
 var linspace = require('linspace');
 var unpack = require('ndarray-unpack');
 var zeros = require('zeros');
@@ -19,6 +17,7 @@ for (var i = 0; i < size; i++) {
   }
 }
 
+var plotly = require('plotly')('TestBot', 'r1neazxo9w');
 var data = [
   {
     z: z, 

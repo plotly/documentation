@@ -2,7 +2,6 @@
 # Find your api_key here: plot.ly/settings/api
 
 library(plotly)
-py <- plotly(username='TestBot', key='r1neazxo9w')
 
 size <- 100
 x <- seq(-2*pi, 2*pi, length=size)
@@ -15,6 +14,7 @@ for(i in 1:size) {
     }
 }
 
+py <- plotly(username='TestBot', key='r1neazxo9w')
 data <- list(
   list(
     z = z, 

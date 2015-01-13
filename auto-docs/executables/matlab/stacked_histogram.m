@@ -1,11 +1,10 @@
 % Learn about API authentication here: plot.ly/matlab/getting-started
 % Find your api_key here: plot.ly/settings/api
 
-signin('TestBot', 'r1neazxo9w')
-
 x0 = randn(500,1);
 x1 = randn(500,1)+1;
 
+signin('TestBot', 'r1neazxo9w')
 trace1 = struct(...
   'x', x0, ...
   'type', 'histogram');

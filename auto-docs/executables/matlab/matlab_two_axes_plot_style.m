@@ -44,5 +44,3 @@ grid on
 % Strip MATLAB style by default!
 response = fig2plotly(fig, 'filename', 'matlab-two-axes-plot-style');
 plotly_url = response.url;
-
-

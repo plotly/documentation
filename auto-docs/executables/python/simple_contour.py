@@ -3,7 +3,6 @@
 
 import plotly.plotly as py
 from plotly.graph_objs import *
-py.sign_in('TestBot', 'r1neazxo9w')
 
 import numpy as np
 
@@ -16,6 +15,7 @@ for i, xi in enumerate(x):
         r2 = (xi**2+yj**2)
         z[i][j] = np.sin(xi)*np.cos(yj)*np.sin(r2)/(np.log(r2+1))
 
+py.sign_in('TestBot', 'r1neazxo9w')
 data = Data([
     Contour(
         z=z,

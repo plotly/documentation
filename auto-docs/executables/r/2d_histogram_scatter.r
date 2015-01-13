@@ -2,17 +2,16 @@
 # Find your api_key here: plot.ly/settings/api
 
 library(plotly)
-py <- plotly(username='TestBot', key='r1neazxo9w')
 
 x0 <- rnorm(100)/5. + 0.5
 y0 <- rnorm(100)/5. + 0.5
 x1 <- runif(50)
 y1 <- runif(50) + 1.0
 
-
 x <- c(x0, x1)
 y <- c(y0, y1)
 
+py <- plotly(username='TestBot', key='r1neazxo9w')
 trace1 <- list(
   x = x0, 
   y = y0, 

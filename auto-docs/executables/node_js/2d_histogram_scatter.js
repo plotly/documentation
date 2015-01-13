@@ -1,8 +1,6 @@
 // Learn about API authentication here: plot.ly/nodejs/getting-started
 // Find your api_key here: plot.ly/settings/api
 
-var plotly = require('plotly')('TestBot', 'r1neazxo9w');
-
 var x0 = [];
 var y0 = [];
 var x1 = [];
@@ -21,7 +19,7 @@ for (var i = 0; i < 50; i ++) {
 var x = [x0, x1]
 var y = [y0, y1]
 
-
+var plotly = require('plotly')('TestBot', 'r1neazxo9w');
 var trace1 = {
   x: x0, 
   y: y0, 

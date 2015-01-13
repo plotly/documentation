@@ -2,9 +2,8 @@
 # Find your api_key here: plot.ly/settings/api
 
 using Plotly
+
 Plotly.signin("TestBot", "r1neazxo9w")
-
-
 data = [
   [
     "x" => [0, 2, 4], 
