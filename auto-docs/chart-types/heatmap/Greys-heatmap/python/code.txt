@@ -1,5 +1,5 @@
-# Learn about API authentication here: plot.ly/python/getting-started
-# Find your api_key here: plot.ly/settings/api
+# Learn about API authentication here: {BASE_URL}/python/getting-started
+# Find your api_key here: {BASE_URL}/settings/api
 
 import plotly.plotly as py
 from plotly.graph_objs import *

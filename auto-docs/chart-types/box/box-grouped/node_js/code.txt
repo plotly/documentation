@@ -1,5 +1,5 @@
-// Learn about API authentication here: plot.ly/nodejs/getting-started
-// Find your api_key here: plot.ly/settings/api
+// Learn about API authentication here: {BASE_URL}/nodejs/getting-started
+// Find your api_key here: {BASE_URL}/settings/api
 
 var x = ['day 1', 'day 1', 'day 1', 'day 1', 'day 1', 'day 1',
          'day 2', 'day 2', 'day 2', 'day 2', 'day 2', 'day 2']

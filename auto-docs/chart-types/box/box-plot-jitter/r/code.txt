@@ -1,5 +1,5 @@
-# Learn about API authentication here: plot.ly/r/getting-started
-# Find your api_key here: plot.ly/settings/api
+# Learn about API authentication here: {BASE_URL}/r/getting-started
+# Find your api_key here: {BASE_URL}/settings/api
 
 library(plotly)
 
