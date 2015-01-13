@@ -1,5 +1,5 @@
-// Learn about API authentication here: {BASE_URL}/nodejs/getting-started
-// Find your api_key here: {BASE_URL}/settings/api
+// Learn about API authentication here: {{BASE_URL}}/nodejs/getting-started
+// Find your api_key here: {{BASE_URL}}/settings/api
 
 var x0 = [];
 var x1 = [];

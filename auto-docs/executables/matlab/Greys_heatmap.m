@@ -1,5 +1,5 @@
-% Learn about API authentication here: {BASE_URL}/matlab/getting-started
-% Find your api_key here: {BASE_URL}/settings/api
+% Learn about API authentication here: {{BASE_URL}}/matlab/getting-started
+% Find your api_key here: {{BASE_URL}}/settings/api
 
 signin('TestBot', 'r1neazxo9w')
 data = {...

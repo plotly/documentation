@@ -1,5 +1,5 @@
-% Learn about API authentication here: {BASE_URL}/matlab/getting-started
-% Find your api_key here: {BASE_URL}/settings/api
+% Learn about API authentication here: {{BASE_URL}}/matlab/getting-started
+% Find your api_key here: {{BASE_URL}}/settings/api
 
 x = {'day 1' 'day 1' 'day 1' 'day 1' 'day 1' 'day 1' ...
      'day 2' 'day 2' 'day 2' 'day 2' 'day 2' 'day 2'}
