@@ -146,7 +146,7 @@ sign_in = dict(
     documentation=dict(
         python="",
         matlab="",
-        r="",
+        r="py <- plotly()",
         julia=(
             "{{% if not username %}}"
             "# Fill in with your personal username and API key\n"
@@ -168,7 +168,7 @@ sign_in = dict(
             "{{% if api_key %}}'{{{{api_key}}}}'"
             "{{% else %}}'{ak}'{{% endif %}});".format(**users['nodejs'])
         ),
-        ggplot2="",
+        ggplot2="py <- plotly()",
         matplotlib="",
         plotly_js=""
     ),
@@ -693,7 +693,6 @@ def insert_init(code, init, language):
 def format_doc_code_sign_in(code, language):
     """
     Replace current sign in line with appropriate documentation sing in line.
-
     """
     sign_in_lino = find_sign_in_line(code, language)
     if sign_in_lino > -1:
@@ -756,6 +755,11 @@ def process_script_leaf(leaf, options, id_dict):
         api_path=api_path[language], comment=comment[language]
     )
     doc_lines.insert(sign_in_lino, auth)
+
+    optional_initialization_line = sign_in["documentation"][language]
+    if language in ['r', 'ggplot2']:
+        doc_lines.insert(sign_in_lino + 1, optional_initialization_line)
+
     code_string = '\n'.join(doc_lines)
     code_string = cgi.escape(code_string)
     leaf[language] = save_code(code_string, leaf, language, 'documentation')
@@ -978,10 +982,8 @@ def trim_tree(section):
 
 def remove_broken_branches(section, bad_ids, previous_leaf_ids):
     """Use this to unset examples that didn't complete during processing.
-
     This is important because we want to make sure broken examples appear as
     if they've never been run. (else, we might accidentally publish them!)
-
     """
     if section:
         if section['is_leaf']:
@@ -1081,10 +1083,8 @@ def get_ordered_dict(d):
 
 def thread_space(thread_list, max_threads):
     """Return the (t)h(r)ead space, number of new threads that can be started.
-
     This effectively throttles the number of threads which can be alive at
     once.
-
     """
     living = sum((1 for t in thread_list if t['thread'].isAlive()))
     return max_threads - living

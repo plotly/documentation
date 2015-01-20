@@ -19,7 +19,8 @@ positions <- data.frame(
 
 datapoly <- merge(values, positions, by=c("id"))
 
-(p <- ggplot(datapoly, aes(x=x, y=y)) + geom_polygon(aes(fill=value, group=id)))
+p <- ggplot(datapoly, aes(x=x, y=y)) +
+        geom_polygon(aes(fill=value, group=id))
 
-out <- py$ggplotly(p)
+out <- py$ggplotly(p, kwargs=list(filename="geom_polygon_1", fileopt="overwrite"))
 plotly_url <- out$response$url
