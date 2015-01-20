@@ -9,5 +9,5 @@ orange <- qplot(
               colour = Tree,
               geom = "line")
 
-out <- py$ggplotly(orange)
+out <- py$ggplotly(orange, kwargs=list(filename="gg-basic-line", fileopt="overwrite"))
 plotly_url <- out$response$url
