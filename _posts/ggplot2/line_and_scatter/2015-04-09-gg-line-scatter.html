@@ -1,0 +1,23 @@
+---
+name: Line and Scatter Plot
+plot_url: https://plot.ly/~PlotBot/138
+language: ggplot2
+suite: line_and_scatter
+order: 3
+---
+library(plotly)
+
+# Learn about API authentication here: {{BASE_URL}}/r/getting-started
+# Find your api_key here: {{BASE_URL}}/settings/api
+
+model &lt;- lm(mpg ~ wt + factor(cyl), data=mtcars)
+grid &lt;- with(mtcars, expand.grid(
+  wt = seq(min(wt), max(wt), length = 20),
+  cyl = levels(factor(cyl))
+))
+
+grid$mpg &lt;- stats::predict(model, newdata=grid)
+
+viz2 &lt;- qplot(wt, mpg, data=mtcars, colour=factor(cyl)) + geom_line(data=grid)
+out &lt;- py$ggplotly(viz2)
+plotly_url &lt;- out$response$url
