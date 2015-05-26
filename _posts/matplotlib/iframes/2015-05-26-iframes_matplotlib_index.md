@@ -9,8 +9,6 @@ has_thumbnail: false
 display_as: get_request
 ---
 
-## Embed Plotly graphs in HTML
-
 Plotly graphs can be embedded in any HTML page. This includes [IPython notebooks](https://plot.ly/ipython-notebooks/),
 [Wordpress sites](https://wordpress.org/plugins/wp-plotly/), dashboards, blogs, and more.
 
@@ -18,7 +16,9 @@ For more on embedding Plotly graphs in HTML documents, [see our tutorial](https:
 
 From Python, you can generate the HTML code to embed Plotly graphs with the <code>plotly.tools.get_embed</code> function.
 
-<code><pre>import plotly.tools as tls
+
+```
+import plotly.tools as tls
 
 tls.get_embed('https://plot.ly/~chris/1638')
-</pre></code>
+```
