@@ -17,8 +17,7 @@ For more on embedding Plotly graphs in HTML documents, [see our tutorial](https:
 From Python, you can generate the HTML code to embed Plotly graphs with the <code>plotly.tools.get_embed</code> function.
 
 
-```
-import plotly.tools as tls
+<pre>import plotly.tools as tls
 
 tls.get_embed('https://plot.ly/~chris/1638')
-```
+</pre>
