@@ -18,9 +18,9 @@ py.image.save_as({'data': data}, 'your_image_filename.png')
 <p>You can also display inline static images in IPython:</p><br>
 
 
-<pre>import plotly.plotly as py
+<pre><code>import plotly.plotly as py
 py.image.ishow({'data': data})
-</pre>
+</code></pre>
 
 
 <p>Combine this with a GET request on a plot you (or someone else) has already created:</p><br>
