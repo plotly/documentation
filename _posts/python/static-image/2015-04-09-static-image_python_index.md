@@ -12,26 +12,24 @@ display_as: get_request
 <div class="content-box">
 <p>You can save static images using the following syntax:</p><br>
 
-<div class="z-depth-1">
 <pre><code>import plotly.plotly as py
 py.image.save_as({'data': data}, 'your_image_filename.png')
 </code></pre>
-</div>
 <p>You can also display inline static images in IPython:</p><br>
 
-<div class="z-depth-1">
+
 <pre>import plotly.plotly as py
 py.image.ishow({'data': data})
 </pre>
-</div>
+
 
 <p>Combine this with a GET request on a plot you (or someone else) has already created:</p><br>
 
-<div class="z-depth-1">
+
 <pre><code>figure = py.get_figure('demos', '1571')
 py.image.save_as(figure, 'your_image_filename.png')
 </code></pre>
-</div>
+
 
 <p>This will save a static image of a plot you've pulled from Plotly's Servers.</p><br>
 
@@ -41,11 +39,11 @@ py.image.save_as(figure, 'your_image_filename.png')
 
 <p>Combine this with the <code>requests</code> package and download the latest version of your Plotly graph:</p><br>
 
-<div class="z-depth-1">
+
 <pre><code>import requests
 
 image_bytes = requests.get('https://plot.ly/~chris/1638.png').content
 </code></pre>
-</div>
+<br>
 
-</div>
+</div><br>

@@ -14,4 +14,4 @@ display_as: get_request
 <p>These docs have moved!</p><br>
 
 <p><a href="https://github.com/plotly/plotly-nodejs#plotlygetimagefigure-options-callback">Learn about image exporting Node.js on our GitHub docs.</a></p><br>
-</div><p>
+</div><br>
