@@ -9,5 +9,5 @@ page_type: example_index
 has_thumbnail: false
 display_as: get_request
 ---
-{% assign examples = site.posts | where:"language","nodejs" | where:"suite","static-image" | sort: "order" %}
-{% include auto_examples.html examples=examples %}
+
+These docs have moved! [Learn about image exporting Node.js on our GitHub docs.](https://github.com/plotly/plotly-nodejs#plotlygetimagefigure-options-callback)
