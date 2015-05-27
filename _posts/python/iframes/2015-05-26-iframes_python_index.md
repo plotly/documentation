@@ -11,15 +11,15 @@ display_as: get_request
 
 <div class="content-box">
 <p>Plotly graphs can be embedded in any HTML page. This includes <a href="https://plot.ly/ipython-notebooks/">IPython notebooks</a>,
-<a href="https://wordpress.org/plugins/wp-plotly">Wordpress sites</a>, dashboards, blogs, and more.</p>
+<a href="https://wordpress.org/plugins/wp-plotly">Wordpress sites</a>, dashboards, blogs, and more.</p></br>
 
-<p>For more on embedding Plotly graphs in HTML documents, <a href="https://plot.ly/how-to-embed-plotly-graphs-in-websites">see our tutorial</a>.</p>
+<p>For more on embedding Plotly graphs in HTML documents, <a href="https://plot.ly/how-to-embed-plotly-graphs-in-websites">see our tutorial</a>.</p></br>
 
-<p>From Python, you can generate the HTML code to embed Plotly graphs with the <code class="no-padding">plotly.tools.get_embed</code> function.</p>
+<p>From Python, you can generate the HTML code to embed Plotly graphs with the <code class="no-padding">plotly.tools.get_embed</code> function.</p></br>
 
 <pre><code>
 import plotly.tools as tls
 
 tls.get_embed('https://plot.ly/~chris/1638')
 </code></pre>
-</div>
+</div></br>

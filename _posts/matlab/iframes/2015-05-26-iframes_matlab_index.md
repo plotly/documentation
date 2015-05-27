@@ -2,7 +2,7 @@
 name: Embedding Graphs in HTML
 permalink: matlab/embedding-plotly-graphs-in-HTML/
 description: How to embed plotly graphs with an iframe in HTML.
-layout: getstart
+layout: getstart-base
 language: matlab
 page_type: example_index
 has_thumbnail: false
@@ -11,8 +11,8 @@ display_as: get_request
 
 <div class="content-box">
 
-<p>Plotly graphs can be embedded in any HTML page. This includes <a href="http://moderndata.plot.ly/r-python-matlab-dashboards-graphs-with-d3-js-webgl/">MATLAB dashboards</a>, <a href="https://wordpress.org/plugins/wp-plotly/">Wordpress sites</a>, blogs, and more.</p>
+<p>Plotly graphs can be embedded in any HTML page. This includes <a href="http://moderndata.plot.ly/r-python-matlab-dashboards-graphs-with-d3-js-webgl/">MATLAB dashboards</a>, <a href="https://wordpress.org/plugins/wp-plotly/">Wordpress sites</a>, blogs, and more.</p></br>
 
-<p>For more on embedding Plotly graphs in HTML documents, <a href="https://plot.ly/how-to-embed-plotly-graphs-in-websites/">see our tutorial</a>.</p>
+<p>For more on embedding Plotly graphs in HTML documents, <a href="https://plot.ly/how-to-embed-plotly-graphs-in-websites/">see our tutorial</a>.</p></br>
 
-</div>
+</div></br>
