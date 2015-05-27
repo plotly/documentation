@@ -2,7 +2,7 @@
 name: Embedding Graphs in HTML
 permalink: matplotlib/embed-matplotlib-graphs-in-HTML/
 description: How to embed plotly's matplotlib graphs with an iframe in HTML.
-layout: base
+layout: getstart
 language: matplotlib
 page_type: example_index
 has_thumbnail: false

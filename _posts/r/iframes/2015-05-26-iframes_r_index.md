@@ -2,7 +2,7 @@
 name: Embedding Graphs in HTML
 permalink: r/embedding-plotly-graphs-in-HTML/
 description: How to embed plotly graphs with an iframe in HTML.
-layout: base
+layout: getstart
 language: r
 page_type: example_index
 has_thumbnail: false
