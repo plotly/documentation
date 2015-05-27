@@ -2,13 +2,16 @@
 name: Embedding Graphs in HTML
 permalink: julia/embedding-plotly-graphs-in-HTML/
 description: How to embed plotly graphs with an iframe in HTML.
-layout: getstart
+layout: getstart-base
 language: julia
 page_type: example_index
 has_thumbnail: false
 display_as: get_request
 ---
 
-Plotly graphs can be embedded in any HTML page. This includes [Julia dashboards](http://moderndata.plot.ly/r-python-matlab-dashboards-graphs-with-d3-js-webgl/), [Wordpress sites](https://wordpress.org/plugins/wp-plotly/), blogs, and more.
+<div class="content-box">
+<p>Plotly graphs can be embedded in any HTML page. This includes <a href="http://moderndata.plot.ly/r-python-matlab-dashboards-graphs-with-d3-js-webgl/">Julia dashboards</a>, <a href="https://wordpress.org/plugins/wp-plotly/">Wordpress sites</a>, blogs, and more.</p>
 
-For more on embedding Plotly graphs in HTML documents, [see our tutorial](https://plot.ly/how-to-embed-plotly-graphs-in-websites/).
+<p>For more on embedding Plotly graphs in HTML documents, <a href="https://plot.ly/how-to-embed-plotly-graphs-in-websites/">see our tutorial</a>.</p>
+
+</div>

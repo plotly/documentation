@@ -2,21 +2,24 @@
 name: Embedding Graphs in HTML
 permalink: python/embedding-plotly-graphs-in-HTML/
 description: How to embed plotly graphs with an iframe in HTML.
-layout: getstart
+layout: getstart-base
 language: python
 page_type: example_index
 has_thumbnail: false
 display_as: get_request
 ---
 
-Plotly graphs can be embedded in any HTML page. This includes [IPython notebooks](https://plot.ly/ipython-notebooks/),
-[Wordpress sites](https://wordpress.org/plugins/wp-plotly/), dashboards, blogs, and more.
+<div class="content-box">
+<p>Plotly graphs can be embedded in any HTML page. This includes <a href="https://plot.ly/ipython-notebooks/">IPython notebooks</a>,
+<a href="https://wordpress.org/plugins/wp-plotly">Wordpress sites</a>, dashboards, blogs, and more.</p>
 
-For more on embedding Plotly graphs in HTML documents, [see our tutorial](https://plot.ly/how-to-embed-plotly-graphs-in-websites/).
+<p>For more on embedding Plotly graphs in HTML documents, <a href="https://plot.ly/how-to-embed-plotly-graphs-in-websites">see our tutorial</a>.</p>
 
-From Python, you can generate the HTML code to embed Plotly graphs with the <code>plotly.tools.get_embed</code> function.
+<p>From Python, you can generate the HTML code to embed Plotly graphs with the <code class="no-padding">plotly.tools.get_embed</code> function.</p>
 
-<pre>import plotly.tools as tls
+<pre><code>
+import plotly.tools as tls
 
 tls.get_embed('https://plot.ly/~chris/1638')
-</pre>
+</code></pre>
+</div>
