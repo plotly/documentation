@@ -5,82 +5,59 @@ language: python
 suite: line_and_scatter
 order: 17
 ---
-
 # Learn about API authentication here: https://plot.ly/python/getting-started
 # Find your api_key here: https://plot.ly/settings/api
 
 import plotly.plotly as py
 from plotly.graph_objs import *
 
-#Television
-trace0 = Scatter(
-    x=[2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013],
-    y=[74, 82, 80, 74, 73, 72, 74, 70, 70, 66, 66, 69],
-    connectgaps=True,
-    mode = 'lines',
-    marker = Marker(
-                color = 'rgb(37,37,37)',  
-                opacity = 1.0,
-    ),
-    #hoverinfo = 'none',
-)
+title = 'Main Source for News'
 
-#Newspaper
-trace1 = Scatter(
-    x=[2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013],
-    y=[45, 42, 50, 46, 36, 36, 34, 35, 32, 31, 31, 28],
-    connectgaps=True,
-    mode = 'lines',
-    marker = Marker(
-                color = 'rgb(115,115,115)',  
-                opacity = 0.7,
-    ),
-    #hoverinfo = 'None',
-)
+labels = ['Television', 'Newspaper', 'Internet', 'Radio']
 
-#Internet
-trace2 = Scatter(
-    x=[2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013],
-    y=[13, 14, 20, 24, 20, 24, 24, 40, 35, 41, 43, 50],
-    connectgaps=True,
-    mode = 'lines',
-    line = Line(
-                color = 'rgb(49,130,189)',  
-                opacity = 0.7,
-                width = 4,
-        
-    ),
-    #hoverinfo = 'None',
-)
+colors = ['rgba(37,37,37,1)', 'rgba(115,115,115,1)', 'rgba(49,130,189, 1)', 'rgba(189,189,189,1)']
 
-#Radio
-trace3 = Scatter(
-    x=[2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013],
-    y=[18, 21, 18, 21, 16, 14, 13, 18, 17, 16, 19, 23],
-    connectgaps=True,
-    mode = 'lines',
-    marker = Marker(
-                color = 'rgb(189,189,189)',  
-                opacity = 0.7,
-    ),
-    #hoverinfo = 'None',
-)
+mode_size = [2, 2, 4, 2]
 
-#end points
-trace4 = Scatter(
-    x=[2001, 2001, 2001, 2001, 2013, 2013, 2013, 2013],
-    y=[74, 45, 13, 18, 69, 28, 50, 23],
-    mode = 'markers',
-    marker = Marker(
-        color = ['rgb(37,37,37)', 'rgb(115,115,115)', 'rgb(49,130,189)', 'rgb(189,189,189)', 'rgb(37,37,37)', 'rgb(115,115,115)', 'rgb(49,130,189)',  'rgb(189,189,189)'],
-        size = 12,
-    ),
-    #hoverinfo = 'None',
-)
+line_size = [2, 2, 4, 2]
 
-data = Data([trace0, trace1, trace2, trace3, trace4])
-layout =Layout(
-  xaxis=XAxis(
+x_data = [
+    [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013],
+    [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013],
+    [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013],
+    [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013],
+]
+
+y_data = [
+    [74, 82, 80, 74, 73, 72, 74, 70, 70, 66, 66, 69],
+    [45, 42, 50, 46, 36, 36, 34, 35, 32, 31, 31, 28],
+    [13, 14, 20, 24, 20, 24, 24, 40, 35, 41, 43, 50],
+    [18, 21, 18, 21, 16, 14, 13, 18, 17, 16, 19, 23], 
+]
+
+
+traces = []
+
+for i in range(0,4):
+    traces.append(Scatter(
+        x = x_data[i], 
+        y = y_data[i],
+        mode = 'lines',
+        line = Line( color = colors[i], width = line_size[i]),
+        connectgaps = True,
+    ))
+
+    traces.append(Scatter(
+        x = [x_data[i][0], x_data[i][11]],
+        y = [y_data[i][0], y_data[i][11]],
+        mode = 'markers',
+        marker = Marker(color = colors[i], size = 12)
+    ))
+    
+    
+    
+layout = Layout(
+  xaxis = XAxis(
         showline = True,
         showgrid = False,
         showticklabels = True,
@@ -98,187 +75,13 @@ layout =Layout(
         ),
     ),
     
-     yaxis=YAxis(
+    yaxis = YAxis(
         showgrid = False, 
         zeroline = False, 
         showline = False,
         showticklabels = False,
     ),
-    
-    annotations = Annotations([ 
-            
-        # left side Television     
-        Annotation(
-                x= 0.05,
-                y= 74,
-                xref= 'paper',
-                yref= 'y',
-                xanchor='right',
-                yanchor='middle',
-                text='Television 74%',
-                font=Font(
-                    family='Arial',
-                    size=16,
-                    color= 'rgb(37,37,37)',
-                ),
-                showarrow=False,
-        ),
-            
-        # left side Newspaper    
-        Annotation(
-                x= 0.05,
-                y= 45,
-                xref= 'paper',
-                yref= 'y',
-                xanchor='right',
-                yanchor='middle',
-                text='Newspaper 45%',
-                font=Font(
-                    family='Arial',
-                    size=16,
-                    color= 'rgb(115,115,115)',
-                ),
-                showarrow=False,
-        ),
-            
-        # left side Internet    
-        Annotation(
-                x= 0.05,
-                y= 13,
-                xref= 'paper',
-                yref= 'y',
-                xanchor='right',
-                yanchor='middle',
-                text='Internet 13%',
-                font=Font(
-                    family='Arial',
-                    size=16,
-                    color= 'rgb(49,130,189)',
-                ),
-                showarrow=False,
-        ),
         
-        # left side Radio    
-        Annotation(
-                x= 0.05,
-                y= 18,
-                xref= 'paper',
-                yref= 'y',
-                xanchor='right',
-                yanchor='middle',
-                text='Radio 18%',
-                font=Font(
-                    family='Arial',
-                    size=16,
-                    color= 'rgb(189,189,189)',
-                ),
-                showarrow=False,
-        ),
-            
-        # Right side Television     
-        Annotation(
-                x= 0.95,
-                y= 69,
-                xref= 'paper',
-                yref= 'y',
-                xanchor='left',
-                yanchor='middle',
-                text='69%',
-                font=Font(
-                    family='Arial',
-                    size=18,
-                    color= 'rgb(37,37,37)',
-                ),
-                showarrow=False,
-        ),
-        
-        # Right side Newspaper    
-        Annotation(
-                x= 0.95,
-                y= 28,
-                xref= 'paper',
-                yref= 'y',
-                xanchor='left',
-                yanchor='middle',
-                text='28%',
-                font=Font(
-                    family='Arial',
-                    size=18,
-                    color= 'rgb(115,115,115)',
-                ),
-                showarrow=False,
-        ),
-            
-        # Right side Internet    
-        Annotation(
-                x= 0.95,
-                y= 50,
-                xref= 'paper',
-                yref= 'y',
-                xanchor='left',
-                yanchor='middle',
-                text='50%',
-                font=Font(
-                    family='Arial',
-                    size=18,
-                    color= 'rgb(49,130,189)',
-                ),
-                showarrow=False,
-        ),
-        
-        # Right side Radio    
-        Annotation(
-                x= 0.95,
-                y= 23,
-                xref= 'paper',
-                yref= 'y',
-                xanchor='left',
-                yanchor='middle',
-                text='23%',
-                font=Font(
-                    family='Arial',
-                    size=18,
-                    color= 'rgb(189,189,189)',
-                ),
-                showarrow=False,
-        ), 
-            
-        # Title   
-        Annotation(
-                x= 0.15,
-                y= 1.05,
-                xref= 'paper',
-                yref= 'paper',
-                xanchor='center',
-                yanchor='bottom',
-                text='Main Source for News',
-                font=Font(
-                    family='Arial',
-                    size=30,
-                    color= 'rgb(37,37,37)',
-                ),
-                showarrow=False,
-        ),
-         
-        # Source  
-        Annotation(
-                x= 0.5,
-                y= -0.1,
-                xref= 'paper',
-                yref= 'paper',
-                xanchor='center',
-                yanchor='top',
-                text='Source: PewResearch Center & Storytelling with data',
-                font=Font(
-                    family='Arial',
-                    size=12,
-                    color= 'rgb(150,150,150)',
-                ),
-                showarrow=False,
-        ),    
-    
-    ]),
-    
     height = 600,
     width = 600,
     autosize = False,
@@ -288,8 +91,34 @@ layout =Layout(
         r = 20,
         t = 110,
     ),
-    showlegend = False,
-    
+    showlegend = False,   
 )
-fig = Figure(data=data, layout=layout)
-plot_url = py.plot(fig, filename='news-soucre')
+           
+annotations = []
+
+# Adding labels
+for y_trace, label, color in zip( y_data, labels, colors):
+    
+    # labeling the left_side of the plot
+    annotations.append(Annotation(xref ='paper',x = 0.05, y = y_trace[0], xanchor ='right', yanchor ='middle',
+        text =  label + ' {}%'.format(y_trace[0]), font = Font(family = 'Arial', size = 16, color = colors,),
+        showarrow = False,))
+    # labeling the right_side of the plot
+    annotations.append(Annotation(xref = 'paper', x = 0.95, y = y_trace[11], xanchor ='left', yanchor ='middle',
+        text = '{}%'.format(y_trace[0]), font = Font(family = 'Arial', size = 16, color = colors,), 
+        showarrow = False,))   
+        
+# Title
+annotations.append(Annotation(xref ='paper', yref = 'paper', x = 0.15, y = 1.05 , xanchor='center', yanchor='bottom',
+    text ='Main Source for News', font = Font(family = 'Arial', size = 30, color = 'rgb(37,37,37)'), 
+    showarrow=False,))         
+                
+# Source
+annotations.append(Annotation(xref ='paper', yref = 'paper', x = 0.5, y = -0.1 , xanchor='center', yanchor='top',
+    text = 'Source: PewResearch Center & Storytelling with data', font = Font(family = 'Arial', size = 12, 
+    color = 'rgb(150,150,150)'), showarrow = False,))    
+
+layout['annotations'] = annotations
+
+fig = Figure(data = traces, layout = layout)    
+plot_url = py.plot(fig, filename='news-soucre')   
