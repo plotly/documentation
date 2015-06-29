@@ -7,3 +7,47 @@ order: 1
 ---
 # Learn about API authentication here: https://plot.ly/python/getting-started
 # Find your api_key here: https://plot.ly/settings/ap
+
+import plotly.plotly as py
+import pandas as pd
+
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv')
+
+scl = [[0.0, 'rgb(242,240,247)'],[0.2, 'rgb(218,218,235)'],[0.4, 'rgb(188,189,220)'],\
+            [0.6, 'rgb(158,154,200)'],[0.8, 'rgb(117,107,177)'],[1.0, 'rgb(84,39,143)']]
+
+df['text'] = df['state'] + '<br>--<br>' +\
+    'Beef: ' + df['beef'].astype(str) + '<br>' +\
+    'Pork: ' + df['pork'].astype(str) + '<br>' +\
+    'Poultry: ' + df['poultry'].astype(str) + '<br>' +\
+    'Dairy: ' + df['dairy'].astype(str) + '<br>--<br>' +\
+    'Fruits: ' + df['total fruits'].astype(str) + '<br>' +\
+    'Veggies: ' + df['total veggies'].astype(str) + '<br>--<br>' +\
+    'Wheat: ' + df['wheat'].astype(str) + '<br>' +\
+    'Corn: ' + df['corn'].astype(str) + '<br>' +\
+    'Cotton: ' + df['cotton'].astype(str)
+
+data = [ dict(
+        type='choropleth',
+        colorscale = scl,
+        autocolorscale = False,
+        locations = df['code'],
+        z = df['total exports'],
+        locationmode = 'USA-states',
+        text = df['text'],
+        colorbar = dict(
+            title = "Millions USD"
+        )
+    ) ]
+
+layout = dict(
+        title = '2011 US Agriculture Exports by State<br>(Hover for breakdown)',
+        geo = dict(
+            scope='usa',
+            projection=dict( type='albers usa' ),
+        ),
+    )
+    
+fig = dict( data=data, layout=layout )
+
+url = py.plot( fig, validate=False, filename='d3-cloropleth-map' )
