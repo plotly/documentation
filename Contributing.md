@@ -16,12 +16,17 @@ excluding folders in the `_config_dev.yml` file.
 For example, change `_config_dev.yml` to this:
 
 ```
-$ ruby --version
-$ sudo gem install bundler
+staticurl: http://localhost:4000/all_static
+exclude: [_posts/ggplot2, _posts/julia, _posts/matlab, _posts/matplotlib, _posts/nodejs, _posts/r] # [_posts/python,]
 ```
 
-To run:
+and you'll only load the files in `_posts/python`.
+
+Change it to this
 
 ```
-$ bundle exec jekyll serve
+staticurl: http://localhost:4000/all_static
+exclude: []
 ```
+
+and it'll load everything.
