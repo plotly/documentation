@@ -2,7 +2,7 @@
 title: Node JS Static Image Export | Examples | Plotly
 name: Static Image Export
 permalink: nodejs/static-image-export/
-description: How to export plotly graphs as static images in {language}. Plotly supports png, svg, jpg, and pdf image export.
+description: How to export plotly graphs as static images in nodejs. Plotly supports png, svg, jpg, and pdf image export.
 layout: getstart-base
 thumbnail: /images/static-image.png
 language: nodejs
