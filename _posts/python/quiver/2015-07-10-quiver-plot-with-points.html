@@ -1,0 +1,38 @@
+---
+name: Quiver Plot with Points
+plot_url: https://plot.ly/~chelsea_lyn/4235/
+language: python
+suite: quiver-plots
+order: 1
+---
+# Learn about API authentication here: https://plot.ly/python/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+import plotly.plotly as py
+import plotly.tools as tls
+from plotly.graph_objs import *
+
+import numpy as np
+
+x,y = np.meshgrid(np.arange(-2, 2, .2), np.arange(-2, 2, .25))
+z = x*np.exp(-x**2 - y**2)
+v, u = np.gradient(z, .2, .2)
+
+# Create quiver
+quiver = tls.TraceFactory.create_quiver(x, y, u, v, 
+                                        scale=.25, 
+                                        arrow_scale=.4, 
+                                        name='quiver',
+                                        line=Line(width=1))
+
+# Create points
+points = Scatter(x=[-.7, .75], y=[0,0], 
+                mode='markers', 
+                marker=Marker(size=14), 
+                name='points')
+
+# Plot
+data = Data([quiver, points])
+fig=Figure(data=data)
+
+url = py.plot( fig, filename='Quiver with Points' )
