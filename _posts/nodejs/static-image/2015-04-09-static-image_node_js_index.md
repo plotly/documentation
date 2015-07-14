@@ -9,6 +9,7 @@ language: nodejs
 page_type: example_index
 has_thumbnail: false
 display_as: get_request
+sitemap: false
 ---
 <div class="content-box">
 <p>These docs have moved!</p><br>

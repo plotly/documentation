@@ -8,6 +8,7 @@ language: python
 page_type: example_index
 has_thumbnail: false
 display_as: get_request
+sitemap: false
 ---
 <div class="content-box">
 <p>You can save static images using the following syntax:</p><br>
