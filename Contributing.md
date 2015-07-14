@@ -2,7 +2,7 @@
 
 1. Move your IPython notebook to somewhere relevant in the repo. e.g. in some folder inside `_posts`.
 2. `pip install publisher --upgrade`
-3. Add another cell to your notebook with `publisher.publish(notebook_name, url_path, page_title, page_description)`. What're these arguments? call `help(publisher.publish)`. This will convert your notebook into an HTML page that gh-pages understands. Example: ![](http://i.imgur.com/SDcuOkv.png), [](https://github.com/plotly/documentation/blob/gh-pages/_posts/user_guide_python/Plotly%20Offline.ipynb)
+3. Add another cell to your notebook with `publisher.publish(notebook_name, url_path, page_title, page_description)`. What're these arguments? call `help(publisher.publish)`. This will convert your notebook into an HTML page that gh-pages understands. Example: ![](http://i.imgur.com/SDcuOkv.png), [https://github.com/plotly/documentation/blob/gh-pages/_posts/user_guide_python/Plotly%20Offline.ipynb](https://github.com/plotly/documentation/blob/gh-pages/_posts/user_guide_python/Plotly%20Offline.ipynb)
 
 
 ## Testing locally
