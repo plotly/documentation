@@ -1,6 +1,6 @@
 ---
 name: Individual growth curves with facets 
-plot_url: https://plot.ly/~MattSundquist/16943
+plot_url: https://plot.ly/~MattSundquist/16946
 language: ggplot2
 suite: facets
 description: Inspired by <a href="http://www.ats.ucla.edu/stat/r/faq/growth.htm">the IDRE at UCLA</a>.
@@ -22,7 +22,9 @@ tolerance <- within(tolerance, {
     male <- factor(male, levels = 0:1, labels = c("female", "male"))
 })
 
-ggplot(data = tolerance, aes(x = time, y = tolerance)) + geom_line() +
-    facet_wrap(~id)
+tolerance$id <- with(tolerance, reorder(id, tolerance[ifelse(time == 0, TRUE, NA)], FUN = mean, na.rm = TRUE))
+
+ggplot(data = tolerance, aes(x = time, y = tolerance)) + geom_point() +
+    stat_smooth(method = "lm", se = FALSE) + facet_wrap(~id)
 
 py$ggplotly()
