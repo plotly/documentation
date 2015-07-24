@@ -1,3 +1,11 @@
+## Deploying changes
+Our repo has become too big for github to process. Edit files on the `source` branch instead of the `gh-pages` branch. Deploy changes locally with:
+```
+.../documentation (source) $ rake deploy
+```
+
+from the `source` branch
+
 ## Converting IPython Notebooks to gh-pages
 
 1. Move your IPython notebook to somewhere relevant in the repo. e.g. in some folder inside `_posts`.
