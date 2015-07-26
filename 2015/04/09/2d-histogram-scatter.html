@@ -1,64 +1,41 @@
-# Learn about API authentication here: https://plot.ly/python/getting-started
+# Learn about API authentication here: https://plot.ly/r/getting-started
 # Find your api_key here: https://plot.ly/settings/api
 
-import plotly.plotly as py
-from plotly.graph_objs import *
+library(plotly)
 
-import numpy as np
+x0 &lt;- rnorm(100)/5. + 0.5
+y0 &lt;- rnorm(100)/5. + 0.5
+x1 &lt;- runif(50)
+y1 &lt;- runif(50) + 1.0
 
-x0 = np.random.randn(100)/5. + 0.5  # 5. enforces float division
-y0 = np.random.randn(100)/5. + 0.5
-x1 = np.random.rand(50)
-y1 = np.random.rand(50) + 1.0
+x &lt;- c(x0, x1)
+y &lt;- c(y0, y1)
 
-x = np.concatenate([x0, x1])
-y = np.concatenate([y0, y1])
-
-trace1 = Scatter(
-    x=x0,
-    y=y0,
-    mode='markers',
-    showlegend=False,
-    marker=Marker(
-        symbol='x',
-        opacity=0.7,
-        color='white',
-        size=8,        
-        line=Line(width=1),
-    )
+trace1 &lt;- list(
+  x = x0,
+  y = y0,
+  mode = "markers",
+  marker = list(
+    symbol = "circle",
+    opacity = 0.7
+  ),
+  type = "scatter"
 )
-trace2 = Scatter(
-    x=x1,
-    y=y1,
-    mode='markers',
-    showlegend=False,
-    marker=Marker(
-        symbol='circle',
-        opacity=0.7,
-        color='white',
-        size=8,        
-        line=Line(width=1),        
-    )
+trace2 &lt;- list(
+  x = x1,
+  y = y1,
+  mode = "markers",
+  marker = list(
+    symbol = "square",
+    opacity = 0.7
+  ),
+  type = "scatter"
 )
-trace3 = Histogram2d(
-    x=x,
-    y=y,
-    colorscale='YIGnBu',
-    zmax=10,
-    nbinsx=14,
-    nbinsy=14,
-    zauto=False,
+trace3 &lt;- list(
+  x = x,
+  y = y,
+  type = "histogram2d"
 )
-    
-layout = Layout( 
-    xaxis=XAxis( ticks='', showgrid=False, zeroline=False, nticks=20 ),
-    yaxis=YAxis( ticks='', showgrid=False, zeroline=False, nticks=20 ),
-    autosize=False,
-    height=550,
-    width=550,
-    hovermode='closest',
-)
-data = Data([trace1, trace2, trace3])
-fig = Figure(data=data,layout=layout)
-
-url = py.plot(fig, filename='2d-histogram-scatter')
+data &lt;- list(trace1, trace2, trace3)
+response &lt;- py$plotly(data, kwargs=list(filename="2d-histogram-scatter", fileopt="overwrite"))
+url &lt;- response$url
