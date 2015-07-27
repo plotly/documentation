@@ -6,11 +6,13 @@ Our repo has become too big for github to process. Edit files on the `source` br
 
 from the `source` branch
 
-## Converting IPython Notebooks to gh-pages
+## Converting IPython Notebooks to github pages
 
-1. Move your IPython notebook to somewhere relevant in the repo. e.g. in some folder inside `_posts`.
-2. `pip install publisher --upgrade`
-3. Add another cell to your notebook with `publisher.publish(notebook_name, url_path, page_title, page_description)`. What're these arguments? call `help(publisher.publish)`. This will convert your notebook into an HTML page that gh-pages understands. Example: ![](http://i.imgur.com/SDcuOkv.png), [https://github.com/plotly/documentation/blob/gh-pages/_posts/user_guide_python/Plotly%20Offline.ipynb](https://github.com/plotly/documentation/blob/gh-pages/_posts/user_guide_python/Plotly%20Offline.ipynb)
+Check out any of the notebooks in [https://github.com/plotly/documentation/tree/source/_posts/tutorials](https://github.com/plotly/documentation/tree/source/_posts/tutorials)
+
+The last cell of these notebooks will convert the notebook into a github pages friendly html format:
+
+![](http://i.imgur.com/SDcuOkv.png)
 
 
 ## Rendering the pages locally
