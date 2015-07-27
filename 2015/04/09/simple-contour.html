@@ -1,26 +1,25 @@
-# Learn about API authentication here: https://plot.ly/r/getting-started
+# Learn about API authentication here: https://plot.ly/julia/getting-started
 # Find your api_key here: https://plot.ly/settings/api
 
-library(plotly)
+using Plotly
 
-size &lt;- 100
-x &lt;- seq(-2*pi, 2*pi, length=size)
-y &lt;- seq(-2*pi, 2*pi, length=size)
-z &lt;- matrix(0, size, size)
-for(i in 1:size) {
-    for(j in 1:size) {
-        r2 &lt;- x[i]^2 + y[j]^2
-        z[i, j] &lt;- sin(x[i])*cos(y[j])*sin(r2)/log(r2+1)
-    }
-}
+size = 100
+x = linspace(-2*pi, 2*pi, size)
+y = linspace(-2*pi, 2*pi, size)
+z = rand(size, size)
+for i = 1:size
+  for j = 1:size
+    r2 = (x(i)^2 + y(j)^2)
+        z(i,j) = sin(x(i))*cos(y(j))*sin(r2)/log(r2+1)
 
-data &lt;- list(
-  list(
-    z = z,
-    x = x,
-    y = y,
-    type = "contour"
-  )
-)
-response &lt;- py$plotly(data, kwargs=list(filename="simple-contour", fileopt="overwrite"))
-url &lt;- response$url
+
+data = [
+  [
+    "z" =&gt; z,
+    "x" =&gt; x,
+    "y" =&gt; y,
+    "type" =&gt; "contour"
+  ]
+]
+response = Plotly.plot(data, ["filename" =&gt; "simple-contour", "fileopt" =&gt; "overwrite"])
+plot_url = response["url"]
