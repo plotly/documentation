@@ -1,11 +1,3 @@
-## Deploying changes
-Our repo has become too big for github to process. Edit files on the `source` branch instead of the `gh-pages` branch. Deploy changes locally with:
-```
-.../documentation (source) $ rake deploy
-```
-
-from the `source` branch
-
 ## Converting IPython Notebooks to github pages
 
 Check out any of the notebooks in [https://github.com/plotly/documentation/tree/source/_posts/tutorials](https://github.com/plotly/documentation/tree/source/_posts/tutorials)
@@ -49,3 +41,11 @@ exclude: []
 ```
 
 and it'll load everything.
+
+## Deploying changes
+Our repo has become too big for github to process. Edit files on the `source` branch instead of the `gh-pages` branch. Deploy changes locally with:
+```
+.../documentation (source) $ rake deploy
+```
+
+from the `source` branch
