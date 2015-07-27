@@ -1,3 +1,6 @@
+## repo organization
+edit or add files in the `_posts` folder in the [source](http://github.com/plotly/documentation/tree/source) branch
+
 ## Converting IPython Notebooks to github pages
 
 Check out any of the notebooks in [https://github.com/plotly/documentation/tree/source/_posts/tutorials](https://github.com/plotly/documentation/tree/source/_posts/tutorials)
