@@ -46,9 +46,17 @@ exclude: []
 and it'll load everything.
 
 ## Deploying changes
-Our repo has become too big for github to process. Edit files on the `source` branch instead of the `gh-pages` branch. Deploy changes locally with:
+Our repo has become too big for github to process. Edit files on the `source` branch instead of the `gh-pages` branch.
+
+To deploy, first install `_config.yml` package dependencies:
 ```
-.../documentation (source) $ rake deploy
+documentation (source) $ sudo gem install jekyll-redirect-from
+documentation (source) $ sudo gem install jekyll-sitemap
 ```
 
-from the `source` branch
+Then, deploy changes with:
+```
+documentation (source) $ rake deploy
+```
+
+(from the `source` branch in the root of the `documentation` repo)
