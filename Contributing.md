@@ -48,8 +48,8 @@ and it'll load everything.
 ## Deploying changes
 Our repo has become too big for github to process. Edit files on the `source` branch instead of the `gh-pages` branch. Deploy changes locally with:
 ```
-.../documentation (source) $ gem install jekyll-redirect-from
-.../documentation (source) $ rake deploy
+documentation (source) $ gem install jekyll-redirect-from
+documentation (source) $ rake deploy
 ```
 
 from the `source` branch
