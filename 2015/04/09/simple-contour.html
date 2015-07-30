@@ -1,26 +1,33 @@
-# Learn about API authentication here: https://plot.ly/r/getting-started
-# Find your api_key here: https://plot.ly/settings/api
+// Learn about API authentication here: https://plot.ly/nodejs/getting-started
+// Find your api_key here: https://plot.ly/settings/api
 
-library(plotly)
+var linspace = require('linspace');
+var unpack = require('ndarray-unpack');
+var zeros = require('zeros');
+var fill = require('ndarray-fill');
 
-size &lt;- 100
-x &lt;- seq(-2*pi, 2*pi, length=size)
-y &lt;- seq(-2*pi, 2*pi, length=size)
-z &lt;- matrix(0, size, size)
-for(i in 1:size) {
-    for(j in 1:size) {
-        r2 &lt;- x[i]^2 + y[j]^2
-        z[i, j] &lt;- sin(x[i])*cos(y[j])*sin(r2)/log(r2+1)
-    }
+var size = 100
+var x = linspace(-2 * Math.PI, 2 * Math.PI, size)
+var y = linspace(-2 * Math.PI, 2 * Math.PI, size)
+var z = unpack(zeros([size,size]))
+for (var i = 0; i &lt; size; i++) {
+  for (var j = 0; j &lt; size; j++) {
+    r2 = (x * (i * i) + y * (j * j))
+      z[i][j] = Math.sin(x * i) * Math.cos(y * j) * Math.sin(r2) / Math.log(r2+1)
+  }
 }
 
-data &lt;- list(
-  list(
-    z = z,
-    x = x,
-    y = y,
-    type = "contour"
-  )
-)
-response &lt;- py$plotly(data, kwargs=list(filename="simple-contour", fileopt="overwrite"))
-url &lt;- response$url
+require('plotly')(username, api_key);
+
+var data = [
+  {
+    z: z,
+    x: x,
+    y: y,
+    type: "contour"
+  }
+];
+var graphOptions = {filename: "simple-contour", fileopt: "overwrite"};
+plotly.plot(data, graphOptions, function (err, msg) {
+    console.log(msg);
+});
