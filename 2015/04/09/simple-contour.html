@@ -1,25 +1,26 @@
-# Learn about API authentication here: https://plot.ly/python/getting-started
+# Learn about API authentication here: https://plot.ly/r/getting-started
 # Find your api_key here: https://plot.ly/settings/api
 
-import plotly.plotly as py
-from plotly.graph_objs import *
+library(plotly)
 
-import numpy as np
+size &lt;- 100
+x &lt;- seq(-2*pi, 2*pi, length=size)
+y &lt;- seq(-2*pi, 2*pi, length=size)
+z &lt;- matrix(0, size, size)
+for(i in 1:size) {
+    for(j in 1:size) {
+        r2 &lt;- x[i]^2 + y[j]^2
+        z[i, j] &lt;- sin(x[i])*cos(y[j])*sin(r2)/log(r2+1)
+    }
+}
 
-size = 100
-x = np.linspace(-2*np.pi, 2*np.pi, size)
-y = np.linspace(-2*np.pi, 2*np.pi, size)
-z = np.empty((size, size))
-for i, xi in enumerate(x):
-    for j, yj in enumerate(y):
-        r2 = (xi**2+yj**2)
-        z[i][j] = np.sin(xi)*np.cos(yj)*np.sin(r2)/(np.log(r2+1))
-
-data = Data([
-    Contour(
-        z=z,
-        x=x,
-        y=y
-    )
-])
-plot_url = py.plot(data, filename='simple-contour')
+data &lt;- list(
+  list(
+    z = z,
+    x = x,
+    y = y,
+    type = "contour"
+  )
+)
+response &lt;- py$plotly(data, kwargs=list(filename="simple-contour", fileopt="overwrite"))
+url &lt;- response$url
