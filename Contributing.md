@@ -1,17 +1,22 @@
-## Converting IPython Notebooks to gh-pages
+## repo organization
+edit or add files in the `_posts` folder in the [source](http://github.com/plotly/documentation/tree/source) branch
 
-1. Move your IPython notebook to somewhere relevant in the repo. e.g. in some folder inside `_posts`.
-2. `pip install publisher --upgrade`
-3. Add another cell to your notebook with `publisher.publish(notebook_name, url_path, page_title, page_description)`. What're these arguments? call `help(publisher.publish)`. This will convert your notebook into an HTML page that gh-pages understands. Example: ![](http://i.imgur.com/SDcuOkv.png), [https://github.com/plotly/documentation/blob/gh-pages/_posts/user_guide_python/Plotly%20Offline.ipynb](https://github.com/plotly/documentation/blob/gh-pages/_posts/user_guide_python/Plotly%20Offline.ipynb)
+## Converting IPython Notebooks to github pages
+
+Check out any of the notebooks in [https://github.com/plotly/documentation/tree/source/_posts/tutorials](https://github.com/plotly/documentation/tree/source/_posts/tutorials)
+
+The last cell of these notebooks will convert the notebook into a github pages friendly html format:
+
+![](http://i.imgur.com/SDcuOkv.png)
 
 
 ## Rendering the pages locally
 0. Clone the repo. `$ git clone git@github.com:plotly/documentation.git`
-1. Check out the gh-pages branch: 
+1. Check out the source branch:
 
   ```
   $ git fetch origin
-  $ git checkout gh-pages
+  $ git checkout source
   ```
 2. [Install jekyll](http://jekyllrb.com/docs/installation/) (usually as simple as `$ sudo gem install jekyll`)
 3. In the documentation repo: `$ jekyll serve --config _config_dev.yml`
@@ -39,3 +44,19 @@ exclude: []
 ```
 
 and it'll load everything.
+
+## Deploying changes
+Our repo has become too big for github to process. Edit files on the `source` branch instead of the `gh-pages` branch.
+
+To deploy, first install `_config.yml` package dependencies:
+```
+documentation (source) $ sudo gem install jekyll-redirect-from
+documentation (source) $ sudo gem install jekyll-sitemap
+```
+
+Then, deploy changes with:
+```
+documentation (source) $ rake deploy
+```
+
+(from the `source` branch in the root of the `documentation` repo)
