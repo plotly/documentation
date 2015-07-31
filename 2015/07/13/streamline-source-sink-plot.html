@@ -2,7 +2,7 @@
 # Find your api_key here: https://plot.ly/settings/api
 
 import plotly.plotly as py
-import plotly.tools as tls
+from plotly.tools import FigureFactory as FF
 from plotly.graph_objs import *
 
 import numpy as np
@@ -32,18 +32,21 @@ v_sink = strength_sink/(2*np.pi) * (Y-y_sink)/((X-x_sink)**2 + (Y-y_sink)**2)
 u_pair = u_source + u_sink
 v_pair = v_source + v_sink
 
-# Make streamline
-streamline = tls.TraceFactory.create_streamline(x, y, u_pair, v_pair, 
-                                                arrow_scale=.07, 
-                                                angle=np.pi/9, 
-                                                density=1.5, 
-                                                name='streamline')
+# Make streamline figure
+fig = FF.create_streamline(x, y, u_pair, v_pair, 
+                           arrow_scale=.07, angle=np.pi/9, 
+                           density=1.5, name='streamline')
     
-# Add source points
+# Make source points
 points = Scatter(x=[x_source, x_sink], y=[y_source, y_sink], 
                  mode='markers', marker=Marker(size=14), 
                  name='source points')
 
+# Add source points to figure
+fig['data'].append(points)
+
+# Add title to plot
+fig['layout'].update(title='Streamline Source and Sink Plot')
+
 # Plot
-fig=Figure(data=[streamline,points])
 url = py.plot( fig, filename='Streamline Source and Sink Plot' )
