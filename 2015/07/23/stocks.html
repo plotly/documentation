@@ -14,19 +14,19 @@ colnames(rtn.obj) <- c("x","y","z")
 # advanced charts.PerforanceSummary based on ggplot
 gg.charts.PerformanceSummary <- function(rtn.obj, geometric = TRUE, main = "", plot = TRUE)
 {
-    
+
     # load libraries
     suppressPackageStartupMessages(require(ggplot2))
     suppressPackageStartupMessages(require(scales))
     suppressPackageStartupMessages(require(reshape))
     suppressPackageStartupMessages(require(PerformanceAnalytics))
-    
+
     # create function to clean returns if having NAs in data
     clean.rtn.xts <- function(univ.rtn.xts.obj,na.replace=0){
         univ.rtn.xts.obj[is.na(univ.rtn.xts.obj)]<- na.replace
-        univ.rtn.xts.obj  
+        univ.rtn.xts.obj
     }
-    
+
     # Create cumulative return function
     cum.rtn <- function(clean.xts.obj, g = TRUE)
     {
@@ -34,7 +34,7 @@ gg.charts.PerformanceSummary <- function(rtn.obj, geometric = TRUE, main = "", p
         if(g == TRUE){y <- cumprod(x+1)-1} else {y <- cumsum(x)}
         y
     }
-    
+
     # Create function to calculate drawdowns
     dd.xts <- function(clean.xts.obj, g = TRUE)
     {
@@ -42,7 +42,7 @@ gg.charts.PerformanceSummary <- function(rtn.obj, geometric = TRUE, main = "", p
         if(g == TRUE){y <- PerformanceAnalytics:::Drawdowns(x)} else {y <- PerformanceAnalytics:::Drawdowns(x,geometric = FALSE)}
         y
     }
-    
+
     # create a function to create a dataframe to be usable in ggplot to replicate charts.PerformanceSummary
     cps.df <- function(xts.obj,geometric)
     {
@@ -58,7 +58,7 @@ gg.charts.PerformanceSummary <- function(rtn.obj, geometric = TRUE, main = "", p
         tmp.df.long$asset <- rep(series.name,nrow(tmp.df.long))
         tmp.df.long
     }
-    
+
     # A conditional statement altering the plot according to the number of assets
     if(ncol(rtn.obj)==1)
     {
@@ -70,7 +70,7 @@ gg.charts.PerformanceSummary <- function(rtn.obj, geometric = TRUE, main = "", p
         } else {
             title.string <- main
         }
-        
+
         gg.xts <- ggplot(df, aes_string( x = "Date", y = "value", group = "variable" )) +
             facet_grid(variable ~ ., scales = "free_y", space = "fixed") +
             geom_line(data = subset(df, variable == "Index")) +
@@ -82,9 +82,9 @@ gg.charts.PerformanceSummary <- function(rtn.obj, geometric = TRUE, main = "", p
             scale_x_datetime(breaks = date_breaks("6 months"), labels = date_format("%m/%Y")) +
             ylab("") +
             xlab("")
-        
-    } 
-    else 
+
+    }
+    else
     {
         # a few extra bits to deal with the added rtn columns
         no.of.assets <- ncol(rtn.obj)
@@ -96,54 +96,54 @@ gg.charts.PerformanceSummary <- function(rtn.obj, geometric = TRUE, main = "", p
         } else {
             title.string <- main
         }
-        
+
         if(no.of.assets>5){legend.rows <- 5} else {legend.rows <- no.of.assets}
-        
+
         gg.xts <- ggplot(df, aes_string(x = "Date", y = "value" )) +
-            
+
             # panel layout
-            facet_grid(variable~., scales = "free_y", space = "fixed", shrink = TRUE, drop = TRUE, margin = 
+            facet_grid(variable~., scales = "free_y", space = "fixed", shrink = TRUE, drop = TRUE, margin =
                            , labeller = label_value) + # label_value is default
-            
+
             # display points for Index and Drawdown, but not for Return
             geom_point(data = subset(df, variable == c("Index","Drawdown"))
-                       , aes(colour = factor(asset), shape = factor(asset)), size = 1.2, show_guide = TRUE) + 
-            
+                       , aes(colour = factor(asset), shape = factor(asset)), size = 1.2, show_guide = TRUE) +
+
             # manually select shape of geom_point
-            scale_shape_manual(values = c(1,2,3)) + 
-            
+            scale_shape_manual(values = c(1,2,3)) +
+
             # line colours for the Index
             geom_line(data = subset(df, variable == "Index"), aes(colour = factor(asset)), show_guide = FALSE) +
-            
+
             # bar colours for the Return
             geom_bar(data = subset(df,variable == "Return"), stat = "identity"
                      , aes(fill = factor(asset), colour = factor(asset)), position = "dodge", show_guide = FALSE) +
-            
+
             # line colours for the Drawdown
             geom_line(data = subset(df, variable == "Drawdown"), aes(colour = factor(asset)), show_guide = FALSE) +
-            
+
             # horizontal ticks
             scale_x_datetime(breaks = date_breaks("6 months"), labels = date_format("%m/%Y")) +
-            
+
             # main y-axis title
             ylab("") +
-            
+
             # main x-axis title
             xlab("") +
-            
+
             # main chart title
             ggtitle(title.string)
-        
+
     }
-    
+
     assign("gg.xts", gg.xts,envir=.GlobalEnv)
     if(plot == TRUE){
         plot(gg.xts)
     } else {}
-    
+
 }
 
 # display chart
 gg.charts.PerformanceSummary(rtn.obj, geometric = TRUE)
 
-py$ggplotly()
+ggplotly()

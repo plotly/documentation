@@ -45,7 +45,7 @@
 <!-- twitter tags -->
     <meta name="twitter:card" content="photo" />
     <meta name="twitter:title" content="plotly"/>
-    <meta name="twitter:url" content="http://help.plot.ly/r/"/>
+    <meta name="twitter:url" content="http://help.plot.lyr/"/>
     <meta name="twitter:description" content="Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of how to make line plots, scatter plots, area charts, bar charts, error bars, box plots, histograms, heatmaps, subplots, multiple-axes, polar charts and bubble charts."/>
     <meta name="twitter:image" content="http://help.plot.ly/images/twitter-default.png">
     <meta name="twitter:site" content="@plotlygraphs"/>
@@ -167,398 +167,530 @@
 				
 
 				<div class="container">
-					<h1 class="centered">Plotly R Library</h1>
-	<div class="row centered btnrow">
-		<a href="/r/getting-started/" class="button no_underline">Getting Started</a>
-		<a href="/r/user-guide/" class="button no_underline">User Guide</a>
-		<a href="https://plot.ly/r/reference/" class="button no_underline">Reference</a>
-	</div>
-	<div class="tipbox row">
-		<img src="https://plot.ly/gh-pages/documentation/static//images/ggplot.png" class="api-thum-img" alt="ggplot2 logo">
-	    <p><strong>ggplot2</strong> user? Check out <a href="https://plot.ly/ggplot2/">our ggplot2 figure converter page</a> for examples and documentation!<p>
-	</div>
-		<p>Want to see a feature added to the library? <a href="mailto:feedback@plot.ly">Get in touch!</a> We'd love to hear your ideas.</p>
-
-	<h2>Documentation Examples</h2>
-		
-		
-
-		
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
+					<h1 class="centered">Plotly R Library 1.0</h1>
+<div class="row centered btnrow">
+	<a href="/r/getting-started/" class="button no_underline">Getting Started</a>
+	<a href="/r/user-guide/" class="button no_underline">User Guide</a>
+	<a href="https://plot.ly/r/reference/" class="button no_underline">Figure Reference</a>
+</div>
 
 
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```
 
-  
-    
-  
+```{r, message=FALSE}
+library(plotly)
+set.seed(100)
+d <- diamonds[sample(nrow(diamonds), 1000), ]
+plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
+        mode = "markers", color = carat, size = carat, opacity = carat)
 
-  
+```
+Plotly graphs are interactive. Click-drag to zoom, shift-click to pan, double-click to autoscale.
 
-  
 
-  
-    
-  
+#### Know and love `ggplot2`? Try `ggplotly`
 
-  
-    
-  
+```{r, message=FALSE}
+p <- ggplot(data = d, aes(x = carat, y = price)) +
+  geom_point(aes(text = paste("Clarity:", clarity)), size = 4) +
+  geom_smooth(aes(colour = cut, fill = cut)) + facet_wrap(~ cut)
 
-  
-    
-  
+(gg <- ggplotly(p))
+```
 
-  
 
-  
+#### Mix data manipulation and visualization verbs
 
-  
+Plotly objects are data frames with a class of plotly and an environment that tracks the mapping from data to visual properties.
 
-  
+```{r, eval = TRUE}
+str(p <- plot_ly(economics, x = date, y = uempmed))
+```
 
-  
+This allows us to mix data manipulation and visualization verbs in a [pure(ly) functional, predictable and pipeable](https://dl.dropboxusercontent.com/u/41902/pipe-dsls.pdf) manner. Here, we take advantage of [dplyr](http://cran.r-project.org/web/packages/dplyr/index.html)'s `filter()` verb to label the highest peak in the time series:
 
-  
-    
-  
+```{r, message = FALSE, warning = FALSE, height=650}
+p %>%
+  add_trace(y = fitted(loess(uempmed ~ as.numeric(date)))) %>%
+  layout(title = "Median duration of unemployment (in weeks)",
+         showlegend = FALSE) %>%
+  dplyr::filter(uempmed == max(uempmed)) %>%
+  layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T))
+```
 
-  
-    
-  
+#### 3D WebGL and more
 
-  
-    
-  
+Although data frames can be thought of as the central object in this package, plotly visualizations don't actually _require_ a data frame. This makes chart types that accept a `z` argument especially easy to use if you have a numeric matrix:
 
-  
-
-  
-
-  
-
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-    
-  
-
-  
-
-  
-    
-  
-
-  
-
-  
-
-  
+```{r, message=FALSE, height=800}
+plot_ly(z = volcano, type = "surface")
+```
 
 
 
 
-  <hr>
-  <h3 id="basic-charts">
-  <a class="no_underline plot-blue" href="#basic-charts">Basic Charts</a>
-    
-  </h3>
-  
-  <div class="row">
-    
-      
-              <a href="/r/time-series/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Time Series" src="https://plot.ly/gh-pages/documentation/static//images/time-series.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Time Series </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-    
-      
-              <a href="/r/polar-chart/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Polar Charts" src="https://plot.ly/gh-pages/documentation/static//images/polar.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Polar Charts </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-    
-      
-              <a href="/r/graphing-multiple-chart-types/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Multiple Chart Types" src="https://plot.ly/gh-pages/documentation/static//images/mixed.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Multiple Chart Types </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/log-plot/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Log Plots" src="https://plot.ly/gh-pages/documentation/static//images/log.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Log Plots </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/line-and-scatter/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Line and Scatter Plots" src="https://plot.ly/gh-pages/documentation/static//images/line_and_scatter.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Line and Scatter Plots </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-    
-      
-              <a href="/r/histograms/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Histograms" src="https://plot.ly/gh-pages/documentation/static//images/histogram.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Histograms </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/2D-Histogram/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="2D Histograms" src="https://plot.ly/gh-pages/documentation/static//images/histogram2d.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> 2D Histograms </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/heatmaps/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Heatmaps" src="https://plot.ly/gh-pages/documentation/static//images/heatmap.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Heatmaps </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/error-bars/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Error Bars" src="https://plot.ly/gh-pages/documentation/static//images/error-bar.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Error Bars </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/contour-plots/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Contour Plots" src="https://plot.ly/gh-pages/documentation/static//images/contour.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Contour Plots </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/bubble-charts/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Bubble Charts" src="https://plot.ly/gh-pages/documentation/static//images/bubble.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Bubble Charts </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/box-plots/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Box Plots" src="https://plot.ly/gh-pages/documentation/static//images/box.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Box Plots </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/bar-charts/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Bar Charts" src="https://plot.ly/gh-pages/documentation/static//images/bar.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Bar Charts </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/filled-area-plots/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="Filled Area Plots" src="https://plot.ly/gh-pages/documentation/static//images/area.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> Filled Area Plots </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/3d-surface-plots/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="3D Surface Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-surface.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> 3D Surface Plots </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/3d-scatter-plots/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="3D Scatter Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-scatter.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> 3D Scatter Plots </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
-      
-              <a href="/r/3d-line-plots/">
-                  <div class="alltutcol">
-                    <img class="thumbnail" alt="3D Line Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-line.png" >
-                    <div class="titlecenter">
-                          <h5 class="centered"> 3D Line Plots </h5>
-                    </div>
-                  </div>
-              </a>
-      
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+<h3 id="basic-charts">
+
+
+</h3>
+
+<div class="row">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a href="/r/line-and-scatter/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Line and Scatter Plots" src="https://plot.ly/gh-pages/documentation/static//images/line-and-scatter.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Line and Scatter Plots </h5>
+      </div>
   </div>
+</a>
+
+
+
+<a href="/r/line-and-scatter/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Line and Scatter Plots" src="https://plot.ly/gh-pages/documentation/static//images/line-and-scatter.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Line and Scatter Plots </h5>
+      </div>
+  </div>
+</a>
+
+
+
+
+
+<a href="/r/bar-charts/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Bar Charts" src="https://plot.ly/gh-pages/documentation/static//images/bar.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Bar Charts </h5>
+      </div>
+  </div>
+</a>
+
+
+
+
+
+<a href="/r/bar-charts/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Bar Charts" src="https://plot.ly/gh-pages/documentation/static//images/bar.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Bar Charts </h5>
+      </div>
+  </div>
+</a>
 
 
 
@@ -570,331 +702,1175 @@
 
 
 
-  <hr>
-  <h3 id="multiple-axes-subplots-and-insets"><a class="no_underline plot-blue" href="#multiple-axes-subplots-and-insets">Multiple Axes, Subplots, and Insets</a></h3>
-    <div class="row">
-      
-        
-      
-        
-            <a href="/r/subplots/">
-              <div class="alltutcol">
-                <img class="thumbnail" alt="Subplots" src="https://plot.ly/gh-pages/documentation/static//images/subplots.png" >
-                <div class="titlecenter">
-                      <h5 class="centered"> Subplots </h5>
-                </div>
-              </div>
-            </a>
-            <div class=""></div>
-        
-      
-        
-      
-        
-            <a href="/r/multiple-axes/">
-              <div class="alltutcol">
-                <img class="thumbnail" alt="Multiple Axes" src="https://plot.ly/gh-pages/documentation/static//images/multiple-axes.png" >
-                <div class="titlecenter">
-                      <h5 class="centered"> Multiple Axes </h5>
-                </div>
-              </div>
-            </a>
-            <div class=""></div>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-            <a href="/r/insets/">
-              <div class="alltutcol">
-                <img class="thumbnail" alt="Inset Plots" src="https://plot.ly/gh-pages/documentation/static//images/insets.png" >
-                <div class="titlecenter">
-                      <h5 class="centered"> Inset Plots </h5>
-                </div>
-              </div>
-            </a>
-            <div class="three-column-clear"></div>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    </div>
+<a href="/r/box-plots/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Box Plots" src="https://plot.ly/gh-pages/documentation/static//images/box.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Box Plots </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/histograms/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Histograms" src="https://plot.ly/gh-pages/documentation/static//images/histogram.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Histograms </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/histograms/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Histograms" src="https://plot.ly/gh-pages/documentation/static//images/histogram.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Histograms </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/filled-area-plots/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Filled Area Plots" src="https://plot.ly/gh-pages/documentation/static//images/area.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Filled Area Plots </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/box-plots/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Box Plots" src="https://plot.ly/gh-pages/documentation/static//images/box.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Box Plots </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/filled-area-plots/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Filled Area Plots" src="https://plot.ly/gh-pages/documentation/static//images/area.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Filled Area Plots </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/2D-Histogram/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="2D Histograms" src="https://plot.ly/gh-pages/documentation/static//images/histogram2d.png">
+      <div class="titlecenter">
+        <h5 class="centered"> 2D Histograms </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/2D-Histogram/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="2D Histograms" src="https://plot.ly/gh-pages/documentation/static//images/histogram2d.png">
+      <div class="titlecenter">
+        <h5 class="centered"> 2D Histograms </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/contour-plots/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Contour Plots" src="https://plot.ly/gh-pages/documentation/static//images/contour.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Contour Plots </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/heatmaps/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Heatmaps" src="https://plot.ly/gh-pages/documentation/static//images/heatmap.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Heatmaps </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/heatmaps/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Heatmaps" src="https://plot.ly/gh-pages/documentation/static//images/heatmap.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Heatmaps </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/bubble-charts/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Bubble Charts" src="https://plot.ly/gh-pages/documentation/static//images/bubble.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Bubble Charts </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/bubble-charts/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Bubble Charts" src="https://plot.ly/gh-pages/documentation/static//images/bubble.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Bubble Charts </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/graphing-multiple-chart-types/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Graphing Multiple Chart Types" src="https://plot.ly/gh-pages/documentation/static//images/mixed.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Graphing Multiple Chart Types </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/graphing-multiple-chart-types/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Graphing Multiple Chart Types" src="https://plot.ly/gh-pages/documentation/static//images/mixed.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Graphing Multiple Chart Types </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/error-bars/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Error Bars" src="https://plot.ly/gh-pages/documentation/static//images/error-bar.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Error Bars </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/error-bars/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Error Bars" src="https://plot.ly/gh-pages/documentation/static//images/error-bar.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Error Bars </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/polar-chart/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Polar Charts" src="https://plot.ly/gh-pages/documentation/static//images/polar.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Polar Charts </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/polar-chart/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="Polar Charts" src="https://plot.ly/gh-pages/documentation/static//images/polar.png">
+      <div class="titlecenter">
+        <h5 class="centered"> Polar Charts </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/3d-line-plots/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="3D Line Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-line.png">
+      <div class="titlecenter">
+        <h5 class="centered"> 3D Line Plots </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/3d-line-plots/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="3D Line Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-line.png">
+      <div class="titlecenter">
+        <h5 class="centered"> 3D Line Plots </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/3d-scatter-plots/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="3D Scatter Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-scatter.png">
+      <div class="titlecenter">
+        <h5 class="centered"> 3D Scatter Plots </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/3d-scatter-plots/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="3D Scatter Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-scatter.png">
+      <div class="titlecenter">
+        <h5 class="centered"> 3D Scatter Plots </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/3d-surface-plots/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="3D Surface Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-surface.png">
+      <div class="titlecenter">
+        <h5 class="centered"> 3D Surface Plots </h5>
+      </div>
+  </div>
+</a>
+
+
+
+<a href="/r/3d-surface-plots/">
+  <div class="alltutcol">
+    <img class="thumbnail" alt="3D Surface Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-surface.png">
+      <div class="titlecenter">
+        <h5 class="centered"> 3D Surface Plots </h5>
+      </div>
+  </div>
+</a>
+
+
+</div>
 
 
 
 
 
-  <hr>
-  <h3 id="layout-options"><a class="no_underline plot-blue" href="#layout-options">Layout Options</a></h3>
-    <div class="row">
-      <ul class="no-list-style">
-      
-        
-      
-        
-      
-        
-      
-        
-        <li><a class="no-list-style" href="/r/setting-graph-size/">Setting Graph Size</a></li>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-        <li><a class="no-list-style" href="/r/legend/">Legends</a></li>
-        
-      
-        
-        <li><a class="no-list-style" href="/r/LaTeX/">LaTeX</a></li>
-        
-      
-        
-        <li><a class="no-list-style" href="/r/figure-labels/">Setting the Title, Legend Entries, and Axis Titles</a></li>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-        <li><a class="no-list-style" href="/r/font/">Text and Font Styling</a></li>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-        <li><a class="no-list-style" href="/r/axes/">Axes</a></li>
-        
-      
-        
-      
-        
-        <li><a class="no-list-style" href="/r/text-and-annotations/">Text and Annotations</a></li>
-        
-      
-        
-      
-        
-      
-        
-      
-      </ul>
-    </div>
+
+
+<hr>
+<h3 id="maps"><a class="no_underline plot-blue" href="#maps">Maps</a></h3>
+<div class="row">
+
+
+<a href="/r/choropleth-maps/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Choropleth Maps" src="https://plot.ly/gh-pages/documentation/static//images/choropleth.png" >
+<div class="titlecenter">
+<h5 class="centered"> Choropleth Maps </h5>
+</div>
+</div>
+</a>
 
 
 
-  <hr>
-  <h3 id="file-settings"><a class="no_underline plot-blue" href="#file-settings">File Settings</a></h3>
-    <div class="row">
-      <ul class="no-list-style">
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-        <li><a class="no-list-style" href="/r/privacy/">Public vs Private Graphs</a></li>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-        <li><a class="no-list-style" href="/r/file-options/">Filenames, Folders, and Updating Plotly Graphs in R</a></li>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-      </ul>
-    </div>
+<a href="/r/choropleth-maps/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Choropleth Maps" src="https://plot.ly/gh-pages/documentation/static//images/choropleth.png" >
+<div class="titlecenter">
+<h5 class="centered"> Choropleth Maps </h5>
+</div>
+</div>
+</a>
+
+
+
+<a href="/r/scatter-plots-on-maps/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Scatter Plots on Maps" src="https://plot.ly/gh-pages/documentation/static//images/scatter-plot-on-maps.png" >
+<div class="titlecenter">
+<h5 class="centered"> Scatter Plots on Maps </h5>
+</div>
+</div>
+</a>
+
+
+
+<a href="/r/scatter-plots-on-maps/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Scatter Plots on Maps" src="https://plot.ly/gh-pages/documentation/static//images/scatter-plot-on-maps.png" >
+<div class="titlecenter">
+<h5 class="centered"> Scatter Plots on Maps </h5>
+</div>
+</div>
+</a>
+
+
+
+<a href="/r/bubble-maps/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Bubble Maps" src="https://plot.ly/gh-pages/documentation/static//images/bubble-map.png" >
+<div class="titlecenter">
+<h5 class="centered"> Bubble Maps </h5>
+</div>
+</div>
+</a>
+
+
+
+<a href="/r/map-subplots-and-small-multiples/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Map Subplots And Small Multiples" src="https://plot.ly/gh-pages/documentation/static//images/map-subplots.png" >
+<div class="titlecenter">
+<h5 class="centered"> Map Subplots And Small Multiples </h5>
+</div>
+</div>
+</a>
+
+
+
+<a href="/r/map-subplots-and-small-multiples/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Map Subplots And Small Multiples" src="https://plot.ly/gh-pages/documentation/static//images/map-subplots.png" >
+<div class="titlecenter">
+<h5 class="centered"> Map Subplots And Small Multiples </h5>
+</div>
+</div>
+</a>
+
+
+
+<a href="/r/bubble-maps/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Bubble Maps" src="https://plot.ly/gh-pages/documentation/static//images/bubble-map.png" >
+<div class="titlecenter">
+<h5 class="centered"> Bubble Maps </h5>
+</div>
+</div>
+</a>
 
 
 
 
 
-  <hr>
-  <h3 id="get-requests-static-image-export"><a class="no_underline plot-blue" href="#get-requests-static-image-export">Get Requests, Static Image Export, and Interactive Embedding</a></h3>
-    <div class="row">
-      <ul class="no-list-style">
-        
-          
-            <li><a class="no-list-style" href="/r/embedding-plotly-graphs-in-HTML/">Embedding Graphs in HTML</a></li>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-            <li><a class="no-list-style" href="/r/shiny-tutorial/">Getting Started with Shiny and Plotly</a></li>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-            <li><a class="no-list-style" href="/r/get-requests/">Get Requests</a></li>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-      </ul>
-    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a href="/r/lines-on-maps/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Lines on Maps" src="https://plot.ly/gh-pages/documentation/static//images/flight-paths.png" >
+<div class="titlecenter">
+<h5 class="centered"> Lines on Maps </h5>
+</div>
+</div>
+</a>
+
+
+
+<a href="/r/lines-on-maps/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Lines on Maps" src="https://plot.ly/gh-pages/documentation/static//images/flight-paths.png" >
+<div class="titlecenter">
+<h5 class="centered"> Lines on Maps </h5>
+</div>
+</div>
+</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+<hr>
+<h3 id="multiple-axes-subplots-and-insets"><a class="no_underline plot-blue" href="#multiple-axes-subplots-and-insets">Multiple Axes, Subplots, and Insets</a></h3>
+<div class="row">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a href="/r/multiple-axes/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Multiple Axes" src="https://plot.ly/gh-pages/documentation/static//images/multiple-axes.png" >
+<div class="titlecenter">
+<h5 class="centered"> Multiple Axes </h5>
+</div>
+</div>
+</a>
+<div class=""></div>
+
+
+
+<a href="/r/multiple-axes/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Multiple Axes" src="https://plot.ly/gh-pages/documentation/static//images/multiple-axes.png" >
+<div class="titlecenter">
+<h5 class="centered"> Multiple Axes </h5>
+</div>
+</div>
+</a>
+<div class=""></div>
+
+
+
+
+
+
+
+<a href="/r/subplots/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Subplots" src="https://plot.ly/gh-pages/documentation/static//images/subplots.png" >
+<div class="titlecenter">
+<h5 class="centered"> Subplots </h5>
+</div>
+</div>
+</a>
+<div class="three-column-clear"></div>
+
+
+
+
+
+<a href="/r/insets/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Inset Plots" src="https://plot.ly/gh-pages/documentation/static//images/insets.png" >
+<div class="titlecenter">
+<h5 class="centered"> Inset Plots </h5>
+</div>
+</div>
+</a>
+<div class=""></div>
+
+
+
+
+
+<a href="/r/subplots/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Subplots" src="https://plot.ly/gh-pages/documentation/static//images/subplots.png" >
+<div class="titlecenter">
+<h5 class="centered"> Subplots </h5>
+</div>
+</div>
+</a>
+<div class="five-column-clear"></div>
+
+
+
+<a href="/r/insets/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Inset Plots" src="https://plot.ly/gh-pages/documentation/static//images/insets.png" >
+<div class="titlecenter">
+<h5 class="centered"> Inset Plots </h5>
+</div>
+</div>
+</a>
+<div class=""></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+<hr>
+
+<div class="row">
+
+<div class="four columns">
+<ul class="no-list-style">
+
+
+
+
+
+
+
+
+
+
+<li><a class="no-list-style" href="/r/text-and-annotations/">Text and Annotations</a></li>
+
+
+
+<li><a class="no-list-style" href="/r/text-and-annotations/">Text and Annotations</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a class="no-list-style" href="/r/setting-graph-size/">Setting Graph Size</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a class="no-list-style" href="/r/legend/">Legends</a></li>
+
+
+
+<li><a class="no-list-style" href="/r/legend/">Legends</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a class="no-list-style" href="/r/figure-labels">Axes Labels</a></li>
+
+
+
+<li><a class="no-list-style" href="/r/figure-labels">Axes Labels</a></li>
+
+
+
+
+
+
+
+<li><a class="no-list-style" href="/r/embedding-plotly-graphs-in-HTML">Text and Annotations</a></li>
+
+
+
+<li><a class="no-list-style" href="/r/embedding-plotly-graphs-in-HTML">Text and Annotations</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a class="no-list-style" href="/r/axes/">Axes</a></li>
+
+
+
+<li><a class="no-list-style" href="/r/axes/">Axes</a></li>
+
+
+
+<li><a class="no-list-style" href="/r/LaTeX/">LaTeX Typesetting in R Graphs</a></li>
+
+
+
+<li><a class="no-list-style" href="/r/LaTeX/">LaTeX Typesetting in R Graphs</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+</div>
+
+<div class="four columns">
+<ul class="no-list-style">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a class="no-list-style" href="/r/privacy/">Public vs Private Graphs</a></li>
+
+
+
+<li><a class="no-list-style" href="/r/privacy/">Public vs Private Graphs</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a class="no-list-style" href="/r/file-options/">Filenames, Folders, and Updating Plotly Graphs in R</a></li>
+
+
+
+<li><a class="no-list-style" href="/r/file-options/">Filenames, Folders, and Updating Plotly Graphs in R</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+</div>
+
+
+<div class="four columns">
+<ul class="no-list-style">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a class="no-list-style" href="/r/shiny-tutorial/">Getting Started with Shiny and Plotly</a></li>
+
+
+
+<li><a class="no-list-style" href="/r/shiny-tutorial/">Getting Started with Shiny and Plotly</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a class="no-list-style" href="/r/get-requests/">Get Requests</a></li>
+
+
+
+<li><a class="no-list-style" href="/r/get-requests/">Get Requests</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+</div>
+
+</div>
+
+
+
 
 
 
