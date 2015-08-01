@@ -174,450 +174,67 @@
 	<a href="https://plot.ly/r/reference/" class="button no_underline">Figure Reference</a>
 </div>
 
-
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
-
-```{r, message=FALSE}
-library(plotly)
+<pre><code class="language-r">library(plotly)
 set.seed(100)
-d <- diamonds[sample(nrow(diamonds), 1000), ]
+d &lt;- diamonds[sample(nrow(diamonds), 1000), ]
 plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
         mode = "markers", color = carat, size = carat, opacity = carat)
+</code></pre>
 
-```
-Plotly graphs are interactive. Click-drag to zoom, shift-click to pan, double-click to autoscale.
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1135.embed" width="800" frameborder="0"></iframe>
+<p>Plotly graphs are interactive. Click-drag to zoom, shift-click to pan, double-click to autoscale.</p>
 
+<h4 id="know-and-love-ggplot2-try-ggplotly">Know and love <code>ggplot2</code>? Try <code>ggplotly</code></h4>
 
-#### Know and love `ggplot2`? Try `ggplotly`
-
-```{r, message=FALSE}
-p <- ggplot(data = d, aes(x = carat, y = price)) +
+<pre><code class="language-r">p &lt;- ggplot(data = d, aes(x = carat, y = price)) +
   geom_point(aes(text = paste("Clarity:", clarity)), size = 4) +
   geom_smooth(aes(colour = cut, fill = cut)) + facet_wrap(~ cut)
 
-(gg <- ggplotly(p))
-```
+(gg &lt;- ggplotly(p))
+</code></pre>
 
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1137.embed" width="800" frameborder="0"></iframe>
 
-#### Mix data manipulation and visualization verbs
+<h4 id="mix-data-manipulation-and-visualization-verbs">Mix data manipulation and visualization verbs</h4>
 
-Plotly objects are data frames with a class of plotly and an environment that tracks the mapping from data to visual properties.
+<p>Plotly objects are data frames with a class of plotly and an environment that tracks the mapping from data to visual properties.</p>
 
-```{r, eval = TRUE}
-str(p <- plot_ly(economics, x = date, y = uempmed))
-```
+<pre><code class="language-r">str(p &lt;- plot_ly(economics, x = date, y = uempmed))
+</code></pre>
 
-This allows us to mix data manipulation and visualization verbs in a [pure(ly) functional, predictable and pipeable](https://dl.dropboxusercontent.com/u/41902/pipe-dsls.pdf) manner. Here, we take advantage of [dplyr](http://cran.r-project.org/web/packages/dplyr/index.html)'s `filter()` verb to label the highest peak in the time series:
+<pre><code>## Classes 'plotly' and 'data.frame':	478 obs. of  6 variables:
+##  $ date    : Date, format: "1967-06-30" "1967-07-31" ...
+##  $ pce     : num  508 511 517 513 518 ...
+##  $ pop     : int  198712 198911 199113 199311 199498 199657 199808 199920 200056 200208 ...
+##  $ psavert : num  9.8 9.8 9 9.8 9.7 9.4 9 9.5 8.9 9.6 ...
+##  $ uempmed : num  4.5 4.7 4.6 4.9 4.7 4.8 5.1 4.5 4.1 4.6 ...
+##  $ unemploy: int  2944 2945 2958 3143 3066 3018 2878 3001 2877 2709 ...
+##  - attr(*, "plotly_hash")= chr "7ff330ec8c566561765c62cbafed3e0f#2"
+</code></pre>
 
-```{r, message = FALSE, warning = FALSE, height=650}
-p %>%
-  add_trace(y = fitted(loess(uempmed ~ as.numeric(date)))) %>%
+<p>This allows us to mix data manipulation and visualization verbs in a <a href="https://dl.dropboxusercontent.com/u/41902/pipe-dsls.pdf">pure(ly) functional, predictable and pipeable</a> manner. Here, we take advantage of <a href="http://cran.r-project.org/web/packages/dplyr/index.html">dplyr</a>’s <code>filter()</code> verb to label the highest peak in the time series:</p>
+
+<pre><code class="language-r">p %&gt;%
+  add_trace(y = fitted(loess(uempmed ~ as.numeric(date)))) %&gt;%
   layout(title = "Median duration of unemployment (in weeks)",
-         showlegend = FALSE) %>%
-  dplyr::filter(uempmed == max(uempmed)) %>%
+         showlegend = FALSE) %&gt;%
+  dplyr::filter(uempmed == max(uempmed)) %&gt;%
   layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T))
-```
+</code></pre>
 
-#### 3D WebGL and more
+<iframe height="650" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1139.embed" width="800" frameborder="0"></iframe>
 
-Although data frames can be thought of as the central object in this package, plotly visualizations don't actually _require_ a data frame. This makes chart types that accept a `z` argument especially easy to use if you have a numeric matrix:
+<h4 id="d-webgl-and-more">3D WebGL and more</h4>
 
-```{r, message=FALSE, height=800}
-plot_ly(z = volcano, type = "surface")
-```
+<p>Although data frames can be thought of as the central object in this package, plotly visualizations don’t actually <em>require</em> a data frame. This makes chart types that accept a <code>z</code> argument especially easy to use if you have a numeric matrix:</p>
 
+<pre><code class="language-r">plot_ly(z = volcano, type = "surface")
+</code></pre>
 
+<iframe height="800" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1141.embed" width="800" frameborder="0"></iframe>
 
+<hr />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<hr>
 <h3 id="basic-charts">
 
 
@@ -636,30 +253,9 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-
-
-
-
-
-
-
-
-
-
 <a href="/r/line-and-scatter/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="Line and Scatter Plots" src="https://plot.ly/gh-pages/documentation/static//images/line-and-scatter.png">
-      <div class="titlecenter">
-        <h5 class="centered"> Line and Scatter Plots </h5>
-      </div>
-  </div>
-</a>
-
-
-
-<a href="/r/line-and-scatter/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="Line and Scatter Plots" src="https://plot.ly/gh-pages/documentation/static//images/line-and-scatter.png">
+    <img class="thumbnail" alt="Line and Scatter Plots" src="https://plot.ly/gh-pages/documentation/static//images/line-and-scatter.png" />
       <div class="titlecenter">
         <h5 class="centered"> Line and Scatter Plots </h5>
       </div>
@@ -670,9 +266,11 @@ plot_ly(z = volcano, type = "surface")
 
 
 
+
+
 <a href="/r/bar-charts/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="Bar Charts" src="https://plot.ly/gh-pages/documentation/static//images/bar.png">
+    <img class="thumbnail" alt="Bar Charts" src="https://plot.ly/gh-pages/documentation/static//images/bar.png" />
       <div class="titlecenter">
         <h5 class="centered"> Bar Charts </h5>
       </div>
@@ -683,39 +281,9 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-<a href="/r/bar-charts/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="Bar Charts" src="https://plot.ly/gh-pages/documentation/static//images/bar.png">
-      <div class="titlecenter">
-        <h5 class="centered"> Bar Charts </h5>
-      </div>
-  </div>
-</a>
-
-
-
-
-
-
-
-
-
-
-
-<a href="/r/box-plots/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="Box Plots" src="https://plot.ly/gh-pages/documentation/static//images/box.png">
-      <div class="titlecenter">
-        <h5 class="centered"> Box Plots </h5>
-      </div>
-  </div>
-</a>
-
-
-
 <a href="/r/histograms/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="Histograms" src="https://plot.ly/gh-pages/documentation/static//images/histogram.png">
+    <img class="thumbnail" alt="Histograms" src="https://plot.ly/gh-pages/documentation/static//images/histogram.png" />
       <div class="titlecenter">
         <h5 class="centered"> Histograms </h5>
       </div>
@@ -724,31 +292,9 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-<a href="/r/histograms/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="Histograms" src="https://plot.ly/gh-pages/documentation/static//images/histogram.png">
-      <div class="titlecenter">
-        <h5 class="centered"> Histograms </h5>
-      </div>
-  </div>
-</a>
-
-
-
-<a href="/r/filled-area-plots/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="Filled Area Plots" src="https://plot.ly/gh-pages/documentation/static//images/area.png">
-      <div class="titlecenter">
-        <h5 class="centered"> Filled Area Plots </h5>
-      </div>
-  </div>
-</a>
-
-
-
 <a href="/r/box-plots/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="Box Plots" src="https://plot.ly/gh-pages/documentation/static//images/box.png">
+    <img class="thumbnail" alt="Box Plots" src="https://plot.ly/gh-pages/documentation/static//images/box.png" />
       <div class="titlecenter">
         <h5 class="centered"> Box Plots </h5>
       </div>
@@ -759,7 +305,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/filled-area-plots/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="Filled Area Plots" src="https://plot.ly/gh-pages/documentation/static//images/area.png">
+    <img class="thumbnail" alt="Filled Area Plots" src="https://plot.ly/gh-pages/documentation/static//images/area.png" />
       <div class="titlecenter">
         <h5 class="centered"> Filled Area Plots </h5>
       </div>
@@ -770,18 +316,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/2D-Histogram/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="2D Histograms" src="https://plot.ly/gh-pages/documentation/static//images/histogram2d.png">
-      <div class="titlecenter">
-        <h5 class="centered"> 2D Histograms </h5>
-      </div>
-  </div>
-</a>
-
-
-
-<a href="/r/2D-Histogram/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="2D Histograms" src="https://plot.ly/gh-pages/documentation/static//images/histogram2d.png">
+    <img class="thumbnail" alt="2D Histograms" src="https://plot.ly/gh-pages/documentation/static//images/histogram2d.png" />
       <div class="titlecenter">
         <h5 class="centered"> 2D Histograms </h5>
       </div>
@@ -792,7 +327,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/contour-plots/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="Contour Plots" src="https://plot.ly/gh-pages/documentation/static//images/contour.png">
+    <img class="thumbnail" alt="Contour Plots" src="https://plot.ly/gh-pages/documentation/static//images/contour.png" />
       <div class="titlecenter">
         <h5 class="centered"> Contour Plots </h5>
       </div>
@@ -803,18 +338,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/heatmaps/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="Heatmaps" src="https://plot.ly/gh-pages/documentation/static//images/heatmap.png">
-      <div class="titlecenter">
-        <h5 class="centered"> Heatmaps </h5>
-      </div>
-  </div>
-</a>
-
-
-
-<a href="/r/heatmaps/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="Heatmaps" src="https://plot.ly/gh-pages/documentation/static//images/heatmap.png">
+    <img class="thumbnail" alt="Heatmaps" src="https://plot.ly/gh-pages/documentation/static//images/heatmap.png" />
       <div class="titlecenter">
         <h5 class="centered"> Heatmaps </h5>
       </div>
@@ -825,18 +349,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/bubble-charts/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="Bubble Charts" src="https://plot.ly/gh-pages/documentation/static//images/bubble.png">
-      <div class="titlecenter">
-        <h5 class="centered"> Bubble Charts </h5>
-      </div>
-  </div>
-</a>
-
-
-
-<a href="/r/bubble-charts/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="Bubble Charts" src="https://plot.ly/gh-pages/documentation/static//images/bubble.png">
+    <img class="thumbnail" alt="Bubble Charts" src="https://plot.ly/gh-pages/documentation/static//images/bubble.png" />
       <div class="titlecenter">
         <h5 class="centered"> Bubble Charts </h5>
       </div>
@@ -847,18 +360,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/graphing-multiple-chart-types/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="Graphing Multiple Chart Types" src="https://plot.ly/gh-pages/documentation/static//images/mixed.png">
-      <div class="titlecenter">
-        <h5 class="centered"> Graphing Multiple Chart Types </h5>
-      </div>
-  </div>
-</a>
-
-
-
-<a href="/r/graphing-multiple-chart-types/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="Graphing Multiple Chart Types" src="https://plot.ly/gh-pages/documentation/static//images/mixed.png">
+    <img class="thumbnail" alt="Graphing Multiple Chart Types" src="https://plot.ly/gh-pages/documentation/static//images/mixed.png" />
       <div class="titlecenter">
         <h5 class="centered"> Graphing Multiple Chart Types </h5>
       </div>
@@ -869,18 +371,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/error-bars/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="Error Bars" src="https://plot.ly/gh-pages/documentation/static//images/error-bar.png">
-      <div class="titlecenter">
-        <h5 class="centered"> Error Bars </h5>
-      </div>
-  </div>
-</a>
-
-
-
-<a href="/r/error-bars/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="Error Bars" src="https://plot.ly/gh-pages/documentation/static//images/error-bar.png">
+    <img class="thumbnail" alt="Error Bars" src="https://plot.ly/gh-pages/documentation/static//images/error-bar.png" />
       <div class="titlecenter">
         <h5 class="centered"> Error Bars </h5>
       </div>
@@ -891,18 +382,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/polar-chart/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="Polar Charts" src="https://plot.ly/gh-pages/documentation/static//images/polar.png">
-      <div class="titlecenter">
-        <h5 class="centered"> Polar Charts </h5>
-      </div>
-  </div>
-</a>
-
-
-
-<a href="/r/polar-chart/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="Polar Charts" src="https://plot.ly/gh-pages/documentation/static//images/polar.png">
+    <img class="thumbnail" alt="Polar Charts" src="https://plot.ly/gh-pages/documentation/static//images/polar.png" />
       <div class="titlecenter">
         <h5 class="centered"> Polar Charts </h5>
       </div>
@@ -913,18 +393,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/3d-line-plots/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="3D Line Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-line.png">
-      <div class="titlecenter">
-        <h5 class="centered"> 3D Line Plots </h5>
-      </div>
-  </div>
-</a>
-
-
-
-<a href="/r/3d-line-plots/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="3D Line Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-line.png">
+    <img class="thumbnail" alt="3D Line Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-line.png" />
       <div class="titlecenter">
         <h5 class="centered"> 3D Line Plots </h5>
       </div>
@@ -935,18 +404,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/3d-scatter-plots/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="3D Scatter Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-scatter.png">
-      <div class="titlecenter">
-        <h5 class="centered"> 3D Scatter Plots </h5>
-      </div>
-  </div>
-</a>
-
-
-
-<a href="/r/3d-scatter-plots/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="3D Scatter Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-scatter.png">
+    <img class="thumbnail" alt="3D Scatter Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-scatter.png" />
       <div class="titlecenter">
         <h5 class="centered"> 3D Scatter Plots </h5>
       </div>
@@ -957,18 +415,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/3d-surface-plots/">
   <div class="alltutcol">
-    <img class="thumbnail" alt="3D Surface Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-surface.png">
-      <div class="titlecenter">
-        <h5 class="centered"> 3D Surface Plots </h5>
-      </div>
-  </div>
-</a>
-
-
-
-<a href="/r/3d-surface-plots/">
-  <div class="alltutcol">
-    <img class="thumbnail" alt="3D Surface Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-surface.png">
+    <img class="thumbnail" alt="3D Surface Plots" src="https://plot.ly/gh-pages/documentation/static//images/3d-surface.png" />
       <div class="titlecenter">
         <h5 class="centered"> 3D Surface Plots </h5>
       </div>
@@ -978,31 +425,15 @@ plot_ly(z = volcano, type = "surface")
 
 </div>
 
+<hr />
 
-
-
-
-
-
-<hr>
 <h3 id="maps"><a class="no_underline plot-blue" href="#maps">Maps</a></h3>
 <div class="row">
 
 
 <a href="/r/choropleth-maps/">
 <div class="alltutcol">
-<img class="thumbnail" alt="Choropleth Maps" src="https://plot.ly/gh-pages/documentation/static//images/choropleth.png" >
-<div class="titlecenter">
-<h5 class="centered"> Choropleth Maps </h5>
-</div>
-</div>
-</a>
-
-
-
-<a href="/r/choropleth-maps/">
-<div class="alltutcol">
-<img class="thumbnail" alt="Choropleth Maps" src="https://plot.ly/gh-pages/documentation/static//images/choropleth.png" >
+<img class="thumbnail" alt="Choropleth Maps" src="https://plot.ly/gh-pages/documentation/static//images/choropleth.png" />
 <div class="titlecenter">
 <h5 class="centered"> Choropleth Maps </h5>
 </div>
@@ -1013,7 +444,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/scatter-plots-on-maps/">
 <div class="alltutcol">
-<img class="thumbnail" alt="Scatter Plots on Maps" src="https://plot.ly/gh-pages/documentation/static//images/scatter-plot-on-maps.png" >
+<img class="thumbnail" alt="Scatter Plots on Maps" src="https://plot.ly/gh-pages/documentation/static//images/scatter-plot-on-maps.png" />
 <div class="titlecenter">
 <h5 class="centered"> Scatter Plots on Maps </h5>
 </div>
@@ -1022,42 +453,9 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-<a href="/r/scatter-plots-on-maps/">
-<div class="alltutcol">
-<img class="thumbnail" alt="Scatter Plots on Maps" src="https://plot.ly/gh-pages/documentation/static//images/scatter-plot-on-maps.png" >
-<div class="titlecenter">
-<h5 class="centered"> Scatter Plots on Maps </h5>
-</div>
-</div>
-</a>
-
-
-
-<a href="/r/bubble-maps/">
-<div class="alltutcol">
-<img class="thumbnail" alt="Bubble Maps" src="https://plot.ly/gh-pages/documentation/static//images/bubble-map.png" >
-<div class="titlecenter">
-<h5 class="centered"> Bubble Maps </h5>
-</div>
-</div>
-</a>
-
-
-
 <a href="/r/map-subplots-and-small-multiples/">
 <div class="alltutcol">
-<img class="thumbnail" alt="Map Subplots And Small Multiples" src="https://plot.ly/gh-pages/documentation/static//images/map-subplots.png" >
-<div class="titlecenter">
-<h5 class="centered"> Map Subplots And Small Multiples </h5>
-</div>
-</div>
-</a>
-
-
-
-<a href="/r/map-subplots-and-small-multiples/">
-<div class="alltutcol">
-<img class="thumbnail" alt="Map Subplots And Small Multiples" src="https://plot.ly/gh-pages/documentation/static//images/map-subplots.png" >
+<img class="thumbnail" alt="Map Subplots And Small Multiples" src="https://plot.ly/gh-pages/documentation/static//images/map-subplots.png" />
 <div class="titlecenter">
 <h5 class="centered"> Map Subplots And Small Multiples </h5>
 </div>
@@ -1068,7 +466,7 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/bubble-maps/">
 <div class="alltutcol">
-<img class="thumbnail" alt="Bubble Maps" src="https://plot.ly/gh-pages/documentation/static//images/bubble-map.png" >
+<img class="thumbnail" alt="Bubble Maps" src="https://plot.ly/gh-pages/documentation/static//images/bubble-map.png" />
 <div class="titlecenter">
 <h5 class="centered"> Bubble Maps </h5>
 </div>
@@ -1087,30 +485,9 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-
-
-
-
-
-
-
-
-
-
 <a href="/r/lines-on-maps/">
 <div class="alltutcol">
-<img class="thumbnail" alt="Lines on Maps" src="https://plot.ly/gh-pages/documentation/static//images/flight-paths.png" >
-<div class="titlecenter">
-<h5 class="centered"> Lines on Maps </h5>
-</div>
-</div>
-</a>
-
-
-
-<a href="/r/lines-on-maps/">
-<div class="alltutcol">
-<img class="thumbnail" alt="Lines on Maps" src="https://plot.ly/gh-pages/documentation/static//images/flight-paths.png" >
+<img class="thumbnail" alt="Lines on Maps" src="https://plot.ly/gh-pages/documentation/static//images/flight-paths.png" />
 <div class="titlecenter">
 <h5 class="centered"> Lines on Maps </h5>
 </div>
@@ -1144,37 +521,10 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </div>
 
+<hr />
 
-
-
-
-<hr>
 <h3 id="multiple-axes-subplots-and-insets"><a class="no_underline plot-blue" href="#multiple-axes-subplots-and-insets">Multiple Axes, Subplots, and Insets</a></h3>
 <div class="row">
 
@@ -1187,37 +537,15 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-
-
-
-
-
-
-
-
 <a href="/r/multiple-axes/">
 <div class="alltutcol">
-<img class="thumbnail" alt="Multiple Axes" src="https://plot.ly/gh-pages/documentation/static//images/multiple-axes.png" >
+<img class="thumbnail" alt="Multiple Axes" src="https://plot.ly/gh-pages/documentation/static//images/multiple-axes.png" />
 <div class="titlecenter">
 <h5 class="centered"> Multiple Axes </h5>
 </div>
 </div>
 </a>
 <div class=""></div>
-
-
-
-<a href="/r/multiple-axes/">
-<div class="alltutcol">
-<img class="thumbnail" alt="Multiple Axes" src="https://plot.ly/gh-pages/documentation/static//images/multiple-axes.png" >
-<div class="titlecenter">
-<h5 class="centered"> Multiple Axes </h5>
-</div>
-</div>
-</a>
-<div class=""></div>
-
-
 
 
 
@@ -1225,9 +553,21 @@ plot_ly(z = volcano, type = "surface")
 
 <a href="/r/subplots/">
 <div class="alltutcol">
-<img class="thumbnail" alt="Subplots" src="https://plot.ly/gh-pages/documentation/static//images/subplots.png" >
+<img class="thumbnail" alt="Subplots" src="https://plot.ly/gh-pages/documentation/static//images/subplots.png" />
 <div class="titlecenter">
 <h5 class="centered"> Subplots </h5>
+</div>
+</div>
+</a>
+<div class=""></div>
+
+
+
+<a href="/r/insets/">
+<div class="alltutcol">
+<img class="thumbnail" alt="Inset Plots" src="https://plot.ly/gh-pages/documentation/static//images/insets.png" />
+<div class="titlecenter">
+<h5 class="centered"> Inset Plots </h5>
 </div>
 </div>
 </a>
@@ -1237,70 +577,6 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-<a href="/r/insets/">
-<div class="alltutcol">
-<img class="thumbnail" alt="Inset Plots" src="https://plot.ly/gh-pages/documentation/static//images/insets.png" >
-<div class="titlecenter">
-<h5 class="centered"> Inset Plots </h5>
-</div>
-</div>
-</a>
-<div class=""></div>
-
-
-
-
-
-<a href="/r/subplots/">
-<div class="alltutcol">
-<img class="thumbnail" alt="Subplots" src="https://plot.ly/gh-pages/documentation/static//images/subplots.png" >
-<div class="titlecenter">
-<h5 class="centered"> Subplots </h5>
-</div>
-</div>
-</a>
-<div class="five-column-clear"></div>
-
-
-
-<a href="/r/insets/">
-<div class="alltutcol">
-<img class="thumbnail" alt="Inset Plots" src="https://plot.ly/gh-pages/documentation/static//images/insets.png" >
-<div class="titlecenter">
-<h5 class="centered"> Inset Plots </h5>
-</div>
-</div>
-</a>
-<div class=""></div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1330,11 +606,7 @@ plot_ly(z = volcano, type = "surface")
 
 </div>
 
-
-
-
-
-<hr>
+<hr />
 
 <div class="row">
 
@@ -1346,39 +618,7 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-
-
-
-
 <li><a class="no-list-style" href="/r/text-and-annotations/">Text and Annotations</a></li>
-
-
-
-<li><a class="no-list-style" href="/r/text-and-annotations/">Text and Annotations</a></li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<li><a class="no-list-style" href="/r/setting-graph-size/">Setting Graph Size</a></li>
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1408,28 +648,6 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-<li><a class="no-list-style" href="/r/legend/">Legends</a></li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1452,31 +670,9 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-<li><a class="no-list-style" href="/r/figure-labels">Axes Labels</a></li>
-
-
-
-
-
 
 
 <li><a class="no-list-style" href="/r/embedding-plotly-graphs-in-HTML">Text and Annotations</a></li>
-
-
-
-<li><a class="no-list-style" href="/r/embedding-plotly-graphs-in-HTML">Text and Annotations</a></li>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1496,23 +692,7 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-<li><a class="no-list-style" href="/r/axes/">Axes</a></li>
-
-
-
 <li><a class="no-list-style" href="/r/LaTeX/">LaTeX Typesetting in R Graphs</a></li>
-
-
-
-<li><a class="no-list-style" href="/r/LaTeX/">LaTeX Typesetting in R Graphs</a></li>
-
-
-
-
-
-
-
-
 
 
 
@@ -1544,24 +724,6 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<li><a class="no-list-style" href="/r/privacy/">Public vs Private Graphs</a></li>
-
-
-
 <li><a class="no-list-style" href="/r/privacy/">Public vs Private Graphs</a></li>
 
 
@@ -1596,71 +758,7 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <li><a class="no-list-style" href="/r/file-options/">Filenames, Folders, and Updating Plotly Graphs in R</a></li>
-
-
-
-<li><a class="no-list-style" href="/r/file-options/">Filenames, Folders, and Updating Plotly Graphs in R</a></li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1709,18 +807,6 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-
-
-
-
-
-
-
-
-<li><a class="no-list-style" href="/r/shiny-tutorial/">Getting Started with Shiny and Plotly</a></li>
-
-
-
 <li><a class="no-list-style" href="/r/shiny-tutorial/">Getting Started with Shiny and Plotly</a></li>
 
 
@@ -1755,77 +841,7 @@ plot_ly(z = volcano, type = "surface")
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <li><a class="no-list-style" href="/r/get-requests/">Get Requests</a></li>
-
-
-
-<li><a class="no-list-style" href="/r/get-requests/">Get Requests</a></li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1868,10 +884,6 @@ plot_ly(z = volcano, type = "surface")
 </div>
 
 </div>
-
-
-
-
 
 
 					

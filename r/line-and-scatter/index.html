@@ -171,86 +171,98 @@
 
 
 
-				```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
-# Line and Scatter Plots in R
+				<h1 id="line-and-scatter-plots-in-r">Line and Scatter Plots in R</h1>
 
-```{r, message=FALSE}
-# Simple scatterplot
+<pre><code class="language-r"># Simple scatterplot
 library(plotly)
 plot_ly(data = iris, x = Sepal.Length, y = Petal.Length, mode = "markers",
         filename="r-docs/simple-scatter")
-```
+</code></pre>
 
-### Scatter Plot with Qualitative Colorscale
-```{r, message=FALSE}
-plot_ly(data = iris, x = Sepal.Length, y = Petal.Length, mode = "markers",
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/259.embed" width="800" frameborder="0"></iframe>
+
+<h3 id="scatter-plot-with-qualitative-colorscale">Scatter Plot with Qualitative Colorscale</h3>
+
+<pre><code class="language-r">plot_ly(data = iris, x = Sepal.Length, y = Petal.Length, mode = "markers",
         color = Species,
         filename="r-docs/scatter-with-qualitative-colorscale")
-```
+</code></pre>
 
-### ColorBrewer Palette Names
-```{r, message=FALSE}
-# By default, colors will 'span the gamut'
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/271.embed" width="800" frameborder="0"></iframe>
+
+<h3 id="colorbrewer-palette-names">ColorBrewer Palette Names</h3>
+
+<pre><code class="language-r"># By default, colors will 'span the gamut'
 # scales::show_col(RColorBrewer::brewer.pal("Set1"))
 plot_ly(data = iris, x = Sepal.Length, y = Petal.Length, mode = "markers",
         color = Species, colors = "Set1",
         filename="r-docs/scatter-colorbrewer")
-```
+</code></pre>
 
-### Custom Color Scales
-```{r, message=FALSE}
-# pass RGB or hex color codes directly to colors for finer control
-pal <- RColorBrewer::brewer.pal(nlevels(iris$Species), "Set1")
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/273.embed" width="800" frameborder="0"></iframe>
+
+<h3 id="custom-color-scales">Custom Color Scales</h3>
+
+<pre><code class="language-r"># pass RGB or hex color codes directly to colors for finer control
+pal &lt;- RColorBrewer::brewer.pal(nlevels(iris$Species), "Set1")
 plot_ly(data = iris, x = Sepal.Length, y = Petal.Length, color = Species,
         colors = pal, mode = "markers",
         filename="r-docs/scatter-custom-color-scale")
-```
+</code></pre>
 
-### Adding Color and Size Mapping
-```{r, message=FALSE}
-library(plotly)
-d <- diamonds[sample(nrow(diamonds), 1000), ]
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/263.embed" width="800" frameborder="0"></iframe>
+
+<h3 id="adding-color-and-size-mapping">Adding Color and Size Mapping</h3>
+
+<pre><code class="language-r">library(plotly)
+d &lt;- diamonds[sample(nrow(diamonds), 1000), ]
 # note how size is automatically scaled and added as hover text
 plot_ly(d, x = carat, y = price, size = carat, mode = "markers", filename="r-docs/basic-bubble")
+</code></pre>
 
-plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/205.embed" width="800" frameborder="0"></iframe>
+
+<pre><code class="language-r">plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
         mode = "markers", color = carat, size = carat, opacity = carat,
         filename="r-docs/custom-bubble-text")
+</code></pre>
 
-```
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/207.embed" width="800" frameborder="0"></iframe>
 
-### Basic Time Series Plot with Loess Smooth
-```{r, message=FALSE}
-p <- plot_ly(economics, x = date, y = uempmed, name = "unemployment", filename="r-docs/basic-time-series")
-p %>% add_trace(y = fitted(loess(uempmed ~ as.numeric(date))), filename="r-docs/time-series-with-fit")
-```
+<h3 id="basic-time-series-plot-with-loess-smooth">Basic Time Series Plot with Loess Smooth</h3>
 
-### Density Plot
-```{r, message=FALSE}
-dens <- with(diamonds, tapply(price, INDEX = cut, density))
-df <- data.frame(
+<pre><code class="language-r">p &lt;- plot_ly(economics, x = date, y = uempmed, name = "unemployment", filename="r-docs/basic-time-series")
+p %&gt;% add_trace(y = fitted(loess(uempmed ~ as.numeric(date))), filename="r-docs/time-series-with-fit")
+</code></pre>
+
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/275.embed" width="800" frameborder="0"></iframe>
+
+<h3 id="density-plot">Density Plot</h3>
+
+<pre><code class="language-r">dens &lt;- with(diamonds, tapply(price, INDEX = cut, density))
+df &lt;- data.frame(
   x = unlist(lapply(dens, "[[", "x")),
   y = unlist(lapply(dens, "[[", "y")),
   cut = rep(names(dens), each = length(dens[[1]]$x))
 )
 plot_ly(df, x = x, y = y, color = cut, filename="r-docs/density-plot")
-```
+</code></pre>
 
-### Line Interpolation Options
-```{r, message=FALSE}
-x <- 1:5
-y <- c(1, 3, 2, 3, 1)
-plot_ly(x = x, y = y, name = "linear", line = list(shape = "linear"), filename="r-docs/line-shape-options") %>%
-  add_trace(y = y + 5, name = "spline", line = list(shape = "spline")) %>%
-  add_trace(y = y + 10, name = "vhv", line = list(shape = "vhv")) %>%
-  add_trace(y = y + 15, name = "hvh", line = list(shape = "hvh")) %>%
-  add_trace(y = y + 20, name = "vh", line = list(shape = "vh")) %>%
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/267.embed" width="800" frameborder="0"></iframe>
+
+<h3 id="line-interpolation-options">Line Interpolation Options</h3>
+
+<pre><code class="language-r">x &lt;- 1:5
+y &lt;- c(1, 3, 2, 3, 1)
+plot_ly(x = x, y = y, name = "linear", line = list(shape = "linear"), filename="r-docs/line-shape-options") %&gt;%
+  add_trace(y = y + 5, name = "spline", line = list(shape = "spline")) %&gt;%
+  add_trace(y = y + 10, name = "vhv", line = list(shape = "vhv")) %&gt;%
+  add_trace(y = y + 15, name = "hvh", line = list(shape = "hvh")) %&gt;%
+  add_trace(y = y + 20, name = "vh", line = list(shape = "vh")) %&gt;%
   add_trace(y = y + 25, name = "hv", line = list(shape = "hv"))
-```
+</code></pre>
+
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/269.embed" width="800" frameborder="0"></iframe>
 
 
 				</div>
