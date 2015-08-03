@@ -1,3 +1,10 @@
+require 'shellwords'
+
+def bash(command)
+  escaped_command = Shellwords.escape(command)
+  system "bash -c #{escaped_command}"
+end
+
 def git_clean?
   git_state = `git status 2> /dev/null | tail -n1`
   clean = (git_state =~ /working directory clean/)
@@ -16,7 +23,7 @@ task :deploy => [:check_git] do
   deploy_branch = 'gh-pages'
   message = "Site updated at #{Time.now.utc}"
 
-  system "git pull origin  \"#{source_branch}\" && jekyll build && git checkout \"#{deploy_branch}\" && git pull origin \"#{deploy_branch}\" && shopt -s extglob && rm -r !(_site|.gitignore) && cp -r _site/* . && rm -rf _site/ && touch .nojekyll"
+  bash("git pull origin  \"#{source_branch}\" && jekyll build && git checkout \"#{deploy_branch}\" && git pull origin \"#{deploy_branch}\" && shopt -s extglob && rm -r !(_site|.gitignore) && cp -r _site/* . && rm -rf _site/ && touch .nojekyll")
 
   unless git_clean?
     system "git add . && git commit -m \"#{message}\""
