@@ -16,7 +16,7 @@ task :deploy => [:check_git] do
   deploy_branch = 'gh-pages'
   message = "Site updated at #{Time.now.utc}"
 
-  system "git pull origin source && jekyll build && git checkout \"#{deploy_branch}\" && git pull origin \"#{deploy_branch}\" && cp -r _site/* . && rm -rf _site/ && touch .nojekyll"
+  system "git pull origin  \"#{source_branch}\" && jekyll build && git checkout \"#{deploy_branch}\" && git pull origin \"#{deploy_branch}\" && cp -r _site/* . && rm -rf _site/ && touch .nojekyll"
 
   unless git_clean?
     system "git add . && git commit -m \"#{message}\""
