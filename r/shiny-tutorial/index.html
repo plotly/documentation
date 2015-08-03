@@ -171,94 +171,89 @@
 
 
 
-				<h1 id="plotly-graphs-in-shiny">Plotly Graphs in Shiny</h1>
+				<h1>Plotly Graphs in Shiny</h1>
 
-<p>Plotly works with Shiny entirely <em>client-side</em> either through <a href="https://plot.ly/javascript-graphing-library">plotly.js</a> or with Plotly’s <a href="https://github.com/plotly/postMessage-API">postMessage API</a>. This means that updating the Plotly graphs is <em>fast</em> because no external calls are made to a Plotly server. You can export Plotly graphs to your account by clicking the <code>Edit chart</code> link on the bottom right of the chart.</p>
+<p>Plotly works with Shiny entirely <em>client-side</em> either through <a href="https://plot.ly/javascript-graphing-library">plotly.js</a> or with Plotly&#39;s <a href="https://github.com/plotly/postMessage-API">postMessage API</a>. This means that updating the Plotly graphs is <em>fast</em> because no external calls are made to a Plotly server. You can export Plotly graphs to your account by clicking the <code>Edit chart</code> link on the bottom right of the chart.</p>
 
-<p>&lt;iframe src=”https://plotly.shinyapps.io/Movies” width=”100%” height=700 scrolling=”no” seamless=”seamless” style=”border: none”&gt;&lt;/iframe&gt;</p>
+<iframe src="https://plotly.shinyapps.io/Movies" width="100%" height=700 scrolling="no" seamless="seamless" style="border: none"></iframe>
 
-<h3 id="example-1---plotlys-native-syntax">Example 1 - Plotly’s Native Syntax</h3>
+<h3>Example 1 - Plotly&#39;s Native Syntax</h3>
 
-<h4 id="uir"><code>ui.R</code></h4>
-<pre><code>
-library(shiny)
+<h4><code>ui.R</code></h4>
+<div class="highlight"><pre><code class="language-text" data-lang="text">library(shiny)
 library(plotly)
 
 shinyUI(fluidPage(
-  titlePanel("Movie Ratings!"),
+  titlePanel(&quot;Movie Ratings!&quot;),
   sidebarPanel(
-    sliderInput("bins", "Number of bins:", min = 1, max = 50, value = 10)
+    sliderInput(&quot;bins&quot;, &quot;Number of bins:&quot;, min = 1, max = 50, value = 10)
   ),
   mainPanel(
-    plotlyOutput("trendPlot")
+    plotlyOutput(&quot;trendPlot&quot;)
   )
 ))
-</code></pre>
+</code></pre></div>
+<h4><code>server.R</code></h4>
+<div class="highlight"><pre><code class="language-R" data-lang="R"><span class="kn">library</span><span class="p">(</span>shiny<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
 
-<h4 id="serverr"><code>server.R</code></h4>
-<pre><code class="language-R">library(shiny)
-library(plotly)
+data<span class="p">(</span>movies<span class="p">,</span> package <span class="o">=</span> <span class="s">&quot;ggplot2&quot;</span><span class="p">)</span>
+minx <span class="o">&lt;-</span> <span class="kp">min</span><span class="p">(</span>movies<span class="o">$</span>rating<span class="p">)</span>
+maxx <span class="o">&lt;-</span> <span class="kp">max</span><span class="p">(</span>movies<span class="o">$</span>rating<span class="p">)</span>
 
-data(movies, package = "ggplot2")
-minx &lt;- min(movies$rating)
-maxx &lt;- max(movies$rating)
+shinyServer<span class="p">(</span><span class="kr">function</span><span class="p">(</span>input<span class="p">,</span> output<span class="p">)</span> <span class="p">{</span>
 
-shinyServer(function(input, output) {
+  output<span class="o">$</span>trendPlot <span class="o">&lt;-</span> renderPlotly<span class="p">({</span>
+    <span class="c1"># size of the bins depend on the input &#39;bins&#39;</span>
+    size <span class="o">&lt;-</span> <span class="p">(</span>maxx <span class="o">-</span> minx<span class="p">)</span> <span class="o">/</span> input<span class="o">$</span>bins
 
-  output$trendPlot &lt;- renderPlotly({
-    # size of the bins depend on the input 'bins'
-    size &lt;- (maxx - minx) / input$bins
+    <span class="c1"># a simple histogram of movie ratings</span>
+    p <span class="o">&lt;-</span> plot_ly<span class="p">(</span>movies<span class="p">,</span> x <span class="o">=</span> rating<span class="p">,</span> autobinx <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;histogram&quot;</span><span class="p">,</span>
+                 xbins <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>start <span class="o">=</span> minx<span class="p">,</span> end <span class="o">=</span> maxx<span class="p">,</span> size <span class="o">=</span> size<span class="p">))</span>
+    <span class="c1"># style the xaxis</span>
+    layout<span class="p">(</span>p<span class="p">,</span> xaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Ratings&quot;</span><span class="p">,</span> range <span class="o">=</span> <span class="kt">c</span><span class="p">(</span>minx<span class="p">,</span> maxx<span class="p">),</span> autorange <span class="o">=</span> <span class="bp">F</span><span class="p">,</span>
+                           autotick <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> tick0 <span class="o">=</span> minx<span class="p">,</span> dtick <span class="o">=</span> size<span class="p">))</span>
+  <span class="p">})</span>
+<span class="p">})</span>
+</code></pre></div>
+<h3>Example 2 - Render <code>ggplotly</code></h3>
 
-    # a simple histogram of movie ratings
-    p &lt;- plot_ly(movies, x = rating, autobinx = F, type = "histogram",
-                 xbins = list(start = minx, end = maxx, size = size))
-    # style the xaxis
-    layout(p, xaxis = list(title = "Ratings", range = c(minx, maxx), autorange = F,
-                           autotick = F, tick0 = minx, dtick = size))
-  })
-})
-</code></pre>
+<h4><code>ui.R</code></h4>
+<div class="highlight"><pre><code class="language-R" data-lang="R"><span class="kn">library</span><span class="p">(</span>shiny<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
 
-<h3 id="example-2---render-ggplotly">Example 2 - Render <code>ggplotly</code></h3>
+shinyUI<span class="p">(</span>fluidPage<span class="p">(</span>
+  titlePanel<span class="p">(</span><span class="s">&quot;Movie Ratings!&quot;</span><span class="p">),</span>
+  sidebarPanel<span class="p">(</span>
+    sliderInput<span class="p">(</span><span class="s">&quot;bins&quot;</span><span class="p">,</span> <span class="s">&quot;Number of bins:&quot;</span><span class="p">,</span> min <span class="o">=</span> <span class="m">1</span><span class="p">,</span> max <span class="o">=</span> <span class="m">50</span><span class="p">,</span> value <span class="o">=</span> <span class="m">10</span><span class="p">)</span>
+  <span class="p">),</span>
+  mainPanel<span class="p">(</span>
+    plotlyOutput<span class="p">(</span><span class="s">&quot;trendPlot&quot;</span><span class="p">)</span>
+  <span class="p">)</span>
+<span class="p">))</span>
+</code></pre></div>
+<h4><code>server.R</code></h4>
+<div class="highlight"><pre><code class="language-R" data-lang="R"><span class="kn">library</span><span class="p">(</span>shiny<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
 
-<h4 id="uir-1"><code>ui.R</code></h4>
-<pre><code class="language-R">library(shiny)
-library(plotly)
+data<span class="p">(</span>movies<span class="p">,</span> package <span class="o">=</span> <span class="s">&quot;ggplot2&quot;</span><span class="p">)</span>
+minx <span class="o">&lt;-</span> <span class="kp">min</span><span class="p">(</span>movies<span class="o">$</span>rating<span class="p">)</span>
+maxx <span class="o">&lt;-</span> <span class="kp">max</span><span class="p">(</span>movies<span class="o">$</span>rating<span class="p">)</span>
 
-shinyUI(fluidPage(
-  titlePanel("Movie Ratings!"),
-  sidebarPanel(
-    sliderInput("bins", "Number of bins:", min = 1, max = 50, value = 10)
-  ),
-  mainPanel(
-    plotlyOutput("trendPlot")
-  )
-))
-</code></pre>
+shinyServer<span class="p">(</span><span class="kr">function</span><span class="p">(</span>input<span class="p">,</span> output<span class="p">)</span> <span class="p">{</span>
 
-<h4 id="serverr-1"><code>server.R</code></h4>
-<pre><code class="language-R">library(shiny)
-library(plotly)
+  output<span class="o">$</span>trendPlot <span class="o">&lt;-</span> renderPlotly<span class="p">({</span>
+    <span class="c1"># size of the bins depend on the input &#39;bins&#39;</span>
+    size <span class="o">&lt;-</span> <span class="p">(</span>maxx <span class="o">-</span> minx<span class="p">)</span> <span class="o">/</span> input<span class="o">$</span>bins
 
-data(movies, package = "ggplot2")
-minx &lt;- min(movies$rating)
-maxx &lt;- max(movies$rating)
-
-shinyServer(function(input, output) {
-
-  output$trendPlot &lt;- renderPlotly({
-    # size of the bins depend on the input 'bins'
-    size &lt;- (maxx - minx) / input$bins
-
-    gg &lt;- ggplot(movies, aes(x=rating)) +
-                 geom_histogram(aes(y = ..density..), binwidth=size)
-    # Convert the ggplot to a plotly
-    p &lt;- ggplotly(gg)
+    gg <span class="o">&lt;-</span> ggplot<span class="p">(</span>movies<span class="p">,</span> aes<span class="p">(</span>x<span class="o">=</span>rating<span class="p">))</span> <span class="o">+</span>
+                 geom_histogram<span class="p">(</span>aes<span class="p">(</span>y <span class="o">=</span> <span class="m">..</span>density..<span class="p">),</span> binwidth<span class="o">=</span>size<span class="p">)</span>
+    <span class="c1"># Convert the ggplot to a plotly</span>
+    p <span class="o">&lt;-</span> ggplotly<span class="p">(</span>gg<span class="p">)</span>
     p
-  })
-})
-</code></pre>
-
+  <span class="p">})</span>
+<span class="p">})</span>
+</code></pre></div>
 
 				</div>
 			</div>

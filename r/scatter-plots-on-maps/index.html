@@ -171,85 +171,81 @@
 
 
 
-				<h1 id="us-airports-map-in-r">US Airports Map in R</h1>
+				<h1>US Airports Map in R</h1>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
+df <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv&#39;</span><span class="p">)</span>
+df<span class="o">$</span>hover <span class="o">&lt;-</span> <span class="kp">with</span><span class="p">(</span>df<span class="p">,</span> <span class="kp">paste</span><span class="p">(</span>airport<span class="p">,</span> city<span class="p">,</span> state<span class="p">,</span> <span class="s">&quot;Arrivals: &quot;</span><span class="p">,</span> cnt<span class="p">))</span>
 
-<pre><code class="language-r">library(plotly)
-df &lt;- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv')
-df$hover &lt;- with(df, paste(airport, city, state, "Arrivals: ", cnt))
+<span class="c1"># marker styling</span>
+m <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>
+  colorbar <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Incoming flights February 2011&quot;</span><span class="p">),</span>
+  size <span class="o">=</span> <span class="m">8</span><span class="p">,</span> opacity <span class="o">=</span> <span class="m">0.8</span><span class="p">,</span> symbol <span class="o">=</span> <span class="s">&#39;square&#39;</span>
+<span class="p">)</span>
 
-# marker styling
-m &lt;- list(
-  colorbar = list(title = "Incoming flights February 2011"),
-  size = 8, opacity = 0.8, symbol = 'square'
-)
+<span class="c1"># geo styling</span>
+g <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>
+  scope <span class="o">=</span> <span class="s">&#39;usa&#39;</span><span class="p">,</span>
+  projection <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>type <span class="o">=</span> <span class="s">&#39;albers usa&#39;</span><span class="p">),</span>
+  showland <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+  landcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;gray95&quot;</span><span class="p">),</span>
+  subunitcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;gray85&quot;</span><span class="p">),</span>
+  countrycolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;gray85&quot;</span><span class="p">),</span>
+  countrywidth <span class="o">=</span> <span class="m">0.5</span><span class="p">,</span>
+  subunitwidth <span class="o">=</span> <span class="m">0.5</span>
+<span class="p">)</span>
 
-# geo styling
-g &lt;- list(
-  scope = 'usa',
-  projection = list(type = 'albers usa'),
-  showland = TRUE,
-  landcolor = toRGB("gray95"),
-  subunitcolor = toRGB("gray85"),
-  countrycolor = toRGB("gray85"),
-  countrywidth = 0.5,
-  subunitwidth = 0.5
-)
+plot_ly<span class="p">(</span>df<span class="p">,</span> lat <span class="o">=</span> lat<span class="p">,</span> lon <span class="o">=</span> long<span class="p">,</span> text <span class="o">=</span> hover<span class="p">,</span> color <span class="o">=</span> cnt<span class="p">,</span>
+        type <span class="o">=</span> <span class="s">&#39;scattergeo&#39;</span><span class="p">,</span> locationmode <span class="o">=</span> <span class="s">&#39;USA-states&#39;</span><span class="p">,</span> mode <span class="o">=</span> <span class="s">&#39;markers&#39;</span><span class="p">,</span>
+        marker <span class="o">=</span> m<span class="p">,</span> filename<span class="o">=</span><span class="s">&quot;r-docs/us-airports&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&#39;Most trafficked US airports&lt;br&gt;(Hover for airport)&#39;</span><span class="p">,</span> geo <span class="o">=</span> g<span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/329" width="800" frameBorder="0"></iframe>
 
-plot_ly(df, lat = lat, lon = long, text = hover, color = cnt,
-        type = 'scattergeo', locationmode = 'USA-states', mode = 'markers',
-        marker = m, filename="r-docs/us-airports") %&gt;%
-  layout(title = 'Most trafficked US airports&lt;br&gt;(Hover for airport)', geo = g)
-</code></pre>
+<h3>North American Precipitation Map from NOAA</h3>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
+df <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2015_06_30_precipitation.csv&#39;</span><span class="p">)</span>
+df<span class="o">$</span>hover <span class="o">&lt;-</span> <span class="kp">paste</span><span class="p">(</span>df<span class="o">$</span>Globvalue<span class="p">,</span> <span class="s">&quot;inches&quot;</span><span class="p">)</span>
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/329" width="800" frameborder="0"></iframe>
+<span class="c1"># change default color scale title</span>
+m <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>colorbar <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Total Inches&quot;</span><span class="p">))</span>
 
-<h3 id="north-american-precipitation-map-from-noaa">North American Precipitation Map from NOAA</h3>
+<span class="c1"># geo styling</span>
+g <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>
+  scope <span class="o">=</span> <span class="s">&#39;north america&#39;</span><span class="p">,</span>
+  showland <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+  landcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;grey83&quot;</span><span class="p">),</span>
+  subunitcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">),</span>
+  countrycolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">),</span>
+  showlakes <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+  lakecolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">),</span>
+  showsubunits <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+  showcountries <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+  resolution <span class="o">=</span> <span class="m">50</span><span class="p">,</span>
+  projection <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>
+    type <span class="o">=</span> <span class="s">&#39;conic conformal&#39;</span><span class="p">,</span>
+    rotation <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>
+      lon <span class="o">=</span> <span class="m">-100</span>
+    <span class="p">)</span>
+  <span class="p">),</span>
+  lonaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>
+    showgrid <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+    gridwidth <span class="o">=</span> <span class="m">0.5</span><span class="p">,</span>
+    range <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">-140</span><span class="p">,</span> <span class="m">-55</span><span class="p">),</span>
+    dtick <span class="o">=</span> <span class="m">5</span>
+  <span class="p">),</span>
+  lataxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>
+    showgrid <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+    gridwidth <span class="o">=</span> <span class="m">0.5</span><span class="p">,</span>
+    range <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">20</span><span class="p">,</span> <span class="m">60</span><span class="p">),</span>
+    dtick <span class="o">=</span> <span class="m">5</span>
+  <span class="p">)</span>
+<span class="p">)</span>
 
-<pre><code class="language-r">library(plotly)
-df &lt;- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2015_06_30_precipitation.csv')
-df$hover &lt;- paste(df$Globvalue, "inches")
-
-# change default color scale title
-m &lt;- list(colorbar = list(title = "Total Inches"))
-
-# geo styling
-g &lt;- list(
-  scope = 'north america',
-  showland = TRUE,
-  landcolor = toRGB("grey83"),
-  subunitcolor = toRGB("white"),
-  countrycolor = toRGB("white"),
-  showlakes = TRUE,
-  lakecolor = toRGB("white"),
-  showsubunits = TRUE,
-  showcountries = TRUE,
-  resolution = 50,
-  projection = list(
-    type = 'conic conformal',
-    rotation = list(
-      lon = -100
-    )
-  ),
-  lonaxis = list(
-    showgrid = TRUE,
-    gridwidth = 0.5,
-    range = c(-140, -55),
-    dtick = 5
-  ),
-  lataxis = list(
-    showgrid = TRUE,
-    gridwidth = 0.5,
-    range = c(20, 60),
-    dtick = 5
-  )
-)
-
-plot_ly(df, lat = Lat, lon = Lon, text = hover, color = Globvalue,
-        type = 'scattergeo', marker = m, filename="r-docs/precipitation-map") %&gt;%
-  layout(title = 'US Precipitation 06-30-2015&lt;br&gt;Source: NOAA', geo = g)
-</code></pre>
-
-<iframe height="800" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/334" width="800" frameborder="0"></iframe>
+plot_ly<span class="p">(</span>df<span class="p">,</span> lat <span class="o">=</span> Lat<span class="p">,</span> lon <span class="o">=</span> Lon<span class="p">,</span> text <span class="o">=</span> hover<span class="p">,</span> color <span class="o">=</span> Globvalue<span class="p">,</span>
+        type <span class="o">=</span> <span class="s">&#39;scattergeo&#39;</span><span class="p">,</span> marker <span class="o">=</span> m<span class="p">,</span> filename<span class="o">=</span><span class="s">&quot;r-docs/precipitation-map&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&#39;US Precipitation 06-30-2015&lt;br&gt;Source: NOAA&#39;</span><span class="p">,</span> geo <span class="o">=</span> g<span class="p">)</span>
+</code></pre></div>
+<iframe height="800" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/334" width="800" frameBorder="0"></iframe>
 
 
 				</div>

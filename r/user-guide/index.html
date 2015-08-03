@@ -173,214 +173,172 @@
 
 					
 
-						<h1 id="plotly-user-guide">Plotly UseR Guide</h1>
+						<h1>Plotly UseR Guide</h1>
 
-<p>Version 1.0.0 of the <a href="https://github.com/ropensci/plotly">plotly R package</a> introduces a new high-level interface for working with plotly’s JavaScript graphing library from R. The aim of this vignette is to explain the semantics of this interface, but I also recommend perusing <a href="https://plot.ly/r/">plotly’s R homepage</a> for more examples.</p>
+<p>Version 1.0.0 of the <a href="https://github.com/ropensci/plotly">plotly R package</a> introduces a new high-level interface for working with plotly&#39;s JavaScript graphing library from R. The aim of this vignette is to explain the semantics of this interface, but I also recommend perusing <a href="https://plot.ly/r/">plotly&#39;s R homepage</a> for more examples.</p>
 
 <p>To initiate a plotly object, use <code>plot_ly()</code>. Here we turn the <code>economics</code> data frame (from the ggplot2 package) into a plotly visualization and store it as the object <code>p</code>.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
+p <span class="o">&lt;-</span> plot_ly<span class="p">(</span>economics<span class="p">,</span> x <span class="o">=</span> <span class="kp">date</span><span class="p">,</span> y <span class="o">=</span> uempmed<span class="p">)</span>
+</code></pre></div>
+<p>If you have a plotly account, printing plotly objects in the R console will create a new plotly figure, and open it in your web browser. If you&#39;re using knitr/R Markdown with HTML output (like <a href="https://github.com/ropensci/plotly/tree/master/vignettes/intro.Rmd">this vignette</a>), printing not only creates the plot, but also embeds it as an HTML iframe.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">p
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/997.embed" width="800" frameBorder="0"></iframe>
 
-<pre><code class="language-r">library(plotly)
-p &lt;- plot_ly(economics, x = date, y = uempmed)
-</code></pre>
+<p><code>plot_ly()</code> has a number of arguments which are unique to the R package and make common visualizations a bit easier. These arguments are very much inspired by the semantics of ggplot2&#39;s <code>qplot()</code> in the sense that a scales are automatically applied these variables (i.e., they map data to visual properties).</p>
 
-<p>If you have a plotly account, printing plotly objects in the R console will create a new plotly figure, and open it in your web browser. If you’re using knitr/R Markdown with HTML output (like <a href="https://github.com/ropensci/plotly/tree/master/vignettes/intro.Rmd">this vignette</a>), printing not only creates the plot, but also embeds it as an HTML iframe.</p>
-
-<pre><code class="language-r">p
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/997.embed" width="800" frameborder="0"></iframe>
-
-<p><code>plot_ly()</code> has a number of arguments which are unique to the R package and make common visualizations a bit easier. These arguments are very much inspired by the semantics of ggplot2’s <code>qplot()</code> in the sense that a scales are automatically applied these variables (i.e., they map data to visual properties).</p>
-
-<h4 id="qualitative-color-mappings">Qualitative color mappings</h4>
+<h4>Qualitative color mappings</h4>
 
 <p>If a ordinal variable (aka a non-ordered factor variable) is assigned to color, then a qualitative color palette is used by default.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">plot_ly<span class="p">(</span>iris<span class="p">,</span> x <span class="o">=</span> Petal.Length<span class="p">,</span> y <span class="o">=</span> Petal.Width<span class="p">,</span>
+        color <span class="o">=</span> Species<span class="p">,</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/999.embed" width="800" frameBorder="0"></iframe>
 
-<pre><code class="language-r">plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        color = Species, mode = "markers")
-</code></pre>
+<p>If you want to change the default palette, it&#39;s recommended that you provide a <a href="http://colorbrewer2.org">http://colorbrewer2.org</a> qualitative pallette name (e.g., &quot;Set1&quot; or &quot;Accent&quot;) to the colors argument.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">plot_ly<span class="p">(</span>iris<span class="p">,</span> x <span class="o">=</span> Petal.Length<span class="p">,</span> y <span class="o">=</span> Petal.Width<span class="p">,</span>
+        color <span class="o">=</span> Species<span class="p">,</span> colors <span class="o">=</span> <span class="s">&quot;Set1&quot;</span><span class="p">,</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1001.embed" width="800" frameBorder="0"></iframe>
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/999.embed" width="800" frameborder="0"></iframe>
-
-<p>If you want to change the default palette, it’s recommended that you provide a <a href="http://colorbrewer2.org">http://colorbrewer2.org</a> qualitative pallette name (e.g., “Set1” or “Accent”) to the colors argument.</p>
-
-<pre><code class="language-r">plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        color = Species, colors = "Set1", mode = "markers")
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1001.embed" width="800" frameborder="0"></iframe>
-
-<p>In this case, the palette consists of 9 colors and the default behavior is to pick colors that are furthest apart (“#E41A1C”, “#FF7F00”, and “#999999”).</p>
-
-<pre><code class="language-r">cols &lt;- RColorBrewer::brewer.pal(9, "Set1")
-scales::show_col(cols)
-</code></pre>
-
+<p>In this case, the palette consists of 9 colors and the default behavior is to pick colors that are furthest apart (&quot;#E41A1C&quot;, &quot;#FF7F00&quot;, and &quot;#999999&quot;).</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">cols <span class="o">&lt;-</span> RColorBrewer<span class="o">::</span>brewer.pal<span class="p">(</span><span class="m">9</span><span class="p">,</span> <span class="s">&quot;Set1&quot;</span><span class="p">)</span>
+scales<span class="o">::</span>show_col<span class="p">(</span>cols<span class="p">)</span>
+</code></pre></div>
 <div align="center">
   <a href="http://imgur.com/PpLch1T">
     <img src="http://i.imgur.com/PpLch1T.png" />
   </a>
 </div>
 
-<p>If you’d like more control over the mapping, you can provide a vector of colors (of appropriate length).</p>
+<p>If you&#39;d like more control over the mapping, you can provide a vector of colors (of appropriate length).</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">cols <span class="o">&lt;-</span> RColorBrewer<span class="o">::</span>brewer.pal<span class="p">(</span><span class="kp">nlevels</span><span class="p">(</span>iris<span class="o">$</span>Species<span class="p">),</span> <span class="s">&quot;Set1&quot;</span><span class="p">)</span>
+plot_ly<span class="p">(</span>iris<span class="p">,</span> x <span class="o">=</span> Petal.Length<span class="p">,</span> y <span class="o">=</span> Petal.Width<span class="p">,</span>
+        color <span class="o">=</span> Species<span class="p">,</span> colors <span class="o">=</span> cols<span class="p">,</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1003.embed" width="800" frameBorder="0"></iframe>
 
-<pre><code class="language-r">cols &lt;- RColorBrewer::brewer.pal(nlevels(iris$Species), "Set1")
-plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        color = Species, colors = cols, mode = "markers")
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1003.embed" width="800" frameborder="0"></iframe>
-
-<h4 id="sequential-color-mappings">Sequential color mappings</h4>
+<h4>Sequential color mappings</h4>
 
 <p>If either a numeric or an ordered factor is mapped to color, <code>plot_ly()</code> applies a sequential color scale by default.</p>
-
-<pre><code class="language-r">plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        color = as.ordered(Species), mode = "markers")
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1005.embed" width="800" frameborder="0"></iframe>
+<div class="highlight"><pre><code class="language-r" data-lang="r">plot_ly<span class="p">(</span>iris<span class="p">,</span> x <span class="o">=</span> Petal.Length<span class="p">,</span> y <span class="o">=</span> Petal.Width<span class="p">,</span>
+        color <span class="o">=</span> <span class="kp">as.ordered</span><span class="p">(</span>Species<span class="p">),</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1005.embed" width="800" frameBorder="0"></iframe>
 
 <p>In the case of continuous numeric variables, <code>plot_ly()</code> performs a linear mapping between the data and an interpolated color pallette.</p>
-
-<pre><code class="language-r">plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        color = Sepal.Length, mode = "markers")
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1007.embed" width="800" frameborder="0"></iframe>
+<div class="highlight"><pre><code class="language-r" data-lang="r">plot_ly<span class="p">(</span>iris<span class="p">,</span> x <span class="o">=</span> Petal.Length<span class="p">,</span> y <span class="o">=</span> Petal.Width<span class="p">,</span>
+        color <span class="o">=</span> Sepal.Length<span class="p">,</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1007.embed" width="800" frameBorder="0"></iframe>
 
 <p>The colors argument takes arbitrary color codes of arbitrary length. Here is how we could use it to replicate the default mapping in ggplot2.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">plot_ly<span class="p">(</span>iris<span class="p">,</span> x <span class="o">=</span> Petal.Length<span class="p">,</span> y <span class="o">=</span> Petal.Width<span class="p">,</span>
+        color <span class="o">=</span> Sepal.Length<span class="p">,</span> colors <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;#132B43&quot;</span><span class="p">,</span> <span class="s">&quot;#56B1F7&quot;</span><span class="p">),</span>
+        mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1009.embed" width="800" frameBorder="0"></iframe>
 
-<pre><code class="language-r">plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        color = Sepal.Length, colors = c("#132B43", "#56B1F7"),
-        mode = "markers")
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1009.embed" width="800" frameborder="0"></iframe>
-
-<h4 id="diverging-color-mappings">Diverging color mappings</h4>
+<h4>Diverging color mappings</h4>
 
 <p>To obtain a diverging color mapping, just provide a diverging palette to the colors argument.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">plot_ly<span class="p">(</span>iris<span class="p">,</span> x <span class="o">=</span> Petal.Length<span class="p">,</span> y <span class="o">=</span> Petal.Width<span class="p">,</span>
+        color <span class="o">=</span> Sepal.Length<span class="p">,</span> colors <span class="o">=</span> <span class="s">&quot;PuOr&quot;</span><span class="p">,</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1011.embed" width="800" frameBorder="0"></iframe>
 
-<pre><code class="language-r">plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        color = Sepal.Length, colors = "PuOr", mode = "markers")
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1011.embed" width="800" frameborder="0"></iframe>
-
-<h4 id="the-symbol-argument">The symbol argument</h4>
+<h4>The symbol argument</h4>
 
 <p>To encode values using symbols, use the symbol argument.</p>
-
-<pre><code class="language-r">plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        symbol = Species, mode = "markers")
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1013.embed" width="800" frameborder="0"></iframe>
+<div class="highlight"><pre><code class="language-r" data-lang="r">plot_ly<span class="p">(</span>iris<span class="p">,</span> x <span class="o">=</span> Petal.Length<span class="p">,</span> y <span class="o">=</span> Petal.Width<span class="p">,</span>
+        symbol <span class="o">=</span> Species<span class="p">,</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1013.embed" width="800" frameBorder="0"></iframe>
 
 <p>To change the default symbols used, use the symbols argument. <a href="https://plot.ly/r/reference/#marker">View all of the available symbol</a>.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">plot_ly<span class="p">(</span>iris<span class="p">,</span> x <span class="o">=</span> Petal.Length<span class="p">,</span> y <span class="o">=</span> Petal.Width<span class="p">,</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">,</span>
+        symbol <span class="o">=</span> Species<span class="p">,</span> symbols <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;cross&quot;</span><span class="p">,</span> <span class="s">&quot;square&quot;</span><span class="p">,</span> <span class="s">&quot;triangle-down&quot;</span><span class="p">))</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1015.embed" width="800" frameBorder="0"></iframe>
 
-<pre><code class="language-r">plot_ly(iris, x = Petal.Length, y = Petal.Width, mode = "markers",
-        symbol = Species, symbols = c("cross", "square", "triangle-down"))
-</code></pre>
+<h3>The group argument and <code>subplot()</code></h3>
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1015.embed" width="800" frameborder="0"></iframe>
+<p>Using the group argument splits the data into different plotly &quot;traces&quot;.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">plot_ly<span class="p">(</span>iris<span class="p">,</span> x <span class="o">=</span> Petal.Length<span class="p">,</span> y <span class="o">=</span> Petal.Width<span class="p">,</span>
+        group <span class="o">=</span> Species<span class="p">,</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1017.embed" width="800" frameBorder="0"></iframe>
 
-<h3 id="the-group-argument-and-subplot">The group argument and <code>subplot()</code></h3>
-
-<p>Using the group argument splits the data into different plotly “traces”.</p>
-
-<pre><code class="language-r">plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        group = Species, mode = "markers")
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1017.embed" width="800" frameborder="0"></iframe>
-
-<p>Although we haven’t specified a coloring scheme, plotly will employ one on it’s own default scheme. The group argument is quite powerful when used in conjunction with <code>subplot()</code> in order to anchor traces onto different axes.</p>
-
-<pre><code class="language-r">iris$id &lt;- as.integer(iris$Species)
-p &lt;- plot_ly(iris, x = Petal.Length, y = Petal.Width, group = Species,
-             xaxis = paste0("x", id), mode = "markers")
-subplot(p)
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1019.embed" width="800" frameborder="0"></iframe>
+<p>Although we haven&#39;t specified a coloring scheme, plotly will employ one on it&#39;s own default scheme. The group argument is quite powerful when used in conjunction with <code>subplot()</code> in order to anchor traces onto different axes.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">iris<span class="o">$</span>id <span class="o">&lt;-</span> <span class="kp">as.integer</span><span class="p">(</span>iris<span class="o">$</span>Species<span class="p">)</span>
+p <span class="o">&lt;-</span> plot_ly<span class="p">(</span>iris<span class="p">,</span> x <span class="o">=</span> Petal.Length<span class="p">,</span> y <span class="o">=</span> Petal.Width<span class="p">,</span> group <span class="o">=</span> Species<span class="p">,</span>
+             xaxis <span class="o">=</span> <span class="kp">paste0</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span> id<span class="p">),</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">)</span>
+subplot<span class="p">(</span>p<span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1019.embed" width="800" frameBorder="0"></iframe>
 
 <p>Since <code>subplot()</code> does not assume x/y axes are on a common scale, it does not impose any restrictions on the range by default. However, you can change this by pre-specifying the range of the <a href="https://plot.ly/r/reference/#xaxis">axis objects</a> via the <code>layout()</code> function.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">p2 <span class="o">&lt;-</span> layout<span class="p">(</span>
+  p<span class="p">,</span>
+  xaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>range <span class="o">=</span> <span class="kp">range</span><span class="p">(</span>Petal.Length<span class="p">)</span> <span class="o">+</span> <span class="kt">c</span><span class="p">(</span><span class="m">-0.1</span><span class="p">,</span> <span class="m">0.1</span><span class="p">)),</span>
+  yaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>range <span class="o">=</span> <span class="kp">range</span><span class="p">(</span>Petal.Width<span class="p">)</span> <span class="o">+</span> <span class="kt">c</span><span class="p">(</span><span class="m">-0.1</span><span class="p">,</span> <span class="m">0.1</span><span class="p">))</span>
+<span class="p">)</span>
+subplot<span class="p">(</span>p2<span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1021.embed" width="800" frameBorder="0"></iframe>
 
-<pre><code class="language-r">p2 &lt;- layout(
-  p,
-  xaxis = list(range = range(Petal.Length) + c(-0.1, 0.1)),
-  yaxis = list(range = range(Petal.Width) + c(-0.1, 0.1))
-)
-subplot(p2)
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1021.embed" width="800" frameborder="0"></iframe>
-
-<p>The <code>subplot()</code> function creates “xaxis[0-9]” objects which inherit pre-specified properties, but you can also customize each subplot by referencing these objects in the layout</p>
-
-<pre><code class="language-r">layout(
-    subplot(p2),
-    yaxis2 = list(title = ""),
-    yaxis3 = list(title = "")
-)
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1023.embed" width="800" frameborder="0"></iframe>
+<p>The <code>subplot()</code> function creates &quot;xaxis[0-9]&quot; objects which inherit pre-specified properties, but you can also customize each subplot by referencing these objects in the layout</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">layout<span class="p">(</span>
+    subplot<span class="p">(</span>p2<span class="p">),</span>
+    yaxis2 <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">),</span>
+    yaxis3 <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1023.embed" width="800" frameBorder="0"></iframe>
 
 <p><a href="https://plot.ly/r/map-subplots-and-small-multiples/">See here</a> for another example of using the group argument to make small multiples (with maps!).</p>
 
-<h3 id="manually-adding-traces">Manually adding traces</h3>
+<h3>Manually adding traces</h3>
 
-<p>Sometimes you may want multiple traces on a plot, but have different traces from different data sources. In this case, the <code>add_trace()</code> function and it’s (optional) <code>data</code> argument come in handy.</p>
+<p>Sometimes you may want multiple traces on a plot, but have different traces from different data sources. In this case, the <code>add_trace()</code> function and it&#39;s (optional) <code>data</code> argument come in handy.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">m <span class="o">&lt;-</span> loess<span class="p">(</span>uempmed <span class="o">~</span> <span class="kp">as.numeric</span><span class="p">(</span><span class="kp">date</span><span class="p">),</span> economics<span class="p">)</span>
+efit <span class="o">&lt;-</span> <span class="kt">data.frame</span><span class="p">(</span>date <span class="o">=</span> economics<span class="o">$</span><span class="kp">date</span><span class="p">,</span> yhat <span class="o">=</span> fitted<span class="p">(</span>m<span class="p">))</span>
 
-<pre><code class="language-r">m &lt;- loess(uempmed ~ as.numeric(date), economics)
-efit &lt;- data.frame(date = economics$date, yhat = fitted(m))
-
-plot_ly(economics, x = date, y = uempmed, name = "observed") %&gt;%
-  add_trace(y = yhat, name = "estimated", data = efit)
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1025.embed" width="800" frameborder="0"></iframe>
+plot_ly<span class="p">(</span>economics<span class="p">,</span> x <span class="o">=</span> <span class="kp">date</span><span class="p">,</span> y <span class="o">=</span> uempmed<span class="p">,</span> name <span class="o">=</span> <span class="s">&quot;observed&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  add_trace<span class="p">(</span>y <span class="o">=</span> yhat<span class="p">,</span> name <span class="o">=</span> <span class="s">&quot;estimated&quot;</span><span class="p">,</span> data <span class="o">=</span> efit<span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1025.embed" width="800" frameBorder="0"></iframe>
 
 <p>Note that the date information carries over from the first trace to the second. In fact, by default, information from the first trace carries over to all subsequent traces unless the property is overwritten or if we set <code>inherit = FALSE</code> in <code>plot_ly()</code> (this helps <a href="http://en.wikipedia.org/wiki/Don%27t_repeat_yourself">avoid repeating yourself</a>).</p>
 
-<h3 id="mixing-data-manipulation-and-visualization-verbs">Mixing data manipulation and visualization verbs</h3>
+<h3>Mixing data manipulation and visualization verbs</h3>
 
 <p>If you look at the structure of plotly objects, they are actually data frames with a class of plotly and a special environment attached (this environment tracks the mapping from data to visual properties).</p>
-
-<pre><code class="language-r">str(p &lt;- plot_ly(economics, x = date, y = uempmed))
-</code></pre>
-
-<pre><code>## Classes 'plotly' and 'data.frame':	478 obs. of  6 variables:
-##  $ date    : Date, format: "1967-06-30" "1967-07-31" ...
+<div class="highlight"><pre><code class="language-r" data-lang="r">str<span class="p">(</span>p <span class="o">&lt;-</span> plot_ly<span class="p">(</span>economics<span class="p">,</span> x <span class="o">=</span> <span class="kp">date</span><span class="p">,</span> y <span class="o">=</span> uempmed<span class="p">))</span>
+</code></pre></div><div class="highlight"><pre><code class="language-text" data-lang="text">## Classes &#39;plotly&#39; and &#39;data.frame&#39;:   478 obs. of  6 variables:
+##  $ date    : Date, format: &quot;1967-06-30&quot; &quot;1967-07-31&quot; ...
 ##  $ pce     : num  508 511 517 513 518 ...
 ##  $ pop     : int  198712 198911 199113 199311 199498 199657 199808 199920 200056 200208 ...
 ##  $ psavert : num  9.8 9.8 9 9.8 9.7 9.4 9 9.5 8.9 9.6 ...
 ##  $ uempmed : num  4.5 4.7 4.6 4.9 4.7 4.8 5.1 4.5 4.1 4.6 ...
 ##  $ unemploy: int  2944 2945 2958 3143 3066 3018 2878 3001 2877 2709 ...
-##  - attr(*, "plotly_hash")= chr "7ff330ec8c566561765c62cbafed3e0f#19"
-</code></pre>
+##  - attr(*, &quot;plotly_hash&quot;)= chr &quot;7ff330ec8c566561765c62cbafed3e0f#19&quot;
+</code></pre></div>
+<p>Doing this allows us to mix data manipulation and visualization verbs in a <a href="https://dl.dropboxusercontent.com/u/41902/pipe-dsls.pdf">pure(ly) functional, predictable and pipeable</a> manner. Here, we take advantage of <a href="http://cran.r-project.org/web/packages/dplyr/index.html">dplyr</a>&#39;s <code>filter()</code> verb to label the highest peak in the time series:</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">p <span class="o">%&gt;%</span>
+  add_trace<span class="p">(</span>y <span class="o">=</span> fitted<span class="p">(</span>loess<span class="p">(</span>uempmed <span class="o">~</span> <span class="kp">as.numeric</span><span class="p">(</span><span class="kp">date</span><span class="p">))))</span> <span class="o">%&gt;%</span>
+  layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Median duration of unemployment (in weeks)&quot;</span><span class="p">,</span>
+         showlegend <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  dplyr<span class="o">::</span>filter<span class="p">(</span>uempmed <span class="o">==</span> <span class="kp">max</span><span class="p">(</span>uempmed<span class="p">))</span> <span class="o">%&gt;%</span>
+  layout<span class="p">(</span>annotations <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>x <span class="o">=</span> <span class="kp">date</span><span class="p">,</span> y <span class="o">=</span> uempmed<span class="p">,</span> text <span class="o">=</span> <span class="s">&quot;Peak&quot;</span><span class="p">,</span> showarrow <span class="o">=</span> <span class="bp">T</span><span class="p">))</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1027.embed" width="800" frameBorder="0"></iframe>
 
-<p>Doing this allows us to mix data manipulation and visualization verbs in a <a href="https://dl.dropboxusercontent.com/u/41902/pipe-dsls.pdf">pure(ly) functional, predictable and pipeable</a> manner. Here, we take advantage of <a href="http://cran.r-project.org/web/packages/dplyr/index.html">dplyr</a>’s <code>filter()</code> verb to label the highest peak in the time series:</p>
-
-<pre><code class="language-r">p %&gt;%
-  add_trace(y = fitted(loess(uempmed ~ as.numeric(date)))) %&gt;%
-  layout(title = "Median duration of unemployment (in weeks)",
-         showlegend = FALSE) %&gt;%
-  dplyr::filter(uempmed == max(uempmed)) %&gt;%
-  layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T))
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1027.embed" width="800" frameborder="0"></iframe>
-
-<p>Although data frames can be thought of as the central object in this package, plotly visualizations don’t actually <em>require</em> a data frame. This makes chart types that accept a <code>z</code> argument especially easy to use if you have a numeric matrix:</p>
-
-<pre><code class="language-r">plot_ly(z = volcano, type = "surface")
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1029.embed" width="800" frameborder="0"></iframe>
+<p>Although data frames can be thought of as the central object in this package, plotly visualizations don&#39;t actually <em>require</em> a data frame. This makes chart types that accept a <code>z</code> argument especially easy to use if you have a numeric matrix:</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r">plot_ly<span class="p">(</span>z <span class="o">=</span> volcano<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;surface&quot;</span><span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1029.embed" width="800" frameBorder="0"></iframe>
 
 				</div>
 			</div>

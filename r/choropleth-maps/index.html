@@ -171,106 +171,100 @@
 
 
 
-				<h1 id="choropleth-maps-in-r">Choropleth Maps in R</h1>
+				<h1>Choropleth Maps in R</h1>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
+df <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv&quot;</span><span class="p">)</span>
+df<span class="o">$</span>hover <span class="o">&lt;-</span> <span class="kp">with</span><span class="p">(</span>df<span class="p">,</span> <span class="kp">paste</span><span class="p">(</span>state<span class="p">,</span> <span class="s">&#39;&lt;br&gt;&#39;</span><span class="p">,</span> <span class="s">&quot;Beef&quot;</span><span class="p">,</span> beef<span class="p">,</span> <span class="s">&quot;Dairy&quot;</span><span class="p">,</span> dairy<span class="p">,</span> <span class="s">&quot;&lt;br&gt;&quot;</span><span class="p">,</span>
+                           <span class="s">&quot;Fruits&quot;</span><span class="p">,</span> total.fruits<span class="p">,</span> <span class="s">&quot;Veggies&quot;</span><span class="p">,</span> total.veggies<span class="p">,</span>
+                           <span class="s">&quot;&lt;br&gt;&quot;</span><span class="p">,</span> <span class="s">&quot;Wheat&quot;</span><span class="p">,</span> wheat<span class="p">,</span> <span class="s">&quot;Corn&quot;</span><span class="p">,</span> corn<span class="p">))</span>
+<span class="c1"># give state boundaries a white border</span>
+l <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>color <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">),</span> width <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+<span class="c1"># specify some map projection/options</span>
+g <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>
+  scope <span class="o">=</span> <span class="s">&#39;usa&#39;</span><span class="p">,</span>
+  projection <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>type <span class="o">=</span> <span class="s">&#39;albers usa&#39;</span><span class="p">),</span>
+  showlakes <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+  lakecolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&#39;white&#39;</span><span class="p">)</span>
+<span class="p">)</span>
 
-<pre><code class="language-r">library(plotly)
-df &lt;- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")
-df$hover &lt;- with(df, paste(state, '&lt;br&gt;', "Beef", beef, "Dairy", dairy, "&lt;br&gt;",
-                           "Fruits", total.fruits, "Veggies", total.veggies,
-                           "&lt;br&gt;", "Wheat", wheat, "Corn", corn))
-# give state boundaries a white border
-l &lt;- list(color = toRGB("white"), width = 2)
-# specify some map projection/options
-g &lt;- list(
-  scope = 'usa',
-  projection = list(type = 'albers usa'),
-  showlakes = TRUE,
-  lakecolor = toRGB('white')
-)
+plot_ly<span class="p">(</span>df<span class="p">,</span> z <span class="o">=</span> total.exports<span class="p">,</span> text <span class="o">=</span> hover<span class="p">,</span> locations <span class="o">=</span> code<span class="p">,</span> type <span class="o">=</span> <span class="s">&#39;choropleth&#39;</span><span class="p">,</span>
+        locationmode <span class="o">=</span> <span class="s">&#39;USA-states&#39;</span><span class="p">,</span> color <span class="o">=</span> total.exports<span class="p">,</span> colors <span class="o">=</span> <span class="s">&#39;Purples&#39;</span><span class="p">,</span>
+        marker <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>line <span class="o">=</span> l<span class="p">),</span> colorbar <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Millions USD&quot;</span><span class="p">),</span>
+        filename<span class="o">=</span><span class="s">&quot;r-docs/usa-choropleth&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&#39;2011 US Agriculture Exports by State&lt;br&gt;(Hover for breakdown)&#39;</span><span class="p">,</span> geo <span class="o">=</span> g<span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/321.embed" width="800" frameBorder="0"></iframe>
 
-plot_ly(df, z = total.exports, text = hover, locations = code, type = 'choropleth',
-        locationmode = 'USA-states', color = total.exports, colors = 'Purples',
-        marker = list(line = l), colorbar = list(title = "Millions USD"),
-        filename="r-docs/usa-choropleth") %&gt;%
-  layout(title = '2011 US Agriculture Exports by State&lt;br&gt;(Hover for breakdown)', geo = g)
-</code></pre>
+<h3>World Choropleth Map</h3>
+<div class="highlight"><pre><code class="language-r" data-lang="r">df <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2014_world_gdp_with_codes.csv&#39;</span><span class="p">)</span>
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/321.embed" width="800" frameborder="0"></iframe>
+<span class="c1"># light grey boundaries</span>
+l <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>color <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;grey&quot;</span><span class="p">),</span> width <span class="o">=</span> <span class="m">0.5</span><span class="p">)</span>
 
-<h3 id="world-choropleth-map">World Choropleth Map</h3>
+<span class="c1"># specify map projection/options</span>
+g <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>
+  showframe <span class="o">=</span> <span class="kc">FALSE</span><span class="p">,</span>
+  showcoastlines <span class="o">=</span> <span class="kc">FALSE</span><span class="p">,</span>
+  projection <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>type <span class="o">=</span> <span class="s">&#39;Mercator&#39;</span><span class="p">)</span>
+<span class="p">)</span>
 
-<pre><code class="language-r">df &lt;- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2014_world_gdp_with_codes.csv')
+plot_ly<span class="p">(</span>df<span class="p">,</span> z <span class="o">=</span> GDP..BILLIONS.<span class="p">,</span> text <span class="o">=</span> COUNTRY<span class="p">,</span> locations <span class="o">=</span> CODE<span class="p">,</span> type <span class="o">=</span> <span class="s">&#39;choropleth&#39;</span><span class="p">,</span>
+        color <span class="o">=</span> GDP..BILLIONS.<span class="p">,</span> colors <span class="o">=</span> <span class="s">&#39;Blues&#39;</span><span class="p">,</span> marker <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>line <span class="o">=</span> l<span class="p">),</span>
+        colorbar <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>tickprefix <span class="o">=</span> <span class="s">&#39;$&#39;</span><span class="p">,</span> title <span class="o">=</span> <span class="s">&#39;GDP Billions US$&#39;</span><span class="p">),</span>
+        filename<span class="o">=</span><span class="s">&quot;r-docs/world-choropleth&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&#39;2014 Global GDP&lt;br&gt;Source:&lt;a href=&quot;https://www.cia.gov/library/publications/the-world-factbook/fields/2195.html&quot;&gt;CIA World Factbook&lt;/a&gt;&#39;</span><span class="p">,</span>
+         geo <span class="o">=</span> g<span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/323.embed" width="800" frameBorder="0"></iframe>
 
-# light grey boundaries
-l &lt;- list(color = toRGB("grey"), width = 0.5)
+<h3>Choropleth Inset Map</h3>
+<div class="highlight"><pre><code class="language-r" data-lang="r">df <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2014_ebola.csv&#39;</span><span class="p">)</span>
+<span class="c1"># restrict from June to September</span>
+df <span class="o">&lt;-</span> <span class="kp">subset</span><span class="p">(</span>df<span class="p">,</span> Month <span class="o">%in%</span> <span class="m">6</span><span class="o">:</span><span class="m">9</span><span class="p">)</span>
+<span class="c1"># ordered factor variable with month abbreviations</span>
+df<span class="o">$</span>abbrev <span class="o">&lt;-</span> <span class="kp">ordered</span><span class="p">(</span><span class="kp">month.abb</span><span class="p">[</span>df<span class="o">$</span>Month<span class="p">],</span> levels <span class="o">=</span> <span class="kp">month.abb</span><span class="p">[</span><span class="m">6</span><span class="o">:</span><span class="m">9</span><span class="p">])</span>
+<span class="c1"># September totals</span>
+df9 <span class="o">&lt;-</span> <span class="kp">subset</span><span class="p">(</span>df<span class="p">,</span> Month <span class="o">==</span> <span class="m">9</span><span class="p">)</span>
 
-# specify map projection/options
-g &lt;- list(
-  showframe = FALSE,
-  showcoastlines = FALSE,
-  projection = list(type = 'Mercator')
-)
+<span class="c1"># common plot options</span>
+g <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>
+  scope <span class="o">=</span> <span class="s">&#39;africa&#39;</span><span class="p">,</span>
+  showframe <span class="o">=</span> <span class="bp">F</span><span class="p">,</span>
+  showland <span class="o">=</span> <span class="bp">T</span><span class="p">,</span>
+  landcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;grey90&quot;</span><span class="p">)</span>
+<span class="p">)</span>
 
-plot_ly(df, z = GDP..BILLIONS., text = COUNTRY, locations = CODE, type = 'choropleth',
-        color = GDP..BILLIONS., colors = 'Blues', marker = list(line = l),
-        colorbar = list(tickprefix = '$', title = 'GDP Billions US$'),
-        filename="r-docs/world-choropleth") %&gt;%
-  layout(title = '2014 Global GDP&lt;br&gt;Source:&lt;a href="https://www.cia.gov/library/publications/the-world-factbook/fields/2195.html"&gt;CIA World Factbook&lt;/a&gt;',
-         geo = g)
-</code></pre>
+g1 <span class="o">&lt;-</span> <span class="kt">c</span><span class="p">(</span>
+  g<span class="p">,</span>
+  resolution <span class="o">=</span> <span class="m">50</span><span class="p">,</span>
+  showcoastlines <span class="o">=</span> <span class="bp">T</span><span class="p">,</span>
+  countrycolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">),</span>
+  coastlinecolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">),</span>
+  projection <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>type <span class="o">=</span> <span class="s">&#39;Mercator&#39;</span><span class="p">),</span>
+  <span class="kt">list</span><span class="p">(</span>lonaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>range <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">-15</span><span class="p">,</span> <span class="m">-5</span><span class="p">))),</span>
+  <span class="kt">list</span><span class="p">(</span>lataxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>range <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">12</span><span class="p">))),</span>
+  <span class="kt">list</span><span class="p">(</span>domain <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>x <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span> y <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">)))</span>
+<span class="p">)</span>
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/323.embed" width="800" frameborder="0"></iframe>
+g2 <span class="o">&lt;-</span> <span class="kt">c</span><span class="p">(</span>
+  g<span class="p">,</span>
+  showcountries <span class="o">=</span> <span class="bp">F</span><span class="p">,</span>
+  bgcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">,</span> alpha <span class="o">=</span> <span class="m">0</span><span class="p">),</span>
+  <span class="kt">list</span><span class="p">(</span>domain <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>x <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">.6</span><span class="p">),</span> y <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">.6</span><span class="p">)))</span>
+<span class="p">)</span>
 
-<h3 id="choropleth-inset-map">Choropleth Inset Map</h3>
-
-<pre><code class="language-r">df &lt;- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2014_ebola.csv')
-# restrict from June to September
-df &lt;- subset(df, Month %in% 6:9)
-# ordered factor variable with month abbreviations
-df$abbrev &lt;- ordered(month.abb[df$Month], levels = month.abb[6:9])
-# September totals
-df9 &lt;- subset(df, Month == 9)
-
-# common plot options
-g &lt;- list(
-  scope = 'africa',
-  showframe = F,
-  showland = T,
-  landcolor = toRGB("grey90")
-)
-
-g1 &lt;- c(
-  g,
-  resolution = 50,
-  showcoastlines = T,
-  countrycolor = toRGB("white"),
-  coastlinecolor = toRGB("white"),
-  projection = list(type = 'Mercator'),
-  list(lonaxis = list(range = c(-15, -5))),
-  list(lataxis = list(range = c(0, 12))),
-  list(domain = list(x = c(0, 1), y = c(0, 1)))
-)
-
-g2 &lt;- c(
-  g,
-  showcountries = F,
-  bgcolor = toRGB("white", alpha = 0),
-  list(domain = list(x = c(0, .6), y = c(0, .6)))
-)
-
-plot_ly(df, type = 'scattergeo', mode = 'markers', locations = Country,
-        locationmode = 'country names', text = paste(Value, "cases"),
-        color = as.ordered(abbrev), marker = list(size = Value/50), inherit = F,
-        filename="r-docs/chropleth-inset") %&gt;%
-  add_trace(type = 'scattergeo', mode = 'text', geo = 'geo2', showlegend = F,
-            lon = 21.0936, lat = 7.1881, text = 'Africa') %&gt;%
-  add_trace(type = 'choropleth', locations = Country, locationmode = 'country names',
-            z = Month, colors = "black", showscale = F, geo = 'geo2', data = df9) %&gt;%
-  layout(title = 'Ebola cases reported by month in West Africa 2014&lt;br&gt; Source: &lt;a href="https://data.hdx.rwlabs.org/dataset/rowca-ebola-cases"&gt;HDX&lt;/a&gt;',
-         geo = g1, geo2 = g2)
-</code></pre>
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/325.embed" width="800" frameborder="0"></iframe>
+plot_ly<span class="p">(</span>df<span class="p">,</span> type <span class="o">=</span> <span class="s">&#39;scattergeo&#39;</span><span class="p">,</span> mode <span class="o">=</span> <span class="s">&#39;markers&#39;</span><span class="p">,</span> locations <span class="o">=</span> Country<span class="p">,</span>
+        locationmode <span class="o">=</span> <span class="s">&#39;country names&#39;</span><span class="p">,</span> text <span class="o">=</span> <span class="kp">paste</span><span class="p">(</span>Value<span class="p">,</span> <span class="s">&quot;cases&quot;</span><span class="p">),</span>
+        color <span class="o">=</span> <span class="kp">as.ordered</span><span class="p">(</span>abbrev<span class="p">),</span> marker <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>size <span class="o">=</span> Value<span class="o">/</span><span class="m">50</span><span class="p">),</span> inherit <span class="o">=</span> <span class="bp">F</span><span class="p">,</span>
+        filename<span class="o">=</span><span class="s">&quot;r-docs/chropleth-inset&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  add_trace<span class="p">(</span>type <span class="o">=</span> <span class="s">&#39;scattergeo&#39;</span><span class="p">,</span> mode <span class="o">=</span> <span class="s">&#39;text&#39;</span><span class="p">,</span> geo <span class="o">=</span> <span class="s">&#39;geo2&#39;</span><span class="p">,</span> showlegend <span class="o">=</span> <span class="bp">F</span><span class="p">,</span>
+            lon <span class="o">=</span> <span class="m">21.0936</span><span class="p">,</span> lat <span class="o">=</span> <span class="m">7.1881</span><span class="p">,</span> text <span class="o">=</span> <span class="s">&#39;Africa&#39;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  add_trace<span class="p">(</span>type <span class="o">=</span> <span class="s">&#39;choropleth&#39;</span><span class="p">,</span> locations <span class="o">=</span> Country<span class="p">,</span> locationmode <span class="o">=</span> <span class="s">&#39;country names&#39;</span><span class="p">,</span>
+            z <span class="o">=</span> Month<span class="p">,</span> colors <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">,</span> showscale <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> geo <span class="o">=</span> <span class="s">&#39;geo2&#39;</span><span class="p">,</span> data <span class="o">=</span> df9<span class="p">)</span> <span class="o">%&gt;%</span>
+  layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&#39;Ebola cases reported by month in West Africa 2014&lt;br&gt; Source: &lt;a href=&quot;https://data.hdx.rwlabs.org/dataset/rowca-ebola-cases&quot;&gt;HDX&lt;/a&gt;&#39;</span><span class="p">,</span>
+         geo <span class="o">=</span> g1<span class="p">,</span> geo2 <span class="o">=</span> g2<span class="p">)</span>
+</code></pre></div>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/325.embed" width="800" frameBorder="0"></iframe>
 
 
 				</div>
