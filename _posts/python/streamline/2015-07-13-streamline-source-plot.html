@@ -10,7 +10,7 @@ sitemap: false
 # Find your api_key here: https://plot.ly/settings/api
 
 import plotly.plotly as py
-from plotly.tools import FigureFactory as FF
+import plotly.tools as tls
 from plotly.graph_objs import *
 
 import numpy as np
@@ -26,14 +26,13 @@ source_strength = 5.0
 x_source, y_source = -1.0, 0.0
 
 # Compute the velocity field on the mesh grid
-u = (source_strength/(2*np.pi) * 
-     (X-x_source)/((X-x_source)**2 + (Y-y_source)**2))
-v = (source_strength/(2*np.pi) * 
-     (Y-y_source)/((X-x_source)**2 + (Y-y_source)**2))
+u_source = source_strength/(2*np.pi) * (X-x_s)/((X-x_s)**2 + (Y-y_s)**2)
+v_source = source_strength/(2*np.pi) * (Y-y_s)/((X-x_s)**2 + (Y-y_s)**2)
 
-# Create streamline figure
-fig = FF.create_streamline(x, y, u, v, 
-                           name='streamline')
+# Create streamline
+streamline = tls.TraceFactory.create_streamline(x, y, 
+                                                u_source, v_source, 
+                                                name='streamline')
 
 # Add source point
 source_point = Scatter(x=[x_source], y=[y_source], 
@@ -41,8 +40,8 @@ source_point = Scatter(x=[x_source], y=[y_source],
                        marker=Marker(size=14), 
                        name='source point')
 
-# Add source point to figure
-fig['data'].append(source_point)
+# Plot
+data = Data([streamline, source_point])
+fig=Figure(data=data)
 
-# Plot!
 url = py.plot(fig, filename='streamline_source')

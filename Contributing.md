@@ -9,11 +9,6 @@ The last cell of these notebooks will convert the notebook into a github pages f
 
 ![](http://i.imgur.com/SDcuOkv.png)
 
-## Converting R Markdown to github pages
-
-The full bleed R pages are created with R Markdown. Here's how:
-- Write your tutorial in R Markdown. Copy any of the `.Rmd` files in this folder: https://github.com/plotly/documentation/tree/source/_posts/r, e.g.  https://github.com/plotly/documentation/blob/source/_posts/r/2015-07-30-3d-line-plots.Rmd
-- Convert the R Markdown to Markdown: `knitr::knit("2015-08-03-your-r-markdown-tutorial.Rmd")`. Or, in the terminal: `Rscript -e 'knitr::knit("2015-08-03-your-r-markdown-tutorial.Rmd")'`
 
 ## Rendering the pages locally
 0. Clone the repo. `$ git clone git@github.com:plotly/documentation.git`
