@@ -1,0 +1,129 @@
+import plotly.plotly as py
+import numpy as np
+from plotly.graph_objs import *
+from plotly import tools
+
+y_saving = [1.3586, 2.2623000000000002, 4.9821999999999997, 6.5096999999999996,
+            7.4812000000000003, 7.5133000000000001, 15.2148, 17.520499999999998
+            ]
+y_net_worth = [93453.919999999998, 81666.570000000007, 69889.619999999995,
+               78381.529999999999, 141395.29999999999, 92969.020000000004,
+               66090.179999999993, 122379.3]
+x_saving = ['Japan', 'United Kingdom', 'Canada', 'Netherlands',
+            'United States', 'Belgium', 'Sweden', 'Switzerland']
+x_net_worth = ['Japan', 'United Kingdom', 'Canada', 'Netherlands',
+               'United States', 'Belgium', 'Sweden', 'Switzerland'
+               ]
+trace0 = Bar(
+    x=y_saving,
+    y=x_saving,
+    marker=Marker(
+        color='rgba(50, 171, 96, 0.6)',
+        line=Line(
+            color='rgba(50, 171, 96, 1.0)',
+            width=1,
+        ),
+    ),
+    name='Household savings, percentage of household disposable income',
+    orientation='h',
+)
+trace1 = Scatter(
+    x=y_net_worth,
+    y=x_net_worth,
+    mode='lines+markers',
+    line=Line(
+        color='rgb(128, 0, 128)',
+    ),
+    name='Household net worth, Million USD/capita',
+)
+layout = dict(
+    title='Household savings & net worth for eight OECD countries',
+    yaxis1=YAxis(
+        showgrid=False,
+        showline=False,
+        showticklabels=True,
+        domain=[0, 0.85],
+    ),
+    yaxis2=YAxis(
+        showgrid=False,
+        showline=True,
+        showticklabels=False,
+        linecolor='rgba(102, 102, 102, 0.8)',
+        linewidth=2,
+        domain=[0, 0.85],
+    ),
+    xaxis1=XAxis(
+        zeroline=False,
+        showline=False,
+        showticklabels=True,
+        showgrid=True,
+        domain=[0, 0.42],
+    ),
+    xaxis2=XAxis(
+        zeroline=False,
+        showline=False,
+        showticklabels=True,
+        showgrid=True,
+        domain=[0.47, 1],
+        side='top',
+        dtick=25000,
+    ),
+    legend=Legend(
+        x=0.029,
+        y=1.038,
+        font=Font(
+            size=10,
+        ),
+    ),
+    margin=Margin(
+        l=100,
+        r=20,
+        t=70,
+        b=70,
+    ),
+    width=600,
+    height=600,
+    paper_bgcolor='rgb(248, 248, 255)',
+    plot_bgcolor='rgb(248, 248, 255)',
+)
+
+annotations = []
+
+y_s = np.round(y_saving, decimals=2)
+y_nw = np.rint(y_net_worth)
+
+# Adding labels
+for ydn, yd, xd in zip(y_nw, y_s, x_saving):
+    # labeling the scatter savings
+    annotations.append(Annotation(xref='x2', yref='y2', y=xd, x=ydn - 20000,
+                                  text='{:,}'.format(ydn) + 'M',
+                                  font=Font(family='Arial', size=12,
+                                            color='rgb(128, 0, 128)'),
+                                  showarrow=False,))
+    # labeling the bar net worht
+    annotations.append(Annotation(xref='x1', yref='y1', y=xd, x=yd + 3,
+                                  text=str(yd) + '%',
+                                  font=Font(family='Arial', size=12,
+                                            color='rgb(50, 171, 96)'),
+                                  showarrow=False,))
+# Source
+annotations.append(Annotation(xref='paper', yref='paper', x=-0.2, y=-0.109,
+                              text='<a herf ="https://data.oecd.org/">OECD "' +
+                              '(2015)</a>, Household savings (indicator), ' +
+                              'Household net worth (indicator). doi: ' +
+                              '10.1787/cfc6f499-en (Accessed on 05 June 2015)',
+                              font=Font(family='Arial', size=10,
+                                        color='rgb(150,150,150)'),
+                              showarrow=False,))
+
+layout['annotations'] = annotations
+
+# Creating two subplots
+fig = tools.make_subplots(rows=1, cols=2, specs=[[{}, {}]], shared_xaxes=True,
+                          shared_yaxes=False, vertical_spacing=0.001)
+
+fig.append_trace(trace0, 1, 1)
+fig.append_trace(trace1, 1, 2)
+
+fig['layout'].update(layout)
+plot_url = py.plot(fig, filename='oecd-networth-saving-bar-line')
