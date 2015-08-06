@@ -1,23 +1,33 @@
-var size = 100, x = new Array(size), y = new Array(size), z = new Array(size), i, j;
+// Learn about API authentication here: https://plot.ly/nodejs/getting-started
+// Find your api_key here: https://plot.ly/settings/api
 
-for(i = 0; i < size; i++) {
-	x[i] = y[i] = -2 * Math.PI + 4 * Math.PI * i / size;
-  	z[i] = new Array(size);
+var linspace = require('linspace');
+var unpack = require('ndarray-unpack');
+var zeros = require('zeros');
+var fill = require('ndarray-fill');
+
+var size = 100
+var x = linspace(-2 * Math.PI, 2 * Math.PI, size)
+var y = linspace(-2 * Math.PI, 2 * Math.PI, size)
+var z = unpack(zeros([size,size]))
+for (var i = 0; i &lt; size; i++) {
+  for (var j = 0; j &lt; size; j++) {
+    r2 = (x * (i * i) + y * (j * j))
+      z[i][j] = Math.sin(x * i) * Math.cos(y * j) * Math.sin(r2) / Math.log(r2+1)
+  }
 }
 
-for(i = 0; i < size; i++) {
-  	for(j = 0; j < size; j++) {
-    	var r2 = x[i]*x[i] + y[j]*y[j];
-    	z[i][j] = Math.sin(x[i]) * Math.cos(y[j]) * Math.sin(r2) / Math.log(r2+1);
- 	}
-}
+require('plotly')(username, api_key);
 
-var data = [ {
-		z: z, 
-		x: x, 
-		y: y, 
-		type: "contour"
-	}
+var data = [
+  {
+    z: z,
+    x: x,
+    y: y,
+    type: "contour"
+  }
 ];
-
-Plotly.plot("myDiv", data);
+var graphOptions = {filename: "simple-contour", fileopt: "overwrite"};
+plotly.plot(data, graphOptions, function (err, msg) {
+    console.log(msg);
+});
