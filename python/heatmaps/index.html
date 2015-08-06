@@ -401,6 +401,14 @@
 		
 		
 		
+		
+		
+		
+		
+	
+		
+		
+		
 			<div class="lang_nav_button-div"><a class="lang_nav_button " href="/r/heatmaps/"><img src="https://plot.ly/gh-pages/documentation/static//images/r-small.png" alt="r" class="lang_nav_thum">R</a></div>
 		
 		
@@ -8768,6 +8776,30 @@
 		
 		
 	
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+		
+		
+		
+		
+	
 
 	</div>
 
@@ -8807,9 +8839,10 @@ plot_url = py.plot(data, filename='basic-heatmap')
           
         </div>
         <div class="six columns">
-          <div class="border">
+          <div class="border" style="text-align:center;">
             
-            <iframe src="https://plot.ly/~PlotBot/69.embed" style="width: 100%; height: 550px; border: none;"></iframe>
+            <iframe src="https://plot.ly/~PlotBot/69.embed" 
+              style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
         </div>
@@ -8847,9 +8880,228 @@ plot_url = py.plot(data, filename='labelled-heatmap')
           
         </div>
         <div class="six columns">
-          <div class="border">
+          <div class="border" style="text-align:center;">
             
-            <iframe src="https://plot.ly/~PlotBot/74.embed" style="width: 100%; height: 550px; border: none;"></iframe>
+            <iframe src="https://plot.ly/~PlotBot/74.embed" 
+              style="width: 100%; height: 550px; border: none;"></iframe>
+                 
+          </div>
+        </div>
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h3 id="annotated-heatmap"><a class="no_underline plot-blue" href="#annotated-heatmap">Annotated Heatmap</a></h3>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          
+          <div class="z-depth-1">
+            <pre><code class="python"># Learn about API authentication here: https://plot.ly/python/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+import plotly.plotly as py
+import plotly.graph_objs as go
+
+x = ['A', 'B', 'C', 'D', 'E']
+y = ['W', 'X', 'Y', 'Z']
+
+#       x0    x1    x2    x3    x4
+z = [[0.00, 0.00, 0.75, 0.75, 0.00],  # y0
+     [0.00, 0.00, 0.75, 0.75, 0.00],  # y1
+     [0.75, 0.75, 0.75, 0.75, 0.75],  # y2
+     [0.00, 0.00, 0.00, 0.75, 0.00]]  # y3
+
+annotations = go.Annotations()
+for n, row in enumerate(z):
+    for m, val in enumerate(row):
+        var = z[n][m]
+        annotations.append(
+            go.Annotation(
+                text=str(val), 
+                x=x[m], y=y[n],
+                xref='x1', yref='y1',
+                font=dict(color='white' if val > 0.5 else 'black'),
+                showarrow=False))
+
+colorscale = [[0, '#3D9970'], [1, '#001f3f']]  # custom colorscale
+trace = go.Heatmap(x=x, y=y, z=z, colorscale=colorscale, showscale=False)
+
+fig = go.Figure(data=go.Data([trace]))
+fig['layout'].update(
+    title="Annotated Heatmap",
+    annotations=annotations,
+    xaxis=go.XAxis(ticks='', side='top'),
+    # ticksuffix is a workaround to add a bit of padding
+    yaxis=go.YAxis(ticks='', ticksuffix='  '),  
+    width=700,
+    height=700,
+    autosize=False
+)
+url = py.plot(fig, filename='Annotated Heatmap', height=750)
+</code></pre>
+          </div>
+               
+          
+        </div>
+        <div class="twelve columns">
+          <div class="border" style="text-align:center;">
+            
+            <iframe src="https://plot.ly/~jackp/10351.embed" 
+              style="width: 750px; height: 750px; border: none;"></iframe>
+                 
+          </div>
+        </div>
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h3 id="heatmap-with-unequal-block-sizes"><a class="no_underline plot-blue" href="#heatmap-with-unequal-block-sizes">Heatmap with Unequal Block Sizes</a></h3>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          
+          <div class="z-depth-1">
+            <pre><code class="python"># Learn about API authentication here: https://plot.ly/python/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+from numpy import *
+import plotly.plotly as py
+
+# Golden spiral with fibonacci rectangles
+
+## Build the spiral
+def spiral(th):
+    a = 1.120529
+    b = 0.306349 
+    r = a*exp(-b*th)
+    return (r*cos(th), r*sin(th))
+
+nspiral = 2 # number of spiral loops
+
+th = linspace(-pi/13,2*pi*nspiral,1000); # angle
+(x,y) = spiral(th)
+
+# shift the spiral north so that it is centered
+yshift = (1.6 - (max(y)-min(y)))/2  
+
+s = dict(x= -x+x[0], y= y-y[0]+yshift, 
+     line =dict(color='white',width=3))  # spiral
+
+# Build the rectangles as a heatmap
+# specify the edges of the heatmap squares
+phi = ( 1+sqrt(5) )/2.
+xe = [0, 1, 1+(1/(phi**4)), 1+(1/(phi**3)), phi]    
+ye = [0, 1/(phi**3),1/phi**3+1/phi**4,1/(phi**2),1]
+
+z = [ [13,3,3,5],
+      [13,2,1,5],
+      [13,10,11,12],
+      [13,8,8,8]
+    ]
+
+hm = dict(x = sort(xe), 
+          y = sort(ye)+yshift, 
+          z = z, 
+          type = 'heatmap', 
+          colorscale = 'Viridis')
+
+axis_template = dict(range = [0,1.6], autorange = False, 
+             showgrid = False, zeroline = False, 
+             linecolor = 'black', showticklabels = False, 
+             ticks = '' )
+
+layout = dict( margin = dict(t=200,r=200,b=200,l=200),
+    xaxis = axis_template,
+    yaxis = axis_template,
+    showlegend = False,
+    width = 700, height = 700, 
+    autosize = False )
+
+figure = dict(data=[s, hm],layout=layout)
+
+url = py.plot(figure, filename='golden spiral', height=750)</code></pre>
+          </div>
+               
+          
+        </div>
+        <div class="twelve columns">
+          <div class="border" style="text-align:center;">
+            
+            <iframe src="https://plot.ly/~jackp/10370.embed" 
+              style="width: 700px; height: 700px; border: none;"></iframe>
+                 
+          </div>
+        </div>
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h3 id="heatmap-with-datetime-axis"><a class="no_underline plot-blue" href="#heatmap-with-datetime-axis">Heatmap with Datetime Axis</a></h3>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          
+          <div class="z-depth-1">
+            <pre><code class="python"># Learn about API authentication here: https://plot.ly/python/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+import datetime
+import numpy as np
+import plotly.plotly as py
+import plotly.graph_objs as go
+
+programmers = ['Alex','Nicole','Sara','Etienne','Chelsea','Jody','Marianne']
+
+base = datetime.datetime.today()
+date_list = [base - datetime.timedelta(days=x) for x in range(0, 180)]
+
+z = []
+
+for prgmr in programmers:
+    new_row = []
+    for date in date_list: 
+        new_row.append( np.random.poisson() )
+    z.append( list(new_row) )
+ 
+data = go.Data([
+    go.Heatmap(
+        z=z,
+        x=date_list,
+        y=programmers,
+        colorscale='Viridis',
+    )
+])
+
+layout = go.Layout( title='GitHub commits per day',
+                  xaxis = dict( ticks='', nticks=36 ),
+                  yaxis = dict( ticks='' ) )
+
+fig = go.Figure( data=data, layout=layout )
+
+url = py.plot(fig, filename='datetime-heatmap', validate=False)   
+</code></pre>
+          </div>
+               
+          
+        </div>
+        <div class="twelve columns">
+          <div class="border" style="text-align:center;">
+            
+            <iframe src="https://plot.ly/~jackp/10372.embed" 
+              style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
         </div>
