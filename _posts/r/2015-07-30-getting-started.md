@@ -64,6 +64,6 @@ Sys.setenv("plotly_domain"="https://plotly.your-company.com")
 Remember to replace "your-company" with the URL of your Plotly On-Premise server.
 
 <div class="row centered btnrow">
-    <a href="/r/" class="button no_underline">view examples</a>
+    <a href="/r/" class="button no_underline">Make your first graph</a>
 </div>
 
