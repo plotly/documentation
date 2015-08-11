@@ -36,7 +36,7 @@
 <!-- Facebook tags -->
     <meta property="og:title" content="geom_polygon"/>
     <meta property="og:type" content="website"/>
-    <meta property="og:image" content="https://plot.ly/gh-pages/documentation/static//images/geom_polygon.png">
+    <meta property="og:image" content="https://plot.ly/gh-pages/documentation/static//images/shape.png">
     <meta property="og:description" content="Examples of geom_polygon in R."/>
     <meta property="og:url" />
     <meta property="fb:admins" content="1123751525"/>
@@ -47,7 +47,7 @@
     <meta name="twitter:title" content="geom_polygon"/>
     <meta name="twitter:url" content="http://help.plot.lyggplot2/geom_polygon/"/>
     <meta name="twitter:description" content="Examples of geom_polygon in R."/>
-    <meta name="twitter:image" content="https://plot.ly/gh-pages/documentation/static//images/geom_polygon.png">
+    <meta name="twitter:image" content="https://plot.ly/gh-pages/documentation/static//images/shape.png">
     <meta name="twitter:site" content="@plotlygraphs"/>
 
 <!-- Favicon -->
@@ -204,6 +204,14 @@
 
 	
 
+	
+		
+		
+		
+		
+		
+		
+		
 	
 		
 		
@@ -9001,10 +9009,10 @@ library(devtools)
 library(ggplot2)
 source_url("https://raw.github.com/JoFrhwld/FAAV/master/r/stat-ellipse.R")
 
-qplot(data = df, x = x, y = y, colour = class) + 
+qplot(data = df, x = x, y = y, colour = class) +
   stat_ellipse(geom = "polygon", alpha = 1/2, aes(fill = class))
-  
-py$ggplotly()
+
+ggplotly(filename="r-docs/ellipses")
 </code></pre>
           </div>
                
@@ -9042,11 +9050,11 @@ py$ggplotly()
 library(plotly)
 
 tmp <- with(mtcars, data.frame(x=c(0, 0, max(wt)*35), y=c(0, max(wt), max(wt))))
-ggplot(mtcars, aes(hp, wt)) + 
-  geom_polygon(data=tmp, aes(x, y), fill="#d8161688") + 
+ggplot(mtcars, aes(hp, wt)) +
+  geom_polygon(data=tmp, aes(x, y), fill="#d8161688") +
   geom_point()
-  
-py$ggplotly()
+
+ggplotly(filename="r-docs/highlight-areas")
 </code></pre>
           </div>
                
@@ -9094,7 +9102,7 @@ df.t<-data.table(rbind( df[,list(Product,X=minX,Y=minY)],
 
 ggplot(df,aes(xmin=minX,xmax=maxX,ymin=minY,ymax=maxY,fill=Product))+geom_rect()
 
-py$ggplotly()
+ggplotly(filename="r-docs/geom_polygon-rect")
 </code></pre>
           </div>
                
@@ -9131,19 +9139,19 @@ py$ggplotly()
 
 library(plotly)
 
-x=seq(-2,2,length=200)  
+x=seq(-2,2,length=200)
 dat <- data.frame(
-  norm = dnorm(x,mean=0,sd=0.2), 
+  norm = dnorm(x,mean=0,sd=0.2),
   logistic = dlogis(x,location=0,scale=0.2), x = x
 )
-p <- ggplot(data=dat, aes(x=x)) + 
-  geom_polygon(aes(y=norm), fill="red", alpha=0.6) + 
-  geom_polygon(aes(y=logistic), fill="blue", alpha=0.6) + 
-  xlab("z") + ylab("") + 
-  scale_x_continuous(expand = c(0, 0)) + 
+p <- ggplot(data=dat, aes(x=x)) +
+  geom_polygon(aes(y=norm), fill="red", alpha=0.6) +
+  geom_polygon(aes(y=logistic), fill="blue", alpha=0.6) +
+  xlab("z") + ylab("") +
+  scale_x_continuous(expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0))
-  
-py$ggplotly()
+
+ggplotly(filename="r-docs/distributions")
 </code></pre>
           </div>
                
@@ -9157,6 +9165,73 @@ py$ggplotly()
           <div class="border" style="text-align:center;">
             
             <iframe src="https://plot.ly/~MattSundquist/18938/none-vs-none/.embed" 
+              style="width: 100%; height: 550px; border: none;"></iframe>
+                 
+          </div>
+        </div>
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="convex-hull-of-a-set-of-points"><a class="no_underline plot-blue" href="#convex-hull-of-a-set-of-points">convex hull of a set of points</a></h4>
+      </div>
+      <div class="row">
+        <div class="six columns">
+          
+          <div class="z-depth-1">
+            <pre><code class="ggplot2"># Learn about API authentication here: https://plot.ly/r/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+library(plotly)
+
+doInstall <- TRUE  # Change to FALSE if you don't want packages installed.
+toInstall <- c("RColorBrewer")
+if(doInstall){install.packages(toInstall, repos = "http://cran.us.r-project.org")}
+lapply(toInstall, library, character.only = TRUE)
+
+# Generate some data
+nn <- 500
+myData <- data.frame(X = rnorm(nn),
+                     Y = rnorm(nn))
+
+setK = 6  # How many clusters?
+clusterSolution <- kmeans(myData, centers = setK)
+
+myData$whichCluster <- factor(clusterSolution$cluster)
+
+splitData <- split(myData, myData$whichCluster)
+appliedData <- lapply(splitData, function(df){
+  df[chull(df), ]  # chull really is useful, even outside of contrived examples.
+  })
+combinedData <- do.call(rbind, appliedData)
+
+zp3 <- ggplot(data = myData,
+                     aes(x = X, y = Y))
+zp3 <- zp3 + geom_polygon(data = combinedData,  # This is also a nice example of how to plot
+                          aes(x = X, y = Y, fill = whichCluster),  # two superimposed geoms
+                          alpha = 1/2)                             # from different data.frames
+zp3 <- zp3 + geom_point(size=3)
+zp3 <- zp3 + coord_equal()
+zp3 <- zp3 + scale_fill_manual(values = colorRampPalette(rev(brewer.pal(11, "Spectral")))(setK))
+
+ggplotly(filename="r-docs/convex-u=hull")
+</code></pre>
+          </div>
+               
+          
+            <blockquote>
+              Inspired by <a href="http://is-r.tumblr.com/post/33356702763/from-holey-polygons-to-convex-hulls">is.R()</a>.
+            </blockquote>
+          
+        </div>
+        <div class="six columns">
+          <div class="border" style="text-align:center;">
+            
+            <iframe src="https://plot.ly/~MattSundquist/18953.embed" 
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
@@ -9203,7 +9278,7 @@ p1 <- p1 + geom_path(colour = 'gray', linestyle = 2)
 p1 <- p1 + scale_fill_brewer('Unemployment Rate (Jan 2011)', palette  = 'PuRd')
 p1 <- p1 + coord_map()
 
-py$ggplotly()
+ggplotly(filename="r-docs/ggmaps")
 </code></pre>
           </div>
                
