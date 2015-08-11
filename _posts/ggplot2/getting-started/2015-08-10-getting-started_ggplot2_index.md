@@ -69,22 +69,19 @@ Remember to replace "your-company" with the URL of your Plotly On-Premise server
 
 
 ```r
+library(plotly)
+
+set.seed(100)
+d <- diamonds[sample(nrow(diamonds), 1000), ]
+
 p <- ggplot(data = d, aes(x = carat, y = price)) +
   geom_point(aes(text = paste("Clarity:", clarity)), size = 4) +
   geom_smooth(aes(colour = cut, fill = cut)) + facet_wrap(~ cut)
-```
 
-```
-## Error in eval(expr, envir, enclos): could not find function "ggplot"
-```
-
-```r
 (gg <- ggplotly(p))
 ```
 
-```
-## Error in eval(expr, envir, enclos): could not find function "ggplotly"
-```
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1284.embed" width="800" frameBorder="0"></iframe>
 
 <div class="row centered btnrow">
     <a href="/r/" class="button no_underline">View more examples</a>
