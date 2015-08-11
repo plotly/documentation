@@ -22,7 +22,7 @@ is here: [https://plot.ly/~PlotBot/82.json](https://plot.ly/~PlotBot/82.json)
 
 ### Plot with `Plotly.newPlot`
 
-Use `newPlot` to create a new plot in an empty `&lt;div&gt;` element.
+Use `newPlot` to create a new plot in an empty `<div>` element.
 A note on sizing: You can either supply height and width in `layout`, or give `graphDiv` a height and width in css.
 
 ```
