@@ -23,6 +23,8 @@ Plotly is R package for creating interactive web-based graphs via [plotly](https
 __plotly__ is not (yet) available on CRAN, but you can install it via [devtools](http://cran.r-project.org/web/packages/devtools/):
 
 ```r
+install.packages("viridis") # dependency
+install.packages("devtools")
 devtools::install_github("ropensci/plotly")
 ```
 
