@@ -5324,6 +5324,33 @@
 		
 		
 		
+		
+	
+		
+				
+		
+		
+		
+		
+		
+		
+	
+		
+				
+		
+		
+		
+		
+		
+		
+	
+		
+				
+		
+		
+		
+		
+		
 			<div class="lang_nav_button-div"><a class="lang_nav_button lang_nav_act" href="/ggplot2/geom_ribbon/"><img src="https://plot.ly/gh-pages/documentation/static//images/ggplot.png" alt="ggplot2" class="lang_nav_thum">ggplot2</a></div>
 		
 		
@@ -11851,6 +11878,196 @@ ggplotly()
           <div class="border" style="text-align:center;">
             
             <iframe src="https://plot.ly/~MattSundquist/17004.embed" 
+              style="width: 100%; height: 550px; border: none;"></iframe>
+                 
+          </div>
+        </div>
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="extract-prediction-band-from-lme-fit"><a class="no_underline plot-blue" href="#extract-prediction-band-from-lme-fit">extract prediction band from lme fit</a></h4>
+      </div>
+      <div class="row">
+        <div class="six columns">
+          
+          <div class="z-depth-1">
+            <pre><code class="ggplot2"># Learn about API authentication here: https://plot.ly/ggplot2/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+library(plotly)
+
+set.seed(42)
+x <- rep(0:100,10)
+y <- 15 + 2*rnorm(1010,10,4)*x + rnorm(1010,20,100)
+id<-rep(1:10,each=101)
+
+dtfr <- data.frame(x=x ,y=y, id=id)
+
+library(nlme)
+
+model.mx <- lme(y~x,random=~1+x|id,data=dtfr)
+
+#create data.frame with new values for predictors
+#more than one predictor is possible
+new.dat <- data.frame(x=0:100)
+#predict response
+new.dat$pred <- predict(model.mx, newdata=new.dat,level=0)
+
+#create design matrix
+Designmat <- model.matrix(eval(eval(model.mx$call$fixed)[-2]), new.dat[-ncol(new.dat)])
+
+#compute standard error for predictions
+predvar <- diag(Designmat %*% model.mx$varFix %*% t(Designmat))
+new.dat$SE <- sqrt(predvar) 
+new.dat$SE2 <- sqrt(predvar+model.mx$sigma^2)
+
+library(ggplot2) 
+p1 <- ggplot(new.dat,aes(x=x,y=pred)) + 
+geom_line() +
+geom_ribbon(aes(ymin=pred-2*SE2,ymax=pred+2*SE2),alpha=0.2,fill="red") +
+geom_ribbon(aes(ymin=pred-2*SE,ymax=pred+2*SE),alpha=0.2,fill="blue") +
+geom_point(data=dtfr,aes(x=x,y=y), size=3) +
+scale_y_continuous("y")
+
+ggplotly(filename="r-docs/lme-fit")
+</code></pre>
+          </div>
+               
+          
+            <blockquote>
+              Inspired by <a href="http://stackoverflow.com/questions/14358811/extract-prediction-band-from-lme-fit/14435982#14435982">Stack Overflow</a>.
+            </blockquote>
+          
+        </div>
+        <div class="six columns">
+          <div class="border" style="text-align:center;">
+            
+            <iframe src="https://plot.ly/~MattSundquist/19053/y-vs-x/.embed" 
+              style="width: 100%; height: 550px; border: none;"></iframe>
+                 
+          </div>
+        </div>
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="plotting-confidence-bands-with-ggplot2"><a class="no_underline plot-blue" href="#plotting-confidence-bands-with-ggplot2">plotting confidence bands with ggplot2</a></h4>
+      </div>
+      <div class="row">
+        <div class="six columns">
+          
+          <div class="z-depth-1">
+            <pre><code class="ggplot2"># Learn about API authentication here: https://plot.ly/ggplot2/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+library(plotly)
+
+require(nlme)
+
+set.seed(101)
+mp <-data.frame(year=1990:2010)
+N <- nrow(mp)
+
+mp <- within(mp,
+         {
+             wav <- rnorm(N)*cos(2*pi*year)+rnorm(N)*sin(2*pi*year)+5
+             wow <- rnorm(N)*wav+rnorm(N)*wav^3
+         })
+
+m01 <- gls(wow~poly(wav,3), data=mp, correlation = corARMA(p=1))
+
+fit <- predict(m01)
+
+V <- vcov(m01)
+X <- model.matrix(~poly(wav,3),data=mp)
+se.fit <- sqrt(diag(X %*% V %*% t(X)))
+
+predframe <- with(mp,data.frame(year,wav,
+                                wow=fit,lwr=fit-1.96*se.fit,upr=fit+1.96*se.fit))
+
+p1 <- ggplot(mp, aes(year, wow))+
+    geom_point()+
+    geom_line(data=predframe)+
+    geom_ribbon(data=predframe,aes(ymin=lwr,ymax=upr),alpha=0.3)
+
+ggplotly(filename="r-docs/confidence-bands")
+</code></pre>
+          </div>
+               
+          
+            <blockquote>
+              Inspired by <a href="http://stackoverflow.com/questions/14033551/r-plotting-confidence-bands-with-ggplot/14033770#14033770">Stack Overflow</a>.
+            </blockquote>
+          
+        </div>
+        <div class="six columns">
+          <div class="border" style="text-align:center;">
+            
+            <iframe src="https://plot.ly/~MattSundquist/19056/wow-vs-year/.embed" 
+              style="width: 100%; height: 550px; border: none;"></iframe>
+                 
+          </div>
+        </div>
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="multiple-layers-in-ggplot2-plot"><a class="no_underline plot-blue" href="#multiple-layers-in-ggplot2-plot">multiple layers in ggplot2 plot</a></h4>
+      </div>
+      <div class="row">
+        <div class="six columns">
+          
+          <div class="z-depth-1">
+            <pre><code class="ggplot2"># Learn about API authentication here: https://plot.ly/ggplot2/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+library(plotly)
+
+x=seq(1,10,length=100)
+data=data.frame(x,dnorm(x,mean=6.5,sd=1))
+names(data)=c('x','new.data')
+x.ribbon=seq(1,10,length=20)
+ribbon=data.frame(x.ribbon,
+                  dnorm(x.ribbon,mean=5,sd=1)+.01,
+                  dnorm(x.ribbon,mean=5,sd=1)-.01,
+                  dnorm(x.ribbon,mean=5,sd=1))
+names(ribbon)=c('x.ribbon','max','min','avg')
+
+ggplot()+geom_ribbon(data=ribbon,aes(ymin=min,ymax=max,x=x.ribbon,fill='lightgreen'))+
+    geom_line(data=ribbon,aes(x=x.ribbon,y=avg,color='black'))+
+    geom_line(data=data,aes(x=x,y=new.data,color='red'))+
+    xlab('x')+ylab('density') + 
+    scale_fill_identity() +
+    scale_colour_manual(name = 'the colour', 
+         values =c('black'='black','red'='red'))
+
+ggplotly(filename="r-docs/multiple-layers")
+</code></pre>
+          </div>
+               
+          
+            <blockquote>
+              Inspired by <a href="http://stackoverflow.com/questions/18394391/r-custom-legend-for-multiple-layer-ggplot/18395012#18395012">Stack Overflow</a>.
+            </blockquote>
+          
+        </div>
+        <div class="six columns">
+          <div class="border" style="text-align:center;">
+            
+            <iframe src="https://plot.ly/~MattSundquist/19060/density-vs-x/.embed" 
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>

@@ -1,0 +1,34 @@
+# Learn about API authentication here: https://plot.ly/ggplot2/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+library(plotly)
+
+require(nlme)
+
+set.seed(101)
+mp <-data.frame(year=1990:2010)
+N <- nrow(mp)
+
+mp <- within(mp,
+         {
+             wav <- rnorm(N)*cos(2*pi*year)+rnorm(N)*sin(2*pi*year)+5
+             wow <- rnorm(N)*wav+rnorm(N)*wav^3
+         })
+
+m01 <- gls(wow~poly(wav,3), data=mp, correlation = corARMA(p=1))
+
+fit <- predict(m01)
+
+V <- vcov(m01)
+X <- model.matrix(~poly(wav,3),data=mp)
+se.fit <- sqrt(diag(X %*% V %*% t(X)))
+
+predframe <- with(mp,data.frame(year,wav,
+                                wow=fit,lwr=fit-1.96*se.fit,upr=fit+1.96*se.fit))
+
+p1 <- ggplot(mp, aes(year, wow))+
+    geom_point()+
+    geom_line(data=predframe)+
+    geom_ribbon(data=predframe,aes(ymin=lwr,ymax=upr),alpha=0.3)
+
+ggplotly(filename="r-docs/confidence-bands")
