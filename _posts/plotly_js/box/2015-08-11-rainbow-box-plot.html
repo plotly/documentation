@@ -1,0 +1,76 @@
+---
+name: Rainbow Box Plot
+plot_url: https://plot.ly/10368/~jackp/
+language: plotly_js
+suite: box
+order: 12
+sitemap: false
+---
+
+var boxNumber = 30;
+var boxColor = [];
+var allColors = numeric.linspace(0, 360, boxNumber);
+var data = [];
+var yValues = [];
+
+// generate an array of rainbow colors by fixing the saturation and lightness of the HSL representation of colour
+// and marching around the hue.
+// Plotly accepts any CSS color format, see e.g. http://www.w3schools.com/cssref/css_colors_legal.asp.
+
+for( var i = 0; i < boxNumber;  i++ ){
+  var result = 'hsl('+ allColors[i] +',50%'+',50%)';
+  boxColor.push(result);
+}
+
+// Each box is represented by a Trace that contains the data, the type, and the colour.
+// Use list comprehension to describe N boxes, each with a different colour and with different randomly generated data:
+
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+};
+
+//Create Y Values
+
+for( var i = 0; i < boxNumber;  i++ ){
+  var ySingleArray = [];
+    for( var j = 0; j < 10;  j++ ){
+      var randomNum = getRandomArbitrary(0, 1);
+      var yIndValue = 3.5*Math.sin(Math.PI * i/boxNumber) + i/boxNumber+(1.5+0.5*Math.cos(Math.PI*i/boxNumber))*randomNum;
+      ySingleArray.push(yIndValue);
+    }
+  yValues.push(ySingleArray);
+}
+
+//Create Traces
+
+for( var i = 0; i < boxNumber;  i++ ){
+  var result = {
+    y: yValues[i],
+    type:'box',
+    marker:{
+      color: boxColor[i]
+    }
+  };
+  data.push(result);
+};
+
+//Format the layout
+
+var layout = {
+  xaxis: {
+    showgrid: false,
+    zeroline: false,
+    tickangle: 60,
+    showticklabels: false
+  },
+  yaxis: {
+    zeroline: false,
+    gridcolor: 'white'
+  },
+  paper_bgcolor: 'rgb(233,233,233)',
+  plot_bgcolor: 'rgb(233,233,233)',
+  showlegend:false
+};
+
+
+Plotly.newPlot('myDiv', data, layout);
