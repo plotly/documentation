@@ -18,4 +18,5 @@ task :deploy => [:check_git] do
 
   system "git pull origin  \"#{source_branch}\" && jekyll build && git checkout \"#{deploy_branch}\" && git pull origin \"#{deploy_branch}\" && cp -r _site/* . && rm -rf _site/ && touch .nojekyll && git add . && git commit -m \"#{message}\" && git push origin \"#{deploy_branch}\""
   system "git checkout \"#{source_branch}\""
+  system "osascript -e 'display notification \"rake deploy just finished\" with title \"Docs are ready!\"'"
 end

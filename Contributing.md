@@ -24,9 +24,15 @@ The full bleed R pages are created with R Markdown. Here's how:
   $ git checkout source
   ```
 2. [Install jekyll](http://jekyllrb.com/docs/installation/) (usually as simple as `$ sudo gem install jekyll`)
-3. In the documentation repo: `$ jekyll serve --config _config_dev.yml`
-4. Visit the pages at: [http://localhost:4000/python/](http://localhost:4000/python/)
-5. When you make changes, jekyll should automatically regenerate for you. Read the messages in your terminal to check it out
+3. Install a couple dependencies:
+
+  ```
+  $ sudo gem install jekyll-redirect-from
+  $ sudo gem install jekyll-sitemap
+  ```
+4. In the documentation repo: `$ jekyll serve --config _config_dev.yml`
+5. Visit the pages at: [http://localhost:4000/python/](http://localhost:4000/python/)
+6. When you make changes, jekyll should automatically regenerate for you. Read the messages in your terminal to check it out
 
 There are a TON of posts in here, so rendering can take up to
 six minutes! You can *limit* the number of posts that render by
