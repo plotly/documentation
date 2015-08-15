@@ -12143,7 +12143,77 @@
 
 
 
-				
+				Converting time series plots from MATLAB to plotly requires a few extra steps.
+
+Since MATLAB is extremely flexible with how the dates can be formatted within the X and Y tick labels, automatically parsing the various permutations of the date labels extremely difficult is impossible.
+
+<!--
+
+<h4>Converting to a Standard Date Format</h4>
+
+The first way to convert MATLAB time series plots is to c
+
+<ol>
+    <li>
+        Convert your MATLAB time values to the “milliseconds from 1969” time format with <code>convertDate</code> below.
+    </li>
+    <li>Run >> plotlyfig = fig2plotly(gcf) to parse your figure.</li>
+    <li>
+        Modify the converted figure's date axes: <code>plotlyfig.layout.xaxis1.type = 'date';</code>(note: the xaxis1 might be xaxisN—> depending on the number of axes you have, where N is the id of the axis you wish to modify)
+    </li>
+    <li>
+        Run <code>&gt;&gt; plotlyfig.PlotOptions.FileOpt = 'overwrite';</code> (changing the file option to overwrite your newly created plot)
+    </li>
+    <li>
+        Run <code>&gt;&gt; plotly(plotlyfig);</code> to send your figure back to Plotly.
+    </li>
+</ol>
+
+<b>Example</b>
+
+<div class="z-depth-1">
+<pre><code class="matlab hljs">x = linspace(datenum(2009,01,01),datenum(2010,01,01),12);
+y = rand(1,12);
+plotlydate = convertDate(x);
+plot(plotlydate,y);
+plotlyfig = fig2plotly(gcf,'filename','myfig');
+plotlyfig.layout.xaxis1.type = 'date';
+plotlyfig.PlotOptions.FileOpt = 'overwrite';
+plotly(plotlyfig);
+</code></pre>
+</div>
+
+-->
+
+<h4>Explicitly Setting the Date Format</h4>
+
+Convert MATLAB time series plots to Plotly by explicitly setting the date-time format.
+
+<ol>
+    <li>
+        set the date-string format, for example: <code>userdata.plotly.xdateformat = ‘yyyy:mm:hh’;</code>
+    </li>
+    <li><code>set(your_axis_handle, ‘UserData’, userdata)</code></li>
+    <li>Send your figure to plotly: <code>plotlyfig = fig2plotly(gcf);</code></li>
+</ol>
+
+<b>Example</b>
+
+<div class="z-depth-1">
+<pre><code class="matlab hljs">startDate = datenum('01-01-2009');
+endDate = datenum('12-31-2009');
+xData = linspace(startDate,endDate,12);
+plot(xData,rand(1,12))
+set(gca,'XTick',xData)
+dateformat = 'yy:mmm';
+datetick('x',dateformat,'keepticks')
+userdata.plotly.xdateformat = dateformat;
+set(gca,'UserData',userdata)
+p = fig2plotly(gcf);
+</code></pre>
+</div>
+
+
 
 
     <div class="section">
