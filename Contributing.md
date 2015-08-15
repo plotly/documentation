@@ -29,6 +29,7 @@ The full bleed R pages are created with R Markdown. Here's how:
   ```
   $ sudo gem install jekyll-redirect-from
   $ sudo gem install jekyll-sitemap
+  $ sudo gem install terminal-notifier
   ```
 4. In the documentation repo: `$ jekyll serve --config _config_dev.yml`
 5. Visit the pages at: [http://localhost:4000/python/](http://localhost:4000/python/)
@@ -63,6 +64,8 @@ To deploy, first install `_config.yml` package dependencies:
 ```
 documentation (source) $ sudo gem install jekyll-redirect-from
 documentation (source) $ sudo gem install jekyll-sitemap
+documentation (source) $ sudo gem install terminal-notifier
+
 ```
 
 Then, deploy changes with:
