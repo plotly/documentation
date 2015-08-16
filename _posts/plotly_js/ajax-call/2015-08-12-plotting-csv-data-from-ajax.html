@@ -1,0 +1,47 @@
+---
+name: Plotting CSV Data from Ajax Call
+plot_url: https://codepen.io/plotly/embed/waZpqe/?height=484&theme-id=15263&default-tab=result
+language: plotly_js
+suite: ajax
+order: 1
+sitemap: false
+arrangement: horizontal
+---
+$(document).ready(function() {
+    $.ajax({
+        type: "GET",
+        url: "https://raw.githubusercontent.com/plotly/datasets/master/wind_speed_laurel_nebraska.csv",
+        dataType: "text",
+        success: function(data) {processData(data);}
+     });
+});
+
+function processData(allText) {
+    var allTextLines = allText.split(/\r\n|\n/);
+    var headers = allTextLines[0].split(',');
+    var x = [];
+    var y = [];
+    var standard_deviation = [];
+
+    for (var i = 1; i < allTextLines.length; i++) {
+        var data = allTextLines[i].split(',');
+        if (data.length == headers.length) {
+        x.push( data[1] );
+         y.push( data[2] );
+         standard_deviation.push( data[0] );
+        }
+    }
+   console.log( 'X',x, 'Y',y, 'SD',standard_deviation );
+   makePlotly( x, y, standard_deviation );
+}
+
+function makePlotly( x, y, standard_deviation ){
+  var plotDiv = document.getElementById('plot');
+  var traces = [{
+    x: x,
+    y: y
+  }];
+
+  Plotly.newPlot(plotDiv, traces,
+    {title: 'Plotting CSV data from AJAX call'});
+};
