@@ -7,100 +7,91 @@ order: 0
 sitemap: false
 ---
 
-$(document).ready(function() {
-    $.ajax({
-        type: 'GET',
-        url: 'https://raw.githubusercontent.com/plotly/datasets/master/alpha_shape.csv',
-        dataType: 'text',
-        success: function(data) {processData(data);}
-     });
-});
+function makePlotly(divId){
+   d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/alpha_shape.csv", function(data){ processData(data) } );
+};
 
-function processData(allText) {
-    var allTextLines = allText.split(/\r\n|\n/);
-    var headers = allTextLines[0].split(',');
-    var xValues = [];
-    var yValues = [];
-    var zValues = [];
+function processData(allRows) {
 
-    for (var i=1; i<allTextLines.length; i++) {
-        var data = allTextLines[i].split(',');
-        if (data.length == headers.length) {
-         xValues.push( data[0] );
-         yValues.push( data[1] );
-         zValues.push( data[2] );
-        }
-    }
-   console.log( 'X Values',xValues, 'Y Values',yValues, 'Z Values', zValues );
-   threeDCluster(xValues, yValues, zValues, 'myDiv');
+  console.log(allRows);
+  var x = [], y = [], z = [];
+
+  for (var i=0; i<allRows.length; i++) {
+    row = allRows[i];
+    x.push( row['x'] );
+    y.push( row['y'] );
+    z.push( row['z'] );
+  }
+  console.log( 'X', x, 'Y', y, 'Z', z );
+  threeDCluster( x, y, z, 'myDiv' );
 }
 
 function threeDCluster(xValues, yValues, zValues, divID){
 
   var data = [{
-    mode: 'markers',
-    name: 'y',
-    type: 'scatter3d',
-    x: xValues,
-    y: yValues,
-    z: zValues,
-    marker: {
-       color: 'rgb(23, 190, 207)',
-       size: 2
-    }
+  mode: 'markers',
+  name: 'y',
+  type: 'scatter3d',
+  x: xValues,
+  y: yValues,
+  z: zValues,
+  marker: {
+     color: 'rgb(23, 190, 207)',
+     size: 2
+  }
   },{
-    alphahull: 7,
-    name: 'y',
-    opacity: 0.1,
-    type: 'mesh3d',
-    x: xValues,
-    y: yValues,
-    z: zValues
+  alphahull: 7,
+  name: 'y',
+  opacity: 0.1,
+  type: 'mesh3d',
+  x: xValues,
+  y: yValues,
+  z: zValues
   }];
 
   var layout = {
-      autosize: true,
-      height: 480,
-      scene: {
-          aspectratio: {
-              x: 1,
-              y: 1,
-              z: 1
-          },
-          camera: {
-              center: {
-                  x: 0,
-                  y: 0,
-                  z: 0
-              },
-              eye: {
-                  x: 1.25,
-                  y: 1.25,
-                  z: 1.25
-              },
-              up: {
-                  x: 0,
-                  y: 0,
-                  z: 1
-              }
-          },
-          xaxis: {
-              type: 'linear',
-              zeroline: false
-          },
-          yaxis: {
-              type: 'linear',
-              zeroline: false
-          },
-          zaxis: {
-              type: 'linear',
-              zeroline: false
-          }
-      },
-      title: '3d point clustering',
-      width: 477
+    autosize: true,
+    height: 480,
+    scene: {
+        aspectratio: {
+            x: 1,
+            y: 1,
+            z: 1
+        },
+        camera: {
+            center: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            eye: {
+                x: 1.25,
+                y: 1.25,
+                z: 1.25
+            },
+            up: {
+                x: 0,
+                y: 0,
+                z: 1
+            }
+        },
+        xaxis: {
+            type: 'linear',
+            zeroline: false
+        },
+        yaxis: {
+            type: 'linear',
+            zeroline: false
+        },
+        zaxis: {
+            type: 'linear',
+            zeroline: false
+        }
+    },
+    title: '3d point clustering',
+    width: 477
   }
 
 
   Plotly.newPlot('myDiv', data, layout);
-  };
+};

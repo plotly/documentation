@@ -1,6 +1,6 @@
 ---
 name: Plotting CSV Data from Ajax Call
-plot_url: https://codepen.io/plotly/embed/waZpqe/?height=484&theme-id=15263&default-tab=result
+plot_url: https://codepen.io/plotly/embed/9a091a6dd0486ff8de95982bc23a3467/?height=562&theme-id=15263&default-tab=result
 language: plotly_js
 suite: ajax
 order: 1
@@ -8,40 +8,31 @@ sitemap: false
 arrangement: horizontal
 ---
 $(document).ready(function() {
-    $.ajax({
-        type: "GET",
-        url: "https://raw.githubusercontent.com/plotly/datasets/master/wind_speed_laurel_nebraska.csv",
-        dataType: "text",
-        success: function(data) {processData(data);}
-     });
+   d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/2014_apple_stock.csv", function(data){ processData(data) } );
+
 });
 
-function processData(allText) {
-    var allTextLines = allText.split(/\r\n|\n/);
-    var headers = allTextLines[0].split(',');
-    var x = [];
-    var y = [];
-    var standard_deviation = [];
+function processData(allRows) {
 
-    for (var i = 1; i &lt; allTextLines.length; i++) {
-        var data = allTextLines[i].split(',');
-        if (data.length == headers.length) {
-        x.push( data[1] );
-         y.push( data[2] );
-         standard_deviation.push( data[0] );
-        }
-    }
-   console.log( 'X',x, 'Y',y, 'SD',standard_deviation );
-   makePlotly( x, y, standard_deviation );
-}
+  console.log(allRows);
+  var x = [], y = [], standard_deviation = [];
+
+  for (var i=0; i<allRows.length; i++) {
+    row = allRows[i];
+    x.push( row['AAPL_x'] );
+    y.push( row['AAPL_y'] );
+  }
+  console.log( 'X',x, 'Y',y, 'SD',standard_deviation );
+  makePlotly( x, y, standard_deviation );
+};
 
 function makePlotly( x, y, standard_deviation ){
-  var plotDiv = document.getElementById('plot');
+  var plotDiv = document.getElementById("plot");
   var traces = [{
     x: x,
     y: y
   }];
 
-  Plotly.newPlot(plotDiv, traces,
+  Plotly.newPlot('DivId', traces,
     {title: 'Plotting CSV data from AJAX call'});
 };

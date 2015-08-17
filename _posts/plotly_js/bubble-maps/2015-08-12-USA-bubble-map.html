@@ -6,73 +6,63 @@ suite: bubble-maps
 order: 2
 sitemap: false
 ---
-var scale = 50000;
+function makePlotly(divId){
+       d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/2014_us_cities.csv", function(data){ processData(data) } );
+    };
 
-$(document).ready(function() {
-    $.ajax({
-        type: 'GET',
-        url: 'https://raw.githubusercontent.com/plotly/datasets/master/2014_us_cities.csv',
-        dataType: 'text',
-        success: function(data) {processData(data);}
-     });
-});
+    function processData(allRows) {
 
-function processData(allText) {
-    var allTextLines = allText.split(/\r\n|\n/);
-    var headers = allTextLines[0].split(',');
-    var population = [];
-    var cityLat = [];
-    var cityLon = [];
-    var cityNames = [];
+      console.log(allRows);
+      var cityName = [], cityPop = [], cityLat = [], cityLon = [];
 
-    for (var i=1; i<allTextLines.length; i++) {
-        var data = allTextLines[i].split(',');
-        if (data.length === headers.length) {
-        population.push( data[1] );
-         cityLat.push( data[2] );
-         cityLon.push( data[3] );
-         cityNames.push( data[0] );
-        }
+      for (var i=0; i<allRows.length; i++) {
+        row = allRows[i];
+        cityName.push( row['name'] );
+        cityPop.push( row['pop'] );
+        cityLat.push( row['lat'] );
+        cityLon.push( row['lon'] );
+      }
+      console.log( 'City',cityName, 'Population',cityPop, 'Latitutde',cityLat, 'Longitude', cityLon );
+      scattergeomarkers( cityName, cityPop, cityLat, cityLon );
     }
-   console.log( 'Population',population, 'City Latitude',cityLat, 'City Longitude', cityLon, 'City Names',cityNames );
-    scattergeomarkers(population, cityLat, cityLon, cityNames, 'myDiv');
-}
 
-function scattergeomarkers(population, cityLat, cityLon, cityNames, myDiv) {
+    function scattergeomarkers(cityName, cityPop, cityLat, cityLon, myDiv) {
 
-  var data = [{
-          type: 'scattergeo',
-          mode: 'markers',
-          locationmode: 'USA-States',
-          text: cityNames,
-          lon: cityLon,
-          lat: cityLat,
-          sizemode: 'diameter',
-          marker: {
-              size: population.map(function(pop) { return pop / scale; }),
-              line: {
-                  width: 2,
-                  color: 'black'
-              }
-          },
-          name: 'US City Population'
-      }];
+      var scale = 50000;
 
-      var layout = {
-        title: '2014 US city populations<br>(Click legend to toggle traces)',
-        showlegend: true,
-        geo: {
-          scope: 'usa',
-          projection: {
-            type: 'albers usa'
-          },
-          showland: true,
-          landcolor: 'rgb(217,217,217)',
-          subunitwidth: 1,
-          countrywidth: 1,
-          subunitcolor: 'rgb(255,255,255)',
-          countrycolor: 'rgb(255,255,255)'
-        }
-      };
-      Plotly.newPlot('myDiv', data, layout);
-};
+      var data = [{
+              type: 'scattergeo',
+              mode: 'markers',
+              locationmode: 'USA-States',
+              text: cityName,
+              lon: cityLon,
+              lat: cityLat,
+              sizemode: 'diameter',
+              marker: {
+                  size: cityPop.map(function(pop) { return pop / scale; }),
+                  line: {
+                      width: 2,
+                      color: 'black'
+                  }
+              },
+              name: 'US City Population'
+          }];
+
+          var layout = {
+            title: '2014 US city populations<br>(Click legend to toggle traces)',
+            showlegend: true,
+            geo: {
+              scope: 'usa',
+              projection: {
+                type: 'albers usa'
+              },
+              showland: true,
+              landcolor: 'rgb(217,217,217)',
+              subunitwidth: 1,
+              countrywidth: 1,
+              subunitcolor: 'rgb(255,255,255)',
+              countrycolor: 'rgb(255,255,255)'
+            }
+          };
+          Plotly.newPlot('myDiv', data, layout);
+    };
