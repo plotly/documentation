@@ -1,5 +1,5 @@
 ---
-title: "Plotly.js Function Reference"
+title: Plotly.js Function Reference
 name: Plotly.js Function Reference
 permalink: /javascript/plotlyjs-function-reference
 layout: getstart
