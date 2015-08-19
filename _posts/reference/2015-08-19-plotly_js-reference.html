@@ -1,6 +1,5 @@
 ---
 permalink: javascript/reference
-layout: langindex
 ---
 {% for trace in site.data.plotschema.traces %}
     <h3>{{ trace[0] }}</h3>
@@ -11,12 +10,32 @@ layout: langindex
             {% if attribute[1].values.size > 0 %}
                 ({{ attribute[1].values | join: "|" }})
             {% endif %}
-            {% if attribute[1] contains 'dflt' and attribute[1].dflt != '' %}
+            {% if attribute[1].dflt %}
                 <br>default: {{ attribute[1].dflt }}
             {% endif %}
-            {% if attribute[1] contains 'type' and attribute[1].type != '' %}
-                <br>type: {{ attribute[1].type }}
-            {% endif %}
+            {% for obj in attribute[1] %}
+                {% assign isnested = false %}
+                {% if obj[0] != "flags" and obj[0] != "dflt" and obj[0] != "values" and obj[0] != "type" and obj[0] != "min" and obj[0] != "max" and obj[0] != "arrayOk" and obj[0] != "flags and obj[0] != "extras" %}
+                    {% if obj[0] != "extras" %}
+                        {% if isnested == false %}
+                        <ul>
+                        {% assign isnested = true %}
+                        {% endif %}
+                        <li>
+                            <b>{{ obj[0] }}</b>
+                            {% if obj[1].values.size > 0 %}
+                                ({{ obj[1].values | join: "|" }})
+                            {% endif %}
+                            {% if obj[1].dflt %}
+                                <br>default: {{ obj[1].dflt }}
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                {% endif %}
+                {% if isnested %}
+                </ul>
+                {% endif %}
+            {% endfor %}
         </li>
     {% endfor %}
     </ul>
