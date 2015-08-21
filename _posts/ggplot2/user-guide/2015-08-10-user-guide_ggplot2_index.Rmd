@@ -6,6 +6,7 @@ layout: base
 thumbnail: /images/facet_wrap.png
 language: ggplot2
 page_type: user_guide
+ignore_header: true
 ---
 
 ## Plotly and ggplot2 UseR Guide
