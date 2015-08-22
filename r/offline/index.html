@@ -313,17 +313,17 @@
 
 <pre><code>dir.create('~/.plotly/plotlyjs', recursive=TRUE)
 
-download.file("http://purchasing.plot.ly/your_licensed_plotly_offline_url", 
+download.file("http://purchasing.plot.ly/your_licensed_plotly_offline_url",
   "~/.plotly/plotlyjs/plotly-offline.zip")
 
 unzip("~/.plotly/plotlyjs/plotly-offline.zip", exdir = "~/.plotly/plotlyjs")
 </code></pre>
 
 <p>
-If, for some reason, you can't move the zip file to that location, tell R to look elsewhere by changing the "plotly_offline" environment variable (in this case, you may want to place this snippet in your ~/.Rprofile). For example:  
+If, for some reason, you can't move the zip file to that location, tell R to look elsewhere by changing the "plotly_offline" environment variable (in this case, you may want to place this snippet in your ~/.Rprofile). For example:
 </p>
 
-<pre><code>download.file("http://purchasing.plot.ly/your_licensed_plotly_offline_url", 
+<pre><code>download.file("http://purchasing.plot.ly/your_licensed_plotly_offline_url",
   "~/Downloads/plotly-offline.zip")
 
 unzip("~/Downloads/plotly-offline.zip", exdir = "~/Downloads/")
@@ -335,8 +335,8 @@ Sys.setenv("plotly_offline"="~/Downloads/")
 
 <pre><code>library(plotly)
 set.seed(100)
-d <- diamonds[sample(nrow(diamonds), 1000), ]
-p <- plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
+d &lt;- diamonds[sample(nrow(diamonds), 1000), ]
+p &lt;- plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
         mode = "markers", color = carat, size = carat)
 offline(p)
 </code></pre>
@@ -349,9 +349,6 @@ offline(p)
 <p>Your graphs will appear in the R Studio viewer:</p>
 
 <img src="http://i.imgur.com/DgFP9oZ.gif">
-<br>
-
-<p>If you use plotly inside of <a href="https://plot.ly/r/shiny-tutorial/">plotly shiny apps</a> or reactive rmarkdown documents, your plotly graphs will be offline by default!</p>
 <br>
 
 <p>You can also construct your figure's entirely declaratively. This was the default syntax in the Plotly R library pre version 1.0.</p>
@@ -368,18 +365,38 @@ fig &lt;- list(data=data, layout=layout)
 
 fig %>% offline</code></pre>
 
+<h3>Offline with <code>knitr</code></h3>
+<p>In knitr documents plotly graphs will be offline by default if the plotly offline libraries are installed.</p>
+
+<br><p>To convert an <b>RMarkdown document to HTML</b>, do:</p>
+<pre><code>knitr::knit_meta(clean=TRUE) # So that you can run this multiple times in a row. See https://github.com/ropensci/plotly/issues/271
+knitr::knit('plotly-offline.Rmd', 'plotly-offline.md')
+markdown::markdownToHTML('plotly-offline.md', 'plotly-offline.html')</code></pre>
+
+<br>
+<p>To print offline plots in a for loop, explicitly wrap the figure in <code>cat(knit_print.offline(offline(fig)))</code> and add <code>results="asis"</code> in the knitr block. Example:</p><br>
+<pre><code>```{r, results="asis"}
+for(i in 1:3) {
+    fig &lt;- list(data=list(list(x=rnorm(100), type="histogram")), layout=list(title=paste(c('plot', i, sep=" "))))
+    cat(knit_print.offline(fig %>% offline))
+}
+```</code></pre>
+
+<h3>Offline with Shiny</h3>
+<p>In Shiny apps plotly graphs will be offline by default if the plotly offline libraries are installed.</p>
+
 <div>
   <h3 id="More-About-Plotly-Offline">More about plotly offline<a class="anchor-link" href="#More-About-Plotly-Offline">¶</a></h3>
-    
+
     <ul>
         <li>Questions? <a href="mailto:support@plot.ly">support@plot.ly</a></li>
-        
-            <li><a href="https://plot.ly/r/">Examples and documentation</a></li>
-        
 
-        
+            <li><a href="https://plot.ly/r/">Examples and documentation</a></li>
+
+
+
             <li><a href="http://purchasing.plot.ly/">Purchase Plotly Offline</a></li>
-        
+
 
         <li><a href="https://plot.ly/feed/">Graph gallery</a></li>
         <li><a href="https://plot.ly/product/enterprise/">Plotly server at your company</a></li>
