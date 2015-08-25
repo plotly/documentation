@@ -1,18 +1,16 @@
-# Learn about API authentication here: https://plot.ly/matlab/getting-started
-# Find your api_key here: https://plot.ly/settings/api
+var N = 40,
+    x = d3.range(N),
+    y = d3.range(N).map( d3.random.normal() ),
+    data = [ { x:x, y:y } ];
+    layout = { title:'Click-drag to zoom' };
 
-x = 80 * randn(1, 30);
-y = 80 * randn(size(x));
-r = randi(1500, size(x));
-c = randi(10, size(x));
+Plotly.newPlot('myDiv', data, layout);
 
-fig = figure;
-
-scatter(x, y, r, c, 'filled', 'MarkerEdgeColor', 'k')
-
-%--PLOTLY--%
-
-% strip = false => preserve MATLAB style!
-
-response = fig2plotly(fig, 'filename', 'matlab-bubble-chart',  'strip', false);
-plotly_url = response.url;
+$('#'+"myDiv").bind('plotly_relayout',
+    function(event,eventdata){  
+        alert( 'ZOOM!' + '\n\n' +
+            'Event data:' + '\n' + 
+             JSON.stringify(eventdata) + '\n\n' +
+            'x-axis start:' + eventdata['xaxis.range[0]'] + '\n' +
+            'x-axis end:' + eventdata['xaxis.range[1]'] );
+    });
