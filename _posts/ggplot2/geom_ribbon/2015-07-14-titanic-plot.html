@@ -1,0 +1,57 @@
+---
+name: facets with <code>geom_ribbon</code>
+plot_url: https://plot.ly/~MattSundquist/18375/none-none-none-none-none-none-none-none-none-none-none-none-none-none-none-none-/
+language: ggplot2
+suite: ribbon
+description: Inspired by <a href="http://zmjones.com/titanic/">Zachary Jones</a>.
+order: 2
+sitemap: false
+---
+# Learn about API authentication here: https://plot.ly/ggplot2/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+library(plotly)
+
+set.seed(1987)
+pkgs <- c("ggplot2", "mgcv", "MASS")
+invisible(lapply(pkgs, require, character.only = TRUE))
+
+load(url('http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic3.sav'))
+titanic3 <- na.omit(titanic3[, -c(3,8:14)])
+titanic3$class_sex <- apply(titanic3, 1,
+                            function(x) paste(x[1], x[3], collapse = "_"))
+titanic3$class_sex <- factor(titanic3$class_sex)
+train <- titanic3[sample(row.names(titanic3),
+                         size = round(nrow(titanic3) / 2)), ]
+test <- titanic3[!(row.names(titanic3) %in% row.names(train)), ]
+
+sim.data <- expand.grid(sex = c("male", "female"), sibsp = 0,
+                        age = seq(1, 80), pclass = c("1st", "2nd", "3rd"))
+
+glm.fit <- glm(survived ~ poly(age, 2) * sex * pclass + sibsp,
+               "binomial", train)
+
+inv.logit <- function(x) exp(x) / (1 + exp(x))
+glm.pred <- predict(glm.fit, newdata = test, se.fit = TRUE)
+pred <- data.frame(mean = inv.logit(glm.pred$fit),
+                   lo = inv.logit(glm.pred$fit - 2 * glm.pred$se.fit),
+                   hi = inv.logit(glm.pred$fit + 2 * glm.pred$se.fit),
+                   survived = test$survived)
+pred <- pred[order(pred$mean), ]
+pred$id <- seq_along(pred$mean)
+row.names(pred) <- NULL
+
+pred <- predict(glm.fit, newdata = sim.data, se.fit = TRUE)
+sim.data$mean <- inv.logit(pred$fit)
+sim.data$lo <- inv.logit(pred$fit - 2 * pred$se.fit)
+sim.data$hi <- inv.logit(pred$fit + 2 * pred$se.fit)
+
+p <- ggplot(titanic3, aes(x = age, y = survived))
+p <- p + geom_point()
+p <- p + facet_grid(sex ~ pclass)
+p <- p + geom_line(data = sim.data, aes(y = mean))
+p <- p + geom_ribbon(data = sim.data, aes(y = mean, ymin = lo, ymax = hi),
+                     alpha = .25)
+p + labs(x = "Passenger Age", y = "Probability of Survival")
+
+ggplotly()

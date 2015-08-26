@@ -1,0 +1,32 @@
+---
+name: <code>geom_bar</code> with month and year using <code>facet_grid</code>
+plot_url: https://plot.ly/~MattSundquist/18004/_2010-2011-2012/
+language: ggplot2
+suite: time-series
+description: Inspired by <a href="http://stackoverflow.com/questions/11472856/r-ggplot2-graph-month-year-bar-graph-plot-faceted-and-filled-on-year-with-data?rq=1">Stack Overflow</a>.
+order: 5
+sitemap: false
+---
+# Learn about API authentication here: https://plot.ly/ggplot2/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+library(plotly)
+
+x <- c("04-01-10","05-01-10","06-01-10","07-01-10","08-01-10","09-01-10","10-01-10","11-01-10","12-01-10","01-01-11","02-01-11","03-01-11","04-01-11","05-01-11","06-01-11","07-01-11","08-01-11","09-01-11","10-01-11","11-01-11","12-01-11","01-01-12","02-01-12","03-01-12","04-01-12","05-01-12","06-01-12")
+y <- c(120,210,130,160,190,210,80,70,110,120,140,160,130,200,110,180,210,200,90,60,100,100,120,170,100,180,120)
+
+MySample <- data.frame(x) ## convert to dataframe
+MySample$y <- y
+
+require(lubridate)
+
+MySample$date <- as.Date(MySample$x, "%m-%d-%y")
+MySample$year <- year(MySample$date)
+
+ggplot(MySample, aes(date, y, fill = year)) +
+    geom_bar(y=y,stat="identity") +
+    facet_grid(. ~ year, scales = "free") +
+    scale_x_date(labels = date_format("%b/%y")) +
+    scale_fill_gradient(breaks=unique(MySample$year))
+
+ggplotly()
