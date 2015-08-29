@@ -1,0 +1,75 @@
+---
+permalink: javascript/reference
+layout: langindex
+---
+{% for trace in site.data.plotschema.traces %}
+    <h3>{{ trace[0] }}</h3>
+    <ul>
+    {% for attribute in trace[1].attributes %}
+        <li>
+            <b>{{ attribute[0] }}</b>
+            {% if attribute[1].type %}
+            (<code>{{ attribute[1].type }}</code>)
+            {% endif %}
+            {% if attribute[1].values.size > 0 %}
+                <br>{% for value in attribute[1].values %}
+                    {% if value != false and value != true %}
+                    <code>"{{value}}"</code>
+                    {% else %}
+                    <code>{{value}}</code>
+                    {% endif %}
+                    {% unless forloop.last %}
+                    |
+                    {% endunless %}
+                {% endfor %}
+            {% endif %}
+            {% if attribute[1].dflt %}
+                <br>default: {{ attribute[1].dflt }}
+            {% endif %}
+            {% if attribute[1].description %}
+            <br>{{attribute[1].description}}<br>
+            {% endif %}
+            {% for obj in attribute[1] %}
+                {% assign isnested = false %}
+                {% if obj[0] != "flags" and obj[0] != "dflt" and obj[0] != "values" and obj[0] != "type" and obj[0] != "min" and obj[0] != "max" and obj[0] != "arrayOk" and obj[0] != "flags and obj[0] != "extras" and obj[0] != "description" %}
+                    {% if obj[0] != "extras" and obj[0] != "description" %}
+                        {% if isnested == false %}
+                        <ul>
+                        {% assign isnested = true %}
+                        {% endif %}
+                        <li>
+                            <b>{{ obj[0] }}</b>
+                            {% if obj[1].type %}
+                            (<code>{{ obj[1].type }}</code>)
+                            {% endif %}
+                            {% if obj[1].values.size > 0 %}
+                                <br>{% for value in obj[1].values %}
+                                    {% if value != false and value != true %}
+                                    <code>"{{value}}"</code>
+                                    {% else %}
+                                    <code>{{value}}</code>
+                                    {% endif %}
+                                    {% unless forloop.last %}
+                                    |
+                                    {% endunless %}
+                                {% endfor %}
+                            {% endif %}
+                            {% if obj[1].dflt %}
+                                <br>default: {{ obj[1].dflt }}
+                            {% endif %}
+                            {% if obj[1].description %}
+                            <br>{{ obj[1].description }}
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                {% endif %}
+                {% if isnested %}
+                </ul>
+                {% endif %}
+            {% endfor %}
+        </li>
+    {% endfor %}
+    </ul>
+{% endfor %}
+
+

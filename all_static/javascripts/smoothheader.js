@@ -9,7 +9,7 @@
         }, 0);
     });
 
-    $(document).scroll(function(){
+    /*$(document).scroll(function(){
         var headerbar = $('.headerbar'),
             ghost = $('.headerbar-nav-item');
 
@@ -20,5 +20,5 @@
             ghost.addClass('transbar-link');
             headerbar.removeClass('is-fixed');
         }
-    });
+    });*/
 })();

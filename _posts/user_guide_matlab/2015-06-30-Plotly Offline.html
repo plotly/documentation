@@ -140,7 +140,7 @@ using the 'offline' flag of fig2plotly as follows:
 <div class=" highlight hl-ipython2"><pre><span class="p">[</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">Z</span><span class="p">]</span> <span class="o">=</span> <span class="n">peaks</span><span class="p">(</span><span class="mi">25</span><span class="p">);</span>
 <span class="n">figure</span>
 <span class="n">surf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">Z</span><span class="p">);</span>
-<span class="n">fig2plotly</span><span class="p">()</span>
+<span class="n">plotly_fig</span> <span class="o">=</span> <span class="n">fig2plotly</span><span class="p">(</span><span class="n">gcf</span><span class="p">,</span> <span class="s">&#39;offline&#39;</span><span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="s">&#39;filename&#39;</span><span class="p">,</span> <span class="s">&#39;peaks&#39;</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -162,4 +162,45 @@ using the 'offline' flag of fig2plotly as follows:
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Creating-offline-figures-with-Plotly's-native-syntax">Creating offline figures with Plotly's native syntax<a class="anchor-link" href="#Creating-offline-figures-with-Plotly's-native-syntax">&#182;</a></h2><p>Describing figure's using Plotly's native syntax is a more cumbersome but powerful and flexible way to create Plotly figures. View more examples at the bottom of each example page on <a href="https://plot.ly/matlab">plotly's online MATLAB documentation</a>.</p>
+<div class="highlight"><pre><span class="c">%% Describe your figure: data and layout. </span>
+<span class="c">% view more examples at the bottom of each example page: https://plot.ly/matlab</span>
+
+<span class="n">trace1</span> <span class="p">=</span> <span class="n">struct</span><span class="p">(</span><span class="c">...</span>
+  <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="c">...</span>
+  <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">],</span> <span class="c">...</span>
+  <span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="s">&#39;scatter&#39;</span><span class="p">);</span>
+<span class="n">trace2</span> <span class="p">=</span> <span class="n">struct</span><span class="p">(</span><span class="c">...</span>
+  <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="c">...</span>
+  <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="c">...</span>
+  <span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="s">&#39;scatter&#39;</span><span class="p">);</span>
+<span class="n">data</span> <span class="p">=</span> <span class="p">{</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">};</span>
+
+<span class="n">layout</span> <span class="p">=</span> <span class="n">struct</span><span class="p">()</span>
+<span class="n">layout</span><span class="p">.</span><span class="n">title</span> <span class="p">=</span> <span class="s">&#39;basic offline figure&#39;</span><span class="p">;</span>
+<span class="n">layout</span><span class="p">.</span><span class="n">width</span> <span class="p">=</span> <span class="mi">800</span><span class="p">;</span> <span class="c">% required</span>
+<span class="n">layout</span><span class="p">.</span><span class="n">height</span> <span class="p">=</span> <span class="mi">650</span><span class="p">;</span> <span class="c">% required</span>
+
+<span class="n">p</span> <span class="p">=</span> <span class="n">plotlyfigure</span><span class="p">;</span> <span class="c">% initalize an empty figure object</span>
+<span class="n">p</span><span class="p">.</span><span class="n">data</span> <span class="p">=</span> <span class="n">data</span><span class="p">;</span>
+<span class="n">p</span><span class="p">.</span><span class="n">layout</span> <span class="p">=</span> <span class="n">layout</span><span class="p">;</span>
+
+<span class="n">p</span><span class="p">.</span><span class="n">PlotOptions</span><span class="p">.</span><span class="n">FileName</span> <span class="p">=</span> <span class="s">&#39;basic-offline&#39;</span>
+
+<span class="c">% Create a standalone HTML file</span>
+<span class="n">html_file</span> <span class="p">=</span> <span class="n">plotlyoffline</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+
+<span class="c">% open it in your web browser</span>
+<span class="n">web</span> <span class="n">html_file</span> <span class="o">-</span><span class="n">browser</span>
+</pre></div>
+<p><img src="http://i.imgur.com/3ECfrwG.png" alt="self-hosted matlab online"></p>
+
+</div>
+</div>
 </div>{% endraw %}

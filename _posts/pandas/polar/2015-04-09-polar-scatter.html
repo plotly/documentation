@@ -1,0 +1,61 @@
+---
+name: Polar Scatter Chart in Pandas
+plot_url: https://plot.ly/~jackp/10411
+description: How to make scatter plots in Pandas on the polar coordinate system.
+language: pandas
+suite: polar
+order: 0
+sitemap: false
+arrangement: horizontal
+---
+# Learn about API authentication here: https://plot.ly/pandas/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+import pandas as pd
+import numpy as np
+import plotly.plotly as py
+from plotly.graph_objs import *
+
+N = 100.0
+r = dict( r = [ np.random.poisson(N)*(np.cos((i/4)*np.pi/180)) for i in range(360) ] )
+df = pd.DataFrame(r)
+df_ma = pd.ewma(df,4.0)
+df_ma.head()
+
+data = []
+data.append( 
+    Scatter( 
+        t=df.index, 
+        r=df['r'], 
+        name = 'Scatter',
+        mode='markers',
+        marker=Marker( 
+            color='rgb(255,78,252)',
+            size=8 )
+    ) )  
+data.append(  
+    Scatter( 
+        t=df_ma.index, 
+        r=df_ma['r'], 
+        name = 'Moving average',
+        mode='lines', 
+        line=Line(color='rgb(69,124,235)'),
+        marker=Marker( 
+            color='rgb(69,124,235)', 
+            line=Line(width=2, 
+            color='rgb(69,124,235)') ),
+    ) )
+layout = Layout(
+    angularaxis=AngularAxis(
+        tickcolor='#CCC',
+        showline=False,
+    ),
+    orientation=270
+)
+
+fig = Figure( data=data, layout=layout )
+
+# IPython notebook
+# py.iplot(fig, filename='pandas-polar-chart')
+
+url = py.plot(fig, filename='pandas-polar-chart')
