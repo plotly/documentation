@@ -1,22 +1,24 @@
-import plotly.plotly as py
-from plotly.graph_objs import *
+var y1 = d3.range(100).map(d3.random.normal(6)),
+    y2 = d3.range(100).map(d3.random.normal(9)),
+    layout = {
+        title:'Click buttons to toggle traces',
+        showlegend:false
+    },
+    data = [{
+        y:y1, marker: {color: 'fuchsia'}
+    }, {
+      y:y2, marker: {color: '#FFD966'}
+    }];
 
-import numpy as np
+Plotly.plot('myDiv', data, layout);
 
-size = 100
-x = np.linspace(-2*np.pi, 2*np.pi, size)
-y = np.linspace(-2*np.pi, 2*np.pi, size)
-z = np.empty((size, size))
-for i, xi in enumerate(x):
-    for j, yj in enumerate(y):
-        r2 = (xi**2+yj**2)
-        z[i][j] = np.sin(xi)*np.cos(yj)*np.sin(r2)/(np.log(r2+1))
+$('.hideshow button').click(function(){
+    var btn_id = this.parentNode.id,
+        data_index = ( btn_id === 'top' ) ? 0 : 1,
+        myDiv = document.getElementById('myDiv'),
+        visible = myDiv.data[data_index].visible;
 
-data = Data([
-    Contour(
-        z=z,
-        x=x,
-        y=y
-    )
-])
-plot_url = py.plot(data, filename='simple-contour')
+    if( visible === undefined ) visible = true;
+
+    Plotly.restyle('myDiv', 'visible', !visible, data_index);
+});
