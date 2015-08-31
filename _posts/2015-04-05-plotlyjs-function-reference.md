@@ -1,19 +1,18 @@
 ---
-title: Plotly.js Function Reference
+title: "Plotly.js Function Reference"
 name: Plotly.js Function Reference
-permalink: /javascript/plotlyjs-function-reference
+permalink: /javascript-graphing-library/plotlyjs-function-reference
 layout: getstart
 language: plotly_js
 description: Plotly.js function reference. How to create, update, and modify graphs drawn with Plotly's Javascript Graphing Library.
-redirect_from: /javascript-graphing-library/plotlyjs-function-reference
 ---
 
 # Plotly Object Reference
 
 #### Other Plotly.js Resources</h5>
 
-- [Simple examples of Plotly.js graphs](https://plot.ly/javascript/)
-- [Reference of all of valid keys of Plotly.js graphs](https://plot.ly/javascript/reference)
+- [Simple examples of Plotly.js graphs](https://plot.ly/javascript-graphing-library/)
+- [Reference of all of valid keys of Plotly.js graphs](https://plot.ly/javascript-graphing-library/reference)
 - Find the JSON description of **any** plotly graph by adding `.json` to the end of **any** Plotly graph url.
 For example, the JSON to describe this graph: [https://plot.ly/~PlotBot/82](https://plot.ly/~PlotBot/82)
 is here: [https://plot.ly/~PlotBot/82.json](https://plot.ly/~PlotBot/82.json)
@@ -23,7 +22,7 @@ is here: [https://plot.ly/~PlotBot/82.json](https://plot.ly/~PlotBot/82.json)
 
 ### Plot with `Plotly.newPlot`
 
-Use `newPlot` to create a new plot in an empty `<div>` element.
+Use `newPlot` to create a new plot in an empty `&lt;div&gt;` element.
 A note on sizing: You can either supply height and width in `layout`, or give `graphDiv` a height and width in css.
 
 ```
