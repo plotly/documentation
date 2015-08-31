@@ -36,7 +36,7 @@ The full bleed R pages are created with R Markdown. Here's how:
 6. When you make changes, jekyll should automatically regenerate for you. Read the messages in your terminal to check it out
 
 There are a TON of posts in here, so rendering can take up to
-six minutes! You can *limit* the number of posts that render by
+thirty minutes! You can *limit* the number of posts that render by
 excluding folders in the `_config_dev.yml` file.
 
 For example, change `_config_dev.yml` to this:
