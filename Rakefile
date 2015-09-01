@@ -16,7 +16,13 @@ task :deploy => [:check_git] do
   deploy_branch = 'gh-pages'
   message = "Site updated at #{Time.now.utc}"
 
-  system "git pull origin  \"#{source_branch}\" && curl https://plot.ly/plot-schema.json > _data/plotschema.json && git add _data/plotschema.json && git commit -m \"Updated plotschema at #{Time.now.utc}\" && git push origin \"#{source_branch}\" && jekyll build && git checkout \"#{deploy_branch}\" && git pull origin \"#{deploy_branch}\" && cp -r _site/* . && rm -rf _site/ && touch .nojekyll && git add . && git commit -m \"#{message}\" && git push origin \"#{deploy_branch}\""
+  puts "...git pull origin  \"#{source_branch}\""
+  system "git pull origin  \"#{source_branch}\""
+  puts "...update plot schema"
+  system "curl https://plot.ly/plot-schema.json > _data/plotschema.json && git add _data/plotschema.json && git commit -m \"Updated plotschema at #{Time.now.utc}\" && git push origin \"#{source_branch}\""
+  puts "...generate _site"
+  system "jekyll build && git checkout \"#{deploy_branch}\" && git pull origin \"#{deploy_branch}\" && cp -r _site/* . && rm -rf _site/ && touch .nojekyll && git add . && git commit -m \"#{message}\" && git push origin \"#{deploy_branch}\""
+  puts "...git checkout \"#{source_branch}\""
   system "git checkout \"#{source_branch}\""
   system "osascript -e 'display notification \"rake deploy just finished\" with title \"Docs are ready!\"'"
 end
