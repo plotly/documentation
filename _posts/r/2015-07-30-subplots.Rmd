@@ -24,7 +24,7 @@ Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```{r, message=FALSE}
 library(plotly)
 subplot(
-  plot_ly(economics, x = date, y = uempmed, filename="r-docs/basic-subplot"),
+  plot_ly(economics, x = date, y = uempmed),
   plot_ly(economics, x = date, y = unemploy),
   margin = 0.05
 ) %>% layout(showlegend = FALSE)
@@ -38,7 +38,7 @@ Specify the number of rows with `nrows`.
 # Basic subplot
 library(plotly)
 subplot(
-  plot_ly(economics, x = date, y = uempmed, filename="r-docs/basic-subplot"),
+  plot_ly(economics, x = date, y = uempmed),
   plot_ly(economics, x = date, y = unemploy),
   margin = 0.05,
   nrows=2
@@ -51,7 +51,7 @@ A more powerful way to make subplots is by using the `group` argument to split t
 
 ```{r, message=FALSE}
 plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        group = Species, mode = "markers", filename="r-docs/grouped")
+        group = Species, mode = "markers")
 ```
 
 Together, `group` and `subplot()` can be used to anchor traces onto different axes. In this example, each trace binds itself to one of the 3 x axes with one of these arguments: `xaxis = "x1"`, `xaxis = "x2"`, `xaxis = "x3"`.
@@ -59,7 +59,7 @@ Together, `group` and `subplot()` can be used to anchor traces onto different ax
 ```{r, message=FALSE}
 iris$id <- as.integer(iris$Species)
 p <- plot_ly(iris, x = Petal.Length, y = Petal.Width, group = Species,
-             xaxis = paste0("x", id), mode = "markers", filename="r-docs/grouped-axes")
+             xaxis = paste0("x", id), mode = "markers")
 subplot(p)
 ```
 
@@ -69,7 +69,7 @@ You can customize each of these axes. "`x1`", "`x2`", "`x3`", etc assigned in th
 
 ```{r, message=FALSE}
 p <- plot_ly(iris, x = Petal.Length, y = Petal.Width, group = Species,
-             xaxis = paste0("x", id), mode = "markers", filename="r-docs/customized-axes")
+             xaxis = paste0("x", id), mode = "markers")
 
 layout(
     subplot(p),
@@ -89,7 +89,7 @@ Since `subplot()` does not assume x/y axes are on a common scale, it does not im
 
 ```{r, message=FALSE}
 p <- plot_ly(iris, x = Petal.Length, y = Petal.Width, group = Species,
-             xaxis = paste0("x", id), mode = "markers", filename="r-docs/restricted-axes")
+             xaxis = paste0("x", id), mode = "markers")
 
 p <- layout(
   p,
@@ -104,7 +104,7 @@ Note that the `xaxis` and `yaxis` properties that are specified in `layout` are 
 
 ```{r, message=FALSE}
 p <- plot_ly(iris, x = Petal.Length, y = Petal.Width, group = Species,
-             xaxis = paste0("x", id), mode = "markers", filename="r-docs/restricted-axes-2")
+             xaxis = paste0("x", id), mode = "markers")
 
 p <- subplot(p)
 layout(p,
@@ -120,6 +120,32 @@ layout(p,
 ```
 
 So, if you would like all of your axes to have the same properties, assign the properties in `layout` before splitting the traces into subplots.
+
+### Updating Subplots
+
+To overwrite or update subplots use `plotly_build()` with `subplot()` then set `filename`.
+
+Create an initial subplot:
+
+```{r, message=FALSE}
+iris$id <- as.integer(iris$Species)
+p <- plot_ly(iris, x = Petal.Length, y = Petal.Width, group = Species,
+						 xaxis = paste0("x", id), mode = "markers")
+p <- plotly_build(subplot(p))
+p$filename <- "overwrite_subplot"
+p
+```
+
+Then update or modify the plot and view the modifications in the same plot.
+
+```{r, message=FALSE}
+p <- layout(title="Overwrite Subplots")
+p <- plotly_build(subplot(p))
+p$filename <- "overwrite_subplot"
+p
+```
+
+Notice the first plot also displays the title even though it was added after this plot was generated. This is because the file was updated (i.e., a new plot is not generated). 
 
 ### Subplot Maps
 
