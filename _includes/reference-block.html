@@ -30,6 +30,12 @@
                         {% else %}
                             (<code class="attribute-type">{{ obj[1].valType }}</code>)
                         {% endif %}
+                    {% elsif obj[1].valType == "flaglist" %}
+                        (<code tooltip='A string representing a combination of flags (order does not matter here). Combine any of the available `flags` with + (e.g. "{{obj[1].flags[0]}}+{{obj[1].flags[1]}}"
+                            {% if obj[1].flags[2] %}
+                                 or "{{obj[1].flags[0]}}+{{obj[1].flags[1]}}+{{obj[1].flags[2]}}"
+                            {% endif %}
+                        ).{% if obj[1].extras[0] != 'none' %} Values in `extras` cannot be combined.{% endif %}' class="attribute-type">flaglist</code>)
                     {% else %}
                     {% assign typekey = obj[1].valType %}
                     (<code tooltip="{{site.data.plotschema.defs.valObjects[typekey].description}}" class="attribute-type">{{ obj[1].valType }}</code>)
@@ -47,9 +53,19 @@
 
                 <br>default: {{ obj[1].dflt }}
             {% if display_info and obj[1].flags %}
+                <br>flags: {% for value in obj[1].flags %}
+                    {% if value != false and value != true %}<code>*{{value}}*</code>{% else %}<code>{{value}}</code>{% endif %}{% unless forloop.last %} | {% endunless %}
+                {% endfor %}
+            {% endif %}
+
+            {% if display_info and obj[1].extras %}
+                <br>extras: {% for value in obj[1].extras %}
+                    {% if value != false and value != true %}<code>*{{value}}*</code>{% else %}<code>{{value}}</code>{% endif %}{% unless forloop.last %} | {% endunless %}
+                    {% endfor %}
             {% endif %}
 
             {% if display_info and obj[1].valType == "flaglist" %}
+                <br>examples: <code>*{{obj[1].flags[0]}}*</code>, <code>*{{obj[1].flags[1]}}*</code>, <code>*{{obj[1].flags[0]}}+{{obj[1].flags[1]}}*</code>{% if obj[1].flags[2] %}, <code>*{{obj[1].flags[0]}}+{{obj[1].flags[1]}}+{{obj[1].flags[2]}}*</code>{% endif %}{% if obj[1].extras %}, <code>*{{obj[1].extras[0]}}*</code>{% endif %}
             {% endif %}
 
             {% if obj[1].role == "object" %}
