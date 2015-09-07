@@ -1,0 +1,104 @@
+---
+permalink: /javascript/reference
+layout: langindex
+page_type: reference
+---
+<h2><code>plotly.js</code> figure reference</h2>
+
+<div class="row">
+    <p>
+        <code>plotly.js</code> charts are described declaratively as JSON objects. Every aspect of a plotly chart (the colors, the grids, the data, and so on) has a corresponding JSON attribute. This page contains an extensive list of these attributes.<br><br>
+
+        Plotly's graph description places attributes into two categories: traces (objects that describe a single series of data in a graph) and layout (attributes that apply to the rest of the chart, like the <code>title</code>, <code>xaxis</code>, or <code>annotations</code>). Traces are categorized by chart type (e.g. <code>scatter</code>, <code>heatmap</code>).<br><br>
+
+        Here is a simple example of a plotly chart inlined with links to each attribute's reference section.
+
+<pre><code class="javascript js language-javascript language-js">{
+    "data": [
+        {
+            "type": "scatter",  // all "scatter" attributes: <a href="#scatter">https://plot.ly/javascript/reference/#scatter</a>
+            "x": [1, 2, 3],     // more about "x": <a href="#scatter-x">#scatter-x</a>
+            "y": [3, 1, 6],     // <a href="#scatter-y">#scatter-y</a>
+            "marker": {         // marker is an object, here are valid marker keys: <a href="#scatter-marker">#scatter-marker</a>
+                "color": "rgb(rgb(16, 32, 77)" // more about "marker.color": <a href="#scatter-marker-color">#scatter-marker-color</a>
+            }
+        },
+        {
+            "type": "bar",      // all "bar" chart attributes: <a href="#bar">#bar</a>
+            "x": [1, 2, 3],     // more about "x": <a href="#bar-x">#bar-x</a>
+            "y": [3, 1, 6],     // <a href="#bar-y">#bar-y</a>
+            "name": "bar chart example" // <a href="#bar-name">#bar-name</a>
+        },
+    ],
+    "layout": {                     // all "layout" attributes: <a href="#layout">#layout</a>
+        "title": "simple example",  // more about "layout.title": <a href="#layout-title">#layout-title</a>
+        "xaxis": {                  // all "layout.xaxis" attributes: <a href="#layout-xaxis">#layout-xaxis</a>
+            "title": "time"         // more about "layout.xaxis.title": <a href="#layout-xaxis-title">#layout-xaxis-title</a>
+        },
+        "annotations": [            // all "annotation" attributes: <a href="#layout-annotations">#layout-annotations</a>
+            {
+                "text": "simple annotation",    // <a href="#layout-annotations-text">#layout-annotations-text</a>
+                "x": 0,                         // <a href="#layout-annotations-x">#layout-annotations-x</a>
+                "xref": "paper",                // <a href="#layout-annotations-xref">#layout-annotations-xref</a>
+                "y": 0,                         // <a href="#layout-annotations-y">#layout-annotations-y</a>
+                "yref": "paper"                 // <a href="#layout-annotations-yref">#layout-annotations-yref</a>
+            }
+        ]
+    }
+}</code></pre>
+
+    <br>You can also view the JSON for any plotly graph by appending ".json" to the end of the URL. For example, the JSON representation of <a href="https://plot.ly/~chris/1638">https://plot.ly/~chris/1638</a> is at <a href="https://plot.ly/~chris/1638.json">https://plot.ly/~chris/1638.json</a>.
+
+    </p>
+    <hr>
+</div>
+{% capture plotschemacontent %}
+<div class="row">
+    <div class="four columns">
+        <div class="toc">
+            {% for trace in site.data.plotschema.traces %}
+                <a href="#{{trace[0]}}"><h4>{{trace[0]}}</h4></a>
+                {% assign attribute=trace[1].attributes %}
+                {% assign localparentlink=trace[0] %}
+                {% assign display_info = false %}
+                {% assign toc = true %}
+                {% include reference-block.html parentlink=localparentlink %}
+                <hr>
+            {% endfor %}
+
+            <a href="#layout"><h4>layout</h4></a>
+            {% assign localparentlink="layout" %}
+            {% assign attribute=site.data.plotschema.layout.layoutAttributes %}
+            {% include reference-block.html parentlink=localparentlink %}
+        </div>
+    </div>
+
+    <div class="eight columns">
+    {% for trace in site.data.plotschema.traces %}
+        <a id="{{ trace[0] }}" href="#{{ trace[0] }}"><h4>{{ trace[0] }}</h4></a>
+        <div class="description">
+            A <code>{{trace[0]}}</code> trace is an object with the key <code>"type"</code> equal to <code>"{{trace[1].attributes.type}}"</code> (i.e. <code>{"type": "{{trace[1].attributes.type}}"}</code>) and any of the keys listed below.
+            <br><br>{{ trace[1].description }}<br><br>
+        </div>
+
+        {% assign localparentlink=trace[0] %}
+        {% assign attribute=trace[1].attributes %}
+        {% assign display_info = true %}
+        {% assign toc = false %}
+        {% include reference-block.html parentlink=localparentlink%}
+        <hr>
+    {% endfor %}
+
+    <a id="layout" href="#layout"><h4>layout</h4></a>
+    {% assign localparentlink="layout" %}
+    {% assign attribute=site.data.plotschema.layout.layoutAttributes %}
+    {% include reference-block.html parentlink=localparentlink %}
+
+    </div>
+</div>
+{% endcapture %}
+{% capture curlyarray %}{% raw %}{array}{% endraw %}{% endcapture %}
+{% capture curlyarrays %}{% raw %}{arrays}{% endraw %}{% endcapture %}
+{% capture curly2darray %}{% raw %}{2D array}{% endraw %}{% endcapture %}
+{% capture curlyobject %}{% raw %}{object}{% endraw %}{% endcapture %}
+{{ plotschemacontent | replace:'*','"' | replace:curlyarray,"array" | replace:curlyobject,"object" | replace:curlyarrays,"arrays" | replace:curly2darray,"2D array" | replace:"data_array","data array" }}

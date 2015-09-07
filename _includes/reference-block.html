@@ -1,0 +1,88 @@
+<ul>
+{% for obj in attribute %}
+    {% if obj[0] != "flags" and obj[0] != "dflt" and obj[0] != "values" and obj[0] != "valType" and obj[0] != "role" and obj[0] != "min" and obj[0] != "max" and obj[0] != "arrayOk" and obj[0] != "flags" and obj[0] != "extras" and obj[0] != "description" and obj[0] != "type" and obj[0] != "_isLinkedToArray" %}
+        <li>
+            {% if toc %}
+                {% assign id="" %}
+            {% else %}
+                {% capture id %}{{include.parentlink}}-{{obj[0]}}{% endcapture %}
+            {% endif %}
+            <a class="attribute-name" id="{{id}}" href="#{{include.parentlink}}-{{obj[0]}}">
+                {{ obj[0] }}
+            </a>
+
+            {% if display_info %}
+                {% if obj[1].valType %}
+                    {% if obj[1].valType == "enumerated" %}
+                        (<code tooltip='One of the following items (e.g. {% if obj[1].values[0] != false and obj[1].values[0] != true %}*{{obj[1].values[0]}}*{% else %}{{obj[1].values[0]}}{% endif %}).' class="attribute-type">{{ obj[1].valType }}</code><code> -
+                        {% for value in obj[1].values %}
+                            {% if value != false and value != true %}<code>*{{value}}*</code>{% else %}<code>{{value}}</code>{% endif %}
+                            {% unless forloop.last %}|{% endunless %}
+                        {% endfor %}
+                        </code>)
+                    {% elsif obj[1].valType == "number" or obj[1].valType == "integer" %}
+                        {% if obj[1].min and obj[1].max %}
+                            (<code class="attribute-type">{{ obj[1].valType }} between or equal to {{obj[1].min}} and {{obj[1].max}}</code>)
+                        {% elsif obj[1].min %}
+                            (<code class="attribute-type">{{ obj[1].valType }} greater than or equal to {{obj[1].min}}</code>)
+                        {% elsif obj[1].max %}
+                            (<code class="attribute-type">{{ obj[1].valType }} less than or equal to {{obj[1].min}}</code>)
+                        {% else %}
+                            (<code class="attribute-type">{{ obj[1].valType }}</code>)
+                        {% endif %}
+                    {% elsif obj[1].valType == "flaglist" %}
+                        (<code tooltip='A string representing a combination of flags (order does not matter here). Combine any of the available `flags` with + (e.g. "{{obj[1].flags[0]}}+{{obj[1].flags[1]}}"
+                            {% if obj[1].flags[2] %}
+                                 or "{{obj[1].flags[0]}}+{{obj[1].flags[1]}}+{{obj[1].flags[2]}}"
+                            {% endif %}
+                        ).{% if obj[1].extras[0] != 'none' %} Values in `extras` cannot be combined.{% endif %}' class="attribute-type">flaglist</code>)
+                    {% elsif obj[1].valType == "boolean" or obj[1].valType == "string" %}
+                        (<code>{{obj[1].valType}}</code>)
+                    {% elsif obj[1].valType == "info_array" %}
+                        (<code>{array}</code>)
+                    {% else %}
+                    {% assign typekey = obj[1].valType %}
+                    (<code tooltip="{{site.data.plotschema.defs.valObjects[typekey].description}}" class="attribute-type">{{ obj[1].valType }}</code>)
+                    {% endif %}
+                {% endif %}
+                {% if obj[1].role == "object" %}
+                    {% if obj[1]._isLinkedToArray %}
+                        (<code tooltip="An {% raw %}{array}{% endraw %} of {% raw %}{object}{% endraw %}s. Each {% raw %}{object}{% endraw %} has one or more of the keys listed below." class="attribute-type">{% raw %}{array}{% endraw %} of {% raw %}{object}{% endraw %}s</code>)
+                    {% else %}
+                        (<code tooltip="An {% raw %}{object}{% endraw %} with one or more of the keys listed below." class="attribute-type">{% raw %}{object}{% endraw %}</code>)
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+
+            {% if display_info and obj[1].flags %}
+                <br>flags: {% for value in obj[1].flags %}
+                    {% if value != false and value != true %}<code>*{{value}}*</code>{% else %}<code>{{value}}</code>{% endif %}{% unless forloop.last %} | {% endunless %}
+                {% endfor %}
+            {% endif %}
+
+            {% if display_info and obj[1].dflt %}
+                <br>default: <code>{% if obj[1].dflt == "" %}**{% else %}{% if obj[1].valType == "string" or obj[1].valType == "color" or (obj[1].valType == "enumerated" and obj[1].dflt != true and obj[1].dflt != false) or obj[1].dflt == "auto" %}*{{ obj[1].dflt }}*{% elsif obj[1].valType == "info_array" %}[{{obj[1].dflt[0]}}, {{obj[1].dflt[1]}}]{% else %}{{obj[1].dflt}}{% endif %}{% endif %}</code>
+            {% endif %}
+
+            {% if display_info and obj[1].extras %}
+                <br>extras: {% for value in obj[1].extras %}
+                    {% if value != false and value != true %}<code>*{{value}}*</code>{% else %}<code>{{value}}</code>{% endif %}{% unless forloop.last %} | {% endunless %}
+                    {% endfor %}
+            {% endif %}
+
+            {% if display_info and obj[1].valType == "flaglist" %}
+                <br>examples: <code>*{{obj[1].flags[0]}}*</code>, <code>*{{obj[1].flags[1]}}*</code>, <code>*{{obj[1].flags[0]}}+{{obj[1].flags[1]}}*</code>{% if obj[1].flags[2] %}, <code>*{{obj[1].flags[0]}}+{{obj[1].flags[1]}}+{{obj[1].flags[2]}}*</code>{% endif %}{% if obj[1].extras %}, <code>*{{obj[1].extras[0]}}*</code>{% endif %}
+            {% endif %}
+
+            {% if obj[1].role == "object" %}
+                {% assign parentattribute = attribute %}
+                {% capture localparentlink %}{{include.parentlink}}-{{obj[0]}}{% endcapture %}
+                {% assign attribute = obj[1] %}
+                {% include reference-block.html parentlink=localparentlink %}
+                {% assign attribute = parrentattribute %}
+            {% endif %}
+
+        </li>
+    {% endif %}
+{% endfor %}
+</ul>

@@ -27,7 +27,7 @@ printing `plot_ly` will create a new plot in your online plotly account.
 plot_ly(x = c(1, 2), y = c(1, 2))
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/533.embed" width="800" frameBorder="0"></iframe>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1933.embed" width="800" frameBorder="0"></iframe>
 <br>
 If you want to overwrite the plot and keep the graph served from the same plotly URL, specify a filename.
 This implicitly overwrites your plotly graph.
@@ -39,6 +39,32 @@ plot_ly(x = c(1, 2), y = c(1, 2), filename="name-of-my-plotly-file")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/505.embed" width="800" frameBorder="0"></iframe>
+
+Overwriting your graph works a bit differently when using ```subplots```.
+To update a graph with ```subplots``` use ```plotly_build()``` and then assign the ```filename```.
+
+
+```r
+p <- plotly_build(subplot(
+	plot_ly(x = c(1, 2), y = c(1, 2)),
+	plot_ly(x = c(1, 2), y = c(2, 1)),
+	margin = 0.05
+	)
+)
+p$filename <- "overwrite_subplots"
+```
+
+Add modifications then see the updated graph at the same plotly URL:
+
+
+```r
+p <- layout(showlegend = FALSE, title = "Overwrite Subplots")
+p$filename <- "overwrite_subplots"
+p
+```
+
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1935.embed" width="800" frameBorder="0"></iframe>
+
 <br>
 If the filename contains "/", it will automatically create a plotly folder.
 
