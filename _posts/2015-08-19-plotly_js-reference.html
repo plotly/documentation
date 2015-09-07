@@ -47,10 +47,12 @@ page_type: reference
     }
 }</code></pre>
 
-    <br>Questions? <a href="https://twitter.com/plotlygraphs">@plotlygraphs</a>
+    <br>You can also view the JSON for any plotly graph by appending ".json" to the end of the URL. For example, the JSON representation of <a href="https://plot.ly/~chris/1638">https://plot.ly/~chris/1638</a> is at <a href="https://plot.ly/~chris/1638.json">https://plot.ly/~chris/1638.json</a>.
+
     </p>
     <hr>
 </div>
+{% capture plotschemacontent %}
 <div class="row">
     <div class="four columns">
         <div class="toc">
@@ -58,9 +60,7 @@ page_type: reference
                 <a href="#{{trace[0]}}"><h4>{{trace[0]}}</h4></a>
                 {% assign attribute=trace[1].attributes %}
                 {% assign localparentlink=trace[0] %}
-                {% assign display_description = false %}
-                {% assign display_default = false %}
-                {% assign display_type = false %}
+                {% assign display_info = false %}
                 {% assign toc = true %}
                 {% include reference-block.html parentlink=localparentlink %}
                 <hr>
@@ -77,15 +77,15 @@ page_type: reference
     {% for trace in site.data.plotschema.traces %}
         <a id="{{ trace[0] }}" href="#{{ trace[0] }}"><h4>{{ trace[0] }}</h4></a>
         <div class="description">
-            {{ trace[1].description }}
+            A <code>{{trace[0]}}</code> trace is an object with the key <code>"type"</code> equal to <code>"{{trace[1].attributes.type}}"</code> (i.e. <code>{"type": "{{trace[1].attributes.type}}"}</code>) and any of the keys listed below.
+            <br><br>{{ trace[1].description }}<br><br>
         </div>
+
         {% assign localparentlink=trace[0] %}
         {% assign attribute=trace[1].attributes %}
-        {% assign display_description = true %}
-        {% assign display_default = true %}
-        {% assign display_type = true %}
+        {% assign display_info = true %}
         {% assign toc = false %}
-        {% include reference-block.html parentlink=localparentlink %}
+        {% include reference-block.html parentlink=localparentlink%}
         <hr>
     {% endfor %}
 
@@ -96,3 +96,9 @@ page_type: reference
 
     </div>
 </div>
+{% endcapture %}
+{% capture curlyarray %}{% raw %}{array}{% endraw %}{% endcapture %}
+{% capture curlyarrays %}{% raw %}{arrays}{% endraw %}{% endcapture %}
+{% capture curly2darray %}{% raw %}{2D array}{% endraw %}{% endcapture %}
+{% capture curlyobject %}{% raw %}{object}{% endraw %}{% endcapture %}
+{{ plotschemacontent | replace:'*','"' | replace:curlyarray,"array" | replace:curlyobject,"object" | replace:curlyarrays,"arrays" | replace:curly2darray,"2D array" | replace:"data_array","data array" }}
