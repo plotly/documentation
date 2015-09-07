@@ -33,12 +33,14 @@ Once the figure is downloaded, you can edit it like any plotly object. This will
 layout(fig, title = paste("Modified on ", Sys.time()))
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1937.embed" width="800" frameBorder="0"></iframe>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1987.embed" width="800" frameBorder="0"></iframe>
 
-# Add Traces with `get_figure` and `subplot`.
+### Adding Traces with `get_figure` and `subplot`.
 
 After downloading a figure with subplots, use `plotly_build` to build the figure. 
 
 
+
 Add new traces to `fig$data[[(length(fig$data)+1)]]` as a list
+
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1935.embed" width="800" frameBorder="0"></iframe>
