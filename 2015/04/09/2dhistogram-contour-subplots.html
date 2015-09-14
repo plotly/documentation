@@ -1,78 +1,92 @@
-# Learn about API authentication here: https://plot.ly/julia/getting-started
+# Learn about API authentication here: https://plot.ly/pandas/getting-started
 # Find your api_key here: https://plot.ly/settings/api
 
-using Plotly
+import plotly.plotly as py
+from plotly.graph_objs import *
+import pandas as pd
+import numpy as np
+import colorlover as cl
+from scipy.stats import gaussian_kde
 
-t = linspace(-1, 1.2, 2000)
-x = t.^3+0.3*randn(2000)
-y = t.^6+0.3*randn(2000)
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/iris.csv')
+df.head()
 
+scl = cl.scales['9']['seq']['Blues']
+colorscale = [ [ float(i)/float(len(scl)-1), scl[i] ] for i in range(len(scl)) ]
+colorscale
 
-trace1 = [
-  "x" =&gt; x,
-  "y" =&gt; y,
-  "mode" =&gt; "markers",
-  "name" =&gt; "points",
-  "marker" =&gt; [
-    "color" =&gt; "rgb(102,0,0)",
-    "size" =&gt; 2,
-    "opacity" =&gt; 0.4
-  ],
-  "type" =&gt; "scatter"
-]
-trace2 = [
-  "x" =&gt; x,
-  "y" =&gt; y,
-  "name" =&gt; "density",
-  "ncontours" =&gt; 20,
-  "colorscale" =&gt; "Hot",
-  "reversescale" =&gt; true,
-  "showscale" =&gt; false,
-  "type" =&gt; "histogram2dcontour"
-]
-trace3 = [
-  "x" =&gt; x,
-  "name" =&gt; "x density",
-  "marker" =&gt; ["color" =&gt; "rgb(102,0,0)"],
-  "yaxis" =&gt; "y2",
-  "type" =&gt; "histogram"
-]
-trace4 = [
-  "y" =&gt; y,
-  "name" =&gt; "y density",
-  "marker" =&gt; ["color" =&gt; "rgb(102,0,0)"],
-  "xaxis" =&gt; "x2",
-  "type" =&gt; "histogram"
-]
-data = [trace1, trace2, trace3, trace4]
-layout = [
-  "showlegend" =&gt; false,
-  "autosize" =&gt; false,
-  "width" =&gt; 600,
-  "height" =&gt; 550,
-  "xaxis" =&gt; [
-    "domain" =&gt; [0, 0.85],
-    "showgrid" =&gt; false,
-    "zeroline" =&gt; false
-  ],
-  "yaxis" =&gt; [
-    "domain" =&gt; [0, 0.85],
-    "showgrid" =&gt; false,
-    "zeroline" =&gt; false
-  ],
-  "margin" =&gt; ["t" =&gt; 50],
-  "hovermode" =&gt; "closest",
-  "bargap" =&gt; 0,
-  "xaxis2" =&gt; [
-    "domain" =&gt; [0.85, 1],
-    "showgrid" =&gt; false,
-    "zeroline" =&gt; false
-  ],
-  "yaxis2" =&gt; [
-    "domain" =&gt; [0.85, 1],
-    "showgrid" =&gt; false,
-    "zeroline" =&gt; false
-  ]
-]
-response = Plotly.plot(data, ["layout" =&gt; layout, "filename" =&gt; "2dhistogram-contour-subplots", "fileopt" =&gt; "overwrite"])
-plot_url = response["url"]
+def kde_scipy(x, x_grid, bandwidth=0.2 ):
+    kde = gaussian_kde(x, bw_method=bandwidth / x.std(ddof=1) )
+    return kde.evaluate(x_grid)
+
+x_grid = np.linspace(df['SepalWidth'].min(), df['SepalWidth'].max(), 100)
+y_grid = np.linspace(df['PetalLength'].min(), df['PetalLength'].max(), 100)
+
+trace1 = Histogram2dContour(
+    x=df['SepalWidth'],
+    y=df['PetalLength'],
+    name='density',
+    ncontours=20,
+    colorscale=colorscale,
+    showscale=False
+)
+trace2 = Histogram(
+    x=df['SepalWidth'],
+    name='x density',
+    yaxis='y2',
+    histnorm='probability density',
+    marker=Marker(color='rgb(217, 217, 217)'),
+    nbinsx=25
+)
+trace2s = Scatter(
+    x=x_grid, 
+    y=kde_scipy( df['SepalWidth'].as_matrix(), x_grid ),
+    yaxis='y2',
+    line = Line( color='rgb(31, 119, 180)' ),
+    fill='tonexty',
+)
+trace3 = Histogram(
+    y=df['PetalLength'],
+    name='y density',
+    xaxis='x2',
+    histnorm='probability density',
+    marker=Marker(color='rgb(217, 217, 217)'),
+    nbinsy=50
+)
+trace3s = Scatter(
+    y=y_grid,
+    x=kde_scipy( df['PetalLength'].as_matrix(), y_grid ),
+    xaxis='x2',
+    line = Line( color='rgb(31, 119, 180)' ),
+    fill='tonextx',    
+)
+
+data = Data([trace1, trace2, trace2s, trace3, trace3s])
+
+layout = Layout(
+    showlegend=False,
+    autosize=False,
+    width=700,
+    height=700,
+    hovermode='closest',
+    bargap=0,
+    
+    xaxis=XAxis(domain=[0, 0.746], linewidth=2, linecolor='#444', title='SepalWidth',
+                showgrid=False, zeroline=False, ticks='', showline=True, mirror=True),
+    
+    yaxis=YAxis(domain=[0, 0.746],linewidth=2,linecolor='#444', title='PetalLength',
+                showgrid=False, zeroline=False, ticks='', showline=True, mirror=True),
+    
+    xaxis2=XAxis( domain=[0.75, 1], showgrid=False, zeroline=False, ticks='',
+                showticklabels=False ),
+    
+    yaxis2=YAxis( domain=[0.75, 1], showgrid=False, zeroline=False, ticks='',
+                showticklabels=False ),
+)
+
+fig = Figure(data=data, layout=layout)
+
+# IPython notebook
+# py.iplot(fig, filename='pandas-2d-density-plot', height=700)
+
+url = py.plot(fig, filename='pandas-2d-density-plot')
