@@ -56,23 +56,36 @@
                     {% endif %}
                 {% endif %}
                 {% if obj[1].role == "object" %}
+                    {% if page.language == "python" %}
+                        {% if obj[1].hrName %}
+                            {% capture graph_object %}{{ obj[1].hrName }}{% endcapture %}
+                        {% else %}
+                            {% capture graph_object %}{{ obj[0] }}{% endcapture %}
+                        {% endif %}
+                        {% capture graph_object %}{{ graph_object | replace: '_', ' ') | capitalize_all | replace: ' ', '' | replace: '2d', '2D' | replace: '3d' : '3D'}}{% endcapture %}
+                    {% endif %}
+
                     {% if obj[1]._isLinkedToArray %}
                         {% if page.language != "python" %}
                         (<code tooltip="An {% raw %}{array}{% endraw %} of {% raw %}{object}{% endraw %}s. Each {% raw %}{object}{% endraw %} has one or more of the keys listed below." class="attribute-type">{% raw %}{array}{% endraw %} of {% raw %}{object}{% endraw %}s</code>)
                         {% else %}
-                        (<code tooltip="An {% raw %}{array}{% endraw %} of <code>plotly.graph_objs.{{obj[0] | capitalize}}</code> objects. Each <code>plotly.graph_objs.{{obj[0] | capitalize}}</code> has one or more of the keys listed below." class="attribute-type">{% raw %}{array}{% endraw %} of <code>plotly.graph_objs.{{obj[0] | capitalize}} objects</code></code>)
+                        {% capture graph_object_length_minus_plural %}{{ graph_object | size | minus:1 }}{% endcapture %}
+                        {% capture graph_object %}{{ graph_object | truncate: graph_object_length_minus_plural, '' }}{% endcapture %}
+                        (<code class="attribute-type">{% raw %}{array}{% endraw %} of <code>plotly.graph_objs.{{graph_object}}</code> objects</code>)
+                        <br>Each <code>plotly.graph_objs.{{ graph_object }}</code> is an object with one or more of the named arguments or attributes listed below.
+                        Import as: <br><code>import plotly.graph_objs as go</code><br><code>go.{{ graph_object }}</code>
                         {% endif %}
                     {% else %}
                         {% if page.language != "python" %}
                         (<code tooltip="An {% raw %}{object}{% endraw %} with one or more of the keys listed below." class="attribute-type">{% raw %}{object}{% endraw %}</code>)
                         {% else %}
-                        (<code tooltip="A plotly.graph_objs.{{ obj[0] | capitalize }} object with one or more of the keys listed below." class="attribute-type">plotly.graph_objs.{{ obj[0] | capitalize }}</code>)
+                        (<code tooltip="A plotly.graph_objs.{{ graph_object }} object with one or more of the keys listed below." class="attribute-type">plotly.graph_objs.{{graph_object}}</code>)
+                        <br>A <code>plotly.graph_objs.{{ graph_object }}</code> object with any of the named arguments or attributes listed below.
+                        Import as: <br><code>import plotly.graph_objs as go</code><br><code>go.{{ graph_object }}</code>
                         {% endif %}
                     {% endif %}
-                    {% if page.language == "python" and obj[1].role == "object" %}
-                    <br>A <code>plotly.graph_objs.{{ obj[0] | capitalize }}</code> object with one or more of the keys listed below.
-                    Import as: <br><code>import plotly.graph_objs as go</code><br><code>go.{{ obj[0] | capitalize }}</code>
-                    {% endif %}
+
+
                 {% endif %}
             {% endif %}
 
@@ -99,11 +112,11 @@
             {% if display_info and obj[1].description %}
                 <br>{{ obj[1].description | escape }}
             {% endif %}
-
             {% if obj[1].role == "object" %}
                 {% assign parentattribute = attribute %}
                 {% capture localparentlink %}{{include.parentlink}}-{{obj[0]}}{% endcapture %}
                 {% assign attribute = obj[1] %}
+                {% assign block = "nested" %}
                 {% include reference-block.html parentlink=localparentlink block=block %}
                 {% assign attribute = parrentattribute %}
             {% endif %}
