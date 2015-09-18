@@ -63,6 +63,11 @@ var layout2 = {title: "Revenue"};
 Plotly.newPlot(graphDiv, data2, layout2);
 ```
 
+You can hide the link to Plotly's cloud with ```{showLink: false}``` as the 4th argument.
+```
+Plotly.plot(divid, data, layout, {showLink: false})
+```
+
 ### Edit attributes with `Plotly.restyle`
 
 A more efficient means of changing parameters in the data array. When restyling, you may choose to have the specified changes effect as many traces as desired. The update is given as a single object and the traces that are effected are given as a list of traces indices. Note, leaving the trace indices unspecified assumes that you want to restyle **all** the traces.
