@@ -68,6 +68,8 @@ You can hide the link to Plotly's cloud with ```{showLink: false}``` as the 4th 
 Plotly.plot(divid, data, layout, {showLink: false})
 ```
 
+There are several other options that you can supply as the fourth argument. See more examples of the [configuration options.](https://plot.ly/javascript/configuration-options/)
+
 ### Edit attributes with `Plotly.restyle`
 
 A more efficient means of changing parameters in the data array. When restyling, you may choose to have the specified changes effect as many traces as desired. The update is given as a single object and the traces that are effected are given as a list of traces indices. Note, leaving the trace indices unspecified assumes that you want to restyle **all** the traces.
