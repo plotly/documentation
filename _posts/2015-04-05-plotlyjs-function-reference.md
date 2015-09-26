@@ -21,6 +21,13 @@ is here: [https://plot.ly/~PlotBot/82.json](https://plot.ly/~PlotBot/82.json)
 - Support: [StackOverflow](http://stackoverflow.com/questions/tagged/plotly?sort=newest&pageSize=15), [@plotlygraphs](https://twitter.com/plotlygraphs)
 
 
+### Retrieving the plot `data` or `layout` objects
+
+The plot `data` or `layout` can  be retrieved from the `<div>` element in which the plot was drawn:
+
+```var plotDiv = document.getElementById('examplePlot');
+var plotData = plotDiv.data;```
+
 ### Plot with `Plotly.newPlot`
 
 Use `newPlot` to create a new plot in an empty `<div>` element.
