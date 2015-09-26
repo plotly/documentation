@@ -25,8 +25,13 @@ is here: [https://plot.ly/~PlotBot/82.json](https://plot.ly/~PlotBot/82.json)
 
 The plot `data` or `layout` can  be retrieved from the `<div>` element in which the plot was drawn:
 
-```var plotDiv = document.getElementById('examplePlot');
-var plotData = plotDiv.data;```
+```
+var data = [trace1, trace2, trace3];
+Plotly.newPlot('examplePlot', data, {title:'My Plot'});
+
+var plotDiv = document.getElementById('examplePlot');
+var plotData = plotDiv.data;
+```
 
 ### Plot with `Plotly.newPlot`
 
