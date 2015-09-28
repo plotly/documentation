@@ -21,6 +21,18 @@ is here: [https://plot.ly/~PlotBot/82.json](https://plot.ly/~PlotBot/82.json)
 - Support: [StackOverflow](http://stackoverflow.com/questions/tagged/plotly?sort=newest&pageSize=15), [@plotlygraphs](https://twitter.com/plotlygraphs)
 
 
+### Retrieving the plot `data` or `layout` objects
+
+The plot `data` or `layout` can  be retrieved from the `<div>` element in which the plot was drawn:
+
+```
+var data = [trace1, trace2, trace3];
+Plotly.newPlot('examplePlot', data, {title:'My Plot'});
+
+var plotDiv = document.getElementById('examplePlot');
+var plotData = plotDiv.data;
+```
+
 ### Plot with `Plotly.newPlot`
 
 Use `newPlot` to create a new plot in an empty `<div>` element.
@@ -67,6 +79,8 @@ You can hide the link to Plotly's cloud with ```{showLink: false}``` as the 4th 
 ```
 Plotly.plot(divid, data, layout, {showLink: false})
 ```
+
+There are several other options that you can supply as the fourth argument. See more examples of the [configuration options.](https://plot.ly/javascript/configuration-options/)
 
 ### Edit attributes with `Plotly.restyle`
 
