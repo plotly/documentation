@@ -30,7 +30,7 @@ library(plotly)
 plot_ly(df, x = x, y = y, z = z, type = "scatter3d", mode = "markers", filename="r-docs/3d-scatter")
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/165.embed" width="800" frameBorder="0"></iframe>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2000.embed" width="800" frameBorder="0"></iframe>
 
 ## 3D Scatter Plot with Hover Text
 
