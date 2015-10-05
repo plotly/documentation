@@ -13298,25 +13298,68 @@
         <h4 id="binding-to-zoom-events"><a class="no_underline plot-blue" href="#binding-to-zoom-events">Binding to Zoom Events</a></h4>
       </div>
       <div class="row">
-        <div class="six columns">
+        <div class="twelve columns">
           <h4 style="margin: 0px;">JavaScript</h4>
           <div class="z-depth-1">
-            <pre><code class="plotly_js">var N = 40,
-    x = d3.range(N),
-    y = d3.range(N).map( d3.random.normal() ),
-    data = [ { x:x, y:y } ];
-    layout = { title:'Click-drag to zoom' };
+            <pre><code class="plotly_js">var plot = document.getElementById('plot').contentWindow;
+var plotTwo = document.getElementById('plotTwo').contentWindow;
 
-Plotly.newPlot('myDiv', data, layout);
+document.getElementById('plot').onload = function() {
+	pinger = setInterval(function(){
+    	plot.postMessage({task: 'ping'}, 'https://plot.ly')
+	}, 100);
+};
 
-$('#'+"myDiv").bind('plotly_relayout',
-    function(event,eventdata){  
-        alert( 'ZOOM!' + '\n\n' +
-            'Event data:' + '\n' + 
-             JSON.stringify(eventdata) + '\n\n' +
-            'x-axis start:' + eventdata['xaxis.range[0]'] + '\n' +
-            'x-axis end:' + eventdata['xaxis.range[1]'] );
-    });
+window.addEventListener('message', function(e) {
+    var message = e.data;
+    if(message.pong) {
+        console.log('Initial pong, frame is ready to receive');
+        clearInterval(pinger);
+        // Listening for zoom events, but you can also listen
+        // for click and hover by adding them to the array
+        plot.postMessage( {
+                task: 'listen',
+                events: ['zoom']
+            }, 'https://plot.ly');
+		 	plotTwo.postMessage({
+            task: 'relayout',
+            'update': {
+					'xaxis.fixedrange': true,
+					'yaxis.fixedrange': true
+				},
+        }, 'https://plot.ly');
+    }
+	 else if( message.type == 'zoom' ){
+		 console.log('zoom', message);
+		 drawRectangle( message['ranges'] );
+	 }
+    else {
+        console.log(message);
+    }
+});
+
+function drawRectangle( ranges ){
+    var rect = {
+		'type': 'rect',
+		'x0': ranges['x'][0],
+		'y0': ranges['y'][0],
+		'x1': ranges['x'][1],
+		'y1': ranges['y'][1],
+		'fillcolor': 'rgba(128, 0, 128, 0.7)',
+	}
+	plotTwo.postMessage({
+		'task': 'relayout',
+		'update': { shapes: [rect] },
+   }, 'https://plot.ly');
+}
+
+function newPlot(){
+	var plotURL = document.getElementById('plotURL').value + '.embed';
+	var iframe = document.getElementById('plot');
+	iframe.src = plotURL;
+	var iframeTwo = document.getElementById('plotTwo');
+	iframeTwo.src = plotURL;
+}
 </code></pre>
           </div>
           
@@ -13324,10 +13367,10 @@ $('#'+"myDiv").bind('plotly_relayout',
                
           
         </div>
-        <div class="six columns">
+        <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe src="https://codepen.io/plotly/embed/xGyzxz/?height=469&theme-id=15263&default-tab=result" 
+            <iframe src="https://codepen.io/plotly/embed/mJaLmp/?height=700&theme-id=15263&default-tab=result" 
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
