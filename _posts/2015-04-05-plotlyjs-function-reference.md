@@ -90,21 +90,21 @@ A more efficient means of changing parameters in the data array. When restyling,
 // restyle a single trace using attribute strings
 var update = {
     'opacity': 0.4,
-    'marker.color' = 'red'
+    'marker.color': 'red'
 };
 Plotly.restyle(graphDiv, update, 0);
 
 // restyle all traces using attribute strings
 var update = {
     'opacity': 0.4,
-    'marker.color' = 'red'
+    'marker.color': 'red'
 };
 Plotly.restyle(graphDiv, update);
 
 // restyle two traces using attribute strings
 var update = {
     'opacity': 0.4,
-    'marker.color' = 'red'
+    'marker.color': 'red'
 };
 Plotly.restyle(graphDiv, update, [1, 2]);
 ```
