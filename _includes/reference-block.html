@@ -54,6 +54,16 @@
                         (<code>{array}</code>)
                     {% elsif obj[1].valType == "any" %}
                         (<code>number or categorical coordinate string</code>)
+                    {% elsif obj[1].valType == "string" %}
+                        {% if obj[0] contains "src" %}
+                            {% if page.language == "python" %}
+                                (<code>source string | plotly.grid_objs.Column</code>)
+                            {% else %}
+                                {% continue %}
+                            {% endif %}
+                        {% else %}
+                        (<code>string</code>)
+                        {% endif %}
                     {% else %}
                         {% assign typekey = obj[1].valType %}
                         (<code tooltip="{{site.data.plotschema.defs.valObjects[typekey].description}}" class="attribute-type">{{ obj[1].valType }}</code>)
@@ -109,6 +119,9 @@
 
             {% if display_info and obj[1].description %}
                 <br>{{ obj[1].description | escape }}
+                {% if obj[0] contains "src" and page.language == "python" %}
+                A <code>source string</code> refers to a unique identifier that is assigned to a plotly grid. Assigning data to a graph with a source string is an alternative way to set this graph's {{ obj[0] | replace:'src','' }} data. It's useful if you want to keep your data separate from your graphs, create several graphs from a single dataset, or edit your graph's data after creation. <a target="_blank" href="https://plot.ly/python/data-api/">Learn more</a>.
+                {% endif %}
             {% endif %}
 
             {% if obj[1].items %}
