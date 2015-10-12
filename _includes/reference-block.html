@@ -1,6 +1,6 @@
 <ul>
 {% for obj in attribute %}
-    {% if obj[0] != "flags" and obj[0] != "dflt" and obj[0] != "values" and obj[0] != "valType" and obj[0] != "role" and obj[0] != "min" and obj[0] != "max" and obj[0] != "arrayOk" and obj[0] != "flags" and obj[0] != "extras" and obj[0] != "description" and obj[0] != "_isLinkedToArray" %}
+    {% if obj[0] != "flags" and obj[0] != "dflt" and obj[0] != "values" and obj[0] != "valType" and obj[0] != "role" and obj[0] != "min" and obj[0] != "max" and obj[0] != "arrayOk" and obj[0] != "flags" and obj[0] != "extras" and obj[0] != "description" and obj[0] != "_isLinkedToArray" and obj[0] != "items" %}
 
         {% if obj[0] == "type" and page.language == "python" and block == "data" %}
             {% continue %}
@@ -65,16 +65,8 @@
                         {% capture graph_object %}{{ graph_object | replace: '_', ' ') | capitalize_all | replace: ' ', '' | replace: '2d', '2D' | replace: '3d' : '3D'}}{% endcapture %}
                     {% endif %}
 
-                    {% if obj[1]._isLinkedToArray %}
-                        {% if page.language != "python" %}
-                        (<code tooltip="An {% raw %}{array}{% endraw %} of {% raw %}{object}{% endraw %}s. Each {% raw %}{object}{% endraw %} has one or more of the keys listed below." class="attribute-type">{% raw %}{array}{% endraw %} of {% raw %}{object}{% endraw %}s</code>)
-                        {% else %}
-                        {% capture graph_object_length_minus_plural %}{{ graph_object | size | minus:1 }}{% endcapture %}
-                        {% capture graph_object %}{{ graph_object | truncate: graph_object_length_minus_plural, '' }}{% endcapture %}
-                        (<code class="attribute-type">{% raw %}{array}{% endraw %} of <code>plotly.graph_objs.{{graph_object}}</code> objects</code>)
-                        <br>Each <code>plotly.graph_objs.{{ graph_object }}</code> is an object with one or more of the named arguments or attributes listed below.
-                        Import as: <br><code>import plotly.graph_objs as go</code><br><code>go.{{ graph_object }}</code>
-                        {% endif %}
+                    {% if obj[1].items %}
+                        (<code tooltip="{% raw %}{array}{% endraw %} of {% raw %}{object}{% endraw %}s. Each {% raw %}{object}{% endraw %} has one or more of the keys listed below." class="attribute-type">{% raw %}{array}{% endraw %} of {% raw %}{object}{% endraw %}s</code>)
                     {% else %}
                         {% if page.language != "python" %}
                         (<code tooltip="An {% raw %}{object}{% endraw %} with one or more of the keys listed below." class="attribute-type">{% raw %}{object}{% endraw %}</code>)
@@ -112,10 +104,22 @@
             {% if display_info and obj[1].description %}
                 <br>{{ obj[1].description | escape }}
             {% endif %}
+
+            {% if obj[1].items %}
+                <br>Each {% raw %}{object}{% endraw %} has one or more of the keys listed below.
+            {% endif %}
+
             {% if obj[1].role == "object" %}
                 {% assign parentattribute = attribute %}
                 {% capture localparentlink %}{{include.parentlink}}-{{obj[0]}}{% endcapture %}
-                {% assign attribute = obj[1] %}
+                {% if obj[1].items %}
+                    <!--This will break if there ever more than one type of item in in items - but for now it's just "shape" and "annotation"-->
+                    {% for item in obj[1].items %}
+                        {% assign attribute = item[1] %}
+                    {% endfor %}
+                {% else %}
+                    {% assign attribute = obj[1] %}
+                {% endif %}
                 {% assign block = "nested" %}
                 {% include reference-block.html parentlink=localparentlink block=block %}
                 {% assign attribute = parrentattribute %}
