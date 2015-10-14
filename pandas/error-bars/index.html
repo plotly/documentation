@@ -13338,27 +13338,30 @@
 # Find your api_key here: https://plot.ly/settings/api
 
 import plotly.plotly as py
-from plotly.graph_objs import *
+import plotly.graph_objs as go
 import pandas as pd
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/wind_speed_laurel_nebraska.csv')
 df.head()
 
-trace = Scatter( 
-    x=df['Time'], 
+trace = go.Scatter(
+    x=df['Time'],
     y=df['10 Min Sampled Avg'],
     mode='lines',
-    error_y=ErrorY( 
-        type='percent', 
-        value=df['10 Min Sampled Avg'].std(), 
-        thickness=1, 
-        width=0, 
+    error_y=dict(
+        type='percent',
+        value=df['10 Min Sampled Avg'].std(),
+        thickness=1,
+        width=0,
         color='#444',
-        opacity=0.8 ) )
-data = Data([trace])
-layout = Layout( 
-    yaxis=YAxis(title='Wind speed (m/s)'),
-    title='Discrete, fixed value error bars<br>Notice the hover text!' )
-fig = Figure( data=data, layout=layout )
+        opacity=0.8
+    )
+)
+
+data = [trace]
+layout = go.Layout(
+    yaxis=dict(title='Wind speed (m/s)'),
+    title='Discrete, fixed value error bars<br>Notice the hover text!')
+fig = go.Figure(data=data, layout=layout)
 
 # IPython notebook
 # py.iplot(fig, filename='pandas-fixed-error-bars')
@@ -13395,27 +13398,29 @@ url = py.plot(fig, filename='pandas-fixed-error-bars')
 # Find your api_key here: https://plot.ly/settings/api
 
 import plotly.plotly as py
-from plotly.graph_objs import *
+import plotly.graph_objs as go
 import pandas as pd
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/wind_speed_laurel_nebraska.csv')
 df.head()
 
-trace = Scatter( 
-    x=df['Time'], 
+trace = go.Scatter(
+    x=df['Time'],
     y=df['10 Min Sampled Avg'],
     mode='lines',
-    error_y=ErrorY( 
-        type='percent', 
+    error_y=dict(
+        type='percent',
         array=df['10 Min Std Dev'],
-        thickness=1, 
-        width=0, 
+        thickness=1,
+        width=0,
         color='#444',
-        opacity=0.8 ) )
-data = Data([trace])
-layout = Layout( 
-    yaxis=YAxis(title='Wind speed (m/s)'),
+        opacity=0.8
+    )
+)
+data = [trace]
+layout = go.Layout(
+    yaxis=dict(title='Wind speed (m/s)'),
     title='Discrete, variable value error bars<br>Notice the hover text!' )
-fig = Figure( data=data, layout=layout )
+fig = go.Figure(data=data, layout=layout)
 
 # IPython notebook
 # py.iplot(fig, filename='pandas-variable-error-bars')
@@ -13452,44 +13457,46 @@ url = py.plot(fig, filename='pandas-variable-error-bars')
 # Find your api_key here: https://plot.ly/settings/api
 
 import plotly.plotly as py
-from plotly.graph_objs import *
+import plotly.graph_objs as go
+import pandas as pd
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/wind_speed_laurel_nebraska.csv')
 
-upper_bound = Scatter( 
+upper_bound = go.Scatter(
     name='Upper Bound',
-    x=df['Time'], 
+    x=df['Time'],
     y=df['10 Min Sampled Avg']+df['10 Min Std Dev'],
     mode='lines',
-    marker=Marker(color="444"),
-    line=Line(width=0),
+    marker=dict(color="444"),
+    line=dict(width=0),
     fillcolor='rgba(68, 68, 68, 0.3)',
-    fill='tonexty' )
+    fill='tonexty')
 
-trace = Scatter( 
+trace = go.Scatter(
     name='Measurement',
-    x=df['Time'], 
+    x=df['Time'],
     y=df['10 Min Sampled Avg'],
     mode='lines',
-    line=Line(color='rgb(31, 119, 180)'),
+    line=dict(color='rgb(31, 119, 180)'),
     fillcolor='rgba(68, 68, 68, 0.3)',
-    fill='tonexty' )
+    fill='tonexty')
 
-lower_bound = Scatter( 
+lower_bound = go.Scatter(
     name='Lower Bound',
-    x=df['Time'], 
+    x=df['Time'],
     y=df['10 Min Sampled Avg']-df['10 Min Std Dev'],
-    marker=Marker(color="444"),
-    line=Line(width=0),
-    mode='lines' )
+    marker=dict(color="444"),
+    line=dict(width=0),
+    mode='lines')
 
-# Trace order can be important 
+# Trace order can be important
 # with continuous error bars
-data = Data([lower_bound, trace, upper_bound])
+data = [lower_bound, trace, upper_bound]
 
-layout = Layout( 
-    yaxis=YAxis(title='Wind speed (m/s)'),
+layout = go.Layout(
+    yaxis=dict(title='Wind speed (m/s)'),
     title='Continuous, variable value error bars<br>Notice the hover text!',
-    showlegend = False )
-fig = Figure( data=data, layout=layout )
+    showlegend = False)
+fig = go.Figure(data=data, layout=layout)
 
 # IPython notebook
 # py.iplot(fig, filename='pandas-continuous-error-bars')
@@ -13540,25 +13547,24 @@ data = []
 
 for supp in supplements:
     data.append(
-        Bar(
+        go.Bar(
             x = doses,
             y = df2.loc[doses,supp,'mean']['len'],
-            
-            error_y=ErrorY(
+
+            error_y=dict(
                 type='data',
                 array=df2.loc[doses,supp,'std']['len']
             ),
-            
+
             name = supp
         )
     )
 
-    
-data = Data( data )
-layout = Layout( xaxis=XAxis(type='category') )
-fig = Figure( data=data, layout=layout )    
-  
-# IPython notebook  
+
+layout = go.Layout( xaxis=XAxis(type='category') )
+fig = Figure( data=data, layout=layout )
+
+# IPython notebook
 # py.iplot(fig, filename='pandas-error-bars-bar-chart')
 
 url = py.plot(fig, filename='pandas-error-bars-bar-chart')

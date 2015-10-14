@@ -13332,7 +13332,7 @@
 # Find your api_key here: https://plot.ly/settings/api
 
 import plotly.plotly as py
-from plotly.graph_objs import *
+import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
 import colorlover as cl
@@ -13352,7 +13352,7 @@ def kde_scipy(x, x_grid, bandwidth=0.2 ):
 x_grid = np.linspace(df['SepalWidth'].min(), df['SepalWidth'].max(), 100)
 y_grid = np.linspace(df['PetalLength'].min(), df['PetalLength'].max(), 100)
 
-trace1 = Histogram2dContour(
+trace1 = go.Histogram2dContour(
     x=df['SepalWidth'],
     y=df['PetalLength'],
     name='density',
@@ -13360,61 +13360,61 @@ trace1 = Histogram2dContour(
     colorscale=colorscale,
     showscale=False
 )
-trace2 = Histogram(
+trace2 = go.Histogram(
     x=df['SepalWidth'],
     name='x density',
     yaxis='y2',
     histnorm='probability density',
-    marker=Marker(color='rgb(217, 217, 217)'),
+    marker=dict(color='rgb(217, 217, 217)'),
     nbinsx=25
 )
-trace2s = Scatter(
-    x=x_grid, 
+trace2s = go.Scatter(
+    x=x_grid,
     y=kde_scipy( df['SepalWidth'].as_matrix(), x_grid ),
     yaxis='y2',
-    line = Line( color='rgb(31, 119, 180)' ),
+    line = dict( color='rgb(31, 119, 180)' ),
     fill='tonexty',
 )
-trace3 = Histogram(
+trace3 = go.Histogram(
     y=df['PetalLength'],
     name='y density',
     xaxis='x2',
     histnorm='probability density',
-    marker=Marker(color='rgb(217, 217, 217)'),
+    marker=dict(color='rgb(217, 217, 217)'),
     nbinsy=50
 )
-trace3s = Scatter(
+trace3s = go.Scatter(
     y=y_grid,
     x=kde_scipy( df['PetalLength'].as_matrix(), y_grid ),
     xaxis='x2',
-    line = Line( color='rgb(31, 119, 180)' ),
-    fill='tonextx',    
+    line = dict( color='rgb(31, 119, 180)' ),
+    fill='tonextx',
 )
 
-data = Data([trace1, trace2, trace2s, trace3, trace3s])
+data = [trace1, trace2, trace2s, trace3, trace3s]
 
-layout = Layout(
+layout = go.Layout(
     showlegend=False,
     autosize=False,
     width=700,
     height=700,
     hovermode='closest',
     bargap=0,
-    
-    xaxis=XAxis(domain=[0, 0.746], linewidth=2, linecolor='#444', title='SepalWidth',
-                showgrid=False, zeroline=False, ticks='', showline=True, mirror=True),
-    
-    yaxis=YAxis(domain=[0, 0.746],linewidth=2,linecolor='#444', title='PetalLength',
-                showgrid=False, zeroline=False, ticks='', showline=True, mirror=True),
-    
-    xaxis2=XAxis( domain=[0.75, 1], showgrid=False, zeroline=False, ticks='',
+
+    xaxis=dict(domain=[0, 0.746], linewidth=2, linecolor='#444', title='SepalWidth',
+               showgrid=False, zeroline=False, ticks='', showline=True, mirror=True),
+
+    yaxis=dict(domain=[0, 0.746],linewidth=2,linecolor='#444', title='PetalLength',
+               showgrid=False, zeroline=False, ticks='', showline=True, mirror=True),
+
+    xaxis2=dict(domain=[0.75, 1], showgrid=False, zeroline=False, ticks='',
                 showticklabels=False ),
-    
-    yaxis2=YAxis( domain=[0.75, 1], showgrid=False, zeroline=False, ticks='',
+
+    yaxis2=dict(domain=[0.75, 1], showgrid=False, zeroline=False, ticks='',
                 showticklabels=False ),
 )
 
-fig = Figure(data=data, layout=layout)
+fig = go.Figure(data=data, layout=layout)
 
 # IPython notebook
 # py.iplot(fig, filename='pandas-2d-density-plot', height=700)
