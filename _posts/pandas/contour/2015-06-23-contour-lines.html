@@ -11,7 +11,7 @@ arrangement: horizontal
 # Find your api_key here: https://plot.ly/settings/api
 
 import plotly.plotly as py
-from plotly.graph_objs import *
+import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
 import scipy.stats as st
@@ -29,39 +29,39 @@ def kde_scipy( m1, m2 ):
     values = np.vstack([m1, m2])
     kernel = st.gaussian_kde(values)
     Z = np.reshape(kernel(positions).T, X.shape)
-    
+
     return Z
 
 def seaborn_to_plotly( scl ):
     ''' converts a seaborn color palette to a plotly colorscale '''
     return [ [ float(i)/float(len(scl)-1), 'rgb'+str((scl[i][0]*255, scl[i][1]*255, scl[i][2]*255)) ] \
             for i in range(len(scl)) ]
-    
+
 Z = kde_scipy( virginica.SepalWidth, virginica.SepalLength )
-     
-data = Data([
-    Contour(
+
+data = [
+    go.Contour(
         z=Z,
-        colorscale=seaborn_to_plotly( sns.color_palette(sns.dark_palette("purple")) ),        
-        contours = Contours( coloring = 'lines' ),
-        line = Line(width=2),
+        colorscale=seaborn_to_plotly( sns.color_palette(sns.dark_palette("purple")) ),
+        contours = dict( coloring = 'lines' ),
+        line = dict(width=2),
         ncontours = 40,
         showscale = False,
-    ),        
-])
+    ),
+]
 
 axis_layout = dict( zeroline = False, ticks = '', gridcolor = 'white' )
 
-layout = Layout( 
-    width=650, 
-    height=600, 
+layout = go.Layout(
+    width=650,
+    height=600,
     autosize=False,
     xaxis = axis_layout,
     yaxis = axis_layout,
     plot_bgcolor = 'rgb(234, 234, 242)'
 )
 
-fig = Figure( data=data, layout=layout )
+fig = go.Figure( data=data, layout=layout )
 
 # IPython notebook
 # py.iplot(fig, filename='pandas-kde-contour-plot-lines')
