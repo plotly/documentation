@@ -1,0 +1,211 @@
+---
+permalink: python/network-graphs
+description: How to make interactive network graphs in Python with NetworkX and Plotly. 
+title: Network Graphs
+has_thumbnail: true
+thumbnail: /images/net.png
+layout: user-guide
+language: python
+title: Python Network Graphs | plotly
+display_as: chart_type
+has_thumbnail: true
+page_type: example_index
+order: 28
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Network-Graphs-with-Plotly-&amp;-NetworkX-in-Python">Network Graphs with Plotly &amp; NetworkX in Python<a class="anchor-link" href="#Network-Graphs-with-Plotly-&amp;-NetworkX-in-Python">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Store-position-as-node-attribute-data-for-random_geometric_graph">Store position as node attribute data for random_geometric_graph<a class="anchor-link" href="#Store-position-as-node-attribute-data-for-random_geometric_graph">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">G</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">random_geometric_graph</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="mf">0.125</span><span class="p">)</span>
+<span class="n">pos</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">get_node_attributes</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="s">&#39;pos&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Find-node-near-center-(0.5,-0.5)">Find node near center (0.5, 0.5)<a class="anchor-link" href="#Find-node-near-center-(0.5,-0.5)">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">dmin</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">ncenter</span><span class="o">=</span><span class="mi">0</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">pos</span><span class="p">:</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">pos</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+    <span class="n">d</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">if</span> <span class="n">d</span><span class="o">&lt;</span><span class="n">dmin</span><span class="p">:</span>
+        <span class="n">ncenter</span><span class="o">=</span><span class="n">n</span>
+        <span class="n">dmin</span><span class="o">=</span><span class="n">d</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Color-by-path-length-from-node-near-center">Color by path length from node near center<a class="anchor-link" href="#Color-by-path-length-from-node-near-center">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">p</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">single_source_shortest_path_length</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="n">ncenter</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-edges-as-disconnected-lines-in-a-single-trace-and-nodes-as-a-scatter-trace">Add edges as disconnected lines in a single trace and nodes as a scatter trace<a class="anchor-link" href="#Add-edges-as-disconnected-lines-in-a-single-trace-and-nodes-as-a-scatter-trace">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">edge_trace</span> <span class="o">=</span> <span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="p">[],</span> 
+    <span class="n">y</span><span class="o">=</span><span class="p">[],</span> 
+    <span class="n">line</span><span class="o">=</span><span class="n">Line</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s">&#39;#888&#39;</span><span class="p">),</span>
+    <span class="n">hoverinfo</span><span class="o">=</span><span class="s">&#39;none&#39;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s">&#39;lines&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s">&#39;pos&#39;</span><span class="p">]</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s">&#39;pos&#39;</span><span class="p">]</span>
+    <span class="n">edge_trace</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="bp">None</span><span class="p">]</span>
+    <span class="n">edge_trace</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="bp">None</span><span class="p">]</span>
+
+<span class="n">node_trace</span> <span class="o">=</span> <span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="p">[],</span> 
+    <span class="n">y</span><span class="o">=</span><span class="p">[],</span> 
+    <span class="n">text</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s">&#39;markers&#39;</span><span class="p">,</span> 
+    <span class="n">hoverinfo</span><span class="o">=</span><span class="s">&#39;text&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">Marker</span><span class="p">(</span>
+        <span class="n">showscale</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="c"># colorscale options</span>
+        <span class="c"># &#39;Greys&#39; | &#39;Greens&#39; | &#39;Bluered&#39; | &#39;Hot&#39; | &#39;Picnic&#39; | &#39;Portland&#39; |</span>
+        <span class="c"># Jet&#39; | &#39;RdBu&#39; | &#39;Blackbody&#39; | &#39;Earth&#39; | &#39;Electric&#39; | &#39;YIOrRd&#39; | &#39;YIGnBu&#39;</span>
+        <span class="n">colorscale</span><span class="o">=</span><span class="s">&#39;YIGnBu&#39;</span><span class="p">,</span>
+        <span class="n">reversescale</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="p">[],</span> 
+        <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>         
+        <span class="n">colorbar</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">thickness</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s">&#39;Node Connections&#39;</span><span class="p">,</span>
+            <span class="n">xanchor</span><span class="o">=</span><span class="s">&#39;left&#39;</span><span class="p">,</span>
+            <span class="n">titleside</span><span class="o">=</span><span class="s">&#39;right&#39;</span>
+        <span class="p">),</span>
+        <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">)))</span>
+
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;pos&#39;</span><span class="p">]</span>
+    <span class="n">node_trace</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">node_trace</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Color-node-points-by-the-number-of-connections.">Color node points by the number of connections.<a class="anchor-link" href="#Color-node-points-by-the-number-of-connections.">&#182;</a></h4><p>Another option would be to size points by the number of connections 
+i.e. <code>node_trace['marker']['size'].append(len(adjacencies))</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">adjacencies</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">adjacency_list</span><span class="p">()):</span>
+    <span class="n">node_trace</span><span class="p">[</span><span class="s">&#39;marker&#39;</span><span class="p">][</span><span class="s">&#39;color&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adjacencies</span><span class="p">))</span>
+    <span class="n">node_info</span> <span class="o">=</span> <span class="s">&#39;# of connections: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adjacencies</span><span class="p">))</span>
+    <span class="n">node_trace</span><span class="p">[</span><span class="s">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_info</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Create-figure-and-send-to-Plotly">Create figure and send to Plotly<a class="anchor-link" href="#Create-figure-and-send-to-Plotly">&#182;</a></h4>
+</div>
+</div>
+</div>{% endraw %}
