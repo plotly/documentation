@@ -15,25 +15,20 @@ order: 7
 # Dumbbell plots in R
 
 ```r
+library(tidyr)
+library(plotly)
 s <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 s <- s[order(s$Men), ]
-library(plotly)
-p <- plot_ly(s, x = Women, y = School, name = "Women",
-             mode = "markers", marker = list(color = "pink")) %>%
-  add_trace(x = Men, name = "Men", marker = list(color = "blue")) %>%
+gather(s, Sex, value, Women, Men) %>%
+  plot_ly(x = value, y = School, mode = "markers",
+          color = Sex, colors = c("pink", "blue")) %>%
+  add_trace(x = value, y = School, mode = "lines", 
+            group = School, showlegend = F, line = list(color = "gray")) %>%
   layout(
     title = "Gender earnings disparity",
     xaxis = list(title = "Annual Salary (in thousands)"),
     margin = list(l = 65)
   )
-
-# to add lines between points:
-library(tidyr)
-s2 <- gather(s, variable, value, Women, Men)
-p %>%
-  add_trace(data = s2, group = School, showlegend = F,
-            x = value, y = School, mode = "lines", 
-            line = list(color = "gray"))
 ```
 
 <iframe width="900" height="800" frameborder="0" scrolling="no" src="https://plot.ly/~agvd/1685.embed"></iframe>
