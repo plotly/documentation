@@ -31,4 +31,4 @@ gather(s, Sex, value, Women, Men) %>%
   )
 ```
 
-<iframe width="900" height="800" frameborder="0" scrolling="no" src="https://plot.ly/~agvd/1685.embed"></iframe>
+<iframe width="650" height="650" frameborder="0" scrolling="no" src="https://plot.ly/~agvd/1685.embed"></iframe>
