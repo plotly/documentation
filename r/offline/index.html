@@ -30,7 +30,7 @@
     	<!-- META TAGS -->
     	<!-- SEO Tags - title, meta_description -->
     <title>Plotly Offline</title>
-    <meta name="description" content="How to use Plotly offline using the Plotly R client, ggplot2, and RStudio">
+    <meta name="description" content="Plotly offline using the Plotly R client, ggplot2, and RStudio">
 
 <!-- Bing tags -->
     <meta name="msvalidate.01" content="D319859A832F9F1D15A7646E2A42150A" />
@@ -38,7 +38,7 @@
     <meta property="og:title" content="Plotly Offline for Plotlys R Library"/>
     <meta property="og:type" content="website"/>
     <meta property="og:image" content="https://plot.ly/gh-pages/documentation/static//images/static-image">
-    <meta property="og:description" content="How to use Plotly offline using the Plotly R client, ggplot2, and RStudio"/>
+    <meta property="og:description" content="Plotly offline using the Plotly R client, ggplot2, and RStudio"/>
     <meta property="og:url" />
     <meta property="fb:admins" content="1123751525"/>
     <meta property="fb:admins" content="22418"/>
@@ -47,7 +47,7 @@
     <meta name="twitter:card" content="photo" />
     <meta name="twitter:title" content="Plotly Offline for Plotlys R Library"/>
     <meta name="twitter:url" content="http://help.plot.ly/r/offline"/>
-    <meta name="twitter:description" content="How to use Plotly offline using the Plotly R client, ggplot2, and RStudio"/>
+    <meta name="twitter:description" content="Plotly offline using the Plotly R client, ggplot2, and RStudio"/>
     <meta name="twitter:image" content="https://plot.ly/gh-pages/documentation/static//images/static-image">
     <meta name="twitter:site" content="@plotlygraphs"/>
 
@@ -280,111 +280,18 @@
 <br>
 
 <ul>
-<li>Plotly R figures will appear interactively within RStudio's graphics viewer without internet connection.</li>
+<li>Since November 2 2015, Plotly R figures now appear interactively within RStudio's graphics viewer <em>without any calls to Plotly's server</em> by default.</li>
 </ul>
 <ul>
-<li>When your ready to share, you can just publish them to the <a href="https://plot.ly/feed">Plotly Cloud</a> or to your company's internal <a href="https://plot.ly/product/enterprise">Plotly Enterprise</a>.</li>
+<li>Plotly graphics in RStudio sit on top of the <a href="http://www.htmlwidgets.org/">HTML widgets</a> framework.</li>
 </ul>
 <ul>
-<li>To get started with Plotly Offline, <a href="http://purchasing.plot.ly/plotly-offline-r">start a trial</a> or contact <a href=\"mailto:sales@plot.ly\">sales@plot.ly</a> to learn about licensing and receive a URL to download the package.</li>
+<li>When you're ready to share, you can  publish your Plotly R figures to the <a href="https://plot.ly/feed">Plotly Cloud</a> or to your company's internal <a href="https://plot.ly/product/enterprise">Plotly On-Premise</a> server.</li>
 </ul>
-<h3 id="Getting-Started">Getting Started<a class="anchor-link" href="#Getting-Started">&#182;</a></h3><p>1 - Update the Plotly R Library so that your version is at least v.1.0. In RStudio, run</p>
+<ul>
+<li><h3>To get started with Plotly offline in RStudio, <a href="/r/getting-started">download Plotly's free R client</a>.</h3></li>
+</ul>
 
-<pre><code>devtools::install_github("ropensci/plotly")</code></pre>
-
-<p>2 - Download the offline Plotly bundle. Obtain a license url by <a href="http://purchasing.plot.ly">starting a trial</a> or contacting <a href=\"mailto:sales@plot.ly\">sales@plot.ly</a></p>
-
-<pre><code>dir.create('~/.plotly/plotlyjs', recursive=TRUE)
-
-download.file("http://purchasing.plot.ly/your_licensed_plotly_offline_url",
-  "~/.plotly/plotlyjs/plotly-offline.zip")
-
-unzip("~/.plotly/plotlyjs/plotly-offline.zip", exdir = "~/.plotly/plotlyjs")
-</code></pre>
-
-<p>
-If, for some reason, you can't move the zip file to that location, tell R to look elsewhere by changing the "plotly_offline" environment variable (in this case, you may want to place this snippet in your ~/.Rprofile). For example:
-</p>
-
-<pre><code>download.file("http://purchasing.plot.ly/your_licensed_plotly_offline_url",
-  "~/Downloads/plotly-offline.zip")
-
-unzip("~/Downloads/plotly-offline.zip", exdir = "~/Downloads/")
-
-Sys.setenv("plotly_offline"="~/Downloads/")
-</code></pre>
-
-<p>3 - Now, you are ready to start using Plotly offline! All you need to do is wrap your <code>plot_ly</code> or <code>ggplotly</code> calls in <code>offline</code></p>
-
-<pre><code>library(plotly)
-set.seed(100)
-d &lt;- diamonds[sample(nrow(diamonds), 1000), ]
-p &lt;- plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
-        mode = "markers", color = carat, size = carat)
-offline(p)
-</code></pre>
-
-<p>Alternatively, pipe the calls into <code>offline.</code></p>
-
-<pre><code>p %>% offline
-</code></pre>
-
-<p>Your graphs will appear in the R Studio viewer:</p>
-
-<img src="http://i.imgur.com/DgFP9oZ.gif">
-<br>
-
-<p>You can also construct your figure's entirely declaratively. This was the default syntax in the Plotly R library pre version 1.0.</p>
-
-<pre><code>x0 = rnorm(500)
-x1 = rnorm(500)+1
-
-trace1 &lt;- list(x = x0, opacity = 0.75, type = "histogram")
-trace2 &lt;- list(x = x1, opacity = 0.75, type = "histogram")
-data &lt;- list(trace1, trace2)
-layout &lt;- list(barmode = "overlay", title="overlaid histograms")
-
-fig &lt;- list(data=data, layout=layout)
-
-fig %>% offline</code></pre>
-
-<h3>Offline with <code>knitr</code></h3>
-<p>In knitr documents plotly graphs will be offline by default if the plotly offline libraries are installed.</p>
-
-<br><p>To convert an <b>RMarkdown document to HTML</b>, do:</p>
-<pre><code>knitr::knit_meta(clean=TRUE) # So that you can run this multiple times in a row. See https://github.com/ropensci/plotly/issues/271
-knitr::knit('plotly-offline.Rmd', 'plotly-offline.md')
-markdown::markdownToHTML('plotly-offline.md', 'plotly-offline.html')</code></pre>
-
-<br>
-<p>To print offline plots in a for loop, explicitly wrap the figure in <code>cat(knit_print.offline(offline(fig)))</code> and add <code>results="asis"</code> in the knitr block. Example:</p><br>
-<pre><code>```{r, results="asis"}
-for(i in 1:3) {
-    fig &lt;- list(data=list(list(x=rnorm(100), type="histogram")), layout=list(title=paste(c('plot', i, sep=" "))))
-    cat(knit_print.offline(fig %>% offline))
-}
-```</code></pre>
-
-<h3>Offline with Shiny</h3>
-<p>In Shiny apps plotly graphs will be offline by default if the plotly offline libraries are installed.</p>
-
-<div>
-  <h3 id="More-About-Plotly-Offline">More about plotly offline<a class="anchor-link" href="#More-About-Plotly-Offline">¶</a></h3>
-
-    <ul>
-        <li>Questions? <a href="mailto:support@plot.ly">support@plot.ly</a></li>
-
-            <li><a href="https://plot.ly/r/">Examples and documentation</a></li>
-
-
-
-            <li><a href="http://purchasing.plot.ly/">Purchase Plotly Offline</a></li>
-
-
-        <li><a href="https://plot.ly/feed/">Graph gallery</a></li>
-        <li><a href="https://plot.ly/product/enterprise/">Plotly server at your company</a></li>
-    </ul>
-</div>
 
 </div>
 </div>
@@ -398,41 +305,6 @@ for(i in 1:3) {
     <footer>
 <div class="plotly-footer">
 	
-
-<div style="
-    background-image: url('http://i.imgur.com/gMliICo.png');
-    height: 200px;
-    font-family: 'Open sans',verdana,arial,sans-serif;
-    position: relative;">
-
-<h2 style="
-    text-align: center;
-    background-color: rgba(255,255,255,0.8);
-    margin: 0px;
-    padding-top: 20px;
-    font-family: 'Open sans',verdana,arial,sans-serif;">use plotly offline</h2>
-
-<h5 style="
-    text-align: center;
-    background-color: rgba(255,255,255,0.8);
-    margin: 0;
-    padding: 20px 0px;
-    color: black;
-    font-family: 'Open sans',verdana,arial,sans-serif;">$250 / developer / year</h5>
-
-<div style="
-    text-align: center;
-    height: 50%;
-    font-family: 'Open sans',verdana,arial,sans-serif;
-    background-color: rgba(255,255,255,0.8);">
-
-
-<a class="button trial-offline-cta" href="http://purchasing.plot.ly/plotly-offline-r">FREE 14 DAY TRIAL</a>
-
-
-</div>
-</div>
-
 
 	<div class="row footerarea footer-top">
 		<div class="one column footcolumn space"> </div>
