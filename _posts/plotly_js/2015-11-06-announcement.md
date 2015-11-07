@@ -6,6 +6,8 @@ description: Plotly.js, the core technology behind the Plotly platform, is now o
 thumbnail: /images/sizing.png
 language: plotly_js
 has_thumbnail: false
+layout: langindex
+language: plotly_js
 ---
 
 # Test
