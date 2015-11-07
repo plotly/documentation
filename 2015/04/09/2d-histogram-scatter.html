@@ -1,64 +1,34 @@
-# Learn about API authentication here: https://plot.ly/python/getting-started
-# Find your api_key here: https://plot.ly/settings/api
+% Learn about API authentication here: https://plot.ly/matlab/getting-started
+% Find your api_key here: https://plot.ly/settings/api
 
-import plotly.plotly as py
-import plotly.graph_objs as go
+x0 = randn(100,1)./5. + 0.5;
+y0 = randn(100,1)./5. + 0.5;
+x1 = rand(50,1);
+y1 = rand(50,1) + 1.0;
 
-import numpy as np
+x = [x0; x1];
+y = [y0; y1];
 
-x0 = np.random.randn(100)/5. + 0.5  # 5. enforces float division
-y0 = np.random.randn(100)/5. + 0.5
-x1 = np.random.rand(50)
-y1 = np.random.rand(50) + 1.0
-
-x = np.concatenate([x0, x1])
-y = np.concatenate([y0, y1])
-
-trace1 = go.Scatter(
-    x=x0,
-    y=y0,
-    mode='markers',
-    showlegend=False,
-    marker=dict(
-        symbol='x',
-        opacity=0.7,
-        color='white',
-        size=8,
-        line=dict(width=1),
-    )
-)
-trace2 = go.Scatter(
-    x=x1,
-    y=y1,
-    mode='markers',
-    showlegend=False,
-    marker=dict(
-        symbol='circle',
-        opacity=0.7,
-        color='white',
-        size=8,
-        line=dict(width=1),
-    )
-)
-trace3 = go.Histogram2d(
-    x=x,
-    y=y,
-    colorscale='YIGnBu',
-    zmax=10,
-    nbinsx=14,
-    nbinsy=14,
-    zauto=False,
-)
-
-layout = go.Layout(
-    xaxis=dict( ticks='', showgrid=False, zeroline=False, nticks=20 ),
-    yaxis=dict( ticks='', showgrid=False, zeroline=False, nticks=20 ),
-    autosize=False,
-    height=550,
-    width=550,
-    hovermode='closest',
-)
-data = [trace1, trace2, trace3]
-fig = go.Figure(data=data, layout=layout)
-
-url = py.plot(fig, filename='2d-histogram-scatter')
+trace1 = struct(...
+  'x', x0, ...
+  'y', y0, ...
+  'mode', 'markers', ...
+  'marker', struct(...
+    'symbol', 'circle', ...
+    'opacity', 0.7), ...
+  'type', 'scatter');
+trace2 = struct(...
+  'x', x1, ...
+  'y', y1, ...
+  'mode', 'markers', ...
+  'marker', struct(...
+    'symbol', 'square', ...
+    'opacity', 0.7), ...
+  'type', 'scatter');
+trace3 = struct(...
+  'x', x, ...
+  'y', y, ...
+  'type', 'histogram2d');
+data = {trace1, trace2, trace3};
+response = plotly(data, struct('filename', '2d-histogram-scatter', 'fileopt', 'overwrite'));
+plot_url = response.url
