@@ -15,19 +15,15 @@ November 17, 2015
 
 A growing number of graphing tools and libraries allow us to make beautiful, interactive web-based graphs. By interactively visualizing our data online, we can learn more, allow others to explore data, work in teams, and paint a complete picture.
 
-Today, Plotly announced that they have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s online platform. Any developer can now integrate Plotly’s library into their own applications and access the power of D3.js - the popular JavaScript graphics library used by the New York Times - for scientific charting. Plotly.js supports 36 chart types, including 3D plots, geographic maps, and statistical charts like density plots, histograms, box plots, and contour plots.
-
-> ### "Today, Plotly announced that they have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s online platform."
-
-Find the [GitHub repository here](https://github.com/plotly/plotlyjs)
+Today, Plotly announced that they have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s online platform. Any developer can now integrate Plotly’s library into their own applications and access the power of D3.js - the popular JavaScript graphics library used by the New York Times - for scientific charting. Plotly.js supports 36 chart types, including 3D plots, geographic maps, and statistical charts like density plots, histograms, box plots, and contour plots. Find the [GitHub repository here](https://github.com/plotly/plotlyjs)
 
 Despite the possibilities that the web offers, the core plotting libraries in scientific software like MATLAB, R, and Python still create static image files rather than dynamic, interactive charts. Many technical and scientific projects still don't embrace web technology because of JavaScript libraries being commercially developed, expensive, narrow in scope, or difficult to learn and use. By open-sourcing Plotly’s easy-to-use, comprehensive library, Plotly hopes to bring the power of interactive plotting to every developer, team, data scientist, and analyst.
 
 Plotly.js was instigated by [Alex Johnson](http://environment.harvard.edu/about/fellows/alex-johnson) and has been in development for over 3 years. 
 
-## plotly.js project highlights
+## Plotly.js Highlights
 
-#### Eight details that make the library especially unique.
+#### Eight details that make the project unique.
 
 1. **Scientific grade.** plotly.js is comparable in scope and features to MATLAB or Python’s matplotlib, but written in JavaScript, the language of the Web. 
 
@@ -47,34 +43,33 @@ Plotly.js was instigated by [Alex Johnson](http://environment.harvard.edu/about/
 
 #### A new JSON schema for data visualization
 
-plotly.js is based on a declarative, open-source [JSON schema](http://help.plot.ly/json-chart-schema/) that attempts to describe every physical aspect of any scientific chart. With this approach, the role of plotly.js is simple: **plotly.js takes the JSON specification of a chart and produces it as an interactive visualization.**
-
-Browse Plotly’s community-created [chart feed](https://plot.ly/feed/) and append “.json” to the URL of any chart to see its representation in JSON format:
-
-- Chart: [https://plot.ly/~empet/6640](https://plot.ly/~empet/6640)
-- JSON representation: [https://plot.ly/~empet/6640.json](https://plot.ly/~empet/6640.json)
+Plotly.js is based on a declarative, open-source [JSON schema](http://help.plot.ly/json-chart-schema/) that attempts to describe every physical aspect of any scientific chart. With this approach, the role of plotly.js is simple: **plotly.js takes the JSON specification of a chart and produces it as an interactive visualization.**
 
 The JSON schema makes Plotly charts *language agnostic* - They can be easily translated from one format to another:
 
+- Interactive chart: [https://plot.ly/~empet/6640](https://plot.ly/~empet/6640)
+- JSON specification: [https://plot.ly/~empet/6640.json](https://plot.ly/~empet/6640.json)
 - Raster image: [https://plot.ly/~empet/6640.png](https://plot.ly/~empet/6640.png)
 - Vector image: [https://plot.ly/~empet/6640.svg](https://plot.ly/~empet/6640.svg)
 - Excel: [https://plot.ly/~empet/6640.xlsx](https://plot.ly/~empet/6640.xlsx)
 - Python code: [https://plot.ly/~empet/6640.py](https://plot.ly/~empet/6640.py)
 - CSV data: [https://plot.ly/~empet/6640.csv](https://plot.ly/~empet/6640.csv)
 
+Browse Plotly’s community-created [chart feed](https://plot.ly/feed/) and append “.json” to the URL of any chart to see its JSON specification.
+
 #### Distinction from vega and vega-lite
 
-The plotly.js JSON schema and API is more like MATLAB or Python’s matplotlib than most JavaScript charting libraries available. It focuses on the chart’s physical attributes and attempts to leave the chart data separate (A workflow that scientists and engineers are accustomed to). For chart types that require binning (contour plots, histograms) or min-max decimation (line plots with >100k lines), some precomputation in JavaScript has been unavoidable. 
+The plotly.js JSON schema and API is more like MATLAB or Python’s matplotlib than most JavaScript charting libraries available. It focuses on the chart’s physical attributes and attempts to leave the chart data separate (a workflow that scientists and engineers are accustomed to). For chart types that require binning (contour plots, histograms) or min-max decimation (line plots with >100k lines), some precomputation in JavaScript has been unavoidable. 
 
 The vega and vega-lite schemas are more opinionated in prescribing how the chart data is grouped, sliced, or statistically processed before graphical display. This allows for very rich chart display with a concise JSON description, but leaves less control to the user. Neither approach is more “correct”—they’re just different.
 
-## Implications for Developers
+## Implications for developers
 
 #### JavaScript Developers
 
 The latest full version of plotly.js is available for free, unlimited use in any project. plotly.js code uses the MIT open-source license, the same license used by Bootstrap.js. The MIT open-source license puts no restrictions on how the code is used. Licensees who have previously purchased a plotly.js commercial license will no longer be charged the annual license fee and are encouraged to update to the latest plotly.js version under the MIT license.
 
-The latest version of plotly.js can be downloaded at the top of this page. There is also a CDN provided by Fastly:
+The latest version of plotly.js can be downloaded from GitHub or the [documentation home](https://plot.ly/javascript/).
 
 ```<script src=”cdn.plot.ly/min.plotly.js”>```
 
