@@ -47,12 +47,7 @@ Plotly.js was instigated by [Alex Johnson](http://environment.harvard.edu/about/
 
 #### A new JSON schema for data visualization
 
-plotly.js is based on a declarative, open-source [JSON schema](http://help.plot.ly/json-chart-schema/) that describes every physical aspect of a Plotly chart. For example, the bar chart below is described the two JSON objects on the left (try editing the JSON objects to change the chart):
-
-<p data-height="580" data-theme-id="15263" data-slug-hash="XmxaXY" data-default-tab="result" data-user="plotly" class='codepen'>See the Pen <a href='https://codepen.io/plotly/pen/XmxaXY/'>Json Editor</a> by Plotly (<a href='https://codepen.io/plotly'>@plotly</a>) on <a href='https://codepen.io'>CodePen</a>.</p>
-<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
-
-With this approach, the role of plotly.js is simple: **plotly.js takes this JSON schema and produces an interactive chart.**
+plotly.js is based on a declarative, open-source [JSON schema](http://help.plot.ly/json-chart-schema/) that attempts to describe every physical aspect of any scientific chart. With this approach, the role of plotly.js is simple: **plotly.js takes this JSON schema and produces an interactive visualization.**
 
 Browse Plotly’s chart feed and append “.json” to the URL of any chart to see its representation in JSON format:
 
@@ -73,9 +68,9 @@ The plotly.js JSON schema and API is more like MATLAB or Python’s matplotlib t
 
 The vega and vega-lite schemas are more opinionated in prescribing how the chart data is grouped, sliced, or statistically processed before graphical display. This allows for very rich chart display with a concise JSON description, but leaves less control to the user. Neither approach is more “correct”—they’re just different.
 
-## Note Developers, Engineers, and Data Scientists
+## Implications for Developers
 
-#### JavaScript
+#### JavaScript Developers
 
 The latest full version of plotly.js is available for free, unlimited use in any project. plotly.js code uses the MIT open-source license, the same license used by Bootstrap.js. The MIT open-source license puts no restrictions on how the code is used. Licensees who have previously purchased a plotly.js commercial license will no longer be charged the annual license fee and are encouraged to update to the latest plotly.js version under the MIT license.
 
@@ -83,7 +78,7 @@ The latest version of plotly.js can be downloaded at the top of this page. There
 
 ```<script src=”cdn.plot.ly/min.plotly.js”>```
 
-#### R, Python, & MATLAB
+#### R, Python, & MATLAB Engineers and Data Scientists
 
 Plotly can now be used 100% offline in RStudio, MATLAB, or Jupyter notebook free-of-charge. The R, Python, and MATLAB clients for Plotly have always been open-source, while the core graphics layer—plotly.js—was closed-source. Now the entire stack is open-source.
 
