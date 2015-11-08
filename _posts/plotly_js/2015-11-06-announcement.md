@@ -111,11 +111,13 @@ If you’re an R, Python, MATLAB, or Julia developer please consider contributin
 
 #### R, Python, and MATLAB client developers
 
-- Python client
+These domain specific libraries are allowing data scientists and engineers to easily create D3.js and stack.gl Plotly charts without any knowledge of JavaScript.
+
+- Python
   - Andrew Seier, Chelsea Douglas, Chris Parmer, Étienne Tétreault-Pinard
-- R client
+- R
   - Carson Sievert, Marianne Corvellec
-- MATLAB client leads
+- MATLAB
   - Chuck Bronson, Chris Parmer
 
 #### Financial sponsors
