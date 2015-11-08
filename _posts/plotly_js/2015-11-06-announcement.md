@@ -33,7 +33,7 @@ What makes the library unique.
 
 - **User documentation.** The [plotly.js documentation](https://plot.ly/javascript) is hosted on GitHub pages and is open-source under a Creative Commons license. 
 
-- **Support & Community.** Plotly is sponsoring staff to update documentation, review pull requests, and patrol Plotly’s Stack Overflow and Discourse channels. Direct developer email support can be purchased through a [Plotly Pro plan](https://plot.ly/products/cloud/)
+- **Support & Community.** Plotly is sponsoring staff to update documentation, review pull requests, and patrol Plotly’s Stack Overflow and Discourse channels. Direct developer email support can be purchased through a [Plotly Pro plan](https://plot.ly/products/cloud/).
 
 ## A JSON Schema Approach
 
