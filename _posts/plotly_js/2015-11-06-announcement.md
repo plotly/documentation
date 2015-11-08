@@ -10,9 +10,13 @@ layout: langindex
 language: plotly_js
 ---
 
-# Test
+November 17, 2015
 
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
+A growing number of graphing tools and libraries allow us to make beautiful, interactive web-based graphs. By interactively visualizing our data online, we can learn more, allow others to explore data, work in teams, and paint a complete picture.
+
+Today, Plotly announced that they have open-sourced plotly.js, the core technology and the  JavaScript graphing library behind Plotly’s online platform. Any developer can now integrate Plotly’s library into their own applications and access the power of D3.js - the popular JavaScript graphics library used by the New York Times - for scientific charting. Plotly.js supports 36 chart types, including 3D plots, geographic maps, and statistical charts like density plots, histograms, box plots, and contour plots.
+
+> "Today, we’re announcing that the full version of plotly.js is entirely  free and open-source, under the MIT open-source license."
 
 --- 
 
