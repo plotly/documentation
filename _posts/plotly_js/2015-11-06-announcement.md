@@ -3,7 +3,6 @@ title: Plotly.js Open-Source Announcement
 name: Plotly.js Open-Source Announcement
 permalink: javascript/open-source-announcement/
 description: Plotly.js, the core technology behind the Plotly platform, is now open-source
-thumbnail: /images/sizing.png
 language: plotly_js
 has_thumbnail: false
 layout: langindex
@@ -28,7 +27,7 @@ What makes the library unique.
 
 - **Scientific grade.** plotly.js is comparable in scope and features to MATLAB or Python’s matplotlib, but written in JavaScript, the language of the Web. 
 
--- **SVG & WebGL backends.** plotly.js uses both D3.js (SVG) and WebGL for graphics rendering. WebGL allows interactive rendering of hundreds of thousands to millions of x-y points, while D3.js is more practical for up to tens of thousands of points.
+- **SVG & WebGL backends.** plotly.js uses both D3.js (SVG) and WebGL for graphics rendering. WebGL allows interactive rendering of hundreds of thousands to millions of x-y points, while D3.js is more practical for up to tens of thousands of points.
 
 - **Testing framework.** For [code contributors](https://github.com/plotly/plotlyjs/graphs/contributors), the plotly.js image testing framework makes it the most stable JavaScript charting library available. 
 
