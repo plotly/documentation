@@ -15,7 +15,7 @@ A growing number of graphing tools and libraries allow us to make beautiful, int
 
 Today, Plotly announced that they have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s online platform. Any developer can now integrate Plotly’s library into their own applications and access the power of D3.js - the popular JavaScript graphics library used by the New York Times - for scientific charting. Plotly.js supports 36 chart types, including 3D plots, geographic maps, and statistical charts like density plots, histograms, box plots, and contour plots.
 
-> ### "Plotly announced that they have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s online platform." [Find the GitHub repository here](https://github.com/plotly/plotlyjs)
+> ### "Today, Plotly announced that they have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s online platform." [Find the GitHub repository here](https://github.com/plotly/plotlyjs)
 
 Despite the possibilities that the web offers, the core plotting libraries in scientific software like MATLAB, R, and Python still create static image files rather than dynamic, interactive charts. Many technical and scientific projects are limited in their scope because JavaScript libraries are commercially developed, expensive, very limited in scope, or difficult to learn and use. By open-sourcing Plotly’s easy-to-use, comprehensive library, Plotly hopes to bring the power of interactive plotting to every developer, team, data scientist, and analyst.
 
