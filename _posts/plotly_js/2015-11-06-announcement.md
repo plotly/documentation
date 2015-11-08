@@ -98,11 +98,16 @@ If you’re an R, Python, MATLAB, or Julia developer please consider contributin
 
 #### plotly.js core developers
 
-- Alex Johnson, plotly.js lead developer, architect, and instigator
-- Mikola Lysenko, Stack.gl WebGL work lead
-- Étienne Tétreault-Pinard, Geospatial work lead
-- Chris Parmer, Documentation lead
-- Ben Postlethwaite, Image testing server lead
+- Alex Johnson
+  - plotly.js lead developer, architect, and instigator
+- Mikola Lysenko
+  - Stack.gl WebGL work lead
+- Étienne Tétreault-Pinard
+  - Geospatial work lead
+- Chris Parmer
+  - Documentation lead
+- Ben Postlethwaite
+  - Image testing server lead
 
 #### R, Python, and MATLAB client developers
 
