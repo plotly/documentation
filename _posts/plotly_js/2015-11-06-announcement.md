@@ -27,29 +27,29 @@ Plotly.js was instigated by [Alex Johnson](http://environment.harvard.edu/about/
 
 ## plotly.js project highlights
 
-#### A few details that make the library especially unique.
+#### Eight details that make the library especially unique.
 
-- **Scientific grade.** plotly.js is comparable in scope and features to MATLAB or Python’s matplotlib, but written in JavaScript, the language of the Web. 
+1. **Scientific grade.** plotly.js is comparable in scope and features to MATLAB or Python’s matplotlib, but written in JavaScript, the language of the Web. 
 
-- **SVG & WebGL backends.** plotly.js uses both D3.js (SVG) and WebGL for graphics rendering. WebGL allows interactive rendering of hundreds of thousands to millions of x-y points, while D3.js is more practical for up to tens of thousands of points.
+2. **SVG & WebGL backends.** plotly.js uses both D3.js (SVG) and WebGL for graphics rendering. WebGL allows interactive rendering of hundreds of thousands to millions of x-y points, while D3.js is more practical for up to tens of thousands of points.
 
-- **Testing framework.** For [code contributors](https://github.com/plotly/plotlyjs/graphs/contributors), the plotly.js image testing framework makes it the most stable JavaScript charting library available. 
+3. **Testing framework.** For [code contributors](https://github.com/plotly/plotlyjs/graphs/contributors), the plotly.js image testing framework makes it the most stable JavaScript charting library available. 
 
-- **User documentation.** The [plotly.js documentation](https://plot.ly/javascript) is hosted on GitHub pages and is open-source under a Creative Commons license. 
+4. **User documentation.** The [plotly.js documentation](https://plot.ly/javascript) is hosted on GitHub pages and is open-source under a Creative Commons license. 
 
-- **Support & Community.** Plotly is sponsoring staff to update documentation, review pull requests, and patrol Plotly’s Stack Overflow and Discourse channels. Direct developer email support can be purchased through a [Plotly Pro plan](https://plot.ly/products/cloud/).
+5. **Support & Community.** Plotly is sponsoring staff to update documentation, review pull requests, and patrol Plotly’s Stack Overflow and Discourse channels. Direct developer email support can be purchased through a [Plotly Pro plan](https://plot.ly/products/cloud/).
 
-- **No dependencies.** plotly.js is an “all-in-one bundle” with d3.js and stack.gl modules baked-in.
+6. **No dependencies.** plotly.js is an “all-in-one bundle” with d3.js and stack.gl modules baked-in.
 
-- **No jQuery.** jQuery has been removed from plotly.js for significantly better performance and improved browser compatibility.
+7. **No jQuery.** jQuery has been removed from plotly.js for significantly better performance and improved browser compatibility.
 
-- **Powered by a JSON schema** plotly.js is based on a new open-source [JSON schema](http://help.plot.ly/json-chart-schema/) for creating, saving, and sharing scientific charts.
+8. **Powered by a JSON schema** plotly.js is based on a new open-source [JSON schema](http://help.plot.ly/json-chart-schema/) for creating, saving, and sharing scientific charts.
 
 #### A new JSON schema for data visualization
 
-plotly.js is based on a declarative, open-source [JSON schema](http://help.plot.ly/json-chart-schema/) that attempts to describe every physical aspect of any scientific chart. With this approach, the role of plotly.js is simple: **plotly.js takes this JSON schema and produces an interactive visualization.**
+plotly.js is based on a declarative, open-source [JSON schema](http://help.plot.ly/json-chart-schema/) that attempts to describe every physical aspect of any scientific chart. With this approach, the role of plotly.js is simple: **plotly.js takes the JSON specification of a chart and produces it as an interactive visualization.**
 
-Browse Plotly’s chart feed and append “.json” to the URL of any chart to see its representation in JSON format:
+Browse Plotly’s community-created [chart feed](https://plot.ly/feed/) and append “.json” to the URL of any chart to see its representation in JSON format:
 
 - Chart: [https://plot.ly/~empet/6640](https://plot.ly/~empet/6640)
 - JSON representation: [https://plot.ly/~empet/6640.json](https://plot.ly/~empet/6640.json)
