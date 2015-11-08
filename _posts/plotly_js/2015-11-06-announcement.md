@@ -107,11 +107,11 @@ If you’re an R, Python, MATLAB, or Julia developer please consider contributin
 #### R, Python, and MATLAB client developers
 
 - Python client
-  Andrew Seier, Chelsea Douglas, Chris Parmer, Étienne Tétreault-Pinard
+  - Andrew Seier, Chelsea Douglas, Chris Parmer, Étienne Tétreault-Pinard
 - R client
-  Carson Sievert, Marianne Corvellec
+  - Carson Sievert, Marianne Corvellec
 - MATLAB client leads
-  Chuck Bronson, Chris Parmer
+  - Chuck Bronson, Chris Parmer
 
 #### Financial sponsors
 
