@@ -76,22 +76,24 @@ The vega and vega-lite schemas are more opinionated in prescribing how the chart
 
 - *No jQuery.* jQuery has been removed from plotly.js for significantly better performance and improved browser compatibility.
 
+## Note for Plotly JavaScript Developers
+
 The latest full version of plotly.js is available for free, unlimited use in any project. plotly.js code uses the MIT open-source license, the same license used by Bootstrap.js. The MIT open-source license puts no restrictions on how the code is used. Licensees who have previously purchased a plotly.js commercial license will no longer be charged the annual license fee and are encouraged to update to the latest plotly.js version under the MIT license.
 
 The latest version of plotly.js can be downloaded at the top of this page. There is also a CDN provided by Fastly:
 
 ```<script src=”cdn.plot.ly/min.plotly.js”>```
 
-## Impact on R, Python, & MATLAB engineers
+## Note for R, Python, & MATLAB engineers
 
-Plotly can now be used 100% offline in RStudio, MATLAB, or Jupyter notebook free-of-charge. The R, Python, and MATLAB clients for Plotly have always been open-source, while the core graphics layer—plotly.js—was closed-source. Now the entire stack is open.
+Plotly can now be used 100% offline in RStudio, MATLAB, or Jupyter notebook free-of-charge. The R, Python, and MATLAB clients for Plotly have always been open-source, while the core graphics layer—plotly.js—was closed-source. Now the entire stack is open-source.
 
-This makes for a 100x better user experience:
+This makes for a better user experience:
 
-There is no round-trip to Plotly’s server, plotting is fast. 
-For the same reason, you can plot more data.
-In RStudio, Plotly charts now appear natively in RStudio instead of opening in a browser tab.
-Everything is local — You can create charts completely independently from Plotly’s online platform.
+- There is no round-trip to Plotly’s server, so plotting is **fast.**
+- For the same reason, you can plot more data.
+- In RStudio, Plotly charts now appear natively in RStudio instead of opening in a browser tab.
+- Everything is local — You can create charts completely independently from Plotly’s online platform.
 
 [Download for IPython notebook](https://plot.ly/python/getting-started/)
 
@@ -99,7 +101,7 @@ Everything is local — You can create charts completely independently from Plot
 
 [Download for MATLAB](https://plot.ly/matlab/getting-started/)
 
-## Ongoing work
+## Future work
 
 If you’re excited about what we’re doing, the best way to support our work is a Pro subscription to [Plotly Cloud](https://plot.ly/products/cloud/). Cloud subscriptions allow you to host and share Plotly charts created with plotly.js and gives your a direct line of developer support (by email) to Plotly staff. 
 
