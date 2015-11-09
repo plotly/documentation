@@ -61,7 +61,7 @@ Browse Plotly’s community-created [chart feed](https://plot.ly/feed/) and appe
 
 The plotly.js JSON schema and API is more like MATLAB or Python’s matplotlib than most JavaScript charting libraries available. It focuses on the chart’s physical attributes and attempts to leave the chart data separate (a workflow that scientists and engineers are accustomed to). For chart types that require binning (contour plots, histograms) or min-max decimation (line plots with >100k lines), some precomputation in JavaScript has been unavoidable. 
 
-The vega and vega-lite schemas are more opinionated in prescribing how the chart data is grouped, sliced, or statistically processed before graphical display. This allows for very rich chart display with a concise JSON description, but leaves less control to the user. Neither approach is more “correct”—they’re just different.
+The vega and vega-lite schemas are more opinionated in prescribing how the chart data is grouped, sliced, or statistically processed before graphical display. This allows for complicated chart display with a concise JSON description, but leaves less control to the user. Neither approach is more “correct”—they’re just different.
 
 ## Implications for developers
 
