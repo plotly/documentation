@@ -116,7 +116,7 @@ These domain specific libraries are allowing data scientists and engineers to ea
 - Python
   - Andrew Seier, Chelsea Douglas, Chris Parmer, Étienne Tétreault-Pinard
 - R
-  - Carson Sievert, Marianne Corvellec
+  - Carson Sievert, Marianne Corvellec, Toby Dylan Hocking, Baobao Zhang
 - MATLAB
   - Chuck Bronson, Chris Parmer
 
