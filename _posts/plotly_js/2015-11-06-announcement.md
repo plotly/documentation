@@ -9,7 +9,7 @@ layout: langindex
 language: plotly_js
 ---
 
-# Plotly.js Open-Source Announcement :sparkles: 
+# Plotly.js Open-Source Announcement
 
 November 17, 2015
 
