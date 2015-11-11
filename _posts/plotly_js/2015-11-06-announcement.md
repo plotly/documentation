@@ -1,8 +1,8 @@
 ---
-title: Plotly.js Open-Source Announcement
-name: Plotly.js Open-Source Announcement
-permalink: javascript/open-source-announcement/ASDFASF12341231
-description: Plotly.js, the web's premier JavaScript charting library and technology behind Plotly, is now open-source.
+title: ASDFASF12341231
+name: ASDFASF12341231
+permalink: javascript/ASDFASF12341231
+description: ASDFASF12341231
 language: plotly_js
 has_thumbnail: false
 layout: langindex
