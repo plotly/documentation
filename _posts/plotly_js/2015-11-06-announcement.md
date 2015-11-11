@@ -2,7 +2,7 @@
 title: Plotly.js Open-Source Announcement
 name: Plotly.js Open-Source Announcement
 permalink: javascript/open-source-announcement/ASDFASF12341231
-description: Plotly.js, the core technology behind the Plotly platform, is now open-source
+description: Plotly.js, the web's premier JavaScript charting library and technology behind Plotly, is now open-source.
 language: plotly_js
 has_thumbnail: false
 layout: langindex
@@ -25,6 +25,8 @@ Plotly.js was instigated by [Dr. Alex Johnson](http://environment.harvard.edu/ab
     <a href="https://plot.ly/~jackp/10551/" target="_blank" title="PetalLength vs SepalWidth" style="display: block; text-align: center;"><img src="https://plot.ly/~jackp/10551.png" alt="PetalLength vs SepalWidth" style="max-width: 100%;width: 700px;"  width="700" onerror="this.onerror=null;this.src='https://plot.ly/404.png';" /></a>
     <script data-plotly="jackp:10551"  src="https://plot.ly/embed.js" async></script>
 </div>
+
+A contour density plot drawn with plotly.js. Visit the [plotly.js documentation](https://plot.ly/javascript/) to to get started.
 
 ## Plotly.js Highlights
 
@@ -93,7 +95,7 @@ This makes for a better user experience:
 
 The plotly.js roadmap is constantly changing, but 2016 is likely to be focused on performance. We would like the higher performance 2d WebGL graphics backend to reach feature parity with the more mature SVG (D3.js) backend. 
 
-If you’re a JavaScript developer, consider taking a look at the plotly.js [code on GitHub](https://github.com/plotly/plotly.js). Submitting Codepen examples to [community.plot.ly](http://community.plot.ly/c/plotly-js) for the documentation is also a great way to contribute.
+If you’re a JavaScript developer, consider taking a look at the plotly.js code on [GitHub](https://github.com/plotly/plotly.js). Submitting Codepen examples to [community.plot.ly](http://community.plot.ly/c/plotly-js) for the documentation is also a great way to contribute.
 
 If you’re an R, Python, MATLAB, or Julia developer please consider contributing to one of the clients on [Plotly's GitHub](http://github.com/plotly/).
 
