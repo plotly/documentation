@@ -1,7 +1,7 @@
 ---
 title: Plotly.js Open-Source Announcement
 name: Plotly.js Open-Source Announcement
-permalink: javascript/open-source-announcement/
+permalink: javascript/open-source-announcement/ASDFASF12341231
 description: Plotly.js, the core technology behind the Plotly platform, is now open-source
 language: plotly_js
 has_thumbnail: false
@@ -21,9 +21,14 @@ Despite the possibilities that the web offers, the core plotting libraries in sc
 
 Plotly.js was instigated by [Dr. Alex Johnson](http://environment.harvard.edu/about/fellows/alex-johnson) and has been in development for over 3 years. 
 
+<div>
+    <a href="https://plot.ly/~jackp/10551/" target="_blank" title="PetalLength vs SepalWidth" style="display: block; text-align: center;"><img src="https://plot.ly/~jackp/10551.png" alt="PetalLength vs SepalWidth" style="max-width: 100%;width: 700px;"  width="700" onerror="this.onerror=null;this.src='https://plot.ly/404.png';" /></a>
+    <script data-plotly="jackp:10551"  src="https://plot.ly/embed.js" async></script>
+</div>
+
 ## Plotly.js Highlights
 
-#### Eight details that make the project unique.
+#### Seven details that make the project unique.
 
 1. **Scientific grade.** plotly.js is comparable in scope and features to MATLAB or Python’s matplotlib, but written in JavaScript, the language of the Web. 
 
@@ -33,13 +38,11 @@ Plotly.js was instigated by [Dr. Alex Johnson](http://environment.harvard.edu/ab
 
 4. **User documentation.** The [plotly.js documentation](https://plot.ly/javascript) is hosted on GitHub pages and is open-source under a Creative Commons license. 
 
-5. **Support & Community.** Plotly is sponsoring staff to update documentation, review pull requests, and patrol Plotly’s Stack Overflow and Discourse channels. Direct developer email support can be purchased through a [Plotly Pro plan](https://plot.ly/products/cloud/).
+5. **No dependencies.** plotly.js is an “all-in-one bundle” with d3.js and stack.gl modules baked-in.
 
-6. **No dependencies.** plotly.js is an “all-in-one bundle” with d3.js and stack.gl modules baked-in.
+6. **No jQuery.** jQuery has been removed from plotly.js for significantly better performance and improved browser compatibility.
 
-7. **No jQuery.** jQuery has been removed from plotly.js for significantly better performance and improved browser compatibility.
-
-8. **Powered by a JSON schema** plotly.js is based on a new open-source [JSON schema](http://help.plot.ly/json-chart-schema/) for creating, saving, and sharing scientific charts.
+7. **Powered by a JSON schema** plotly.js is based on a new open-source [JSON schema](http://help.plot.ly/json-chart-schema/) for creating, saving, and sharing scientific charts.
 
 #### A new JSON schema for data visualization
 
@@ -86,11 +89,11 @@ This makes for a better user experience:
 
 [Download for IPython notebook](https://plot.ly/python/getting-started/) | [Download for RStudio](https://plot.ly/r/getting-started/) | [Download for MATLAB](https://plot.ly/matlab/getting-started/)
 
-## Plans for future work
+## Future plans and contributing
 
-If you’re excited about what we’re doing, the best way to support our work is a Pro subscription to [Plotly Cloud](https://plot.ly/products/cloud/). Cloud subscriptions allow you to host and share Plotly charts created with plotly.js and gives your a direct line of developer support (by email) to Plotly staff. 
+The plotly.js roadmap is constantly changing, but 2016 is likely to be focused on performance. We would like the higher performance 2d WebGL graphics backend to reach feature parity with the more mature SVG (D3.js) backend. 
 
-If you’re a JavaScript developer,  consider taking a look at the code and contributing to the plotly.js codebase or submitting Codepen examples to [community.plot.ly](http://community.plot.ly/c/plotly-js).
+If you’re a JavaScript developer, consider taking a look at the plotly.js [code on GitHub](https://github.com/plotly/plotly.js). Submitting Codepen examples to [community.plot.ly](http://community.plot.ly/c/plotly-js) for the documentation is also a great way to contribute.
 
 If you’re an R, Python, MATLAB, or Julia developer please consider contributing to one of the clients on [Plotly's GitHub](http://github.com/plotly/).
 
