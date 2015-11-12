@@ -13,11 +13,11 @@ language: plotly_js
 
 November 17, 2015
 
-A growing number of graphing tools and libraries allow us to make beautiful, interactive web-based graphs. By interactively visualizing our data online, we can learn more, allow others to explore data, work in teams, and paint a complete picture.
+A growing number of graphing tools and libraries allow us to make beautiful, interactive web-based graphs. By interactively visualizing our data online, we share complex ideas in an exploratory, visual, open, and collaborative way.
 
-**Today, Plotly announced that they have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s online platform** (MIT license). Any developer can now integrate Plotly’s library into their own applications and access the power of D3.js - the popular JavaScript graphics library used by the New York Times - for scientific charting. Plotly.js supports 36 chart types, including 3D plots, geographic maps, and statistical charts like density plots, histograms, box plots, and contour plots. 
+**Today, Plotly is announcing that we have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s products** (MIT license). Its all out there and free. Any developer can now integrate Plotly’s library into their own applications unencumbered. Plotly.js supports 36 chart types, including 3D plots, geographic maps, and statistical charts like density plots, histograms, box plots, and contour plots. 
 
-We’re big fans of collaboration, freedom, and perpetual motion. Open-source has become the de facto distribution for excellent scientific software and business intelligence software. We want to support, participate in, and amplify this trend. By open-sourcing Plotly's core technology, everyone benefits from peer-review and Plotly's products will be strongest offering that they can be in the long-run. Plotly.js has the quality and scope to be the charting standard for the Web, but we can only achieve this breadth by working across communities and making the distribution truly unencumbered, portable, and free.
+We’re big fans of collaboration, freedom, and perpetual motion. Open-source has become the de facto distribution for gold-standard scientific and business intelligence software. We want to support, participate in, and amplify this trend. By open-sourcing Plotly's core technology, everyone benefits from peer-review and Plotly's products will continue to be the most cutting-edge offering for exploratory visualization. Plotly.js has the quality, accessibility, and scope to be the charting standard for the Web, but we can only achieve this breadth by working across communities and making the distribution truly unencumbered, portable, and free.
 
 Despite the possibilities that the web offers, the core plotting libraries in scientific software like MATLAB, R, and Python still create static image files rather than dynamic, interactive charts. Many technical and scientific projects still don't embrace web technology because of JavaScript libraries being commercially developed, expensive, narrow in scope, or difficult to learn and use. By open-sourcing Plotly’s easy-to-use, comprehensive library, Plotly hopes to bring the power of interactive plotting to every developer, team, data scientist, and analyst.
 
@@ -34,7 +34,7 @@ A contour density plot drawn with plotly.js. Visit the [plotly.js documentation]
 
 ## Plotly.js Highlights
 
-#### Seven details that make the project unique.
+#### Seven details that make the project unique
 
 1. **Scientific grade.** plotly.js is comparable in scope and features to MATLAB or Python’s matplotlib, but written in JavaScript, the language of the Web. 
 
