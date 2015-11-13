@@ -12,7 +12,7 @@ redirect_from: /javascript-graphing-library/plotlyjs-function-reference
 <br><br><br>
 <div class="row">
     <div class="four columns">
-      <div class="toc" style="border-right: 1px solid #f3f3f3; padding-right: 20px;">
+      <div class="toc" style="border-right: 1px solid #f3f3f3; padding-right: 20px;"><br><br>
           <ul>
               <li><a href="#other-resources" class="attribute-name"><p class="left-align">Other Plotly.js resources</p></a></li>
               <li><a href="#retrieving-data-layout" class="attribute-name"><p class="left-align">Retrieving the plot 'data' or 'layout' objects</p></a></li>
@@ -27,7 +27,6 @@ redirect_from: /javascript-graphing-library/plotlyjs-function-reference
       </div>
     </div>
 <div class="eight columns">
-
 <h4 id="other-resources"><a class="no_underline plot-blue" href="#other-resources">Other Plotly.js Resources</a></h4>
 
 <ul>
@@ -93,6 +92,10 @@ Plotly.newPlot(graphDiv, data2, layout2);
 </code></pre>
 <br>
 
+<iframe height='518' scrolling='no' src='//codepen.io/plotly/embed/meaKwE/?height=518&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/meaKwE/'>Plotly.newPlot</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
+</iframe>
+<br>
+
 You can hide the link to Plotly's cloud with <code>{showLink: false}</code> as the 4th argument.<br>
 <code>Plotly.plot(divid, data, layout, {showLink: false})</code>
 
@@ -127,6 +130,8 @@ Plotly.restyle(graphDiv, update, [1, 2]);
 
 <br>
 
+<iframe height='510' scrolling='no' src='//codepen.io/plotly/embed/meaKYw/?height=510&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/meaKYw/'>Plotly.restyle</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
+</iframe>
 
 The above examples have applied values across single or multiple traces. However, you can also specify <b>arrays</b> of values to apply to traces <b>in turn</b>.
 
@@ -146,6 +151,10 @@ Plotly.restyle(graphDiv, update)
 
 <br>
 
+<iframe height='515' scrolling='no' src='//codepen.io/plotly/embed/NGeBGL/?height=515&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/NGeBGL/'>Plotly.restyle Traces in Turn</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
+</iframe>
+
+<br>
 
 In restyle, arrays are assumed to be used in conjunction with the trace indices provided. Therefore, to apply an array <b>as a value</b>, you need to wrap it in an additional array. For example:
 
@@ -164,6 +173,11 @@ Plotly.restyle(graphDiv, update, [1, 2])
 
 <br>
 
+<iframe height='502' scrolling='no' src='//codepen.io/plotly/embed/wKRxJE/?height=502&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/wKRxJE/'>Plotly.restyle Arrays </a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
+</iframe>
+
+<br>
+
 The term <b>attribute strings</b> is used above to mean <b>flattened</b> (e.g., <code>{marker: {color: 'red'}}</code> vs. <code>{'marker.color': red}</code>). When you pass an attribute string to restyle inside the update object, it’s assumed to mean <b>update only this attribute</b>. Therefore, if you wish to replace and entire sub-object, you may simply specify <b>one less level of nesting</b>.
 
 <pre><code class="language-javascript hljs" data-lang="javascript">
@@ -173,6 +187,11 @@ var update = {
 };
 Plotly.restyle(graphDiv, update, [0])
 </code></pre>
+
+<br>
+
+<iframe height='528' scrolling='no' src='//codepen.io/plotly/embed/LpMBOy/?height=528&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/LpMBOy/'>Plotly.restyle Attribute strings </a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
+</iframe>
 
 <br>
 
@@ -191,6 +210,11 @@ Plotly.relayout(graphDiv, update)
 
 <br>
 
+<iframe height='526' scrolling='no' src='//codepen.io/plotly/embed/meajqx/?height=526&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/meajqx/'>Plotly.relayout</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
+</iframe>
+
+<br>
+
 Again, caution should be taken regarding flat <b>attribute strings</b> vs sub-objects used with relayout. In the above example, the value for <code>range</code> <b>in</b> <code>xaxis</code> is update. Conversly, below, the <code>xaxis</code> object is <b>replaced</b> with one that only has the range value:
 
 <pre><code class="language-javascript hljs" data-lang="javascript">
@@ -201,6 +225,11 @@ var update = {
 };
 Plotly.relayout(graphDiv, update)
 </code></pre>
+
+<br>
+
+<iframe height='507' scrolling='no' src='//codepen.io/plotly/embed/jbXpZj/?height=507&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/jbXpZj/'>Plotly.relayout - xaxis replace</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
+</iframe>
 
 <br>
 
@@ -221,6 +250,11 @@ Plotly.addTraces(graphDiv, {y: [1, 5, 7]}, 0);
 
 <br>
 
+<iframe height='510' scrolling='no' src='//codepen.io/plotly/embed/xwmJvL/?height=510&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/xwmJvL/'>Plotly.addtraces</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
+</iframe>
+
+<br>
+
 <h4 id="plotly-deletetraces"><a class="no_underline plot-blue" href="#plotly-deletetraces">Delete Traces with <code>Plotly.deleteTraces</code></a></h4>
 
 This allows you to remove traces from an existing <code>graphDiv</code> by specifying the indices of the traces to be removed.
@@ -232,6 +266,11 @@ Plotly.deleteTraces(graphDiv, 0);
 // remove the last two traces
 Plotly.deleteTraces(graphDiv, [-2, -1]);
 </code></pre>
+
+<br>
+
+<iframe height='503' scrolling='no' src='//codepen.io/plotly/embed/meaGRo/?height=503&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/meaGRo/'>Plotly.deleteTraces</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
+</iframe>
 
 <br>
 
@@ -255,6 +294,11 @@ Plotly.moveTraces(graphDiv, [1, 4, 5], [0, 3, 2]);
 
 <br>
 
+<iframe height='500' scrolling='no' src='//codepen.io/plotly/embed/LpMJyB/?height=500&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/LpMJyB/'>Plotly.moveTraces</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
+</iframe>
+
+<br>
+
 <h4 id="plotly-redraw"><a class="no_underline plot-blue" href="#plotly-redraw">Redraw with <code>Plotly.redraw</code></a></h4>
 
 Use <code>redraw</code> to trigger a complete recalculation and redraw of the graph. This is not the fastest way to change single attributes, but may be the simplest way. You can make any arbitrary change to the data and layout objects, including completely replacing them, then call redraw.
@@ -270,6 +314,11 @@ graphDiv.data.push({x: [1,2,3,4], y: [4,3,2,1], mode: 'lines+markers'})
 graphDiv.layout.showlegend = false;
 Plotly.redraw(graphDiv);
 </code></pre>
+
+<br>
+
+<iframe height='515' scrolling='no' src='//codepen.io/plotly/embed/GpPXdV/?height=515&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/GpPXdV/'>Plotly.redraw</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
+</iframe>
 
 <br>
 
