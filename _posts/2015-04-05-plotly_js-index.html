@@ -2,36 +2,456 @@
 title: JavaScript Graphing Library | Plotly
 permalink: /javascript/
 description: Plotly's scientific JavaScript graphing library for web-applications and dashboards. Examples of how to make line plots, scatter plots, area charts, bar charts, error bars, box plots, histograms, heatmaps, subplots, multiple-axes, polar charts and bubble charts.
-layout: langindex
 language: plotly_js
 redirect_from: /javascript-graphing-library/
 ---
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Icon -->
+<link rel="shortcut icon" href="{{site.staticurl}}/images/plotly-ico.png" type="image/x-icon" />
 
-<h1 class="centered">Plotly.js</h1>
+<!-- META TAGS -->
+{% include analytics.html %}
+{% include seo.html %}
 
-<h3 class="centered">Plotly JavaScript Graphing Library</h3>
 
-<div class="row centered btnrow">
-	<a href="https://plot.ly/javascript/getting-started/" class="button no_underline">Getting Started</a>
-	<a href="https://plot.ly/javascript/reference/" class="button no_underline">Reference</a>
-	<a href="https://plot.ly/javascript-graphing-library/showcase/" class="button no_underline">Showcase</a>
-	<a href="https://plot.ly/javascript/plotlyjs-function-reference/" class="button no_underline">Plotly.js Functions</a>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="stylesheet" href="{{ site.staticurl }}/css/modules.css"/>
+<link rel="stylesheet" href="{{ site.staticurl }}/css/layout_block.css"/>
+<link rel="stylesheet" href="{{ site.staticurl }}/css/base.css"/>
+<link rel="stylesheet" href="{{ site.staticurl }}/css/js-splash.css"/>
+<link rel="stylesheet" href="{{ site.staticurl }}/css/js-splash-highlight.css"/>
+<link rel="stylesheet" href="{{ site.staticurl }}/css/plotly_icons.css"/>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+
+<div id="header" style="
+  background-image: url('https://raw.githubusercontent.com/plotly/documentation/gh-pages/all_static/images/unemployment.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  max-width: 100%;
+  background-position: center top;
+  width: 100%;
+  height: 350px;
+  position: relative;
+  ">
+
+	{% include header.html %}
+
+  <div style="
+    background-image: linear-gradient(0deg, rgba(128,122,54, 0.8)  0%, rgba(58,124,187, 0.7) 100%);
+    width: 100%;
+    height: 100%;
+  "></div>
+
+  <div class="js-splash--banner-container">
+    <div class="js-splash--banner-title" style="font-size: 4.2rem; margin-top: 0; margin-bottom: 2rem; font-weight: 300; ">plotly.js</div>
+    <div class="js-splash--banner-subtitle" style="font-size: 2.2rem; letter-spacing: 0.3px; font-weight: 100;   margin-top: 0; margin-bottom: 2rem; font-weight: 300;">The javascript graphing library that powers plotly</div>
+  </div>
 </div>
 
-	<p style="text-align: center;">
-		<b style="color:#447adb;">plotly.js</b> is Plotly's client-side, interactive JavaScript graphing library,
-		built on top of <a href="http://d3js.org/">D3.js</a> and
-		<a href="http://stack.gl/">stackgl</a>.
-	</p>
+<div style="position: relative;">
+	<div id="sidebar" class="js-splash--navigation-sidebar">
+		<div class="js-splash--navigation-section-title">Quick Start</div>
+		<div class="js-splash--navigation-item-container">
+			<a href="https://plot.ly/javascript/getting-started" class="js-splash--navigation-item">Getting Started</a>
+			<a href="https://cdn.plot.ly/plotly-latest.min.js" class="js-splash--navigation-item">CDN</a>
+		</div>
 
-	<p style="text-align: center;">
-		<b style="color:#447adb;">plotly.js</b> supports all SVG-compatible browsers:
-	</p>
+		<div class="js-splash--navigation-section-title">Reference</div>
+		<div class="js-splash--navigation-item-container">
+			<a href="https://plot.ly/javascript/reference" class="js-splash--navigation-item">Plot Schema</a>
+			<a href="https://plot.ly/javascript/plotlyjs-function-reference/" class="js-splash--navigation-item">Function Reference</a>
+		</div>
 
-	<img width="300" src="{{ site.staticurl }}/images/browser_support.png" style="margin-bottom:60px;"></img>
+		<div class="js-splash--navigation-section-title">Examples</div>
+		<div class="js-splash--navigation-item-container">
+			<a href="#basic-charts" class="js-splash--navigation-item">2D</a>
+      <a href="#3d-charts" class="js-splash--navigation-item">3D</a>
+			<a href="#maps" class="js-splash--navigation-item">Maps</a>
+			<a href="#chart-events" class="js-splash--navigation-item">Events</a>
+			<a href="#layout-options" class="js-splash--navigation-item">Layout</a>
+		</div>
 
-<h2>Documentation Examples</h2>
+    <!--
+		<div class="js-splash--navigation-section-title">Community</div>
+		<div class="js-splash--navigation-item-container">
+			<a target="_blank" href="https://github.com/plotly/plotly.js/" class="js-splash--navigation-item">Contributing</a>
+		  <a target="_blank" href="https://github.com/plotly/plotly.js/" class="js-splash--navigation-item">GitHub</a>
+		</div>
+    -->
+
+		<div class="js-splash--navigation-section-title">Tools</div>
+		<div class="js-splash--navigation-item-container">
+			<a target="_blank" href="https://plot.ly/plot" class="js-splash--navigation-item">Web Editor</a>
+			<a target="_blank" href="https://codepen.io/plotly" class="js-splash--navigation-item">CodePen</a>
+		</div>
+	</div>
+</div>
+
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+<!-- pin the sidebar to the top -->
+$(function() {
+    var $sidebar   = $("#sidebar"),
+        $window    = $(window),
+        $header    = $("#header");
+    function setHeight() {
+      $sidebar.css({top: Math.max(50,
+                (($header.height() + 50) - // 50: margin-top of the first header
+                $window.scrollTop()))});
+    }
+    setHeight();
+    $window.scroll(setHeight);
+});
+</script>
+
+<div class="js-splash--container">
+
+<div class="block-title">what is plotly.js?</div>
+
+<div style="width: 90%; margin-bottom: 30px;" class="block-content">
+  Built on top of d3.js and <a target="_blank" href="http://stack.gl">stack.gl</a>, plotly.js is a high-level, declarative charting library. plotly.js ships with 20 chart types, including 3D charts, statistical graphs, and SVG maps.
+  <!--
+  <br>You can view the source on <a target="_blank" href="https://github.com/plotly/plotly.js">GitHub</a>.
+  -->
+
+</div>
+
+  <!-- menu for small screens - is shown through a media query at some screenwidth -->
+
+  <div class="js-splash--navigation-inline row" style="width: 100%">
+    <div style="width: 33%; float: left;">
+      <div class="js-splash--navigation-section-title">Quick Start</div>
+      <div class="js-splash--navigation-item-container">
+        <a href="https://plot.ly/javascript/getting-started" class="js-splash--navigation-item">Getting Started</a>
+        <a href="https://cdn.plot.ly/plotly-latest.min.js" class="js-splash--navigation-item">CDN</a>
+      </div>
+
+      <div class="js-splash--navigation-section-title">Reference</div>
+      <div class="js-splash--navigation-item-container">
+        <a href="https://plot.ly/javascript/reference" class="js-splash--navigation-item">Plot Schema</a>
+        <a href="https://plot.ly/javascript/plotlyjs-function-reference/" class="js-splash--navigation-item">Function Reference</a>
+      </div>
+    </div>
+
+    <div style="width: 33%; float: left;">
+      <div class="js-splash--navigation-section-title">Examples</div>
+      <div class="js-splash--navigation-item-container">
+        <a href="#basic-charts" class="js-splash--navigation-item">2D</a>
+        <a href="#3d-charts" class="js-splash--navigation-item">3D</a>
+        <a href="#maps" class="js-splash--navigation-item">Maps</a>
+        <a href="#chart-events" class="js-splash--navigation-item">Events</a>
+        <a href="#layout-options" class="js-splash--navigation-item">Layout</a>
+      </div>
+    </div>
+
+    <div style="width: 33%; float: left;">
+      <!--
+      <div class="js-splash--navigation-section-title">Community</div>
+      <div class="js-splash--navigation-item-container">
+        <a target="_blank" href="https://github.com/plotly/plotly.js/" class="js-splash--navigation-item">Contributing</a>
+        <a target="_blank" href="https://github.com/plotly/plotly.js/" class="js-splash--navigation-item">GitHub</a>
+      </div>
+      -->
+
+      <div class="js-splash--navigation-section-title">Tools</div>
+      <div class="js-splash--navigation-item-container">
+        <a target="_blank" href="https://plot.ly/plot" class="js-splash--navigation-item">Web Editor</a>
+        <a href="http://codepen.io/plotly" class="js-splash--navigation-item">CodePen</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="graph js-splash--responsive-chart-js" class="graph" style="height: 80vh;" id="my-graph"></div>
+  <img class="js-splash--responsive-chart-image" src="https://plot.ly/~chris/17398.png">
+
+
+  <pre><code class="js-splash--code-block">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv', function(err, rows){
+      var YEAR = 2007;
+      var continents = ['Asia', 'Europe', 'Africa', 'Oceania', 'Americas'];
+      var POP_TO_PX_SIZE = 2e5;
+      function unpack(rows, key) {
+          return rows.map(function(row) { return row[key]; });
+      }
+
+      var data = continents.map(function(continent) {
+          var rowsFiltered = rows.filter(function(row) {
+              return (row.continent === continent) && (+row.year === YEAR);
+          });
+          return {
+              mode: 'markers',
+              name: continent,
+              x: unpack(rowsFiltered, 'lifeExp'),
+              y: unpack(rowsFiltered, 'gdpPercap'),
+              text: unpack(rowsFiltered, 'country'),
+              marker: {
+                  sizemode: 'area',
+                  size: unpack(rowsFiltered, 'pop'),
+                  sizeref: POP_TO_PX_SIZE
+              }
+          };
+      });
+      var layout = {
+          xaxis: {title: 'Life Expectancy'},
+          yaxis: {title: 'GDP per Capita', type: 'log'},
+          margin: {t: 20},
+          hovermode: 'closest'
+      };
+      Plotly.plot('my-graph', data, layout, {showLink: false});
+  });</code></pre>
+
+  <script type="text/javascript">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv', function(err, rows){
+      var YEAR = 2007;
+      var continents = ['Asia', 'Europe', 'Africa', 'Oceania', 'Americas'];
+      var POP_TO_PX_SIZE = 2e5;
+      function unpack(rows, key) {
+          return rows.map(function(row) { return row[key]; });
+      }
+
+      var data = continents.map(function(continent) {
+          var rowsFiltered = rows.filter(function(row) {
+              return (row.continent === continent) && (+row.year === YEAR);
+          });
+          return {
+              mode: 'markers',
+              name: continent,
+              x: unpack(rowsFiltered, 'lifeExp'),
+              y: unpack(rowsFiltered, 'gdpPercap'),
+              text: unpack(rowsFiltered, 'country'),
+              marker: {
+                  sizemode: 'area',
+                  size: unpack(rowsFiltered, 'pop'),
+                  sizeref: POP_TO_PX_SIZE
+              }
+          };
+      });
+      var layout = {
+          xaxis: {title: 'Life Expectancy'},
+          yaxis: {title: 'GDP per Capita', type: 'log'},
+          margin: {t: 20},
+          hovermode: 'closest'
+      };
+      Plotly.plot('my-graph', data, layout, {showLink: true});
+  });</script>
+
+
+  <div class="js-splash--section-title">
+    <div>features</div>
+  </div>
+
+  <div class="js-splash--feature-block">
+
+    <div class="block-title">
+      Sophisticated chart types
+    </div>
+
+
+    <div class="block-content">
+      <code>plotly.js</code> abstracts the types of statistical and scientific charts that you would find in packages like matplotlib, ggplot2, or MATLAB.
+    </div>
+
+    <div class="graph" style="height: 75vh" id="contour-plot"></div>
+
+<pre><code class="js-splash--code-block">Plotly.d3.json('https://plot.ly/~DanielCarrera/13.json', function(figure){
+  var trace = {
+    x: figure.data[0].x, y: figure.data[0].y, z: figure.data[0].z,
+    type: 'contour', autocolorscale: false,
+    colorscale: [[0,"rgb(  0,  0,  0)"],[0.3,"rgb(230,  0,  0)"],[0.6,"rgb(255,210,  0)"],[1,"rgb(255,255,255)"]],
+    reversescale: true, zmax: 2.5, zmin: -2.5
+  };
+  var layout = {
+    title: 'turbulence simulation',
+    xaxis: {title: 'radial direction', showline: true, mirror: 'allticks', ticks: 'inside'},
+    yaxis: {title: 'vertical direction', showline: true, mirror: 'allticks', ticks: 'inside'},
+    margin: {l: 40, b: 40, t: 60},
+    annotations: [{
+      showarrow: false,
+      text: 'Credit: <a target="_blank" href="https://plot.ly/~DanielCarrera">Daniel Carrera</a>',
+      x: 0, y: 0, xref: 'paper', yref: 'paper'
+    }]
+  }
+  Plotly.plot(document.getElementById('contour-plot'), [trace], layout, {showLink: false});
+});</code></pre>
+
+
+  <script type="text/javascript">
+  Plotly.d3.json('https://plot.ly/~DanielCarrera/13.json', function(figure){
+    var trace = {
+      x: figure.data[0].x, y: figure.data[0].y, z: figure.data[0].z,
+      type: 'contour', autocolorscale: false,
+      colorscale: [[0,"rgb(  0,  0,  0)"],[0.3,"rgb(230,  0,  0)"],[0.6,"rgb(255,210,  0)"],[1,"rgb(255,255,255)"]],
+      showscale: false,
+      reversescale: true, zmax: 2.5, zmin: -2.5,
+      colorbar:{ypad:0}
+    };
+    var layout = {
+      xaxis: {title: '', showgrid: false, ticks: '', zeroline: false}, // , showline: true, mirror: 'allticks', ticks: 'inside'},
+      yaxis: {title: '', showgrid: false, ticks: '', zeroline: false}, //, showline: true, mirror: 'allticks', ticks: 'inside'},
+      margin: {l: 0, b: 0, t: 0, r: 0},
+      annotations: [
+      {
+        showarrow: false,
+        text: 'turbulence simulation', font: {size: 16},
+        x: 0, y: 1, xref: 'paper', yref: 'paper', bgcolor: 'white'
+      },
+      {
+        showarrow: false,
+        text: 'Credit: <a target="_blank" href="https://plot.ly/~DanielCarrera">Daniel Carrera</a>',
+        x: 0, y: 0, xref: 'paper', yref: 'paper'
+      }]
+    }
+    Plotly.plot(document.getElementById('contour-plot'), [trace], layout, {showLink: false});
+  });
+  </script>
+
+  <div class="block-title">Fully customizable</div>
+  <div class="block-content">
+    <code>plotly.js</code> charts are described declaritively as JSON objects. Every aspect of the charts, such as colors, grid lines, and the legend, has a corresponding set of JSON attributes.
+
+    <div style="
+      padding-top: 15px;
+      padding-bottom: 10px;
+      text-align: right;
+      height: 30px;
+    ">
+      <a style="float: right" target="_blank" href="https://plot.ly/javascript/reference">view all of the available attributes</a>
+    </div>
+
+  </div>
+
+  <div class="graph" style="height: 70vh;" id="wind-speed"></div>
+
+  <pre><code class="js-splash--code-block">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/wind_speed_laurel_nebraska.csv', function(rows){
+    var trace = {
+      type: 'scatter',                    // set the chart type
+      mode: 'lines',                      // connect points with lines
+      x: rows.map(function(row){          // set the x-data
+        return row['Time'];
+      }),
+      y: rows.map(function(row){          // set the x-data
+        return row['10 Min Sampled Avg'];
+      }),
+      line: {                             // set the width of the line.
+        width: 1
+      },
+      error_y: {
+        array: rows.map(function(row){    // set the height of the error bars
+          return row['10 Min Std Dev'];
+        }),
+        thickness: 0.5,                   // set the thickness of the error bars
+        width: 0
+      }
+    };
+
+    var layout = {
+      yaxis: {title: "Wind Speed"},       // set the y axis title
+      xaxis: {
+        showgrid: false,                  // remove the x-axis grid lines
+        tickformat: "%B, %Y"              // customize the date format to "month, day"
+      },
+      margin: {                           // update the left, bottom, right, top margin
+        l: 40, b: 10, r: 10, t: 20
+      }
+    };
+
+    Plotly.plot(document.getElementById('wind-speed'), [trace], layout, {showLink: false});
+});</code></pre>
+
+
+  <script type="text/javascript">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/wind_speed_laurel_nebraska.csv', function(rows){
+    var trace = {
+      x: rows.map(function(row){return row['Time']; }),
+      y: rows.map(function(row){return row['10 Min Sampled Avg']; }),
+      line: {
+        width: 1
+      },
+      error_y: {
+        array: rows.map(function(row){return row['10 Min Std Dev']; }),
+        thickness: 0.5,
+        width: 0
+      }
+    };
+
+    var layout = {
+      yaxis: {title: "Wind Speed"},
+      xaxis: {showgrid: false, tickformat: "%B %e"},
+      margin: {l: 60, b: 37, t: 0, r: 20}
+    };
+
+    Plotly.plot(document.getElementById('wind-speed'), [trace], layout, {showLink: false});
+  });
+  </script>
+
+  <div class="block-title">High performance</div>
+  <div style="width: 100%" class="block-content">
+
+    <div class="js-splash--inline-text-header">
+      Most plotly graphs are drawn with SVG. This offers great compatability across browsers and publication-quality vector image export. Unfortunately, there are inherent performance limitations with the number of SVG elements that you can draw in the DOM.<br><br>
+      <code>plotly.js</code><a target="_blank" href=""> uses <a target="_blank" href="http://stack.gl">stack.gl</a></a> for high performance 2D and 3D charting.<br><br>
+    </div>
+
+    <div style="position: relative;" class="row">
+      <div class="js-splash--inline-image-left">
+        <a class="image-link" style="display: inline-block;" href="https://plot.ly/~chris/17389.embed"><img style="width: 100%" src="https://plot.ly/~chriddyp/1771/hue-value-vs.png"/></a>
+      </div>
+      <div class="js-splash--inline-text-right">
+        This chart was drawn with the <code>plotly.js</code> chart type <code>scattergl</code>. <code>scattergl</code> charts render an order of magnitude faster than their SVG counterparts.<br>
+      </div>
+    </div>
+
+    <div style="position: relative; width: 100%" class="row">
+      <div class="js-splash--inline-image-right">
+        <a class="image-link" style="display: inline-block; width: 100%;" href="https://plot.ly/~chriddyp/1780.embed">
+            <img style="width: 100%;" src="https://plot.ly/~chriddyp/1780.png"/>
+        </a>
+      </div>
+      <div class="js-splash--inline-text-left">
+        All 3D charts in <code>plotly.js</code> are rendered with webgl, leveraging the power of the GPU for fast interactivity.
+        <a class="js-splash--chart-link" target="_blank" href="https://plot.ly/~chris/17389.embed">view the interactive version</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="block-title">Fully interactive</div>
+  <div class="block-content">
+  <code>plotly.js</code> charts are shipped with zoom, pan, hover, and click interactions. Click-and-drag to zoom into a region, double-click to autoscale, click on legend items to toggle traces. All of these events are also <a target="_blank" href="">exposed in the API</a>.
+  </div>
+
+  <div style="border: 1px solid #C2C2C2;">
+    <video style="width: 100%;" preload="auto" loop="loop" autoplay>
+      <source src="https://s3.amazonaws.com/plotly-downloads/js-interactive.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="block-title">Universal</div>
+  <div class="block-content">
+  By abstracting charts to a declaritive JSON structure, <code>plotly.js</code> is used a browser-based charting library in <a target="_blank" href="">Python</a>, <a target="_blank" href="">R</a>, <a target="_blank" href="">MATLAB</a>, <a target="_blank" href="">Julia</a>.
+  </div>
+
+  <script type="text/javascript">
+  window.addEventListener("resize", function(){
+    Plotly.Plots.resize(document.getElementById('wind-speed'), {showLink: false});
+    Plotly.Plots.resize(document.getElementById('contour-plot'), {showLink: false});
+    Plotly.Plots.resize(document.getElementById('my-graph'), {showLink: false});
+  });
+  </script>
+
+  </div>
+
+	<div id="examples" class="js-splash--section-title">Examples</div>
 	{% assign languagelistimg = site.posts | where:"page_type":"example_index" | where:"language","plotly_js"  | where:"has_thumbnail",true | sort: "order" %}
 	{% assign languagelist = site.posts | where:"page_type":"example_index" | where:"language","plotly_js" %}
 
-	{% include documentation_eg.html %} 
+	{% include documentation_eg.html %}
+
+</div>
+
+
+{% include footer.html %}
+
+</body>
+</html>
