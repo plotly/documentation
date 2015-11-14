@@ -1,0 +1,26 @@
+---
+name: adding trend lines in R with <code>stat_smooth</code>
+plot_url: https://plot.ly/~MattSundquist/18370/y-vs-x/
+language: ggplot2
+suite: smooth
+description: Inspired by <a href="http://stackoverflow.com/questions/15102254/how-do-i-add-different-trend-lines-in-r">Stack Overflow</a>.
+order: 7
+sitemap: false
+---
+# Learn about API authentication here: https://plot.ly/ggplot2/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+library(plotly)
+
+x <- 1:10
+y <- jitter(x^2)
+
+DF <- data.frame(x, y)
+
+ggplot(DF, aes(x = x, y = y)) + geom_point() +
+    stat_smooth(method = 'lm', aes(colour = 'linear'), se = FALSE) +
+    stat_smooth(method = 'lm', formula = y ~ poly(x,2), aes(colour = 'polynomial'), se= FALSE) +
+    stat_smooth(method = 'nls', formula = y ~ a * log(x) +b, aes(colour = 'logarithmic'), se = FALSE, start = list(a=1,b=1)) +
+    stat_smooth(method = 'nls', formula = y ~ a*exp(b *x), aes(colour = 'Exponential'), se = FALSE, start = list(a=1,b=1))
+
+ggplotly()
