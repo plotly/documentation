@@ -1,8 +1,8 @@
 ---
-title: Embedding Plotly Graphs in HTML with KnitR
-name: Text and Annotations
+title: Embed Graphs in HTML
+name: Embed Graphs in HTML
 permalink: r/embedding-plotly-graphs-in-HTML
-description: How to embed Plotly graphs in HTML pages with Plotly's R API
+description: How to embed plotly graphs in HTML pages with plotly for R
 layout: base
 thumbnail: text-and-annotations.png
 language: r
@@ -11,9 +11,7 @@ has_thumbnail: false
 display_as: layout_opt
 ---
 
-# Embedding Plotly Graphs in HTML
-
-If you have a plotly account, printing plotly objects in the R console will create a new plotly figure (via plotly's REST API). If you're using knitr/R Markdown with HTML output, printing not only creates the plot, but also embeds it as an HTML iframe.
+# Embed Graphs in HTML
 
 ```{r, echo = FALSE, message=FALSE}
 knitr::opts_chunk$set(message = FALSE)
@@ -21,25 +19,21 @@ Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
 
-```{r, message=FALSE}
+As of version 2.0, plotly's R package utilizes the [htmlwidgets](http://www.htmlwidgets.org/) framework. As a result, printing objects of class "plotly" in [rmarkdown/knitr HTML documents](http://rmarkdown.rstudio.com/html_document_format.html) will embed the necessary HTML/JavaScript to create the client-side visualization (via [plotly.js](http://plot.ly/javascript)).
+
+```{r}
 library(plotly)
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        color = Species, mode = "markers", filename="r-docs/example-plot")
+p <- plot_ly(midwest, x = percollege, color = state, type = "box")
+class(p)
 p
 ```
 
-Plotly graphs hosted on [https://plot.ly](https://plot.ly) can be embedded in webpages as iframes or images. Just add `.embed` or `.png` to the end of the graph URL.
+You can also host your figures on a plotly server by calling `plotly_POST()`. This function returns an object of class figure. When you print a figure object in an rmarkdown/knitr document, it embeds the figure as an iframe which is served from your plotly account.
 
-```html
-<iframe src="https://plot.ly/~RPlotBot/501.embed"
-		height="600" width="100%"
-		scrolling="no" seamless="seamless"
-		frameBorder="0">
-</iframe>
+```{r}
+f <- plotly_POST(p, filename = "r-docs/midwest-boxplots")
+class(f)
+f
 ```
 
-```html
-<img src="https://plot.ly/~RPlotBot/501.png">
-```
-
-[Learn more about embedding graphs in HTML pages, blogs, and websites in our tutorial](http://help.plot.ly/embed-graphs-in-websites/).
+If you want more control over embedding graphs hosted on <https://plot.ly>, [learn how to embed plotly graphs with HTML iframes](http://help.plot.ly/embed-graphs-in-websites/)
