@@ -9,65 +9,96 @@ page_type: example_index
 has_thumbnail: false
 ---
 
-
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```{r, echo = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
-# Plotly UseR Guide
 
-Version 1.0.0 of the [plotly R package](https://github.com/ropensci/plotly) introduces a new high-level interface for working with plotly's JavaScript graphing library from R. The aim of this vignette is to explain the semantics of this interface, but I also recommend perusing [plotly's R homepage](https://plot.ly/r/) for more examples.
+To create a plotly visualization, start with `plot_ly()`.
 
-To initiate a plotly object, use `plot_ly()`. Here we turn the `economics` data frame (from the ggplot2 package) into a plotly visualization and store it as the object `p`.
-
-```{r, message=FALSE}
+```{r}
 library(plotly)
-p <- plot_ly(economics, x = date, y = uempmed)
+plot_ly(economics, x = date, y = unemploy / pop)
 ```
 
-If you have a plotly account, printing plotly objects in the R console will create a new plotly figure, and open it in your web browser. If you're using knitr/R Markdown with HTML output (like [this vignette](https://github.com/ropensci/plotly/tree/master/vignettes/intro.Rmd)), printing not only creates the plot, but also embeds it as an HTML iframe.
+A plotly visualization is composed of one (or more) trace(s), and every trace has a `type` (the default type is 'scatter'). The arguments/properties that a trace will respect ([documented here](https://plot.ly/r/reference)) depend on it's type. A scatter trace respects `mode`, which can be any combination of "lines", "markers", "text" joined with a "+":
 
-```{r, message=FALSE}
-p
+```{r}
+library(plotly)
+plot_ly(economics, x = date, y = unemploy / pop, 
+        type = "scatter", mode = "markers+lines")
 ```
 
-`plot_ly()` has a number of arguments which are unique to the R package and make common visualizations a bit easier. These arguments are very much inspired by the semantics of ggplot2's `qplot()` in the sense that a scales are automatically applied these variables (i.e., they map data to visual properties).
+You can manually add a trace to an existing plot with `add_trace()`. In that case, you'll want to either `name` your traces, or hide the legend by setting `showlegend = FALSE`
+
+```{r}
+m <- loess(unemploy / pop ~ as.numeric(date), data = economics)
+p <- plot_ly(economics, x = date, y = unemploy / pop, name = "raw") 
+add_trace(p, y = fitted(m), name = "loess")
+```
+
+__plotly__ was designed with a [pure, predictable, and pipeable interface](https://dl.dropboxusercontent.com/u/41902/pipe-dsls.pdf) in mind, so you can also use the `%>%` operator to modify your plots:
+
+```{r}
+economics %>%
+  plot_ly(x = date, y = unemploy / pop) %>% 
+  add_trace(y = fitted(m)) %>%
+  layout(showlegend = F)
+```
+
+Furthermore, `plot_ly()`, `add_trace()`, and `layout()`, all accept a data frame as their first argument and output a data frame. As a result, we can inter-weave data manipulations and visual mappings in a single pipeline.
+
+```{r}
+economics %>%
+  transform(rate = unemploy / pop) %>%
+  plot_ly(x = date, y = rate) %>% 
+  subset(rate == max(rate)) %>%
+  layout(
+    showlegend = F, 
+    annotations = list(x = date, y = rate, text = "Peak", showarrow = T)
+  )
+```
+
+Although these functions output special "plotly data frames", `plot_ly()` doesn't require a data frame for input. This makes chart types that accept a `z` argument especially easy to use if you have a numeric matrix:
+
+```{r}
+plot_ly(z = volcano, type = "surface")
+plot_ly(z = volcano, type = "contour")
+```
+
+## Special arguments
+
+The __plotly__ function arguments used thus far are documented in [the figure reference](https://plot.ly/r/reference), but there are a handful of additional arguments not described in the reference that make common visualizations a bit easier. These arguments are very much inspired by the semantics of ggplot2's `qplot()` in the sense that a scales are automatically applied these variables.
+
+### The color argument
 
 #### Qualitative color mappings
 
 If a ordinal variable (aka a non-ordered factor variable) is assigned to color, then a qualitative color palette is used by default.
 
-```{r, message=FALSE}
-plot_ly(iris, x = Petal.Length, y = Petal.Width,
+```{r}
+plot_ly(iris, x = Petal.Length, y = Petal.Width, 
         color = Species, mode = "markers")
 ```
 
 If you want to change the default palette, it's recommended that you provide a <http://colorbrewer2.org> qualitative pallette name (e.g., "Set1" or "Accent") to the colors argument.
 
-```{r, message=FALSE}
-plot_ly(iris, x = Petal.Length, y = Petal.Width,
+```{r}
+plot_ly(iris, x = Petal.Length, y = Petal.Width, 
         color = Species, colors = "Set1", mode = "markers")
 ```
 
 In this case, the palette consists of 9 colors and the default behavior is to pick colors that are furthest apart ("#E41A1C", "#FF7F00", and "#999999").
 
-```{r, eval=FALSE}
+```{r}
 cols <- RColorBrewer::brewer.pal(9, "Set1")
 scales::show_col(cols)
 ```
 
-<div align="center">
-  <a href="http://imgur.com/PpLch1T">
-    <img src="http://i.imgur.com/PpLch1T.png" />
-  </a>
-</div>
-
 If you'd like more control over the mapping, you can provide a vector of colors (of appropriate length).
 
-```{r, message=FALSE}
+```{r}
 cols <- RColorBrewer::brewer.pal(nlevels(iris$Species), "Set1")
-plot_ly(iris, x = Petal.Length, y = Petal.Width,
+plot_ly(iris, x = Petal.Length, y = Petal.Width, 
         color = Species, colors = cols, mode = "markers")
 ```
 
@@ -75,23 +106,23 @@ plot_ly(iris, x = Petal.Length, y = Petal.Width,
 
 If either a numeric or an ordered factor is mapped to color, `plot_ly()` applies a sequential color scale by default.
 
-```{r, message=FALSE}
-plot_ly(iris, x = Petal.Length, y = Petal.Width,
+```{r}
+plot_ly(iris, x = Petal.Length, y = Petal.Width, 
         color = as.ordered(Species), mode = "markers")
 ```
 
 In the case of continuous numeric variables, `plot_ly()` performs a linear mapping between the data and an interpolated color pallette.
 
-```{r, message=FALSE}
-plot_ly(iris, x = Petal.Length, y = Petal.Width,
+```{r}
+plot_ly(iris, x = Petal.Length, y = Petal.Width, 
         color = Sepal.Length, mode = "markers")
 ```
 
 The colors argument takes arbitrary color codes of arbitrary length. Here is how we could use it to replicate the default mapping in ggplot2.
 
-```{r, message=FALSE}
-plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        color = Sepal.Length, colors = c("#132B43", "#56B1F7"),
+```{r}
+plot_ly(iris, x = Petal.Length, y = Petal.Width, 
+        color = Sepal.Length, colors = c("#132B43", "#56B1F7"), 
         mode = "markers")
 ```
 
@@ -99,39 +130,40 @@ plot_ly(iris, x = Petal.Length, y = Petal.Width,
 
 To obtain a diverging color mapping, just provide a diverging palette to the colors argument.
 
-```{r, message=FALSE}
-plot_ly(iris, x = Petal.Length, y = Petal.Width,
+```{r}
+plot_ly(iris, x = Petal.Length, y = Petal.Width, 
         color = Sepal.Length, colors = "PuOr", mode = "markers")
 ```
 
-#### The symbol argument
+### The symbol argument
 
 To encode values using symbols, use the symbol argument.
 
-```{r, message=FALSE}
-plot_ly(iris, x = Petal.Length, y = Petal.Width,
+```{r}
+plot_ly(iris, x = Petal.Length, y = Petal.Width, 
         symbol = Species, mode = "markers")
 ```
 
-To change the default symbols used, use the symbols argument. [View all of the available symbol](https://plot.ly/r/reference/#marker).
+To change the default symbols used, use the symbols argument. All the valid symbol types are listed [here](https://plot.ly/r/reference/#marker).
 
-```{r, message=FALSE}
+```{r}
 plot_ly(iris, x = Petal.Length, y = Petal.Width, mode = "markers",
         symbol = Species, symbols = c("cross", "square", "triangle-down"))
 ```
+
 
 ### The group argument and `subplot()`
 
 Using the group argument splits the data into different plotly "traces".
 
-```{r, message=FALSE}
-plot_ly(iris, x = Petal.Length, y = Petal.Width,
+```{r}
+plot_ly(iris, x = Petal.Length, y = Petal.Width, 
         group = Species, mode = "markers")
 ```
 
 Although we haven't specified a coloring scheme, plotly will employ one on it's own default scheme. The group argument is quite powerful when used in conjunction with `subplot()` in order to anchor traces onto different axes.
 
-```{r, message=FALSE}
+```{r}
 iris$id <- as.integer(iris$Species)
 p <- plot_ly(iris, x = Petal.Length, y = Petal.Width, group = Species,
              xaxis = paste0("x", id), mode = "markers")
@@ -140,62 +172,24 @@ subplot(p)
 
 Since `subplot()` does not assume x/y axes are on a common scale, it does not impose any restrictions on the range by default. However, you can change this by pre-specifying the range of the [axis objects](https://plot.ly/r/reference/#xaxis) via the `layout()` function.
 
-```{r, message=FALSE}
+```{r}
 p2 <- layout(
-  p,
+  p, 
   xaxis = list(range = range(Petal.Length) + c(-0.1, 0.1)),
   yaxis = list(range = range(Petal.Width) + c(-0.1, 0.1))
 )
 subplot(p2)
 ```
 
-The `subplot()` function creates "xaxis[0-9]" objects which inherit pre-specified properties, but you can also customize each subplot by referencing these objects in the layout
+Part of the magic of `subplot()` is that it generates axis objects with appropriate anchor and domain properties. After generating a subplot, you can always reference these axis objects to customize each plot.
 
-```{r, message=FALSE}
+```{r}
 layout(
     subplot(p2),
-    yaxis2 = list(title = ""),
+    yaxis2 = list(title = ""), 
     yaxis3 = list(title = "")
 )
 ```
 
+
 [See here](https://plot.ly/r/map-subplots-and-small-multiples/) for another example of using the group argument to make small multiples (with maps!).
-
-### Manually adding traces
-
-Sometimes you may want multiple traces on a plot, but have different traces from different data sources. In this case, the `add_trace()` function and it's (optional) `data` argument come in handy.
-
-```{r, message=FALSE}
-m <- loess(uempmed ~ as.numeric(date), economics)
-efit <- data.frame(date = economics$date, yhat = fitted(m))
-
-plot_ly(economics, x = date, y = uempmed, name = "observed") %>%
-  add_trace(y = yhat, name = "estimated", data = efit)
-```
-
-Note that the date information carries over from the first trace to the second. In fact, by default, information from the first trace carries over to all subsequent traces unless the property is overwritten or if we set `inherit = FALSE` in `plot_ly()` (this helps [avoid repeating yourself](http://en.wikipedia.org/wiki/Don%27t_repeat_yourself)).
-
-### Mixing data manipulation and visualization verbs
-
-If you look at the structure of plotly objects, they are actually data frames with a class of plotly and a special environment attached (this environment tracks the mapping from data to visual properties).
-
-```{r, eval = TRUE}
-str(p <- plot_ly(economics, x = date, y = uempmed))
-```
-
-Doing this allows us to mix data manipulation and visualization verbs in a [pure(ly) functional, predictable and pipeable](https://dl.dropboxusercontent.com/u/41902/pipe-dsls.pdf) manner. Here, we take advantage of [dplyr](http://cran.r-project.org/web/packages/dplyr/index.html)'s `filter()` verb to label the highest peak in the time series:
-
-```{r, message = FALSE, warning = FALSE}
-p %>%
-  add_trace(y = fitted(loess(uempmed ~ as.numeric(date)))) %>%
-  layout(title = "Median duration of unemployment (in weeks)",
-         showlegend = FALSE) %>%
-  dplyr::filter(uempmed == max(uempmed)) %>%
-  layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T))
-```
-
-Although data frames can be thought of as the central object in this package, plotly visualizations don't actually _require_ a data frame. This makes chart types that accept a `z` argument especially easy to use if you have a numeric matrix:
-
-```{r, message=FALSE}
-plot_ly(z = volcano, type = "surface")
-```
