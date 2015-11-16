@@ -36,19 +36,19 @@ A contour density plot drawn with plotly.js. Visit the [plotly.js documentation]
 
 #### Seven details that make the project unique
 
-1. **Scientific grade.** plotly.js is comparable in scope and features to MATLAB or Python’s matplotlib, but written in JavaScript, the language of the Web. 
+1. **Scientific grade.** Plotly.js is comparable in scope and features to MATLAB or Python’s matplotlib, but written in JavaScript, the language of the Web. 
 
-2. **SVG & WebGL backends.** plotly.js uses both D3.js (SVG) and WebGL for graphics rendering. WebGL allows interactive rendering of hundreds of thousands to millions of x-y points, while D3.js is more practical for up to tens of thousands of points.
+2. **SVG & WebGL backends.** Plotly.js uses both D3.js (SVG) and WebGL for graphics rendering. WebGL allows interactive rendering of hundreds of thousands to millions of x-y points, while D3.js is more practical for up to tens of thousands of points.
 
 3. **Testing framework.** For [code contributors](https://github.com/plotly/plotlyjs/graphs/contributors), the plotly.js image testing framework makes it the most stable JavaScript charting library available. 
 
 4. **User documentation.** The [plotly.js documentation](https://plot.ly/javascript) is hosted on GitHub pages and is open-source under a Creative Commons license. 
 
-5. **No dependencies.** plotly.js is an “all-in-one bundle” with d3.js and stack.gl modules baked-in.
+5. **No dependencies.** Plotly.js is an “all-in-one bundle” with d3.js and stack.gl modules baked-in.
 
 6. **No jQuery.** jQuery has been removed from plotly.js for significantly better performance and improved browser compatibility.
 
-7. **Powered by a JSON schema** plotly.js is based on a new open-source [JSON schema](http://help.plot.ly/json-chart-schema/) for creating, saving, and sharing scientific charts.
+7. **Powered by a JSON schema** Plotly.js is based on a new open-source [JSON schema](http://help.plot.ly/json-chart-schema/) for creating, saving, and sharing scientific charts.
 
 #### A new JSON schema for data visualization
 
@@ -76,7 +76,7 @@ The vega and vega-lite schemas are more opinionated in prescribing how the chart
 
 #### JavaScript Developers
 
-The latest full version of plotly.js is available for free, unlimited use in any project. plotly.js code uses the MIT open-source license, the same license used by Bootstrap.js. The MIT open-source license puts no restrictions on how the code is used. Licensees who have previously purchased a plotly.js commercial license will no longer be charged the annual license fee and are encouraged to update to the latest plotly.js version under the MIT license.
+The latest full version of plotly.js is available for free, unlimited use in any project. Plotly.js code uses the MIT open-source license, the same license used by Bootstrap.js. The MIT open-source license puts no restrictions on how the code is used. Licensees who have previously purchased a plotly.js commercial license will no longer be charged the annual license fee and are encouraged to update to the latest plotly.js version under the MIT license.
 
 The latest version of plotly.js can be downloaded from GitHub or the [documentation home](https://plot.ly/javascript/).
 
@@ -105,10 +105,10 @@ If you’re an R, Python, MATLAB, or Julia developer please consider contributin
 
 ## Humans behind the project
 
-#### plotly.js core developers
+#### Plotly.js core developers
 
 - Alex Johnson
-  - plotly.js lead developer, architect, and instigator
+  - Plotly.js lead developer, architect, and instigator
 - Mikola Lysenko
   - Stack.gl WebGL work lead
 - Étienne Tétreault-Pinard
