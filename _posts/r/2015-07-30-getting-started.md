@@ -20,6 +20,12 @@ As of version 2.0 (November 17, 2015), Plotly graphs are rendered *locally* thro
 
 #### Installation
 
+Plotly is now on CRAN!
+
+```r
+install.packages("plotly")
+```
+
 Install the latest development version ([on GitHub](https://github.com/ropensci/plotly)) via [devtools](http://cran.r-project.org/web/packages/devtools/):
 
 ```r
