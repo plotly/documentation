@@ -1,0 +1,146 @@
+---
+name: Choropleth Map of 2014 US Population by State
+plot_url: https://plot.ly/~Nicole_G/3191/
+language: plotly_js
+suite: choropleth-maps
+order: 5
+sitemap: false
+arrangement: horizontal
+---
+
+/* global Plotly:false, PLOTLYENV:false, d3:false, queue:false */
+
+(function() {
+
+PLOTLYENV = { TOPOJSON_URL: './' };
+
+var divid = 'plot',
+    currentLocation = null,
+    padding = 20;
+
+function createMap(error, statesCSV, citiesCSV) {
+    var data = [
+        makeChoropleth(statesCSV),
+        makeBubbles(citiesCSV)
+    ];
+
+    var layout = {
+        title: '2014 US population by states&lt;br&gt;(Click on state to see population by cities)',
+        geo: {
+            scope: 'usa',
+            countrycolor: 'rgb(255, 255, 255)',
+            showland: true,
+            landcolor: 'rgb(217, 217, 217)',
+            showlakes: true,
+            lakecolor: 'rgb(255, 255, 255)',
+            subunitcolor: 'rgb(255, 255, 255)',
+            lonaxis: {},
+            lataxis: {}
+        }
+    };
+
+    Plotly.plot(divid, data, layout);
+    attach();
+}
+
+function makeChoropleth(csv) {
+    var trace = {
+        type: 'choropleth',
+        locationmode: 'USA-states',
+        locations: [],
+        z: [],
+        text: []
+    };
+
+    csv.forEach(function(datum) {
+        trace.locations.push(datum.postal);
+        trace.z.push(datum.pop);
+        trace.text.push(datum.state);
+    });
+
+    return trace;
+}
+
+function makeBubbles(csv) {
+    var trace = {
+        type: 'scattergeo',
+        lon: [],
+        lat: [],
+        text: [],
+        name: '',
+        marker: {
+            size: [],
+            sizemode: 'area',
+            sizeref: 5e3,
+            sizemin: 4
+        },
+        visible: false
+    };
+
+    csv.forEach(function(datum) {
+        trace.lon.push(datum.lon);
+        trace.lat.push(datum.lat);
+        trace.text.push([
+            datum.name, '&lt;br&gt;',
+            '&lt;br&gt;Population:&lt;br&gt; ', datum.pop
+        ].join(''));
+        trace.marker.size.push(datum.pop);
+    });
+
+    return trace;
+}
+
+function selectChoroplethPaths() {
+    return d3.selectAll('path.choroplethlocation');
+}
+
+function attach() {
+    setTimeout(function() {
+        selectChoroplethPaths().on('click', handleClick);
+    }, 500);
+}
+
+function handleClick(d) {
+    if(d3.event.defaultPrevented) return;
+
+    var gd = d3.select('#plot').node(),
+        geoLayout = gd._fullLayout.geo,
+        geo = geoLayout._geo,
+        projection = geo.projection,
+        bb = d3.geo.path().projection(projection).bounds(d);
+
+    var lonlat0, lonlat1;
+
+    function invert(p) {
+        return projection.invert(p);
+    }
+
+    if(currentLocation === d.id) {
+        currentLocation = null;
+
+        gd.layout.geo.lonaxis.range = geoLayout.lonaxis._fullRange;
+        gd.layout.geo.lataxis.range = geoLayout.lataxis._fullRange;
+        Plotly.restyle(gd, 'visible', false, 1);
+    }
+    else {
+        currentLocation = d.id;
+        lonlat0 = invert([bb[0][0] - padding, bb[0][1] - padding]);
+        lonlat1 = invert([bb[1][0] + padding, bb[1][1] + padding]);
+
+        gd.layout.geo.lonaxis.range = [lonlat0[0], lonlat1[0]];
+        gd.layout.geo.lataxis.range = [lonlat1[1], lonlat0[1]];
+        Plotly.restyle(gd, 'visible', true, 1);
+
+        selectChoroplethPaths().on('mouseover', null);
+    }
+
+    Plotly.Fx.loneUnhover(gd);
+    attach();
+}
+
+queue()
+    .defer(d3.csv, 'https://raw.githubusercontent.com/plotly/datasets/master/2014_usa_states.csv')
+    .defer(d3.csv, 'https://raw.githubusercontent.com/plotly/datasets/master/2014_us_cities.csv')
+    .await(createMap);
+
+})();

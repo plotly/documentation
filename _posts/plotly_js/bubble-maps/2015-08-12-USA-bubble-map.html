@@ -1,0 +1,68 @@
+---
+name: USA Bubble Map
+plot_url: https://plot.ly/~Nicole_G/3175/_2014-us-city-populations-click-legend-to-toggle-traces/
+language: plotly_js
+suite: bubble-maps
+order: 2
+sitemap: false
+---
+function makePlotly(divId){
+       d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/2014_us_cities.csv", function(data){ processData(data) } );
+    };
+
+    function processData(allRows) {
+
+      console.log(allRows);
+      var cityName = [], cityPop = [], cityLat = [], cityLon = [];
+
+      for (var i=0; i<allRows.length; i++) {
+        row = allRows[i];
+        cityName.push( row['name'] );
+        cityPop.push( row['pop'] );
+        cityLat.push( row['lat'] );
+        cityLon.push( row['lon'] );
+      }
+      console.log( 'City',cityName, 'Population',cityPop, 'Latitutde',cityLat, 'Longitude', cityLon );
+      scattergeomarkers( cityName, cityPop, cityLat, cityLon );
+    }
+
+    function scattergeomarkers(cityName, cityPop, cityLat, cityLon, myDiv) {
+
+      var scale = 50000;
+
+      var data = [{
+              type: 'scattergeo',
+              mode: 'markers',
+              locationmode: 'USA-States',
+              text: cityName,
+              lon: cityLon,
+              lat: cityLat,
+              sizemode: 'diameter',
+              marker: {
+                  size: cityPop.map(function(pop) { return pop / scale; }),
+                  line: {
+                      width: 2,
+                      color: 'black'
+                  }
+              },
+              name: 'US City Population'
+          }];
+
+          var layout = {
+            title: '2014 US city populations<br>(Click legend to toggle traces)',
+            showlegend: true,
+            geo: {
+              scope: 'usa',
+              projection: {
+                type: 'albers usa'
+              },
+              showland: true,
+              landcolor: 'rgb(217,217,217)',
+              subunitwidth: 1,
+              countrywidth: 1,
+              subunitcolor: 'rgb(255,255,255)',
+              countrycolor: 'rgb(255,255,255)'
+            }
+          };
+          Plotly.newPlot('myDiv', data, layout);
+    };

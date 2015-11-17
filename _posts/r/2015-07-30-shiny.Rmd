@@ -1,0 +1,116 @@
+---
+title: Getting Started with Shiny and Plotly | Examples | Plotly
+name: Getting Started with Shiny and Plotly
+permalink: r/shiny-tutorial/
+redirect_from:
+  - ggplot2/shiny-tutorial/
+  - r/shiny/
+  - ggplot2/shiny/
+description: Getting Started with Shiny and Plotly
+layout: base
+thumbnail: /images/shiny-r.png
+language: r
+page_type: example_index
+has_thumbnail: false
+display_as: get_request
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+# Plotly Graphs in Shiny
+
+As of version 2.0, plotly's R package utilizes the [htmlwidgets](http://www.htmlwidgets.org/) framework. As a result, it's easy to embed plotly graphs in [shiny](http://shiny.rstudio.com/) apps.
+
+<iframe src="https://plotly.shinyapps.io/Movies" width="100%" height=700 scrolling="no" seamless="seamless" style="border: none"></iframe>
+
+### Example 1 - Plotly's Native Syntax
+
+The key idea is to pass a plotly object to `renderPlotly()` on the server and place it in the UI with `plotlyOutput()`.
+
+#### `ui.R`
+```{r}
+
+library(shiny)
+library(plotly)
+
+shinyUI(fluidPage(
+  titlePanel("Movie Ratings!"),
+  sidebarPanel(
+    sliderInput("bins", "Number of bins:", min = 1, max = 50, value = 10)
+  ),
+  mainPanel(
+    plotlyOutput("trendPlot")
+  )
+))
+```
+
+#### `server.R`
+```{r}
+library(shiny)
+library(plotly)
+
+data(movies, package = "ggplot2")
+minx <- min(movies$rating)
+maxx <- max(movies$rating)
+
+shinyServer(function(input, output) {
+
+  output$trendPlot <- renderPlotly({
+    # size of the bins depend on the input 'bins'
+    size <- (maxx - minx) / input$bins
+
+    # a simple histogram of movie ratings
+    p <- plot_ly(movies, x = rating, autobinx = F, type = "histogram",
+                 xbins = list(start = minx, end = maxx, size = size))
+    # style the xaxis
+    layout(p, xaxis = list(title = "Ratings", range = c(minx, maxx), autorange = F,
+                           autotick = F, tick0 = minx, dtick = size))
+  })
+})
+```
+
+### Example 2 - Render `ggplotly`
+
+You can also convert ggplot2 objects to plotly objects with `ggplotly()`
+
+#### `ui.R`
+```{r}
+library(shiny)
+library(plotly)
+
+shinyUI(fluidPage(
+  titlePanel("Movie Ratings!"),
+  sidebarPanel(
+    sliderInput("bins", "Number of bins:", min = 1, max = 50, value = 10)
+  ),
+  mainPanel(
+    plotlyOutput("trendPlot")
+  )
+))
+```
+
+#### `server.R`
+```{r}
+library(shiny)
+library(plotly)
+
+data(movies, package = "ggplot2")
+minx <- min(movies$rating)
+maxx <- max(movies$rating)
+
+shinyServer(function(input, output) {
+
+  output$trendPlot <- renderPlotly({
+    # size of the bins depend on the input 'bins'
+    size <- (maxx - minx) / input$bins
+
+    gg <- ggplot(movies, aes(x=rating)) +
+                 geom_histogram(aes(y = ..density..), binwidth=size)
+    # Convert the ggplot to a plotly
+    p <- ggplotly(gg)
+    p
+  })
+})
+```
