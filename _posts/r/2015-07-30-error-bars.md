@@ -36,8 +36,7 @@ df2 <- mpg %>% group_by(class) %>%
   summarise(mn = mean(cty), sd = 1.96 * sd(cty))
 
 p2 <- add_trace(p, y = mn, error_y = list(value = sd),
-          name = "City", data = df2,
-          filename = "r-docs/basic-error-bars-2")
+          name = "City", data = df2)
 p2
 ```
 

@@ -39,7 +39,7 @@ plot_ly(df, x = x, y = y, z = z, type = "scatter3d", mode = "markers")
 set.seed(100)
 d <- diamonds[sample(nrow(diamonds), 1000), ]
 plot_ly(d, x = carat, y = price, z=depth, text = paste("Clarity: ", clarity),
-        type="scatter3d", mode="markers", filename="r-docs/3d-scatter-with-hover-text")
+        type="scatter3d", mode="markers")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2002.embed" width="800" frameBorder="0"></iframe>

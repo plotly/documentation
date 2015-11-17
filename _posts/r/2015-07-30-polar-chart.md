@@ -28,7 +28,7 @@ layout(p, title = "Mic Patterns", orientation = -90)
 ### Polar Scatter Chart
 
 ```r
-p <- plot_ly(plotly::hobbs, r = r, t = t, color = nms, opacity = 0.7, mode = "markers", filename="r-docs/polar-scatter-chart")
+p <- plot_ly(plotly::hobbs, r = r, t = t, color = nms, opacity = 0.7, mode = "markers")
 layout(p, title = "Hobbs-Pearson Trials", plot_bgcolor = toRGB("grey90"))
 ```
 
@@ -37,7 +37,7 @@ layout(p, title = "Hobbs-Pearson Trials", plot_bgcolor = toRGB("grey90"))
 ### Polar Area Chart
 
 ```r
-p <- plot_ly(plotly::wind, r = r, t = t, color = nms, type = "area", filename="r-docs/polar-area-chart")
+p <- plot_ly(plotly::wind, r = r, t = t, color = nms, type = "area")
 layout(p, radialaxis = list(ticksuffix = "%"), orientation = 270)
 ```
 

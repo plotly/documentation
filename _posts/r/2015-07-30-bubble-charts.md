@@ -27,8 +27,7 @@ plot_ly(d, x = carat, y = price, size = carat, mode = "markers")
 
 ```r
 plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
-        mode = "markers", color = carat, size = carat, opacity = carat,
-        filename="r-docs/custom-bubble-text")
+        mode = "markers", color = carat, size = carat, opacity = carat)
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/207.embed" width="800" frameBorder="0"></iframe>

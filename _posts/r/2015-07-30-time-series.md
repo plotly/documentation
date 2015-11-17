@@ -33,8 +33,7 @@ now_ct <- as.POSIXct(Sys.time())
 tm <- seq(0, 600, by = 10)
 x <- now_ct - tm
 y <- rnorm(length(x))
-plot_ly(x = x, y = y, text = paste(tm, "seconds from now in", Sys.timezone()),
-        filename="r-docs/time-series")
+plot_ly(x = x, y = y, text = paste(tm, "seconds from now in", Sys.timezone()))
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/317.embed" width="800" frameBorder="0"></iframe>
@@ -45,8 +44,7 @@ today <- Sys.Date()
 tm <- seq(0, 600, by = 10)
 x <- today - tm
 y <- rnorm(length(x))
-plot_ly(x = x, y = y, text = paste(tm, "days from today"),
-        filename="r-docs/time-series-sysdate")
+plot_ly(x = x, y = y, text = paste(tm, "days from today"))
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/319.embed" width="800" frameBorder="0"></iframe>

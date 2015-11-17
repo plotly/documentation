@@ -28,7 +28,7 @@ library(plotly)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 gg <- qplot(carat, price, data=dsamp, colour=clarity)
 
-ggplotly(gg, filename="ggplot2-user-guide/example-1")
+ggplotly(gg)
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1778.embed" width="800" frameBorder="0"></iframe>
@@ -47,7 +47,7 @@ In this case, use `plotly_build`. Consider this simple ggplot2 figure:
 ```r
 df <- data.frame(x=c(1, 2, 3, 4), y=c(1, 5, 3, 5), group=c('A', 'A', 'B', 'B'))
 g <- ggplot(data=df, aes(x=x, y=y, colour=group)) + geom_point()
-ggplotly(g, filename="ggplot2-user-guide/example-2")
+ggplotly(g)
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1791.embed" width="800" frameBorder="0"></iframe>

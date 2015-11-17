@@ -29,7 +29,7 @@ plot_ly(z = volcano, type = "surface")
 
 ```r
 kd <- with(MASS::geyser, MASS::kde2d(duration, waiting, n = 50))
-with(kd, plot_ly(x = x, y = y, z = z, type = "surface", filename="r-docs/2d-density-surface"))
+with(kd, plot_ly(x = x, y = y, z = z, type = "surface"))
 ```
 
 <iframe height="850" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/173.embed" width="800" frameBorder="0"></iframe>
