@@ -1,8 +1,8 @@
 ---
-title: ASDFASF12341231
-name: ASDFASF12341231
-permalink: javascript/ASDFASF12341231
-description: ASDFASF12341231
+title: Plotly.js: 100% of Plotly's JavaScript graphing library is now Open-source and Free
+name: Plotly.js: 100% of Plotly's JavaScript graphing library is now Open-source and Free
+permalink: javascript/open-source-announcement
+description: Plotly.js: 100% of Plotly's JavaScript graphing library is now Open-source and Free
 language: plotly_js
 has_thumbnail: false
 layout: langindex
@@ -13,9 +13,9 @@ language: plotly_js
 
 November 17, 2015
 
-A growing number of graphing tools and libraries allow us to make beautiful, interactive web-based graphs. By interactively visualizing our data online, we share complex ideas in an exploratory, visual, open, and collaborative way.
+A growing number of graphing tools and libraries allow anyone to make beautiful, interactive web-based graphs. By interactively visualizing our data online, we share complex ideas in an exploratory, visual, open, and collaborative way.
 
-**Today, Plotly is announcing that we have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s products** (MIT license). It's all out there and free. Any developer can now integrate Plotly’s library into their own applications unencumbered. Plotly.js supports 36 chart types, including 3D plots, geographic maps, and statistical charts like density plots, histograms, box plots, and contour plots. 
+**Today, Plotly is announcing that we have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s products** (MIT license). It's all out there and free. Any developer can now integrate Plotly’s library into their own applications unencumbered. Plotly.js supports 20 chart types, including 3D plots, geographic maps, and statistical charts like density plots, histograms, box plots, and contour plots. 
 
 We’re big fans of collaboration, freedom, and perpetual motion. Open-source has become the de facto distribution for gold-standard scientific and business intelligence software. We want to support, participate in, and amplify this trend. By open-sourcing Plotly's core technology, everyone benefits from peer-review and Plotly's products will continue to be the most cutting-edge offering for exploratory visualization. Plotly.js has the quality, accessibility, and scope to be the charting standard for the Web, but we can only achieve this breadth by working across communities and making the distribution truly unencumbered, portable, and free.
 
@@ -26,8 +26,8 @@ Plotly.js was instigated by [Dr. Alex Johnson](http://environment.harvard.edu/ab
  Access the [GitHub repository here](https://github.com/plotly/plotly.js).
 
 <div>
-    <a href="https://plot.ly/~jackp/10551/" target="_blank" title="PetalLength vs SepalWidth" style="display: block; text-align: center;"><img src="https://plot.ly/~jackp/10551.png" alt="PetalLength vs SepalWidth" style="max-width: 100%;width: 700px;"  width="700" onerror="this.onerror=null;this.src='https://plot.ly/404.png';" /></a>
-    <script data-plotly="jackp:10551"  src="https://plot.ly/embed.js" async></script>
+    <a href="https://plot.ly/~jackp/15667/" target="_blank" title="Petal Length vs Sepal Width" style="display: block; text-align: center;"><img src="https://plot.ly/~jackp/15667.png" alt="Petal Length vs Sepal Width" style="max-width: 100%;width: 925px;"  width="925" onerror="this.onerror=null;this.src='https://plot.ly/404.png';" /></a>
+    <script data-plotly="jackp:15667"  src="https://plot.ly/embed.js" async></script>
 </div>
 
 A contour density plot drawn with plotly.js. Visit the [plotly.js documentation](https://plot.ly/javascript/) to to get started.
@@ -38,7 +38,7 @@ A contour density plot drawn with plotly.js. Visit the [plotly.js documentation]
 
 1. **Scientific grade.** Plotly.js is comparable in scope and features to MATLAB or Python’s matplotlib, but written in JavaScript, the language of the Web. 
 
-2. **SVG & WebGL backends.** Plotly.js uses both D3.js (SVG) and WebGL for graphics rendering. WebGL allows interactive rendering of hundreds of thousands to millions of x-y points, while D3.js is more practical for up to tens of thousands of points.
+2. **SVG & WebGL backends.** Plotly.js uses both D3.js (SVG) and WebGL for graphics rendering. WebGL allows interactive rendering of hundreds of thousands to millions of x-y points, while D3.js is more practical for up to tens of thousands of points and vector-quality image export.
 
 3. **Testing framework.** For [code contributors](https://github.com/plotly/plotlyjs/graphs/contributors), the plotly.js image testing framework makes it the most stable JavaScript charting library available. 
 
@@ -80,7 +80,7 @@ The latest full version of plotly.js is available for free, unlimited use in any
 
 The latest version of plotly.js can be downloaded from GitHub or the [documentation home](https://plot.ly/javascript/).
 
-```<script src=”cdn.plot.ly/min.plotly.js”>```
+```<script src=”https://cdn.plot.ly/plotly-latest.min.js”>```
 
 #### R, Python, & MATLAB Engineers and Data Scientists
 
@@ -97,7 +97,7 @@ This makes for a better user experience:
 
 ## Future plans and contributing
 
-The plotly.js roadmap is constantly changing, but 2016 is likely to be focused on performance. We would like the higher performance 2d WebGL graphics backend to reach feature parity with the more mature SVG (D3.js) backend. 
+The plotly.js roadmap is constantly changing, but 2016 is likely to be focused on performance. We would like the higher performance 2D WebGL graphics backend to reach feature parity with the more mature SVG (D3.js) backend. 
 
 If you’re a JavaScript developer, consider taking a look at the plotly.js code on [GitHub](https://github.com/plotly/plotly.js). Submitting Codepen examples to [community.plot.ly](http://community.plot.ly/c/plotly-js) for the documentation is also a great way to contribute.
 
