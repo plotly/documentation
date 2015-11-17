@@ -13,13 +13,13 @@ ignore_header: true
 
 
 
-Plotly is a web-based visualization platform. Plotly graphs are drawn with javascript, SVG, and D3.js.
+Plotly for R is an interactive, browser-based charting library built on the open source JavaScript graphing library <a href="https://plot.ly/javascript" target="_blank">plotly.js</a>. It works entirely locally in your web-browser via the <a target="_blank" href="http://www.htmlwidgets.org/">HTML widgets framework</a>.
 
 <iframe src="https://plot.ly/~RPlotBot/1772.embed" width="100%" height="600px" style="border: none;"></iframe>
 
 Plotly graphs are interactive: click-and-drag to zoom, shift-drag to pan, click on legend entries to toggle traces.
 
-The [plotly R package](https://github.com/ropensci/plotly) serializes ggplot2 figures into Plotly's universal graph JSON. `plotly::ggplotly` will crawl the ggplot2 figure, extract and translate all of the attributes of the ggplot2 figure (the colors, the axes, the chart type, etc), and send the result to your online plotly account to be served.
+The [plotly R package](https://github.com/ropensci/plotly) serializes ggplot2 figures into Plotly's <a target="_blank" href="http://help.plot.ly/json-chart-schema/">universal graph JSON</a>. `plotly::ggplotly` will crawl the ggplot2 figure, extract and translate all of the attributes of the ggplot2 figure into JSON (the colors, the axes, the chart type, etc), and draw the graph with plotly.js.
 
 
 ```r
@@ -28,7 +28,7 @@ library(plotly)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 gg <- qplot(carat, price, data=dsamp, colour=clarity)
 
-ggplotly(gg, filename="ggplot2-user-guide/example-1")
+ggplotly(gg)
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1778.embed" width="800" frameBorder="0"></iframe>
@@ -47,7 +47,7 @@ In this case, use `plotly_build`. Consider this simple ggplot2 figure:
 ```r
 df <- data.frame(x=c(1, 2, 3, 4), y=c(1, 5, 3, 5), group=c('A', 'A', 'B', 'B'))
 g <- ggplot(data=df, aes(x=x, y=y, colour=group)) + geom_point()
-ggplotly(g, filename="ggplot2-user-guide/example-2")
+ggplotly(g)
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1791.embed" width="800" frameBorder="0"></iframe>

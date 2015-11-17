@@ -21,7 +21,7 @@ If you have a plotly account, printing plotly objects in the R console will crea
 ```r
 library(plotly)
 p <- plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        color = Species, mode = "markers", filename="r-docs/example-plot")
+        color = Species, mode = "markers")
 p
 ```
 
