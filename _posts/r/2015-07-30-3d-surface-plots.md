@@ -19,7 +19,7 @@ order: 15
 ```r
 library(plotly)
 # volcano is a numeric matrix that ships with R
-plot_ly(z = volcano, type = "surface", filename="r-docs/surface")
+plot_ly(z = volcano, type = "surface")
 ```
 
 <iframe height="850" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/171.embed" width="800" frameBorder="0"></iframe>

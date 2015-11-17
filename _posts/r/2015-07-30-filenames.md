@@ -35,7 +35,7 @@ View your Plotly graphs at [https://plot.ly/organize](https://plot.ly/organize).
 
 
 ```r
-plot_ly(x = c(1, 2), y = c(1, 2), filename="name-of-my-plotly-file")
+plot_ly(x = c(1, 2), y = c(1, 2))
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/505.embed" width="800" frameBorder="0"></iframe>

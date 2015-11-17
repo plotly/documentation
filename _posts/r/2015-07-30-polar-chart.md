@@ -19,7 +19,7 @@ order: 12
 
 ```r
 library(plotly)
-p <- plot_ly(plotly::mic, r = r, t = t, color = nms, mode = "lines", filename="r-docs/polar-line-chart")
+p <- plot_ly(plotly::mic, r = r, t = t, color = nms, mode = "lines")
 layout(p, title = "Mic Patterns", orientation = -90)
 ```
 

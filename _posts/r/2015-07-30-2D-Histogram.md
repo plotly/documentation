@@ -20,7 +20,7 @@ order: 5
 library(plotly)
 s <- matrix(c(1, -.75, -.75, 1), ncol = 2)
 obs <- mvtnorm::rmvnorm(500, sigma = s)
-plot_ly(x = obs[,1], y = obs[,2], type = "histogram2d", filename="r-docs/2d-histogram")
+plot_ly(x = obs[,1], y = obs[,2], type = "histogram2d")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/161.embed" width="800" frameBorder="0"></iframe>
