@@ -24,8 +24,7 @@ p <- ggplot2::mpg %>% group_by(class) %>%
   summarise(mn = mean(hwy), sd = 1.96 * sd(hwy)) %>%
   arrange(desc(mn)) %>%
   plot_ly(x = class, y = mn, error_y = list(value = sd),
-          mode = "markers", name = "Highway",
-          filename="r-docs/basic-error-bars") %>%
+          mode = "markers", name = "Highway") %>%
   layout(yaxis = list(title = "Miles Per Gallon"))
 p
 ```

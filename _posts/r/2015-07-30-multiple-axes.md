@@ -23,8 +23,7 @@ ay <- list(
   overlaying = "y",
   side = "right"
 )
-plot_ly(x = 1:3, y = 10*(1:3), name = "slope of 10",
-  		filename="r-docs/multiple-axes") %>%
+plot_ly(x = 1:3, y = 10*(1:3), name = "slope of 10") %>%
   add_trace(x = 2:4, y = 1:3, name = "slope of 1", yaxis = "y2") %>%
   layout(title = "Double Y Axis", yaxis2 = ay)
 ```

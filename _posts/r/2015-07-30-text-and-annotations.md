@@ -19,7 +19,7 @@ display_as: layout_opt
 
 ```r
 library(plotly)
-plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode = "text", filename="r-docs/text-mode")
+plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode = "text")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/488" width="800" frameBorder="0"></iframe>

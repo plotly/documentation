@@ -22,8 +22,7 @@ order: 9
 library(plotly)
 mtcars <- mtcars[order(mtcars$disp), ]
 p <- plot_ly(mtcars, x = disp, y = mpg, mode = "markers",
-             text = rownames(mtcars), showlegend = FALSE,
-             filename="r-docs/scatter-loess-smoother")
+             text = rownames(mtcars), showlegend = FALSE)
 add_trace(p, y = fitted(loess(mpg ~ disp)), mode = "lines",
           name = "loess smoother", showlegend = TRUE)
 ```

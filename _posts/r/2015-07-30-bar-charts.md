@@ -44,8 +44,7 @@ p2
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/177.embed" width="800" frameBorder="0"></iframe>
 
 ```r
-layout(p2, barmode = "stack",
-       filename="r-docs/stacked-bars")
+layout(p2, barmode = "stack")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/177.embed" width="800" frameBorder="0"></iframe>

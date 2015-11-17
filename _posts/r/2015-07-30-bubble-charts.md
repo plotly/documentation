@@ -20,7 +20,7 @@ order: 8
 library(plotly)
 d <- diamonds[sample(nrow(diamonds), 1000), ]
 # note how size is automatically scaled and added as hover text
-plot_ly(d, x = carat, y = price, size = carat, mode = "markers", filename="r-docs/basic-bubble")
+plot_ly(d, x = carat, y = price, size = carat, mode = "markers")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/205.embed" width="800" frameBorder="0"></iframe>

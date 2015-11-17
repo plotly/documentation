@@ -19,7 +19,7 @@ order: 6
 ```r
 ### Basic contour
 library(plotly)
-plot_ly(z = volcano, type = "contour", filename="r-docs/basic-contour")
+plot_ly(z = volcano, type = "contour")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/209.embed" width="800" frameBorder="0"></iframe>

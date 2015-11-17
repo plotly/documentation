@@ -19,8 +19,7 @@ order: 1
 ```r
 # Simple scatterplot
 library(plotly)
-plot_ly(data = iris, x = Sepal.Length, y = Petal.Length, mode = "markers",
-        filename="r-docs/simple-scatter")
+plot_ly(data = iris, x = Sepal.Length, y = Petal.Length, mode = "markers")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/259.embed" width="800" frameBorder="0"></iframe>
