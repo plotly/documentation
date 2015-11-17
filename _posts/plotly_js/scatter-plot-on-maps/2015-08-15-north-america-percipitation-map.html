@@ -1,24 +1,26 @@
 ---
 name: North America Precipitation Map
-plot_url: https://plot.ly/~jackp/8573/us-precipitation-06-30-2015-source-noaa/
+plot_url: https://codepen.io/plotly/embed/ffc4d23253e52483f518f58af8f0571d/?height=669&theme-id=15263&default-tab=result
 language: plotly_js
 suite: scatter-plots-on-maps
 order: 3
 sitemap: false
 ---
+Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/2015_06_30_precipitation.csv', function(err, rows){
+      function unpack(rows, key) {
+          return rows.map(function(row) { return row[key]; });
+      }
 
-function scattergeomarkers() {
-
-    scl = [[0, 'rgb(150,0,90)'],[0.125, 'rgb(0, 0, 200)'],[0.25,'rgb(0, 25, 255)'],[0.375,'rgb(0, 152, 255)'],[0.5,'rgb(44, 255, 150)'],[0.625,'rgb(151, 255, 0)'],[0.75,'rgb(255, 234, 0)'],[0.875,'rgb(255, 111, 0)'],[1,'rgb(255, 0, 0)']];
+ scl = [[0, 'rgb(150,0,90)'],[0.125, 'rgb(0, 0, 200)'],[0.25,'rgb(0, 25, 255)'],[0.375,'rgb(0, 152, 255)'],[0.5,'rgb(44, 255, 150)'],[0.625,'rgb(151, 255, 0)'],[0.75,'rgb(255, 234, 0)'],[0.875,'rgb(255, 111, 0)'],[1,'rgb(255, 0, 0)']];
 
     var data = [{
         type: 'scattergeo',
         mode: 'markers',
-        text: textInches,
-        lon: longitude,
-        lat: latitude,
+        text: unpack(rows, 'Globvalue'),
+        lon: unpack(rows, 'Lon'),
+        lat: unpack(rows, 'Lat'),
         marker: {
-          color: precipitation,
+          color: unpack(rows, 'Globvalue'),
           colorscale: scl,
           cmin: 0,
           cmax: 1.4,
@@ -76,4 +78,4 @@ function scattergeomarkers() {
     };
 
     Plotly.newPlot('myDiv', data, layout);
-}
+  });
