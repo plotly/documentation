@@ -30,6 +30,8 @@ The full bleed R pages are created with R Markdown. Here's how:
   $ sudo gem install jekyll-redirect-from
   $ sudo gem install jekyll-sitemap
   $ sudo gem install terminal-notifier
+  $ sudo gem install jemoji
+  $ sudo gem install redcarpet
   ```
 4. In the documentation repo: `$ jekyll serve --config _config_dev.yml`
 5. Visit the pages at: [http://localhost:4000/python/](http://localhost:4000/python/)

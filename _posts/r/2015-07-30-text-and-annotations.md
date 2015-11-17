@@ -19,7 +19,7 @@ display_as: layout_opt
 
 ```r
 library(plotly)
-plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode = "text", filename="r-docs/text-mode")
+plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode = "text")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/488" width="800" frameBorder="0"></iframe>
@@ -28,7 +28,7 @@ plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode = "text", filenam
 
 ```r
 library(plotly)
-plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode="markers", filename="r-docs/hover-text")
+plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode="markers")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/490" width="800" frameBorder="0"></iframe>
@@ -42,7 +42,7 @@ t <- list(
     color = toRGB("grey50")
 )
 plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode = "markers+text",
-        textfont = t, textposition = "top middle", filename="r-docs/style-text")
+        textfont = t, textposition = "top middle")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/492" width="800" frameBorder="0"></iframe>
@@ -64,7 +64,7 @@ a <- list(
   ay = -40
 )
 
-plot_ly(mtcars, x = wt, y = mpg, mode = "markers", filename="r-docs/annotation") %>%
+plot_ly(mtcars, x = wt, y = mpg, mode = "markers") %>%
   layout(annotations = a)
 ```
 
