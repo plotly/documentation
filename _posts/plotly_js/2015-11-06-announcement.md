@@ -107,27 +107,19 @@ If you’re an R, Python, MATLAB, or Julia developer please consider contributin
 
 #### Plotly.js core developers
 
-- Alex Johnson
-  - Plotly.js lead developer, architect, and instigator
-- Mikola Lysenko
-  - Stack.gl WebGL work lead
-- Étienne Tétreault-Pinard
-  - Geospatial work lead
-- Chris Parmer
-  - Documentation lead
-- Ben Postlethwaite
-  - Image testing server lead
+- **Alex Johnson**: Plotly.js lead developer, architect, and instigator
+- **Mikola Lysenko**: Stack.gl WebGL work lead
+- **Étienne Tétreault-Pinard**: Geospatial work lead
+- **Chris Parmer**: Documentation lead
+- **Ben Postlethwaite**: Image testing server lead
 
 #### R, Python, and MATLAB client developers
 
 These domain specific libraries are allowing data scientists and engineers to easily create D3.js and stack.gl Plotly charts without any knowledge of JavaScript.
 
-- Python
-  - Andrew Seier, Chelsea Douglas, Chris Parmer, Étienne Tétreault-Pinard
-- R
-  - Carson Sievert, Marianne Corvellec, Toby Dylan Hocking, Baobao Zhang
-- MATLAB
-  - Chuck Bronson, Chris Parmer
+- **Python**: Andrew Seier, Chelsea Douglas, Chris Parmer, Étienne Tétreault-Pinard
+- **R**: Carson Sievert, Marianne Corvellec, Toby Dylan Hocking, Baobao Zhang
+- **MATLAB**: Chuck Bronson, Chris Parmer
 
 #### Financial sponsors
 
