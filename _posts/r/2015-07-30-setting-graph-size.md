@@ -22,7 +22,7 @@ m = list(
   t = 100,
   pad = 4
 )
-plot_ly(x = seq(0, 8), y = seq(0, 8), filename="r-docs/sizing") %>%
+plot_ly(x = seq(0, 8), y = seq(0, 8)) %>%
   layout(autosize = F, width = 500, height = 500, margin = m)
 ```
 

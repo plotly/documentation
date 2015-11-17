@@ -19,7 +19,7 @@ order: 6
 ```r
 ### Basic contour
 library(plotly)
-plot_ly(z = volcano, type = "contour", filename="r-docs/basic-contour")
+plot_ly(z = volcano, type = "contour")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/209.embed" width="800" frameBorder="0"></iframe>
@@ -32,7 +32,7 @@ x <- rnorm(200)
 y <- rnorm(200)
 p1 <- plot_ly(x = x, type = "histogram")
 p2 <- plot_ly(x = x, y = y, type = "histogram2dcontour")
-p3 <- plot_ly(y = y, type = "histogram", filename="r-docs/subplots")
+p3 <- plot_ly(y = y, type = "histogram")
 a1 <- list(domain = c(0, .85))
 a2 <- list(domain = c(.85, 1))
 subplot(

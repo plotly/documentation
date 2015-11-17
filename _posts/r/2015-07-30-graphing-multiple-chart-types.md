@@ -22,8 +22,7 @@ order: 9
 library(plotly)
 mtcars <- mtcars[order(mtcars$disp), ]
 p <- plot_ly(mtcars, x = disp, y = mpg, mode = "markers",
-             text = rownames(mtcars), showlegend = FALSE,
-             filename="r-docs/scatter-loess-smoother")
+             text = rownames(mtcars), showlegend = FALSE)
 add_trace(p, y = fitted(loess(mpg ~ disp)), mode = "lines",
           name = "loess smoother", showlegend = TRUE)
 ```
@@ -45,8 +44,7 @@ p %>%
   add_trace(p, data = f, y = fit + 1.96 * se.fit, mode = "lines",
             fill = "tonexty", line = l) %>%
   add_trace(p, data = f, y = fit - 1.96 * se.fit, mode = "lines",
-            fill = "tonexty", line = l,
-            filename="r-docs/scatter-uncertaincy-estimates")
+            fill = "tonexty", line = l)
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/225.embed" width="800" frameBorder="0"></iframe>

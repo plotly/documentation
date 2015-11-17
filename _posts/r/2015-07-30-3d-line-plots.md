@@ -28,7 +28,7 @@ df <- setNames(
 )
 
 library(plotly)
-plot_ly(df, x = x, y = y, z = z, color = time, type = "scatter3d", filename="r-docs/3d-line-plot")
+plot_ly(df, x = x, y = y, z = z, color = time, type = "scatter3d")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/163.embed" width="800" frameBorder="0"></iframe>

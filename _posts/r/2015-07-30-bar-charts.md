@@ -44,8 +44,7 @@ p2
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/177.embed" width="800" frameBorder="0"></iframe>
 
 ```r
-layout(p2, barmode = "stack",
-       filename="r-docs/stacked-bars")
+layout(p2, barmode = "stack")
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/177.embed" width="800" frameBorder="0"></iframe>
@@ -55,8 +54,7 @@ layout(p2, barmode = "stack",
 
 library(dplyr)
 ggplot2::diamonds %>% count(cut) %>%
-  plot_ly(x = cut, y = n, type = "bar", marker = list(color = toRGB("black")),
-          filename="r-docs/bar-custom-colors")
+  plot_ly(x = cut, y = n, type = "bar", marker = list(color = toRGB("black")))
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/183.embed" width="800" frameBorder="0"></iframe>
@@ -65,7 +63,7 @@ ggplot2::diamonds %>% count(cut) %>%
 # mapping a color variable
 
 ggplot2::diamonds %>% count(cut, clarity) %>%
-  plot_ly(x = cut, y = n, type = "bar", color = clarity, filename="r-docs/bar-color-map")
+  plot_ly(x = cut, y = n, type = "bar", color = clarity)
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/187.embed" width="800" frameBorder="0"></iframe>

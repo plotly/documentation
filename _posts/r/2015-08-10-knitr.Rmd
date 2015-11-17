@@ -13,40 +13,29 @@ order: 5
 
 ## Embedding plotly graphs in knitr documents
 
-
 ```{r, echo = FALSE, message=FALSE}
 knitr::opts_chunk$set(message = FALSE)
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
 
-Simply printing `plotly` objects in the R console will create a new plotly figure in your online plotly account and open your web-browser to view it.
+Simply printing `plotly` objects in the R console will render your chart in the web browser or in RStudio's viewer.
 
-```{r, message=FALSE, height=800}
+If you are using knitr/R Markdown with HTML output, printing the `plotly` object will embed the graph in the HTML.
+
+
+```{r, results='hide'}
 library(plotly)
-p <- plot_ly(economics, x = date, y = uempmed, filename="r-docs/knitr-example")
-```
-
-If you are using knitr/R Markdown with HTML output, printing the `plotly` object will not only create the plot but embed it in the HTML as an iframe. This document itself is written with R Markdown, so printing `p` embeds the figure.
-
-
-```{r, message=FALSE}
+p <- plot_ly(economics, x = date, y = unemploy / pop)
 p
 ```
 
-You can set the width and the height of the plot with `width` and `height` code chunk parameters. For example:
-
-`{r, height=800}`
-
-```{r, height=800}
-p
+```{r, echo=FALSE, message=FALSE}
+plotly_POST(p, filename='r-docs/knitr-example')
 ```
 
-If you are using [Plotly Offline with R Studio](https://purchasing.plot.ly/plotly-offline-r), then printing the plotly object in knitr will also include the necessary `plotly.js` files to draw the graph: the graph is rendered locally inside the document.
+If your hosting your graphs in your online plotly account through `plotly_POST`, printing the figure will embed the graph as an iframe.
 
-To convert the knitr document to a standalone HTML file, use `knitr::knit` and `markdown::markdownToHTML`. For example:
-
-```
-knitr::knit('plotly-report.Rmd', 'plotly-report.md')
-markdown::markdownToHTML('plotly-report.md', 'plotly-report.html')
+```{r}
+plotly_POST(p, filename='r-docs/knitr-example')
 ```
