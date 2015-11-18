@@ -13366,26 +13366,42 @@
         <h4 id="lines-on-an-orthographic-map"><a class="no_underline plot-blue" href="#lines-on-an-orthographic-map">Lines on an Orthographic Map</a></h4>
       </div>
       <div class="row">
-        <div class="six columns">
+        <div class="twelve columns">
           <div class="z-depth-1">
-            <pre><code class="plotly_js">function scattergeolines('myDiv') {
-    var colors = ['rgb(213,62,79)', 'rgb(254,224,139)', 'rgb(102,194,165)'],
-    lon = _.range(-180, 180, 0.5),
-    data = [];
+            <pre><code class="plotly_js">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/globe_contours.csv', function(err, rows){
 
-    for(var i = 0; i &lt; colors.length; i++) {
-        data.push({
-            type: 'scattergeo',
-            mode: 'lines',
-            lon: lon,
-            lat: _.map(lon, function(loni) {
-                return 15*(i+1) * Math.sin(4 * loni * Math.PI / 180) + 15;
-            }),
-            line: {
-                color: colors[i]
-            }
-        });
+    function unpack(rows, key) {
+        return rows.map(function(row) { return row[key]; });
     }
+
+    var data = [];
+    var scl =['rgb(213,62,79)','rgb(244,109,67)','rgb(253,174,97)','rgb(254,224,139)','rgb(255,255,191)','rgb(230,245,152)','rgb(171,221,164)','rgb(102,194,165)','rgb(50,136,189)'];
+    var allLats = [];
+    var allLons = [];
+
+    for ( var i = 0 ; i < scl.length; i++){
+        var latHead = 'lat-'+i;
+        var lonHead = 'lon-'+i;
+        var lat = unpack(rows, latHead);
+        var lon = unpack(rows, lonHead);
+        allLats.push(lat);
+        allLons.push(lon);
+    }
+
+    for ( var i = 0 ; i < scl.length; i++) {
+        var current = {
+            type:'scattergeo',
+            lon: allLons[i],
+            lat: allLats[i],
+            mode: 'lines',
+            line: {
+                width: 2,
+                color: scl[i]
+            }
+        }
+        data.push(current);
+    };
+
 
     var layout = {
         geo: {
@@ -13414,16 +13430,16 @@
         }
     };
 
-    Plotly.newPlot('myDiv', data, layout);
-}
+    Plotly.plot(myDiv, data, layout, {showLink: false});
+});
 </code></pre>
           </div>
           
         </div>
-        <div class="six columns">
+        <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe src="https://plot.ly/~jackp/9098/.embed" 
+            <iframe src="https://codepen.io/plotly/embed/MaxWjZ/?height=515&theme-id=15263&default-tab=result" 
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
@@ -13507,80 +13523,67 @@
         <h4 id="us-flight-paths-map"><a class="no_underline plot-blue" href="#us-flight-paths-map">US Flight Paths Map</a></h4>
       </div>
       <div class="row">
-        <div class="six columns">
+        <div class="twelve columns">
           <div class="z-depth-1">
-            <pre><code class="plotly_js">function scattergeomarkers() {
+            <pre><code class="plotly_js">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/c34aaa0b1b3cddad335173cb7bc0181897201ee6/2011_february_aa_flight_paths.csv', function(err, rows){
+    function unpack(rows, key) {
+        return rows.map(function(row) { return row[key]; });}
 
-  var data = [ ];
-
-  //Airports
-
-  var result = {
-    type:'scattergeo',
-    locationmode: 'USA-states',
-    lon: airportLon,
-    lat: airportLat,
-    hoverinfor: 'text',
-    text: airportName,
-    mode: 'markers',
-    marker:{
-      size: 2,
-      color: 'rgb(255,0,0)',
-      line:{
-        width: 3,
-        color: 'rgba(68, 68, 68, 0)'
-      }
+    function getMaxOfArray(numArray) {
+        return Math.max.apply(null, numArray);
     }
-  };
-  data.push(result);
 
-  function getMaxOfArray(numArray) {
-    return Math.max.apply(null, numArray);
-  }
+    var data = [];
+    var count = unpack(rows, 'cnt');
+    var startLongitude = unpack(rows, 'start_lon');
+    var endLongitude = unpack(rows, 'end_lon');
+    var startLat = unpack(rows, 'start_lat');
+    var endLat = unpack(rows, 'end_lat');
 
-  //Flightpaths
+    for ( var i = 0 ; i < count.length; i++ ) {
+        var opacityValue = count[i]/getMaxOfArray(count);
 
-  for ( var i = 0 ; i &lt; startLon.length ; i++){
-    var opacityValue = cnt[i]/getMaxOfArray(cnt);
-    console.log(opacityValue);
-    var result2 = {
-      type: 'scattergeo',
-      locationmode: 'USA-states',
-      lon: [ startLon[i] , endLon[i] ],
-      lat: [ startLat[i] , endLat[i] ],
-      mode: 'lines',
-      line: {
-        width: 1,
-        color: 'red'
-      },
-    opacity: opacityValue
+        var result = {
+            type: 'scattergeo',
+            locationmode: 'USA-states',
+            lon: [ startLongitude[i] , endLongitude[i] ],
+            lat: [ startLat[i] , endLat[i] ],
+            mode: 'lines',
+            line: {
+                width: 1,
+                color: 'red'
+            },
+            opacity: opacityValue
+        };
+
+        data.push(result);
     };
-    data.push(result2);
-  };
 
     var layout = {
-      title: 'Feb. 2011 American Airline flight paths<br>(Hover for airport names)',
-      showlegend: false,
-      geo:{
-        scope: 'north america',
-        projection: {
-          type: 'azimuthal equal area'
-        },
-        showland: true,
-        landcolor: 'rgb(243,243,243)',
-        countrycolor: 'rgb(204,204,204)'
-      }
+        title: 'Feb. 2011 American Airline flight paths',
+        showlegend: false,
+        geo:{
+            scope: 'north america',
+            projection: {
+                type: 'azimuthal equal area'
+            },
+            showland: true,
+            landcolor: 'rgb(243,243,243)',
+            countrycolor: 'rgb(204,204,204)'
+        }
     };
-    Plotly.newPlot('myDiv', data, layout);
-}
+
+    Plotly.plot(myDiv, data, layout, {showLink: false});
+
+});
 </code></pre>
           </div>
           
         </div>
-        <div class="six columns">
+        <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe src="https://plot.ly/~jackp/8421/feb-2011-american-airline-flight-paths-hover-for-airport-names/.embed" 
+            <iframe src="https://codepen.io/plotly/embed/dYrymN/?height=508&theme-id=15263&default-tab=result" 
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>

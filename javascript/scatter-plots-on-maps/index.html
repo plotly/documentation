@@ -13469,66 +13469,72 @@
         <h4 id="us-airports-map"><a class="no_underline plot-blue" href="#us-airports-map">US Airports Map</a></h4>
       </div>
       <div class="row">
-        <div class="six columns">
+        <div class="twelve columns">
           <div class="z-depth-1">
-            <pre><code class="plotly_js">function scattergeomarkers() {
+            <pre><code class="plotly_js">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv', function(err, rows){
 
-  var scl = [[0,'rgb(5, 10, 172)'],[0.35,'rgb(40, 60, 190)'],[0.5,'rgb(70, 100, 245)'], [0.6,'rgb(90, 120, 245)'],[0.7,'rgb(106, 137, 247)'],[1,'rgb(220, 220, 220)']];
+    function unpack(rows, key) {
+        return rows.map(function(row) { return row[key]; });
+    }
 
-  var data = [
-    {
-      type: 'scattergeo',
-      locationmode: 'USA-states',
-      mode: 'markers',
-      text: airportText,
-      lon: airportLon,
-      lat: airportLat,
-      marker: {
-          size: 8,
-          opacity: 0.8,
-          reversescale: true,
-          autocolorscale: false,
-          symbol: 'square',
-          line:{
-            width: 1,
-            color: 'rgb(102,102,102)'
-          },
-          colorscale: scl,
-          cmin: 0,
-          color: airportColor,
-          colorbar: {
-            title: 'Incoming Flights February 2011'
-          }
-    }}
-  ];
+    var scl = [[0,'rgb(5, 10, 172)'],[0.35,'rgb(40, 60, 190)'],[0.5,'rgb(70, 100, 245)'], [0.6,'rgb(90, 120, 245)'],[0.7,'rgb(106, 137, 247)'],[1,'rgb(220, 220, 220)']];
 
-  var layout = {
-      title: 'Most Trafficked US airports<br>(Hover for airport names)',
-      colorbar: true,
-      geo: {
-        scope: 'usa',
-        projection: {
-          type: 'albers usa'
-        },
-        showland: true,
-        landcolor: 'rgb(250,250,250)',
-        subunitcolor: 'rgb(217,217,217)',
-        countrycolor: 'rgb(217,217,217)',
-        countrywidth: 0.5,
-        subunitwidth: 0.5
-      }
-  };
+    var data = [{
+        type:'scattergeo',
+        locationmode: 'USA-states',
+        lon: unpack(rows, 'long'),
+        lat: unpack(rows, 'lat'),
+        hoverinfor:  unpack(rows, 'airport'),
+        text:  unpack(rows, 'airport'),
+        mode: 'markers',
+        marker: {
+            size: 8,
+            opacity: 0.8,
+            reversescale: true,
+            autocolorscale: false,
+            symbol: 'square',
+            line: {
+                width: 1,
+                color: 'rgb(102,102,102)'
+            },
+            colorscale: scl,
+            cmin: 0,
+            color: unpack(rows, 'cnt'),
+            colorbar: {
+                title: 'Incoming Flights February 2011'
+            }
+        }
+    }];
 
-  Plotly.newPlot('myDiv', data, layout);
-};
+
+    var layout = {
+        title: 'Most Trafficked US airports',
+        colorbar: true,
+        geo: {
+            scope: 'usa',
+            projection: {
+                type: 'albers usa'
+            },
+            showland: true,
+            landcolor: 'rgb(250,250,250)',
+            subunitcolor: 'rgb(217,217,217)',
+            countrycolor: 'rgb(217,217,217)',
+            countrywidth: 0.5,
+            subunitwidth: 0.5
+        }
+    };
+
+    Plotly.plot(myDiv, data, layout, {showLink: false});
+
+});
 </code></pre>
           </div>
           
         </div>
-        <div class="six columns">
+        <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe src="https://plot.ly/~jackp/8427/most-trafficked-us-airports-hover-for-airport-names/.embed" 
+            <iframe src="https://codepen.io/plotly/embed/MaLdZB/?height=532&theme-id=15263&default-tab=result" 
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
@@ -13546,18 +13552,21 @@
       <div class="row">
         <div class="six columns">
           <div class="z-depth-1">
-            <pre><code class="plotly_js">function scattergeomarkers() {
+            <pre><code class="plotly_js">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/2015_06_30_precipitation.csv', function(err, rows){
+      function unpack(rows, key) {
+          return rows.map(function(row) { return row[key]; });
+      }
 
-    scl = [[0, 'rgb(150,0,90)'],[0.125, 'rgb(0, 0, 200)'],[0.25,'rgb(0, 25, 255)'],[0.375,'rgb(0, 152, 255)'],[0.5,'rgb(44, 255, 150)'],[0.625,'rgb(151, 255, 0)'],[0.75,'rgb(255, 234, 0)'],[0.875,'rgb(255, 111, 0)'],[1,'rgb(255, 0, 0)']];
+ scl = [[0, 'rgb(150,0,90)'],[0.125, 'rgb(0, 0, 200)'],[0.25,'rgb(0, 25, 255)'],[0.375,'rgb(0, 152, 255)'],[0.5,'rgb(44, 255, 150)'],[0.625,'rgb(151, 255, 0)'],[0.75,'rgb(255, 234, 0)'],[0.875,'rgb(255, 111, 0)'],[1,'rgb(255, 0, 0)']];
 
     var data = [{
         type: 'scattergeo',
         mode: 'markers',
-        text: textInches,
-        lon: longitude,
-        lat: latitude,
+        text: unpack(rows, 'Globvalue'),
+        lon: unpack(rows, 'Lon'),
+        lat: unpack(rows, 'Lat'),
         marker: {
-          color: precipitation,
+          color: unpack(rows, 'Globvalue'),
           colorscale: scl,
           cmin: 0,
           cmax: 1.4,
@@ -13615,7 +13624,7 @@
     };
 
     Plotly.newPlot('myDiv', data, layout);
-}
+  });
 </code></pre>
           </div>
           
@@ -13623,7 +13632,7 @@
         <div class="six columns">
           <div class="border" style="text-align:center;">
             
-            <iframe src="https://plot.ly/~jackp/8573/us-precipitation-06-30-2015-source-noaa/.embed" 
+            <iframe src="https://codepen.io/plotly/embed/ffc4d23253e52483f518f58af8f0571d/?height=669&theme-id=15263&default-tab=result" 
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>

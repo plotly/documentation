@@ -1,21 +1,37 @@
-function scattergeolines('myDiv') {
-    var colors = ['rgb(213,62,79)', 'rgb(254,224,139)', 'rgb(102,194,165)'],
-    lon = _.range(-180, 180, 0.5),
-    data = [];
+Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/globe_contours.csv', function(err, rows){
 
-    for(var i = 0; i &lt; colors.length; i++) {
-        data.push({
-            type: 'scattergeo',
-            mode: 'lines',
-            lon: lon,
-            lat: _.map(lon, function(loni) {
-                return 15*(i+1) * Math.sin(4 * loni * Math.PI / 180) + 15;
-            }),
-            line: {
-                color: colors[i]
-            }
-        });
+    function unpack(rows, key) {
+        return rows.map(function(row) { return row[key]; });
     }
+
+    var data = [];
+    var scl =['rgb(213,62,79)','rgb(244,109,67)','rgb(253,174,97)','rgb(254,224,139)','rgb(255,255,191)','rgb(230,245,152)','rgb(171,221,164)','rgb(102,194,165)','rgb(50,136,189)'];
+    var allLats = [];
+    var allLons = [];
+
+    for ( var i = 0 ; i < scl.length; i++){
+        var latHead = 'lat-'+i;
+        var lonHead = 'lon-'+i;
+        var lat = unpack(rows, latHead);
+        var lon = unpack(rows, lonHead);
+        allLats.push(lat);
+        allLons.push(lon);
+    }
+
+    for ( var i = 0 ; i < scl.length; i++) {
+        var current = {
+            type:'scattergeo',
+            lon: allLons[i],
+            lat: allLats[i],
+            mode: 'lines',
+            line: {
+                width: 2,
+                color: scl[i]
+            }
+        }
+        data.push(current);
+    };
+
 
     var layout = {
         geo: {
@@ -44,5 +60,5 @@ function scattergeolines('myDiv') {
         }
     };
 
-    Plotly.newPlot('myDiv', data, layout);
-}
+    Plotly.plot(myDiv, data, layout, {showLink: false});
+});
