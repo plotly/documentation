@@ -1,15 +1,59 @@
-# Cufflinks binds plotly to pandas dataframes in IPython notebook.
+var plot = document.getElementById('plot').contentWindow;
+var plotTwo = document.getElementById('plotTwo').contentWindow;
 
-import plotly.plotly as py
-import cufflinks as cf
-import pandas as pd
+document.getElementById('plot').onload = function() {
+	pinger = setInterval(function(){
+    	plot.postMessage({task: 'ping'}, 'https://plot.ly')
+	}, 100);
+};
 
-cf.set_config_file(offline=False, world_readable=True, theme='pearl')
+window.addEventListener('message', function(e) {
+    var message = e.data;
+    if(message.pong) {
+        console.log('Initial pong, frame is ready to receive');
+        clearInterval(pinger);
+        // Listening for zoom events, but you can also listen
+        // for click and hover by adding them to the array
+        plot.postMessage( {
+                task: 'listen',
+                events: ['zoom']
+            }, 'https://plot.ly');
+		 	plotTwo.postMessage({
+            task: 'relayout',
+            'update': {
+					'xaxis.fixedrange': true,
+					'yaxis.fixedrange': true
+				},
+        }, 'https://plot.ly');
+    }
+	 else if( message.type == 'zoom' ){
+		 console.log('zoom', message);
+		 drawRectangle( message['ranges'] );
+	 }
+    else {
+        console.log(message);
+    }
+});
 
-df = pd.read_csv('http://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderDataFiveYear.txt', sep='\t')
-df2007 = df[df.year==2007]
-df.head(2)
+function drawRectangle( ranges ){
+    var rect = {
+		'type': 'rect',
+		'x0': ranges['x'][0],
+		'y0': ranges['y'][0],
+		'x1': ranges['x'][1],
+		'y1': ranges['y'][1],
+		'fillcolor': 'rgba(128, 0, 128, 0.7)',
+	}
+	plotTwo.postMessage({
+		'task': 'relayout',
+		'update': { shapes: [rect] },
+   }, 'https://plot.ly');
+}
 
-df2007.iplot(kind='bubble', x='gdpPercap', y='lifeExp', size='pop', text='country',
-             xTitle='GDP per Capita', yTitle='Life Expectancy',
-             filename='cufflinks/simple-bubble-chart')
+function newPlot(){
+	var plotURL = document.getElementById('plotURL').value + '.embed';
+	var iframe = document.getElementById('plot');
+	iframe.src = plotURL;
+	var iframeTwo = document.getElementById('plotTwo');
+	iframeTwo.src = plotURL;
+}
