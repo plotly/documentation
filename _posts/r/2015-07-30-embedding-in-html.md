@@ -4,7 +4,7 @@ name: Text and Annotations
 permalink: r/embedding-plotly-graphs-in-HTML
 description: How to embed Plotly graphs in HTML pages with Plotly's R API
 layout: base
-thumbnail: text-and-annotations.png
+thumbnail: thumbnail/text-and-annotations.jpg
 language: r
 page_type: example_index
 has_thumbnail: false

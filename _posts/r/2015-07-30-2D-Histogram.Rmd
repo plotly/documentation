@@ -4,7 +4,7 @@ name: 2D Histograms
 permalink: r/2D-Histogram/
 description: How to make a 2D histogram in R. A 2D histogram is a visualization of a bivariate distribution.
 layout: base
-thumbnail: /images/histogram2d.png
+thumbnail: thumbnail/histogram2d.jpg
 language: r
 page_type: example_index
 has_thumbnail: true

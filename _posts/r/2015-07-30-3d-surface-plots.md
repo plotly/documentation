@@ -4,7 +4,7 @@ name: 3D Surface Plots
 permalink: r/3d-surface-plots/
 description: How to make interactive 3D surface plots in R.
 layout: base
-thumbnail: /images/3d-surface.png
+thumbnail: thumbnail/3d-surface.jpg
 language: r
 page_type: example_index
 has_thumbnail: TRUE

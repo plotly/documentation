@@ -4,7 +4,7 @@ name: Dumbbell plots
 permalink: r/dumbbell-plots/
 description: How to make a dumbbell plot in R. Dumbbell plots show changes between two points in time or between two conditions.
 layout: base
-thumbnail: /images/dumbbell-plot.jpg
+thumbnail: thumbnail/dumbbell-plot.jpg
 language: r
 page_type: example_index
 has_thumbnail: true

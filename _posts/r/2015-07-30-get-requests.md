@@ -4,7 +4,7 @@ name: Get Requests
 permalink: r/get-requests/
 description: How to download plotly users's public graphs and data with R.
 layout: base
-thumbnail: /images/get-requests.png
+thumbnail: thumbnail/get-requests.jpg
 language: r
 page_type: example_index
 has_thumbnail: false
