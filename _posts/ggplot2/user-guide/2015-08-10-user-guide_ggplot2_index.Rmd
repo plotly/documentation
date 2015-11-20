@@ -17,13 +17,13 @@ Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
 
-Plotly is a web-based visualization platform. Plotly graphs are drawn with javascript, SVG, and D3.js.
+Plotly for R is an interactive, browser-based charting library built on the open source JavaScript graphing library <a href="https://plot.ly/javascript" target="_blank">plotly.js</a>. It works entirely locally in your web-browser via the <a target="_blank" href="http://www.htmlwidgets.org/">HTML widgets framework</a>.
 
 <iframe src="https://plot.ly/~RPlotBot/1772.embed" width="100%" height="600px" style="border: none;"></iframe>
 
 Plotly graphs are interactive: click-and-drag to zoom, shift-drag to pan, click on legend entries to toggle traces.
 
-The [plotly R package](https://github.com/ropensci/plotly) serializes ggplot2 figures into Plotly's universal graph JSON. `plotly::ggplotly` will crawl the ggplot2 figure, extract and translate all of the attributes of the ggplot2 figure (the colors, the axes, the chart type, etc), and send the result to your online plotly account to be served.
+The [plotly R package](https://github.com/ropensci/plotly) serializes ggplot2 figures into Plotly's <a target="_blank" href="http://help.plot.ly/json-chart-schema/">universal graph JSON</a>. `plotly::ggplotly` will crawl the ggplot2 figure, extract and translate all of the attributes of the ggplot2 figure into JSON (the colors, the axes, the chart type, etc), and draw the graph with plotly.js.
 
 ```{r, message=FALSE}
 library(plotly)
@@ -31,23 +31,23 @@ library(plotly)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 gg <- qplot(carat, price, data=dsamp, colour=clarity)
 
-ggplotly(gg, filename="ggplot2-user-guide/example-1")
+ggplotly(gg)
 ```
 
-`plotly::ggplotly` returns a `plotly` object. When you print it in your console, the plotly object will be sent to your plotly account and opened in your web-browser (e.g. [https://plot.ly/~RPlotBot/1778](https://plot.ly/~RPlotBot/1778)). [In knitr](https://plot.ly/r/knitr), the chart is embedded as an iframe. [In Shiny](https://plot.ly/r/shiny-tutorial), the chart JSON is served to the client and graphed client-side with [postMessage](https://github.com/plotly/postMessage-API) or [plotly.js](https://plot.ly/javascript).
+`plotly::ggplotly` returns a `plotly` object. When you print it in your console, the plotly graph will be rendered in your web browser or in R Studio's viewer.
 
-Plotly graphs can also be rendered locally with [Plotly Offline for R](https://plot.ly/r/offline).
+Plotly graphs can also be published on the web by calling `plotly_POST(ggplotly(gg))`. [Learn how to get started with publishing plotly graphs to the web](https://plot.ly/r/).
 
 <h4><a name="modify-ggplot2-figure" href="#modify-ggplot2-figure">Modifying the <code>plotly</code> figure after ggplot2 conversion</a></h4>
 
-Sometimes it's helpful to modify your figure *after* you have converted it from ggplot2 to `plotly` *before* you save it in your plotly account. You may want to change the way `ggplotly` chose to translate the figure, or modify graph properties that just aren't available in `ggplot2`, like hover text.
+Sometimes it's helpful to modify your figure *after* you have converted it from ggplot2 to `plotly` *before* it is rendered. You may want to change the way `ggplotly` chose to translate the figure, or modify graph properties that just aren't available in `ggplot2`, like hover text.
 
 In this case, use `plotly_build`. Consider this simple ggplot2 figure:
 
 ```{r}
 df <- data.frame(x=c(1, 2, 3, 4), y=c(1, 5, 3, 5), group=c('A', 'A', 'B', 'B'))
 g <- ggplot(data=df, aes(x=x, y=y, colour=group)) + geom_point()
-ggplotly(g, filename="ggplot2-user-guide/example-2")
+ggplotly(g)
 ```
 
 Here is the ggplot2 figure described as a plotly object

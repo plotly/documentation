@@ -322,7 +322,7 @@ Plotly.redraw(graphDiv);
 
 <br>
 
-<h4 id="plotly-plot"><a class="no_underline plot-blue" href="plotly-plot">A note on <code>Plotly.plot</code></a></h4>
+<h4 id="plotly-plot"><a class="no_underline plot-blue" href="#note-plotly-plot">A note on <code>Plotly.plot</code></a></h4>
 
 <code>Plotly.plot</code> is like <code>newPlot</code>, but it isn't idempotent (you can't call it multiple times in a row).
     </div>

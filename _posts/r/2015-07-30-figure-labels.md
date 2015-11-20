@@ -29,8 +29,7 @@ y <- list(
   title = "y Axis",
   titlefont = f
 )
-plot_ly(x = rnorm(10), y = rnorm(10), mode = "markers",
-	    filename="r-docs/figure-labels") %>%
+plot_ly(x = rnorm(10), y = rnorm(10), mode = "markers") %>%
   layout(xaxis = x, yaxis = y)
 ```
 

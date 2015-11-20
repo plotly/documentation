@@ -33,8 +33,7 @@ g <- list(
 
 plot_ly(df, z = total.exports, text = hover, locations = code, type = 'choropleth',
         locationmode = 'USA-states', color = total.exports, colors = 'Purples',
-        marker = list(line = l), colorbar = list(title = "Millions USD"),
-        filename="r-docs/usa-choropleth") %>%
+        marker = list(line = l), colorbar = list(title = "Millions USD")) %>%
   layout(title = '2011 US Agriculture Exports by State<br>(Hover for breakdown)', geo = g)
 ```
 
@@ -57,8 +56,7 @@ g <- list(
 
 plot_ly(df, z = GDP..BILLIONS., text = COUNTRY, locations = CODE, type = 'choropleth',
         color = GDP..BILLIONS., colors = 'Blues', marker = list(line = l),
-        colorbar = list(tickprefix = '$', title = 'GDP Billions US$'),
-        filename="r-docs/world-choropleth") %>%
+        colorbar = list(tickprefix = '$', title = 'GDP Billions US$')) %>%
   layout(title = '2014 Global GDP<br>Source:<a href="https://www.cia.gov/library/publications/the-world-factbook/fields/2195.html">CIA World Factbook</a>',
          geo = g)
 ```
@@ -105,8 +103,7 @@ g2 <- c(
 
 plot_ly(df, type = 'scattergeo', mode = 'markers', locations = Country,
         locationmode = 'country names', text = paste(Value, "cases"),
-        color = as.ordered(abbrev), marker = list(size = Value/50), inherit = F,
-        filename="r-docs/chropleth-inset") %>%
+        color = as.ordered(abbrev), marker = list(size = Value/50), inherit = F) %>%
   add_trace(type = 'scattergeo', mode = 'text', geo = 'geo2', showlegend = F,
             lon = 21.0936, lat = 7.1881, text = 'Africa') %>%
   add_trace(type = 'choropleth', locations = Country, locationmode = 'country names',

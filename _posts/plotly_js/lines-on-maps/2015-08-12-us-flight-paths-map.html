@@ -1,74 +1,60 @@
 ---
 name: US Flight Paths Map
-plot_url: https://plot.ly/~jackp/8421/feb-2011-american-airline-flight-paths-hover-for-airport-names/
+plot_url: https://codepen.io/plotly/embed/dYrymN/?height=508&theme-id=15263&default-tab=result
 language: plotly_js
 suite: lines-on-maps
 order: 3
 sitemap: false
-
+arrangement: horizontal
 ---
+Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/c34aaa0b1b3cddad335173cb7bc0181897201ee6/2011_february_aa_flight_paths.csv', function(err, rows){
+    function unpack(rows, key) {
+        return rows.map(function(row) { return row[key]; });}
 
-function scattergeomarkers() {
-
-  var data = [ ];
-
-  //Airports
-
-  var result = {
-    type:'scattergeo',
-    locationmode: 'USA-states',
-    lon: airportLon,
-    lat: airportLat,
-    hoverinfor: 'text',
-    text: airportName,
-    mode: 'markers',
-    marker:{
-      size: 2,
-      color: 'rgb(255,0,0)',
-      line:{
-        width: 3,
-        color: 'rgba(68, 68, 68, 0)'
-      }
+    function getMaxOfArray(numArray) {
+        return Math.max.apply(null, numArray);
     }
-  };
-  data.push(result);
 
-  function getMaxOfArray(numArray) {
-    return Math.max.apply(null, numArray);
-  }
+    var data = [];
+    var count = unpack(rows, 'cnt');
+    var startLongitude = unpack(rows, 'start_lon');
+    var endLongitude = unpack(rows, 'end_lon');
+    var startLat = unpack(rows, 'start_lat');
+    var endLat = unpack(rows, 'end_lat');
 
-  //Flightpaths
+    for ( var i = 0 ; i < count.length; i++ ) {
+        var opacityValue = count[i]/getMaxOfArray(count);
 
-  for ( var i = 0 ; i &lt; startLon.length ; i++){
-    var opacityValue = cnt[i]/getMaxOfArray(cnt);
-    console.log(opacityValue);
-    var result2 = {
-      type: 'scattergeo',
-      locationmode: 'USA-states',
-      lon: [ startLon[i] , endLon[i] ],
-      lat: [ startLat[i] , endLat[i] ],
-      mode: 'lines',
-      line: {
-        width: 1,
-        color: 'red'
-      },
-    opacity: opacityValue
+        var result = {
+            type: 'scattergeo',
+            locationmode: 'USA-states',
+            lon: [ startLongitude[i] , endLongitude[i] ],
+            lat: [ startLat[i] , endLat[i] ],
+            mode: 'lines',
+            line: {
+                width: 1,
+                color: 'red'
+            },
+            opacity: opacityValue
+        };
+
+        data.push(result);
     };
-    data.push(result2);
-  };
 
     var layout = {
-      title: 'Feb. 2011 American Airline flight paths<br>(Hover for airport names)',
-      showlegend: false,
-      geo:{
-        scope: 'north america',
-        projection: {
-          type: 'azimuthal equal area'
-        },
-        showland: true,
-        landcolor: 'rgb(243,243,243)',
-        countrycolor: 'rgb(204,204,204)'
-      }
+        title: 'Feb. 2011 American Airline flight paths',
+        showlegend: false,
+        geo:{
+            scope: 'north america',
+            projection: {
+                type: 'azimuthal equal area'
+            },
+            showland: true,
+            landcolor: 'rgb(243,243,243)',
+            countrycolor: 'rgb(204,204,204)'
+        }
     };
-    Plotly.newPlot('myDiv', data, layout);
-}
+
+    Plotly.plot(myDiv, data, layout, {showLink: false});
+
+});
