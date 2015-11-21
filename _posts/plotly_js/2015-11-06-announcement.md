@@ -11,17 +11,19 @@ language: plotly_js
 
 # Plotly.js Open-Source Announcement
 
+<iframe src="https://ghbtns.com/github-btn.html?user=plotly&repo=plotly.js&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+
 November 17, 2015
 
 A growing number of graphing tools and libraries allow anyone to make beautiful, interactive web-based graphs. By interactively visualizing our data online, we share complex ideas in an exploratory, visual, open, and collaborative way.
 
-**Today, Plotly is announcing that we have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s products** (MIT license). It's all out there and free. Any developer can now integrate Plotly’s library into their own applications unencumbered. Plotly.js supports 20 chart types, including 3D plots, geographic maps, and statistical charts like density plots, histograms, box plots, and contour plots. 
+**Today, Plotly is announcing that we have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s products** (MIT license). It's all out there and free. Any developer can now integrate Plotly’s library into their own applications unencumbered. Plotly.js supports 20 chart types, including 3D plots, geographic maps, and statistical charts like density plots, histograms, box plots, and contour plots.
 
 We’re big fans of collaboration, freedom, and perpetual motion. Open-source has become the de facto distribution for gold-standard scientific and business intelligence software. We want to support, participate in, and amplify this trend. By open-sourcing Plotly's core technology, everyone benefits from peer-review and Plotly's products will continue to be the most cutting-edge offering for exploratory visualization. Plotly.js has the quality, accessibility, and scope to be the charting standard for the Web, but we can only achieve this breadth by working across communities and making the distribution truly unencumbered, portable, and free.
 
 Despite the possibilities that the web offers, the core plotting libraries in scientific software like MATLAB, R, and Python still create static image files rather than dynamic, interactive charts. Many technical and scientific projects still don't embrace web technology because of JavaScript libraries being commercially developed, expensive, narrow in scope, or difficult to learn and use. By open-sourcing Plotly’s easy-to-use, comprehensive library, Plotly hopes to bring the power of interactive plotting to every developer, team, data scientist, and analyst.
 
-Plotly.js was instigated by [Dr. Alex Johnson](http://environment.harvard.edu/about/fellows/alex-johnson) and has been in development for over 3 years. 
+Plotly.js was instigated by [Dr. Alex Johnson](http://environment.harvard.edu/about/fellows/alex-johnson) and has been in development for over 3 years.
 
  Access the [GitHub repository here](https://github.com/plotly/plotly.js).
 
@@ -36,13 +38,13 @@ A contour density plot drawn with plotly.js. Visit the [plotly.js documentation]
 
 #### Seven details that make the project unique
 
-1. **Scientific grade.** Plotly.js is comparable in scope and features to MATLAB or Python’s matplotlib, but written in JavaScript, the language of the Web. 
+1. **Scientific grade.** Plotly.js is comparable in scope and features to MATLAB or Python’s matplotlib, but written in JavaScript, the language of the Web.
 
 2. **SVG & WebGL backends.** Plotly.js uses both D3.js (SVG) and WebGL for graphics rendering. WebGL allows interactive rendering of hundreds of thousands to millions of x-y points, while D3.js is more practical for up to tens of thousands of points and vector-quality image export.
 
-3. **Testing framework.** For [code contributors](https://github.com/plotly/plotlyjs/graphs/contributors), the plotly.js image testing framework makes it the most stable JavaScript charting library available. 
+3. **Testing framework.** For [code contributors](https://github.com/plotly/plotly.js/blob/master/CONTRIBUTING.md), the plotly.js image testing framework makes it the most stable JavaScript charting library available.
 
-4. **User documentation.** The [plotly.js documentation](https://plot.ly/javascript) is hosted on GitHub pages and is open-source under a Creative Commons license. 
+4. **User documentation.** The [plotly.js documentation](https://plot.ly/javascript) is hosted on GitHub pages and is open-source under a Creative Commons license.
 
 5. **No dependencies.** Plotly.js is an “all-in-one bundle” with d3.js and stack.gl modules baked-in.
 
@@ -58,6 +60,7 @@ The JSON schema makes Plotly charts *language agnostic* - They can be easily tra
 
 - Interactive chart: [https://plot.ly/~empet/6640](https://plot.ly/~empet/6640)
 - JSON specification: [https://plot.ly/~empet/6640.json](https://plot.ly/~empet/6640.json)
+- plotly.js code: [https://plot.ly/~empet/6640.json](https://plot.ly/~empet/6640.js)
 - Raster image: [https://plot.ly/~empet/6640.png](https://plot.ly/~empet/6640.png)
 - Vector image: [https://plot.ly/~empet/6640.svg](https://plot.ly/~empet/6640.svg)
 - Excel: [https://plot.ly/~empet/6640.xlsx](https://plot.ly/~empet/6640.xlsx)
@@ -68,7 +71,7 @@ Browse Plotly’s community-created [chart feed](https://plot.ly/feed/) and appe
 
 #### Distinction from vega and vega-lite
 
-The plotly.js JSON schema and API is more like MATLAB or Python’s matplotlib than most JavaScript charting libraries available. It focuses on the chart’s physical attributes and attempts to leave the chart data separate (a workflow that scientists and engineers are accustomed to). For chart types that require binning (contour plots, histograms) or min-max decimation (line plots with >100k lines), some precomputation in JavaScript has been unavoidable. 
+The plotly.js JSON schema and API is more like MATLAB or Python’s matplotlib than most JavaScript charting libraries available. It focuses on the chart’s physical attributes and attempts to leave the chart data separate (a workflow that scientists and engineers are accustomed to). For chart types that require binning (contour plots, histograms) or min-max decimation (line plots with >100k lines), some precomputation in JavaScript has been unavoidable.
 
 The vega and vega-lite schemas are more opinionated in prescribing how the chart data is grouped, sliced, or statistically processed before graphical display. This allows for complicated chart display with a concise JSON description, but leaves less control to the user. Neither approach is more “correct”—they’re just different.
 
@@ -97,7 +100,7 @@ This makes for a better user experience:
 
 ## Future plans and contributing
 
-The plotly.js roadmap is constantly changing, but 2016 is likely to be focused on performance. We would like the higher performance 2D WebGL graphics backend to reach feature parity with the more mature SVG (D3.js) backend. 
+The plotly.js roadmap is constantly changing, but 2016 is likely to be focused on performance. We would like the higher performance 2D WebGL graphics backend to reach feature parity with the more mature SVG (D3.js) backend.
 
 If you’re a JavaScript developer, consider taking a look at the plotly.js code on [GitHub](https://github.com/plotly/plotly.js). Submitting Codepen examples to [community.plot.ly](http://community.plot.ly/c/plotly-js) for the documentation is also a great way to contribute.
 

@@ -1,68 +1,67 @@
 ---
 name: USA Bubble Map
-plot_url: https://plot.ly/~Nicole_G/3175/_2014-us-city-populations-click-legend-to-toggle-traces/
+plot_url: https://codepen.io/plotly/embed/dc02d0146b01a7481bcba7610366625f/?height=529&theme-id=15263&default-tab=result
 language: plotly_js
 suite: bubble-maps
 order: 2
 sitemap: false
+arrangement: horizontal
 ---
-function makePlotly(divId){
-       d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/2014_us_cities.csv", function(data){ processData(data) } );
-    };
+Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/2014_us_cities.csv', function(err, rows){
 
-    function processData(allRows) {
-
-      console.log(allRows);
-      var cityName = [], cityPop = [], cityLat = [], cityLon = [];
-
-      for (var i=0; i<allRows.length; i++) {
-        row = allRows[i];
-        cityName.push( row['name'] );
-        cityPop.push( row['pop'] );
-        cityLat.push( row['lat'] );
-        cityLon.push( row['lon'] );
-      }
-      console.log( 'City',cityName, 'Population',cityPop, 'Latitutde',cityLat, 'Longitude', cityLon );
-      scattergeomarkers( cityName, cityPop, cityLat, cityLon );
+    function unpack(rows, key) {
+        return rows.map(function(row) { return row[key]; });
     }
 
-    function scattergeomarkers(cityName, cityPop, cityLat, cityLon, myDiv) {
+    var cityName = unpack(rows, 'name'),
+        cityPop = unpack(rows, 'pop'),
+        cityLat = unpack(rows, 'lat'),
+        cityLon = unpack(rows, 'lon'),
+        color = [,"rgb(255,65,54)","rgb(133,20,75)","rgb(255,133,27)","lightgrey"],
+        citySize = [],
+        hoverText = [],
+        scale = 50000;
 
-      var scale = 50000;
+    for ( var i = 0 ; i < cityPop.length; i++) {
+        var currentSize = cityPop[i] / scale;
+        var currentText = cityName[i] + " pop: " + cityPop[i];
+        citySize.push(currentSize);
+        hoverText.push(currentText);
+    }
 
-      var data = [{
-              type: 'scattergeo',
-              mode: 'markers',
-              locationmode: 'USA-States',
-              text: cityName,
-              lon: cityLon,
-              lat: cityLat,
-              sizemode: 'diameter',
-              marker: {
-                  size: cityPop.map(function(pop) { return pop / scale; }),
-                  line: {
-                      width: 2,
-                      color: 'black'
-                  }
-              },
-              name: 'US City Population'
-          }];
+    var data = [{
+        type: 'scattergeo',
+        locationmode: 'USA-states',
+        lat: cityLat,
+        lon: cityLon,
+        hoverinfo: 'text',
+        text: hoverText,
+        marker: {
+            size: citySize,
+            line: {
+                color: 'black',
+                width: 2
+            },
+        }
+    }];
 
-          var layout = {
-            title: '2014 US city populations<br>(Click legend to toggle traces)',
-            showlegend: true,
-            geo: {
-              scope: 'usa',
-              projection: {
+    var layout = {
+        title: '2014 US City Populations',
+        showlegend: false,
+        geo: {
+            scope: 'usa',
+            projection: {
                 type: 'albers usa'
-              },
-              showland: true,
-              landcolor: 'rgb(217,217,217)',
-              subunitwidth: 1,
-              countrywidth: 1,
-              subunitcolor: 'rgb(255,255,255)',
-              countrycolor: 'rgb(255,255,255)'
-            }
-          };
-          Plotly.newPlot('myDiv', data, layout);
+            },
+            showland: true,
+            landcolor: 'rgb(217, 217, 217)',
+            subunitwidth: 1,
+            countrywidth: 1,
+            subunitcolor: 'rgb(255,255,255)',
+            countrycolor: 'rgb(255,255,255)'
+        },
     };
+
+    Plotly.plot(myDiv, data, layout, {showLink: false});
+
+});
