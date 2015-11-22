@@ -4,7 +4,7 @@ name: Bubble Maps
 permalink: r/bubble-maps/
 description: How to make a bubble chart and map in R.
 layout: base
-thumbnail: /images/bubble-map.png
+thumbnail: thumbnail/bubble-map.jpg
 language: r
 page_type: example_index
 has_thumbnail: true

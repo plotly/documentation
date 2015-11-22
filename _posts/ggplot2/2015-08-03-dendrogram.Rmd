@@ -4,7 +4,7 @@ name: ggdendro lattice dendrograms
 permalink: ggplot2/ggdendro-dendrograms
 description: How to make a dendrogram with ggdendro and ggplot2
 layout: base
-thumbnail: /images/dendrogram.png
+thumbnail: thumbnail/dendrogram.jpg
 language: ggplot2
 page_type: example_index
 has_thumbnail: true

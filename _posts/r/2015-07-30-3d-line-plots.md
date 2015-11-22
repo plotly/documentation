@@ -4,7 +4,7 @@ name: 3D Line Plots
 permalink: r/3d-line-plots/
 description: How to make interactive 3D line plots in R.
 layout: base
-thumbnail: /images/3d-line.png
+thumbnail: thumbnail/3d-line.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
