@@ -17,7 +17,7 @@ update_pos = function() {
 	}
 	else{
 		refBar.style.position = "fixed";
-		refBar.style.top = MAINBAR_H;
+		refBar.style.top = (MAINBAR_H).toString();
 	}
 }
 document.addEventListener ("scroll", update_pos);
