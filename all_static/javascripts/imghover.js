@@ -9,14 +9,14 @@ function movingOutImgOp(img, text) {
 
 /* vertical position of side navigation on reference pages */
 var refBar = document.getElementById('reference-side-nav');
-var MAINBAR_H = 310;
+var MAINBAR_H = 405;
 update_pos = function() {
 	if (document.body.scrollTop > MAINBAR_H ){
 		refBar.style.position = "fixed";
 		refBar.style.top = "0";
 	}
 	else{
-		refBar.style.position = "absolute";
+		refBar.style.position = "fixed";
 		refBar.style.top = MAINBAR_H;
 	}
 }
