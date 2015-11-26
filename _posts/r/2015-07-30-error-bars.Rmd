@@ -4,7 +4,7 @@ name: Error Bars
 permalink: r/error-bars/
 description: How to add error bars to scatter plots in R.
 layout: base
-thumbnail: /images/error-bar.png
+thumbnail: thumbnail/error-bar.jpg
 language: r
 page_type: example_index
 has_thumbnail: true

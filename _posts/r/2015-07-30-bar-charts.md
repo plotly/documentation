@@ -4,7 +4,7 @@ name: Bar Charts
 permalink: r/bar-charts/
 description: How to make a bar chart in R. Seven examples of grouped, stacked, overlaid, and colored bar charts.
 layout: base
-thumbnail: /images/bar.png
+thumbnail: thumbnail/bar.jpg
 language: r
 page_type: example_index
 has_thumbnail: true

@@ -3,7 +3,7 @@ title: ggplot2 useR guide | plotly
 permalink: ggplot2/user-guide
 description: A useR guide for interfacing ggplot2 with Plotly.
 layout: base
-thumbnail: /images/facet_wrap.png
+thumbnail: thumbnail/facet_wrap.jpg
 language: ggplot2
 page_type: user_guide
 ignore_header: true
