@@ -63,7 +63,6 @@ The JSON schema makes Plotly charts *language agnostic* - They can be easily tra
 - plotly.js code: [https://plot.ly/~empet/6640.json](https://plot.ly/~empet/6640.js)
 - Raster image: [https://plot.ly/~empet/6640.png](https://plot.ly/~empet/6640.png)
 - Vector image: [https://plot.ly/~empet/6640.svg](https://plot.ly/~empet/6640.svg)
-- Excel: [https://plot.ly/~empet/6640.xlsx](https://plot.ly/~empet/6640.xlsx)
 - Python code: [https://plot.ly/~empet/6640.py](https://plot.ly/~empet/6640.py)
 - CSV data: [https://plot.ly/~empet/6640.csv](https://plot.ly/~empet/6640.csv)
 
