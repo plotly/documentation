@@ -1,0 +1,62 @@
+---
+name: 2D Histogram in Pandas
+plot_url: https://plot.ly/~jackp/10391
+language: pandas
+suite: histogram2d
+order: 0
+sitemap: false
+height: 750
+arrangement: horizontal
+---
+# Learn about API authentication here: https://plot.ly/pandas/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+import pandas as pd
+import numpy as np
+import plotly.plotly as py
+import colorlover as cl
+import plotly.graph_objs as go
+
+scl = cl.scales['9']['seq']['Blues']
+colorscale = [ [ float(i)/float(len(scl)-1), scl[i] ] for i in range(len(scl)) ]
+colorscale
+
+N = 500
+mean, cov = [0, 2], [(1, .5), (.5, 1)]
+x, y = np.random.multivariate_normal(mean, cov, size=50).T
+df = pd.DataFrame({'x': x, 'y': y})
+df.head()
+
+data = [
+    go.Histogram2dContour(
+        x=df['x'], # assign x as the dataframe column 'x'
+        y=df['y'],
+        colorscale=colorscale,
+        line=Line(width=0)
+    )
+]
+
+axis_template = dict(
+    ticks='',
+    showgrid=False,
+    zeroline=False,
+    showline=True,
+    mirror=True,
+    linewidth=2,
+    linecolor='#444',
+)
+
+layout=go.Layout(xaxis=axis_template,
+                 yaxis=axis_template,
+                 width=700,
+                 height=750,
+                 autosize=False,
+                 hovermode='closest',
+                 title='2d Histogram in Pandas')
+
+fig = go.Figure(data=data, layout=layout)
+
+# IPython notebook
+# py.iplot(fig, filename='pandas-2d-histogram', height=750)
+
+url = py.plot(fig, filename='pandas-2d-histogram', height=750)
