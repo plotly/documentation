@@ -1,0 +1,51 @@
+---
+title: Graphing Multiple Chart Types in R | Examples | Plotly
+name: Graphing Multiple Chart Types
+permalink: r/graphing-multiple-chart-types/
+description: How to design figures with multiple chart types in R. An example of a line chart with a line of best fit and an uncertainty band.
+layout: base
+thumbnail: thumbnail/mixed.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: chart_type
+order: 9
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```
+# Graphing Multiple Chart Types in R
+
+```{r, message=FALSE}
+
+
+### Scatterplot with loess smoother
+
+library(plotly)
+mtcars <- mtcars[order(mtcars$disp), ]
+p <- plot_ly(mtcars, x = disp, y = mpg, mode = "markers",
+             text = rownames(mtcars), showlegend = FALSE)
+add_trace(p, y = fitted(loess(mpg ~ disp)), mode = "lines",
+          name = "loess smoother", showlegend = TRUE)
+
+### Scatterplot with loess smoother and it's uncertaincy estimates
+m <- loess(mpg ~ disp, data = mtcars)
+f <- with(predict(m, se = TRUE), data.frame(fit, se.fit))
+
+l <- list(
+  color = toRGB("gray90", alpha = 0.3),
+  fillcolor = toRGB("gray90", alpha = 0.3)
+)
+
+p %>%
+  add_trace(p, data = f, y = fit, mode = "lines") %>%
+  add_trace(p, data = f, y = fit + 1.96 * se.fit, mode = "lines",
+            fill = "tonexty", line = l) %>%
+  add_trace(p, data = f, y = fit - 1.96 * se.fit, mode = "lines",
+            fill = "tonexty", line = l)
+
+
+```
