@@ -338,7 +338,7 @@ graphDiv.on('plotly_click', function(data){
 
 <br>
 
-As well as <code>plotly\_click</code>, there is <code>plotly\_hover</code> and <code>plotly_unhover</code>.
+As well as <code>plotly\_click</code>, there is <code>plotly\_beforehover</code>, <code>plotly\_hover</code> and <code>plotly_unhover</code>.
 
 <br>
 
