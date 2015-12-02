@@ -6,7 +6,9 @@ suite: hover-events
 sitemap: false
 order: 0
 ---
-var N = 16,
+var myPlot = document.getElementById('myDiv'),
+    hoverInfo = document.getElementById('hoverinfo'),
+    N = 16,
     x = d3.range(N),
     y1 = d3.range(N).map( d3.random.normal() ),
     y2 = d3.range(N).map( d3.random.normal() ),
@@ -19,15 +21,15 @@ var N = 16,
         title:'Hover on Points'
      };
 
-Plotly.newPlot('myDiv', data, layout);
+Plotly.plot('myDiv', data, layout);
 
-$('#myDiv')
-    .bind('plotly_hover', function(event,data){
-        var infotext = data.points.map(function(d){
-            return (d.data.name+': x= '+d.x+', y= '+d.y.toPrecision(3));
-        });
-        $('#hoverinfo').html(infotext.join('<br/>'));
-    })
-    .bind('plotly_unhover', function(event,data){
-        $('#hoverinfo').html('');
+myPlot.on('plotly_hover', function(data){
+    var infotext = data.points.map(function(d){
+      return (d.data.name+': x= '+d.x+', y= '+d.y.toPrecision(3));
     });
+  
+    hoverInfo.innerHTML = infotext.join('<br/>');
+})
+ .on('plotly_unhover', function(data){
+    hoverInfo.innerHTML = '';
+});
