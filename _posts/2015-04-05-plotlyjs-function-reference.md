@@ -23,6 +23,7 @@ redirect_from: /javascript-graphing-library/plotlyjs-function-reference
               <li><a href="#plotly-deletetraces" class="attribute-name"><p class="left-align">Delete traces with Plotly.deleteTraces</p></a></li>
               <li><a href="#plotly-movetraces" class="attribute-name"><p class="left-align">Move traces with Plotly.moveTraces</p></a></li>
               <li><a href="#plotly-redraw" class="attribute-name"><p class="left-align">Redraw with Plotly.redraw</p></a></li>
+              <li><a href="#plotly-events" class="attribute-name"><p class="left-align">Using events</p></a></li>
           </ul>
       </div>
     </div>
@@ -92,8 +93,9 @@ Plotly.newPlot(graphDiv, data2, layout2);
 </code></pre>
 <br>
 
-<iframe height='518' scrolling='no' src='//codepen.io/plotly/embed/meaKwE/?height=518&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/meaKwE/'>Plotly.newPlot</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
-</iframe>
+<p data-height="440" data-theme-id="15263" data-slug-hash="meaKwE" data-default-tab="result" data-user="plotly" class='codepen' data-preview="true">See the Pen <a href='http://codepen.io/plotly/pen/meaKwE/'>Plotly.newPlot</a> by plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
+
 <br>
 
 You can hide the link to Plotly's cloud with <code>{showLink: false}</code> as the 4th argument.<br>
@@ -130,8 +132,10 @@ Plotly.restyle(graphDiv, update, [1, 2]);
 
 <br>
 
-<iframe height='510' scrolling='no' src='//codepen.io/plotly/embed/meaKYw/?height=510&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/meaKYw/'>Plotly.restyle</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
-</iframe>
+<p data-height="400" data-theme-id="15263" data-slug-hash="meaKYw" data-default-tab="result" data-user="plotly" class='codepen' data-preview="true">See the Pen <a href='http://codepen.io/plotly/pen/meaKYw/'>Plotly.restyle</a> by plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
+
+<br>
 
 The above examples have applied values across single or multiple traces. However, you can also specify <b>arrays</b> of values to apply to traces <b>in turn</b>.
 
@@ -151,8 +155,7 @@ Plotly.restyle(graphDiv, update)
 
 <br>
 
-<iframe height='515' scrolling='no' src='//codepen.io/plotly/embed/NGeBGL/?height=515&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/NGeBGL/'>Plotly.restyle Traces in Turn</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
-</iframe>
+<p data-height="515" data-theme-id="15263" data-slug-hash="NGeBGL" data-default-tab="result" data-user="plotly" class='codepen' data-preview="true">See the Pen <a href='http://codepen.io/plotly/pen/NGeBGL/'>Plotly.restyle Traces in Turn</a> by plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
 
 <br>
 
@@ -173,8 +176,8 @@ Plotly.restyle(graphDiv, update, [1, 2])
 
 <br>
 
-<iframe height='502' scrolling='no' src='//codepen.io/plotly/embed/wKRxJE/?height=502&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/wKRxJE/'>Plotly.restyle Arrays </a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
-</iframe>
+<p data-height="502" data-theme-id="15263" data-slug-hash="wKRxJE" data-default-tab="result" data-user="plotly" class='codepen' data-preview="true">See the Pen <a href='http://codepen.io/plotly/pen/wKRxJE/'>Plotly.restyle Arrays </a> by plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <br>
 
@@ -190,8 +193,8 @@ Plotly.restyle(graphDiv, update, [0])
 
 <br>
 
-<iframe height='528' scrolling='no' src='//codepen.io/plotly/embed/LpMBOy/?height=528&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/LpMBOy/'>Plotly.restyle Attribute strings </a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
-</iframe>
+<p data-height="528" data-theme-id="15263" data-slug-hash="LpMBOy" data-default-tab="result" data-user="plotly" class='codepen' data-preview="true">See the Pen <a href='http://codepen.io/plotly/pen/LpMBOy/'>Plotly.restyle Attribute strings </a> by plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <br>
 
@@ -210,8 +213,8 @@ Plotly.relayout(graphDiv, update)
 
 <br>
 
-<iframe height='526' scrolling='no' src='//codepen.io/plotly/embed/meajqx/?height=526&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/meajqx/'>Plotly.relayout</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
-</iframe>
+<p data-height="526" data-theme-id="15263" data-slug-hash="meajqx" data-default-tab="result" data-user="plotly" class='codepen' data-preview="true">See the Pen <a href='http://codepen.io/plotly/pen/meajqx/'>Plotly.relayout</a> by plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <br>
 
@@ -228,8 +231,8 @@ Plotly.relayout(graphDiv, update)
 
 <br>
 
-<iframe height='507' scrolling='no' src='//codepen.io/plotly/embed/jbXpZj/?height=507&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/jbXpZj/'>Plotly.relayout - xaxis replace</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
-</iframe>
+<p data-height="507" data-theme-id="15263" data-slug-hash="jbXpZj" data-default-tab="result" data-user="plotly" class='codepen' data-preview="true">See the Pen <a href='http://codepen.io/plotly/pen/jbXpZj/'>Plotly.relayout - xaxis replace</a> by plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <br>
 
@@ -250,8 +253,8 @@ Plotly.addTraces(graphDiv, {y: [1, 5, 7]}, 0);
 
 <br>
 
-<iframe height='510' scrolling='no' src='//codepen.io/plotly/embed/xwmJvL/?height=510&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/xwmJvL/'>Plotly.addtraces</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
-</iframe>
+<p data-height="510" data-theme-id="15263" data-slug-hash="xwmJvL" data-default-tab="result" data-user="plotly" class='codepen' data-preview="true">See the Pen <a href='http://codepen.io/plotly/pen/xwmJvL/'>Plotly.addtraces</a> by plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <br>
 
@@ -269,8 +272,8 @@ Plotly.deleteTraces(graphDiv, [-2, -1]);
 
 <br>
 
-<iframe height='503' scrolling='no' src='//codepen.io/plotly/embed/meaGRo/?height=503&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/meaGRo/'>Plotly.deleteTraces</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
-</iframe>
+<p data-height="503" data-theme-id="15263" data-slug-hash="meaGRo" data-default-tab="result" data-user="plotly" class='codepen' data-preview="true">See the Pen <a href='http://codepen.io/plotly/pen/meaGRo/'>Plotly.deleteTraces</a> by plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <br>
 
@@ -294,8 +297,8 @@ Plotly.moveTraces(graphDiv, [1, 4, 5], [0, 3, 2]);
 
 <br>
 
-<iframe height='500' scrolling='no' src='//codepen.io/plotly/embed/LpMJyB/?height=500&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/LpMJyB/'>Plotly.moveTraces</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
-</iframe>
+<p data-height="500" data-theme-id="15263" data-slug-hash="LpMJyB" data-default-tab="result" data-user="plotly" class='codepen' data-preview="true">See the Pen <a href='http://codepen.io/plotly/pen/LpMJyB/'>Plotly.moveTraces</a> by plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <br>
 
@@ -317,8 +320,25 @@ Plotly.redraw(graphDiv);
 
 <br>
 
-<iframe height='515' scrolling='no' src='//codepen.io/plotly/embed/GpPXdV/?height=515&theme-id=15263&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/plotly/pen/GpPXdV/'>Plotly.redraw</a> by Plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.
-</iframe>
+<p data-height="515" data-theme-id="15263" data-slug-hash="GpPXdV" data-default-tab="result" data-user="plotly" class='codepen' data-preview="true">See the Pen <a href='http://codepen.io/plotly/pen/GpPXdV/'>Plotly.redraw</a> by plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
+
+<br>
+
+<h4 id="plotly-events"><a class="no_underline plot-blue" href="#plotly-redraw">Using events</a></h4>
+
+Plots emit events prefixed with <code>plotly_</code> when clicked or hovered over, and event handlers can be bound to events using the <code>on</code> method that is exposed by the plot div object. It is possible to use jQuery events, but plotly.js no longer bundles jQuery, so we recommend using the plotly.js implementation.
+
+<pre><code class="language-javascript hljs" data-lang="javascript">
+// You can obtain the plot using document.getElementById('graphDiv')
+graphDiv.on('plotly_click', function(data){
+    // do something using the event data
+});
+</code></pre>
+
+<br>
+
+As well as <code>plotly\_click</code>, there is <code>plotly\_hover</code> and <code>plotly_unhover</code>.
 
 <br>
 
