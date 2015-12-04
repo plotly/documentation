@@ -11,7 +11,9 @@ function movingOutImgOp(img, text) {
 var refBar = document.getElementById('reference-side-nav');
 var MAINBAR_H = 405;
 update_pos = function() {
-	if( refBar === undefined ) return;
+	if( refBar === undefined || refBar === null ){ 
+		return;
+	}
 	
 	if ( (document.body.scrollTop > MAINBAR_H) || (document.documentElement.scrollTop > MAINBAR_H) ){
 		refBar.style.position = "fixed";
