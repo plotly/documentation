@@ -1,0 +1,38 @@
+---
+name: Wind Rose Chart in Pandas
+plot_url: https://plot.ly/~jackp/10415
+language: pandas
+suite: wind-rose
+order: 0
+sitemap: false
+arrangement: horizontal
+---
+# Learn about API authentication here: https://plot.ly/pandas/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+import pandas as pd
+import colorlover as cl
+import numpy as np
+import plotly.plotly as py
+import plotly.graph_objs as go
+
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/wind_rose.csv')
+df.head()
+
+data = []
+counter = 0
+for col in df.columns:
+    if col != 'r':
+        data.append(
+            go.Area(t=df['r'],
+                    r=df[col],
+                    marker=dict(color=cl.scales['9']['seq']['PuBu'][counter]),
+                    name=col+' m/s' ) )
+        counter+=1
+
+fig = Figure(data=data, layout=go.Layout(orientation=270, barmode='stack'))
+
+# IPython notebook
+# py.iplot(fig, filename='pandas-wind-rose-chart')
+
+url = py.plot(fig, filename='pandas-wind-rose-chart')
