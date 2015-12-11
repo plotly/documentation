@@ -4,7 +4,7 @@ name: 3D Scatter Plots
 permalink: r/3d-scatter-plots/
 description: How to make interactive 3D scatter plots in R.
 layout: base
-thumbnail: /images/3d-scatter.png
+thumbnail: thumbnail/3d-scatter.jpg
 language: r
 page_type: example_index
 has_thumbnail: true

@@ -4,7 +4,7 @@ name: Map Subplots And Small Multiples
 permalink: r/map-subplots-and-small-multiples/
 description: How to create map subplots and small multiples in R.
 layout: base
-thumbnail: /images/map-subplots.png
+thumbnail: thumbnail/map-subplots.jpg
 language: r
 page_type: example_index
 has_thumbnail: true

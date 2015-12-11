@@ -4,7 +4,7 @@ name: Time Series
 permalink: r/time-series/
 description: How to plot date and time in R. An example of a time series plot with the POSIXct and Sys.Date classes.
 layout: base
-thumbnail: /images/time-series.png
+thumbnail: thumbnail/time-series.jpg
 language: r
 page_type: example_index
 has_thumbnail: false
