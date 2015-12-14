@@ -25,14 +25,14 @@ Plotly is now on CRAN!
 ```r
 install.packages("plotly")
 ```
-
+<br>
 Or install the latest development version ([on GitHub](https://github.com/ropensci/plotly)) via [devtools](http://cran.r-project.org/web/packages/devtools/):
 
 ```r
 # install.packages("devtools")
 devtools::install_github("ropensci/plotly")
 ```
-
+<br>
 RStudio users should download the latest [RStudio release](https://www.rstudio.com/products/rstudio/download/) for compatibility with htmlwidgets.
 
 
