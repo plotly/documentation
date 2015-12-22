@@ -8,7 +8,7 @@ thumbnail: thumbnail/time-series.jpg
 language: r
 page_type: example_index
 has_thumbnail: false
-display_as: chart_type
+display_as: basic
 ---
 
 
