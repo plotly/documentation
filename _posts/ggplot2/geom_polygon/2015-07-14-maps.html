@@ -1,0 +1,39 @@
+---
+name: maps with R and ggplot2
+plot_url: https://plot.ly/~MattSundquist/18964/lat-vs-long/
+language: ggplot2
+suite: geom_polygon
+description: Inspired by <a href="http://stackoverflow.com/questions/17723822/administrative-regions-map-of-a-country-with-ggmap-and-ggplot2">Stack Overflow</a>.
+order: 6
+sitemap: false
+---
+
+# Learn about API authentication here: https://plot.ly/r/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+library(plotly)
+library(XML)
+library(plyr)
+library(maps)
+
+unemp <-
+  readHTMLTable('http://www.bls.gov/web/laus/laumstrk.htm',
+    colClasses = c('character', 'character', 'numeric'))[[2]]
+
+names(unemp) <- c('rank', 'region', 'rate')
+unemp$region <- tolower(unemp$region)
+
+us_state_map <- map_data('state')
+map_data <- merge(unemp, us_state_map, by = 'region')
+
+map_data <- arrange(map_data, order)
+
+states <- data.frame(state.center, state.abb)
+
+p1 <- ggplot(data = map_data, aes(x = long, y = lat, group = group))
+p1 <- p1 + geom_polygon(aes(fill = cut_number(rate, 5)))
+p1 <- p1 + geom_path(colour = 'gray', linestyle = 2)
+p1 <- p1 + scale_fill_brewer('Unemployment Rate (Jan 2011)', palette  = 'PuRd')
+p1 <- p1 + coord_map()
+
+ggplotly(filename="r-docs/ggmaps")
