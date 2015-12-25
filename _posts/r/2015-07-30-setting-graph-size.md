@@ -7,7 +7,7 @@ layout: base
 language: r
 page_type: example_index
 has_thumbnail: false
-display_as: layout
+display_as: layout_opt
 ---
 
 

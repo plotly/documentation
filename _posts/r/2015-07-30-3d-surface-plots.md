@@ -8,7 +8,7 @@ thumbnail: thumbnail/3d-surface.jpg
 language: r
 page_type: example_index
 has_thumbnail: TRUE
-display_as: chart_type
+display_as: 3d_charts
 order: 15
 ---
 

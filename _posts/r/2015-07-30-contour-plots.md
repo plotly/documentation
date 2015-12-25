@@ -8,7 +8,7 @@ thumbnail: thumbnail/contour.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_type
+display_as: scientific
 order: 6
 ---
 
