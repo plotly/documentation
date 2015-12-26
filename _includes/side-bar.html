@@ -1,20 +1,26 @@
-{% if page.url contains "python" %}
+{% if page.url contains "dashboards" %}
+    {% assign dashboards = true %}
+{% elsif page.url contains "python" %}
     {% assign language = "python" %}
 {% elsif page.url contains "javascript" %}
     {% assign language = "plotly_js" %}  
 {% elsif page.url contains "ggplot2" %}
-    {% assign language = "ggplot2" %}    
-{% elsif page.url contains "r" %}
-    {% assign language = "r" %}    
+    {% assign language = "ggplot2" %}
 {% elsif page.url contains "matlab" %}
     {% assign language = "matlab" %}
 {% elsif page.url contains "matplotlib" %}
     {% assign language = "matplotlib" %}
+{% elsif page.url contains "julia" %}
+    {% assign language = "julia" %}
+{% elsif page.url contains "nodejs" %}
+    {% assign language = "nodejs" %}
+{% elsif page.url contains "r" %}
+    {% assign language = "r" %}    
 {% endif %}
 
+{% assign pages_list = site.posts | where:"language", language %}
 
-
-{% for page in site.posts | where "language", language | where "has_thumbnail", true %}
+{% for page in pages_list %}
     {% if page.display_as == "chart_type" or page.display_as == "basic" %}
 		{% assign basic = true %}
 	{% elsif page.display_as == "advanced_charts"%}
@@ -25,8 +31,8 @@
 		{% assign chart_events = true %}
 	{% elsif page.display_as == "3d_charts" %}
 		{% assign 3d_charts = true %}
-	{% elsif page.display_as == "financial_analysis" %}
-		{% assign financial_analysis = true %}
+	{% elsif page.display_as == "financial_analysis" or page.display_as == "financial" %}
+		{% assign financial = true %}
 	{% elsif page.display_as == "multiple_axes" %}
 		{% assign multiple_axes = true %}
     {% elsif page.display_as == "fitting_tools" %}
@@ -35,15 +41,19 @@
 		{% assign scientific = true %}
 	{% elsif page.display_as == "statistical" %}
 		{% assign statistical = true %}
-	{% elsif page.display_as == "financial" %}
-		{% assign financial = true %}
 	{% elsif page.display_as == "layout_opt" %}
 		{% assign layout_opt = true %}
+	{% elsif page.display_as == "file_settings" %}
+		{% assign file_settings = true %}
+	{% elsif page.display_as == "tutorial" %}
+		{% assign tutorial = true %}
+	{% elsif page.display_as == "get_request" %}
+		{% assign get_request = true %}
 	{% endif %}
 {% endfor %}
 
 <div style="position: relative;">
-<div id="sidebar" class="js-splash--navigation-sidebar">
+  <div id="sidebar" class="js-splash--navigation-sidebar">
 	<div class="js-splash--navigation-section-title">Quick Start</div>
 	<div class="js-splash--navigation-item-container">
 		{% if page.language == "plotly_js" %}
@@ -98,22 +108,58 @@
 	{% if statistical == true %}<a href="#statistical-charts" class="js-splash--navigation-item">Statistical</a>{% endif %}
 	{% if scientific == true %}<a href="#scientific-charts" class="js-splash--navigation-item">Scientific</a>{% endif %}
 	{% if financial == true %}<a href="#financial-charts" class="js-splash--navigation-item">Financial</a>{% endif %}
-	{% if 3d_charts == true %}<a href="#3d-charts" class="js-splash--navigation-item">3D</a>{% endif %}
-	{% if fitting_tools == true %}<a href="#3d-charts" class="js-splash--navigation-item">Fitting Tools</a>{% endif %}
 	{% if maps == true %}<a href="#maps" class="js-splash--navigation-item">Maps</a>{% endif %}
+	{% if 3d_charts == true %}<a href="#3d-charts" class="js-splash--navigation-item">3D</a>{% endif %}
+	{% if fitting_tools == true %}<a href="#fitting-tools" class="js-splash--navigation-item">Fitting Tools</a>{% endif %}
 	{% if chart_events == true %}<a href="#chart-events" class="js-splash--navigation-item">Events and Controls</a>{% endif %}
 	{% if layout_opt == true %}<a href="#layout-options" class="js-splash--navigation-item">Layout Options</a> {% endif %}
+	{% if file_settings == true %}<a href="#layout-options" class="js-splash--navigation-item">File Settings</a> {% endif %}
+	{% if tutorial == true %}<a href="#layout-options" class="js-splash--navigation-item">Tutorial</a> {% endif %}
+	{% if get_request == true %}<a href="#layout-options" class="js-splash--navigation-item">Image Export & Retrieving Plots</a> {% endif %}
+
+	{% if dashboards %}
+	<!--override for dashboards index page -->
+	<a href="#industry" class="js-splash--navigation-item">By Industry</a>
+	<a href="#language" class="js-splash--navigation-item">By Data Science Language</a>
+	{% endif %}
+
 	</div>
 
 	<div class="js-splash--navigation-section-title">Community</div>
 			<div class="js-splash--navigation-item-container">
+			  {% if language == "plotly_js" %}
 				<a target="_blank" href="https://github.com/plotly/plotly.js/blob/master/CONTRIBUTING.md" class="js-splash--navigation-item">Contributing</a>
+			  {% endif %}
+              
+              {% if page.permalink == '/ipython-notebooks/' %}             			  
+			  <a target="_blank" href="https://github.com/plotly/IPython-plotly" class="js-splash--navigation-item">GitHub</a>
+			  {% elsif page.language == 'python' or page.language == 'pandas' %}
+			  <a target="_blank" href="https://github.com/plotly/plotly.py" class="js-splash--navigation-item">GitHub</a>
+			  {% elsif page.language == 'matlab' or page.language == 'matplotlib' %}
+			  <a target="_blank" href="https://github.com/plotly/matlab-api" class="js-splash--navigation-item">GitHub</a>
+			  {% elsif page.language == 'julia' %}
+			  <a target="_blank" href="https://github.com/plotly/Julia-API" class="js-splash--navigation-item">GitHub</a>
+			  {% elsif page.language == 'nodejs' %}
+			  <a target="_blank" href="https://github.com/plotly/plotly-nodejs" class="js-splash--navigation-item">GitHub</a>
+			  {% elsif page.language == 'r' or page.language == 'ggplot2' %}
+			  <a target="_blank" href="https://github.com/ropensci/plotly" class="js-splash--navigation-item">GitHub</a>
+			  {% elsif page.language == 'plotly_js' %}
 			  <a target="_blank" href="https://github.com/plotly/plotly.js/" class="js-splash--navigation-item">GitHub</a>
-	      <a target="_blank" href="http://community.plot.ly/c/plotly-js" class="js-splash--navigation-item">community.plot.ly</a>
+              {% else %}
+              <a target="_blank" href="https://github.com/plotly/" class="js-splash--navigation-item">GitHub</a>
+              {% endif %}
+
+	          <a target="_blank" href="http://community.plot.ly/" class="js-splash--navigation-item">community.plot.ly</a>
+
 			</div>
 
 	<div class="js-splash--navigation-section-title">Tools</div>
 		<div class="js-splash--navigation-item-container">
 			<a target="_blank" href="{{ BASE_URL }}/plot" class="js-splash--navigation-item">Web Editor</a>
+			{% if language == "plotly_js" %}
 			<a target="_blank" href="https://codepen.io/plotly" class="js-splash--navigation-item">CodePen</a>
+			{% endif %}
 		</div>
+
+  </div>
+</div>
