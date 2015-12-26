@@ -1,13 +1,15 @@
 ---
 title: Plotly.js Open-Source Announcement
-name: Plotly's JavaScript graphing library is now Open-source and Free
+name: Plotly.js Open-Source Announcement
 permalink: javascript/open-source-announcement
-description: Plotly's JavaScript graphing library, Plotly.js, is now Open-source and Free
 language: plotly_js
 has_thumbnail: false
-layout: base
+layout: langindex
+no_sidebar: true
 language: plotly_js
 ---
+
+# Plotly.js Open-Source Announcement
 
 
 November 17, 2015
