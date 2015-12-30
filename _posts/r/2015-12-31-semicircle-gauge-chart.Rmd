@@ -4,7 +4,7 @@ name: Gauge Meter
 permalink: r/gauge-meter/
 description: How to make guage meter charts in R with Plotly.
 layout: base
-thumbnail: thumbnail/bar.jpg
+thumbnail: thumbnail/gauge.jpg
 language: r
 page_type: example_index
 has_thumbnail: true

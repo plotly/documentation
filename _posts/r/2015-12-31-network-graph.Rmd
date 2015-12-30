@@ -4,7 +4,7 @@ name: Network Graph
 permalink: r/network-graphs/
 description: How to make network graphs in R with Plotly.
 layout: base
-thumbnail: thumbnail/bar.jpg
+thumbnail: thumbnail/net.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
