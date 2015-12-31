@@ -14,48 +14,51 @@ order: 11
 
 
 
-We are using the well-known social network of `Zachary's karate club`. GML format file can be collected from [here](https://gist.github.com/pravj/9168fe52823c1702a07b).
+# Network Graphs in R
+
+##### We are using the well-known social network of `Zachary's karate club`. GML format file can be collected from [here](https://gist.github.com/pravj/9168fe52823c1702a07b).
+
+##### read graph file and update layout
 
 
 ```r
 library(igraph)
 library(plotly)
 
-# read graph file and update layout
 G <- read.graph("karate.gml", format = c("gml"))
 L <- layout.circle(G)
 ```
 
+##### vertices and edges for the graph
 
 ```r
-# vertices and edges for the graph
 vs <- V(G)
 es <- as.data.frame(get.edgelist(G))
 ```
 
+##### count of vertices and edges
 
 ```r
-# count of vertices and edges
 Nv <- length(vs)
 Ne <- length(es[1]$V1)
 ```
 
+##### node positions
 
 ```r
-# node positions
 Xn <- L[,1]
 Yn <- L[,2]
 ```
 
+##### draw network nodes
 
 ```r
-# draw network nodes
 network <- plot_ly(type = "scatter", x = Xn, y = Yn, mode = "markers", text = vs$label, hoverinfo = "text")
 ```
 
+##### creates shapes for edges
 
 ```r
-# creates shapes for edges
 edge_shapes <- list()
 for(i in 1:Ne) {
   v0 <- es[i,]$V1
@@ -74,9 +77,9 @@ for(i in 1:Ne) {
 }
 ```
 
+##### add edges to the network
 
 ```r
-# add edges to the network
 network <- layout(
   network,
   title = 'Karate Network',
@@ -88,4 +91,4 @@ network <- layout(
 network
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2801.embed" width="800" frameBorder="0"></iframe>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2803.embed" width="800" frameBorder="0"></iframe>
