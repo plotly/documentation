@@ -308,26 +308,34 @@
 				
 				<div class="row">
 
-				<p>We are using the well-known social network of <code>Zachary&#39;s karate club</code>. GML format file can be collected from <a href="https://gist.github.com/pravj/9168fe52823c1702a07b">here</a>.</p>
+				<h1>Network Graphs in R</h1>
+
+<h5>We are using the well-known social network of <code>Zachary&#39;s karate club</code>. GML format file can be collected from <a href="https://gist.github.com/pravj/9168fe52823c1702a07b">here</a>.</h5>
+
+<h5>read graph file and update layout</h5>
 <div class="highlight"><pre><code class="language-r" data-lang="r"><span class="kn">library</span><span class="p">(</span>igraph<span class="p">)</span>
 <span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
 
-<span class="c1"># read graph file and update layout</span>
 G <span class="o">&lt;-</span> read.graph<span class="p">(</span><span class="s">&quot;karate.gml&quot;</span><span class="p">,</span> format <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;gml&quot;</span><span class="p">))</span>
 L <span class="o">&lt;-</span> layout.circle<span class="p">(</span>G<span class="p">)</span>
-</code></pre></div><div class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># vertices and edges for the graph</span>
-vs <span class="o">&lt;-</span> V<span class="p">(</span>G<span class="p">)</span>
+</code></pre></div>
+<h5>vertices and edges for the graph</h5>
+<div class="highlight"><pre><code class="language-r" data-lang="r">vs <span class="o">&lt;-</span> V<span class="p">(</span>G<span class="p">)</span>
 es <span class="o">&lt;-</span> <span class="kp">as.data.frame</span><span class="p">(</span>get.edgelist<span class="p">(</span>G<span class="p">))</span>
-</code></pre></div><div class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># count of vertices and edges</span>
-Nv <span class="o">&lt;-</span> <span class="kp">length</span><span class="p">(</span>vs<span class="p">)</span>
+</code></pre></div>
+<h5>count of vertices and edges</h5>
+<div class="highlight"><pre><code class="language-r" data-lang="r">Nv <span class="o">&lt;-</span> <span class="kp">length</span><span class="p">(</span>vs<span class="p">)</span>
 Ne <span class="o">&lt;-</span> <span class="kp">length</span><span class="p">(</span>es<span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="o">$</span>V1<span class="p">)</span>
-</code></pre></div><div class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># node positions</span>
-Xn <span class="o">&lt;-</span> L<span class="p">[,</span><span class="m">1</span><span class="p">]</span>
+</code></pre></div>
+<h5>node positions</h5>
+<div class="highlight"><pre><code class="language-r" data-lang="r">Xn <span class="o">&lt;-</span> L<span class="p">[,</span><span class="m">1</span><span class="p">]</span>
 Yn <span class="o">&lt;-</span> L<span class="p">[,</span><span class="m">2</span><span class="p">]</span>
-</code></pre></div><div class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># draw network nodes</span>
-network <span class="o">&lt;-</span> plot_ly<span class="p">(</span>type <span class="o">=</span> <span class="s">&quot;scatter&quot;</span><span class="p">,</span> x <span class="o">=</span> Xn<span class="p">,</span> y <span class="o">=</span> Yn<span class="p">,</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">,</span> text <span class="o">=</span> vs<span class="o">$</span>label<span class="p">,</span> hoverinfo <span class="o">=</span> <span class="s">&quot;text&quot;</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># creates shapes for edges</span>
-edge_shapes <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">()</span>
+</code></pre></div>
+<h5>draw network nodes</h5>
+<div class="highlight"><pre><code class="language-r" data-lang="r">network <span class="o">&lt;-</span> plot_ly<span class="p">(</span>type <span class="o">=</span> <span class="s">&quot;scatter&quot;</span><span class="p">,</span> x <span class="o">=</span> Xn<span class="p">,</span> y <span class="o">=</span> Yn<span class="p">,</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">,</span> text <span class="o">=</span> vs<span class="o">$</span>label<span class="p">,</span> hoverinfo <span class="o">=</span> <span class="s">&quot;text&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h5>creates shapes for edges</h5>
+<div class="highlight"><pre><code class="language-r" data-lang="r">edge_shapes <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">()</span>
 <span class="kr">for</span><span class="p">(</span>i <span class="kr">in</span> <span class="m">1</span><span class="o">:</span>Ne<span class="p">)</span> <span class="p">{</span>
   v0 <span class="o">&lt;-</span> es<span class="p">[</span>i<span class="p">,]</span><span class="o">$</span>V1
   v1 <span class="o">&lt;-</span> es<span class="p">[</span>i<span class="p">,]</span><span class="o">$</span>V2
@@ -343,8 +351,9 @@ edge_shapes <span class="o">&lt;-</span> <span class="kt">list</span><span class
 
   edge_shapes<span class="p">[[</span>i<span class="p">]]</span> <span class="o">&lt;-</span> edge_shape
 <span class="p">}</span>
-</code></pre></div><div class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># add edges to the network</span>
-network <span class="o">&lt;-</span> layout<span class="p">(</span>
+</code></pre></div>
+<h5>add edges to the network</h5>
+<div class="highlight"><pre><code class="language-r" data-lang="r">network <span class="o">&lt;-</span> layout<span class="p">(</span>
   network<span class="p">,</span>
   title <span class="o">=</span> <span class="s">&#39;Karate Network&#39;</span><span class="p">,</span>
   shapes <span class="o">=</span> edge_shapes<span class="p">,</span>
@@ -354,7 +363,7 @@ network <span class="o">&lt;-</span> layout<span class="p">(</span>
 
 network
 </code></pre></div>
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2801.embed" width="800" frameBorder="0"></iframe>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2803.embed" width="800" frameBorder="0"></iframe>
 
 
 				</div>
