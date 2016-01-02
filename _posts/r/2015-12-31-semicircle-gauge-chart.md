@@ -4,15 +4,13 @@ name: Gauge Chart
 permalink: r/gauge-charts/
 description: How to make gauge charts in R with Plotly.
 layout: base
-thumbnail: http://images.plot.ly/plotly-documentation/thumbnail/gauge.jpg
+thumbnail: thumbnail/gauge.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
 display_as: chart_type
 order: 10
 ---
-
-
 
 # Gauge Meter Chart in R
 
