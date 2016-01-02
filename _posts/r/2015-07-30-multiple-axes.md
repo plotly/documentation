@@ -8,7 +8,7 @@ thumbnail: thumbnail/multiple-axes.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: basic
+display_as: layout_opt
 order: 1
 ---
 

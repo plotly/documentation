@@ -8,8 +8,8 @@ thumbnail: thumbnail/net.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_type
-order: 11
+display_as: scientific
+order: 1
 ---
 
 
