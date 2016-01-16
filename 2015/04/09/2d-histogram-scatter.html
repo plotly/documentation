@@ -1,42 +1,64 @@
-# Learn about API authentication here: https://plot.ly/julia/getting-started
+# Learn about API authentication here: https://plot.ly/python/getting-started
 # Find your api_key here: https://plot.ly/settings/api
 
-using Plotly
+import plotly.plotly as py
+import plotly.graph_objs as go
 
-x0 = randn(100)/5. + 0.5
-y0 = randn(100)/5. + 0.5
-x1 = rand(50)
-y1 = rand(50) + 1.0
+import numpy as np
 
-x = [x0; x1]
-y = [y0; y1]
+x0 = np.random.randn(100)/5. + 0.5  # 5. enforces float division
+y0 = np.random.randn(100)/5. + 0.5
+x1 = np.random.rand(50)
+y1 = np.random.rand(50) + 1.0
 
+x = np.concatenate([x0, x1])
+y = np.concatenate([y0, y1])
 
-trace1 = [
-  "x" =&gt; x0,
-  "y" =&gt; y0,
-  "mode" =&gt; "markers",
-  "marker" =&gt; [
-    "symbol" =&gt; "circle",
-    "opacity" =&gt; 0.7
-  ],
-  "type" =&gt; "scatter"
-]
-trace2 = [
-  "x" =&gt; x1,
-  "y" =&gt; y1,
-  "mode" =&gt; "markers",
-  "marker" =&gt; [
-    "symbol" =&gt; "square",
-    "opacity" =&gt; 0.7
-  ],
-  "type" =&gt; "scatter"
-]
-trace3 = [
-  "x" =&gt; x,
-  "y" =&gt; y,
-  "type" =&gt; "histogram2d"
-]
+trace1 = go.Scatter(
+    x=x0,
+    y=y0,
+    mode='markers',
+    showlegend=False,
+    marker=dict(
+        symbol='x',
+        opacity=0.7,
+        color='white',
+        size=8,
+        line=dict(width=1),
+    )
+)
+trace2 = go.Scatter(
+    x=x1,
+    y=y1,
+    mode='markers',
+    showlegend=False,
+    marker=dict(
+        symbol='circle',
+        opacity=0.7,
+        color='white',
+        size=8,
+        line=dict(width=1),
+    )
+)
+trace3 = go.Histogram2d(
+    x=x,
+    y=y,
+    colorscale='YIGnBu',
+    zmax=10,
+    nbinsx=14,
+    nbinsy=14,
+    zauto=False,
+)
+
+layout = go.Layout(
+    xaxis=dict( ticks='', showgrid=False, zeroline=False, nticks=20 ),
+    yaxis=dict( ticks='', showgrid=False, zeroline=False, nticks=20 ),
+    autosize=False,
+    height=550,
+    width=550,
+    hovermode='closest',
+)
 data = [trace1, trace2, trace3]
-response = Plotly.plot(data, ["filename" =&gt; "2d-histogram-scatter", "fileopt" =&gt; "overwrite"])
-plot_url = response["url"]
+fig = go.Figure(data=data, layout=layout)
+
+url = py.plot(fig, filename='2d-histogram-scatter')
