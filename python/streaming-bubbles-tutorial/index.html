@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html>
+	    <head>
+
+        <meta charset="utf-8" />
+
+        <!-- Media query magic - http://stackoverflow.com/questions/19945658/my-iphone-thinks-its-980px-wide -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    	<!-- Fonts -->
+    	<link rel="stylesheet" type="text/css" href="https://plot.ly/gh-pages/documentation/static//fonts/font-awesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://plot.ly/gh-pages/documentation/static//css/plotly_icons.css" />
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:600,400,300,200|Inconsolata|Ubuntu+Mono:400,700" rel="stylesheet" type="text/css" />
+	    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+        <script src="//cdn.plot.ly/plotly-latest.min.js"></script>
+
+    	<!-- Stylesheets -->
+        <link rel="stylesheet" href="https://plot.ly/gh-pages/documentation/static//css/js-splash-highlight.css"/>
+    	<link rel="stylesheet" type="text/css" href="https://plot.ly/gh-pages/documentation/static//css/normalize.css">
+    	<link rel="stylesheet" type="text/css" href="https://plot.ly/gh-pages/documentation/static//css/base.css">
+    	<link rel="stylesheet" type="text/css" href="https://plot.ly/gh-pages/documentation/static//css/layout_block.css">
+    	<link rel="stylesheet" type="text/css" href="https://plot.ly/gh-pages/documentation/static//css/modules.css">
+    	<link rel="stylesheet" type="text/css" href="https://plot.ly/gh-pages/documentation/static//css/state.css">
+        <link rel="stylesheet" href="https://plot.ly/gh-pages/documentation/static//css/js-splash.css"/>
+        
+        
+        <link rel="stylesheet" type="text/css" href="https://plot.ly/gh-pages/documentation/static//css/api_docs.css">
+        
+        
+
+    	<!-- Icon -->
+    	<link rel="shortcut icon" href="https://plot.ly/gh-pages/documentation/static//images/plotly-ico.png" type="image/x-icon" />
+
+    	<!-- META TAGS -->
+    	<!-- SEO Tags - title, meta_description -->
+    <title>Streaming Bubbles Tutorial</title>
+    <meta name="description" content="A tutorial on how to make a beautiful streaming plot of an animated bubble chart with plotly and Python or IPython.">
+
+<!-- Bing tags -->
+    <meta name="msvalidate.01" content="D319859A832F9F1D15A7646E2A42150A" />
+<!-- Facebook tags -->
+    <meta property="og:title" content="Streaming"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content="https://plot.ly/gh-pages/documentation/static//images/static-image.png">
+    <meta property="og:description" content="A tutorial on how to make a beautiful streaming plot of an animated bubble chart with plotly and Python or IPython."/>
+    <meta property="og:url" />
+    <meta property="fb:admins" content="1123751525"/>
+    <meta property="fb:admins" content="22418"/>
+
+<!-- twitter tags -->
+    <meta name="twitter:card" content="photo" />
+    <meta name="twitter:title" content="Streaming"/>
+    <meta name="twitter:url" content="http://help.plot.lypython/streaming-bubbles-tutorial/"/>
+    <meta name="twitter:description" content="A tutorial on how to make a beautiful streaming plot of an animated bubble chart with plotly and Python or IPython."/>
+    <meta name="twitter:image" content="https://plot.ly/gh-pages/documentation/static//images/static-image.png">
+    <meta name="twitter:site" content="@plotlygraphs"/>
+
+<!-- Favicon -->
+    <link rel="shortcut icon" href="https://plot.ly/gh-pages/documentation/static//images/plotly-ico.png" />
+
+
+
+    	<!-- code highlighting -->
+    	<!--<link rel="stylesheet" href="https://plot.ly/gh-pages/documentation/static//javascripts/codehighlight/styles/tomorrow.css">-->
+        
+	<!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+	for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
+	mixpanel.init("ad6df61d0b9400400b240631576c24d4");</script><!-- end Mixpanel -->
+
+	</head>
+
+	<head>
+	<link rel="stylesheet" type="text/css" href="https://plot.ly/gh-pages/documentation/static//css/state.css">
+	<link rel="stylesheet" type="text/css" href="https://plot.ly/gh-pages/documentation/static//css/ipython-notebook-base.css">
+	<link rel="stylesheet" type="text/css" href="https://plot.ly/gh-pages/documentation/static//css/ipython-notebook-custom.css">
+	</head>
+
+	<body>
+	<div id="header" style="
+  background-image: url('https://images.plot.ly/excel/plotlyjs/plotlyjs-banner-background.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  max-width: 100%;
+  background-position: center top;
+  width: 100%;
+  height: 350px;
+  position: relative;
+  ">
+
+	<div class="headerbar">
+
+  <div class="headerbar-leftside">
+      <a href="https://plot.ly/feed/" class="logo" target="_blank">
+          <i class="ploticon-plotlylogo"></i>
+          <em>plotly</em>
+      </a>
+  </div>
+
+  <div class="headerbar-rightside hidesmall">
+
+
+      <a href="/settings" id="toolsignin" class="headerbar-nav-item --product-header" target="_self">Sign In</a>
+
+      <a class="button --enterprise-quaternary" href="/settings" id="signup" target="_self">
+        SIGN UP
+      </a>
+      
+      
+        <a class="button" href="/2/~bar-chart-excel/?plot_type=Bar%20chart">
+          &plus; NEW PROJECT
+        </a>
+        <a class="button" href="https://plot.ly/products/cloud/">
+          UPGRADE
+        </a>
+      
+      
+      <a href="https://plotly.typeform.com/to/seG7Vb" class="typeform-share button --enterprise-quaternary" data-mode="1" target="_blank" onclick="window.mixpanel.track('Typeform demo request');">REQUEST DEMO</a>
+      <script>(function(){var qs,js,q,s,d=document,gi=d.getElementById,ce=d.createElement,gt=d.getElementsByTagName,id='typef_orm',b='https://s3-eu-west-1.amazonaws.com/share.typeform.com/';if(!gi.call(d,id)){js=ce.call(d,'script');js.id=id;js.src=b+'share.js';q=gt.call(d,'script')[0];q.parentNode.insertBefore(js,q)}})()
+      </script>
+
+  </div>
+
+  <div class="headerbar-nav hidesmall">
+
+      <a href="https://plot.ly/feed/" target="_blank">
+      <span class="headerbar-nav-item ">Feed</span>
+      </a>
+
+      <a href="https://plot.ly/products/cloud/" target="_blank">
+      <span class="headerbar-nav-item ">Pricing</span></span>
+      </a>
+
+      <a href="http://dashboards.ly/" target="_blank">
+      <span class="headerbar-nav-item ">Dashboards</span></span>
+      </a>
+
+      <a href="https://plot.ly/api/" onmouseover="dropDownMenu('api-menu')" onmouseout="hideDropDownMenu('api-menu')" target="_self">
+      <span class="headerbar-nav-item ">API</span><span class="caret"></span>
+      </a>
+
+          <nav id="api-menu" role="menu" class="dropdown-menu" onmouseover="dropDownMenu('api-menu')" onmouseout="hideDropDownMenu('api-menu')" style="display:none; margin-left: 225px;">
+              <a href="/python" class="dropdown-menu-item" target="_blank">PYTHON</a>
+              <a href="/r" class="dropdown-menu-item" target="_blank">R</a>
+              <a href="/matlab" class="dropdown-menu-item" target="_blank">MATLAB</a>
+              <a href="/javascript-graphing-library" class="dropdown-menu-item" target="_blank">JAVASCRIPT</a>
+              <a href="/api" class="dropdown-menu-item" target="_blank">MORE</a>
+          </nav>
+
+  </div>
+
+  <div class="hamburger">
+    <a href='#popmenufull' onclick='return clickfullmenu();'>
+      <div id="harburger-menu"></div>
+    </a>
+
+  </div>
+
+</div>
+
+<!-- POP UP MENU -->
+  <div id="popmenufull" style="display:none;">
+      <div class="popupheader">
+          <div class="headerbar-leftside">
+            <a href="/feed/" class="logo">
+              <i class="ploticon-plotlylogo"></i>
+              <em>plotly</em>
+            </a>
+          </div>
+          <a href='#popmenufull' onclick='return clickfullmenu();'>
+          <div class="close"><img alt="close" src="http://i.imgur.com/esVZHwn.png"></div> </a>
+      </div>
+
+      <div class="popupmenu">
+        <ul>
+          <li><a href="https://plot.ly/feed/">Explore</a></li>
+          <li><a href="https://plot.ly/products/cloud/">Pricing</a></li>
+
+          <div onmouseover="dropDownMenu('sub-industries')" onmouseout="hideDropDownMenu('sub-industries')">
+            <li><a href="https://plot.ly/products/industries/">Industries</a></li>
+            <div class="sub-popmenu" id="sub-industries" style="display:none;">
+                <ul class="no-margin">
+                  <li class="no-margin"><a href="https://plot.ly/products/industries/finance/">FINANCE</a></li>
+                  <li class="no-margin"><a href="https://plot.ly/products/industries/insurance/">INSURANCE</a></li>
+                  <li class="no-margin"><a href="https://plot.ly/products/industries/aerospace/">AEROSPACE</a></li>
+                  <li class="no-margin"><a href="https://plot.ly/products/industries/energy/">ENERGY</a></li>
+                  <li class="no-margin"><a href="https://plot.ly/products/industries/research-and-development/">RESEARCH &amp; DEVELOPMENT</a></li>
+                  <li class="no-margin"><a href="https://plot.ly/products/industries/automotive/">AUTOMOTIVE</a></li>
+                  <li class="no-margin"><a href="https://plot.ly/products/industries/government-and-public/">GOVERNMENT</a></li>
+                  <li class="no-margin"><a href="https://plot.ly/products/industries/pharma/">PHARMA &amp; COMPUTATIONAL BIOLOGY</a></li>
+                  <li class="no-margin"><a href="https://plot.ly/products/industries/journalism/">JOURNALISM</a></li>
+                  <li class="no-margin"><a href="https://plot.ly/products/industries/business-intelligence/">BUSINESS INTELLIGENCE</a></li>
+                </ul>
+            </div>
+          </div>
+          <div onmouseover="dropDownMenu('sub-api')" onmouseout="hideDropDownMenu('sub-api')">
+            <li><a href="https://plot.ly/api/">API</a></li>
+            <div class="sub-popmenu" id="sub-api" style="display:none;">
+              <ul class="no-margin">
+                <li class="no-margin"><a href="/python">PYTHON</a></li>
+                <li class="no-margin"><a href="/r">R</a></li>
+                <li class="no-margin"><a href="/matlab">MATLAB</a></li>
+                <li class="no-margin"><a href="/javascript">JAVASCRIPT</a></li>
+                <li class="no-margin"><a href="/api">MORE</a></li>
+              </ul>
+            </div>
+          </div>
+        </ul>
+      </div>
+
+  </div>
+
+  <!-- POPUP MENU FULL PAGE -->
+  <script>
+  function clickfullmenu(){
+    var thediv=document.getElementById('popmenufull');
+    if(thediv.style.display == "none"){
+      thediv.style.display = "";
+    }else{
+      thediv.style.display = "none";
+    }
+    return false;
+  };
+  </script>
+
+  <!-- Drop Down Menu -->
+  <script>
+  function dropDownMenu(divID){
+    var chosenDiv = document.getElementById(divID);
+    console.log(chosenDiv);
+    if(chosenDiv.style.display == "none"){
+      chosenDiv.style.display = "block";
+    }
+  };
+  function hideDropDownMenu(divID){
+    var chosenDiv = document.getElementById(divID);
+    console.log(chosenDiv);
+    if(chosenDiv.style.display == "block"){
+      chosenDiv.style.display = "none";
+    }
+  }
+  </script>
+
+  <script>
+  console.log('got this');
+    var hamburgerDiv = document.getElementById('harburger-menu');
+    var currentUrl = window.location.href;
+    var newImg = document.createElement('img');
+    if (currentUrl === 'https://plot.ly/javascript/' ) {
+        newImg.setAttribute('src', 'https://plot.ly/gh-pages/documentation/static//images/white-hamburger-bg-transparent.png');
+        newImg.setAttribute('alt', 'Menu');
+        newImg.setAttribute('id', 'hamburgerlink');
+        newImg.setAttribute('onmouseover', 'this.src="https://plot.ly/gh-pages/documentation/static//images/blue-hamburger-bg-transparent.png"');
+        newImg.setAttribute('onmouseout', 'this.src="https://plot.ly/gh-pages/documentation/static//images/white-hamburger-bg-transparent.png"');
+        hamburgerDiv.appendChild(newImg);
+    } else {
+        newImg.setAttribute('src', 'http://i.imgur.com/o7Mxj6T.png');
+        newImg.setAttribute('alt', 'Menu');
+        newImg.setAttribute('id', 'hamburgerlink');
+        newImg.setAttribute('onmouseover', 'this.src="http://i.imgur.com/gj2TtuI.png"');
+        newImg.setAttribute('onmouseout', 'this.src="http://i.imgur.com/o7Mxj6T.png"');
+        hamburgerDiv.appendChild(newImg);
+    }
+
+  </script>
+
+  <div style="
+    background-image: linear-gradient(0deg, rgba(100,91,158, 0.89)  0%, rgba(58,124,187, 0.89) 100%);
+    width: 100%;
+    height: 100%;
+  "></div>
+  
+    <!-- Lang Banner -->
+    <div class="js-splash--banner-container">
+    <div class="js-splash--banner-title" style="font-size: 5rem; margin-top: 0; margin-bottom: 2rem; font-weight: 300; font-family:'Open sans',verdana,arial,sans-serif;">
+    
+    </div>
+    <div class="js-splash--banner-subtitle" style="font-size: 2.2rem; letter-spacing: 0.3px; font-weight: 100;  margin-top: 0; margin-bottom: 2rem; font-weight: 300; font-family:'Open sans',verdana,arial,sans-serif;">
+    
+        <div style="padding-top: 30px;">
+          <h6 style="font-size:30px; color: rgb(255,255,255);">Plotly for Python is now entirely open source, free, and self-hosted</h6>
+          <h5 style="font-size:30px; color: rgb(255,255,255);" style="text-align: center;">
+            Learn more about <a style="color: #ABB9D2;" href="https://plot.ly/javascript/open-source-announcement">why we've open sourced</a>
+          </h5>
+        </div>
+    
+    </div>
+    
+    
+       <iframe src="https://ghbtns.com/github-btn.html?user=plotly&repo=plotly.py&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+    
+</div>
+
+
+</div>
+
+    <!-- sitemap -->
+    <div class="navigation-bar">
+
+    <p class="align-left padding_left_small"><a href="http://help.plot.ly/"><i class="fa fa-life-ring"></i> Help</a><span>/</span><a href="/api/">API Libraries</a><span>/</span><a href="/python"  >Python</a><span>/</span><a href="#">Streaming</a></p>
+
+    <div class="float-right padding_right_small" style="margin-top:10px;">
+        
+            <a id="forklink" href="https://github.com/plotly/plotly.py"><i class="fa fa-github-alt"></i> Fork on GitHub</a>
+        
+    </div>
+
+</div>
+
+
+		<div class="allcontent">
+			
+			<div class="sectionseparator_white">
+				<div class="container">
+
+
+
+					   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <h2 id="Section-7:-Plotly's-Streaming-API-part-3">
+       Section 7: Plotly's Streaming API part 3
+       <a class="anchor-link" href="#Section-7:-Plotly's-Streaming-API-part-3">
+        ¶
+       </a>
+      </h2>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Welcome to Plotly's Python API User Guide.
+      </p>
+      <blockquote>
+       <p>
+        Links to the other sections are on the User Guide's
+        <a href="/python/user-guide#Table-of-Contents:">
+         homepage
+        </a>
+        <br/>
+        The Github repository is available
+        <a href="https://github.com/plotly/python-user-guide" target="_blank">
+         here
+        </a>
+       </p>
+      </blockquote>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Section 7 is divided, into separate notebooks, as follows:
+      </p>
+      <ul>
+       <li>
+        <p>
+         <a href="/python/streaming-tutorial">
+          7.0 Streaming API introduction
+         </a>
+        </p>
+       </li>
+       <li>
+        <p>
+         <a href="/python/streaming-line-tutorial">
+          7.1 A first Plotly streaming plot
+         </a>
+        </p>
+       </li>
+       <li>
+        <p>
+         <a href="/python/streaming-double-pendulum-tutorial">
+          7.2 Never-ending double pendulum simulation
+         </a>
+        </p>
+       </li>
+       <li>
+        <p>
+         <a href="/python/streaming-bubbles-tutorial">
+          7.3 An animated version of Hans Rosling's bubble chart
+         </a>
+        </p>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <hr/>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       The User Guide assumes version 1.0 and up of Plotly's Python API.
+      </p>
+      <p>
+       Check which version is installed on your machine and please upgrade if needed.
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[1]">
+      <a class="prompt input_prompt" href="#in-[1]">
+       In [1]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="c"># (*) Import plotly package</span>
+<span class="kn">import</span> <span class="nn">plotly</span>
+
+<span class="c"># Check plolty version (if not latest, please upgrade)</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt" id="out[1]">
+        <a class="prompt output_prompt" href="#out[1]">
+         Out[1]:
+        </a>
+       </div>
+       <div class="output_text output_subarea output_pyout">
+        <pre>
+'1.6.6'
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       See the User Guide's
+       <a href="/python/user-guide#Installation-guidelines" target="_blank">
+        homepage
+       </a>
+       for more info on installation and upgrading.
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Import a few modules and sign in to Plotly using our credentials file:
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[2]">
+      <a class="prompt input_prompt" href="#in-[2]">
+       In [2]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="c"># (*) To communicate with Plotly's server, sign in with credentials file</span>
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+
+<span class="c"># (*) Useful Python/Plotly tools</span>
+<span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>
+
+<span class="c"># (*) Graph objects to piece together plots</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>  <span class="c"># (*) numpy for math functions and arrays</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       If you are not familiar with credentials files, refer to the User Guide's
+       <a href="/python/user-guide#Step-6" target="_blank">
+        homepage
+       </a>
+       .
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Finally, retrieve the stream ids in our credentials file as set up in
+       <a href="/python/streaming-tutorial#Get-your-stream-tokens" target="_blank">
+        subsection 7.1
+       </a>
+       :
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[3]">
+      <a class="prompt input_prompt" href="#in-[3]">
+       In [3]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="n">stream_ids</span> <span class="o">=</span> <span class="n">tls</span><span class="o">.</span><span class="n">get_credentials_file</span><span class="p">()[</span><span class="s">'stream_ids'</span><span class="p">]</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <h3 id="7.3-An-animated-version-of-Hans-Rosling's-bubble-chart">
+       7.3 An animated version of Hans Rosling's bubble chart
+       <a class="anchor-link" href="#7.3-An-animated-version-of-Hans-Rosling's-bubble-chart">
+        ¶
+       </a>
+      </h3>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Our next plot is an animated version of Hans Roslin's bubble chart found
+       <a href="/python/bubble-charts-tutorial" target="_blank">
+        section 3
+       </a>
+       . The GapMinder Data
+       <a href="https://github.com/plotly/python-user-guide/blob/master/s3_bubble-charts" target="_blank">
+        file
+       </a>
+       contains data for several years. Using Plotly's streaming API, we will show life expentancy of each of the world's countries versus their GDP, one year after the other as an animation.
+      </p>
+      <p>
+       We use pandas to manipulate the data file:
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[4]">
+      <a class="prompt input_prompt" href="#in-[4]">
+       In [4]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="c"># (*) Pandas for data manipulation</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="c"># (*) Urllib2 for in-session downloads</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+
+<span class="c"># The datasets' url. Thanks Jennifer Bryan!</span>
+<span class="n">data_url</span> <span class="o">=</span> <span class="s">'http://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/</span><span class="se">\</span>
+<span class="s">gapminder/data/gapminderDataFiveYear.txt'</span>
+
+<span class="n">data_file</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">data_url</span><span class="p">)</span>  <span class="c"># import data file into session</span>
+
+<span class="c"># Read csv file and define dataframe object (df for dataframe)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_file</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Find how many years there are in the dataframe:
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[5]">
+      <a class="prompt input_prompt" href="#in-[5]">
+       In [5]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'year'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()))</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt">
+       </div>
+       <div class="output_subarea output_stream output_stdout output_text">
+        <pre>
+12
+
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Ok, so our animation will show data for 12 different years.
+      </p>
+      <p>
+       Now, the number of countries for each year in the dataframe is:
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[6]">
+      <a class="prompt input_prompt" href="#in-[6]">
+       In [6]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="k">for</span> <span class="n">year</span><span class="p">,</span> <span class="n">X</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'year'</span><span class="p">):</span>
+   <span class="k">print</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="s">'country'</span><span class="p">]))</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt">
+       </div>
+       <div class="output_subarea output_stream output_stdout output_text">
+        <pre>
+(1952, 142)
+(1957, 142)
+(1962, 142)
+(1967, 142)
+(1972, 142)
+(1977, 142)
+(1982, 142)
+(1987, 142)
+(1992, 142)
+(1997, 142)
+(2002, 142)
+(2007, 142)
+
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Each year in the dataframe has data for the same number of countries; we have one less thing to worry about.
+      </p>
+      <p>
+       Finally, the minimum and maximum values of the x and y variables are:
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[7]">
+      <a class="prompt input_prompt" href="#in-[7]">
+       In [7]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="n">df</span><span class="p">[</span><span class="s">'gdpPercap'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">df</span><span class="p">[</span><span class="s">'gdpPercap'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt" id="out[7]">
+        <a class="prompt output_prompt" href="#out[7]">
+         Out[7]:
+        </a>
+       </div>
+       <div class="output_text output_subarea output_pyout">
+        <pre>
+(241.16587650000002, 113523.1329)
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[8]">
+      <a class="prompt input_prompt" href="#in-[8]">
+       In [8]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="n">df</span><span class="p">[</span><span class="s">'lifeExp'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">df</span><span class="p">[</span><span class="s">'lifeExp'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt" id="out[8]">
+        <a class="prompt output_prompt" href="#out[8]">
+         Out[8]:
+        </a>
+       </div>
+       <div class="output_text output_subarea output_pyout">
+        <pre>
+(23.599, 82.602999999999994)
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       We will use these values to set up the range of the plot's x-axis and y-axis in the layout object shortly.
+      </p>
+      <p>
+       First, set up a
+       <a href="/python/streaming-line-tutorial#7.1-A-first-Plotly-streaming-plot" target="_blank">
+        stream id
+       </a>
+       graph object:
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[9]">
+      <a class="prompt input_prompt" href="#in-[9]">
+       In [9]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="c"># (!) Get stream id from stream id list, </span>
+<span class="c">#     only one needed for this plot</span>
+<span class="n">stream_id</span> <span class="o">=</span> <span class="n">stream_ids</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+<span class="c"># Make a stream id object linking stream id to 'token' key</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">stream_id</span><span class="p">)</span>
+
+<span class="c"># no need to set `'maxpoints'` for this plot</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Next, initialize the plot's trace and layout objects:
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[10]">
+      <a class="prompt input_prompt" href="#in-[10]">
+       In [10]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="c"># Initialize trace of streaming plot by embedding the unique stream_id</span>
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="p">[],</span>     <span class="c"># init. data</span>
+    <span class="n">y</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">[],</span>  <span class="c"># init. hover text</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s">'markers'</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">Marker</span><span class="p">(</span>
+        <span class="n">color</span><span class="o">=</span><span class="p">[],</span>  <span class="c"># init. marker color</span>
+        <span class="n">size</span><span class="o">=</span><span class="p">[],</span>   <span class="c"># init. marker sizes</span>
+        <span class="n">opacity</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>          <span class="c"># partly transparent markers</span>
+        <span class="n">line</span><span class="o">=</span><span class="n">Line</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>  <span class="c"># remove marker borders</span>
+    <span class="p">),</span>
+    <span class="n">stream</span><span class="o">=</span><span class="n">stream</span>  <span class="c"># (!) embed stream id, 1 per trace</span>
+<span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">([</span><span class="n">trace1</span><span class="p">])</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[11]">
+      <a class="prompt input_prompt" href="#in-[11]">
+       In [11]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="c"># Set plot and axis titles</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s">"Fig 7.3a: Animated Hans Rosling bubble chart"</span>  <span class="c"># plot's title</span>
+<span class="n">x_title</span> <span class="o">=</span> <span class="s">"Gross Domestic Product per Capita [in USD of the year 2000]"</span>
+<span class="n">y_title</span> <span class="o">=</span> <span class="s">"Life Expentancy [in years]"</span>
+
+<span class="c"># Define a dictionary of axis style options</span>
+<span class="n">axis_style</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>       <span class="c"># remove thick zero line</span>
+    <span class="n">gridcolor</span><span class="o">=</span><span class="s">'#FFFFFF'</span><span class="p">,</span>  <span class="c"># white grid lines</span>
+    <span class="n">ticks</span><span class="o">=</span><span class="s">'outside'</span><span class="p">,</span>      <span class="c"># draw ticks outside axes </span>
+    <span class="n">ticklen</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>            <span class="c"># tick length</span>
+    <span class="n">tickwidth</span><span class="o">=</span><span class="mf">1.5</span>         <span class="c">#   and width</span>
+<span class="p">)</span>
+
+<span class="c"># Initialize layout object</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>  <span class="c"># set plot title</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span>
+        <span class="n">axis_style</span><span class="p">,</span>            <span class="c"># add style options</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">x_title</span><span class="p">,</span>         <span class="c"># set x-axis title</span>
+        <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.9e4</span><span class="p">,</span><span class="mf">1.15e5</span><span class="p">]</span>  <span class="c"># set range</span>
+    <span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="n">YAxis</span><span class="p">(</span>
+        <span class="n">axis_style</span><span class="p">,</span>            <span class="c"># add style options</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">y_title</span><span class="p">,</span>         <span class="c"># y-axis title</span>
+        <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mi">21</span><span class="p">,</span><span class="mi">89</span><span class="p">]</span>          <span class="c"># set range</span>
+    <span class="p">),</span>
+    <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>         <span class="c"># remove legend (info in hover)</span>
+    <span class="n">hovermode</span><span class="o">=</span><span class="s">'closest'</span><span class="p">,</span>      <span class="c"># (!) hover -&gt; closest data pt</span>
+    <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s">'#EFECEA'</span><span class="p">,</span>   <span class="c"># set plot color to grey</span>
+    <span class="n">autosize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>  <span class="c"># turn off autosize</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">650</span><span class="p">,</span>       <span class="c"># plot width</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>      <span class="c"># plot height</span>
+<span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Initialize the figure with a call to Plotly:
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[12]">
+      <a class="prompt input_prompt" href="#in-[12]">
+       In [12]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="c"># Make a figure object</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="c"># (@) Send fig to Plotly, initialize streaming plot, open new tab</span>
+<span class="n">unique_url</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">'s7_bubbles'</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       You should have, opened in a new tab, something like (in our old UI)
+      </p>
+      <p>
+       <img src="https://plot.ly/gh-pages/documentation/static//images/py-user-guide-img/image16.png" style="padding-top:1em; padding-bottom:1em;"/>
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Before starting to stream our data, define a few functions to help us build the data object to be streamed. For more complete description of the options used below, refer to
+       <a href="/python/bubble-charts-tutorial" target="_blank">
+        section 3
+       </a>
+       of the User Guide.
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[13]">
+      <a class="prompt input_prompt" href="#in-[13]">
+       In [13]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="c"># (!) Set a reference for 'size' values (i.e. a population-to-pixel scaling).</span>
+<span class="c">#     Here the max bubble area will be on the order of 100 pixels</span>
+<span class="n">sizeref</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'pop'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1e2</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="c"># (!) Instead of defining a 'sizemode', the bubble's size will be given by</span>
+<span class="c">#     sqrt(pop / sizeref) </span>
+
+<span class="c"># Define a dictionary of color, one for each continent</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">Asia</span><span class="o">=</span><span class="s">'#1f77b4'</span><span class="p">,</span>
+    <span class="n">Europe</span><span class="o">=</span><span class="s">'#ff7f0e'</span><span class="p">,</span>
+    <span class="n">Africa</span><span class="o">=</span><span class="s">'#2ca02c'</span><span class="p">,</span>
+    <span class="n">Americas</span><span class="o">=</span><span class="s">'#d62728'</span><span class="p">,</span>
+    <span class="n">Oceania</span><span class="o">=</span><span class="s">'#9467bd'</span>
+<span class="p">)</span>
+
+<span class="c"># Define a hover-text generating function (returns a list of strings)</span>
+<span class="k">def</span> <span class="nf">make_text</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">'Year: </span><span class="si">%s</span><span class="se">\</span>
+<span class="s">    &lt;br&gt;Country: </span><span class="si">%s</span><span class="se">\</span>
+<span class="s">    &lt;br&gt;Life Expectancy: </span><span class="si">%s</span><span class="s"> years</span><span class="se">\</span>
+<span class="s">    &lt;br&gt;GDP per capita: </span><span class="si">%s</span><span class="s"> $</span><span class="se">\</span>
+<span class="s">    &lt;br&gt;Population: </span><span class="si">%s</span><span class="s"> million'</span> \
+    <span class="o">%</span> <span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="s">'country'</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="s">'lifeExp'</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="s">'gdpPercap'</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="s">'pop'</span><span class="p">]</span><span class="o">/</span><span class="mf">1e6</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       In addition, to keep track of the years in the animation,
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[14]">
+      <a class="prompt input_prompt" href="#in-[14]">
+       In [14]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="c"># Define an annotation-generating function (to label year and data source)</span>
+<span class="k">def</span> <span class="nf">make_anno</span><span class="p">(</span><span class="n">year</span><span class="p">):</span>
+    <span class="n">anno_text</span> <span class="o">=</span> <span class="s">'&lt;b&gt;Year: {}&lt;/b&gt;&lt;br&gt;Data source: GapMinder'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">text</span><span class="o">=</span><span class="n">anno_text</span><span class="p">,</span>  <span class="c"># set annotation text</span>
+        <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="c"># remove arrow </span>
+        <span class="n">xref</span><span class="o">=</span><span class="s">'paper'</span><span class="p">,</span>  <span class="c"># use paper coords</span>
+        <span class="n">yref</span><span class="o">=</span><span class="s">'paper'</span><span class="p">,</span>  <span class="c">#  for both coordinates</span>
+        <span class="n">x</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>  <span class="c"># position's x-coord</span>
+        <span class="n">y</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>  <span class="c">#   and y-coord</span>
+        <span class="n">font</span><span class="o">=</span><span class="n">Font</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span>    <span class="c"># increase font size (default is 12)</span>
+        <span class="n">bgcolor</span><span class="o">=</span><span class="s">'#FFFFFF'</span><span class="p">,</span>     <span class="c"># white background</span>
+        <span class="n">borderpad</span><span class="o">=</span><span class="mi">4</span>            <span class="c"># space bt. border and text (in px)</span>
+<span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Now, open the stream via the stream link object:
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[15]">
+      <a class="prompt input_prompt" href="#in-[15]">
+       In [15]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="c"># (@) Make instance of the Stream link object, </span>
+<span class="c">#     with same stream id as Stream id object</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">Stream</span><span class="p">(</span><span class="n">stream_id</span><span class="p">)</span>
+
+<span class="c"># (@) Open the stream</span>
+<span class="n">s</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       In our next plot, we stream not only x and y coordinates, but also marker size, marker color, hover text info and annotations. As always for more info on how to do so, let's call
+       <code>
+        help()
+       </code>
+       :
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[16]">
+      <a class="prompt input_prompt" href="#in-[16]">
+       In [16]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="n">help</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">write</span><span class="p">)</span>  <span class="c"># help for writing onto stream</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt">
+       </div>
+       <div class="output_subarea output_stream output_stdout output_text">
+        <pre>
+Help on method write in module plotly.plotly.plotly:
+
+write(self, trace, layout=None, validate=True, reconnect_on=(200, '', 408)) method of plotly.plotly.plotly.Stream instance
+    Write to an open stream.
+
+    Once you've instantiated a 'Stream' object with a 'stream_id',
+    you can 'write' to it in real time.
+
+    positional arguments:
+    trace - A valid plotly trace object (e.g., Scatter, Heatmap, etc.).
+            Not all keys in these are `stremable` run help(Obj) on the type
+            of trace your trying to stream, for each valid key, if the key
+            is streamable, it will say 'streamable = True'. Trace objects
+            must be dictionary-like.
+
+    keyword arguments:
+    layout (default=None) - A valid Layout object
+                            Run help(plotly.graph_objs.Layout)
+    validate (default = True) - Validate this stream before sending?
+                                This will catch local errors if set to True.
+
+    Some valid keys for trace dictionaries:
+        'x', 'y', 'text', 'z', 'marker', 'line'
+
+    Examples:
+    &gt;&gt;&gt; write(dict(x=1, y=2))  # assumes 'scatter' type
+    &gt;&gt;&gt; write(Bar(x=[1, 2, 3], y=[10, 20, 30]))
+    &gt;&gt;&gt; write(Scatter(x=1, y=2, text='scatter text'))
+    &gt;&gt;&gt; write(Scatter(x=1, y=3, marker=Marker(color='blue')))
+    &gt;&gt;&gt; write(Heatmap(z=[[1, 2, 3], [4, 5, 6]]))
+
+    The connection to plotly's servers is checked before writing
+    and reconnected if disconnected and if the response status code
+    is in `reconnect_on`.
+
+    For more help, see: `help(plotly.plotly.Stream)`
+    or see examples and tutorials here:
+    http://nbviewer.ipython.org/github/plotly/python-user-guide/blob/master/s7_streaming/s7_streaming.ipynb
+
+
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       So,
+       <code>
+        s.write()
+       </code>
+       accepts a dictionary of data specifications as its first positional argument (as we have done in the previous subsections). In contrast, users can send a dictionary of layout specifications to the stream via the
+       <code>
+        layout
+       </code>
+       keyword argument.
+      </p>
+      <p>
+       Now, let's loop through all years in the dataframe and plot every country one at a time from the lowest life expentancy to the highest (for fun):
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[17]">
+      <a class="prompt input_prompt" href="#in-[17]">
+       In [17]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="c"># (*) Import module keep track of time </span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="c"># Delay start of stream by 5 sec (time to switch tabs)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c"># Make list of (unique) years in the dataframe</span>
+<span class="n">years</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'year'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="c"># Loop through all years in df!</span>
+<span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+
+    <span class="c"># Find indices in df corresponding to year</span>
+    <span class="n">i_year</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'year'</span><span class="p">]</span><span class="o">==</span><span class="n">year</span><span class="p">)</span>
+
+    <span class="c"># Grab all rows correponding to year</span>
+    <span class="n">df_year</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">i_year</span><span class="p">]</span>
+
+    <span class="c"># Sort dataframe by life expentency in accending order</span>
+    <span class="n">df_year_sorted</span> <span class="o">=</span> <span class="n">df_year</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s">'lifeExp'</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">s_data</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c"># initialize data dict. to be streamed</span>
+    <span class="n">s_layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">annotations</span><span class="o">=</span><span class="p">[</span><span class="n">make_anno</span><span class="p">(</span><span class="n">year</span><span class="p">)])</span> <span class="c"># layout dict. to be streamed</span>
+
+    <span class="c"># Loop through each row of sorted df</span>
+    <span class="k">for</span> <span class="n">i_X</span><span class="p">,</span> <span class="n">X</span> <span class="ow">in</span> <span class="n">df_year_sorted</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+
+        <span class="n">s_data</span><span class="p">[</span><span class="s">'x'</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="s">'gdpPercap'</span><span class="p">]</span>   <span class="c"># GDP on the x-xaxis</span>
+        <span class="n">s_data</span><span class="p">[</span><span class="s">'y'</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="s">'lifeExp'</span><span class="p">]</span>     <span class="c"># life Exp on th y-axis</span>
+        <span class="n">s_data</span><span class="p">[</span><span class="s">'marker'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">X</span><span class="p">[</span><span class="s">'continent'</span><span class="p">]]</span> <span class="p">,</span>  <span class="c"># color by continent</span>
+            <span class="n">size</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="s">'pop'</span><span class="p">]</span><span class="o">/</span><span class="n">sizeref</span><span class="p">)</span>  <span class="c"># size by population</span>
+        <span class="p">)</span>
+        <span class="n">s_data</span><span class="p">[</span><span class="s">'text'</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_text</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span> <span class="c"># hover text info</span>
+
+        <span class="c"># (@) Write data and layout dict. to stream, every 0.1 sec</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s_data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">s_layout</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="c"># When all countries are plotted, hold for 2 sec and clear data on plot</span>
+    <span class="k">if</span> <span class="n">year</span> <span class="o">!=</span> <span class="n">years</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>  <span class="c"># except for last year in the dataframe</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">s_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">y</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="n">color</span><span class="o">=</span><span class="p">[],</span>
+                <span class="n">size</span><span class="o">=</span><span class="p">[]</span>
+            <span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="p">[]</span>
+        <span class="p">)</span>
+
+        <span class="n">s</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s_data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">s_layout</span><span class="p">)</span> <span class="c"># clear data, keep layout</span>
+
+<span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>  <span class="c"># (!) close stream when done</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       To see the results, watch the video below showing a screen capture of our animated plot during the data stream (in our old UI):
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt" id="in-[18]">
+      <a class="prompt input_prompt" href="#in-[18]">
+       In [18]:
+      </a>
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight">
+        <pre><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">YouTubeVideo</span>
+<span class="n">YouTubeVideo</span><span class="p">(</span><span class="s">'ZPHE888xSrw'</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s">'100%'</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s">'350'</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt" id="out[18]">
+        <a class="prompt output_prompt" href="#out[18]">
+         Out[18]:
+        </a>
+       </div>
+       <div class="output_html rendered_html output_subarea output_pyout">
+        <iframe allowfullscreen="" frameborder="0" height='350"' src="https://www.youtube.com/embed/ZPHE888xSrw" width="100%">
+        </iframe>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       This could make a really nice screensaver.
+      </p>
+      <p>
+       Plotly allows you to stream data points, marker specifications and layout options with ease.
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Subsections of section 7:
+      </p>
+      <ul>
+       <li>
+        <p>
+         <a href="/python/streaming-tutorial">
+          7.0 Streaming API introduction
+         </a>
+        </p>
+       </li>
+       <li>
+        <p>
+         <a href="/python/streaming-line-tutorial">
+          7.1 A first Plotly streaming plot
+         </a>
+        </p>
+       </li>
+       <li>
+        <p>
+         <a href="/python/streaming-double-pendulum-tutorial">
+          7.2 Never-ending double pendulum simulation
+         </a>
+        </p>
+       </li>
+       <li>
+        <p>
+         <a href="/python/streaming-bubbles-tutorial">
+          7.3 An animated version of Hans Rosling's bubble chart
+         </a>
+        </p>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <hr/>
+      <h4 style="font-size:14pt;">
+       Go to
+       <a href="/python/3d-plots-tutorial">
+        Section 8  --- 3D Plots
+       </a>
+      </h4>
+      <h4 style="font-size:14pt;">
+       Go to
+       <a href="/python/matplotlib-to-plotly-tutorial">
+        Section 6  --- Convert your Matplotlib plots to Plotly
+       </a>
+      </h4>
+      <h4 style="font-size:14pt;">
+       Go to
+       <a href="#notebook">
+        top of page
+       </a>
+      </h4>
+      <h4 style="font-size:14pt;">
+       Go to User Guide's
+       <a href="/python/user-guide">
+        homepage
+       </a>
+      </h4>
+      <hr/>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <div style="float:right; \">
+       <img align="right" src="https://plot.ly/gh-pages/documentation/static//images/py-user-guide-img/image06.png" style="float:right; margin-left: 5px; margin-top: -10px"/>
+      </div>
+      <h4>
+       Got Questions or Feedback?
+      </h4>
+      <p>
+       About
+       <a href="https://plot.ly" target="_blank">
+        Plotly
+       </a>
+      </p>
+      <ul>
+       <li>
+        email: feedback@plot.ly
+       </li>
+       <li>
+        tweet:
+        <a href="https://twitter.com/plotlygraphs" target="_blank">
+         @plotlygraphs
+        </a>
+       </li>
+      </ul>
+      <p>
+       About the
+       <a href="https://github.com/plotly/python-user-guide" target="_blank">
+        User Guide
+       </a>
+      </p>
+      <ul>
+       <li>
+        email: etienne@plot.ly
+       </li>
+       <li>
+        tweet:
+        <a href="https://twitter.com/etpinard" target="_blank">
+         @etpinard
+        </a>
+       </li>
+      </ul>
+      <h4 style="margin-top:30px;">
+       Notebook styling ideas
+      </h4>
+      <p>
+       Big thanks to
+      </p>
+      <ul>
+       <li>
+        <a href="http://nbviewer.ipython.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Prologue/Prologue.ipynb" target="_blank">
+         Cam Davidson-Pilon
+        </a>
+       </li>
+       <li>
+        <a href="http://lorenabarba.com/blog/announcing-aeropython/#.U1ULXdX1LJ4.google_plusone_share" target="_blank">
+         Lorena A. Barba
+        </a>
+       </li>
+      </ul>
+      <p>
+       <br/>
+      </p>
+     </div>
+    </div>
+   </div>
+
+
+				</div>
+			</div>
+		</div>
+    <footer>
+<div class="plotly-footer">
+	<div style="
+    background-image: url('https://images.plot.ly/background-images/grey-chart-background.png');
+    height: 200px;
+    font-family: 'Open sans',verdana,arial,sans-serif;
+    position: relative;">
+
+<h2 style="
+    text-align: center;
+    background-color: rgba(255,255,255,0.9);
+    margin: 0px;
+    padding-top: 20px;
+    font-family: 'Open sans',verdana,arial,sans-serif;">upgrade to pro</h2>
+
+<h5 style="
+    text-align: center;
+    background-color: rgba(255,255,255,0.9);
+    margin: 0;
+    padding: 20px 0px;
+    color: black;
+    font-family: 'Open sans',verdana,arial,sans-serif;">unlimited private files & email support</h5>
+
+<div style="
+    text-align: center;
+    height: 50%;
+    font-family: 'Open sans',verdana,arial,sans-serif;
+    background-color: rgba(255,255,255,0.9);">
+
+<a class="button trial-offline-cta" href="https://plot.ly/products/cloud/">$20 per month</a>
+
+</div>
+</div>
+
+	<div class="row footerarea footer-top" style="z-index: 100; position: relative;">
+		<div class="one column footcolumn space"> </div>
+		<div class="two columns footcolumn respfooter">
+			<h6 class="footer-heading">API</h6>
+			<ul>
+				<li><a  href="https://plot.ly/api/" target="_self">Documentation</a></li>
+				<li><a  href="https://plot.ly/api/" target="_self">API Libraries</a></li>
+				<li><a  href="https://plot.ly/rest/" target="_self">REST APIs</a></li>
+				<li><a  href="https://plot.ly/javascript/" target="_self">Plotly.js</a></li>
+				<li><a  href="https://plot.ly/workshop/" target="_self">Hardware</a></li>
+			</ul>
+		</div>
+		<div class="two columns footcolumn respfooter">
+			<h6 class="footer-heading">About Us</h6>
+			<ul>
+				<li><a href="https://plot.ly/company/team/" target="_self">Team</a></li>
+				<li><a href="https://plot.ly/company/jobs/" target="_self">Careers</a></li>
+				<li><a href="http://blog.plot.ly" target="_blank">Plotly Blog</a></li>
+				<li><a href="http://moderndata.plot.ly" target="_blank">Modern Data</a></li>
+			</ul>
+		</div>
+		<div class="two columns footcolumn respfooter">
+			<h6 class="footer-heading">Help</h6>
+			<ul>
+				<li><a href="https://plot.ly/learn/" target="_self">Knowledge Base</a></li>
+				<li><a href="https://plot.ly/benchmarks/" target="_self">Benchmarks</a></li>
+				<li><a href="https://plot.ly/workshop/" target="_self">Workshop</a></li>
+			</ul>
+		</div>
+		<div class="two columns footcolumn respfooter">
+			<h6 class="footer-heading">Solutions</h6>
+			<ul>
+				<li><a href="https://plot.ly/product/plans/" target="_self">Plans &amp; Pricing</a></li>
+				<li><a href="https://plot.ly/product/enterprise/" target="_self">Enterprise</a></li>
+				<li><a href="https://plot.ly/online-graphing-and-statistics-for-educators/" target="_self">Education</a></li>
+				<li><a href="https://plot.ly/product/plotlyjs/" target="_self">Plotly.js</a></li>
+			</ul>
+		</div>
+		<div class="two columns footcolumn respfooter">
+     		<h6 class="footer-heading">Connect</h6>
+			<ul class="plotly-social-media-small">
+				<li><a href="//twitter.com/plotlygraphs" target="_blank"><i class="icon-twitter social_icon"></i></a></li>
+				<li><a href="//www.facebook.com/Plotly" target="_blank"><i class="icon-facebook social_icon"></i></a></li>
+				<li><a href="//github.com/plotly" target="_blank"><i class="icon-github social_icon"></i></a></li>
+				<li><a href="//linkedin.com/company/plotly" target="_blank"><i class="icon-linkedin social_icon"></i></a></li>
+				<li><a href="//plus.google.com/+PlotLy" target="_blank"><i class="icon-google-plus  social_icon"></i></a></li>
+			</ul>
+		</div>
+		<div class="one column footcolumn"></div>
+	</div>
+
+	<div class="row footerarea footer-bottom" style="z-index: 100; position: relative;">
+		<div class="one column footcolumn space"> </div>
+		<div class="four columns footcolumn"><p>Copyright &copy; 2015 Plotly. All rights reserved.</p></div>
+		<div class="two columns footcolumn"><a href="https://plot.ly/terms-of-service/" target="_blank" ><p>Terms of Service</p></a></div>
+		<div class="two columns footcolumn"><a href="https://plot.ly/privacy/" target="_blank"><p>Privacy Policy</p></a></div>
+
+
+	</div>
+</div>
+</footer>
+
+
+<!-- Mathjax -->
+<script type='text/x-mathjax-config'>
+MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}});
+</script>
+<script type='text/javascript' src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML%2CSafe.js&#038;ver=4.1'></script>
+
+
+<!-- Image Hover Script -->
+<script src="https://plot.ly/gh-pages/documentation/static//javascripts/imghover.js"></script>
+
+<!-- code highlighting -->
+<script src="https://plot.ly/gh-pages/documentation/static//javascripts/codehighlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-39373211-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+<!-- start Mixpanel --><script type="text/javascript">(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f)}})(document,window.mixpanel||[]);
+mixpanel.init("ad6df61d0b9400400b240631576c24d4");</script><!-- end Mixpanel -->
+
+<script type="text/javascript">
+    mixpanel.track("Page visit", {
+        "url_group": "API docs - GitHub pages",
+        "url": window.location.pathname
+    });
+</script>
+
+<script type="text/javascript">
+function getQueryParam(param) {
+    param = param.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regexS = "[\\?&]" + param + "=([^&#]*)",
+        regex = new RegExp( regexS ),
+        results = regex.exec(document.URL);
+    if (results === null || (results && typeof(results[1]) !== 'string' && results[1].length)) {
+        return '';
+    } else {
+        return decodeURIComponent(results[1]).replace(/\+/g, ' ');
+    }
+};
+</script>
+
+<script type="text/javascript">
+    var visit_origin = getQueryParam("campaign_id");
+
+    mixpanel.register({
+        "email_campaign_received": visit_origin
+    });
+
+		mixpanel.track("email-campaign-visit", {
+				"url": window.location.pathname,
+				"email_campaign_received": visit_origin
+		});
+</script>
+
+
+<!-- Crazy Egg -->
+<script type="text/javascript">
+setTimeout(function(){var a=document.createElement("script");
+var b=document.getElementsByTagName("script")[0];
+a.src=document.location.protocol+"//script.crazyegg.com/pages/scripts/0042/1249.js?"+Math.floor(new Date().getTime()/3600000);
+a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);
+</script>
+
+<!-- Go to www.addthis.com/dashboard to customize your tools -->
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-563d60eba90f0f45" async="async"></script>
+
+<!-- Perfect Audience -->
+<script type="text/javascript">
+(function() {
+  window._pa = window._pa || {};
+  // _pa.orderId = "myOrderId"; // OPTIONAL: attach unique conversion identifier to conversions
+  // _pa.revenue = "19.99"; // OPTIONAL: attach dynamic purchase values to conversions
+  // _pa.productId = "myProductId"; // OPTIONAL: Include product ID for use with dynamic ads
+  var pa = document.createElement('script'); pa.type = 'text/javascript'; pa.async = true;
+  pa.src = ('https:' == document.location.protocol ? 'https:' : 'http:') + "//tag.marinsm.com/serve/5641f73b04b7cacb9d000124.js";
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(pa, s);
+})();
+</script>
+
+	</body>
+</html>
