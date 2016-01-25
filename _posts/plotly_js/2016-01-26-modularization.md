@@ -75,8 +75,10 @@ modules](https://developer.mozilla.org/en/docs/web/javascript/reference/statemen
 to be included in the output bundles has the potential of solving many of
 problems in modularization that we will highlight below simply by using ES6
 module definitions. While workarounds do exist, converting the plotly.js modules
-to ES6 syntax would have increased the overhead for browserify and webpack
-users. It simply feels too early for client-side libraries to adopt ES6 modules
+to ES6 syntax would have increased the overhead for browserify and webpack v1
+users (note that webpack v2 is planning on featuring
+[tree-shaking](http://www.2ality.com/2015/12/webpack-tree-shaking.html)). It
+simply feels too early for client-side libraries to adopt ES6 modules
 definitions.  Nevertheless, keeping an eye on how rollup progresses will be
 important in the next year. Its endorsement by the version 4 of
 [d3](https://github.com/substack/node-browserify/issues/1186) may make ES6
