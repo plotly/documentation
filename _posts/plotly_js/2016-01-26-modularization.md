@@ -122,7 +122,7 @@ Cons:
 Our solution!
 
 To avoid the problems of code duplication and nightmarish project management, we
-decided to opt for an easy to maintain monorepo style solution where the end
+decided to opt for an easy to maintain *mono-repo* style solution where the end
 user can configure and build the final package as they see fit, with only the
 trace types (e.g. bar, pie, histogram etc.) that they require. The WebGL trace
 types - specifically ScatterGL and Mesh3D - add nearly INSERT_BUNDLE_SIZE_DIFFERENCE
@@ -147,7 +147,7 @@ The downside of this route was that the modules couldn't completely stand on
 their own; nearly every trace module depends on code that is bundled in the
 core. Lucky for us, nearly everyone has a build step nowadays!
 
-While the generally preferred way to ship a package is to include `build` and
+While the generally preferred way to ship a package is to include `build` and/or
 `dist` directories, we've added an additional `lib` directory that contains all
 the user-facing parts. Inside, the files contain nothing more than re-exports,
 but this allows for a much nicer interface to `require`. Users can pick and
@@ -160,6 +160,11 @@ it allows is well worth the hit. Browserify and
 webpack both allow for caching, so after an initial bundling, there is
 no difference in development bundling time compared to using a pre-built bundle.
 
+So,
+
+```js
+// insert code example
+```
 
 
 Mention https://github.com/nodejs/node/issues/3953 which would make things even
