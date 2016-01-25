@@ -34,7 +34,7 @@ systems and different library features.
 [Plotly](https://plot.ly/)'s open source javascript graphing library,
 [plotly.js](https://plot.ly/javascript/), recently published its first modular
 [release](https://github.com/plotly/plotly.js/releases/tag/v1.5.0) allowing
-users to the bundle only the specific [trace
+users to bundle only the specific [trace
 modules](https://github.com/plotly/plotly.js/blob/49ea59fd3016b4b125855511a05abe92a2e69082/README.md#modules)
 they need.
 
@@ -47,7 +47,7 @@ presented below.
 
 We state the problem as such:
 
-> How to modularize a library, mainly for the purpose of trimming JS bundle size,
+> How to modularize a JS library, mainly for the purpose of trimming bundle size,
 in way that adds as little friction as possible for both the library consumers
 and the library developers.
 
@@ -66,7 +66,7 @@ href="https://twitter.com/mattdesl/status/683753259992006656">January 3,
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 Moreover, browserify and webpack are the two most mature bundling systems
-judging by the commit frequency and github activity of both.
+judging by the commit frequency and GitHub activity of both.
 
 The [rollup](http://rollupjs.org/) bundler offers an interesting take on
 client-side bundling and it worthy of a mention. Its *tree-shaking* feature,
