@@ -101,20 +101,66 @@ Cons:
 
 ### Possible solution 2
 
-Have the all the code in one repo and create multiple npm packages from it.
+Another solution to the problem would place all the code under one *mono-repo*
+and publish the different modules as distinct npm packages.
 
-Mention lodash: https://github.com/lodash/lodash
-and its cli: https://github.com/lodash/lodash-cli
+Three well-known projects are currently implementing this solution with slightly
+different flavours: [React](https://github.com/facebook/react),
+[Babel](https://github.com/babel/babel) and
+[lodash](https://github.com/lodash/lodash).
 
-Mention babel: https://github.com/babel/babel/blob/master/doc/design/monorepo.md
+While React and Babel spawn multiple npm packages from inside their mono-repos,
+the lodash team wrote a CLI utility named
+[lodash-cli](https://github.com/lodash/lodash-cli) to parse through their
+mono-repo looking for all its public methods and their dependencies to
+ultimately automatically publish them on npm (see
+[lodash-modularized](https://www.npmjs.com/browse/keyword/lodash-modularized)).
 
-Pros:
- - able to share test and building resources
+Mono-repos have several advantages. For instance, as pointed out in the Babel
+design
+[docs](https://github.com/babel/babel/blob/12b7a44796a504dbe5841473b899e499cae30749/doc/design/monorepo.md),
+the different packages can easily share common resources such as testing
+frameworks (who want to `npm i karma` for each package in a project) and
+development tooling which is a big plus for developers. In addition, issues are
+reported in a single place instead of being spread over multiple GitHub
+trackers.
+
+However, mono-repos spawning multiple npm package may not be ideal for project
+with several shared internal methods as they are prone to code duplication. To
+be more specific, imagine that the plotly.js repo spawned one npm package per
+trace type along with a core package. Then, to make a custom plotly.js bundle
+including only code to draw bar charts, one would:
+
+```bash
+npm i plotly.js-code plotly.js-bar
+```
+
+and then
+
+```js
+var plotlyCore = require('plotly.js-core');
+var plotlyBar = require('plotly.js-bar');
+
+plotlyCore.register(plotlyBar);
+
+module.exports = plotlyCore;
+```
+
+which only includes the bar charts when bundled. But, the two packages required
+above have shared dependencies e.g. both required the same helper functions to
+coerce chart attributes. But publishing both package independently, their shared
+dependencies would lose
+
+
+To sum up:
+
+**Pros:**
+ - able to share common resources
 
 
 Cons:
  - writing the scripts the would split up the repo into modules would be tricky
-   and error-prone
+   and error-prone. hats off to the lodash team for pulling it off
  - Would have to make the internal modules, public module on npm to
    not duplicate code
 
