@@ -1,7 +1,7 @@
 ---
-title: Plotly's answer to client-side modularization
-name: Plotly's answer to client-side modularization
-permalink: javascript/client-side-modularization
+title: Plotly's solution to client-side modularization
+name: Plotly's solution to client-side modularization
+permalink: javascript/friction-less-client-side-modularization
 language: plotly_js
 has_thumbnail: false
 layout: user-guide
@@ -9,11 +9,15 @@ no_sidebar: true
 language: plotly_js
 ---
 
-# Plotly's answer to client-side modularization
+# Plotly's solution to client-side modularization
+
+or maybe
+
+# Friction-less client-side modularization
 
 January 26, 2015
 
-**tl;dr** One library's answer to approaching client-side modularity using a
+**tl;dr** One library's solution to approaching client-side modularity using a
 mono-repo, one npm package and several CommonJS require-able modules.
 
 
@@ -38,18 +42,19 @@ users to bundle only the specific [trace
 modules](https://github.com/plotly/plotly.js/blob/49ea59fd3016b4b125855511a05abe92a2e69082/README.md#modules)
 they need.
 
-We believe that our reflection on providing the best experience for plotly.js
-consumers can be applicable for other client-side libraries. Our reflection is
-presented below.
+In the past two months, we surveyed library design solutions in an effort to
+provide the best experience for plotly.js consumers. We hope that our reflection
+may help maintainers of other client-side libraries make judicious design
+choices. We present Plotly's solution to client-side modularization below.
 
 
 ### Problem
 
 We state the problem as such:
 
-> How to modularize a JS library, mainly for the purpose of trimming bundle size,
-in way that adds as little friction as possible for both the library consumers
-and the library developers.
+> How to modularize a client-side JS library, mainly for the purpose of trimming
+bundle size, in way that adds as little friction as possible for both
+library consumers and library developers.
 
 In addition, we formalize two addition requirements:
 
@@ -75,12 +80,12 @@ modules](https://developer.mozilla.org/en/docs/web/javascript/reference/statemen
 to be included in the output bundles has the potential of solving many of
 problems in modularization that we will highlight below simply by using ES6
 module definitions. While workarounds do exist, converting the plotly.js modules
-to ES6 syntax would have increased the overhead for browserify and webpack v1
+to ES6 syntax would increase the overhead for browserify and webpack v1
 users (note that webpack v2 is planning on featuring
 [tree-shaking](http://www.2ality.com/2015/12/webpack-tree-shaking.html)). It
 simply feels too early for client-side libraries to adopt ES6 modules
 definitions.  Nevertheless, keeping an eye on how rollup progresses will be
-important in the next year. Its endorsement by the version 4 of
+important in 2016. Its endorsement by the version 4 of
 [d3](https://github.com/substack/node-browserify/issues/1186) may make ES6
 module definitions common place for the next generation of large client-side
 libraries.
@@ -113,23 +118,23 @@ While React and Babel spawn multiple npm packages from inside their mono-repos,
 the lodash team wrote a CLI utility named
 [lodash-cli](https://github.com/lodash/lodash-cli) to parse through their
 mono-repo looking for all its public methods and their dependencies to
-ultimately automatically publish them on npm (see
+ultimately publish them on npm automatically (see
 [lodash-modularized](https://www.npmjs.com/browse/keyword/lodash-modularized)).
 
 Mono-repos have several advantages. For instance, as pointed out in the Babel
-design
-[docs](https://github.com/babel/babel/blob/12b7a44796a504dbe5841473b899e499cae30749/doc/design/monorepo.md),
+[design
+docs](https://github.com/babel/babel/blob/12b7a44796a504dbe5841473b899e499cae30749/doc/design/monorepo.md),
 the different packages can easily share common resources such as testing
-frameworks (who want to `npm i karma` for each package in a project) and
+frameworks (who wants to `npm i karma` for each package in a project) and
 development tooling which is a big plus for developers. In addition, issues are
 reported in a single place instead of being spread over multiple GitHub
 trackers.
 
 However, mono-repos spawning multiple npm package may not be ideal for project
-with several shared internal methods as they are prone to code duplication. To
-be more specific, imagine that the plotly.js repo spawned one npm package per
-trace type along with a core package. Then, to make a custom plotly.js bundle
-including only code to draw bar charts, one would:
+with several shared internal modules, mainly because they are prone to code
+duplication. To be more specific, imagine that the plotly.js repo spawned one
+npm package per trace type along with a core package. Then, to make a custom
+plotly.js bundle including only code to draw bar charts, one would:
 
 ```bash
 npm i plotly.js-code plotly.js-bar
@@ -146,23 +151,26 @@ plotlyCore.register(plotlyBar);
 module.exports = plotlyCore;
 ```
 
-which only includes the bar charts when bundled. But, the two packages required
-above have shared dependencies e.g. both required the same helper functions to
-coerce chart attributes. But publishing both package independently, their shared
-dependencies would lose
+It is important to note that if these two modules required above have shared
+dependencies (e.g. some internal helper function), these will be duplicated in
+the resulting bundle unless (1) they become themselves published modules or (2)
+are exposed on the core export (e.g. `plotlyCore` in the above example).
 
+Both (1) and (2) have drawbacks. Publishing internal modules would result extra
+maintenance work while exposing more methods on the core export would result in
+greater library footprint.
 
 To sum up:
 
 **Pros:**
- - able to share common resources
+ - Able to share common resources (e.g. testing, development and build step)
+ - Centralized GitHub issue tracker
 
-
-Cons:
- - writing the scripts the would split up the repo into modules would be tricky
-   and error-prone. hats off to the lodash team for pulling it off
- - Would have to make the internal modules, public module on npm to
-   not duplicate code
+**Cons:**
+ - Writing the script(s) needed to split and/or publish the individual packages
+   from within the mono-repo is non-trivial. Hats off to the lodash team for
+   pulling it off.
+ - Internal modules are prone to code duplication in the resulting bundles.
 
 
 ### Possible solution 3
