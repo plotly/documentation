@@ -137,7 +137,7 @@ npm package per trace type along with a core package. Then, to make a custom
 plotly.js bundle including only code to draw bar charts, one would:
 
 ```bash
-npm i plotly.js-code plotly.js-bar
+npm i plotly.js-core plotly.js-bar
 ```
 
 and then
@@ -177,44 +177,65 @@ To sum up:
 
 Our solution!
 
-To avoid the problems of code duplication and nightmarish project management, we
-decided to opt for an easy to maintain *mono-repo* style solution where the end
-user can configure and build the final package as they see fit, with only the
-trace types (e.g. bar, pie, histogram etc.) that they require. The WebGL trace
-types - specifically ScatterGL and Mesh3D - add nearly INSERT_BUNDLE_SIZE_DIFFERENCE
+To avoid the problems of code duplication and adding complication toproject
+management, we decided to opt for an easy to maintain *mono-repo* style solution
+where the end user can configure and build the final package as they see fit,
+with only the trace types (e.g. bar, pie, histogram etc.) that they require. The
+WebGL trace types - specifically ScatterGL and Mesh3D - add nearly INSERT_BUNDLE_SIZE_DIFFERENCE
 to the bundle size and for many users, only one or two basic trace types are
 needed.
 
 Traces were originally loaded onto the `Plotly` object when a trace's `index.js`
 file was executed, so the whole trace module had a dependency on `Plotly`.
-To deal with this, we initially implemented a simplistic dependency injection
-system where each `index.js` for a trace exported a function that accepted
-the `Plotly` dependency and would pass it down to its child files, then load
-the trace onto `Plotly`. This worked well enough, but felt more complex than it
-needed to be and required us to wrap all the trace module code in functions. We
-quickly saw that dependency injection could be completely avoided by changing
-dependencies on `Plotly.____` to directly require the code
-needed, and invert the control flow by moving the code that loads
-modules into a top-level `register` method. This meant that the `index.js` of
-each trace could be greatly simplified to re-export only the generalized methods
-that are used for drawing traces.
+To deal with this, we initially implemented a simple dependency injection
+system where each trace's `index.js` exported a function that accepted
+the `Plotly` dependency and passed it down to its children, then we could load
+the ready-to-go trace onto `Plotly`.
 
-The downside of this route was that the modules couldn't completely stand on
+```javascript
+module.init = function(Plotly){
+  return {
+    plot: require('./plot')(Plotly),
+    attributes: require('./attributes')(Plotly),
+    ...
+  }
+}
+```
+
+This worked well enough, but was more complex than it needed to be and required
+us to wrap all the trace module code in functions. We quickly saw that
+dependency injection could be completely avoided by changing dependencies on
+`Plotly.____` to directly require the code needed, and invert the control flow
+by moving the code that loads modules into a top-level `register` method. This
+meant that the `index.js` of each trace could be greatly simplified to re-export
+only the generalized methods that are used for drawing traces.
+
+The downside of this solution is that the modules can't completely stand on
 their own; nearly every trace module depends on code that is bundled in the
-core. Lucky for us, nearly everyone has a build step nowadays!
+core. Lucky for us, in the year 2016, nearly everyone has a build step!
 
-While the generally preferred way to ship a package is to include `build` and/or
-`dist` directories, we've added an additional `lib` directory that contains all
-the user-facing parts. Inside, the files contain nothing more than re-exports,
-but this allows for a much nicer interface to `require`. Users can pick and
-choose the trace types they'd like to use, register them with the plotly.js core
-module, then re-export their custom plotly.js module for use everywhere in their
-own source.
+While the generally preferred way to ship a package is to include `build` and
+`dist` directories, containing nothing but pure and clean javascript, we've
+added an additional `lib` directory that contains all the power-user-facing
+parts. Inside, the files contain nothing more than re-exports, but this allows
+for a much cleaner `require`'s in end-user code. Users can pick and choose the
+trace types they'd like to use, register them with the plotly.js core module,
+then re-export their own custom plotly.js module for use in their own code. If
+the need arises to use another trace type, all that needs to be done is adding a
+new trace module to the `Plotly.register` call.
+
+```javascript
+var Core = require('plotly.js/lib/core');
+var Bar = require('plotly.js/lib/bar');
+
+var CustomPlotly = Core.register(Bar);
+
+```
 
 Although this adds a minor increase in build time, we feel that the flexibility
-it allows is well worth the hit. Browserify and
-webpack both allow for caching, so after an initial bundling, there is
-no difference in development bundling time compared to using a pre-built bundle.
+it allows is well worth the hit. Browserify and webpack both have caching while,
+developing, so after an initial bundling, there is no appreciable difference in
+bundling time compared to using a pre-built library.
 
 So,
 
@@ -222,6 +243,16 @@ So,
 // insert code example
 ```
 
+Once working this out and getting everything to work smoothly, we were faced
+with one more issue still: webpack. Many areas of the plotly.js use
+[glslify](https://github.com/stackgl/glslify) transforms, and unfortunately,
+some of the plotly.js dependencies *rely on browserify to resolve transforms
+specified in a package.json*. This was a problem that we puzzled over for quite
+some time until [Hugh Kenedy](https://github.com/hughsk) released
+[ify-loader](https://github.com/hughsk/ify-loader) for webpack. With this, as
+webpack walks through source code and resolves `require`'s it will check the
+package.json `browserify` field for any necessary transforms and apply them
+appropriately.
 
 Mention https://github.com/nodejs/node/issues/3953 which would make things even
 cleaner.
@@ -233,7 +264,6 @@ Pros:
 Cons:
  - consumers need to require the plotly.js modules will a longer path e.g
    `require('plotly.js/lib/scatter3d')`
+ - webpack users will need to add [ify-loader](https://github.com/hughsk/ify-loader)
+   to their config
 
-
-
-Mention https://github.com/hughsk/ify-loader for full webpack support
