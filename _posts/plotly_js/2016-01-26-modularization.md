@@ -89,15 +89,25 @@ libraries.
 
 ### Possible solution 1
 
-Split up the library into separate repo / npm modules
+Split up the library's modules into multiple repos, with each module linked to
+its own npm package.
 
-Pros:
- -
+This solution is most common in the node.js world, but for a large client-side
+library is less-than-ideal. Having the different modules spread across multiple
+repos increases friction during development. For example, how should one write
+integration tests for module that can't do anything on its own? One could write
+up on testing repo requiring multiple modules, but that would often result in
+several `npm link` and `npm publish` commands. For a small team of maintainer
+like ours, this solution was quickly discarded.
 
-Cons:
+**Pros:**
+ - For a large project like plotly.js, we can't honestly think of any
+
+**Cons:**
  - That would have been a lot of work for us
  - Can't easily share testing and building resources from module to module
- - Possible code duplication unless the internal modules become npm modules too
+ - Possible code duplication unless the internal modules become npm package too
+   (more on that in the next section)
 
 
 ### Possible solution 2
