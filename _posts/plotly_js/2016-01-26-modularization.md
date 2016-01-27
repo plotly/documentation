@@ -50,7 +50,7 @@ choices. We present Plotly's solution to client-side modularization below.
 We state the problem as such:
 
 > How to modularize a client-side JS library, mainly for the purpose of trimming
-bundle size, in way that adds as little friction as possible for both
+bundle size, in a way that adds as little friction as possible for both
 library consumers and library developers?
 
 In addition, we formalize two additional requirements:
