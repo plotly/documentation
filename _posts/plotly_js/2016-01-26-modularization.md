@@ -71,11 +71,11 @@ Moreover, browserify and webpack are the two most mature bundling systems
 judging by the commit frequency and GitHub activity of both.
 
 The [rollup](http://rollupjs.org/) bundler offers an interesting take on
-client-side bundling and it worthy of a mention. Its *tree-shaking* feature,
+client-side bundling and is worthy of a mention. Its *tree-shaking* feature,
 which allows for only certain bits of [ES6
 modules](https://developer.mozilla.org/en/docs/web/javascript/reference/statements/import)
-to be included in the output bundles has the potential of solving many of
-problems in modularization that we will highlight below simply by using ES6
+to be included in the output bundles, has the potential of solving many of
+the problems in modularization that we will highlight below simply by using ES6
 module definitions. While workarounds do exist, converting the plotly.js modules
 to ES6 syntax would increase the overhead for browserify and webpack v1
 users (note that webpack v2 is planning on featuring
@@ -96,9 +96,9 @@ its own npm package.
 This solution is most common in the node.js world, but for a large client-side
 library is less-than-ideal. Having the different modules spread across multiple
 repos increases friction during development. For example, how should one write
-integration tests for module that can't do anything on its own? One could write
+integration tests for a module that can't do anything on its own? One could write
 up on testing repo requiring multiple modules, but that would often result in
-several `npm link` and `npm publish` commands. For a small team of maintainer
+several `npm link` and `npm publish` commands. For a small team of maintainers
 like ours, this solution was quickly discarded.
 
 **Pros:**
