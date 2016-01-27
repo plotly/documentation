@@ -4,7 +4,7 @@ name: Friction-less client-side modularization
 permalink: javascript/friction-less-client-side-modularization
 language: plotly_js
 has_thumbnail: false
-layout: user-guide
+layout: blog-post
 no_sidebar: true
 language: plotly_js
 ---
@@ -13,6 +13,7 @@ language: plotly_js
 
 January 26, 2015
 
+---
 > **tl;dr** One library's solution to approaching client-side modularity using a
 mono-repo, one npm package and several CommonJS require-able modules.
 
