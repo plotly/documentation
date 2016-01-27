@@ -148,13 +148,13 @@ npm i plotly.js-core plotly.js-bar
 
 and then
 
-```js
+```javascript
 var plotlyCore = require('plotly.js-core');
 var plotlyBar = require('plotly.js-bar');
 
-plotlyCore.register(plotlyBar);
+var customPlotly = plotlyCore.register(plotlyBar);
 
-module.exports = plotlyCore;
+module.exports = customPlotly;
 ```
 
 It is important to note that if these two modules required above have shared
@@ -199,11 +199,11 @@ the `Plotly` dependency and passed it down to its children, then we could load
 the ready-to-go trace onto `Plotly`.
 
 ```javascript
-module.init = function(Plotly){
+module.init = function(Plotly) {
   return {
     plot: require('./plot')(Plotly),
     attributes: require('./attributes')(Plotly),
-    ...
+    // ...
   }
 }
 ```
@@ -231,11 +231,12 @@ the need arises to use another trace type, all that needs to be done is adding a
 new trace module to the `Plotly.register` call.
 
 ```javascript
-var Core = require('plotly.js/lib/core');
-var Bar = require('plotly.js/lib/bar');
+var plotlyCore = require('plotly.js/lib/core');
+var plotlyBar = require('plotly.js/lib/bar');
 
-var CustomPlotly = Core.register(Bar);
+var customPlotly = plotlyCore.register(plotlyBar);
 
+module.exports = customPlotly;
 ```
 
 Although this adds a minor increase in build time, we feel that the flexibility
@@ -245,9 +246,6 @@ bundling time compared to using a pre-built library.
 
 So,
 
-```js
-// insert code example
-```
 
 Once working this out and getting everything to work smoothly, we were faced
 with one more issue still: webpack. Many areas of the plotly.js use
@@ -260,16 +258,13 @@ webpack walks through source code and resolves `require`'s it will check the
 package.json `browserify` field for any necessary transforms and apply them
 appropriately.
 
-Mention https://github.com/nodejs/node/issues/3953 which would make things even
-cleaner.
-
 Pros:
- - one repo
- - no code duplication in bundles
+ - One repo
+ - No code duplication in resulting bundles
 
 Cons:
- - consumers need to require the plotly.js modules will a longer path e.g
-   `require('plotly.js/lib/scatter3d')`
+ - consumers need to require the plotly.js modules will a longer path e.g.
+   `require('plotly.js/lib/bar')`
  - webpack users will need to add [ify-loader](https://github.com/hughsk/ify-loader)
-   to their config
+   to their config file
 
