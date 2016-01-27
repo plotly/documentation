@@ -50,7 +50,7 @@ We state the problem as such:
 
 > How to modularize a client-side JS library, mainly for the purpose of trimming
 bundle size, in way that adds as little friction as possible for both
-library consumers and library developers.
+library consumers and library developers?
 
 In addition, we formalize two addition requirements:
 
@@ -183,18 +183,20 @@ To sum up:
 
 Our solution!
 
-To avoid the problems of code duplication and adding complication toproject
-management, we decided to opt for an easy to maintain *mono-repo* style solution
-where the end user can configure and build the final package as they see fit,
-with only the trace types (e.g. bar, pie, histogram etc.) that they require. The
-WebGL trace types - specifically ScatterGL and Mesh3D - add nearly INSERT_BUNDLE_SIZE_DIFFERENCE
-to the bundle size and for many users, only one or two basic trace types are
-needed.
+To avoid the problems of code duplication and adding complication to project
+management, we decided to opt for an easy to maintain *mono-repo* +
+*mono-package* style solution.
 
-Traces were originally loaded onto the `Plotly` object when a trace's `index.js`
-file was executed, so the whole trace module had a dependency on `Plotly`.
-To deal with this, we initially implemented a simple dependency injection
-system where each trace's `index.js` exported a function that accepted
+With this solution, the end user can configure and build the final package as
+they see fit, with only the trace types (e.g. bar, pie, histogram etc.) that
+they require. The WebGL trace types - specifically ScatterGL and Mesh3D - add
+nearly 100 KB to the bundle size and for many users, only one or two basic trace
+types are needed.
+
+Traces modules were originally loaded onto the `Plotly` core object when a
+trace's `index.js` file was executed, so the whole trace module had a dependency
+on `Plotly`.  To deal with this, we initially implemented a simple dependency
+injection system where each trace's `index.js` exported a function that accepted
 the `Plotly` dependency and passed it down to its children, then we could load
 the ready-to-go trace onto `Plotly`.
 
@@ -220,7 +222,7 @@ The downside of this solution is that the modules can't completely stand on
 their own; nearly every trace module depends on code that is bundled in the
 core. Lucky for us, in the year 2016, nearly everyone has a build step!
 
-While the generally preferred way to ship a package is to include `build` and
+While the generally preferred way to ship a package is to include `build` and/or
 `dist` directories, containing nothing but pure and clean javascript, we've
 added an additional `lib` directory that contains all the power-user-facing
 parts. Inside, the files contain nothing more than re-exports, but this allows
@@ -239,13 +241,17 @@ var customPlotly = plotlyCore.register(plotlyBar);
 module.exports = customPlotly;
 ```
 
-Although this adds a minor increase in build time, we feel that the flexibility
-it allows is well worth the hit. Browserify and webpack both have caching while,
-developing, so after an initial bundling, there is no appreciable difference in
-bundling time compared to using a pre-built library.
+Alternatively, putting the `lib` files at the repo's root would have made the
+`require` statements even cleaner e.g. `require('plotly.js/core')` instead of
+`require('plotly.js/lib/core')`. But considering the large number of these `lib`
+files we have, we opt for a `lib` directory in order to not pollute the repo's
+root. Note that the `"main"` package.json filed cannot be set to a directory
+(more info [here](Mention https://github.com/nodejs/node/issues/3953)).
 
-So,
-
+Our solution results in a minor increase in build time, we feel that the
+flexibility it allows is well worth the hit. Browserify and webpack both have
+caching while, developing, so after an initial bundling, there is no appreciable
+difference in bundling time compared to using a pre-built library.
 
 Once working this out and getting everything to work smoothly, we were faced
 with one more issue still: webpack. Many areas of the plotly.js use
