@@ -71,7 +71,7 @@ Moreover, browserify and webpack are the two most mature bundling systems
 judging by the commit frequency and GitHub activity of both.
 
 The [rollup](http://rollupjs.org/) bundler offers an interesting take on
-client-side bundling and is worthy of a mention. Its *tree-shaking* feature,
+client-side bundling and is worthy of mention. Its *tree-shaking* feature,
 which allows for only certain bits of [ES6
 modules](https://developer.mozilla.org/en/docs/web/javascript/reference/statements/import)
 to be included in the output bundles, has the potential of solving many of
@@ -137,7 +137,7 @@ development tooling which is a big plus for developers. In addition, issues are
 reported in a single place instead of being spread over multiple GitHub
 trackers.
 
-However, mono-repos spawning multiple npm package may not be ideal for project
+However, mono-repos spawning multiple npm package may not be ideal for a project
 with several shared internal modules, mainly because they are prone to code
 duplication. To be more specific, imagine that the plotly.js repo spawned one
 npm package per trace type along with a core package. Then, to make a custom
@@ -163,7 +163,7 @@ dependencies (e.g. some internal helper function), these will be duplicated in
 the resulting bundle unless (1) they become themselves published modules or (2)
 are exposed on the core export (e.g. `plotlyCore` in the above example).
 
-Both (1) and (2) have drawbacks. Publishing internal modules would result extra
+Both (1) and (2) have drawbacks. Publishing internal modules would result in extra
 maintenance work while exposing more methods on the core export would result in
 greater library footprint.
 
