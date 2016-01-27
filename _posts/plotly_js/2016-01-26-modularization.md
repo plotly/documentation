@@ -264,11 +264,11 @@ webpack walks through source code and resolves `require`'s it will check the
 package.json `browserify` field for any necessary transforms and apply them
 appropriately.
 
-Pros:
- - One repo
+**Pros:**
+ - One repo (**!!!**)
  - No code duplication in resulting bundles
 
-Cons:
+**Cons:**
  - consumers need to require the plotly.js modules will a longer path e.g.
    `require('plotly.js/lib/bar')`
  - webpack users will need to add [ify-loader](https://github.com/hughsk/ify-loader)
