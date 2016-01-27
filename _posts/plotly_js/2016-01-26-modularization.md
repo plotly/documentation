@@ -32,7 +32,7 @@ realities to provide the best experience for consumers using different bundling
 systems and different library features.
 
 [Plotly](https://plot.ly/)'s open source javascript graphing library,
-[plotly.js](https://plot.ly/javascript/), recently published its first modular
+[plotly.js](https://github.com/plotly/plotly.js), recently published its first modular
 [release](https://github.com/plotly/plotly.js/releases/tag/v1.5.0) allowing
 users to bundle only the specific [trace
 modules](https://github.com/plotly/plotly.js/blob/49ea59fd3016b4b125855511a05abe92a2e69082/README.md#modules)
@@ -52,7 +52,7 @@ We state the problem as such:
 bundle size, in way that adds as little friction as possible for both
 library consumers and library developers?
 
-In addition, we formalize two addition requirements:
+In addition, we formalize two additional requirements:
 
 - Minimal overhead for browserify and webpack users
 - Optimal bundling via browserify and webpack
@@ -82,7 +82,7 @@ users (note that webpack v2 is planning on featuring
 simply feels too early for client-side libraries to adopt ES6 modules
 definitions.  Nevertheless, keeping an eye on how rollup progresses will be
 important in 2016. Its endorsement by the version 4 of
-[d3](https://github.com/substack/node-browserify/issues/1186) may make ES6
+[d3](http://bost.ocks.org/mike/d3-plugin/) may make ES6
 module definitions common place for the next generation of large client-side
 libraries.
 
@@ -245,10 +245,10 @@ Alternatively, putting the `lib` files at the repo's root would have made the
 `require` statements even cleaner e.g. `require('plotly.js/core')` instead of
 `require('plotly.js/lib/core')`. But considering the large number of these `lib`
 files we have, we opt for a `lib` directory in order to not pollute the repo's
-root. Note that the `"main"` package.json filed cannot be set to a directory
+root. Note that the `"main"` package.json field cannot be set to a directory
 (more info [here](Mention https://github.com/nodejs/node/issues/3953)).
 
-Our solution results in a minor increase in build time, we feel that the
+Our solution results in a minor increase in build time, but we feel that the
 flexibility it allows is well worth the hit. Browserify and webpack both have
 caching while, developing, so after an initial bundling, there is no appreciable
 difference in bundling time compared to using a pre-built library.
