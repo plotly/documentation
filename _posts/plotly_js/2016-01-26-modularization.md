@@ -25,12 +25,12 @@ of native client-side modules by browsers is several years away.
 In this context, bundling systems such as [browserify](http://browserify.org/)
 and [webpack](https://webpack.github.io/) are, for most JS applications, a
 necessity. This fact is especially true for applications that make use of
-several npm packages at once. Moreover, in applications with heavy JS assets,
-optimizing the resulting bundles where semver-compatible third-party
-dependencies are shared and code duplication is left to a minimum is crucial.
-Maintainers of today's client-side libraries must adapt for the aforementioned
-realities to provide the best experience for consumers using different bundling
-systems and different library features.
+several npm packages at once. Moreover, it is crucial to optimize the resulting
+bundles where semver-compatible third-party dependencies are shared and to
+minimize code duplication for applications with heavy JS assets. Maintainers of
+today's client-side libraries must adapt for the aforementioned realities to
+provide the best experience for consumers using different bundling systems and
+different library features.
 
 [Plotly](https://plot.ly/)'s open source javascript graphing library,
 [plotly.js](https://github.com/plotly/plotly.js), recently published its first modular
@@ -40,7 +40,7 @@ modules](https://github.com/plotly/plotly.js/blob/49ea59fd3016b4b125855511a05abe
 they need.
 
 In the past two months, we surveyed library design solutions in an effort to
-provide the best experience for plotly.js consumers. We hope that our reflection
+provide the best experience for plotly.js consumers. We hope that our efforts
 may help maintainers of other client-side libraries make judicious design
 choices. We present Plotly's solution to client-side modularization below.
 
@@ -58,8 +58,8 @@ In addition, we formalize two additional requirements:
 - Minimal overhead for browserify and webpack users
 - Optimal bundling via browserify and webpack
 
-Why prioritize browserify and webpack? They seem to be the most used bundling
-systems. Source:
+Why prioritize browserify and webpack? Simply because they seem to be the most
+used bundling systems. Source:
 
 <blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">... and
 go!</p>&mdash; Matt DesLauriers (@mattdesl) <a
@@ -68,10 +68,10 @@ href="https://twitter.com/mattdesl/status/683753259992006656">January 3,
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 Moreover, browserify and webpack are the two most mature bundling systems
-judging by the commit frequency and GitHub activity of both.
+judging by their respective commit frequency and GitHub activity.
 
 The [rollup](http://rollupjs.org/) bundler offers an interesting take on
-client-side bundling and is worthy of mention. Its *tree-shaking* feature,
+client-side bundling and is worth mentioning. Its *tree-shaking* feature,
 which allows for only certain bits of [ES6
 modules](https://developer.mozilla.org/en/docs/web/javascript/reference/statements/import)
 to be included in the output bundles, has the potential of solving many of
@@ -80,7 +80,7 @@ module definitions. While workarounds do exist, converting the plotly.js modules
 to ES6 syntax would increase the overhead for browserify and webpack v1
 users (note that webpack v2 is planning on featuring
 [tree-shaking](http://www.2ality.com/2015/12/webpack-tree-shaking.html)). It
-simply feels too early for client-side libraries to adopt ES6 modules
+simply feels too early for client-side libraries to adopt ES6 module
 definitions.  Nevertheless, keeping an eye on how rollup progresses will be
 important in 2016. Its endorsement by the version 4 of
 [d3](http://bost.ocks.org/mike/d3-plugin/) may make ES6
@@ -93,13 +93,14 @@ libraries.
 Split up the library's modules into multiple repos, with each module linked to
 its own npm package.
 
-This solution is most common in the node.js world, but for a large client-side
-library is less-than-ideal. Having the different modules spread across multiple
-repos increases friction during development. For example, how should one write
-integration tests for a module that can't do anything on its own? One could write
-up on testing repo requiring multiple modules, but that would often result in
-several `npm link` and `npm publish` commands. For a small team of maintainers
-like ours, this solution was quickly discarded.
+This solution is most common in the node.js world, however it is less-than-ideal
+for a large client-side library. Having the different modules spread across
+multiple repos increases friction during development. For example, how
+should one write integration tests for a module that can't do anything on
+its own? One could write up a testing repo requiring multiple modules, but
+that would often result in several `npm link` and `npm publish` commands.
+For a small team of maintainers like ours, this solution was quickly
+discarded.
 
 **Pros:**
  - For a large project like plotly.js, we can't honestly think of any
@@ -107,7 +108,7 @@ like ours, this solution was quickly discarded.
 **Cons:**
  - That would have been a lot of work for us
  - Can't easily share testing and building resources from module to module
- - Possible code duplication unless the internal modules become npm package too
+ - Possible code duplication unless the internal modules become npm packages too
    (more on that in the next section)
 
 
@@ -137,14 +138,14 @@ development tooling which is a big plus for developers. In addition, issues are
 reported in a single place instead of being spread over multiple GitHub
 trackers.
 
-However, mono-repos spawning multiple npm package may not be ideal for a project
+However, mono-repos spawning multiple npm package may not be ideal for projects
 with several shared internal modules, mainly because they are prone to code
 duplication. To be more specific, imagine that the plotly.js repo spawned one
 npm package per trace type along with a core package. Then, to make a custom
 plotly.js bundle including only code to draw bar charts, one would:
 
 ```bash
-npm i plotly.js-core plotly.js-bar
+npm install plotly.js-core plotly.js-bar
 ```
 
 and then
@@ -160,7 +161,7 @@ module.exports = customPlotly;
 
 It is important to note that if these two modules required above have shared
 dependencies (e.g. some internal helper function), these will be duplicated in
-the resulting bundle unless (1) they become themselves published modules or (2)
+the resulting bundle unless (1) they themselves become published modules or (2)
 are exposed on the core export (e.g. `plotlyCore` in the above example).
 
 Both (1) and (2) have drawbacks. Publishing internal modules would result in extra
@@ -229,9 +230,8 @@ added an additional `lib` directory that contains all the power-user-facing
 parts. Inside, the files contain nothing more than re-exports, but this allows
 for a much cleaner `require`'s in end-user code. Users can pick and choose the
 trace types they'd like to use, register them with the plotly.js core module,
-then re-export their own custom plotly.js module for use in their own code. If
-the need arises to use another trace type, all that needs to be done is adding a
-new trace module to the `Plotly.register` call.
+then re-export their own custom plotly.js module for use in their own code.
+Example:
 
 ```javascript
 var plotlyCore = require('plotly.js/lib/core');
@@ -242,16 +242,20 @@ var customPlotly = plotlyCore.register(plotlyBar);
 module.exports = customPlotly;
 ```
 
-Alternatively, putting the `lib` files at the repo's root would have made the
-`require` statements even cleaner e.g. `require('plotly.js/core')` instead of
-`require('plotly.js/lib/core')`. But considering the large number of these `lib`
-files we have, we opt for a `lib` directory in order to not pollute the repo's
-root. Note that the `"main"` package.json field cannot be set to a directory
-(more info [here](Mention https://github.com/nodejs/node/issues/3953)).
+If the need arises to use another trace type, all that needs to be done is to
+add a new trace module to the `Plotly.register` call.
+
+We also considered, putting the `lib` files at the repo's root. This would have
+made the `require` statements even cleaner e.g. `require('plotly.js/core')`
+instead of `require('plotly.js/lib/core')`. But considering the large number of
+these `lib` files we have, we opt for a `lib` directory in order to not pollute
+the repo's root. Note that the `"main"` package.json field cannot be set to a
+directory (more info [here](Mention
+https://github.com/nodejs/node/issues/3953)).
 
 Our solution results in a minor increase in build time, but we feel that the
 flexibility it allows is well worth the hit. Browserify and webpack both have
-caching while, developing, so after an initial bundling, there is no appreciable
+caching, while developing, so after an initial bundling, there is no appreciable
 difference in bundling time compared to using a pre-built library.
 
 Once working this out and getting everything to work smoothly, we were faced
@@ -270,7 +274,7 @@ appropriately.
  - No code duplication in resulting bundles
 
 **Cons:**
- - consumers need to require the plotly.js modules will a longer path e.g.
+ - consumers need to require the plotly.js modules with a longer path e.g.
    `require('plotly.js/lib/bar')`
  - webpack users will need to add [ify-loader](https://github.com/hughsk/ify-loader)
    to their config file
