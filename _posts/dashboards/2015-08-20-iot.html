@@ -2,7 +2,7 @@
 title: IoT Raspberry Pi Dashboard
 name: IoT Raspberry Pi Dashboard
 description: Internet-of-things dashboard of sensor readings streamed from a Rasberry Pi embedded system.
-permalink: dashboards/iot-rasberry-pi/
+permalink: dashboards/internet-of-things-rasberry-pi/
 industry: Internet of Things
 language: dashboard
 background_color: '#CC0000'
@@ -20,7 +20,7 @@ foreground_color: 'white'
 
 <div class="container-fluid">
 
-    <h2>Dashboard charts of Rasberry Pi Streaming Temperature Data</h2>
+    <h2>Rasberry Pi: Temperature Data</h2>
 
     <div class="row">
       <div class="col-sm-3">
@@ -45,30 +45,7 @@ foreground_color: 'white'
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-sm-3">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Temperature Histogram
-          </div>
-          <div class="chart-stage">
-              <iframe width="100%" height="410px;" frameborder="0" scrolling="no" id="temperature-hist-plot" src="https://plot.ly/~jackp/12028.embed?autoscale=true&link=false"></iframe>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-9">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Temperature 2d Histogram
-          </div>
-          <div class="chart-stage">
-              <iframe width="100%" height="410px;" frameborder="0" scrolling="no" id="temperature-density-plot" src="https://plot.ly/~jackp/12028.embed?autoscale=true&link=false"></iframe>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <h2>Dashboard charts of Rasberry Pi Streaming Dissolved Oxygen Sensor Data</h2>    
+    <h2>Rasberry Pi: Dissolved Oxygen Sensor Data</h2>
 
     <div class="row">
       <div class="col-sm-3">
@@ -122,12 +99,12 @@ function addData() {
       task: 'getAttributes',
       attributes: [ 'data[0].x', 'data[0].y' ],
     },
-    'https://plot.ly/');  
+    'https://plot.ly/');
 }
 
 window.addEventListener('message', function(e) {
     var message = e.data;
-  
+
     if (message.pong) {
       console.log('Initial pong, \
          frame is ready to receive');
@@ -135,7 +112,7 @@ window.addEventListener('message', function(e) {
       clearInterval();
       clearTimeout();
       addTemperatureData = setInterval(addData, INTERVAL);
-    }    
+    }
     else if( 'data[0].x' in message.response ){
 
       X = message.response['data[0].x'];
@@ -152,7 +129,7 @@ window.addEventListener('message', function(e) {
       dt = dt.toISOString()
         .slice(0, 23)
         .replace('T', ' ');
-      
+
       if( X === undefined ){
         var seconds = 5;
         var dt0 = new Date(
@@ -162,21 +139,21 @@ window.addEventListener('message', function(e) {
         Y = [ normal()*10+30 ];
       }
       else{
-        // append new data  
+        // append new data
         dY = normal()*10+30;
         X.push( dt );
         Y.push( dY );
       }
-      
+
       if( X.length > 200 ){
         X.shift(); Y.shift();
       }
-      
+
       console.log(dt, X.length);
 
       plotLine.postMessage({
         task: 'restyle',
-        update: { 
+        update: {
           x: [X], y: [Y],
           marker: { color: '#A30000' },
         }
@@ -184,8 +161,8 @@ window.addEventListener('message', function(e) {
 
       plotHist.postMessage({
         task: 'restyle',
-        update: { 
-          x: [Y], 
+        update: {
+          x: [Y],
           type: 'histogram',
           marker: { color: '#A30000' },
         }
@@ -193,7 +170,7 @@ window.addEventListener('message', function(e) {
 
       plotDensity.postMessage({
         task: 'restyle',
-        update: { 
+        update: {
           x: [X], y: [Y],
           type: 'histogram2d',
           nbinsx:50,
@@ -201,7 +178,7 @@ window.addEventListener('message', function(e) {
           reversescale:false,
           colorscale:[COLORSCALE],
         }
-      }, 'https://plot.ly');      
+      }, 'https://plot.ly');
 
       // Dissolved Oxy plot
 
@@ -214,14 +191,14 @@ window.addEventListener('message', function(e) {
 
       disOxyPlot.postMessage({
         task: 'restyle',
-        update: { 
-          x: [ disOxy_X ], 
-          y: [ disOxy_Y ], 
+        update: {
+          x: [ disOxy_X ],
+          y: [ disOxy_Y ],
           marker: { color: '#A30000' },
           line: { shape: "hvh" },
           fill: 'tonexty' }
-      }, 'https://plot.ly'); 
-    } 
+      }, 'https://plot.ly');
+    }
 });
 
 var pinger = setInterval(function() {
