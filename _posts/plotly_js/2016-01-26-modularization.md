@@ -282,3 +282,9 @@ appropriately.
  - webpack users will need to add [ify-loader](https://github.com/hughsk/ify-loader)
    to their config file
 
+
+You can check out our latest (modular) [plotly.js release on GitHub](https://github.com/plotly/plotly.js/releases/tag/v1.5.0). If this is your first time hearing about plotly.js, check out our [gallery and documentation](https://plot.ly/javascript). We just recently open-sourced the project and you can learn more about our decision in our [open-source announcement](https://plot.ly/javascript/open-source-announcement).
+
+Thanks for reading!
+
+![3D-chart](https://images.plot.ly/excel/plotlyjs/plotlyjs-banner-background.png)
