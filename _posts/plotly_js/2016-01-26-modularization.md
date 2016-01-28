@@ -34,10 +34,14 @@ provide the best experience for consumers using different bundling systems and
 different library features.
 
 [Plotly](https://plot.ly/)'s open source javascript graphing library,
-[plotly.js](https://github.com/plotly/plotly.js), recently published its first modular
-[release](https://github.com/plotly/plotly.js/releases/tag/v1.5.0) allowing
-users to bundle only the specific [trace
-modules](https://github.com/plotly/plotly.js/blob/49ea59fd3016b4b125855511a05abe92a2e69082/README.md#modules)
+[plotly.js](https://github.com/plotly/plotly.js), includes multiple different
+trace types (e.g. pie, scatter, bar, choropleth etc.) and as we add more types -
+especially with the inclusion of WebGL types - our bundle size grows ever more
+daunting. For a while, we've received requests to implement a module system, and
+have recently published our first modular
+[release](https://github.com/plotly/plotly.js/releases/tag/v1.5.0), allowing
+users to bundle only the specific
+[trace modules](https://github.com/plotly/plotly.js/blob/49ea59fd3016b4b125855511a05abe92a2e69082/README.md#modules)
 they need.
 
 In the past two months, we surveyed library design solutions in an effort to
@@ -73,20 +77,18 @@ judging by their respective commit frequency and GitHub activity.
 
 The [rollup](http://rollupjs.org/) bundler offers an interesting take on
 client-side bundling and is worth mentioning. Its *tree-shaking* feature,
-which allows for only certain bits of [ES6
+which removes unused portions of code when used with [ES6
 modules](https://developer.mozilla.org/en/docs/web/javascript/reference/statements/import)
-to be included in the output bundles, has the potential of solving many of
-the problems in modularization that we will highlight below simply by using ES6
-module definitions. While workarounds do exist, converting the plotly.js modules
-to ES6 syntax would increase the overhead for browserify and webpack v1
-users (note that webpack v2 is planning on featuring
-[tree-shaking](http://www.2ality.com/2015/12/webpack-tree-shaking.html)). It
-simply feels too early for client-side libraries to adopt ES6 module
-definitions.  Nevertheless, keeping an eye on how rollup progresses will be
+to, has the potential of solving many of the problems in modularization that we
+will highlight below simply by using ES6 module definitions. While workarounds
+do exist, converting plotly.js modules to ES6 syntax would increase the overhead
+for browserify and webpack v1 users (note that webpack v2 is planning on
+featuring [tree-shaking](http://www.2ality.com/2015/12/webpack-tree-shaking.html)).
+It simply feels too early for client-side libraries to adopt ES6 module
+definitions. Nevertheless, keeping an eye on how rollup progresses will be
 important in 2016. Its endorsement by the version 4 of
-[d3](http://bost.ocks.org/mike/d3-plugin/) may make ES6
-module definitions common place for the next generation of large client-side
-libraries.
+[d3](http://bost.ocks.org/mike/d3-plugin/) may make ES6 module definitions
+common place for the next generation of large client-side libraries.
 
 
 ### Possible solution 1
