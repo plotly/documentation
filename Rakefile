@@ -19,7 +19,7 @@ task :deploy => [:check_git] do
   puts "...git pull origin  \"#{source_branch}\""
   system "git pull origin  \"#{source_branch}\""
   puts "...update plot schema"
-  system "curl https://plot.ly/plot-schema.json > _data/plotschema.json && git add _data/plotschema.json && git commit -m \"Updated plotschema at #{Time.now.utc}\" && git push origin \"#{source_branch}\""
+  system "curl https://api.plot.ly/v2/plot-schema?sha1=%27%27 > _data/plotschema.json && git add _data/plotschema.json && git commit -m \"Updated plotschema at #{Time.now.utc}\" && git push origin \"#{source_branch}\""
   puts "...generate _site"
   system "jekyll build && git checkout \"#{deploy_branch}\" && git pull origin \"#{deploy_branch}\" && cp -r _site/* . && rm -rf _site/ && touch .nojekyll && git add . && git commit -m \"#{message}\" && git push origin \"#{deploy_branch}\""
   puts "...git checkout \"#{source_branch}\""
