@@ -9,9 +9,9 @@ no_sidebar: true
 language: plotly_js
 ---
 
-# Modularizing monolithic javascript projects
+# Modularizing monolithic JS projects
 
-January 28, 2015
+January 28, 2016
 
 ---
 > **tl;dr** One javascript library's solution to approaching client-side
