@@ -277,9 +277,9 @@ appropriately.
  - No code duplication in resulting bundles
 
 **Cons:**
- - consumers need to require the plotly.js modules with a longer path e.g.
+ - Consumers need to require the plotly.js modules with a longer path e.g.
    `require('plotly.js/lib/bar')`
- - webpack users will need to add [ify-loader](https://github.com/hughsk/ify-loader)
+ - Webpack users will need to add [ify-loader](https://github.com/hughsk/ify-loader)
    to their config file
 
 
