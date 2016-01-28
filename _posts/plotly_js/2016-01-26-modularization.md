@@ -1,7 +1,7 @@
 ---
-title: Friction-less client-side modularization
-name: Friction-less client-side modularization
-permalink: javascript/friction-less-client-side-modularization
+title: Modularizing monolithic javascript projects
+name:  Modularizing monolithic javascript projects
+permalink:-javascript/modularizing-monolithic-javascript-projects
 language: plotly_js
 has_thumbnail: false
 layout: blog-post
@@ -9,13 +9,14 @@ no_sidebar: true
 language: plotly_js
 ---
 
-# Friction-less client-side modularization
+# Modularizing monolithic javascript projects
 
-January 26, 2015
+January 28, 2015
 
 ---
-> **tl;dr** One library's solution to approaching client-side modularity using a
-mono-repo, one npm package and several CommonJS require-able modules.
+> **tl;dr** One javascript library's solution to approaching client-side
+modularity using a mono-repo, one npm package and several CommonJS require-able
+modules.
 
 
 The current era of client-side javascript stands between two major events: the
