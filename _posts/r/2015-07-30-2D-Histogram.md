@@ -9,6 +9,7 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: statistical
+plottype: histogram
 order: 5
 ---
 
