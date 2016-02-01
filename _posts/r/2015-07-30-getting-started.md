@@ -93,7 +93,8 @@ If your company has a Plotly On-Premise server, change the R API endpoint so tha
 In your .RProfile write:
 
 ```r
-Sys.setenv("plotly_domain"="https://plotly.your-company.com")
+Sys.setenv("plotly_domain"="https://plotly.your-company.com")  
+Sys.setenv("plotly_api_domain" = "https://api-plotly.your-company.com")
 ```
 
 Remember to replace "your-company" with the URL of your Plotly On-Premise server.
