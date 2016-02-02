@@ -1,8 +1,8 @@
 ---
 title: Manufacturing SPC Dashboard
 name: Manufacturing SPC Dashboard
-description: Manufacturing dashboard of statistical process control charts and real-time manufacturing sensor data. 
-permalink: dashboards/manufacturing-spc/
+description: Manufacturing dashboard of statistical process control charts and real-time manufacturing sensor data.
+permalink: dashboards/manufacturing-statistical-process-control/
 industry: Manufacturing SPC
 language: dashboard
 background_color: '#fdbf6f'
@@ -35,7 +35,7 @@ foreground_color: '#444'
           Streaming live data in <a href="https://plot.ly/python/streaming-line-tutorial/">Python</a>
         </div>
       </div>
-    </div>    
+    </div>
   </div>
 
   <h2>Dashboard charts of Process Deviations by Manufacturing Line</h2>
@@ -76,7 +76,7 @@ foreground_color: '#444'
     </div>
   </div>
     <!-- end of three -->
-  <div>
+  <div class="row">
     <div class="col-sm-6 col-md-4">
       <div class="chart-wrapper">
         <div class="chart-title">
@@ -117,13 +117,11 @@ foreground_color: '#444'
 
 {% include dashboard-industries-footer.html %}
 
-<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/237913/jquery-2.1.4.min.js"></script>
-<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/237913/d3.min.js"></script>
-<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/237913/plotly.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <script>
 
-var normalDistribution = d3.random.normal();
+var normalDistribution = Plotly.d3.random.normal();
 // Time between measurements in minutes
 var INTERVAL = 30;
 var NUM_MEASUREMENTS = 100;
@@ -141,25 +139,25 @@ Date.prototype.toMysqlFormat = function() {
      if(-10 < d && d < 0) return "-0" + (-1*d).toString();
      return d.toString();
   }
-   return this.getUTCFullYear() + "-" + twoDigits(1 + this.getUTCMonth()) + "-" +         twoDigits(this.getUTCDate()) + " " + twoDigits(this.getUTCHours()) + ":" +    
+   return this.getUTCFullYear() + "-" + twoDigits(1 + this.getUTCMonth()) + "-" +         twoDigits(this.getUTCDate()) + " " + twoDigits(this.getUTCHours()) + ":" +
     twoDigits(this.getUTCMinutes()) + ":" + twoDigits(this.getUTCSeconds());
 };
 
 var makeHeatmap = function(myDivId){
   var date = new Date(), dateArray=[], x=[], z=[];
   var operationIds = [];
-  
+
   // Create Y date values
   for(var i=0;i<NUM_MEASUREMENTS;i++){
-      date.setMinutes(date.getMinutes() + INTERVAL); 
+      date.setMinutes(date.getMinutes() + INTERVAL);
       dateArray.push( date.toMysqlFormat() );
   }
-  
+
   // Create X operation values
   for( var j=0; j<NUM_OPERATIONS; j++ ){
     operationIds.push( Math.floor(Math.random()*8999+1000).toString() );
   }
-  
+
   // Create Z heatmap values
   for(var i=0;i<NUM_MEASUREMENTS;i++){
     var newRow = [];
@@ -168,7 +166,7 @@ var makeHeatmap = function(myDivId){
     }
     z.push( newRow );
   }
-  
+
   var data = [ {
      x: operationIds,
      y: dateArray,
@@ -176,37 +174,37 @@ var makeHeatmap = function(myDivId){
      type: "heatmap",
      colorscale: SCL
     } ];
-  
+
   var layout = {
       xaxis:{ type: 'category', ticks: '' }
   }
-  
+
   Plotly.plot(myDivId, data, layout);
 }
 
 var makeHistogram = function(histogramDiv, heatmapDiv, slice){
 
   var heatmapSlice = [];
-  var z = heatmapDiv['data'][0]['z']; 
-  
+  var z = heatmapDiv['data'][0]['z'];
+
   Plotly.plot(histogramDiv,[]);
-  
+
   for( var i=0; i<z.length; i++ ){
     heatmapSlice.push( z[i][slice] );
   }
-  
+
   var data = [ {
-    x: heatmapSlice, 
+    x: heatmapSlice,
     type: "histogram",
     marker: { color: '#fdbf6f' },
     nbinsx:40,
   } ];
-  
+
   var histogramTitle = heatmapDiv['data'][0]['x'][slice];
   var layout = { title: 'Operator ID: ' + histogramTitle };
-    
+
   if(histogramDiv['data'] === undefined || histogramDiv['data'].length == 0){
-    Plotly.plot(histogramDiv, data, layout);  
+    Plotly.plot(histogramDiv, data, layout);
   } else{
     Plotly.deleteTraces(histogramDiv, 0);
     Plotly.addTraces(histogramDiv, data );
@@ -217,10 +215,10 @@ var makeHistogram = function(histogramDiv, heatmapDiv, slice){
 for( var i=1; i<=3; i++ ){
   makeHeatmap('grid-'+i+'-1');
   makeHistogram(
-    document.getElementById('grid-'+i+'-2'), 
+    document.getElementById('grid-'+i+'-2'),
     document.getElementById('grid-'+i+'-1'), 0);
-  
-  // This makes the plots respond to 
+
+  // This makes the plots respond to
   // window size changes
   $(window).resize(function() {
      setTimeout(function() {
@@ -228,7 +226,7 @@ for( var i=1; i<=3; i++ ){
         Plotly.Plots.resize(document.getElementById('grid-'+i+'-2'));
      }, 500);
   });
-    
+
   $('#'+'grid-'+i+'-1').bind('plotly_click',function(event,data){
     console.log('Heatmap click event',event);
     console.log('Heatmap click data',data);
@@ -238,16 +236,16 @@ for( var i=1; i<=3; i++ ){
     var histogramDiv = document.getElementById( histogramDivId );
     console.log(histogramDiv, heatmapDiv, slice);
     makeHistogram(histogramDiv, heatmapDiv, slice);
-  });   
+  });
 }
 
 function changeType(type){
   // https://plot.ly/javascript-graphing-library/plotlyjs-function-reference/
-  
+
   for( var i=1; i<=3; i++ ){
     var heatmapId = 'grid-'+i+'-1';
     var heatmapDiv = document.getElementById(heatmapId);
-    Plotly.restyle( heatmapDiv, 
+    Plotly.restyle( heatmapDiv,
           {type:type, contours:{showlines:false} } );
   }
 }
@@ -296,7 +294,7 @@ function addData() {
 
 window.addEventListener('message', function(e) {
     var message = e.data;
-  
+
     if (message.pong) {
       console.log('Initial pong, \
          frame is ready to receive');
@@ -306,24 +304,24 @@ window.addEventListener('message', function(e) {
       plot.postMessage({
         task: 'relayout',
         hovermode: 'closest',
-        update: { 
+        update: {
           showlegend: false,
           shapes:[{
             type: 'line',
             xref: 'paper',
             yref: 'y',
-            x0:0, 
+            x0:0,
             x1:1,
-            y0:UPPER_THRESHOLD, 
+            y0:UPPER_THRESHOLD,
             y1:UPPER_THRESHOLD,
             line:{ color: 'rgb(127,127,127)' }
           },{
             type: 'line',
             xref: 'paper',
             yref: 'y',
-            x0:0, 
+            x0:0,
             x1:1,
-            y0:LOWER_THRESHOLD, 
+            y0:LOWER_THRESHOLD,
             y1:LOWER_THRESHOLD,
             line:{ color: 'rgb(127,127,127)' }
           }]
@@ -332,8 +330,8 @@ window.addEventListener('message', function(e) {
 
       startTimer();
       return;
-    }    
-  
+    }
+
     X = message.response['data[0].x'];
     Y = message.response['data[0].y'];
 
@@ -350,7 +348,7 @@ window.addEventListener('message', function(e) {
     dt = dt.toISOString()
       .slice(0, 23)
       .replace('T', ' ');
-    
+
     if( X === undefined ){
       var seconds = 5;
       var dt0 = new Date(
@@ -360,12 +358,12 @@ window.addEventListener('message', function(e) {
       Y = [ normal()*10 ];
     }
     else{
-      // append new data  
+      // append new data
       dY = normal()*10;
       X.push( dt );
       Y.push( dY );
-    }    
-    
+    }
+
     if( X.length > MAX_POINTS ){
       X.shift(); Y.shift();
     }
@@ -373,19 +371,19 @@ window.addEventListener('message', function(e) {
     plot.postMessage({
       task: 'restyle',
       indices:[0],
-      update: { 
-        x: [X], 
+      update: {
+        x: [X],
         y: [Y],
         marker: { color: 'rgb(255, 133, 27)' },
         line: { width: 0.5 },
         mode:"lines+markers",
-      },      
+      },
     }, 'https://plot.ly');
 
-    if( dY <= LOWER_THRESHOLD || dY >= UPPER_THRESHOLD ){ 
+    if( dY <= LOWER_THRESHOLD || dY >= UPPER_THRESHOLD ){
 
-      violations_X.push( dt ); 
-      violations_Y.push( dY );  
+      violations_X.push( dt );
+      violations_Y.push( dY );
 
       while(true){
         if( violations_X[0] < X[0] ){
@@ -401,22 +399,22 @@ window.addEventListener('message', function(e) {
           plot.postMessage({
             task: 'addTraces',
             indices:[1],
-            traces: [{ 
-              x: [violations_X], 
+            traces: [{
+              x: [violations_X],
               y: [violations_Y],
               marker: { color: 'rgba(255, 0, 0, 0.5)', size: 18 },
               name: 'violation',
               mode:"markers",
             }]
-          }, 'https://plot.ly');         
+          }, 'https://plot.ly');
           return;
       }
 
       plot.postMessage({
         task: 'restyle',
         indices:[1],
-        update: { 
-          x: [violations_X], 
+        update: {
+          x: [violations_X],
           y: [violations_Y],
           marker: { color: 'rgba(255, 0, 0, 0.5)', size: 18 },
           name: 'violation',
