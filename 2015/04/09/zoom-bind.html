@@ -1,17 +1,15 @@
-var d3 = Plotly.d3,
-    N = 40,
-    x = d3.range(N),
-    y = d3.range(N).map( d3.random.normal() ),
-    data = [ { x:x, y:y } ];
-    layout = { title:'Click-drag to zoom' };
+# Cufflinks binds plotly to pandas dataframes in IPython notebook.
 
-Plotly.plot('myDiv', data, layout);
+import plotly.plotly as py
+import cufflinks as cf
+import pandas as pd
 
-$('#'+"myDiv").bind('plotly_relayout',
-    function(event,eventdata){
-        alert( 'ZOOM!' + '\n\n' +
-            'Event data:' + '\n' +
-             JSON.stringify(eventdata) + '\n\n' +
-            'x-axis start:' + eventdata['xaxis.range[0]'] + '\n' +
-            'x-axis end:' + eventdata['xaxis.range[1]'] );
-    });
+cf.set_config_file(offline=False, world_readable=True, theme='pearl')
+
+df = pd.read_csv('http://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderDataFiveYear.txt', sep='\t')
+df2007 = df[df.year==2007]
+df.head(2)
+
+df2007.iplot(kind='bubble', x='gdpPercap', y='lifeExp', size='pop', text='country',
+             xTitle='GDP per Capita', yTitle='Life Expectancy',
+             filename='cufflinks/simple-bubble-chart')
