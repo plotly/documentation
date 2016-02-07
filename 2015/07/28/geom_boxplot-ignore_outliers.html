@@ -1,0 +1,20 @@
+library(plotly)
+set.seed(123)
+
+df <- diamonds[sample(1:nrow(diamonds), size = 1000),]
+
+p <- ggplot(df, aes(cut, price, fill = cut)) + 
+  geom_boxplot(outlier.shape = NA) + 
+  ggtitle("Ignore outliers in ggplot2")
+
+# To replicate what ggplot does, need to modify the plotly 
+# object to make sure outlier points have opacity = 0  
+
+p <- plotly_build(p)
+
+p$data <- lapply(p$data, FUN = function(x){
+  x$marker = list(opacity = 0)
+  return(x)
+})
+
+p
