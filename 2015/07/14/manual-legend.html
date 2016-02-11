@@ -1,0 +1,25 @@
+library(plotly)
+set.seed(123)
+
+x <- rnorm(1000)
+y1 <- 2*x + rnorm(1000)
+y2 <- x^2 + rnorm(1000)
+
+ds <- data.frame(data = x, 
+                 Linear = y1, 
+                 Quadratic = y2)
+
+
+cols1 <- c("#ff8080", "#66b3ff")
+cols2 <- c("#ff4d4d", "#3399ff")
+
+p <- ggplot(ds, aes(x = data)) + 
+  geom_point(aes(y = Linear, color = "Linear"), size = 3, alpha = 0.5) + 
+  geom_point(aes(y = Quadratic, color = "Non Linear"), size = 3, alpha = 0.5) + 
+  stat_smooth(aes(x = data, y = Linear, linetype = "Linear Fit"), method = "lm", formula = y ~ x, se = F, size = 0.25, color = cols2[1]) + 
+  stat_smooth(aes(x = data, y = Quadratic, linetype = "Quadratic Fit"), method = "lm", formula = y ~ poly(x,2), se = F, size = 0.25, color = cols2[2]) + 
+  scale_color_manual(name = "Relationship", values = c(cols1[1], cols1[2])) + 
+  scale_linetype_manual(name = "Fit Type", values = c(2, 2)) + 
+  ggtitle("Manual Legend for Stat Smooth")
+
+ggplotly(p)
