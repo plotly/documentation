@@ -1,4 +1,4 @@
-# Contribute to Plotly's [R Documentation](https://plot.ly/r/)
+# Contribute to Plotly's [ggplot2 Documentation](https://plot.ly/ggplot2/)
 ## Initial Steps:
 0. Clone the repo and then check out the source branch:
 
@@ -23,27 +23,27 @@
   ```
 
 ## Create R Documentation:
-##### In `documentation/_posts/r`
+##### In `documentation/_posts/ggplot2`
 1. Write your tutorial in R Markdown (.Rmd file)
   - Your .Rmd file should be named in the following format: `yyyy-mm-dd-chart-type.Rmd`
   - Please base your tutorial off of one of our exsisting tutorials (i.e. `documentation/_posts/r/2015-11-19-shapes.Rmd`)
       - Include the following header (*replacing `your-tutorial-chart` with the type of chart you're creating in the tutorial.) :
       ```
       ---
-      title: Your-Tutorial-Chart in R | Examples | Plotly
+      title: Your-Tutorial-Chart in ggplot2 | Examples | Plotly
       name: Your-Tutorial-Chart
-      permalink: r/your-tutorial-chart/
-      description: How to create your-tutorial-chart in R. Short description of your tutorial.
+      permalink: ggplot2/your-tutorial-chart/
+      description: How to create your-tutorial-chart in ggplot2. Short description of your tutorial.
       layout: base
       thumbnail: thumbnail/your-tutorial-chart.jpg *see step 2 for further thumbnail instructions*
-      language: r
+      language: ggplot2
       page_type: example_index
       has_thumbnail: true
       display_as: chart_type
       order: 9 *see below for order instructions*
       ---
       ```
-      *`order` defines the order in which the tutorials appear on plot.ly/r. Please take a look at https://plot.ly/r/ and order your tutorial next to similar chart types.
+      *`order` defines the order in which the tutorials appear on plot.ly/ggplot2. Please take a look at https://plot.ly/ggplot2/ and order your tutorial next to similar chart types.
       - Under the header, include the following r code snippet:
       ```
         ```{r, echo = FALSE, message=FALSE}
@@ -53,7 +53,7 @@
       ```
 
       
-    - To include r code and plots in the tutorial format the code snippets and plots in the following format:
+    - To include r/ggplot2 code and plots in the tutorial format the code snippets and plots in the following format:
       
       ```
       ```{r, results='hide'}
@@ -93,7 +93,7 @@
 
 6. Deploy with `rake deploy`
 
-##### At https://plot.ly/r
+##### At https://plot.ly/ggplot2/
 7. Check your Tutorial!!!! 
   <b>PLEASE</b> visit https://plot.ly/r/your-tutorial and make sure everything looks correct :)
 
