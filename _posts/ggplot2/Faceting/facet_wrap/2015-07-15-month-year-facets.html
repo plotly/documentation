@@ -1,0 +1,37 @@
+---
+name: <code>facet_wrap</code> with a time series
+plot_url: https://plot.ly/~MattSundquist/17053
+arrangement: horizontal
+language: ggplot2
+suite: time-series
+description: Inspired by <a href="http://is-r.tumblr.com/post/33829008995/faceting-as-a-preferable-alternative-to-3-d">is.R()</a>.
+order: 5
+sitemap: false
+---
+library(plotly)
+install.packages("plyr")
+
+# Air passenger data. ts converted to long matrix:
+myData <- data.frame(Year = c(floor(time(AirPassengers) + .01)),
+                     Month = c(cycle(AirPassengers)),
+                     Value = c(AirPassengers))
+# easy conversion code from: http://stackoverflow.com/a/4973859/479554
+
+# convert month numbers to names, using a built-in constant:
+myData$Month <- factor(myData$Month)
+levels(myData$Month) <- month.abb
+
+# plotting reference lines across each facet:
+
+referenceLines <- myData  # \/ Rename
+colnames(referenceLines)[2] <- "groupVar"
+zp <- ggplot(myData,
+              aes(x = Year, y = Value))
+zp <- zp + geom_line(data = referenceLines,  # Plotting the "underlayer"
+                       aes(x = Year, y = Value, group = groupVar),
+                       colour = "GRAY", alpha = 1/2, size = 1/2)
+zp <- zp + geom_line(size = 1)  # Drawing the "overlayer"
+zp <- zp + facet_wrap(~ Month)
+zp <- zp + theme_bw()
+
+ggplotly()
