@@ -71,6 +71,8 @@ To deploy, first install `_config.yml` package dependencies:
 documentation (source) $ sudo gem install jekyll-redirect-from
 documentation (source) $ sudo gem install jekyll-sitemap
 documentation (source) $ sudo gem install terminal-notifier
+documentation (source) $ sudo gem install jemoji
+documentation (source) $ sudo gem install redcarpet
 
 ```
 
