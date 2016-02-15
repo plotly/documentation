@@ -23,10 +23,10 @@ The full bleed R pages are created with R Markdown. Here's how:
   $ git fetch origin
   $ git checkout source
   ```
-2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - [Install the same version that GitHub is using: 2.4.0](https://pages.github.com/versions/):
+2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - [Install the same version that GitHub is using: 3.](https://pages.github.com/versions/):
 
   ```
-  $ gem install jekyll -v 2.4.0
+  $ gem install jekyll -v 3.0.3
   ```
 3. Install a couple dependencies:
 
