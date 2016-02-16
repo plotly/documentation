@@ -54,3 +54,20 @@ fig
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1935.embed" width="800" frameBorder="0"></iframe>
+
+### Adding custom hover text after downloading a plotly graph
+
+Use `plotly_build()` first and then modify the plotly object as such
+
+```r
+fig <- get_figure("rplotbot", 2833)
+fig <- plotly_build(fig)
+
+fig$data[[1]]$hoverinfo <- "text"
+fig$data[[1]]$text <- paste("Displacement = ", mtcars$disp, "Miles Per Gallon = ", mtcars$mpg)
+
+fig
+```
+
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2835.embed" width="800" frameBorder="0"></iframe>
+

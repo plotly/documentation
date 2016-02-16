@@ -93,3 +93,14 @@ plot_ly(filename="r-docs/multiple-annotations") %>% layout(annotations = a)
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/498" width="800" frameBorder="0"></iframe>
+
+### Custom Hover Text
+```r
+p <- mtcars %>% 
+  plot_ly(x = disp, y = mpg, mode = "markers", color = cyl, size = wt, 
+          hoverinfo = "text",
+          text = paste("Displacement = ", mtcars$disp, "Miles Per Gallon = ", mtcars$mpg)) %>% 
+  layout(title ="Custom Hover Text")
+```
+
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2835.embed" width="800" frameBorder="0"></iframe>
