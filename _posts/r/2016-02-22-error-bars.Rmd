@@ -21,23 +21,20 @@ Sys.setenv("plotly_api_key"="q0lz6r5efr")
 
 ```{r, message=FALSE}
 
-
 library(dplyr)
 library(plotly)
 
-p <- ggplot2::mpg %>% group_by(class) %>%
-  summarise(mn = mean(hwy), sd = 1.96 * sd(hwy)) %>%
-  arrange(desc(mn)) %>%
-  plot_ly(x = class, y = mn, error_y = list(array = sd),
+data <- ggplot2::mpg %>% group_by(class) %>%
+  summarise(mn = mean(hwy), sd = 1.96 * sd(hwy), mn_c = mean(cty)) %>%
+  arrange(desc(mn))
+
+p <- data %>%
+  plot_ly(x = class, y = mn, error_y = list(value=10),
           mode = "markers", name = "Highway") %>%
   layout(yaxis = list(title = "Miles Per Gallon"))
-p
 
-df2 <- mpg %>% group_by(class) %>%
-  summarise(mn = mean(cty))
-
-p2 <- add_trace(p, y = mn, error_y = list(value=10),
-          name = "City", data = df2)
+p2 <- add_trace(p, x = class, y = mn_c, error_y = list(value=10),
+                name = "City", data = data)
 #by default the `type` for error is `percent`, which takes
 #a percentage of the y value as the error bar.
 p2
