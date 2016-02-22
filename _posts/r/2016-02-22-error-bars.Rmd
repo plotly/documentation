@@ -8,36 +8,37 @@ thumbnail: thumbnail/error-bar.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: statistical
+display_as: chart_type
 order: 11
 ---
 
-
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```
 # Error Bars
 
+```{r, message=FALSE}
 
-```r
+
 library(dplyr)
 library(plotly)
 
 p <- ggplot2::mpg %>% group_by(class) %>%
   summarise(mn = mean(hwy), sd = 1.96 * sd(hwy)) %>%
   arrange(desc(mn)) %>%
-  plot_ly(x = class, y = mn, error_y = list(value = sd),
+  plot_ly(x = class, y = mn, error_y = list(array = sd),
           mode = "markers", name = "Highway") %>%
   layout(yaxis = list(title = "Miles Per Gallon"))
 p
-```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/213.embed" width="800" frameBorder="0"></iframe>
-
-```r
 df2 <- mpg %>% group_by(class) %>%
-  summarise(mn = mean(cty), sd = 1.96 * sd(cty))
+  summarise(mn = mean(cty))
 
-p2 <- add_trace(p, y = mn, error_y = list(value = sd),
+p2 <- add_trace(p, y = mn, error_y = list(value=10),
           name = "City", data = df2)
+#by default the `type` for error is `percent`, which takes
+#a percentage of the y value as the error bar.
 p2
 ```
-
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/531.embed" width="800" frameBorder="0"></iframe>
