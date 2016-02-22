@@ -1,0 +1,41 @@
+---
+name: Simple Quiver Plot with Points
+plot_url: https://plot.ly/~tarzzz/1372/
+arrangement: horizontal
+language: matplotlib
+suite: quiver-plots
+order: 1
+sitemap: false
+---
+
+import plotly.plotly as py
+import plotly.tools as tls
+from plotly.tools import FigureFactory as FF
+# Learn about API authentication here: https://plot.ly/python/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+x=[-.7, .75]
+y=[0, 0]
+plt.scatter(x,y, marker='o', color="r")
+plt.title('Quiver Plot with Points')
+fig = plt.gcf()
+
+plotly_fig = tls.mpl_to_plotly(fig)
+
+
+x,y = np.meshgrid(np.arange(-2, 2, .2),
+                  np.arange(-2, 2, .25))
+z = x*np.exp(-x**2 - y**2)
+v, u = np.gradient(z, .2, .2)
+
+quiver_fig = FF.create_quiver(x, y, u, v,
+                       scale=.25,
+                       arrow_scale=.4,
+                       name='quiver',
+                       line=dict(width=1))
+
+quiver_fig['data'].append(plotly_fig['data'][0])
+plot_url = py.plot(quiver_fig, filename='mpl-quiver-with-points')
