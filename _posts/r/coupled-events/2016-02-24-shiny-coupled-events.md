@@ -12,17 +12,7 @@ language: r
 page_type: example_index
 has_thumbnail: false
 display_as: get_request
-output: 
-  html_document: 
-    highlight: null
-    keep_md: yes
-    theme: null
 ---
-
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(eval = FALSE)
-```
-
 # Coupled Events in Plotly using Shiny
 Plotly supports two separate **click events** that can be used to read user inputs using the `event_data()` function.
 
@@ -44,7 +34,8 @@ Below is an example on how to couple events from multiple charts together in the
 
 ## Code
 ### ui.r
-```{r}
+
+```r
 library(shiny)
 library(mlbench)
 library(plotly)
@@ -94,16 +85,19 @@ ui <- fluidPage(
     column(6, plotlyOutput("Plot2", height = "600px"))),
   
   tags$hr(),
+  tags$blockquote("First drag a selection box in the scatter plot to populate the barchart. Then select one of the bars in the barchat
+    to populate the boxplot"),
+  
   
   # Second row
   fixedRow(
     column(3, plotlyOutput("Plot3", height = "600px")),
-    column(9, plotlyOutput("Plot4", height = "600px")))
-)
+    column(9, plotlyOutput("Plot4", height = "600px"))))
 ```
 
 ### server.r
-```{r}
+
+```r
 # server.R definition
 server <- function(input, output){
   
@@ -140,7 +134,9 @@ server <- function(input, output){
         summarize(Count = n()) %>%
         filter(Class == "malignant") %>%
         plot_ly(x = x, y = y, z = Count, type = "contour") %>%
-        layout(title = "Contour map of number of malignant cases")
+        layout(title = "Contour map of number of malignant cases",
+               xaxis = list(title = input$featureInput1),
+               yaxis = list(title = input$featureInput2))
       
     })
     
@@ -169,18 +165,15 @@ server <- function(input, output){
       group_by(x, y, Class) %>%
       summarize(Count = n())
     
-    # Assign colors
-    plot.summ$color <- factor(x = plot.summ$Class, labels = c("FF7676","F6F49D"))
-    
     # Assign to parent frame
     plot.summ <<- plot.summ
     
     
     # Plot
-    plot_ly(plot.summ, x = Class, y = Count, type = "bar", source = "select",
-            marker = list(color = color)) %>% 
-      layout(title = "No. of Malignant and Benign cases in Selection",
-             plot_bgcolor = "466C95")
+    plot_ly(plot.summ, x = Class, y = Count, type = "bar", source = "select", color = Class) %>% 
+      layout(title = "No. of Malignant and Benign cases <br> in Selection",
+             plot_bgcolor = "6A446F",
+             yaxis = list(domain = c(0, 0.9)))
   })
   
   # Coupled event 2
@@ -192,32 +185,33 @@ server <- function(input, output){
     # If NULL dont do anything
     if(is.null(event.data) == T) return(NULL)
     
+    
     # If Malignant
     if(event.data[3] == "malignant"){
       
       tab <- subset(plot.summ, Class == "malignant")
       
-      p1 <- plot_ly(tab, x = as.factor(Count), y = x, type = "box", showlegend = F) %>% 
-        layout(xaxis = list(title = "Count"),
-               yaxis = list(title = input$featureInput1))
+      p1 <- plot_ly(tab, x = x, y = Count, type = "box", showlegend = F) %>% 
+        layout(yaxis = list(title = "Count"),
+               xaxis = list(title = input$featureInput1))
       
-      p2 <- plot_ly(tab, x = as.factor(Count), y = y, type = "box", showlegend = F) %>% 
+      p2 <- plot_ly(tab, x = y, y = Count, type = "box", showlegend = F) %>% 
         layout(title = "Box plot for Malignant cases",
-               xaxis = list(title = "Count"),
-               yaxis = list(title = input$featureInput2))
+               yaxis = list(title = "Count"),
+               xaxis = list(title = input$featureInput2))
       
       subplot(p1, p2)
     }else{
       tab <- subset(plot.summ, Class == "benign")
       
-      p1 <- plot_ly(tab, x = as.factor(Count), y = x, type = "box", showlegend = F) %>% 
-        layout(xaxis = list(title = "Count"),
-               yaxis = list(title = input$featureInput1))
+      p1 <- plot_ly(tab, x = x, y = Count, type = "box", showlegend = F) %>% 
+        layout(yaxis = list(title = "Count"),
+               xaxis = list(title = input$featureInput1))
       
-      p2 <- plot_ly(tab, x = as.factor(Count), y = y, type = "box", showlegend = F) %>% 
+      p2 <- plot_ly(tab, x = y, y = Count, type = "box", showlegend = F) %>% 
         layout(title = "Box plot for Benign cases",
-               xaxis = list(title = "Count"),
-               yaxis = list(title = input$featureInput2))
+               yaxis = list(title = "Count"),
+               xaxis = list(title = input$featureInput2))
       
       subplot(p1, p2)
     }
