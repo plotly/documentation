@@ -334,8 +334,6 @@
 
 <p>Below is an example on how to couple events from multiple charts together in the same app. The <code>source</code> argument is used to bind an <code>event_data()</code> command to a specific plotly graph.</p>
 
-<p><hr></p>
-
 <h2>Shiny app</h2>
 
 <iframe src="https://plotly.shinyapps.io/ShinyCoupledEvents/" width="100%" height=1600 scrolling="no" seamless="seamless" style="border: none"></iframe>
@@ -392,12 +390,14 @@ ui <span class="o">&lt;-</span> fluidPage<span class="p">(</span>
     column<span class="p">(</span><span class="m">6</span><span class="p">,</span> plotlyOutput<span class="p">(</span><span class="s">&quot;Plot2&quot;</span><span class="p">,</span> height <span class="o">=</span> <span class="s">&quot;600px&quot;</span><span class="p">))),</span>
 
   tags<span class="o">$</span>hr<span class="p">(),</span>
+  tags<span class="o">$</span>blockquote<span class="p">(</span><span class="s">&quot;First drag a selection box in the scatter plot to populate the barchart. Then select one of the bars in the barchat</span>
+<span class="s">    to populate the boxplot&quot;</span><span class="p">),</span>
+
 
   <span class="c1"># Second row</span>
   fixedRow<span class="p">(</span>
     column<span class="p">(</span><span class="m">3</span><span class="p">,</span> plotlyOutput<span class="p">(</span><span class="s">&quot;Plot3&quot;</span><span class="p">,</span> height <span class="o">=</span> <span class="s">&quot;600px&quot;</span><span class="p">)),</span>
-    column<span class="p">(</span><span class="m">9</span><span class="p">,</span> plotlyOutput<span class="p">(</span><span class="s">&quot;Plot4&quot;</span><span class="p">,</span> height <span class="o">=</span> <span class="s">&quot;600px&quot;</span><span class="p">)))</span>
-<span class="p">)</span>
+    column<span class="p">(</span><span class="m">9</span><span class="p">,</span> plotlyOutput<span class="p">(</span><span class="s">&quot;Plot4&quot;</span><span class="p">,</span> height <span class="o">=</span> <span class="s">&quot;600px&quot;</span><span class="p">))))</span>
 </code></pre></div>
 <h3>server.r</h3>
 <div class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># server.R definition</span>
@@ -436,7 +436,9 @@ server <span class="o">&lt;-</span> <span class="kr">function</span><span class=
         summarize<span class="p">(</span>Count <span class="o">=</span> n<span class="p">())</span> <span class="o">%&gt;%</span>
         filter<span class="p">(</span>Class <span class="o">==</span> <span class="s">&quot;malignant&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
         plot_ly<span class="p">(</span>x <span class="o">=</span> x<span class="p">,</span> y <span class="o">=</span> y<span class="p">,</span> z <span class="o">=</span> Count<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;contour&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
-        layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Contour map of number of malignant cases&quot;</span><span class="p">)</span>
+        layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Contour map of number of malignant cases&quot;</span><span class="p">,</span>
+               xaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> input<span class="o">$</span>featureInput1<span class="p">),</span>
+               yaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> input<span class="o">$</span>featureInput2<span class="p">))</span>
 
     <span class="p">})</span>
 
@@ -465,18 +467,15 @@ server <span class="o">&lt;-</span> <span class="kr">function</span><span class=
       group_by<span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> Class<span class="p">)</span> <span class="o">%&gt;%</span>
       summarize<span class="p">(</span>Count <span class="o">=</span> n<span class="p">())</span>
 
-    <span class="c1"># Assign colors</span>
-    plot.summ<span class="o">$</span>color <span class="o">&lt;-</span> <span class="kp">factor</span><span class="p">(</span>x <span class="o">=</span> plot.summ<span class="o">$</span>Class<span class="p">,</span> labels <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;FF7676&quot;</span><span class="p">,</span><span class="s">&quot;F6F49D&quot;</span><span class="p">))</span>
-
     <span class="c1"># Assign to parent frame</span>
     plot.summ <span class="o">&lt;&lt;-</span> plot.summ
 
 
     <span class="c1"># Plot</span>
-    plot_ly<span class="p">(</span>plot.summ<span class="p">,</span> x <span class="o">=</span> Class<span class="p">,</span> y <span class="o">=</span> Count<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;bar&quot;</span><span class="p">,</span> <span class="kn">source</span> <span class="o">=</span> <span class="s">&quot;select&quot;</span><span class="p">,</span>
-            marker <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>color <span class="o">=</span> color<span class="p">))</span> <span class="o">%&gt;%</span> 
-      layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;No. of Malignant and Benign cases in Selection&quot;</span><span class="p">,</span>
-             plot_bgcolor <span class="o">=</span> <span class="s">&quot;466C95&quot;</span><span class="p">)</span>
+    plot_ly<span class="p">(</span>plot.summ<span class="p">,</span> x <span class="o">=</span> Class<span class="p">,</span> y <span class="o">=</span> Count<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;bar&quot;</span><span class="p">,</span> <span class="kn">source</span> <span class="o">=</span> <span class="s">&quot;select&quot;</span><span class="p">,</span> color <span class="o">=</span> Class<span class="p">)</span> <span class="o">%&gt;%</span> 
+      layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;No. of Malignant and Benign cases &lt;br&gt; in Selection&quot;</span><span class="p">,</span>
+             plot_bgcolor <span class="o">=</span> <span class="s">&quot;6A446F&quot;</span><span class="p">,</span>
+             yaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>domain <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0.9</span><span class="p">)))</span>
   <span class="p">})</span>
 
   <span class="c1"># Coupled event 2</span>
@@ -488,32 +487,33 @@ server <span class="o">&lt;-</span> <span class="kr">function</span><span class=
     <span class="c1"># If NULL dont do anything</span>
     <span class="kr">if</span><span class="p">(</span><span class="kp">is.null</span><span class="p">(</span>event.data<span class="p">)</span> <span class="o">==</span> <span class="bp">T</span><span class="p">)</span> <span class="kr">return</span><span class="p">(</span><span class="kc">NULL</span><span class="p">)</span>
 
+
     <span class="c1"># If Malignant</span>
     <span class="kr">if</span><span class="p">(</span>event.data<span class="p">[</span><span class="m">3</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;malignant&quot;</span><span class="p">){</span>
 
       tab <span class="o">&lt;-</span> <span class="kp">subset</span><span class="p">(</span>plot.summ<span class="p">,</span> Class <span class="o">==</span> <span class="s">&quot;malignant&quot;</span><span class="p">)</span>
 
-      p1 <span class="o">&lt;-</span> plot_ly<span class="p">(</span>tab<span class="p">,</span> x <span class="o">=</span> <span class="kp">as.factor</span><span class="p">(</span>Count<span class="p">),</span> y <span class="o">=</span> x<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;box&quot;</span><span class="p">,</span> showlegend <span class="o">=</span> <span class="bp">F</span><span class="p">)</span> <span class="o">%&gt;%</span> 
-        layout<span class="p">(</span>xaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Count&quot;</span><span class="p">),</span>
-               yaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> input<span class="o">$</span>featureInput1<span class="p">))</span>
+      p1 <span class="o">&lt;-</span> plot_ly<span class="p">(</span>tab<span class="p">,</span> x <span class="o">=</span> x<span class="p">,</span> y <span class="o">=</span> Count<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;box&quot;</span><span class="p">,</span> showlegend <span class="o">=</span> <span class="bp">F</span><span class="p">)</span> <span class="o">%&gt;%</span> 
+        layout<span class="p">(</span>yaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Count&quot;</span><span class="p">),</span>
+               xaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> input<span class="o">$</span>featureInput1<span class="p">))</span>
 
-      p2 <span class="o">&lt;-</span> plot_ly<span class="p">(</span>tab<span class="p">,</span> x <span class="o">=</span> <span class="kp">as.factor</span><span class="p">(</span>Count<span class="p">),</span> y <span class="o">=</span> y<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;box&quot;</span><span class="p">,</span> showlegend <span class="o">=</span> <span class="bp">F</span><span class="p">)</span> <span class="o">%&gt;%</span> 
+      p2 <span class="o">&lt;-</span> plot_ly<span class="p">(</span>tab<span class="p">,</span> x <span class="o">=</span> y<span class="p">,</span> y <span class="o">=</span> Count<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;box&quot;</span><span class="p">,</span> showlegend <span class="o">=</span> <span class="bp">F</span><span class="p">)</span> <span class="o">%&gt;%</span> 
         layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Box plot for Malignant cases&quot;</span><span class="p">,</span>
-               xaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Count&quot;</span><span class="p">),</span>
-               yaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> input<span class="o">$</span>featureInput2<span class="p">))</span>
+               yaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Count&quot;</span><span class="p">),</span>
+               xaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> input<span class="o">$</span>featureInput2<span class="p">))</span>
 
       subplot<span class="p">(</span>p1<span class="p">,</span> p2<span class="p">)</span>
     <span class="p">}</span><span class="kp">else</span><span class="p">{</span>
       tab <span class="o">&lt;-</span> <span class="kp">subset</span><span class="p">(</span>plot.summ<span class="p">,</span> Class <span class="o">==</span> <span class="s">&quot;benign&quot;</span><span class="p">)</span>
 
-      p1 <span class="o">&lt;-</span> plot_ly<span class="p">(</span>tab<span class="p">,</span> x <span class="o">=</span> <span class="kp">as.factor</span><span class="p">(</span>Count<span class="p">),</span> y <span class="o">=</span> x<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;box&quot;</span><span class="p">,</span> showlegend <span class="o">=</span> <span class="bp">F</span><span class="p">)</span> <span class="o">%&gt;%</span> 
-        layout<span class="p">(</span>xaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Count&quot;</span><span class="p">),</span>
-               yaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> input<span class="o">$</span>featureInput1<span class="p">))</span>
+      p1 <span class="o">&lt;-</span> plot_ly<span class="p">(</span>tab<span class="p">,</span> x <span class="o">=</span> x<span class="p">,</span> y <span class="o">=</span> Count<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;box&quot;</span><span class="p">,</span> showlegend <span class="o">=</span> <span class="bp">F</span><span class="p">)</span> <span class="o">%&gt;%</span> 
+        layout<span class="p">(</span>yaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Count&quot;</span><span class="p">),</span>
+               xaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> input<span class="o">$</span>featureInput1<span class="p">))</span>
 
-      p2 <span class="o">&lt;-</span> plot_ly<span class="p">(</span>tab<span class="p">,</span> x <span class="o">=</span> <span class="kp">as.factor</span><span class="p">(</span>Count<span class="p">),</span> y <span class="o">=</span> y<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;box&quot;</span><span class="p">,</span> showlegend <span class="o">=</span> <span class="bp">F</span><span class="p">)</span> <span class="o">%&gt;%</span> 
+      p2 <span class="o">&lt;-</span> plot_ly<span class="p">(</span>tab<span class="p">,</span> x <span class="o">=</span> y<span class="p">,</span> y <span class="o">=</span> Count<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;box&quot;</span><span class="p">,</span> showlegend <span class="o">=</span> <span class="bp">F</span><span class="p">)</span> <span class="o">%&gt;%</span> 
         layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Box plot for Benign cases&quot;</span><span class="p">,</span>
-               xaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Count&quot;</span><span class="p">),</span>
-               yaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> input<span class="o">$</span>featureInput2<span class="p">))</span>
+               yaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Count&quot;</span><span class="p">),</span>
+               xaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> input<span class="o">$</span>featureInput2<span class="p">))</span>
 
       subplot<span class="p">(</span>p1<span class="p">,</span> p2<span class="p">)</span>
     <span class="p">}</span>
