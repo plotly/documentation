@@ -47,9 +47,14 @@ ui <- fluidPage(
     column(6, plotlyOutput("Plot2", height = "600px"))),
   
   tags$hr(),
+  tags$blockquote("First drag a selection box in the scatter plot to populate the barchart. Then select one of the bars in the barchat
+    to populate the boxplot"),
+  
   
   # Second row
   fixedRow(
     column(3, plotlyOutput("Plot3", height = "600px")),
-    column(9, plotlyOutput("Plot4", height = "600px")))
-)
+    column(9, plotlyOutput("Plot4", height = "600px"))))
+  
+  
+  
