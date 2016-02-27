@@ -6,7 +6,6 @@ description: Compare WebGL and SVG in R
 layout: user-guide
 language: r
 page_type: example_index
-display_as: get_request
 ---
 # Compare WebGL and SVG in R
 
