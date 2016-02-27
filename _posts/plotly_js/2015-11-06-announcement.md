@@ -14,10 +14,8 @@ language: plotly_js
 
 November 17, 2015
 
-{% raw %}
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">✨ Announcement ✨ 100% of Plotly&#39;s JavaScript charting library is now free and open-source.<a href="https://t.co/5bneDRdV98">https://t.co/5bneDRdV98</a> <a href="https://t.co/NADG6eaEmA">pic.twitter.com/NADG6eaEmA</a></p>&mdash; plotly (@plotlygraphs) <a href="https://twitter.com/plotlygraphs/status/666667595903459328">November 17, 2015</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-{% endraw %}
 
 A growing number of graphing tools and libraries allow anyone to make beautiful, interactive web-based graphs. By interactively visualizing our data online, we share complex ideas in an exploratory, visual, open, and collaborative way.
 
