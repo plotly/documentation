@@ -22,7 +22,7 @@ Checkout this [post](/r/compare-webgl-svg/) for a comparison of WebGL and SVG sc
 library(plotly)
 
 # Read some weather data
-df <- read.csv('https://cdn.rawgit.com/plotly/documentation/tree/source/_posts/r/scattergl/weather-data.csv')
+df <- read.csv('https://cdn.rawgit.com/plotly/documentation/source/_posts/r/scattergl/weather-data.csv')
 
 # Convert to dates
 df$Date <- zoo::as.Date(df$Date, format =  "%m/%d/%Y")
