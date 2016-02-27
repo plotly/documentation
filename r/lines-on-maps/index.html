@@ -315,61 +315,61 @@
 				<div class="row">
 
 				<h1>USA Flight Paths Map</h1>
-<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
-<span class="c1"># airport locations</span>
-air <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv&#39;</span><span class="p">)</span>
-<span class="c1"># flights between airports</span>
-flights <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2011_february_aa_flight_paths.csv&#39;</span><span class="p">)</span>
-flights<span class="o">$</span>id <span class="o">&lt;-</span> <span class="kp">seq_len</span><span class="p">(</span><span class="kp">nrow</span><span class="p">(</span>flights<span class="p">))</span>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span>
+<span class="c1"># airport locations
+</span><span class="n">air</span> <span class="o">&lt;-</span> <span class="n">read.csv</span><span class="p">(</span><span class="s1">'https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv'</span><span class="p">)</span>
+<span class="c1"># flights between airports
+</span><span class="n">flights</span> <span class="o">&lt;-</span> <span class="n">read.csv</span><span class="p">(</span><span class="s1">'https://raw.githubusercontent.com/plotly/datasets/master/2011_february_aa_flight_paths.csv'</span><span class="p">)</span>
+<span class="n">flights</span><span class="o">$</span><span class="n">id</span> <span class="o">&lt;-</span> <span class="n">seq_len</span><span class="p">(</span><span class="n">nrow</span><span class="p">(</span><span class="n">flights</span><span class="p">))</span>
 
-<span class="c1"># map projection</span>
-geo <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>
-  scope <span class="o">=</span> <span class="s">&#39;north america&#39;</span><span class="p">,</span>
-  projection <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>type <span class="o">=</span> <span class="s">&#39;azimuthal equal area&#39;</span><span class="p">),</span>
-  showland <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-  landcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;gray95&quot;</span><span class="p">),</span>
-  countrycolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;gray80&quot;</span><span class="p">)</span>
+<span class="c1"># map projection
+</span><span class="n">geo</span> <span class="o">&lt;-</span> <span class="n">list</span><span class="p">(</span>
+  <span class="n">scope</span> <span class="o">=</span> <span class="s1">'north america'</span><span class="p">,</span>
+  <span class="n">projection</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span><span class="n">type</span> <span class="o">=</span> <span class="s1">'azimuthal equal area'</span><span class="p">),</span>
+  <span class="n">showland</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span>
+  <span class="n">landcolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"gray95"</span><span class="p">),</span>
+  <span class="n">countrycolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"gray80"</span><span class="p">)</span>
 <span class="p">)</span>
 
-plot_ly<span class="p">(</span>air<span class="p">,</span> lon <span class="o">=</span> long<span class="p">,</span> lat <span class="o">=</span> lat<span class="p">,</span> text <span class="o">=</span> airport<span class="p">,</span> type <span class="o">=</span> <span class="s">&#39;scattergeo&#39;</span><span class="p">,</span>
-        locationmode <span class="o">=</span> <span class="s">&#39;USA-states&#39;</span><span class="p">,</span> marker <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>size <span class="o">=</span> <span class="m">2</span><span class="p">,</span> color <span class="o">=</span> <span class="s">&#39;red&#39;</span><span class="p">),</span>
-        inherit <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span> <span class="o">%&gt;%</span>
-  add_trace<span class="p">(</span>lon <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>start_lon<span class="p">,</span> end_lon<span class="p">),</span> lat <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>start_lat<span class="p">,</span> end_lat<span class="p">),</span>
-            group <span class="o">=</span> id<span class="p">,</span> opacity <span class="o">=</span> cnt<span class="o">/</span><span class="kp">max</span><span class="p">(</span>cnt<span class="p">),</span> data <span class="o">=</span> flights<span class="p">,</span>
-            mode <span class="o">=</span> <span class="s">&#39;lines&#39;</span><span class="p">,</span> line <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>width <span class="o">=</span> <span class="m">1</span><span class="p">,</span> color <span class="o">=</span> <span class="s">&#39;red&#39;</span><span class="p">),</span>
-            type <span class="o">=</span> <span class="s">&#39;scattergeo&#39;</span><span class="p">,</span> locationmode <span class="o">=</span> <span class="s">&#39;USA-states&#39;</span><span class="p">)</span> <span class="o">%&gt;%</span>
-  layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&#39;Feb. 2011 American Airline flight paths&lt;br&gt;(Hover for airport names)&#39;</span><span class="p">,</span>
-         geo <span class="o">=</span> geo<span class="p">,</span> showlegend <span class="o">=</span> <span class="kc">FALSE</span><span class="p">,</span> height<span class="o">=</span><span class="m">800</span><span class="p">)</span>
+<span class="n">plot_ly</span><span class="p">(</span><span class="n">air</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">long</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">lat</span><span class="p">,</span> <span class="n">text</span> <span class="o">=</span> <span class="n">airport</span><span class="p">,</span> <span class="n">type</span> <span class="o">=</span> <span class="s1">'scattergeo'</span><span class="p">,</span>
+        <span class="n">locationmode</span> <span class="o">=</span> <span class="s1">'USA-states'</span><span class="p">,</span> <span class="n">marker</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">'red'</span><span class="p">),</span>
+        <span class="n">inherit</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">add_trace</span><span class="p">(</span><span class="n">lon</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span><span class="n">start_lon</span><span class="p">,</span> <span class="n">end_lon</span><span class="p">),</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span><span class="n">start_lat</span><span class="p">,</span> <span class="n">end_lat</span><span class="p">),</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">id</span><span class="p">,</span> <span class="n">opacity</span> <span class="o">=</span> <span class="n">cnt</span><span class="o">/</span><span class="n">max</span><span class="p">(</span><span class="n">cnt</span><span class="p">),</span> <span class="n">data</span> <span class="o">=</span> <span class="n">flights</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">'lines'</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span><span class="n">width</span> <span class="o">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">'red'</span><span class="p">),</span>
+            <span class="n">type</span> <span class="o">=</span> <span class="s1">'scattergeo'</span><span class="p">,</span> <span class="n">locationmode</span> <span class="o">=</span> <span class="s1">'USA-states'</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">layout</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s1">'Feb. 2011 American Airline flight paths&lt;br&gt;(Hover for airport names)'</span><span class="p">,</span>
+         <span class="n">geo</span> <span class="o">=</span> <span class="n">geo</span><span class="p">,</span> <span class="n">showlegend</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="m">800</span><span class="p">)</span>
 </code></pre></div>
 <iframe height="800" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/336" width="800" frameBorder="0"></iframe>
 
 <h3>London to NYC Great Circle</h3>
-<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
-plot_ly<span class="p">(</span>lat <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">40.7127</span><span class="p">,</span> <span class="m">51.5072</span><span class="p">),</span> lon <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">-74.0059</span><span class="p">,</span> <span class="m">0.1275</span><span class="p">),</span> type <span class="o">=</span> <span class="s">&#39;scattergeo&#39;</span><span class="p">,</span>
-        mode <span class="o">=</span> <span class="s">&#39;lines&#39;</span><span class="p">,</span> line <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>width <span class="o">=</span> <span class="m">2</span><span class="p">,</span> color <span class="o">=</span> <span class="s">&#39;blue&#39;</span><span class="p">))</span> <span class="o">%&gt;%</span>
-  layout<span class="p">(</span>
-    title <span class="o">=</span> <span class="s">&#39;London to NYC Great Circle&#39;</span><span class="p">,</span>
-    showlegend <span class="o">=</span> <span class="kc">FALSE</span><span class="p">,</span>
-    geo <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>
-      resolution <span class="o">=</span> <span class="m">50</span><span class="p">,</span>
-      showland <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-      showlakes <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-      landcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;grey80&quot;</span><span class="p">),</span>
-      countrycolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;grey80&quot;</span><span class="p">),</span>
-      lakecolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">),</span>
-      projection <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>type <span class="o">=</span> <span class="s">&quot;equirectangular&quot;</span><span class="p">),</span>
-      coastlinewidth <span class="o">=</span> <span class="m">2</span><span class="p">,</span>
-      lataxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>
-        range <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">20</span><span class="p">,</span> <span class="m">60</span><span class="p">),</span>
-        showgrid <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-        tickmode <span class="o">=</span> <span class="s">&quot;linear&quot;</span><span class="p">,</span>
-        dtick <span class="o">=</span> <span class="m">10</span>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span>
+<span class="n">plot_ly</span><span class="p">(</span><span class="n">lat</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="m">40.7127</span><span class="p">,</span> <span class="m">51.5072</span><span class="p">),</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="m">-74.0059</span><span class="p">,</span> <span class="m">0.1275</span><span class="p">),</span> <span class="n">type</span> <span class="o">=</span> <span class="s1">'scattergeo'</span><span class="p">,</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">'lines'</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span><span class="n">width</span> <span class="o">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">'blue'</span><span class="p">))</span> <span class="o">%&gt;%</span>
+  <span class="n">layout</span><span class="p">(</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">'London to NYC Great Circle'</span><span class="p">,</span>
+    <span class="n">showlegend</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">,</span>
+    <span class="n">geo</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span>
+      <span class="n">resolution</span> <span class="o">=</span> <span class="m">50</span><span class="p">,</span>
+      <span class="n">showland</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span>
+      <span class="n">showlakes</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span>
+      <span class="n">landcolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"grey80"</span><span class="p">),</span>
+      <span class="n">countrycolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"grey80"</span><span class="p">),</span>
+      <span class="n">lakecolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"white"</span><span class="p">),</span>
+      <span class="n">projection</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span><span class="n">type</span> <span class="o">=</span> <span class="s2">"equirectangular"</span><span class="p">),</span>
+      <span class="n">coastlinewidth</span> <span class="o">=</span> <span class="m">2</span><span class="p">,</span>
+      <span class="n">lataxis</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span>
+        <span class="n">range</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="m">20</span><span class="p">,</span> <span class="m">60</span><span class="p">),</span>
+        <span class="n">showgrid</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="n">tickmode</span> <span class="o">=</span> <span class="s2">"linear"</span><span class="p">,</span>
+        <span class="n">dtick</span> <span class="o">=</span> <span class="m">10</span>
       <span class="p">),</span>
-      lonaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>
-        range <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">-100</span><span class="p">,</span> <span class="m">20</span><span class="p">),</span>
-        showgrid <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-        tickmode <span class="o">=</span> <span class="s">&quot;linear&quot;</span><span class="p">,</span>
-        dtick <span class="o">=</span> <span class="m">20</span>
+      <span class="n">lonaxis</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span>
+        <span class="n">range</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="m">-100</span><span class="p">,</span> <span class="m">20</span><span class="p">),</span>
+        <span class="n">showgrid</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span>
+        <span class="n">tickmode</span> <span class="o">=</span> <span class="s2">"linear"</span><span class="p">,</span>
+        <span class="n">dtick</span> <span class="o">=</span> <span class="m">20</span>
       <span class="p">)</span>
     <span class="p">)</span>
   <span class="p">)</span>
@@ -377,53 +377,53 @@ plot_ly<span class="p">(</span>lat <span class="o">=</span> <span class="kt">c</
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/331" width="800" frameBorder="0"></iframe>
 
 <h3>Contour lines on globe</h3>
-<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
-df <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/plotly/datasets/master/globe_contours.csv&#39;</span><span class="p">)</span>
-df<span class="o">$</span>id <span class="o">&lt;-</span> <span class="kp">seq_len</span><span class="p">(</span><span class="kp">nrow</span><span class="p">(</span>df<span class="p">))</span>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">&lt;-</span> <span class="n">read.csv</span><span class="p">(</span><span class="s1">'https://raw.githubusercontent.com/plotly/datasets/master/globe_contours.csv'</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">id</span> <span class="o">&lt;-</span> <span class="n">seq_len</span><span class="p">(</span><span class="n">nrow</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
 
-<span class="kn">library</span><span class="p">(</span>tidyr<span class="p">)</span>
-d <span class="o">&lt;-</span> df <span class="o">%&gt;%</span>
-  gather<span class="p">(</span>key<span class="p">,</span> value<span class="p">,</span> <span class="o">-</span>id<span class="p">)</span> <span class="o">%&gt;%</span>
-  separate<span class="p">(</span>key<span class="p">,</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;l&quot;</span><span class="p">,</span> <span class="s">&quot;line&quot;</span><span class="p">),</span> <span class="s">&quot;\\.&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
-  spread<span class="p">(</span>l<span class="p">,</span> value<span class="p">)</span>
+<span class="n">library</span><span class="p">(</span><span class="n">tidyr</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">&lt;-</span> <span class="n">df</span> <span class="o">%&gt;%</span>
+  <span class="n">gather</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">-</span><span class="n">id</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">separate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">c</span><span class="p">(</span><span class="s2">"l"</span><span class="p">,</span> <span class="s2">"line"</span><span class="p">),</span> <span class="s2">"\\."</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">spread</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-p <span class="o">&lt;-</span> plot_ly<span class="p">(</span>type <span class="o">=</span> <span class="s">&#39;scattergeo&#39;</span><span class="p">,</span> mode <span class="o">=</span> <span class="s">&#39;lines&#39;</span><span class="p">,</span>
-             line <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>width <span class="o">=</span> <span class="m">2</span><span class="p">,</span> color <span class="o">=</span> <span class="s">&#39;violet&#39;</span><span class="p">))</span>
+<span class="n">p</span> <span class="o">&lt;-</span> <span class="n">plot_ly</span><span class="p">(</span><span class="n">type</span> <span class="o">=</span> <span class="s1">'scattergeo'</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">'lines'</span><span class="p">,</span>
+             <span class="n">line</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span><span class="n">width</span> <span class="o">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">'violet'</span><span class="p">))</span>
 
-<span class="kr">for</span> <span class="p">(</span>i <span class="kr">in</span> <span class="kp">unique</span><span class="p">(</span>d<span class="o">$</span>line<span class="p">))</span>
-  p <span class="o">&lt;-</span> add_trace<span class="p">(</span>p<span class="p">,</span> lat <span class="o">=</span> lat<span class="p">,</span> lon <span class="o">=</span> lon<span class="p">,</span> data <span class="o">=</span> <span class="kp">subset</span><span class="p">(</span>d<span class="p">,</span> line <span class="o">==</span> i<span class="p">))</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="k">in</span> <span class="n">unique</span><span class="p">(</span><span class="n">d</span><span class="o">$</span><span class="n">line</span><span class="p">))</span>
+  <span class="n">p</span> <span class="o">&lt;-</span> <span class="n">add_trace</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">lon</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">subset</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">line</span> <span class="o">==</span> <span class="n">i</span><span class="p">))</span>
 
-geo <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>
-  showland <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-  showlakes <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-  showcountries <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-  showocean <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-  countrywidth <span class="o">=</span> <span class="m">0.5</span><span class="p">,</span>
-  landcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;grey90&quot;</span><span class="p">),</span>
-  lakecolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">),</span>
-  oceancolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">),</span>
-  projection <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>
-    type <span class="o">=</span> <span class="s">&#39;orthographic&#39;</span><span class="p">,</span>
-    rotation <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>
-      lon <span class="o">=</span> <span class="m">-100</span><span class="p">,</span>
-      lat <span class="o">=</span> <span class="m">40</span><span class="p">,</span>
-      roll <span class="o">=</span> <span class="m">0</span>
+<span class="n">geo</span> <span class="o">&lt;-</span> <span class="n">list</span><span class="p">(</span>
+  <span class="n">showland</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span>
+  <span class="n">showlakes</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span>
+  <span class="n">showcountries</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span>
+  <span class="n">showocean</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span>
+  <span class="n">countrywidth</span> <span class="o">=</span> <span class="m">0.5</span><span class="p">,</span>
+  <span class="n">landcolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"grey90"</span><span class="p">),</span>
+  <span class="n">lakecolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"white"</span><span class="p">),</span>
+  <span class="n">oceancolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"white"</span><span class="p">),</span>
+  <span class="n">projection</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span>
+    <span class="n">type</span> <span class="o">=</span> <span class="s1">'orthographic'</span><span class="p">,</span>
+    <span class="n">rotation</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span>
+      <span class="n">lon</span> <span class="o">=</span> <span class="m">-100</span><span class="p">,</span>
+      <span class="n">lat</span> <span class="o">=</span> <span class="m">40</span><span class="p">,</span>
+      <span class="n">roll</span> <span class="o">=</span> <span class="m">0</span>
     <span class="p">)</span>
   <span class="p">),</span>
-  lonaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>
-    showgrid <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-    gridcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;gray40&quot;</span><span class="p">),</span>
-    gridwidth <span class="o">=</span> <span class="m">0.5</span>
+  <span class="n">lonaxis</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span>
+    <span class="n">showgrid</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span>
+    <span class="n">gridcolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"gray40"</span><span class="p">),</span>
+    <span class="n">gridwidth</span> <span class="o">=</span> <span class="m">0.5</span>
   <span class="p">),</span>
-  lataxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>
-    showgrid <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-    gridcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;gray40&quot;</span><span class="p">),</span>
-    gridwidth <span class="o">=</span> <span class="m">0.5</span>
+  <span class="n">lataxis</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span>
+    <span class="n">showgrid</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span>
+    <span class="n">gridcolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"gray40"</span><span class="p">),</span>
+    <span class="n">gridwidth</span> <span class="o">=</span> <span class="m">0.5</span>
   <span class="p">)</span>
 <span class="p">)</span>
 
-layout<span class="p">(</span>p<span class="p">,</span> showlegend <span class="o">=</span> <span class="kc">FALSE</span><span class="p">,</span> geo <span class="o">=</span> geo<span class="p">,</span>
-       title <span class="o">=</span> <span class="s">&#39;Contour lines over globe&lt;br&gt;(Click and drag to rotate)&#39;</span><span class="p">)</span>
+<span class="n">layout</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">showlegend</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">,</span> <span class="n">geo</span> <span class="o">=</span> <span class="n">geo</span><span class="p">,</span>
+       <span class="n">title</span> <span class="o">=</span> <span class="s1">'Contour lines over globe&lt;br&gt;(Click and drag to rotate)'</span><span class="p">)</span>
 </code></pre></div>
 <iframe height="800" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/333" width="800" frameBorder="0"></iframe>
 
