@@ -42,7 +42,7 @@ p <- plot_ly(df, x = Date, y = Mean_TemperatureC, name = "Mean Temp.", type = "s
 p
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2873/mean-temparature-in-seattle-1948-2015/" width="800px" height="600px" scrolling="no" seamless="seamless"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/2873/mean-temparature-in-seattle-1948-2015/" width="950" height="600px" scrolling="no" seamless="seamless"></iframe>
 
 # Reference
 see [scattergl](https://plot.ly/r/reference/#scattergl) for more information. 

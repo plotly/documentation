@@ -24,7 +24,7 @@ p <- plot_ly(x = x, y = y, type = "scattergl", mode = "markers", marker = list(l
 p
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2869"width="900px" height="600px" scrolling="no" seamless="seamless"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/2869"width="950" height="600px" scrolling="no" seamless="seamless"></iframe>
 
 ### SVG 
 > The draw time for this plot will be slow for all clients.
@@ -41,7 +41,7 @@ p <- plot_ly(x = x, y = y, type = "scatter", mode = "markers", marker = list(lin
 p
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2871/y-vs-x/" width="900px" height="600px" scrolling="no" seamless="seamless"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/2871/y-vs-x/" width="950px" height="600px" scrolling="no" seamless="seamless"></iframe>
 
 # References
 See below for more information:

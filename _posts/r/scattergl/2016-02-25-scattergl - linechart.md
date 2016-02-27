@@ -45,7 +45,7 @@ for(i in 1:nPlot){
 p
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2867/randwalkn-nrand-vs-1nrand/"width="900px" height="600px" scrolling="no" seamless="seamless"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/2867/randwalkn-nrand-vs-1nrand/"width="950" height="600px" scrolling="no" seamless="seamless"></iframe>
 
 # Reference
 see [scattergl](https://plot.ly/r/reference/#scattergl) for more information. 

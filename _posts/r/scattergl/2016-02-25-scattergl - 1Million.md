@@ -29,7 +29,7 @@ p <- plot_ly(x = x, y = y, type = "scattergl", mode = "markers", marker = list(l
 p
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2865/y-vs-x/" width="900px" height="600px" scrolling="no" seamless="seamless"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/2865/y-vs-x/" width="950" height="600px" scrolling="no" seamless="seamless"></iframe>
 
 # Reference
 see [scattergl](https://plot.ly/r/reference/#scattergl) for more information. 
