@@ -323,71 +323,71 @@
 <h3>Example 1 - Plotly&#39;s Native Syntax</h3>
 
 <h4><code>ui.R</code></h4>
-<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">shiny</span><span class="p">)</span>
-<span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span>
-<span class="n">library</span><span class="p">(</span><span class="n">ggplot2movies</span><span class="p">)</span>  <span class="c1"># Needed for the 'movies' data set
-</span>
-<span class="n">shinyUI</span><span class="p">(</span><span class="n">fluidPage</span><span class="p">(</span>
-  <span class="n">titlePanel</span><span class="p">(</span><span class="s2">"Movie Ratings!"</span><span class="p">),</span>
-  <span class="n">sidebarPanel</span><span class="p">(</span>
-    <span class="n">sliderInput</span><span class="p">(</span><span class="s2">"bins"</span><span class="p">,</span> <span class="s2">"Number of bins:"</span><span class="p">,</span> <span class="n">min</span> <span class="o">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">max</span> <span class="o">=</span> <span class="m">50</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="m">10</span><span class="p">)</span>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="kn">library</span><span class="p">(</span>shiny<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>ggplot2movies<span class="p">)</span>  <span class="c1"># Needed for the &#39;movies&#39; data set</span>
+
+shinyUI<span class="p">(</span>fluidPage<span class="p">(</span>
+  titlePanel<span class="p">(</span><span class="s">&quot;Movie Ratings!&quot;</span><span class="p">),</span>
+  sidebarPanel<span class="p">(</span>
+    sliderInput<span class="p">(</span><span class="s">&quot;bins&quot;</span><span class="p">,</span> <span class="s">&quot;Number of bins:&quot;</span><span class="p">,</span> min <span class="o">=</span> <span class="m">1</span><span class="p">,</span> max <span class="o">=</span> <span class="m">50</span><span class="p">,</span> value <span class="o">=</span> <span class="m">10</span><span class="p">)</span>
   <span class="p">),</span>
-  <span class="n">mainPanel</span><span class="p">(</span>
-    <span class="n">plotlyOutput</span><span class="p">(</span><span class="s2">"trendPlot"</span><span class="p">)</span>
+  mainPanel<span class="p">(</span>
+    plotlyOutput<span class="p">(</span><span class="s">&quot;trendPlot&quot;</span><span class="p">)</span>
   <span class="p">)</span>
 <span class="p">))</span>
 </code></pre></div>
 <h4><code>server.R</code></h4>
-<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">minx</span> <span class="o">&lt;-</span> <span class="n">min</span><span class="p">(</span><span class="n">movies</span><span class="o">$</span><span class="n">rating</span><span class="p">)</span>
-<span class="n">maxx</span> <span class="o">&lt;-</span> <span class="n">max</span><span class="p">(</span><span class="n">movies</span><span class="o">$</span><span class="n">rating</span><span class="p">)</span>
+<div class="highlight"><pre><code class="language-r" data-lang="r">minx <span class="o">&lt;-</span> <span class="kp">min</span><span class="p">(</span>movies<span class="o">$</span>rating<span class="p">)</span>
+maxx <span class="o">&lt;-</span> <span class="kp">max</span><span class="p">(</span>movies<span class="o">$</span>rating<span class="p">)</span>
 
-<span class="n">shinyServer</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">input</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span> <span class="p">{</span>
+shinyServer<span class="p">(</span><span class="kr">function</span><span class="p">(</span>input<span class="p">,</span> output<span class="p">)</span> <span class="p">{</span>
 
-  <span class="n">output</span><span class="o">$</span><span class="n">trendPlot</span> <span class="o">&lt;-</span> <span class="n">renderPlotly</span><span class="p">({</span>
-    <span class="c1"># size of the bins depend on the input 'bins'
-</span>    <span class="n">size</span> <span class="o">&lt;-</span> <span class="p">(</span><span class="n">maxx</span> <span class="o">-</span> <span class="n">minx</span><span class="p">)</span> <span class="o">/</span> <span class="n">input</span><span class="o">$</span><span class="n">bins</span>
+  output<span class="o">$</span>trendPlot <span class="o">&lt;-</span> renderPlotly<span class="p">({</span>
+    <span class="c1"># size of the bins depend on the input &#39;bins&#39;</span>
+    size <span class="o">&lt;-</span> <span class="p">(</span>maxx <span class="o">-</span> minx<span class="p">)</span> <span class="o">/</span> input<span class="o">$</span>bins
 
-    <span class="c1"># a simple histogram of movie ratings
-</span>    <span class="n">p</span> <span class="o">&lt;-</span> <span class="n">plot_ly</span><span class="p">(</span><span class="n">movies</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">rating</span><span class="p">,</span> <span class="n">autobinx</span> <span class="o">=</span> <span class="n">F</span><span class="p">,</span> <span class="n">type</span> <span class="o">=</span> <span class="s2">"histogram"</span><span class="p">,</span>
-                 <span class="n">xbins</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span><span class="n">start</span> <span class="o">=</span> <span class="n">minx</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">maxx</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">size</span><span class="p">))</span>
-    <span class="c1"># style the xaxis
-</span>    <span class="n">layout</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">xaxis</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">"Ratings"</span><span class="p">,</span> <span class="n">range</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="n">minx</span><span class="p">,</span> <span class="n">maxx</span><span class="p">),</span> <span class="n">autorange</span> <span class="o">=</span> <span class="n">F</span><span class="p">,</span>
-                           <span class="n">autotick</span> <span class="o">=</span> <span class="n">F</span><span class="p">,</span> <span class="n">tick0</span> <span class="o">=</span> <span class="n">minx</span><span class="p">,</span> <span class="n">dtick</span> <span class="o">=</span> <span class="n">size</span><span class="p">))</span>
+    <span class="c1"># a simple histogram of movie ratings</span>
+    p <span class="o">&lt;-</span> plot_ly<span class="p">(</span>movies<span class="p">,</span> x <span class="o">=</span> rating<span class="p">,</span> autobinx <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;histogram&quot;</span><span class="p">,</span>
+                 xbins <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>start <span class="o">=</span> minx<span class="p">,</span> end <span class="o">=</span> maxx<span class="p">,</span> size <span class="o">=</span> size<span class="p">))</span>
+    <span class="c1"># style the xaxis</span>
+    layout<span class="p">(</span>p<span class="p">,</span> xaxis <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Ratings&quot;</span><span class="p">,</span> range <span class="o">=</span> <span class="kt">c</span><span class="p">(</span>minx<span class="p">,</span> maxx<span class="p">),</span> autorange <span class="o">=</span> <span class="bp">F</span><span class="p">,</span>
+                           autotick <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> tick0 <span class="o">=</span> minx<span class="p">,</span> dtick <span class="o">=</span> size<span class="p">))</span>
   <span class="p">})</span>
 <span class="p">})</span>
 </code></pre></div>
 <h3>Example 2 - Render <code>ggplotly</code></h3>
 
 <h4><code>ui.R</code></h4>
-<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">shiny</span><span class="p">)</span>
-<span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span>
-<span class="n">library</span><span class="p">(</span><span class="n">ggplot2movies</span><span class="p">)</span>  <span class="c1"># Needed for the 'movies' data set
-</span>
-<span class="n">shinyUI</span><span class="p">(</span><span class="n">fluidPage</span><span class="p">(</span>
-  <span class="n">titlePanel</span><span class="p">(</span><span class="s2">"Movie Ratings!"</span><span class="p">),</span>
-  <span class="n">sidebarPanel</span><span class="p">(</span>
-    <span class="n">sliderInput</span><span class="p">(</span><span class="s2">"bins"</span><span class="p">,</span> <span class="s2">"Number of bins:"</span><span class="p">,</span> <span class="n">min</span> <span class="o">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">max</span> <span class="o">=</span> <span class="m">50</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="m">10</span><span class="p">)</span>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="kn">library</span><span class="p">(</span>shiny<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>ggplot2movies<span class="p">)</span>  <span class="c1"># Needed for the &#39;movies&#39; data set</span>
+
+shinyUI<span class="p">(</span>fluidPage<span class="p">(</span>
+  titlePanel<span class="p">(</span><span class="s">&quot;Movie Ratings!&quot;</span><span class="p">),</span>
+  sidebarPanel<span class="p">(</span>
+    sliderInput<span class="p">(</span><span class="s">&quot;bins&quot;</span><span class="p">,</span> <span class="s">&quot;Number of bins:&quot;</span><span class="p">,</span> min <span class="o">=</span> <span class="m">1</span><span class="p">,</span> max <span class="o">=</span> <span class="m">50</span><span class="p">,</span> value <span class="o">=</span> <span class="m">10</span><span class="p">)</span>
   <span class="p">),</span>
-  <span class="n">mainPanel</span><span class="p">(</span>
-    <span class="n">plotlyOutput</span><span class="p">(</span><span class="s2">"trendPlot"</span><span class="p">)</span>
+  mainPanel<span class="p">(</span>
+    plotlyOutput<span class="p">(</span><span class="s">&quot;trendPlot&quot;</span><span class="p">)</span>
   <span class="p">)</span>
 <span class="p">))</span>
 </code></pre></div>
 <h4><code>server.R</code></h4>
-<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">minx</span> <span class="o">&lt;-</span> <span class="n">min</span><span class="p">(</span><span class="n">movies</span><span class="o">$</span><span class="n">rating</span><span class="p">)</span>
-<span class="n">maxx</span> <span class="o">&lt;-</span> <span class="n">max</span><span class="p">(</span><span class="n">movies</span><span class="o">$</span><span class="n">rating</span><span class="p">)</span>
+<div class="highlight"><pre><code class="language-r" data-lang="r">minx <span class="o">&lt;-</span> <span class="kp">min</span><span class="p">(</span>movies<span class="o">$</span>rating<span class="p">)</span>
+maxx <span class="o">&lt;-</span> <span class="kp">max</span><span class="p">(</span>movies<span class="o">$</span>rating<span class="p">)</span>
 
-<span class="n">shinyServer</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">input</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span> <span class="p">{</span>
+shinyServer<span class="p">(</span><span class="kr">function</span><span class="p">(</span>input<span class="p">,</span> output<span class="p">)</span> <span class="p">{</span>
 
-  <span class="n">output</span><span class="o">$</span><span class="n">trendPlot</span> <span class="o">&lt;-</span> <span class="n">renderPlotly</span><span class="p">({</span>
-    <span class="c1"># size of the bins depend on the input 'bins'
-</span>    <span class="n">size</span> <span class="o">&lt;-</span> <span class="p">(</span><span class="n">maxx</span> <span class="o">-</span> <span class="n">minx</span><span class="p">)</span> <span class="o">/</span> <span class="n">input</span><span class="o">$</span><span class="n">bins</span>
+  output<span class="o">$</span>trendPlot <span class="o">&lt;-</span> renderPlotly<span class="p">({</span>
+    <span class="c1"># size of the bins depend on the input &#39;bins&#39;</span>
+    size <span class="o">&lt;-</span> <span class="p">(</span>maxx <span class="o">-</span> minx<span class="p">)</span> <span class="o">/</span> input<span class="o">$</span>bins
 
-    <span class="n">gg</span> <span class="o">&lt;-</span> <span class="n">ggplot</span><span class="p">(</span><span class="n">movies</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">rating</span><span class="p">))</span> <span class="o">+</span>
-                 <span class="n">geom_histogram</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="err">.</span><span class="n">.density..</span><span class="p">),</span> <span class="n">binwidth</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
-    <span class="c1"># Convert the ggplot to a plotly
-</span>    <span class="n">p</span> <span class="o">&lt;-</span> <span class="n">ggplotly</span><span class="p">(</span><span class="n">gg</span><span class="p">)</span>
-    <span class="n">p</span>
+    gg <span class="o">&lt;-</span> ggplot<span class="p">(</span>movies<span class="p">,</span> aes<span class="p">(</span>x<span class="o">=</span>rating<span class="p">))</span> <span class="o">+</span>
+                 geom_histogram<span class="p">(</span>aes<span class="p">(</span>y <span class="o">=</span> <span class="m">..</span>density..<span class="p">),</span> binwidth<span class="o">=</span>size<span class="p">)</span>
+    <span class="c1"># Convert the ggplot to a plotly</span>
+    p <span class="o">&lt;-</span> ggplotly<span class="p">(</span>gg<span class="p">)</span>
+    p
   <span class="p">})</span>
 <span class="p">})</span>
 </code></pre></div>

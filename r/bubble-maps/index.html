@@ -315,29 +315,29 @@
 				<div class="row">
 
 				<h1>United States Bubble Map</h1>
-<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span>
-<span class="n">df</span> <span class="o">&lt;-</span> <span class="n">read.csv</span><span class="p">(</span><span class="s1">'https://raw.githubusercontent.com/plotly/datasets/master/2014_us_cities.csv'</span><span class="p">)</span>
-<span class="n">df</span><span class="o">$</span><span class="n">hover</span> <span class="o">&lt;-</span> <span class="n">paste</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">name</span><span class="p">,</span> <span class="s2">"Population"</span><span class="p">,</span> <span class="n">df</span><span class="o">$</span><span class="n">pop</span><span class="o">/</span><span class="m">1e6</span><span class="p">,</span> <span class="s2">" million"</span><span class="p">)</span>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
+df <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2014_us_cities.csv&#39;</span><span class="p">)</span>
+df<span class="o">$</span>hover <span class="o">&lt;-</span> <span class="kp">paste</span><span class="p">(</span>df<span class="o">$</span>name<span class="p">,</span> <span class="s">&quot;Population&quot;</span><span class="p">,</span> df<span class="o">$</span>pop<span class="o">/</span><span class="m">1e6</span><span class="p">,</span> <span class="s">&quot; million&quot;</span><span class="p">)</span>
 
-<span class="n">df</span><span class="o">$</span><span class="n">q</span> <span class="o">&lt;-</span> <span class="n">with</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cut</span><span class="p">(</span><span class="n">pop</span><span class="p">,</span> <span class="n">quantile</span><span class="p">(</span><span class="n">pop</span><span class="p">)))</span>
-<span class="n">levels</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">q</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="n">paste</span><span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="s2">"1st"</span><span class="p">,</span> <span class="s2">"2nd"</span><span class="p">,</span> <span class="s2">"3rd"</span><span class="p">,</span> <span class="s2">"4th"</span><span class="p">,</span> <span class="s2">"5th"</span><span class="p">),</span> <span class="s2">"Quantile"</span><span class="p">)</span>
-<span class="n">df</span><span class="o">$</span><span class="n">q</span> <span class="o">&lt;-</span> <span class="n">as.ordered</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">q</span><span class="p">)</span>
+df<span class="o">$</span>q <span class="o">&lt;-</span> <span class="kp">with</span><span class="p">(</span>df<span class="p">,</span> <span class="kp">cut</span><span class="p">(</span>pop<span class="p">,</span> quantile<span class="p">(</span>pop<span class="p">)))</span>
+<span class="kp">levels</span><span class="p">(</span>df<span class="o">$</span><span class="kp">q</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="kp">paste</span><span class="p">(</span><span class="kt">c</span><span class="p">(</span><span class="s">&quot;1st&quot;</span><span class="p">,</span> <span class="s">&quot;2nd&quot;</span><span class="p">,</span> <span class="s">&quot;3rd&quot;</span><span class="p">,</span> <span class="s">&quot;4th&quot;</span><span class="p">,</span> <span class="s">&quot;5th&quot;</span><span class="p">),</span> <span class="s">&quot;Quantile&quot;</span><span class="p">)</span>
+df<span class="o">$</span>q <span class="o">&lt;-</span> <span class="kp">as.ordered</span><span class="p">(</span>df<span class="o">$</span><span class="kp">q</span><span class="p">)</span>
 
-<span class="n">g</span> <span class="o">&lt;-</span> <span class="n">list</span><span class="p">(</span>
-  <span class="n">scope</span> <span class="o">=</span> <span class="s1">'usa'</span><span class="p">,</span>
-  <span class="n">projection</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span><span class="n">type</span> <span class="o">=</span> <span class="s1">'albers usa'</span><span class="p">),</span>
-  <span class="n">showland</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span>
-  <span class="n">landcolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"gray85"</span><span class="p">),</span>
-  <span class="n">subunitwidth</span> <span class="o">=</span> <span class="m">1</span><span class="p">,</span>
-  <span class="n">countrywidth</span> <span class="o">=</span> <span class="m">1</span><span class="p">,</span>
-  <span class="n">subunitcolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"white"</span><span class="p">),</span>
-  <span class="n">countrycolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"white"</span><span class="p">)</span>
+g <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>
+  scope <span class="o">=</span> <span class="s">&#39;usa&#39;</span><span class="p">,</span>
+  projection <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>type <span class="o">=</span> <span class="s">&#39;albers usa&#39;</span><span class="p">),</span>
+  showland <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+  landcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;gray85&quot;</span><span class="p">),</span>
+  subunitwidth <span class="o">=</span> <span class="m">1</span><span class="p">,</span>
+  countrywidth <span class="o">=</span> <span class="m">1</span><span class="p">,</span>
+  subunitcolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">),</span>
+  countrycolor <span class="o">=</span> toRGB<span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">plot_ly</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">lat</span><span class="p">,</span> <span class="n">text</span> <span class="o">=</span> <span class="n">hover</span><span class="p">,</span>
-        <span class="n">marker</span> <span class="o">=</span> <span class="n">list</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">pop</span><span class="o">/</span><span class="m">10000</span><span class="p">)</span> <span class="o">+</span> <span class="m">1</span><span class="p">),</span>
-        <span class="n">color</span> <span class="o">=</span> <span class="n">q</span><span class="p">,</span> <span class="n">type</span> <span class="o">=</span> <span class="s1">'scattergeo'</span><span class="p">,</span> <span class="n">locationmode</span> <span class="o">=</span> <span class="s1">'USA-states'</span><span class="p">)</span> <span class="o">%&gt;%</span>
-  <span class="n">layout</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s1">'2014 US city populations&lt;br&gt;(Click legend to toggle)'</span><span class="p">,</span> <span class="n">geo</span> <span class="o">=</span> <span class="n">g</span><span class="p">)</span>
+plot_ly<span class="p">(</span>df<span class="p">,</span> lon <span class="o">=</span> lon<span class="p">,</span> lat <span class="o">=</span> lat<span class="p">,</span> text <span class="o">=</span> hover<span class="p">,</span>
+        marker <span class="o">=</span> <span class="kt">list</span><span class="p">(</span>size <span class="o">=</span> <span class="kp">sqrt</span><span class="p">(</span>pop<span class="o">/</span><span class="m">10000</span><span class="p">)</span> <span class="o">+</span> <span class="m">1</span><span class="p">),</span>
+        color <span class="o">=</span> <span class="kp">q</span><span class="p">,</span> type <span class="o">=</span> <span class="s">&#39;scattergeo&#39;</span><span class="p">,</span> locationmode <span class="o">=</span> <span class="s">&#39;USA-states&#39;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&#39;2014 US city populations&lt;br&gt;(Click legend to toggle)&#39;</span><span class="p">,</span> geo <span class="o">=</span> g<span class="p">)</span>
 </code></pre></div>
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/327.embed" width="800" frameBorder="0"></iframe>
 
