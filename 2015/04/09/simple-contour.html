@@ -1,33 +1,25 @@
-// Learn about API authentication here: https://plot.ly/nodejs/getting-started
-// Find your api_key here: https://plot.ly/settings/api
+# Learn about API authentication here: https://plot.ly/julia/getting-started
+# Find your api_key here: https://plot.ly/settings/api
 
-var linspace = require('linspace');
-var unpack = require('ndarray-unpack');
-var zeros = require('zeros');
-var fill = require('ndarray-fill');
+using Plotly
 
-var size = 100
-var x = linspace(-2 * Math.PI, 2 * Math.PI, size)
-var y = linspace(-2 * Math.PI, 2 * Math.PI, size)
-var z = unpack(zeros([size,size]))
-for (var i = 0; i &lt; size; i++) {
-  for (var j = 0; j &lt; size; j++) {
-    r2 = (x * (i * i) + y * (j * j))
-      z[i][j] = Math.sin(x * i) * Math.cos(y * j) * Math.sin(r2) / Math.log(r2+1)
-  }
-}
+size = 100
+x = linspace(-2*pi, 2*pi, size)
+y = linspace(-2*pi, 2*pi, size)
+z = rand(size, size)
+for i = 1:size
+  for j = 1:size
+    r2 = (x(i)^2 + y(j)^2)
+        z(i,j) = sin(x(i))*cos(y(j))*sin(r2)/log(r2+1)
 
-require('plotly')(username, api_key);
 
-var data = [
-  {
-    z: z,
-    x: x,
-    y: y,
-    type: "contour"
-  }
-];
-var graphOptions = {filename: "simple-contour", fileopt: "overwrite"};
-plotly.plot(data, graphOptions, function (err, msg) {
-    console.log(msg);
-});
+data = [
+  [
+    "z" =&gt; z,
+    "x" =&gt; x,
+    "y" =&gt; y,
+    "type" =&gt; "contour"
+  ]
+]
+response = Plotly.plot(data, ["filename" =&gt; "simple-contour", "fileopt" =&gt; "overwrite"])
+plot_url = response["url"]
