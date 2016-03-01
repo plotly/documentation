@@ -65,4 +65,4 @@ plot_ly(z=z, type="surface") %>%
   add_trace(z=z2, type="surface") %>%
   add_trace(z=z3, type="surface")
 ```
-<iframe width="800" height="850" frameborder="0" scrolling="no" src="https://plot.ly/~RPlotBot/2877.embed"></iframe>
+<iframe width="800" height="850", id="igraph", frameborder="0" scrolling="no" src="https://plot.ly/~RPlotBot/2877.embed"></iframe>
