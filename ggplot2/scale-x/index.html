@@ -35,26 +35,26 @@
 
     	<!-- META TAGS -->
     	<!-- SEO Tags - title, meta_description -->
-    <title>ggplot2 Geom Line | Examples | Plotly</title>
-    <meta name="description" content="How to make line plots in ggplot2 with geom_line. Examples with code and interactive charts">
+    <title>ggplot2 scale_x_date | Examples | Plotly</title>
+    <meta name="description" content="How to make plots in R and ggplot2 using scale_x_date.">
 
 <!-- Bing tags -->
     <meta name="msvalidate.01" content="D319859A832F9F1D15A7646E2A42150A" />
 <!-- Facebook tags -->
-    <meta property="og:title" content="geom_line"/>
+    <meta property="og:title" content="scale_x_date"/>
     <meta property="og:type" content="website"/>
-    <meta property="og:image" content="https://plot.ly/gh-pages/documentation/static/thumbnail/line_shapes.jpg">
-    <meta property="og:description" content="How to make line plots in ggplot2 with geom_line. Examples with code and interactive charts"/>
+    <meta property="og:image" content="https://plot.ly/gh-pages/documentation/static/thumbnail/time-series.jpg">
+    <meta property="og:description" content="How to make plots in R and ggplot2 using scale_x_date."/>
     <meta property="og:url" />
     <meta property="fb:admins" content="1123751525"/>
     <meta property="fb:admins" content="22418"/>
 
 <!-- twitter tags -->
     <meta name="twitter:card" content="photo" />
-    <meta name="twitter:title" content="geom_line"/>
-    <meta name="twitter:url" content="http://help.plot.lyggplot2/geom_line/"/>
-    <meta name="twitter:description" content="How to make line plots in ggplot2 with geom_line. Examples with code and interactive charts"/>
-    <meta name="twitter:image" content="https://plot.ly/gh-pages/documentation/static/thumbnail/line_shapes.jpg">
+    <meta name="twitter:title" content="scale_x_date"/>
+    <meta name="twitter:url" content="http://help.plot.lyggplot2/scale-x/"/>
+    <meta name="twitter:description" content="How to make plots in R and ggplot2 using scale_x_date."/>
+    <meta name="twitter:image" content="https://plot.ly/gh-pages/documentation/static/thumbnail/time-series.jpg">
     <meta name="twitter:site" content="@plotlygraphs"/>
 
 <!-- Favicon -->
@@ -293,7 +293,7 @@
     <!-- sitemap -->
     <div class="navigation-bar">
 
-    <p class="align-left padding_left_small"><a href="http://help.plot.ly/"><i class="fa fa-life-ring"></i> Help</a><span>/</span><a href="/api/">API Libraries</a><span>/</span><a href="/ggplot2"  >ggplot2</a><span>/</span><a href="#">geom_line</a></p>
+    <p class="align-left padding_left_small"><a href="http://help.plot.ly/"><i class="fa fa-life-ring"></i> Help</a><span>/</span><a href="/api/">API Libraries</a><span>/</span><a href="/ggplot2"  >ggplot2</a><span>/</span><a href="#">scale_x_date</a></p>
 
     <div class="float-right padding_right_small" style="margin-top:10px;">
         
@@ -315,7 +315,7 @@
 				
 					
 					<h1 class="centered" >
-						geom_line in ggplot2
+						scale_x_date in ggplot2
 					</h1>
 					
 					
@@ -3890,8 +3890,6 @@
 		
 		
 		
-			<div class="lang_nav_button-div"><a class="lang_nav_button lang_nav_act" href="/ggplot2/geom_line/"><img src="https://plot.ly/gh-pages/documentation/static//images/ggplot.png" alt="ggplot2" class="lang_nav_thum">ggplot2</a></div>
-		
 		
 	
 			
@@ -4341,6 +4339,8 @@
 		
 		
 		
+		
+			<div class="lang_nav_button-div"><a class="lang_nav_button lang_nav_act" href="/ggplot2/scale-x/"><img src="https://plot.ly/gh-pages/documentation/static//images/ggplot.png" alt="ggplot2" class="lang_nav_thum">ggplot2</a></div>
 		
 		
 	
@@ -14581,36 +14581,169 @@
     <div class="section">
         <div class="row auto-eg-padding">
       <div class=" row twelve columns">
-        <h4 id="geom_line-with-multiple-lines"><a class="no_underline plot-blue" href="#geom_line-with-multiple-lines"><code>geom_line</code> with multiple lines</a></h4>
+        <h4 id="stock-chart-prices-dashboard"><a class="no_underline plot-blue" href="#stock-chart-prices-dashboard">stock chart prices dashboard</a></h4>
       </div>
       <div class="row">
         <div class="twelve columns">
           <div class="z-depth-1">
             <pre><code class="ggplot2">library(plotly)
 
-dat1 <- data.frame(
-    sex = factor(c("Female","Female","Male","Male")),
-    time = factor(c("Lunch","Dinner","Lunch","Dinner"), levels=c("Lunch","Dinner")),
-    total_bill = c(13.53, 16.81, 16.24, 17.42)
-)
+require(xts)
 
-ggplot(data=dat1, aes(x=time, y=total_bill, group=sex)) +
-    geom_line() +
-    geom_point()
+X.stock.rtns <- xts(rnorm(1000,0.00001,0.0003), Sys.Date()-(1000:1))
+Y.stock.rtns <- xts(rnorm(1000,0.00003,0.0004), Sys.Date()-(1000:1))
+Z.stock.rtns <- xts(rnorm(1000,0.00005,0.0005), Sys.Date()-(1000:1))
+rtn.obj <- merge(X.stock.rtns , Y.stock.rtns, Z.stock.rtns)
+colnames(rtn.obj) <- c("x","y","z")
+
+# advanced charts.PerforanceSummary based on ggplot
+gg.charts.PerformanceSummary <- function(rtn.obj, geometric = TRUE, main = "", plot = TRUE)
+{
+
+    # load libraries
+    suppressPackageStartupMessages(require(ggplot2))
+    suppressPackageStartupMessages(require(scales))
+    suppressPackageStartupMessages(require(reshape))
+    suppressPackageStartupMessages(require(PerformanceAnalytics))
+
+    # create function to clean returns if having NAs in data
+    clean.rtn.xts <- function(univ.rtn.xts.obj,na.replace=0){
+        univ.rtn.xts.obj[is.na(univ.rtn.xts.obj)]<- na.replace
+        univ.rtn.xts.obj
+    }
+
+    # Create cumulative return function
+    cum.rtn <- function(clean.xts.obj, g = TRUE)
+    {
+        x <- clean.xts.obj
+        if(g == TRUE){y <- cumprod(x+1)-1} else {y <- cumsum(x)}
+        y
+    }
+
+    # Create function to calculate drawdowns
+    dd.xts <- function(clean.xts.obj, g = TRUE)
+    {
+        x <- clean.xts.obj
+        if(g == TRUE){y <- PerformanceAnalytics:::Drawdowns(x)} else {y <- PerformanceAnalytics:::Drawdowns(x,geometric = FALSE)}
+        y
+    }
+
+    # create a function to create a dataframe to be usable in ggplot to replicate charts.PerformanceSummary
+    cps.df <- function(xts.obj,geometric)
+    {
+        x <- clean.rtn.xts(xts.obj)
+        series.name <- colnames(xts.obj)[1]
+        tmp <- cum.rtn(x,geometric)
+        tmp$rtn <- x
+        tmp$dd <- dd.xts(x,geometric)
+        colnames(tmp) <- c("Index","Return","Drawdown") # names with space
+        tmp.df <- as.data.frame(coredata(tmp))
+        tmp.df$Date <- as.POSIXct(index(tmp))
+        tmp.df.long <- melt(tmp.df,id.var="Date")
+        tmp.df.long$asset <- rep(series.name,nrow(tmp.df.long))
+        tmp.df.long
+    }
+
+    # A conditional statement altering the plot according to the number of assets
+    if(ncol(rtn.obj)==1)
+    {
+        # using the cps.df function
+        df <- cps.df(rtn.obj,geometric)
+        # adding in a title string if need be
+        if(main == ""){
+            title.string <- paste("Asset Performance")
+        } else {
+            title.string <- main
+        }
+
+        gg.xts <- ggplot(df, aes_string( x = "Date", y = "value", group = "variable" )) +
+            facet_grid(variable ~ ., scales = "free_y", space = "fixed") +
+            geom_line(data = subset(df, variable == "Index")) +
+            geom_bar(data = subset(df, variable == "Return"), stat = "identity") +
+            geom_line(data = subset(df, variable == "Drawdown")) +
+            geom_hline(yintercept = 0, size = 0.5, colour = "black") +
+            ggtitle(title.string) +
+            theme(axis.text.x = element_text(angle = 0, hjust = 1)) +
+            scale_x_datetime(breaks = date_breaks("6 months"), labels = date_format("%m/%Y")) +
+            ylab("") +
+            xlab("")
+
+    }
+    else
+    {
+        # a few extra bits to deal with the added rtn columns
+        no.of.assets <- ncol(rtn.obj)
+        asset.names <- colnames(rtn.obj)
+        df <- do.call(rbind,lapply(1:no.of.assets, function(x){cps.df(rtn.obj[,x],geometric)}))
+        df$asset <- ordered(df$asset, levels=asset.names)
+        if(main == ""){
+            title.string <- paste("Asset",asset.names[1],asset.names[2],asset.names[3],"Performance")
+        } else {
+            title.string <- main
+        }
+
+        if(no.of.assets>5){legend.rows <- 5} else {legend.rows <- no.of.assets}
+
+        gg.xts <- ggplot(df, aes_string(x = "Date", y = "value" )) +
+
+            # panel layout
+            facet_grid(variable~., scales = "free_y", space = "fixed", shrink = TRUE, drop = TRUE, margin =
+                           , labeller = label_value) + # label_value is default
+
+            # display points for Index and Drawdown, but not for Return
+            geom_point(data = subset(df, variable == c("Index","Drawdown"))
+                       , aes(colour = factor(asset), shape = factor(asset)), size = 1.2, show_guide = TRUE) +
+
+            # manually select shape of geom_point
+            scale_shape_manual(values = c(1,2,3)) +
+
+            # line colours for the Index
+            geom_line(data = subset(df, variable == "Index"), aes(colour = factor(asset)), show_guide = FALSE) +
+
+            # bar colours for the Return
+            geom_bar(data = subset(df,variable == "Return"), stat = "identity"
+                     , aes(fill = factor(asset), colour = factor(asset)), position = "dodge", show_guide = FALSE) +
+
+            # line colours for the Drawdown
+            geom_line(data = subset(df, variable == "Drawdown"), aes(colour = factor(asset)), show_guide = FALSE) +
+
+            # horizontal ticks
+            scale_x_datetime(breaks = date_breaks("6 months"), labels = date_format("%m/%Y")) +
+
+            # main y-axis title
+            ylab("") +
+
+            # main x-axis title
+            xlab("") +
+
+            # main chart title
+            ggtitle(title.string)
+
+    }
+
+    assign("gg.xts", gg.xts,envir=.GlobalEnv)
+    if(plot == TRUE){
+        plot(gg.xts)
+    } else {}
+
+}
+
+# display chart
+gg.charts.PerformanceSummary(rtn.obj, geometric = TRUE)
 
 ggplotly()
 </code></pre>
           </div>
           
             <blockquote>
-              Inspired by <a href="http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/">the Cookbook for R</a>. Write feedback@plot.ly with questions or  <a href="https://github.com/ropensci/plotly/issues">submit an issue</a>. See the <a href="http://ropensci.github.io/plotly-test-table/tables/0e3d5ca144d27d8416318824c1b6ec1421a51045/index.html">ggplot2 → plotly test tables</a> for ggplot2 conversion coverage.
+              Inspired by <a href="http://stackoverflow.com/questions/14817006/ggplot-version-of-charts-performancesummary">Stack Overflow</a>.
             </blockquote>
           
         </div>
         <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17768/total-bill-vs-time/.embed" 
+            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17916/asset-x-y-z-performance/.embed" 
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
@@ -14623,37 +14756,43 @@ ggplotly()
     <div class="section">
         <div class="row auto-eg-padding">
       <div class=" row twelve columns">
-        <h4 id="geom_line-and-larger-geom_point-points"><a class="no_underline plot-blue" href="#geom_line-and-larger-geom_point-points"><code>geom_line</code> and larger <code>geom_point</code> points</a></h4>
+        <h4 id="geom_bar-with-month-and-year-using-facet_grid"><a class="no_underline plot-blue" href="#geom_bar-with-month-and-year-using-facet_grid"><code>geom_bar</code> with month and year using <code>facet_grid</code></a></h4>
       </div>
       <div class="row">
         <div class="twelve columns">
           <div class="z-depth-1">
             <pre><code class="ggplot2">library(plotly)
 
-dat1 <- data.frame(
-    sex = factor(c("Female","Female","Male","Male")),
-    time = factor(c("Lunch","Dinner","Lunch","Dinner"), levels=c("Lunch","Dinner")),
-    total_bill = c(13.53, 16.81, 16.24, 17.42)
-)
+x <- c("04-01-10","05-01-10","06-01-10","07-01-10","08-01-10","09-01-10","10-01-10","11-01-10","12-01-10","01-01-11","02-01-11","03-01-11","04-01-11","05-01-11","06-01-11","07-01-11","08-01-11","09-01-11","10-01-11","11-01-11","12-01-11","01-01-12","02-01-12","03-01-12","04-01-12","05-01-12","06-01-12")
+y <- c(120,210,130,160,190,210,80,70,110,120,140,160,130,200,110,180,210,200,90,60,100,100,120,170,100,180,120)
 
-# Map sex to different point shape, and use larger points
-ggplot(data=dat1, aes(x=time, y=total_bill, group=sex, shape=sex)) +
-    geom_line() +
-    geom_point()
+MySample <- data.frame(x) ## convert to dataframe
+MySample$y <- y
+
+require(lubridate)
+
+MySample$date <- as.Date(MySample$x, "%m-%d-%y")
+MySample$year <- year(MySample$date)
+
+ggplot(MySample, aes(date, y, fill = year)) +
+    geom_bar(y=y,stat="identity") +
+    facet_grid(. ~ year, scales = "free") +
+    scale_x_date(labels = date_format("%b/%y")) +
+    scale_fill_gradient(breaks=unique(MySample$year))
 
 ggplotly()
 </code></pre>
           </div>
           
             <blockquote>
-              Inspired by <a href="http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/">the Cookbook for R</a>.
+              Inspired by <a href="http://stackoverflow.com/questions/11472856/r-ggplot2-graph-month-year-bar-graph-plot-faceted-and-filled-on-year-with-data?rq=1">Stack Overflow</a>.
             </blockquote>
           
         </div>
         <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17771/total-bill-vs-time/.embed" 
+            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/18004/_2010-2011-2012/.embed" 
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
@@ -14666,457 +14805,45 @@ ggplotly()
     <div class="section">
         <div class="row auto-eg-padding">
       <div class=" row twelve columns">
-        <h4 id="geom_line-with-styling-and-theme"><a class="no_underline plot-blue" href="#geom_line-with-styling-and-theme"><code>geom_line</code> with styling and theme</a></h4>
+        <h4 id="facet_grid-time-series-by-year"><a class="no_underline plot-blue" href="#facet_grid-time-series-by-year"><code>facet_grid</code> time series by year</a></h4>
       </div>
       <div class="row">
         <div class="twelve columns">
           <div class="z-depth-1">
             <pre><code class="ggplot2">library(plotly)
 
-dat1 <- data.frame(
-    sex = factor(c("Female","Female","Male","Male")),
-    time = factor(c("Lunch","Dinner","Lunch","Dinner"), levels=c("Lunch","Dinner")),
-    total_bill = c(13.53, 16.81, 16.24, 17.42)
-)
+set.seed(12345)
+Date <- seq(as.Date("2010/1/1"), as.Date("2014/1/1"), "week")
+Y <- rnorm(n=length(Date), mean=100, sd=1)
+df <- data.frame(Date, Y)
 
-ggplot(data=dat1, aes(x=time, y=total_bill, group=sex, shape=sex, colour=sex)) +
-    geom_line(aes(linetype=sex), size=1) +     # Set linetype by sex
-    geom_point(size=5) +         # Use larger points, fill with white
-    scale_colour_hue(name="Sex",      # Set legend title
-                     l=30)  +                  # Use darker colors (lightness=30)
-    scale_shape_manual(name="Sex",
-                       values=c(22,21)) +      # Use points with a fill color
-    scale_linetype_discrete(name="Sex") +
-    xlab("Time of day") + ylab("Total bill") + # Set axis labels
-    ggtitle("Average bill for 2 people") +     # Set title
-    theme_bw()
+df$Year <- format(df$Date, "%Y")
+df$Month <- format(df$Date, "%b")
+df$Day <- format(df$Date, "%d")
 
-ggplotly()
-</code></pre>
-          </div>
-          
-            <blockquote>
-              Inspired by <a href="http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/">the Cookbook for R</a>.
-            </blockquote>
-          
-        </div>
-        <div class="twelve columns">
-          <div class="border" style="text-align:center;">
-            
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17798/average-bill-for-2-people/.embed" 
-              style="width: 100%; height: 550px; border: none;"></iframe>
-                 
-          </div>
-        </div>
-      </div>
-        </div>
+df$MonthDay <- format(df$Date, "%d-%b")
 
-    </div>
-
-    <div class="section">
-        <div class="row auto-eg-padding">
-      <div class=" row twelve columns">
-        <h4 id="geom_line-with-x-axis-as-continuous"><a class="no_underline plot-blue" href="#geom_line-with-x-axis-as-continuous"><code>geom_line</code> with x-axis as continuous</a></h4>
-      </div>
-      <div class="row">
-        <div class="twelve columns">
-          <div class="z-depth-1">
-            <pre><code class="ggplot2">library(plotly)
-
-datn <- read.table(header=TRUE, text='
-supp dose length
-  OJ  0.5  13.23
-  OJ  1.0  22.70
-  OJ  2.0  26.06
-  VC  0.5   7.98
-  VC  1.0  16.77
-  VC  2.0  26.14
-')
-
-ggplot(data=datn, aes(x=dose, y=length, group=supp, colour=supp)) +
-    geom_line() +
-    geom_point()
-
-ggplotly()
-</code></pre>
-          </div>
-          
-            <blockquote>
-              Inspired by <a href="http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/">the Cookbook for R</a>.
-            </blockquote>
-          
-        </div>
-        <div class="twelve columns">
-          <div class="border" style="text-align:center;">
-            
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17801/length-vs-dose/.embed" 
-              style="width: 100%; height: 550px; border: none;"></iframe>
-                 
-          </div>
-        </div>
-      </div>
-        </div>
-
-    </div>
-
-    <div class="section">
-        <div class="row auto-eg-padding">
-      <div class=" row twelve columns">
-        <h4 id="geom_line-with-x-axis-as-categorical"><a class="no_underline plot-blue" href="#geom_line-with-x-axis-as-categorical"><code>geom_line</code> with x-axis as categorical</a></h4>
-      </div>
-      <div class="row">
-        <div class="twelve columns">
-          <div class="z-depth-1">
-            <pre><code class="ggplot2">library(plotly)
-
-datn <- read.table(header=TRUE, text='
-supp dose length
-  OJ  0.5  13.23
-  OJ  1.0  22.70
-  OJ  2.0  26.06
-  VC  0.5   7.98
-  VC  1.0  16.77
-  VC  2.0  26.14
-')
-
-datn2 <- datn
-datn2$dose <- factor(datn2$dose)
-ggplot(data=datn2, aes(x=dose, y=length, group=supp, colour=supp)) +
-    geom_line() +
-    geom_point()
-
-ggplotly()
-</code></pre>
-          </div>
-          
-            <blockquote>
-              Inspired by <a href="http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/">the Cookbook for R</a>.
-            </blockquote>
-          
-        </div>
-        <div class="twelve columns">
-          <div class="border" style="text-align:center;">
-            
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17807/length-vs-dose/.embed" 
-              style="width: 100%; height: 550px; border: none;"></iframe>
-                 
-          </div>
-        </div>
-      </div>
-        </div>
-
-    </div>
-
-    <div class="section">
-        <div class="row auto-eg-padding">
-      <div class=" row twelve columns">
-        <h4 id="plotting-two-variables-with-geom_line"><a class="no_underline plot-blue" href="#plotting-two-variables-with-geom_line">plotting two variables with <code>geom_line</code></a></h4>
-      </div>
-      <div class="row">
-        <div class="twelve columns">
-          <div class="z-depth-1">
-            <pre><code class="ggplot2">library(reshape2)
-library(plotly)
-
-test_data_long <- melt(test_data, id="date")  # convert to long format
-
-ggplot(data=test_data_long,
-       aes(x=date, y=value, colour=variable)) +
-    geom_line()
-
-ggplotly()
-</code></pre>
-          </div>
-          
-            <blockquote>
-              Inspired by <a href="http://stackoverflow.com/questions/3777174/plotting-two-variables-as-lines-using-ggplot2-on-the-same-graph/3780353#3780353">Stack Overflow</a>.
-            </blockquote>
-          
-        </div>
-        <div class="twelve columns">
-          <div class="border" style="text-align:center;">
-            
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17360.embed" 
-              style="width: 100%; height: 550px; border: none;"></iframe>
-                 
-          </div>
-        </div>
-      </div>
-        </div>
-
-    </div>
-
-    <div class="section">
-        <div class="row auto-eg-padding">
-      <div class=" row twelve columns">
-        <h4 id="geom_point-and-geom_line-on-one-graph"><a class="no_underline plot-blue" href="#geom_point-and-geom_line-on-one-graph"><code>geom_point</code> and <code>geom_line</code> on one graph</a></h4>
-      </div>
-      <div class="row">
-        <div class="twelve columns">
-          <div class="z-depth-1">
-            <pre><code class="ggplot2">library(plotly)
-
-x <- c(1,2,3,4)
-y <- c(1.1,1.2,1.3,1.4)
-y2 <- c(2.1,2.2,2.3,2.4)
-x3 <- c(4,5,6,7)
-y3 <- c(3.1,3.2,3.3,3.2)
-p1 <- data.frame(x=x,y=y)
-p2 <- data.frame(x=x,y=y2)
-p3 <- data.frame(x=x3,y=y3)
-
-plot(x,y,type="o", col="red")
-points(x3,y3,col="darkgreen",pch=16)
-points(x,y2,type="o",col="blue")
-
-ggplot(exShapedMayGroup, aes_string(x="Date", y="Score")) +
-    geom_line(aes_string(group=".id", linetype=".id")) +
+df$CommonDate <- as.Date(paste0("2000-",format(df$Date, "%j")), "%Y-%j")
+ggplot(data = df,
+       mapping = aes(x = CommonDate, y = Y, shape = Year, colour = Year)) +
     geom_point() +
-    geom_line(aes_string(y="Lower", colour="Right")) +
-    geom_line(aes_string(y="Upper", colour="Right")) +
-    scale_linetype_discrete(name="Group") + scale_color_discrete(name="Limits")
-
-ggplotly()
-</code></pre>
-          </div>
-          
-            <blockquote>
-              Inspired by <a href="http://stackoverflow.com/questions/7476022/geom-point-and-geom-line-for-multiple-datasets-on-same-graph-in-ggplot2">Stack Overflow</a>.
-            </blockquote>
-          
-        </div>
-        <div class="twelve columns">
-          <div class="border" style="text-align:center;">
-            
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17366.embed" 
-              style="width: 100%; height: 550px; border: none;"></iframe>
-                 
-          </div>
-        </div>
-      </div>
-        </div>
-
-    </div>
-
-    <div class="section">
-        <div class="row auto-eg-padding">
-      <div class=" row twelve columns">
-        <h4 id="add-points-to-geom_line"><a class="no_underline plot-blue" href="#add-points-to-geom_line">add points to <code>geom_line</code></a></h4>
-      </div>
-      <div class="row">
-        <div class="twelve columns">
-          <div class="z-depth-1">
-            <pre><code class="ggplot2">library(plotly)
-
-library(data.table)
-d=data.table(x=seq(0, 100, by=0.1), y=seq(0,1000))
-ggplot(d, aes(x=x, y=y))+geom_line()
-#Change the length parameter for fewer or more points
-thinned <- floor(seq(from=1,to=dim(d)[1],length=70))
-ggplot(d, aes(x=x, y=y))+geom_line()+geom_point(data=d[thinned,],aes(x=x,y=y))
-
-ggplotly()
-</code></pre>
-          </div>
-          
-            <blockquote>
-              Inspired by <a href="http://stackoverflow.com/questions/12332298/ggplot2-add-points-to-geom-line?rq=1">Stack Overflow</a>.
-            </blockquote>
-          
-        </div>
-        <div class="twelve columns">
-          <div class="border" style="text-align:center;">
-            
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17623/y-vs-x/.embed" 
-              style="width: 100%; height: 550px; border: none;"></iframe>
-                 
-          </div>
-        </div>
-      </div>
-        </div>
-
-    </div>
-
-    <div class="section">
-        <div class="row auto-eg-padding">
-      <div class=" row twelve columns">
-        <h4 id="geom_line-with-dashed-and-solid-lines"><a class="no_underline plot-blue" href="#geom_line-with-dashed-and-solid-lines"><code>geom_line</code> with dashed and solid lines</a></h4>
-      </div>
-      <div class="row">
-        <div class="twelve columns">
-          <div class="z-depth-1">
-            <pre><code class="ggplot2">library(plotly)
-
-x <- c(10, 20, 50, 10, 20, 50)
-mean = c(52.4, 98.2, 97.9, 74.1, 98.1, 97.6)
-group = c(1, 1, 1, 2,2,2)
-upper = c(13.64, 89, 86.4, 13.64, 89, 86.4)
-lower = c(95.4, 99.8, 99.7, 95.4, 99.8, 99.7)
-data <- data.frame(x=x,y=mean, group, upper, lower)
-
-ggplot(data, aes(x = x, y= mean, group = as.factor(data$group),
-                          colour=as.factor(data$group))) +
-  geom_line() + geom_point() +
-  geom_line(aes(y=lower),linetype="dotted") +
-  geom_line(aes(y=upper),linetype="dotted")+
-  scale_color_manual(name="Groups",values=c("red", "blue"))+
-  guides(colour = guide_legend(override.aes = list(linetype = 1)))
-
-ggplotly()
-</code></pre>
-          </div>
-          
-            <blockquote>
-              Inspired by <a href="http://stackoverflow.com/questions/16320148/ggplot2-draw-dashed-lines-of-same-colour-as-solid-lines-belonging-to-different-g">Stack Overflow</a>.
-            </blockquote>
-          
-        </div>
-        <div class="twelve columns">
-          <div class="border" style="text-align:center;">
-            
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17657/mean-vs-x/.embed" 
-              style="width: 100%; height: 550px; border: none;"></iframe>
-                 
-          </div>
-        </div>
-      </div>
-        </div>
-
-    </div>
-
-    <div class="section">
-        <div class="row auto-eg-padding">
-      <div class=" row twelve columns">
-        <h4 id="geom_line-mapping-to-groups"><a class="no_underline plot-blue" href="#geom_line-mapping-to-groups"><code>geom_line</code> mapping to groups</a></h4>
-      </div>
-      <div class="row">
-        <div class="twelve columns">
-          <div class="z-depth-1">
-            <pre><code class="ggplot2">library(plotly)
-
-# Data frame with two continuous variables and two factors
-set.seed(0)
-x <- rep(1:10, 4)
-y <- c(rep(1:10, 2)+rnorm(20)/5, rep(6:15, 2) + rnorm(20)/5)
-treatment <- gl(2, 20, 40, labels=letters[1:2])
-replicate <- gl(2, 10, 40)
-d <- data.frame(x=x, y=y, treatment=treatment, replicate=replicate)
-
-ggplot(d, aes(x=x, y=y, colour=treatment, group=interaction(treatment, replicate))) +
-    geom_point() + geom_line()
-
-ggplotly()
-</code></pre>
-          </div>
-          
-            <blockquote>
-              Inspired by <a href="http://stackoverflow.com/questions/18598953/geom-line-connects-points-mapped-to-different-groups">Stack Overflow</a>.
-            </blockquote>
-          
-        </div>
-        <div class="twelve columns">
-          <div class="border" style="text-align:center;">
-            
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17660/y-vs-x/.embed" 
-              style="width: 100%; height: 550px; border: none;"></iframe>
-                 
-          </div>
-        </div>
-      </div>
-        </div>
-
-    </div>
-
-    <div class="section">
-        <div class="row auto-eg-padding">
-      <div class=" row twelve columns">
-        <h4 id="geom_line-and-geom_segment"><a class="no_underline plot-blue" href="#geom_line-and-geom_segment"><code>geom_line</code> and <code>geom_segment</code></a></h4>
-      </div>
-      <div class="row">
-        <div class="twelve columns">
-          <div class="z-depth-1">
-            <pre><code class="ggplot2">library(plotly)
-
-x <- rep(1:10, 2)
-y <- c(1:10, 1:10+5)
-fac <- gl(2, 10)
-df <- data.frame(x=x, y=y, fac=fac)
-
-ggplot(df, aes(x=x, y=y, linetype=fac)) +
     geom_line() +
-    geom_segment(aes(x=2, y=7, xend=7, yend=7), colour="red") +
-    scale_linetype_discrete(guide=guide_legend(override.aes=aes(colour="blue")))
+    facet_grid(facets = Year ~ .) +
+    scale_x_date(labels = function(x) format(x, "%d-%b"))
 
 ggplotly()
 </code></pre>
           </div>
           
             <blockquote>
-              Inspired by <a href="http://stackoverflow.com/questions/12478346/seemingly-incorrect-guide-color-when-geom-line-and-geom-segment-are-used-tog">Stack Overflow</a>.
+              Inspired by <a href="http://stackoverflow.com/questions/29974535/dates-with-month-and-day-in-time-series-plot-in-ggplot2-with-facet-for-years">Stack Overflow</a>.
             </blockquote>
           
         </div>
         <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17373/.embed" 
-              style="width: 100%; height: 550px; border: none;"></iframe>
-                 
-          </div>
-        </div>
-      </div>
-        </div>
-
-    </div>
-
-    <div class="section">
-        <div class="row auto-eg-padding">
-      <div class=" row twelve columns">
-        <h4 id="geom_line-geom_point-and-geom_errorbar"><a class="no_underline plot-blue" href="#geom_line-geom_point-and-geom_errorbar"><code>geom_line</code>, <code>geom_point</code>, and <code>geom_errorbar</code></a></h4>
-      </div>
-      <div class="row">
-        <div class="twelve columns">
-          <div class="z-depth-1">
-            <pre><code class="ggplot2">library(plotly)
-
-# sample data
-df <- data.frame(condition = rep(LETTERS[1:4], each = 5),
-                 E = rep(1:5, times = 4),
-                 avg = rnorm(20),
-                 se = .3)
-# plotting command
-ggplot(data = df, aes(x = E,
-                      y = avg,
-                      color = condition,
-                      linetype = condition,
-                      shape = condition,
-                      fill = condition)) +
-  geom_line(size=1) +
-  geom_point(size=5) +
-  scale_color_manual(values = c(A = "red", B = "red", C = "blue", D = "blue"),
-                     guide = "none") +
-  scale_linetype_manual(values = c(A = "solid", B = "dashed", C = "solid", D = "dashed"),
-                        guide = "none") +
-  scale_shape_manual(values = c(A = 24, B = 24, C = 21, D = 21),
-                     guide = "none") +
-  scale_fill_manual(values = c(A = "white", B = "red", C = "white", D = "blue"),
-                    guide = "none") +
-  geom_errorbar(aes(x = E, ymin = avg-se, ymax = avg+se, color = NULL, linetype = NULL),
-                width=.1, position=position_dodge(width = .1))
-
-ggplotly()
-</code></pre>
-          </div>
-          
-            <blockquote>
-              Inspired by <a href="http://stackoverflow.com/questions/29000409/ggplot2-how-to-combine-layers-of-geom-line-and-geom-point-with-error-bars">Stack Overflow</a>.
-            </blockquote>
-          
-        </div>
-        <div class="twelve columns">
-          <div class="border" style="text-align:center;">
-            
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17620.embed" 
+            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17922/_2010-2011-2012-2013/.embed" 
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
