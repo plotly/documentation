@@ -34,8 +34,9 @@ with(kd, plot_ly(x = x, y = y, z = z, type = "surface"))
 
 <iframe height="850" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/173.embed" width="800" frameBorder="0"></iframe>
 
-```
+
 ### Multiple Surfaces
+
 ```{r, message=FALSE, heigh=850}
 library(plotly)
 
