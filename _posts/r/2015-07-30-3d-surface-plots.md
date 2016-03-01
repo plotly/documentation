@@ -61,8 +61,9 @@ dim(z) <- c(15,6)
 z2 <- z + 1
 z3 <- z - 1
 
-plot_ly(z=z, type="surface") %>%
-  add_trace(z=z2, type="surface") %>%
-  add_trace(z=z3, type="surface")
+p <- plot_ly(z=z, type="surface",showscale=FALSE) %>%
+  add_trace(z=z2, type="surface", showscale=FALSE, opacity=0.98) %>%
+  add_trace(z=z3, type="surface", showscale=FALSE, opacity=0.98)
+p
 ```
 <iframe width="800" height="850", id="igraph", frameborder="0" scrolling="no" src="https://plot.ly/~RPlotBot/2877.embed"></iframe>
