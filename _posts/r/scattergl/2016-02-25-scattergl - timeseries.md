@@ -16,7 +16,7 @@ Now in Ploty you can implement WebGL with `type = "scattergl"` in place of `scat
 
 Checkout this [post](/r/compare-webgl-svg/) for a comparison of WebGL and SVG scatter plots with 75000 data points.
 
-### WebGL for time series data
+### WebGL for time series data (24381 points)
 
 ```r
 library(plotly)
@@ -27,22 +27,14 @@ df <- read.csv('https://cdn.rawgit.com/plotly/documentation/source/_posts/r/scat
 # Convert to dates
 df$Date <- zoo::as.Date(df$Date, format =  "%m/%d/%Y")
 
-# Plot using plotly
-
-plot_bgcolor <- "34495E"
-paper_bgcolor <- "E4F1FE"
-
 p <- plot_ly(df, x = Date, y = Mean_TemperatureC, name = "Mean Temp.", type = "scattergl", 
-             marker = list(color = "F6FFD2")) %>% 
+             marker = list(color = "#3b3b9e")) %>% 
   layout(title = "Mean Temparature in Seattle (1948 - 2015)",
-         yaxis = list(title = "Temperature (<sup>o</sup>C)"),
-         plot_bgcolor = plot_bgcolor, 
-         paper_bgcolor = paper_bgcolor)
-
+         yaxis = list(title = "Temperature (<sup>o</sup>C)"))
 p
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2873/mean-temparature-in-seattle-1948-2015/" width="950" height="600px" scrolling="no" seamless="seamless"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/2879/mean-temparature-in-seattle-1948-2015/" width="950" height="600px" scrolling="no" seamless="seamless" align="left" display = "inline-block"></iframe>
 
 # Reference
 see [scattergl](https://plot.ly/r/reference/#scattergl) for more information. 
