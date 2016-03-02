@@ -22,7 +22,7 @@ Below is an example on how to couple a hover event on one chart to trigger a com
 
 ## Shiny app
 
-<iframe src="https://plotly.shinyapps.io/ShinyCoupledHoverEvents/" width="100%" height="800px" scrolling="no" seamless="seamless" style="border: none"></iframe>
+<iframe src="https://plotly.shinyapps.io/ShinyCoupledHoverEvents/" width="100%" height= 800  scrolling="no" seamless="seamless" style="border: none; position: relative"></iframe>
 
 ## Code
 ### ui.r
@@ -99,7 +99,7 @@ server <- function(input, output){
     
     # Read in hover data
     eventdata <- event_data("plotly_hover", source = "source")
-    print(length(eventdata))
+    validate(need(!is.null(eventdata), "Hover over the time series chart to populate this heatmap"))
     
     # Get point number
     datapoint <- as.numeric(eventdata[2])
@@ -111,7 +111,8 @@ server <- function(input, output){
     rng <- (datapoint - window):(datapoint + window)
     cormat <- round(cor(stockdata[rng, 1:5]),2)
     
-    plot_ly(x = rownames(cormat), y = colnames(cormat), z = cormat, type = "heatmap") %>% 
+    plot_ly(x = rownames(cormat), y = colnames(cormat), z = cormat, type = "heatmap", 
+            colorscale=list(c(0, 'rgb(227, 223, 200)'), c(1, 'rgb(128, 140, 108)')))%>% 
       layout(title = "Correlation heatmap",
              xaxis = list(title = ""),
              yaxis = list(title = ""))
