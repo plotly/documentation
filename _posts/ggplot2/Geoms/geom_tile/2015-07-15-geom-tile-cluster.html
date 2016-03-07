@@ -1,0 +1,31 @@
+---
+name: Displaying hierarchical clustering using <code>geom_tile</code>
+plot_url: https://plot.ly/~RPlotBot/2909/var2-vs-var1/
+arrangement: horizontal
+language: ggplot2
+suite: tile
+description: Inspired by <a href="http://stackoverflow.com/questions/25528059/cluster-data-in-heat-map-in-r-ggplot">Stack Overflow</a>.
+order: 2
+sitemap: false
+---
+library(plotly)
+library(reshape2)
+
+# Do hierarchical clustering
+
+clust <- volcano %>% 
+  dist() %>% 
+  hclust()
+
+# Get order
+ord <- clust$order
+
+# Re-arrange based on order
+df <- volcano[ord,]
+
+# Plot
+p <- df %>%
+  melt() %>% 
+  ggplot(aes(Var1, Var2, fill = value)) + geom_tile()
+
+ggplotly(p)
