@@ -1,0 +1,20 @@
+library(plotly)
+library(reshape2)
+library(RColorBrewer)
+
+# Cut into factors
+levels <- cut(volcano, breaks = seq(min(volcano), max(volcano), by = 10), right = F)
+
+# Convert into matrix
+df <- matrix(levels, nrow = nrow(volcano), byrow = F)
+nColor <- length(unique(levels))
+
+# Plot
+p <- df %>%
+  melt() %>%
+  ggplot(aes(Var1, Var2, fill = value)) + geom_tile() +
+  scale_fill_manual(values = brewer.pal(nColor, "Set3"))+
+  ggtitle("Custom Discrete Colorscale")
+
+ggplotly(p)
+
