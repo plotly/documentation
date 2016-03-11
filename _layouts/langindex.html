@@ -50,22 +50,36 @@ $(function() {
         $header    = $("#header");
     
     function setHeight() {
+      var scrollbottom = $(document).height() - $(window).scrollTop() - $(window).height() - $("#footer").height();
       if($("#sidebar").length){
-          var $sidebar   = $("#sidebar");
-          var $top = Math.max(50,(($header.height() + 50) - $window.scrollTop()));
+          
+          if(scrollbottom > 0 ) { 
+              var $sidebar   = $("#sidebar");
+              var $top = Math.max(50,(($header.height() + 50) - $window.scrollTop()));
+              var $bottom = "auto";
+              console.log('top: '+$top+' bottom: '+$bottom);
+          }
+          else{
+              /* corrects messing up of footer when scrolled to the bottom (for long sidebar )*/
+              var $sidebar   = $("#sidebar");
+              var $top = Math.max(50 + scrollbottom, 0)?Math.max(50 + scrollbottom, 0):"auto";
+              var $bottom = 0 -  scrollbottom -50;
+          }
       } 
 
       else if($("#reference-side-nav").length){
           var $sidebar   = $("#reference-side-nav");
           var $top = Math.max(0,(($header.height() + 60) - $window.scrollTop())); 
+          var $bottom = null;
       }
 
       else{
           var $sidebar = null; // dont do anything, if no sidebars
           var $top = 0;
+          var $bottom = null;
       }
       
-      $sidebar.css({top: $top});
+      $sidebar.css({top: $top, bottom: $bottom});
     }
     setHeight();
     $window.scroll(setHeight);
