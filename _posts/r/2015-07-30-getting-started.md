@@ -4,11 +4,11 @@ name: Getting Started with Plotly for R
 permalink: r/getting-started/
 description: Get started with Plotly's R graphing library to make interactive, publication-quality graphs online.
 page_type: example_index
-layout: base
+layout: getstart
 language: r
 ---
 
-## Getting Started with Plotly for R
+# Getting Started with Plotly for R
 
 Plotly is an R package for creating interactive web-based graphs via the open source JavaScript graphing library [plotly.js](http://plot.ly/javascript).
 As of version 2.0 (November 17, 2015), Plotly graphs are rendered *locally* through the [htmlwidgets](http://www.htmlwidgets.org/) framework.
