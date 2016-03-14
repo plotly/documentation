@@ -8,7 +8,7 @@ thumbnail: thumbnail/text-and-annotations.jpg
 language: r
 page_type: example_index
 has_thumbnail: false
-display_as: layout_opt
+display_as: get_request
 ---
 
 # Embedding Plotly Graphs in HTML

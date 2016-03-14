@@ -14,6 +14,9 @@ language: plotly_js
 
 November 17, 2015
 
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">✨ Announcement ✨ 100% of Plotly&#39;s JavaScript charting library is now free and open-source.<a href="https://t.co/5bneDRdV98">https://t.co/5bneDRdV98</a> <a href="https://t.co/NADG6eaEmA">pic.twitter.com/NADG6eaEmA</a></p>&mdash; plotly (@plotlygraphs) <a href="https://twitter.com/plotlygraphs/status/666667595903459328">November 17, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 A growing number of graphing tools and libraries allow anyone to make beautiful, interactive web-based graphs. By interactively visualizing our data online, we share complex ideas in an exploratory, visual, open, and collaborative way.
 
 **Today, Plotly is announcing that we have open-sourced plotly.js, the core technology and JavaScript graphing library behind Plotly’s products** (MIT license). It's all out there and free. Any developer can now integrate Plotly’s library into their own applications unencumbered. Plotly.js supports 20 chart types, including 3D plots, geographic maps, and statistical charts like density plots, histograms, box plots, and contour plots.

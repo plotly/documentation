@@ -23,10 +23,10 @@ The full bleed R pages are created with R Markdown. Here's how:
   $ git fetch origin
   $ git checkout source
   ```
-2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - [Install the same version that GitHub is using: 2.4.0](https://pages.github.com/versions/):
+2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - Install Jekyll version 2.5.3:
 
   ```
-  $ gem install jekyll -v 2.4.0
+  $ gem install jekyll -v 2.5.3
   ```
 3. Install a couple dependencies:
 
@@ -71,6 +71,8 @@ To deploy, first install `_config.yml` package dependencies:
 documentation (source) $ sudo gem install jekyll-redirect-from
 documentation (source) $ sudo gem install jekyll-sitemap
 documentation (source) $ sudo gem install terminal-notifier
+documentation (source) $ sudo gem install jemoji
+documentation (source) $ sudo gem install redcarpet
 
 ```
 
