@@ -12,7 +12,7 @@ end
 
 desc "Deploy to remote origin"
 task :deploy => [:check_git] do
-  source_branch = 'source'
+  source_branch = 'source-old-design'
   deploy_branch = 'gh-pages'
   message = "Site updated at #{Time.now.utc}"
 
