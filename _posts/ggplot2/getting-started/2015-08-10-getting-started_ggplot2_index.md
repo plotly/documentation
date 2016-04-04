@@ -13,7 +13,7 @@ language: ggplot2
 # Plotly for R
 
 Plotly is R package for creating interactive web-based graphs via [plotly](https://plot.ly/)'s JavaScript graphing library, `plotly.js`.
-The `plotly` R libary contains a function `ggplotly` which will convert `ggplot2` figures into graphs drawn with `plotly.js` and saved in your online plotly account.
+The `plotly` R libary contains a function `ggplotly` which will convert `ggplot2` figures into graphs drawn with `plotly.js` which can be saved to your online plotly account or rendered locally. 
 
 <a href="https://travis-ci.org/ropensci/plotly">
     <img alt="Build Status" style="margin: 0;" src="https://travis-ci.org/ropensci/plotly.png?branch=master">
@@ -21,25 +21,22 @@ The `plotly` R libary contains a function `ggplotly` which will convert `ggplot2
 
 #### Installation
 
-__plotly__ is not (yet) available on CRAN, but you can install it via [devtools](http://cran.r-project.org/web/packages/devtools/):
+__plotly__ is now available on CRAN.
 
 ```r
-install.packages("viridis") # dependency
+install.packages("plotly")
+``` 
+
+To install the **dev** version use:
+
+```r
 install.packages("devtools")
 devtools::install_github("ropensci/plotly")
 ```
 
-
 #### Signup
 
 If you don't already have a plotly account, either [signup online](https://plot.ly/ssu/) or use the `signup()` function (see the `help(signup)` page for more details).
-
-Note you can check if you have a username and API key with:
-
-```r
-plotly:::verify("username")
-plotly:::verify("api_key")
-```
 
 #### Credentials
 
@@ -79,7 +76,7 @@ p <- ggplot(data = d, aes(x = carat, y = price)) +
   geom_point(aes(text = paste("Clarity:", clarity)), size = 4) +
   geom_smooth(aes(colour = cut, fill = cut)) + facet_wrap(~ cut)
 
-(gg <- ggplotly(p))
+ggplotly(p)
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1284.embed" width="800" frameBorder="0"></iframe>
@@ -88,3 +85,9 @@ p <- ggplot(data = d, aes(x = carat, y = price)) +
     <a href="/r/" class="button no_underline">View more examples</a>
 </div>
 
+#### Publishing graphs to your online plotly account
+You can publish your newly created plotly graph to your online plotly account by using `plotly_POST()`. 
+
+```r
+plotly_POST(p, "Sample Plotly Chart")
+```
