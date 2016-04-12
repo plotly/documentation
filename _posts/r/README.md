@@ -1,11 +1,11 @@
 # Contribute to Plotly's [R Documentation](https://plot.ly/r/)
 ## Initial Steps:
-0. Clone the repo and then check out the source branch:
+0. Clone the repo and then check out the source-design-merge branch:
 
   ```
   $ git clone git@github.com:plotly/documentation.git
   $ git fetch origin
-  $ git checkout source
+  $ git checkout source-design-merge
   ```
 1. [Install jekyll](http://jekyllrb.com/docs/installation/). <b>IMPORTANT</b> - [Install the same version that Github Pages is using: 3.0.3](https://pages.github.com/versions/):
 
