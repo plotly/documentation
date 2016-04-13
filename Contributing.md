@@ -64,21 +64,21 @@ exclude: []
 and it'll load everything.
 
 ## Deploying changes
-Our repo has become too big for github to process. Edit files on the `source` branch instead of the `gh-pages` branch.
+Our repo has become too big for github to process. Edit files on the `source-design-merge` branch instead of the `gh-pages` branch.
 
 To deploy, first install `_config.yml` package dependencies:
 ```
-documentation (source) $ sudo gem install jekyll-redirect-from
-documentation (source) $ sudo gem install jekyll-sitemap
-documentation (source) $ sudo gem install terminal-notifier
-documentation (source) $ sudo gem install jemoji
-documentation (source) $ sudo gem install redcarpet
+documentation (source-design-merge) $ sudo gem install jekyll-redirect-from
+documentation (source-design-merge) $ sudo gem install jekyll-sitemap
+documentation (source-design-merge) $ sudo gem install terminal-notifier
+documentation (source-design-merge) $ sudo gem install jemoji
+documentation (source-design-merge) $ sudo gem install redcarpet
 
 ```
 
 Then, deploy changes with:
 ```
-documentation (source) $ rake deploy
+documentation (source-design-merge) $ rake deploy
 ```
 
-(from the `source` branch in the root of the `documentation` repo)
+(from the `source-design-merge` branch in the root of the `documentation` repo)
