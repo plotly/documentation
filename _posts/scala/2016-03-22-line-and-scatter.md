@@ -60,7 +60,7 @@ draw(p, "scatter-mode", writer.FileOptions(overwrite=true))
 // returns  PlotFile(pbugnion:216,scatter-mode)
 ```
 
-<iframe id="graph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~pbugnion/216.embed" height="525px" width="100%"></iframe>
+<iframe id="graph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~pbugnion/322.embed" height="525px" width="100%"></iframe>
 
 ## Style scatter plots
 
@@ -75,31 +75,28 @@ val ys0 = (0 until n).map { i => Random.nextDouble + 2.0 }
 val ys1 = (0 until n).map { i => Random.nextDouble - 2.0 }
 
 val p = Plot()
-  .withScatter(xs, ys0,
-    ScatterOptions()
-      .mode(ScatterMode.Marker)
-      .name("Above")
-      .marker(
-        MarkerOptions()
-          .size(10)
-          .color(152, 0, 0, 0.8)
-          .lineWidth(2)
-          .lineColor(0, 0, 0)))
-
-  .withScatter(xs, ys1,
-    ScatterOptions()
-      .mode(ScatterMode.Marker)
-      .name("Below")
-      .marker(
-        MarkerOptions()
-          .size(10)
-          .color(255, 182, 193, 0.9)
-          .lineWidth(2)))
+  .withScatter(xs, ys0, ScatterOptions()
+    .mode(ScatterMode.Marker)
+    .name("Above")
+    .marker(
+      MarkerOptions()
+        .size(10)
+        .color(152, 0, 0, 0.8)
+        .lineWidth(2)
+        .lineColor(0, 0, 0)))
+  .withScatter(xs, ys1, ScatterOptions()
+    .mode(ScatterMode.Marker)
+    .name("Below")
+    .marker(
+      MarkerOptions()
+        .size(10)
+        .color(255, 182, 193, 0.9)
+        .lineWidth(2)))
 
 draw(p, "styled-scatter", writer.FileOptions(overwrite=true))
 ```
 
-<iframe id="graph" scrolling="no" style="border:none;" seamless="seamless" src="" height="525px" width="100%"></iframe>
+<iframe id="graph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~pbugnion/324.embed" height="525px" width="100%"></iframe>
 
 ## Data labels on the plot
 
@@ -218,6 +215,8 @@ val p = Plot()
 draw(p, "life-expectancy-per-GDP-2007", writer.FileOptions(overwrite=true))
 ```
 
+<iframe id="graph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~pbugnion/326.embed" height="525px" width="100%"></iframe>
+
 ## Categorical dot plot
 
 ```scala
@@ -278,5 +277,6 @@ val layout = SingleAxisLayout()
       .updatedMarker(_.color(204, 204, 204, 0.95).lineColor(217, 217, 217, 1.0)))
 
 draw(p, "lowest-oecd-votes-cast", writer.FileOptions(overwrite=true))
-
 ```
+
+<iframe id="graph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~pbugnion/328.embed" height="525px" width="100%"></iframe>
