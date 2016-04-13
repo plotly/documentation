@@ -15,7 +15,7 @@ To include Plotly in your project, add the following dependency to your `build.s
 libraryDependencies += "co.theasi" %% "plotly" % "0.1"
 ```
 
-The Scala plotly client is updated frequently. Check that you include the latest version in your script LINK to Maven coordinates
+The Scala plotly client is updated frequently. Check that you include the [latest version](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22co.theasi%22) in your script.
 
 # Initialization
 
