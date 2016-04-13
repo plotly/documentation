@@ -17,7 +17,7 @@ The full bleed R pages are created with R Markdown. Here's how:
 
 ## Rendering the pages locally
 0. Clone the repo. `$ git clone git@github.com:plotly/documentation.git`
-1. Check out the source branch:
+1. Check out the source-design-merge branch:
 
   ```
   $ git fetch origin
