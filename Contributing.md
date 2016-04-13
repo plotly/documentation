@@ -1,9 +1,9 @@
 ## repo organization
-edit or add files in the `_posts` folder in the [source](http://github.com/plotly/documentation/tree/source) branch
+edit or add files in the `_posts` folder in the [source-design-merge](http://github.com/plotly/documentation/tree/source-design-merge) branch
 
 ## Converting IPython Notebooks to github pages
 
-Check out any of the notebooks in [https://github.com/plotly/documentation/tree/source/_posts/tutorials](https://github.com/plotly/documentation/tree/source/_posts/tutorials)
+Check out any of the notebooks in [https://github.com/plotly/documentation/tree/source-design-merge/_posts/tutorials](https://github.com/plotly/documentation/tree/source-design-merge/_posts/tutorials)
 
 The last cell of these notebooks will convert the notebook into a github pages friendly html format:
 
@@ -21,7 +21,7 @@ The full bleed R pages are created with R Markdown. Here's how:
 
   ```
   $ git fetch origin
-  $ git checkout source
+  $ git checkout source-design-merge
   ```
 2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - Install Jekyll version 2.5.3:
 
