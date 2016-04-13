@@ -17,6 +17,10 @@ libraryDependencies += "co.theasi" %% "plotly" % "0.1"
 
 The Scala plotly client is updated frequently. Check that you include the [latest version](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22co.theasi%22) in your script.
 
+# API Documentation and source code
+
+If you need documentation beyond the tutorials presented here, read either the [Scaladocs](http://the-asi.github.io/scala-plotly-client/) for API documentation, or the [Source code](https://github.com/the-asi/scala-plotly-client).
+
 # Initialization
 
 The Scala Plotly client looks for credentials placed in a file called `~/.plotly/.credentials`. If you have already used another Plotly client, for instance the Python client, you probably have this file already and you do not need to do anything else.
