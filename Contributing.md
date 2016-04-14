@@ -1,9 +1,9 @@
 ## repo organization
-edit or add files in the `_posts` folder in the [source](http://github.com/plotly/documentation/tree/source) branch
+edit or add files in the `_posts` folder in the [source-design-merge](http://github.com/plotly/documentation/tree/source-design-merge) branch
 
 ## Converting IPython Notebooks to github pages
 
-Check out any of the notebooks in [https://github.com/plotly/documentation/tree/source/_posts/tutorials](https://github.com/plotly/documentation/tree/source/_posts/tutorials)
+Check out any of the notebooks in [https://github.com/plotly/documentation/tree/source-design-merge/_posts/tutorials](https://github.com/plotly/documentation/tree/source-design-merge/_posts/tutorials)
 
 The last cell of these notebooks will convert the notebook into a github pages friendly html format:
 
@@ -12,16 +12,16 @@ The last cell of these notebooks will convert the notebook into a github pages f
 ## Converting R Markdown to github pages
 
 The full bleed R pages are created with R Markdown. Here's how:
-- Write your tutorial in R Markdown. Copy any of the `.Rmd` files in this folder: https://github.com/plotly/documentation/tree/source/_posts/r, e.g.  https://github.com/plotly/documentation/blob/source/_posts/r/2015-07-30-3d-line-plots.Rmd
+- Write your tutorial in R Markdown. Copy any of the `.Rmd` files in this folder: https://github.com/plotly/documentation/tree/source-design-merge/_posts/r, e.g.  https://github.com/plotly/documentation/blob/source-design-merge/_posts/r/2015-07-30-3d-line-plots.Rmd
 - Convert the R Markdown to Markdown: `knitr::knit("2015-08-03-your-r-markdown-tutorial.Rmd")`. Or, in the terminal: `Rscript -e 'knitr::knit("2015-08-03-your-r-markdown-tutorial.Rmd")'`
 
 ## Rendering the pages locally
 0. Clone the repo. `$ git clone git@github.com:plotly/documentation.git`
-1. Check out the source branch:
+1. Check out the source-design-merge branch:
 
   ```
   $ git fetch origin
-  $ git checkout source
+  $ git checkout source-design-merge
   ```
 2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - Install Jekyll version 2.5.3:
 
@@ -64,21 +64,21 @@ exclude: []
 and it'll load everything.
 
 ## Deploying changes
-Our repo has become too big for github to process. Edit files on the `source` branch instead of the `gh-pages` branch.
+Our repo has become too big for github to process. Edit files on the `source-design-merge` branch instead of the `gh-pages` branch.
 
 To deploy, first install `_config.yml` package dependencies:
 ```
-documentation (source) $ sudo gem install jekyll-redirect-from
-documentation (source) $ sudo gem install jekyll-sitemap
-documentation (source) $ sudo gem install terminal-notifier
-documentation (source) $ sudo gem install jemoji
-documentation (source) $ sudo gem install redcarpet
+documentation (source-design-merge) $ sudo gem install jekyll-redirect-from
+documentation (source-design-merge) $ sudo gem install jekyll-sitemap
+documentation (source-design-merge) $ sudo gem install terminal-notifier
+documentation (source-design-merge) $ sudo gem install jemoji
+documentation (source-design-merge) $ sudo gem install redcarpet
 
 ```
 
 Then, deploy changes with:
 ```
-documentation (source) $ rake deploy
+documentation (source-design-merge) $ rake deploy
 ```
 
-(from the `source` branch in the root of the `documentation` repo)
+(from the `source-design-merge` branch in the root of the `documentation` repo)
