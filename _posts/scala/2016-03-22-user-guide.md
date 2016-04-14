@@ -1,11 +1,14 @@
 ---
-title: Setting credentials programmatically
-name: Setting credentials programmatically
-permalink: scala/programmatic-credentials/
-description: How to set Plotly credentials programmatically
-layout: base
+title: User guide
+name: Plotly for Scala User Guide
+permalink: scala/user-guide/
+description: User guide to the Scala Plotly client
+layout: user-guide
 language: scala
+page_type: example_index
 ---
+
+## Setting credentials programmatically
 
 The simplest way to pass credentials to the Plotly client is through the [credentials file](scala/getting-started). However, we sometimes need more flexibility. The Scala Plotly client lets you set credentials within your program:
 
