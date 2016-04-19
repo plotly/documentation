@@ -224,7 +224,7 @@ Again, caution should be taken regarding flat <b>attribute strings</b> vs sub-ob
 <pre><code class="language-javascript hljs" data-lang="javascript">
 // update an entire nested object with relayout
 var update = {
-    tile: 'some new title',
+    tile: 'New Title',
     xaxis: {range: [0, 5]}
 };
 Plotly.relayout(graphDiv, update)
