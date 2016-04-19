@@ -1,12 +1,12 @@
 ---
 title: Plotly.js Function Reference
 name: Plotly.js Function Reference
-permalink: /javascript/plotlyjs-function-reference/
+permalink: /javascript/plotlyjs-function-reference
 layout: langindex
 nosidebar: true
 language: plotly_js
 description: Plotly.js function reference. How to create, update, and modify graphs drawn with Plotly's Javascript Graphing Library.
-redirect_from: /javascript-graphing-library/plotlyjs-function-reference/
+redirect_from: /javascript-graphing-library/plotlyjs-function-reference
 ---
 
 <h1 id="plotlyjs-function-reference" class="centered"><a class="no_underline" href="#plotlyjs-function-reference">Plotly Function Reference</a></h1>
