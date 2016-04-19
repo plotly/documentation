@@ -206,8 +206,8 @@ A more efficient means of updating just the layout in a graphDiv. The call signa
 <pre><code class="language-javascript hljs" data-lang="javascript">
 // update only values within nested objects
 var update = {
-    title: 'some new title',
-    xaxis.range: [0, 5]
+    title: 'New Title',
+    'xaxis.range': [0, 5]
 };
 Plotly.relayout(graphDiv, update)
 </code></pre>
