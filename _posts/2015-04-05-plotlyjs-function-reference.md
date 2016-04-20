@@ -1,12 +1,12 @@
 ---
 title: Plotly.js Function Reference
 name: Plotly.js Function Reference
-permalink: /javascript/plotlyjs-function-reference/
+permalink: /javascript/plotlyjs-function-reference
 layout: langindex
 nosidebar: true
 language: plotly_js
 description: Plotly.js function reference. How to create, update, and modify graphs drawn with Plotly's Javascript Graphing Library.
-redirect_from: /javascript-graphing-library/plotlyjs-function-reference/
+redirect_from: /javascript-graphing-library/plotlyjs-function-reference
 ---
 
 <h1 id="plotlyjs-function-reference" class="centered"><a class="no_underline" href="#plotlyjs-function-reference">Plotly Function Reference</a></h1>
@@ -206,8 +206,8 @@ A more efficient means of updating just the layout in a graphDiv. The call signa
 <pre><code class="language-javascript hljs" data-lang="javascript">
 // update only values within nested objects
 var update = {
-    title: 'New Title',
-    'xaxis.range': [0, 5]
+    title: 'some new title',
+    xaxis.range: [0, 5]
 };
 Plotly.relayout(graphDiv, update)
 </code></pre>
@@ -224,7 +224,7 @@ Again, caution should be taken regarding flat <b>attribute strings</b> vs sub-ob
 <pre><code class="language-javascript hljs" data-lang="javascript">
 // update an entire nested object with relayout
 var update = {
-    tile: 'New Title',
+    tile: 'some new title',
     xaxis: {range: [0, 5]}
 };
 Plotly.relayout(graphDiv, update)
