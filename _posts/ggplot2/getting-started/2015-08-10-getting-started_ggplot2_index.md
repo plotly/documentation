@@ -4,7 +4,7 @@ name: Getting Started with Plotly and ggplot2
 permalink: ggplot2/getting-started/
 description: Get started with Plotly's R graphing library with ggplot2 to make interactive, publication-quality graphs online.
 page_type: example_index
-layout: base
+layout: getstart
 language: ggplot2
 ---
 
@@ -13,7 +13,7 @@ language: ggplot2
 # Plotly for R
 
 Plotly is R package for creating interactive web-based graphs via [plotly](https://plot.ly/)'s JavaScript graphing library, `plotly.js`.
-The `plotly` R libary contains a function `ggplotly` which will convert `ggplot2` figures into graphs drawn with `plotly.js` which can be saved to your online plotly account or rendered locally. 
+The `plotly` R libary contains a function `ggplotly` which will convert `ggplot2` figures into graphs drawn with `plotly.js` which can be saved to your online plotly account or rendered locally.
 
 <a href="https://travis-ci.org/ropensci/plotly">
     <img alt="Build Status" style="margin: 0;" src="https://travis-ci.org/ropensci/plotly.png?branch=master">
@@ -25,7 +25,7 @@ __plotly__ is now available on CRAN.
 
 ```r
 install.packages("plotly")
-``` 
+```
 
 To install the **dev** version use:
 
@@ -86,7 +86,7 @@ ggplotly(p)
 </div>
 
 #### Publishing graphs to your online plotly account
-You can publish your newly created plotly graph to your online plotly account by using `plotly_POST()`. 
+You can publish your newly created plotly graph to your online plotly account by using `plotly_POST()`.
 
 ```r
 plotly_POST(p, "Sample Plotly Chart")
