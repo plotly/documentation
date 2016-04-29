@@ -9,7 +9,7 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: scientific
-order: 12
+order: 3
 ---
 
 

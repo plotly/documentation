@@ -9,7 +9,7 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: statistical
-order: 4
+order: 3
 ---
 
 

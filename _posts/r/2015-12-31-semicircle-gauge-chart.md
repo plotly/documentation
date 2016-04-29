@@ -9,7 +9,7 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: chart_type
-order: 10
+order: 9
 ---
 
 # Gauge Meter Chart in R

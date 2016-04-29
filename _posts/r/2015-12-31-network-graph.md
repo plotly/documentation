@@ -9,7 +9,7 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: scientific
-order: 1
+order: 4
 ---
 
 
@@ -63,7 +63,7 @@ edge_shapes <- list()
 for(i in 1:Ne) {
   v0 <- es[i,]$V1
   v1 <- es[i,]$V2
-  
+
   edge_shape = list(
     type = "line",
     line = list(color = "#030303", width = 0.3),
@@ -72,7 +72,7 @@ for(i in 1:Ne) {
     x1 = Xn[v1],
     y1 = Yn[v1]
   )
-  
+
   edge_shapes[[i]] <- edge_shape
 }
 ```
