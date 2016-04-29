@@ -5,7 +5,7 @@ language: python
 height: 900
 arrangement: horizontal
 suite: map-subplots
-order: 1
+order: 5
 sitemap: false
 ---
 
@@ -38,7 +38,7 @@ for i in range(len(years)):
     lons = list(df[ df['YEAR'] == years[i] ]['LON'])
     lats = list(df[ df['YEAR'] == years[i] ]['LAT'])
     # Walmart store data
-    data.append( 
+    data.append(
         dict(
             type = 'scattergeo',
             showlegend=False,
@@ -61,9 +61,9 @@ for i in range(len(years)):
             lat = [47],
             geo = geo_key,
             text = [years[i]],
-            mode = 'text',            
+            mode = 'text',
         )
-    )    
+    )
     layout[geo_key] = dict(
         scope = 'usa',
         showland = True,
@@ -71,20 +71,20 @@ for i in range(len(years)):
         showcountries = False,
         domain = dict( x = [], y = [] ),
         subunitcolor = "rgb(255, 255, 255)",
-    ) 
+    )
 
-    
+
 def draw_sparkline( domain, lataxis, lonaxis ):
     ''' Returns a sparkline layout object for geo coordinates  '''
     return dict(
         showland = False,
         showframe = False,
         showcountries = False,
-        showcoastlines = False,    
+        showcoastlines = False,
         domain = domain,
         lataxis = lataxis,
         lonaxis = lonaxis,
-        bgcolor = 'rgba(255,200,200,0.0)'        
+        bgcolor = 'rgba(255,200,200,0.0)'
     )
 
 # Stores per year sparkline
@@ -93,7 +93,7 @@ layout['geo44'] = draw_sparkline({'x':[0.6,0.8], 'y':[0,0.15]}, \
 data.append(
     dict(
         type = 'scattergeo',
-        mode = 'lines',        
+        mode = 'lines',
         lat = list(df.groupby(by=['YEAR']).count()['storenum']/1e1),
         lon = range(len(df.groupby(by=['YEAR']).count()['storenum']/1e1)),
         line = dict( color = "rgb(0, 0, 255)" ),
@@ -108,7 +108,7 @@ layout['geo45'] = draw_sparkline({'x':[0.8,1], 'y':[0,0.15]}, \
 data.append(
     dict(
         type = 'scattergeo',
-        mode = 'lines',        
+        mode = 'lines',
         lat = list(df.groupby(by=['YEAR']).count().cumsum()['storenum']/1e2),
         lon = range(len(df.groupby(by=['YEAR']).count()['storenum']/1e1)),
         line = dict( color = "rgb(214, 39, 40)" ),
@@ -116,7 +116,7 @@ data.append(
         geo = 'geo45',
     )
 )
-    
+
 z = 0
 COLS = 5
 ROWS = 9
@@ -125,9 +125,9 @@ for y in reversed(range(ROWS)):
         geo_key = 'geo'+str(z+1) if z != 0 else 'geo'
         layout[geo_key]['domain']['x'] = [float(x)/float(COLS), float(x+1)/float(COLS)]
         layout[geo_key]['domain']['y'] = [float(y)/float(ROWS), float(y+1)/float(ROWS)]
-        z=z+1 
+        z=z+1
         if z > 42:
             break
-    
+
 fig = { 'data':data, 'layout':layout }
 py.iplot( fig, filename='US Walmart growth', height=900, width=1000 )
