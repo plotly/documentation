@@ -9,7 +9,7 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: chart_type
-order: 7
+order: 8
 ---
 
 # Dumbbell plots in R
@@ -22,7 +22,7 @@ s <- s[order(s$Men), ]
 gather(s, Sex, value, Women, Men) %>%
   plot_ly(x = value, y = School, mode = "markers",
           color = Sex, colors = c("pink", "blue")) %>%
-  add_trace(x = value, y = School, mode = "lines", 
+  add_trace(x = value, y = School, mode = "lines",
             group = School, showlegend = F, line = list(color = "gray")) %>%
   layout(
     title = "Gender earnings disparity",

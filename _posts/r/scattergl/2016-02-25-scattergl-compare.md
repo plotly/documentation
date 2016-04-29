@@ -5,6 +5,7 @@ permalink: r/compare-webgl-svg/
 description: Compare WebGL and SVG in R
 layout: user-guide
 language: r
+order: 1
 page_type: example_index
 ---
 # Compare WebGL and SVG in R
@@ -26,7 +27,7 @@ p
 
 <iframe src="https://plot.ly/~RPlotBot/2869"width="950" height="600px" scrolling="no" seamless="seamless"></iframe>
 
-### SVG 
+### SVG
 > The draw time for this plot will be slow for all clients.
 
 
@@ -46,5 +47,5 @@ p
 # References
 See below for more information:
 
-- [scattergl](https://plot.ly/r/reference/#scattergl)  
+- [scattergl](https://plot.ly/r/reference/#scattergl)
 - [scatter](https://plot.ly/r/reference/#scatter)
