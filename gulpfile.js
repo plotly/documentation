@@ -49,4 +49,4 @@ gulp.task('watch', function () {
 
 //gulp.task('default', 'build');
 
-gulp.task('see', ['sass', 'watch']);
+gulp.task('default', ['sass', 'watch']);
