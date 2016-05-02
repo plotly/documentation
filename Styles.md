@@ -2,7 +2,7 @@
 
 The styling for this repo is broken up into two different parts: gulp + browsersync + sass and vanilla css. 
 
-It is recommended to use something to create a local server environment such as MAMP Pro which allows you to set virtual hosts (i.e.: http://api.plotly.dev)
+It is recommended to use something to create a local server environment such as MAMP Pro which allows you to set virtual hosts (e.g.: http://api.plotly.dev)
 
 ## gulp + browsersync + scss
 
@@ -18,15 +18,17 @@ Generally it's best to work with two instances of terminal, one to use for anyth
 
 
 1. run `$ jekyll serve --config _config_dev.yml` to create a local server @ http://localhost:4000 that browsersync leverages (see gulpfile.js to adjust as needed)
+
 OR
+
 2. run `$ jekyll build --config _config_dev.yml` and leverage a local server @ http://api.plotly.dev through a service like MAMP Pro that browsersync leverages (see gulpfile.js to adjust as needed)
-2. run `$ gulp`
-3. make any updates to the scss files
+3. run `$ gulp`
+4. make any updates to the scss files
 
 ### markup + scss workflow
 
-It's a bit of a hassle to make concurrent updates to markup and scss. Anytime you update an html/js file you'll have to run a `$ jekyll build` command or `$ jekyll serve` have jekyll watching for changes. I have found issue with jekyll's watch being too sensitive and have opted to build when I choose to prevent long hangs because of the size of the repo. 
-When you run a `$ jekyll` you need to update any scss file as jekyll will automatically replace the styles.css file. For example if you just modify any scss file and save it, it will overwrite the file jekyll has produced. 
+It's a bit of a hassle to make concurrent updates to markup and scss. Anytime you update an html/js file you'll have to run a `$ jekyll build` command or `$ jekyll serve` and have jekyll watching for changes. I have found issues with jekyll's watch being too sensitive and have opted to build when I choose to prevent long hangs because of the size of the repo. 
+When you run a `$ jekyll` you need to update any scss file as jekyll will automatically replace the styles.css file. e.g.: if you modify any scss file and save it, it will overwrite the file jekyll has produced.
 
 ### folder structure
 
