@@ -1,6 +1,10 @@
 # Changes
 
 
+## v1.2.8
+
+* bullet items in changelog that contain (but don't start with) #
+
 ## v1.2.7
 
 * strip 'update changelog' changelog entries out of changelog
