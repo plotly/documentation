@@ -8,6 +8,7 @@ var autoprefixer = require('gulp-autoprefixer');
 // misc
 var plumber = require('gulp-plumber');
 var browserSync = require('browser-sync');
+var hashsum = require("gulp-hashsum");
 
 
 gulp.task('build', shell.task(['bundle exec jekyll build --config _config_dev.yml']));
@@ -28,7 +29,9 @@ gulp.task('sass', function () {
             browsers: ['last 15 versions'],
             cascade: false
         }))
+        .pipe(hashsum({filename: './_data/cache_bust_css.yml', hash: 'md5'}))
         .pipe(gulp.dest('_site/styles'))
+        .pipe(gulp.dest('./styles'))
         .pipe(browserSync.stream())
 });
 
