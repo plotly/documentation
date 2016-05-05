@@ -16,6 +16,7 @@ task :deploy => [:check_git] do
   deploy_branch = 'gh-pages'
   message = "Site updated at #{Time.now.utc}"
 
+  system "npm install"
   system "npm install --global gulp-cli"
   puts "...git pull origin  \"#{source_branch}\""
   system "git pull origin  \"#{source_branch}\""
