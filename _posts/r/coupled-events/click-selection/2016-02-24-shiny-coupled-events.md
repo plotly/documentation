@@ -30,7 +30,7 @@ Below is an example on how to couple events from multiple charts together in the
 
 ## Shiny app
 
-<iframe src="https://plotly.shinyapps.io/ShinyCoupledEvents/" width="100%" height=1600 scrolling="no" seamless="seamless" style="border: none"></iframe>
+<iframe src="https://plotly.shinyapps.io/ShinyCoupledEvents/" width="100%" height= "800" scrolling="yes" seamless="seamless" style="border: none"></iframe>
 
 ## Code
 ### ui.r
