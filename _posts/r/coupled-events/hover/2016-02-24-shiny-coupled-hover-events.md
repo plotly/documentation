@@ -22,7 +22,7 @@ Below is an example on how to couple a hover event on one chart to trigger a com
 
 ## Shiny app
 
-<iframe src="https://plotly.shinyapps.io/ShinyCoupledHoverEvents/" width="100%" height= 800  scrolling="no" seamless="seamless" style="border: none; position: relative"></iframe>
+<iframe src="https://plotly.shinyapps.io/ShinyCoupledHoverEvents/" width="100%" height= "800"  scrolling="no" seamless="seamless" style="border: none; position: relative"></iframe>
 
 ## Code
 ### ui.r

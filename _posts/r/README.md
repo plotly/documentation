@@ -87,9 +87,9 @@
 4. Commit and Push your tutorial
   - `git add` your .Rmd and .md files
   - `git commit -m "include a message about the tutorial you're adding"`
-  - `git push origin source`
+  - `git push origin source-design-merge`
 
-5. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally 
+5. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source-design-merge/Contributing.md#rendering-the-pages-locally 
 
 6. Deploy with `rake deploy`
 
