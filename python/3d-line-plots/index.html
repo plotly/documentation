@@ -4964,12 +4964,78 @@
 
 		
 		
+		
+		
+		
+			
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+			
+	
+		
+		
+		
+
+		
+		
 			<li class="lang-nav--item">
                 <a class="lang_nav_button " href="/r/3d-line-plots/">
                     <div><img src="https://plot.ly/gh-pages/documentation/static/images/r-small.png" alt="r" class="lang_nav_thum"></div>
                     R
                 </a>
             </li>
+		
+		
+		
+		
+			
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+			
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+			
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+			
+	
+		
+		
+		
+
+		
 		
 		
 		
@@ -19109,103 +19175,107 @@
     <div class="section">
         <div class="row auto-eg-padding">
       <div class=" row twelve columns">
-        <h4 id="3d-line-plot3d-random-walk"><a class="no_underline plot-blue" href="#3d-line-plot3d-random-walk">3D Line Plot<br>3D Random Walk</a></h4>
+        <h4 id="3d-line-plot-brownian-motion"><a class="no_underline plot-blue" href="#3d-line-plot-brownian-motion">3D Line Plot<br> Brownian Motion</a></h4>
       </div>
       <div class="row">
         <div class="twelve columns">
           <div class="z-depth-1">
-            <pre><code class="python"># Learn about API authentication here: https://plot.ly/python/getting-started
-# Find your api_key here: https://plot.ly/settings/api
-
-# Learn about API authentication here: https://plot.ly/python/getting-started
-# Find your api_key here: https://plot.ly/settings/api
-
-import plotly.plotly as py
+            <pre><code class="python">import plotly.plotly as py
 import plotly.graph_objs as go
-
 import pandas as pd
+import numpy as np
 
-# Read data from a csv.
-df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/3d_line_sample_data.csv')
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/iris.csv')
+df.head()
 
-trace1 = go.Scatter3d(
-    x = df.x1,
-    y = df.y1,
-    z = df.z1,
-    mode='lines',
-    marker=go.Marker(
-        color='#1f77b4',
-        size=12,
-        symbol='circle',
-        line=go.Line(
-            color='rgb(0,0,0)',
-            width=0
-        )
-    ),
-    line=go.Line(
-        color='#1f77b4',
-        width=1
-    )
-)
-trace2 = go.Scatter3d(    
-    x = df.x2,
-    y = df.y2,
-    z = df.z2,
-    mode='lines',
-    marker=go.Marker(
-        color='#9467bd',
-        size=12,
-        symbol='circle',
-        line=go.Line(
-            color='rgb(0,0,0)',
-            width=0
-        )
-    ),
-    line=go.Line(
-        color='rgb(44, 160, 44)',
-        width=1
-    )
-)
-trace3 = go.Scatter3d(
-    x = df.x3,
-    y = df.y3,
-    z = df.z3,    
-    mode='lines',
+def brownian_motion(T = 1, N = 100, mu = 0.1, sigma = 0.01, S0 = 20):
+    dt = float(T)/N
+    t = np.linspace(0, T, N)
+    W = np.random.standard_normal(size = N)
+    W = np.cumsum(W)*np.sqrt(dt) # standard brownian motion
+    X = (mu-0.5*sigma**2)*t + sigma*W
+    S = S0*np.exp(X) # geometric brownian motion
+    return S
+
+dates = pd.date_range('2012-01-01', '2013-02-22')
+T = (dates.max()-dates.min()).days / 365
+N = dates.size
+start_price = 100
+y = pd.Series(
+    brownian_motion(T, N, sigma=0.1, S0=start_price), index=dates)
+z = pd.Series(
+    brownian_motion(T, N, sigma=0.1, S0=start_price), index=dates)
+
+trace = go.Scatter3d(
+    x=dates, y=y, z=z,
     marker=dict(
-        color='#bcbd22',
-        size=12,
-        symbol='circle',
-        line=dict(
-            color='rgb(0,0,0)',
-            width=0
-        )
+        size=4,
+        color=z,
+        colorscale='Viridis',
     ),
     line=dict(
-        color='#bcbd22',
+        color='#1f77b4',
         width=1
     )
 )
-data = [trace1, trace2, trace3]
-layout = go.Layout(
+
+data = [trace]
+
+layout = dict(
+    width=800,
+    height=700,
     autosize=False,
-    width=500,
-    height=500,
-    margin=dict(
-        l=0,
-        r=0,
-        b=0,
-        t=65
-    )
+    title='Iris dataset',
+    scene=dict(
+        xaxis=dict(
+            gridcolor='rgb(255, 255, 255)',
+            zerolinecolor='rgb(255, 255, 255)',
+            showbackground=True,
+            backgroundcolor='rgb(230, 230,230)'
+        ),
+        yaxis=dict(
+            gridcolor='rgb(255, 255, 255)',
+            zerolinecolor='rgb(255, 255, 255)',
+            showbackground=True,
+            backgroundcolor='rgb(230, 230,230)'
+        ),
+        zaxis=dict(
+            gridcolor='rgb(255, 255, 255)',
+            zerolinecolor='rgb(255, 255, 255)',
+            showbackground=True,
+            backgroundcolor='rgb(230, 230,230)'
+        ),
+        camera=dict(
+            up=dict(
+                x=0,
+                y=0,
+                z=1
+            ),
+            eye=dict(
+                x=-1.7428,
+                y=1.0707,
+                z=0.7100,
+            )
+        ),
+        aspectratio = dict( x=1, y=1, z=0.7 ),
+        aspectmode = 'manual'
+    ),
 )
-fig = go.Figure(data=data, layout=layout)
-plot_url = py.plot(fig, filename='random-walk')</code></pre>
+
+fig = dict(data=data, layout=layout)
+
+# IPython notebook
+# py.iplot(fig, filename='pandas-brownian-motion-3d', height=700, validate=False)
+
+url = py.plot(fig, filename='pandas-brownian-motion-3d', height=700, validate=False)
+</code></pre>
           </div>
           
         </div>
         <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe id="auto-examples" src="https://plot.ly/~PlotBot/192.embed"
+            <iframe id="auto-examples" src="https://plot.ly/~jackp/10542.embed"
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
