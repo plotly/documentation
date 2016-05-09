@@ -10,9 +10,9 @@ This repo is set up to run with a gulp + sass + browsersync workflow. Essentiall
 
 The scss and jekyll instance have been separated to allow for faster updates to the scss independent of the markup.
 
-### usage
+### Usage
 
-Once the repo has been cloned successfully (see Contributing.md), run `$ npm install` to install gulp and the necessary dependencies.
+Once the repo has been cloned successfully (see [Contributing.md](https://github.com/plotly/documentation/blob/source-design-merge/Contributing.md)), run `$ npm install` to install gulp and the necessary dependencies.
 
 Generally it's best to work with two instances of terminal, one to use for anything related to `$ jekyll` and then another to keep the `$ gulp` task running.
 
@@ -50,7 +50,14 @@ When you run a `$ jekyll` you need to update any scss file as jekyll will automa
      * _tutorial-index.scss
      * _tutorial-single.scss
    - main.scss *(bringing it all together)*
+ 
+- all_static/css/
+   - main.css *(the css conversion of main.scss)*
 
+## Deploying Changes After Editing the SCSS
+   - Run `gulp build` in the root of the documentation repo after making any scss edits. This will update `main.css` as well as the [verion](https://github.com/plotly/documentation/blob/source-design-merge/_data/cache_bust_css.yml) which is used to prevent css caching.
+   - `git add` the files you've changed as well as the generated `main.css` and `cache_bust_css.yml` files, `git commit -m 'message about update'`, and `git push origin source-design-merge` to add your updates to the repo.
+   - run `rake deploy` to deploy changes.
 
 ## vanilla css
 
@@ -58,4 +65,4 @@ If there's no need or desire to utilize the scss workflow, there's a separate cs
 
 `/all_static/css/css.css`
 
-Last updated: 05.02.2016
+Last updated: 05.09.2016
