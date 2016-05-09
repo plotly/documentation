@@ -1,12 +1,12 @@
 # Styles
 
-The styling for this repo is broken up into two different parts: gulp + browsersync + sass and vanilla css. 
+The styling for this repo is broken up into two different parts: [gulp](https://github.com/plotly/documentation/blob/source-design-merge/gulpfile.js) + browsersync + sass and vanilla css. 
 
 It is recommended to use something to create a local server environment such as MAMP Pro which allows you to set virtual hosts (e.g.: http://api.plotly.dev)
 
 ## gulp + browsersync + scss
 
-This repo is set up to run with a gulp + sass + browsersync workflow. Essentially what this does is leverages a local server to display the site and when you make updates to the scss files they will be live injected into the site to see the immediate effects of your changes.
+This repo is set up to run with a [gulp](https://github.com/plotly/documentation/blob/source-design-merge/gulpfile.js) + sass + browsersync workflow. Essentially what this does is leverages a local server to display the site and when you make updates to the scss files they will be live injected into the site to see the immediate effects of your changes.
 
 The scss and jekyll instance have been separated to allow for faster updates to the scss independent of the markup.
 
