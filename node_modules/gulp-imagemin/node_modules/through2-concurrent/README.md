@@ -9,7 +9,7 @@ parallel. You can limit the concurrency (default is 16) and order is
 the order they started in if the transform functions take different
 amounts of time).
 
-Build using [through2](https://github.com/rvagg/through2) and has the
+Built using [through2](https://github.com/rvagg/through2) and has the
 same API with the addition of a `maxConcurrency` option.
 
 Non-`objectMode` streams are supported for completeness but I'm not
@@ -49,6 +49,7 @@ fs.createReadStream('data.csv')
       var self = this;
       someThingAsync(chunk, function (newChunk) {
         self.push(newChunk);
+        callback();
       });
   }))
   .on('data', function (data) {

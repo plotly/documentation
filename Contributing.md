@@ -1,4 +1,4 @@
-## repo organization
+## Repo Organization
 edit or add files in the `_posts` folder in the [source-design-merge](http://github.com/plotly/documentation/tree/source-design-merge) branch
 
 ## Converting IPython Notebooks to github pages
@@ -82,3 +82,7 @@ documentation (source-design-merge) $ rake deploy
 ```
 
 (from the `source-design-merge` branch in the root of the `documentation` repo)
+
+## Style Edits
+
+Please refer to our [Styles README](https://github.com/plotly/documentation/blob/source-design-merge/Styles.md)

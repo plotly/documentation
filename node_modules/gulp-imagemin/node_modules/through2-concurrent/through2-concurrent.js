@@ -1,5 +1,6 @@
 // Like through2 except execute in parallel with a set maximum
 // concurrency
+"use strict";
 var through2 = require('through2');
 
 module.exports = function concurrentThrough (options, transform, flush) {
@@ -11,7 +12,7 @@ module.exports = function concurrentThrough (options, transform, flush) {
     options   = {};
   }
 
-  maxConcurrency = options.maxConcurrency || 16;
+  var maxConcurrency = options.maxConcurrency || 16;
 
   function _transform (message, enc, callback) {
     var self = this;
