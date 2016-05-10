@@ -29,12 +29,14 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
 2. `cd` into the folder you created and run `ipython notebook`
   - From the <b>New</b> dropdown create a new notebook and title it based on the type of chart you're adding to the documentation.
 3. Base your tutorial structure off of one of our exsisting tutorials (i.e. `documentation/_posts/python/table/table.ipynb`)
-  - <b>Now we have an awesome bavigation bar on the left side of our tutorial pages.</b> The navigation bar displayed the titles you add to your notebook. Please title each example clearly and order then from basic -> advanced.
+  - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displayed the titles you add to your notebook. Please title each example clearly and order then from basic -> advanced.
 4. The last content cell of your notebook should be a markdown cell with: 
-  ```
-  ## Reference
-  See https://plot.ly/python/reference/#scatter for more information and chart attribute options!
-  ```
+
+    ```
+    ## Reference
+    See https://plot.ly/python/reference/#scatter for more information and chart attribute options!
+    ```
+
   where `https://plot.ly/python/reference/#scatter` is replaced with the pertinent link(s) to our python [reference page](https://plot.ly/python/reference/)!
 5. Finally, convert your .ipynb to a .html file by adding the following code snippet as the last cell of your notebook.
   - Replace `your-tutorial-chart` with the type of chart you're creating in the tutorial.) 
