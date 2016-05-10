@@ -34,10 +34,14 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
 
     ```
     ## Reference
-    See https://plot.ly/python/reference/#scatter for more information and chart attribute options!
+    See https://plot.ly/python/reference/##heatmap for more information and chart attribute options!
     ```
 
-  where `https://plot.ly/python/reference/#scatter` is replaced with the pertinent link(s) to our python [reference page](https://plot.ly/python/reference/)!
+  where `https://plot.ly/python/reference/##heatmap` is replaced with the pertinent link(s) to our python [reference
+  page](https://plot.ly/python/reference/)!
+  
+  and/or provide a help call:
+    `help(FF.create_table)` (*This applies to documentation on FigureFactory functions)
 5. Finally, convert your .ipynb to a .html file by adding the following code snippet as the last cell of your notebook.
   - Replace `your-tutorial-chart` with the type of chart you're creating in the tutorial.) 
   - Please be dilligent about adding this information completely and in the order as it appears here (this is really helpful if future edits are necessary :D )
