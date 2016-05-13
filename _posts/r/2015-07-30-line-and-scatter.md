@@ -77,7 +77,7 @@ plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
 
 ```r
 p <- plot_ly(economics, x = date, y = uempmed, name = "unemployment")
-p %>% add_trace(y = fitted(loess(uempmed ~ as.numeric(date))))
+p %>% add_trace(y = fitted(loess(uempmed ~ as.numeric(date))), x = date)
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/275.embed" width="800" frameBorder="0"></iframe>
