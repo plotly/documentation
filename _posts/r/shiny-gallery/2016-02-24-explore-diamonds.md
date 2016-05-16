@@ -69,7 +69,15 @@ shinyServer(function(input, output, session) {
     facets <- paste(input$facet_row, '~', input$facet_col)
     if (facets != '. ~ .') p <- p + facet_grid(facets)
     # return the ggplot object and renderPlotly() will know how to handle it
-    p
+    
+    
+    # just verify that this is reactive as expected to the height slider
+    height = input$plotHeight
+    
+    ggp <- as.widget(ggplotly(p, height = height) %>% layout(autosize=TRUE))
+    ggp$x$layout$height = height
+    ggp
+    
   })
   
 })
