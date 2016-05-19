@@ -1,0 +1,139 @@
+<ul>
+{% for obj in attribute %}
+    {% if obj[0] != "flags" and obj[0] != "dflt" and obj[0] != "values" and obj[0] != "valType" and obj[0] != "role" and obj[0] != "min" and obj[0] != "max" and obj[0] != "arrayOk" and obj[0] != "flags" and obj[0] != "extras" and obj[0] != "description" and obj[0] != "_isLinkedToArray" and obj[0] != "items" and obj[0] != "uid" and obj[0] != "smith" and obj[0] != "_deprecated" and obj[0] != "_isSubplotObj" %}
+
+        {% if obj[0] == "type" and page.language == "python" and block == "data" %}
+            {% continue %}
+        {% endif %}
+
+        <li>
+            {% if toc %}
+                {% assign id="" %}
+            {% else %}
+                {% capture id %}{{include.parentlink}}-{{obj[0]}}{% endcapture %}
+            {% endif %}
+            <a class="attribute-name" id="{{id}}" href="#{{include.parentlink}}-{{obj[0]}}">
+                {{ obj[0] }}
+            </a>
+
+            {% if display_info %}
+
+                {% if obj[0] == "type" and block == "data" %}
+                    (<code>*{{obj[1]}}*</code>)
+                {% endif %}
+
+                {% if obj[1].valType %}
+                    {% if obj[1].valType == "enumerated" or obj[1].valType.values %}
+                        (<code tooltip='One of the following items (e.g. {% if obj[1].values[0] != false and obj[1].values[0] != true %}*{{obj[1].values[0]}}*{% else %}{{obj[1].values[0]}}{% endif %}).' class="attribute-type">{{ obj[1].valType }}</code><code>:
+                        {% for value in obj[1].values %}
+                            {% if value != false and value != true %}<code>*{{value}}*</code>{% else %}<code>{{value}}</code>{% endif %}
+                            {% unless forloop.last %}|{% endunless %}
+                        {% endfor %}
+                        </code>)
+                    {% elsif obj[1].valType == "number" or obj[1].valType == "integer" %}
+                        {% if obj[1].min and obj[1].max %}
+                            (<code class="attribute-type">{{ obj[1].valType }} between or equal to {{obj[1].min}} and {{obj[1].max}}</code>)
+                        {% elsif obj[1].min %}
+                            (<code class="attribute-type">{{ obj[1].valType }} greater than or equal to {{obj[1].min}}</code>)
+                        {% elsif obj[1].max %}
+                            (<code class="attribute-type">{{ obj[1].valType }} less than or equal to {{obj[1].min}}</code>)
+                        {% else %}
+                            (<code class="attribute-type">{{ obj[1].valType }}</code>)
+                        {% endif %}
+                    {% elsif obj[1].valType == "boolean" %}
+                        (<code>{{obj[1].valType}}</code>)
+                    {% elsif obj[1].valType == "flaglist" %}
+                        (<code>{{obj[1].valType}} string</code>)
+                    {% elsif obj[1].valType == "data_array" %}
+                        {% if page.language == "python" %}
+                            (<code>list, numpy array, or Pandas series of numbers, strings, or datetimes.</code>)
+                        {% else %}
+                            (<code tooltip='{% raw %}{array}{% endraw %} of numbers, strings, or date strings (strings in the format YYYY-MM-DD HH:MM:ss.ffff - hours, minutes, and milliseconds are optional).'>{{obj[1].valType}}</code>)
+                        {% endif %}
+                    {% elsif obj[1].valType == "info_array" %}
+                        (<code>{array}</code>)
+                    {% elsif obj[1].valType == "any" %}
+                        (<code>number or categorical coordinate string</code>)
+                    {% elsif obj[1].valType == "string" %}
+                        {% if obj[0] contains "src" %}
+                            {% if page.language == "python" %}
+                                (<code>source string | plotly.grid_objs.Column</code>)
+                            {% else %}
+                                {% continue %}
+                            {% endif %}
+                        {% else %}
+                        (<code>string</code>)
+                        {% endif %}
+                    {% else %}
+                        {% assign typekey = obj[1].valType %}
+                        (<code tooltip="{{site.data.plotschema.schema.defs.valObjects[typekey].description}}" class="attribute-type">{{ obj[1].valType }}</code>)
+                    {% endif %}
+                    {% if obj[1].role == "object" %}
+                        {% if obj[1].items %}
+                            (<code tooltip="{% raw %}{array}{% endraw %} of {% raw %}{object}{% endraw %}s. Each {% raw %}{object}{% endraw %} has one or more of the keys listed below." class="attribute-type">{% raw %}{array}{% endraw %} of {% raw %}{object}{% endraw %}s</code>)
+                        {% else %}
+                            (<code tooltip="{% raw %}{object}{% endraw %} with any of the keys listed below." class="attribute-type">{% raw %}{object}{% endraw %}</code>)
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+
+            {% endif %}
+
+            {% if display_info and obj[1].valType == "flaglist" %}
+
+                <br>Any combination of {% for value in obj[1].flags %}{% if value != false and value != true %}<code>*{{value}}*</code>{% else %}<code>{{value}}</code>{% endif %}{% unless forloop.last %}, {% endunless %} {% endfor %} joined with a <code>*+*</code>
+
+                {% if obj[1].extras %}
+                    OR {% for value in obj[1].extras %}{% if value != false and value != true %}<code>*{{value}}*</code>{% else %}<code>{{value}}</code>{% endif %}{% unless forloop.last %} or {% endunless %}{% endfor %}.
+                {% endif %}
+
+                <br>examples: <code>*{{obj[1].flags[0]}}*</code>, <code>*{{obj[1].flags[1]}}*</code>, <code>*{{obj[1].flags[0]}}+{{obj[1].flags[1]}}*</code>{% if obj[1].flags[2] %}, <code>*{{obj[1].flags[0]}}+{{obj[1].flags[1]}}+{{obj[1].flags[2]}}*</code>{% endif %}{% if obj[1].extras %}, <code>*{{obj[1].extras[0]}}*</code>{% endif %}
+
+                {% if obj[1].dflt %}
+                    <br>default: <code>*{{ obj[1].dflt }}*</code>
+                {% endif %}
+
+            {% endif %}
+
+            {% if display_info and obj[1].dflt %}
+                {% unless obj[1].valType == "flaglist" %}
+                    <br>default: <code>{% if obj[1].dflt == "" %}**{% else %}{% if obj[1].valType == "string" or obj[1].valType == "color" or (obj[1].valType == "enumerated" and obj[1].dflt != true and obj[1].dflt != false) or obj[1].dflt == "auto" %}*{{ obj[1].dflt }}*{% elsif obj[1].valType == "info_array" %}[{{obj[1].dflt[0]}}, {{obj[1].dflt[1]}}]{% else %}{{obj[1].dflt}}{% endif %}{% endif %}</code>
+                {% endunless %}
+            {% endif %}
+
+            {% if display_info and obj[1].description %}
+                <br>{{ obj[1].description | escape }}
+                {% if obj[0] contains "src" and page.language == "python" %}
+                A <code>source string</code> refers to a unique identifier that is assigned to a plotly grid. Assigning data to a graph with a source string is an alternative way to set this graph's {{ obj[0] | replace:'src','' }} data. It's useful if you want to keep your data separate from your graphs, create several graphs from a single dataset, or edit your graph's data after creation. <a target="_blank" href="https://plot.ly/python/data-api/">Learn more</a>.
+                {% endif %}
+            {% endif %}
+
+            {% if obj[1].items %}
+                <br>Each {% raw %}{object}{% endraw %} has one or more of the keys listed below.
+                {% if obj[0] == "annotations" %}
+                    {% unless obj[1].description %}
+                        <br>An annotation is a text element that can be placed anywhere in the plot. It can be positioned with respect to relative coordinates in the plot or with respect to the actual data coordinates of the graph. Annotations can be shown with or without an arrow.
+                    {% endunless %}
+                {% endif %}
+            {% endif %}
+
+            {% if obj[1].role == "object" %}
+                {% assign parentattribute = attribute %}
+                {% capture localparentlink %}{{include.parentlink}}-{{obj[0]}}{% endcapture %}
+                {% if obj[1].items %}
+                    <!--This will break if there ever more than one type of item in in items - but for now it's just "shape" and "annotation"-->
+                    {% for item in obj[1].items %}
+                        {% assign attribute = item[1] %}
+                    {% endfor %}
+                {% else %}
+                    {% assign attribute = obj[1] %}
+                {% endif %}
+                {% assign block = "nested" %}
+                {% include reference-block.html parentlink=localparentlink block=block %}
+                {% assign attribute = parrentattribute %}
+            {% endif %}
+
+        </li>
+    {% endif %}
+{% endfor %}
+</ul>

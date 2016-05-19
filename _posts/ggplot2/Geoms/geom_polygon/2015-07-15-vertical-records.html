@@ -1,0 +1,28 @@
+---
+name: convert row records to vertical values
+plot_url: https://plot.ly/~MattSundquist/18934/a-b-c-d-e-f-g-h-i-j/
+arrangement: horizontal
+language: ggplot2
+suite: geom_polygon
+description: Inspired by <a href="http://stackoverflow.com/questions/22100486/r-ggplot2-convert-row-records-to-vertical-values-and-use-in-geom-polygon">Stack Overflow</a>.
+order: 3
+sitemap: false
+---
+
+# Learn about API authentication here: https://plot.ly/r/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+library(plotly)
+
+library(data.table)
+df<-data.table(Product=letters[1:10], minX=1:10, maxX=5:14, minY= 10:1, maxY=14:5)
+
+df.t<-data.table(rbind( df[,list(Product,X=minX,Y=minY)],
+       df[,list(Product,X=minX,Y=maxY)],
+       df[,list(Product,X=maxX,Y=minY)],
+       df[,list(Product,X=maxX,Y=maxY)]))[
+      order(Product,X,Y)]
+
+ggplot(df,aes(xmin=minX,xmax=maxX,ymin=minY,ymax=maxY,fill=Product))+geom_rect()
+
+ggplotly(filename="r-docs/geom_polygon-rect")

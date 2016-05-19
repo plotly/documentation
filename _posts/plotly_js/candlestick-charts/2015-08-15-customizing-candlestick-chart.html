@@ -1,0 +1,100 @@
+---
+name: Adding Text and Annotations
+plot_url: https://codepen.io/plotly/embed/yOoYdV/?height=443&theme-id=15263&default-tab=result
+language: plotly_js
+suite: candlestick
+order: 4
+sitemap: false
+arrangement: horizontal
+---
+
+function makeplot() {
+  Plotly.d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/candlestick_dataset_2007_2009.csv", function(data){ processData(data) } );
+};
+
+function processData(allRows) {
+  var data_open = [], data_close = [], data_high = [], data_low = [], dates = [];
+  for (var i=0; i &lt; allRows.length; i++) {
+    row = allRows[i];
+	 data_close.push(parseFloat(row['close']));
+	 data_high.push(parseFloat(row['high']));
+	 data_low.push(parseFloat(row['low']));	 
+	 data_open.push(parseFloat(row['open']));
+  }
+  makePlotly( data_open, data_close, data_high, data_low );	
+}
+
+
+function makePlotly( data_open, data_close, data_high, data_low ){
+	var data_dates = getAllDays('2007-10-01', '2009-04-01');
+	
+	var fig = PlotlyFinance.createCandlestick({
+	                                          open: data_open,
+	                                          high: data_high,
+	                                          low: data_low,
+	                                          close: data_close,
+	                                          dates: data_dates
+                            });
+
+    fig.layout.title = 'The Great Recession';
+
+    fig.layout.annotations = [
+                 {
+                     text: "Official start of the recession",
+                     x: '2007-12-01',
+                     y: 0.05,
+                     xref: 'x',
+                     yref: 'paper',
+                     showarrow: false,
+                     xanchor: 'left'
+                 },
+                 {
+                     text: "AAPL Stock",
+                     x: '-0.05',
+                     y: 0.5,
+                     xref: 'paper',
+                     yref: 'paper',
+                     font:{
+                           size: 18
+                          },
+                     showarrow: false,
+                     xanchor: 'right',
+                     textangle: 270
+                 }
+                ];
+
+    fig.layout.shapes = [{
+                      x0: '2007-12-01',
+                      x1: '2007-12-01',
+                      type: 'line',
+                      y0: 0,
+                      y1: 1,
+                      xref: 'x',
+                      yref: 'paper'  ,
+                      line: {
+                            color: 'rgb(30,30,30)',
+                            width: 1
+                       }
+                    }
+                 ];
+
+    Plotly.newPlot('myDiv', fig.data, fig.layout);
+};
+
+// Utility Function to generate all days
+function getAllDays(start, end) {
+    var s = new Date(start);
+    var e = new Date(end);
+    var a = [];
+	
+    while(s < e) {
+        a.push(s);
+        s = new Date(s.setDate(
+            s.getDate() + 1
+        ))
+    }
+
+    return a;
+};
+
+makeplot();

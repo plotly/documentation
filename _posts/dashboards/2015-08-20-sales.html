@@ -1,0 +1,236 @@
+---
+title: Sales Dashboard
+name: Sales Dashboard
+description: Sales dashboard with KPIs for sales call centers, Salesforce analytics, revenue by geography, sales rep, and more.
+permalink: dashboards/sales/
+industry: Sales
+language: dashboard
+background_color: '#a6cee3'
+foreground_color: '#444'
+---
+<!DOCTYPE html>
+<html>
+<head>
+
+{% include seo.html %}
+
+{% include dashboard-head.html %}
+
+{% include dashboard-industries-nav.html %}
+
+<div class="container-fluid">
+
+  <!--------------------------->
+  <!-- SALES REP PERFORMANCE -->
+  <!------------------------ -->
+  <h2>Call center and sales rep performance</h2>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          Live call center stream - Average calls per minute
+        </div>
+        <div class="chart-stage">
+          <div id="grid-1-1">
+            <div>
+              <iframe width="100%" height="480px" frameborder="0" scrolling="no" id="iplot" src="https://plot.ly/~jackp/12028.embed?autoscale=true&link=false&modebar=false"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="chart-notes">
+          <a href="https://plot.ly/12028/~jackp"><i class="icon-edit"></i> Copy & Edit</a>
+          <a href="https://plot.ly/~jackp/12028" style="float:right"><i class="fa fa-comment"></i> Comment</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          Top sale performers by quarter
+        </div>
+        <div class="chart-stage">
+          <iframe width="100%" height="480px" frameborder="0" scrolling="no" src="https://plot.ly/~jackp/11804.embed?autoscale=true&link=false&modebar=false"></iframe>
+        </div>
+        <div class="chart-notes">
+          <a href="https://plot.ly/11804/~jackp"><i class="icon-edit"></i> Copy & Edit</a>
+          <a href="https://plot.ly/~jackp/11804" style="float:right"><i class="fa fa-comment"></i> Comment</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!------------------------>
+  <!-- SALES BY GEOGRAPHY -->
+  <!--------------------- -->
+  <h2>Sales revenue by geography</h2>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          US sales by state and quarter
+        </div>
+        <div class="chart-stage">
+          <select id="selectQuarter" onchange="changeMapQuarter()" style="position:absolute;">
+            <option value="0">Quarter 1</option>
+            <option value="1">Quarter 2</option>
+            <option value="2">Quarter 3</option>
+            <option value="3">Quarter 4</option>
+          </select>
+          <iframe id="usaSalesPlot" width="100%" height="480px" frameborder="0" scrolling="no" src="https://plot.ly/~jackp/11579.embed?autoscale=true&link=false&modebar=false"></iframe>
+        </div>
+        <div class="chart-notes">
+          <a href="https://plot.ly/11579/~jackp"><i class="icon-edit"></i> Copy & Edit</a>
+          <a href="https://plot.ly/~jackp/11579" style="float:right"><i class="fa fa-comment"></i> Comment</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          Q4 sales by region
+        </div>
+        <div class="chart-stage">
+          <iframe width="100%" height="480px" frameborder="0" scrolling="no" src="https://plot.ly/~jackp/11634.embed?autoscale=true&link=false&modebar=false"></iframe>
+        </div>
+        <div class="chart-notes">
+          <a href="https://plot.ly/11634/~jackp"><i class="icon-edit"></i> Copy & Edit</a>
+          <a href="https://plot.ly/~jackp/11634" style="float:right"><i class="fa fa-comment"></i> Comment</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-------------------------->
+  <!-- SALESFORCE ANALYTICS -->
+  <!----------------------- -->
+  <h2>Salesforce Analytics in Python</h2>
+  <a href="https://plot.ly/ipython-notebooks/salesforce/">IPython notebook analysis</a>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          Open deals in Salesforce
+        </div>
+        <div class="chart-stage">
+          <iframe width="100%" height="480px" frameborder="0" scrolling="no" src="https://plot.ly/~jackp/11654.embed?autoscale=true&link=false&modebar=false"></iframe>
+        </div>
+        <div class="chart-notes">
+          <a href="https://plot.ly/11654/~jackp"><i class="icon-edit"></i> Copy & Edit</a>
+          <a href="https://plot.ly/~jackp/11654" style="float:right"><i class="fa fa-comment"></i> Comment</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          Month Revenue vs Target
+        </div>
+        <div class="chart-stage">
+          <iframe width="100%" height="480px" frameborder="0" scrolling="no" src="https://plot.ly/~jackp/11648.embed?autoscale=true&link=false&modebar=false"></iframe>
+        </div>
+        <div class="chart-notes">
+          <a href="https://plot.ly/11648/~jackp"><i class="icon-edit"></i> Copy & Edit</a>
+          <a href="https://plot.ly/~jackp/11648" style="float:right"><i class="fa fa-comment"></i> Comment</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- end of three -->
+  </div>
+
+    <!-- end of three -->
+  </div>
+
+{% include dashboard-industries-footer.html %}
+
+<script>
+
+var INTERVAL = 1000;
+lastUpdate = 0;
+var X, Y, dX, dY;
+
+var plot = document.getElementById('iplot').contentWindow;
+
+function startTimer() {
+  setInterval(addData, INTERVAL);
+}
+
+function addData() {
+  // get current x, y data
+  plot.postMessage({
+      task: 'getAttributes',
+      attributes: [
+        'data[0].x', 'data[0].y',
+      ]
+    },
+    'https://plot.ly/');
+}
+
+window.addEventListener('message', function(e) {
+    var message = e.data;
+
+    if (message.pong) {
+      console.log('Initial pong, \
+         frame is ready to receive');
+      clearInterval(pinger);
+      clearInterval();
+      startTimer();
+      return;
+    }
+
+    X = message.response['data[0].x'];
+    Y = message.response['data[0].y'];
+
+    dt = new Date();
+
+    if( dt.getTime()-lastUpdate < INTERVAL ){
+      console.log('Too early.', dt.getTime()-lastUpdate);
+      return;
+    }
+
+    console.log('Time (ms) since last point: ', dt-lastUpdate)
+    lastUpdate = dt.getTime();
+
+    dt = dt.toISOString()
+      .slice(0, 23)
+      .replace('T', ' ');
+
+    if( X === undefined ){
+      var seconds = 5;
+      var dt0 = new Date(
+        (new Date).getTime() - seconds*INTERVAL );
+      dt0 = dt0.toISOString().slice(0, 23).replace('T', ' ');
+      X = [ dt0 ];
+      Y = [ normal()*10+30 ];
+    }
+    else{
+      // append new data
+      dY = normal()*10+30;
+      X.push( dt );
+      Y.push( dY );
+    }
+
+    if( X.length > 100 ){
+      X.shift(); Y.shift();
+    }
+
+    plot.postMessage({
+      task: 'restyle',
+      update: { x: [X], y: [Y] }
+    }, 'https://plot.ly');
+});
+
+var pinger = setInterval(function() {
+  plot.postMessage({
+    task: 'ping'
+  }, 'https://plot.ly')
+}, 100);
+
+</script>
+
+</body>
+</html>

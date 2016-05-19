@@ -1,0 +1,190 @@
+---
+title: IoT Raspberry Pi Dashboard
+name: IoT Raspberry Pi Dashboard
+description: Internet-of-things dashboard of sensor readings streamed from a Rasberry Pi embedded system.
+permalink: dashboards/internet-of-things-rasberry-pi/
+industry: Internet of Things
+language: dashboard
+background_color: '#CC0000'
+foreground_color: 'white'
+---
+<!DOCTYPE html>
+<html>
+<head>
+
+{% include seo.html %}
+
+{% include dashboard-head.html %}
+
+{% include dashboard-industries-nav.html %}
+
+<div class="container-fluid">
+
+    <h2>Rasberry Pi: Temperature Data</h2>
+
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Rasberry Pi and Ethernet Shield
+          </div>
+          <div class="chart-stage">
+              <img src="http://cdn.instructables.com/FT8/296W/HS18FTON/FT8296WHS18FTON.MEDIUM.jpg" style="margin-left:-100px;">
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-9">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Temperature (C) vs Time <a href="https://plot.ly/raspberry-pi/tmp36-temperature-tutorial/">Read the Tutorial</a>
+          </div>
+          <div class="chart-stage">
+              <iframe width="100%" height="410px;" frameborder="0" scrolling="no" id="temperature-line-plot" src="https://plot.ly/~jackp/12028.embed?autoscale=true&link=false"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>Rasberry Pi: Dissolved Oxygen Sensor Data</h2>
+
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Raspberry Pi and DO Sensor
+          </div>
+          <div class="chart-stage">
+              <img src="http://cdn.instructables.com/FWM/ZIJN/HUMTMWWM/FWMZIJNHUMTMWWM.MEDIUM.jpg" style="margin-left:-100px;">
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-9">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Dissolved Oxygen (mg/mL) vs Time <a href="http://www.instructables.com/id/Plotly-Atlas-Scientific-Graph-Real-Time-Dissolved-/">Get the Tutorial</a>
+          </div>
+          <div class="chart-stage">
+              <iframe width="100%" height="460px;" frameborder="0" scrolling="no" id="dissolved-oxygen-plot" src="https://plot.ly/~jackp/12028.embed?autoscale=true&link=false"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+{% include dashboard-industries-footer.html %}
+
+<script>
+
+var INTERVAL = 600;
+var X, Y, dX, dY, addTemperatureData, lastUpdate;
+var COLORSCALE = [[0.0, 'rgb(34.0, 34.0, 34.0)'],
+ [0.2, 'rgb(59.799999999999997, 27.199999999999999, 27.199999999999999)'],
+ [0.4, 'rgb(85.600000000000009, 20.399999999999999, 20.399999999999999)'],
+ [0.6, 'rgb(111.40000000000001, 13.6, 13.6)'],
+ [0.8, 'rgb(137.20000000000002, 6.799999999999998, 6.799999999999998)'],
+ [1.0, 'rgb(163.0, 0.0, 0.0)']];
+
+var plotLine = document.getElementById('temperature-line-plot').contentWindow;
+var disOxyPlot = document.getElementById('dissolved-oxygen-plot').contentWindow;
+
+var disOxy_X = [];
+var disOxy_Y = [];
+
+function addData() {
+  // get current x, y data
+  plotLine.postMessage({
+      task: 'getAttributes',
+      attributes: [ 'data[0].x', 'data[0].y' ],
+    },
+    'https://plot.ly/');
+}
+
+window.addEventListener('message', function(e) {
+    var message = e.data;
+
+    if (message.pong) {
+      console.log('Initial pong, \
+         frame is ready to receive');
+      clearInterval(pinger);
+      clearInterval();
+      clearTimeout();
+      addTemperatureData = setInterval(addData, INTERVAL);
+    }
+    else if( 'data[0].x' in message.response ){
+
+      X = message.response['data[0].x'];
+      Y = message.response['data[0].y'];
+
+      dt = new Date();
+
+      if( dt-lastUpdate < INTERVAL ){
+        return;
+      }
+
+      lastUpdate = dt;
+
+      dt = dt.toISOString()
+        .slice(0, 23)
+        .replace('T', ' ');
+
+      if( X === undefined ){
+        var seconds = 5;
+        var dt0 = new Date(
+          (new Date).getTime() - seconds*INTERVAL );
+        dt0 = dt0.toISOString().slice(0, 23).replace('T', ' ');
+        X = [ dt0 ];
+        Y = [ normal()*10+30 ];
+      }
+      else{
+        // append new data
+        dY = normal()*10+30;
+        X.push( dt );
+        Y.push( dY );
+      }
+
+      if( X.length > 200 ){
+        X.shift(); Y.shift();
+      }
+
+      console.log(dt, X.length);
+
+      plotLine.postMessage({
+        task: 'restyle',
+        update: {
+          x: [X], y: [Y],
+          marker: { color: '#A30000' },
+        }
+      }, 'https://plot.ly');
+
+      // Dissolved Oxy plot
+
+      disOxy_X.push( dt );
+      disOxy_Y.push( (normal()*10+30)*(Math.sin( (new Date).getTime() )+30) );
+
+      if( disOxy_X.length > 300 ){
+        disOxy_X.shift(); disOxy_Y.shift();
+      }
+
+      disOxyPlot.postMessage({
+        task: 'restyle',
+        update: {
+          x: [ disOxy_X ],
+          y: [ disOxy_Y ],
+          marker: { color: '#A30000' },
+          line: { shape: "hvh" },
+          fill: 'tonexty' }
+      }, 'https://plot.ly');
+    }
+});
+
+var pinger = setInterval(function() {
+  plotLine.postMessage({
+    task: 'ping'
+  }, 'https://plot.ly')
+}, 100);
+
+</script>
+
+</body>
+</html>
