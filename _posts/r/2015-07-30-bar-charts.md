@@ -22,8 +22,7 @@ p <- plot_ly(
   x = c("giraffes", "orangutans", "monkeys"),
   y = c(20, 14, 23),
   name = "SF Zoo",
-  type = "bar",
-  filename="r-docs/simple-bar"
+  type = "bar"
 )
 p
 ```
@@ -36,15 +35,16 @@ p2 <- add_trace(
   x = c("giraffes", "orangutans", "monkeys"),
   y = c(12, 18, 29),
   name = "LA Zoo",
-  filename="r-docs/simple-bars"
+  type = "bar"
 )
 p2
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/177.embed" width="800" frameBorder="0"></iframe>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/40.embed" width="800" frameBorder="0"></iframe>
 
 ```r
-layout(p2, barmode = "stack")
+p3 <- layout(p2, barmode = "stack")
+p3
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/177.embed" width="800" frameBorder="0"></iframe>
