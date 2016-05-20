@@ -14,7 +14,7 @@ has_thumbnail: true
 
 
 
-## GitHub for Data Scientists wihtout the terminal
+## GitHub for Data Scientists without the terminal
 
 
 by [Sahir Bhatnagar](http://sahirbhatnagar.com/)
