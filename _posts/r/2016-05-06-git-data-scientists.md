@@ -14,6 +14,9 @@ has_thumbnail: true
 
 
 
+## GitHub for Data Scientists wihtout the terminal
+
+
 by [Sahir Bhatnagar](http://sahirbhatnagar.com/)
 
 
@@ -33,9 +36,19 @@ assume basic knowledge of `R` and `RStudio`.
 
 ### What
 
-The outline is provided in the floating table of contents. You will learn the essential 
+The outline is provided below. You will learn the essential 
 concepts and terminology of version control, Git, GitHub and GitHub desktop. This 
 tutorial follows a _learn-by-doing_ approach. 
+
+1. Installing Git
+2. Signup for a GitHub account and a Hello World tutorial
+3. Installing GitHub Desktop
+4. Version control `R` code using an example of PCA 
+5. Create a branch, pull request and merge
+6. Introduction to Git functionality in RStudio
+7. Create and publish an `R Markdown` document 
+8. Create an online CV
+
 
 ### Why
 
