@@ -19583,6 +19583,47 @@ ggplotly()
     <div class="section">
         <div class="row auto-eg-padding">
       <div class=" row twelve columns">
+        <h4 id="ordering-variable-in-geom_bar"><a class="no_underline plot-blue" href="#ordering-variable-in-geom_bar">ordering variable in <code>geom_bar</code></a></h4>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          <div class="z-depth-1">
+            <pre><code class="ggplot2">library(plotly)
+library(plyr)
+
+dane<-data.frame(x=1:10,y=seq(-5,4),g=rep(c('A','B'),each=5))
+dane$x<-as.factor(dane$x)
+
+ggplot(data=dane,aes(x=x,y=y,fill=g)) +
+    geom_bar(subset=.(g=='A'),stat='identity') +
+    geom_bar(subset=.(g=='B'),stat='identity') +
+    scale_x_discrete(drop=FALSE)
+
+ggplotly()
+</code></pre>
+          </div>
+          
+            <blockquote>
+              Inspired by <a href="http://stackoverflow.com/questions/15624711/two-geom-bar-and-wrong-order-of-factor-variable">Stack Overflow</a>.
+            </blockquote>
+          
+        </div>
+        <div class="twelve columns">
+          <div class="border" style="text-align:center;">
+            
+            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17678/y-vs-x/.embed"
+              style="width: 100%; height: 550px; border: none;"></iframe>
+                 
+          </div>
+        </div>
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
         <h4 id="bargraph-color-with-errorbars"><a class="no_underline plot-blue" href="#bargraph-color-with-errorbars">bargraph color with errorbars</a></h4>
       </div>
       <div class="row">
@@ -19625,35 +19666,35 @@ ggplotly()</code></pre>
     <div class="section">
         <div class="row auto-eg-padding">
       <div class=" row twelve columns">
-        <h4 id="ordering-variable-in-geom_bar"><a class="no_underline plot-blue" href="#ordering-variable-in-geom_bar">ordering variable in <code>geom_bar</code></a></h4>
+        <h4 id="stacked-geom_bar-with-position="dodge""><a class="no_underline plot-blue" href="#stacked-geom_bar-with-position="dodge"">stacked <code>geom_bar</code> with <code>position="dodge"</code></a></h4>
       </div>
       <div class="row">
         <div class="twelve columns">
           <div class="z-depth-1">
             <pre><code class="ggplot2">library(plotly)
+
+test <- data.frame(names=rep(c("A","B","C"), 5), values=1:15)
+test2 <- data.frame(names=c("A","B","C"), values=5:7)
+
+df <- data.frame(names=c(paste(test$names), paste(test2$names)), num=c(rep(1, nrow(test)), rep(2, nrow(test2))), values=c(test$values, test2$values))
+
 library(plyr)
+df2 <- ddply(df, c("names", "num"), summarise, values = sum(values))
 
-dane<-data.frame(x=1:10,y=seq(-5,4),g=rep(c('A','B'),each=5))
-dane$x<-as.factor(dane$x)
-
-ggplot(data=dane,aes(x=x,y=y,fill=g)) +
-    geom_bar(subset=.(g=='A'),stat='identity') +
-    geom_bar(subset=.(g=='B'),stat='identity') +
-    scale_x_discrete(drop=FALSE)
-
-ggplotly()
+ggplot(df2, aes(x=factor(names), y=values, fill=factor(num))) + 
+  geom_bar(stat="identity", colour="black", position="dodge")
 </code></pre>
           </div>
           
             <blockquote>
-              Inspired by <a href="http://stackoverflow.com/questions/15624711/two-geom-bar-and-wrong-order-of-factor-variable">Stack Overflow</a>.
+              Inspired by <a href="http://stackoverflow.com/questions/11604070/issue-with-ggplot2-geom-bar-and-position-dodge-stacked-has-correct-y-values">Stack Overflow</a>.
             </blockquote>
           
         </div>
         <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17678/y-vs-x/.embed"
+            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17684/.embed"
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
@@ -19698,47 +19739,6 @@ ggplotly()
           <div class="border" style="text-align:center;">
             
             <iframe id="auto-examples" src="https://plot.ly/~RPlotBot/2980/bar-chart-with-changed-factor-levels/.embed"
-              style="width: 100%; height: 550px; border: none;"></iframe>
-                 
-          </div>
-        </div>
-      </div>
-        </div>
-
-    </div>
-
-    <div class="section">
-        <div class="row auto-eg-padding">
-      <div class=" row twelve columns">
-        <h4 id="stacked-geom_bar-with-position="dodge""><a class="no_underline plot-blue" href="#stacked-geom_bar-with-position="dodge"">stacked <code>geom_bar</code> with <code>position="dodge"</code></a></h4>
-      </div>
-      <div class="row">
-        <div class="twelve columns">
-          <div class="z-depth-1">
-            <pre><code class="ggplot2">library(plotly)
-
-test <- data.frame(names=rep(c("A","B","C"), 5), values=1:15)
-test2 <- data.frame(names=c("A","B","C"), values=5:7)
-
-df <- data.frame(names=c(paste(test$names), paste(test2$names)), num=c(rep(1, nrow(test)), rep(2, nrow(test2))), values=c(test$values, test2$values))
-
-library(plyr)
-df2 <- ddply(df, c("names", "num"), summarise, values = sum(values))
-
-ggplot(df2, aes(x=factor(names), y=values, fill=factor(num))) + 
-  geom_bar(stat="identity", colour="black", position="dodge")
-</code></pre>
-          </div>
-          
-            <blockquote>
-              Inspired by <a href="http://stackoverflow.com/questions/11604070/issue-with-ggplot2-geom-bar-and-position-dodge-stacked-has-correct-y-values">Stack Overflow</a>.
-            </blockquote>
-          
-        </div>
-        <div class="twelve columns">
-          <div class="border" style="text-align:center;">
-            
-            <iframe id="auto-examples" src="https://plot.ly/~MattSundquist/17684/.embed"
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
