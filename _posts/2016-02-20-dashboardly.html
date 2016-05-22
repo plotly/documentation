@@ -34,6 +34,7 @@ layout: dashboardly
         <li><a href="#JSON-Structure">API - JSON Structure</a></li>
         <li><a href="#POST">API - POST at /publish</code></a></li>
         <li><a href="#Python-Example">API - Python Example</a></li>
+        <li><a href="#R-Example">API - R Example</a></li>
         <li><a href="#MATLAB-Example">API - MATLAB Example</a></li>
     </ul>
 </article>
@@ -402,6 +403,72 @@ layout: dashboardly
             Update a graph in the dashboard by making another <code>py.plot</code> with the same filename. For example:
         </p>
         <pre><code>py.plot(new_figure, filename='dashboard/earnings', sharing='secret')</code></pre>
+    </div>
+</article>
+
+<article>
+    <header>
+        <h4 id="R-Example"><a style="color: inherit; text-decoration: none;" href="#R-Example">R
+            Example</a>
+        </h4>
+    </header>
+    <div class="--body">
+        <p>
+            <a target="_blank" href="https://dashboards.ly/9zskjKDpHnr3TftgjdKbEN">View this dashboard</a>.
+
+        </p>
+        <iframe src="https://dashboards.ly/9zskjKDpHnr3TftgjdKbEN" style="border: none;" width="100%"
+                height="600px"></iframe>
+
+<pre><code class="R">
+
+library(plotly)
+library(httr)
+library(rjson)
+
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+
+p1 <- plot_ly(mtcars, x = wt, y = mpg, mode = "markers")
+p2 <- plot_ly(mtcars, x = wt, y = disp, mode = "markers")
+p3 <- plot_ly(mtcars, x = gear, y = mpg, type = "box")
+p4 <- ggplotly(ggplot(mtcars, aes(as.factor(cyl), mpg)) + geom_violin())
+
+p1 <- plotly_POST(p1)
+p2 <- plotly_POST(p2)
+p3 <- plotly_POST(p3)
+p4 <- plotly_POST(p4)
+
+lst <- list(
+  requireauth = "false",
+  rows = list(
+    list(
+      list(plot_url = p1$url),
+      list(plot_url = p2$url)),
+
+    list(
+      list(plot_url = p3$url),
+      list(plot_url = p4$url))),
+
+  banner = list(
+    visible = "true",
+    textcolor = "white",
+    backgroundcolor = "#3d4a57",
+    title = "MTCARS Dashboard",
+    links = list()),
+
+  auth = list(
+    username = "Plotly",
+    passphrase = ""
+  ))
+
+json <- toJSON(lst)
+
+resp <- POST('https://dashboards.ly/publish', body = list(dashboard=json),
+             encode = "form",
+             content_type('application/x-www-form-urlencoded'))
+resp
+</code></pre>
     </div>
 </article>
 
