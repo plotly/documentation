@@ -102,11 +102,11 @@ plot_ly(df, x = x, y = y, color = cut)
 x <- 1:5
 y <- c(1, 3, 2, 3, 1)
 plot_ly(x = x, y = y, name = "linear", line = list(shape = "linear")) %>%
-  add_trace(y = y + 5, name = "spline", line = list(shape = "spline")) %>%
-  add_trace(y = y + 10, name = "vhv", line = list(shape = "vhv")) %>%
-  add_trace(y = y + 15, name = "hvh", line = list(shape = "hvh")) %>%
-  add_trace(y = y + 20, name = "vh", line = list(shape = "vh")) %>%
-  add_trace(y = y + 25, name = "hv", line = list(shape = "hv"))
+  add_trace(x = x, y = y + 5, name = "spline", line = list(shape = "spline")) %>%
+  add_trace(x = x, y = y + 10, name = "vhv", line = list(shape = "vhv")) %>%
+  add_trace(x = x, y = y + 15, name = "hvh", line = list(shape = "hvh")) %>%
+  add_trace(x = x, y = y + 20, name = "vh", line = list(shape = "vh")) %>%
+  add_trace(x = x, y = y + 25, name = "hv", line = list(shape = "hv"))
 ```
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/269.embed" width="800" frameBorder="0"></iframe>
