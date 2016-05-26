@@ -29,7 +29,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
 2. `cd` into the folder you created and run `ipython notebook`
   - From the <b>New</b> dropdown create a new notebook and title it based on the type of chart you're adding to the documentation.
 3. Base your tutorial structure off of one of our exsisting tutorials (i.e. `documentation/_posts/python/table/table.ipynb`)
-  - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displayed the titles you add to your notebook. Please title each example clearly and order then from basic -> advanced.
+  - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displayed the titles you add to your notebook. Please title each example clearly and order them from basic -> advanced.
 4. The last content cell of your notebook should be a markdown cell with: 
 
     ```
