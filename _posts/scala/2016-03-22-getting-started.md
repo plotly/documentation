@@ -31,7 +31,7 @@ Once you have an account, generate an [API key](https://plot.ly/settings/api/). 
 
 ```
 {
-    "username": "pbugnion",
-    "api_key": "qnm2ndgaca"
+    "username": "DemoAccount",
+    "api_key": "lr1c37zw81"
 }
 ```

@@ -16,7 +16,7 @@ The simplest way to pass credentials to the Plotly client is through the [creden
 import co.theasi.plotly._
 
 implicit val server = new writer.Server {
-  val credentials = writer.Credentials("<username>", "<api-key>")
+  val credentials = writer.Credentials("DemoAccount", "lr1c37zw81")
   val url = "https://api.plot.ly/v2/"
 }
 
