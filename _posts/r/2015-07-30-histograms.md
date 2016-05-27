@@ -29,7 +29,7 @@ plot_ly(x = rnorm(50), type = "histogram")
 ```r
 ### Overlaid histograms
 plot_ly(x = rnorm(500), opacity = 0.6, type = "histogram") %>%
-  add_trace(x = rnorm(500)+1) %>%
+  add_trace(x = rnorm(500)+1, opacity = 0.6, type = "histogram") %>%
   layout(barmode="overlay")
 ```
 
