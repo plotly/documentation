@@ -23,18 +23,18 @@ gulp.task('serve', function () {
 
 
 gulp.task('sass', function () {
-    gulp.src('scss/**/*.scss')
+    gulp.src('scss/*.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer({
             browsers: ['last 15 versions'],
             cascade: false
         }))
-        .pipe(gulp.dest('_site/styles'))
+        .pipe(gulp.dest('./_site/all_static/css'))
         .pipe(browserSync.stream())
 });
 
 gulp.task('sassVersion', function () {
-    gulp.src('scss/**/*.scss')
+    gulp.src('scss/*.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer({
             browsers: ['last 15 versions'],

@@ -18,6 +18,7 @@ order: 4
 
 
 ```r
+# install.packages('mvtnorm')
 library(plotly)
 s <- matrix(c(1, -.75, -.75, 1), ncol = 2)
 obs <- mvtnorm::rmvnorm(500, sigma = s)
