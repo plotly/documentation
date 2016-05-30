@@ -101,7 +101,9 @@ p <- plot_ly(type = 'scattergeo', mode = 'lines',
              line = list(width = 2, color = 'violet'))
 
 for (i in unique(d$line))
-  p <- add_trace(p, lat = lat, lon = lon, data = subset(d, line == i))
+  p <- add_trace(p, lat = lat, lon = lon, data = subset(d, line == i),
+                 type = 'scattergeo', mode = 'lines',
+                 line = list(width = 2, color = 'violet'))
 
 geo <- list(
   showland = TRUE,

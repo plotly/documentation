@@ -12,51 +12,48 @@ display_as: scientific
 order: 4
 ---
 
-
-
-# Network Graphs in R
-
-##### We are using the well-known social network of `Zachary's karate club`. GML format file can be collected from [here](https://gist.github.com/pravj/9168fe52823c1702a07b).
-
-##### read graph file and update layout
+#### Read graph file and update layout
 
 
 ```r
 library(igraph)
 library(plotly)
 
+# We are using the well-known social network of `Zachary's Karate Club`,
+# which can be found in GML format here: https://gist.github.com/pravj/9168fe52823c1702a07b
+
 G <- read.graph("karate.gml", format = c("gml"))
 L <- layout.circle(G)
 ```
 
-##### vertices and edges for the graph
+##### Vertices and edges for the graph
 
 ```r
 vs <- V(G)
 es <- as.data.frame(get.edgelist(G))
 ```
 
-##### count of vertices and edges
+##### Count of vertices and edges
 
 ```r
 Nv <- length(vs)
 Ne <- length(es[1]$V1)
 ```
 
-##### node positions
+##### Node positions
 
 ```r
 Xn <- L[,1]
 Yn <- L[,2]
 ```
 
-##### draw network nodes
+##### Draw network nodes
 
 ```r
 network <- plot_ly(type = "scatter", x = Xn, y = Yn, mode = "markers", text = vs$label, hoverinfo = "text")
 ```
 
-##### creates shapes for edges
+##### Creates shapes for edges
 
 ```r
 edge_shapes <- list()
@@ -77,7 +74,7 @@ for(i in 1:Ne) {
 }
 ```
 
-##### add edges to the network
+##### Add edges to the network
 
 ```r
 network <- layout(
