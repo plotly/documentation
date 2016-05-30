@@ -30,7 +30,30 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
   - From the <b>New</b> dropdown create a new notebook and title it based on the type of chart you're adding to the documentation.
 3. Base your tutorial structure off of one of our exsisting tutorials (i.e. `documentation/_posts/python/table/table.ipynb`)
   - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displayed the titles you add to your notebook. Please title each example clearly and order them from basic -> advanced.
-4. The last content cell of your notebook should be a markdown cell with: 
+4. The first cell should be a markdown cell with the following text:
+  
+    ```
+    #### New to Plotly?
+    Plotly's Python library is free and open source! [Get started](https://plot.ly/python/getting-started/) by dowloading the client and [reading the primer](https://plot.ly/python/getting-started/).
+    <br>You can set up Plotly to work in [online](https://plot.ly/python/getting-started/#initialization-for-online-plotting) or [offline](https://plot.ly/python/getting-started/#initialization-for-offline-plotting) mode, or in [jupyter notebooks](https://plot.ly/python/getting-started/#start-plotting-online).
+    <br>We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf) (new!) to help you get started!!
+    ```
+
+5. **IF** you're adding a doc about a new feature, the second and third cells will display a version check. This is to ensure the reader has updated to the necessary version. This is especially applicable to FigureFactory docs. You can refer to the python api [CHANGELOG](https://github.com/plotly/plotly.py/blob/master/CHANGELOG.md) to check the appropriate version #. Example of a version check:   
+  - markdown cell:
+      ```
+      #### Version Check
+      Note: Tables are available in version <b>1.9.2+</b><br>
+      Run  `pip install plotly --upgrade` to update your Plotly version
+      ```
+
+  - code cell:
+      ```
+      import plotly
+      plotly.__version__
+      ```
+
+6. The last content cell of your notebook should be a markdown cell with: 
 
     ```
     ## Reference
@@ -42,7 +65,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
   
   and/or provide a help call:
     `help(FF.create_table)` (*This applies to documentation on FigureFactory functions)
-5. Finally, convert your .ipynb to a .html file by adding the following code snippet as the last cell of your notebook.
+7. Finally, convert your .ipynb to a .html file by adding the following code snippet as the last cell of your notebook.
   - Replace `your-tutorial-chart` with the type of chart you're creating in the tutorial.) 
   - Please be dilligent about adding this information completely and in the order as it appears here (this is really helpful if future edits are necessary :D )
 
@@ -73,7 +96,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
     - '3d_charts' = https://plot.ly/python/#3d-charts
   - `order` defines the order in which the tutorials appear on plot.ly/python. Please take a look at https://plot.ly/python/ anorder your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
   
-6. Add Thumbnail Images
+8. Add Thumbnail Images
   - Thumbnail images should named `your-tutorial-chart.jpg` and be *EXACTLY* 160px X 160px
   - Thumbnail images should be clear and interesting. You do not need to capture the ENTIRE chart, but rather focus on the most interesting part of the chart. 
   - Use images.plot.ly for adding new images. 
@@ -83,16 +106,16 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
     - Now from <b>All Buckets /plotly-tutorials/plotly-documentation/thumbnail</b> select the <b>Actions</b> dropdown and <b>upload</b> your .jpg file
     
 ##### In the teminal in `documentation`
-7. Commit and Push your tutorial
+9. Commit and Push your tutorial
   - `git add` your .ipynb and .html files
   - `git commit -m "include a message about the tutorial you're adding"`
   - `git push origin source`
 
-8. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally 
-9. Deploy with `rake deploy`
+10. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally 
+11. Deploy with `rake deploy`
 
 ##### At https://plot.ly/python
-10. Check your Tutorial!!!! This is a <b>very important</b> step.
+12. Check your Tutorial!!!! This is a <b>very important</b> step.
   <b>PLEASE</b> visit https://plot.ly/python/your-tutorial and make sure everything looks correct :)
 
   - Some common problems that you should check for:
