@@ -13,8 +13,7 @@ order: 4
 ---
 
 
-# Bar Charts in R
-
+### Simple Bar Chart
 
 ```r
 library(plotly)
@@ -28,6 +27,8 @@ p
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/175.embed" width="800" frameBorder="0"></iframe>
 
+### Grouped Bar Chart
+
 ```r
 p2 <- add_trace(
   p,
@@ -40,6 +41,8 @@ p2
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/40.embed" width="800" frameBorder="0"></iframe>
 
+### Stacked Bar Chart
+
 ```r
 p3 <- layout(p2, barmode = "stack")
 p3
@@ -47,9 +50,9 @@ p3
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/177.embed" width="800" frameBorder="0"></iframe>
 
-```r
-## customizing colors
+### Customizing Colors
 
+```r
 library(dplyr)
 ggplot2::diamonds %>% count(cut) %>%
   plot_ly(x = cut, y = n, type = "bar", marker = list(color = toRGB("black")))
@@ -57,8 +60,9 @@ ggplot2::diamonds %>% count(cut) %>%
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/183.embed" width="800" frameBorder="0"></iframe>
 
+# Mapping a Color Variable
+
 ```r
-# mapping a color variable
 
 ggplot2::diamonds %>% count(cut, clarity) %>%
   plot_ly(x = cut, y = n, type = "bar", color = clarity)
