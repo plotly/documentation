@@ -12,7 +12,7 @@ display_as: layout_opt
 ---
 
 
-# Figure Labels
+### Setting Axes Labels
 
 ```r
 library(plotly)
@@ -36,7 +36,7 @@ p
 
 <iframe src="https://plot.ly/~RPlotBot/2821" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-# Figure Labels for 3d Charts
+### Setting Axes Labels for 3d Charts
 
 
 ```r
