@@ -13,8 +13,7 @@ order: 4
 ---
 
 
-# Bar Charts in R
-
+### Simple Bar Chart
 
 ```r
 library(plotly)
