@@ -36,7 +36,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
     #### New to Plotly?
     Plotly's Python library is free and open source! [Get started](https://plot.ly/python/getting-started/) by dowloading the client and [reading the primer](https://plot.ly/python/getting-started/).
     <br>You can set up Plotly to work in [online](https://plot.ly/python/getting-started/#initialization-for-online-plotting) or [offline](https://plot.ly/python/getting-started/#initialization-for-offline-plotting) mode, or in [jupyter notebooks](https://plot.ly/python/getting-started/#start-plotting-online).
-    <br>We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf) (new!) to help you get started!!
+    <br>We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf) (new!) to help you get started!
     ```
 
 5. **IF** you're adding a doc about a new feature, the second and third cells will display a version check. This is to ensure the reader has updated to the necessary version. This is especially applicable to FigureFactory docs. You can refer to the python api [CHANGELOG](https://github.com/plotly/plotly.py/blob/master/CHANGELOG.md) to check the appropriate version #. Example of a version check:   
