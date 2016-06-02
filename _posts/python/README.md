@@ -53,14 +53,14 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
       ```
 
 6. Best Practices:
-  - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displays the headers you add to your notebook so add a header for each example and try to make headers as informative and concise as possible. 
+  - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displays the headers you add to your notebook so add a header for each example and try to make headers as informative and concise as possible. Ex: `#### Basic Line Chart`
   - Order examples from basic -> advanced.
   - Try and write all of the code for a given example in a *single* ipython notebook cell. This makes it easier for users to use the `copy to clipboard` button that appears on the codeblocks and easily/quickly reproduce each example.
 
 7. The last content cell of your notebook should be a markdown cell with: 
 
     ```
-    ## Reference
+    #### Reference
     See https://plot.ly/python/reference/##heatmap for more information and chart attribute options!
     ```
 
