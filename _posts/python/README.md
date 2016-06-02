@@ -29,7 +29,6 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
 2. `cd` into the folder you created and run `ipython notebook`
   - From the <b>New</b> dropdown create a new notebook and title it based on the type of chart you're adding to the documentation.
 3. Base your tutorial structure off of one of our exsisting tutorials (i.e. `documentation/_posts/python/table/table.ipynb`)
-  - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displayed the titles you add to your notebook. Please title each example clearly and order them from basic -> advanced.
 4. The first cell should be a markdown cell with the following text:
   
     ```
@@ -53,7 +52,12 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
       plotly.__version__
       ```
 
-6. The last content cell of your notebook should be a markdown cell with: 
+6. Best Practices:
+  - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displays the headers you add to your notebook so add a header for each example and try to make headers as informative and concise as possible. 
+  - Order examples from basic -> advanced.
+  - Try and write all of the code for a given example in a *single* ipython notebook cell. This makes it easier for users to use the `copy to clipboard` button that appears on the codeblocks and easily/quickly reproduce each example.
+
+7. The last content cell of your notebook should be a markdown cell with: 
 
     ```
     ## Reference
@@ -65,7 +69,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
   
   and/or provide a help call:
     `help(FF.create_table)` (*This applies to documentation on FigureFactory functions)
-7. Finally, convert your .ipynb to a .html file by adding the following code snippet as the last cell of your notebook.
+8. Finally, convert your .ipynb to a .html file by adding the following code snippet as the last cell of your notebook.
   - Replace `your-tutorial-chart` with the type of chart you're creating in the tutorial.) 
   - Please be dilligent about adding this information completely and in the order as it appears here (this is really helpful if future edits are necessary :D )
 
