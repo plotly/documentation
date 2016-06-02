@@ -1,7 +1,7 @@
 ---
 title: Plotly.js Function Reference
 name: Plotly.js Function Reference
-permalink: /javascript/plotlyjs-function-reference
+permalink: /javascript/plotlyjs-function-reference/
 layout: langindex
 nosidebar: true
 language: plotly_js
