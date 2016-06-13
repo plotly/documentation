@@ -24,6 +24,7 @@ redirect_from: /javascript-graphing-library/plotlyjs-function-reference
               <li><a href="#plotly-movetraces" class="attribute-name"><p class="left-align">Move traces with Plotly.moveTraces</p></a></li>
               <li><a href="#plotly-redraw" class="attribute-name"><p class="left-align">Redraw with Plotly.redraw</p></a></li>
               <li><a href="#plotly-events" class="attribute-name"><p class="left-align">Using events</p></a></li>
+              <li><a href="#plotly-purge" class="attribute-name"><p class="left-align">Purging Plotting Surface</p></a></li>
           </ul>
       </div>
     </div>
@@ -340,6 +341,20 @@ graphDiv.on('plotly_click', function(data){
 
 As well as <code>plotly\_click</code>, there is <code>plotly\_beforehover</code>, <code>plotly\_hover</code> and <code>plotly_unhover</code>.
 
+<br>
+
+<h4 id="plotly-purge"><a class="no_underline plot-blue" href="#plotly-purge">Purging plotting surface</a></h4>
+
+Using `purge` will clear the div, and remove any Plotly plots that have been placed in it.
+<pre><code class="language-javascript hljs" data-lang="javascript">
+// purge will be used on the div that you wish clear of Plotly plots
+Plotly.purge(graphDiv);
+</code></pre>
+
+<br>
+
+<p data-height="515" data-theme-id="15263" data-slug-hash="GpPXdV" data-default-tab="result" data-user="plotly" class='codepen' data-preview="true">See the Pen <a href='http://codepen.io/plotly/pen/xOVpeb'>Plotly.purge</a> by plotly (<a href='http://codepen.io/plotly'>@plotly</a>) on <a href='http://codepen.io'>CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 <br>
 
 <h4 id="plotly-plot"><a class="no_underline plot-blue" href="#note-plotly-plot">A note on <code>Plotly.plot</code></a></h4>

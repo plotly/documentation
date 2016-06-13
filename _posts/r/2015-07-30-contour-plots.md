@@ -30,16 +30,15 @@ plot_ly(z = volcano, type = "contour")
 ```r
 x <- rnorm(200)
 y <- rnorm(200)
-p1 <- plot_ly(x = x, type = "histogram")
-p2 <- plot_ly(x = x, y = y, type = "histogram2dcontour")
-p3 <- plot_ly(y = y, type = "histogram")
-a1 <- list(domain = c(0, .85))
-a2 <- list(domain = c(.85, 1))
-subplot(
-  layout(p1, xaxis = a1, yaxis = a2),
-  layout(p2, xaxis = a1, yaxis = a1),
-  layout(p3, xaxis = a2, yaxis = a1)
+s <- subplot(
+  plot_ly(x = x, type = "histogram", showlegend=FALSE),
+  plotly_empty(),
+  plot_ly(x = x, y = y, type = "histogram2dcontour", showlegend=FALSE),
+  plot_ly(y = y, type = "histogram", showlegend=FALSE),
+  nrows = 2, heights = c(0.2, 0.8), widths = c(0.8, 0.2),
+  shareX = TRUE, shareY = TRUE, titleX = FALSE, titleY = FALSE
 )
+layout(s)
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/995.embed" width="800" frameBorder="0"></iframe>
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/3014.embed" width="800" frameBorder="0"></iframe>
