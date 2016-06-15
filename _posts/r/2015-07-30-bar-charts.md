@@ -50,6 +50,34 @@ p3
 
 <iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/177.embed" width="800" frameBorder="0"></iframe>
 
+### Bar Chart with Relative Barmode
+
+```r
+p <- plot_ly(
+  x = c(1, 2, 3),
+  y = c(20, 14, 23),
+  name = "SF Zoo",
+  type = "bar")
+
+p2 <- add_trace(
+  p,
+  x = c(1, 2, 3),
+  y = c(-10, -18, -29),
+  name = "LA Zoo",
+  type = "bar")
+
+p3 <- add_trace(
+      p2,
+      x = c(1, 2, 3),
+      y = c(3, -3, 7),
+      name = "NY Zoo",
+      type = "bar")
+
+p_final <- layout(p3, barmode = 'relative')
+p_final
+```
+<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/3020.embed" width="800" frameBorder="0"></iframe>
+
 ### Customizing Colors
 
 ```r
