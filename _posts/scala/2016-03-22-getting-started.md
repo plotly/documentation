@@ -19,7 +19,7 @@ The Scala plotly client is updated frequently. Check that you include the [lates
 
 # API Documentation and source code
 
-If you need documentation beyond the tutorials presented here, read either the [Scaladocs](http://the-asi.github.io/scala-plotly-client/) for API documentation, or the [Source code](https://github.com/the-asi/scala-plotly-client).
+If you need documentation beyond the tutorials presented here, read either the [Scaladocs](http://asidatascience.github.io/scala-plotly-client/) for API documentation, or the [Source code](https://github.com/asidatascience/scala-plotly-client).
 
 # Initialization
 
