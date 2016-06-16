@@ -4,7 +4,7 @@ name: 3D Mesh Plots
 permalink: r/3d-mesh/
 description: How to make interactive 3D mesh plots in R.
 layout: base
-thumbnail: thumbnail/3d-scatter.jpg
+thumbnail: thumbnail/3d-mesh.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
