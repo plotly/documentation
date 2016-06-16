@@ -1,10 +1,10 @@
 ---
 title: 3D Mesh Plots in R | Examples | Plotly
 name: 3D Mesh Plots
-permalink: r/3d-mesh-plots/
+permalink: r/3d-mesh/
 description: How to make interactive 3D mesh plots in R.
 layout: base
-thumbnail: thumbnail/3d-scatter.jpg
+thumbnail: thumbnail/3d-mesh.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
@@ -54,13 +54,13 @@ colorscale = list(
   c(1, 'rgb(0, 0, 255)')
 )
 
-p<- plot_ly(x = x, y = y, z = z,
+p <- plot_ly(x = x, y = y, z = z,
             i = i, j = j, k = k,
             type = "mesh3d",
             intensity = intensity,
             colorscale = colorscale,
             showscale = TRUE
-        )
+            )
 p
 ```
 
@@ -69,6 +69,8 @@ p
 # Cube Mesh Plot
 
 ```r
+library(plotly)
+
 x = c(0, 0, 1, 1, 0, 0, 1, 1)
 y = c(0, 1, 1, 0, 0, 1, 1, 0)
 z = c(0, 0, 0, 0, 1, 1, 1, 1)
@@ -82,14 +84,13 @@ colorscale = list(
   c(1, 'rgb(0, 0, 255)')
 )
 
-
-p<- plot_ly(x = x, y = y, z = z,
+p <- plot_ly(x = x, y = y, z = z,
             i = i, j = j, k = k,
             type = "mesh3d",
             intensity = intensity,
             colorscale = colorscale,
             showscale = TRUE
-        )
+            )
 p
 ```
 
