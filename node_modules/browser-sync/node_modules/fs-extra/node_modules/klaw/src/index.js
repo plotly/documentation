@@ -8,7 +8,7 @@ var assign = require('./assign')
 function Walker (dir, options) {
   assert.strictEqual(typeof dir, 'string', '`dir` parameter should be of type string. Got type: ' + typeof dir)
   var defaultStreamOptions = { objectMode: true }
-  var defaultOpts = { queueMethod: 'shift', pathSorter: undefined }
+  var defaultOpts = { queueMethod: 'shift', pathSorter: undefined, filter: undefined }
   options = assign(defaultOpts, options, defaultStreamOptions)
 
   Readable.call(this, options)
@@ -36,6 +36,7 @@ Walker.prototype._read = function () {
       }
 
       pathItems = pathItems.map(function (part) { return path.join(pathItem, part) })
+      if (self.options.filter) pathItems = pathItems.filter(self.options.filter)
       if (self.options.pathSorter) pathItems.sort(self.options.pathSorter)
       pathItems.forEach(function (pi) { self.paths.push(pi) })
 

@@ -98,14 +98,16 @@ module.exports = {
             }
         });
 
+        require('server-destroy')(server.server);
+
         bs.registerCleanupTask(function () {
             if (server.server) {
-                server.server.close();
+                server.server.destroy();
             }
             if (ui.servers) {
                 Object.keys(ui.servers).forEach(function (key) {
                     if (ui.servers[key].server) {
-                        ui.servers[key].server.close();
+                        ui.servers[key].server.destroy();
                     }
                 });
             }

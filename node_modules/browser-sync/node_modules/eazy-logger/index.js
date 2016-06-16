@@ -4,14 +4,9 @@
 var tfunk = require("tfunk");
 
 /**
- * Lodash.clonedeep for deep cloning
+ * Lodash clonedeep & merge
  */
-var cloneDeep = require("lodash.clonedeep");
-
-/**
- * opt-merger for option merging
- */
-var merge = require("opt-merger");
+var _ = require("./lodash.custom");
 
 /**
  * Default configuration.
@@ -71,7 +66,7 @@ var Logger = function(config) {
     config = config || {};
 
     this._mute = false;
-    this.config = merge.set({simple: true}).merge(defaults, config);
+    this.config = _.merge({}, defaults, config);
     this.addLevelMethods(this.config.levels);
     this.compiler = new tfunk.Compiler(this.config.custom || {}, this.config);
     this._memo = {};
@@ -259,12 +254,12 @@ Logger.prototype.mute = function (bool) {
  */
 Logger.prototype.clone = function (opts) {
 
-    var config = cloneDeep(this.config);
+    var config = _.cloneDeep(this.config);
 
     if (typeof opts === "function") {
         config = opts(config) || {};
     } else {
-        config = merge.set({simple: true}).merge(config, opts || {});
+        config = _.merge({}, config, opts || {});
     }
 
     return new Logger(config);

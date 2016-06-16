@@ -1,7 +1,7 @@
 'use strict';
 var util = require('util');
 var onExit = require('signal-exit');
-var api = require('./api');
+var currentlyUnhandled = require('currently-unhandled');
 var installed = false;
 
 function outputRejectedMessage(err) {
@@ -19,10 +19,10 @@ module.exports = function () {
 
 	installed = true;
 
-	var tracker = api(process);
+	var listUnhandled = currentlyUnhandled();
 
 	onExit(function () {
-		var unhandledRejections = tracker.currentlyUnhandled();
+		var unhandledRejections = listUnhandled();
 
 		if (unhandledRejections.length > 0) {
 			unhandledRejections.forEach(function (x) {

@@ -13,7 +13,7 @@ module.exports = function (opts) {
 	var port = '(?::\\d{2,5})?';
 	var path = '(?:[/?#][^\\s"]*)?';
 	var regex = [
-		protocol, auth, '(?:localhost|' + ip + '|' + host + domain + tld + ')',
+		'(?:' + protocol + '|www\\.)' + auth, '(?:localhost|' + ip + '|' + host + domain + tld + ')',
 		port, path
 	].join('');
 

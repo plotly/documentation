@@ -65,7 +65,7 @@ module.exports = {
     "client:js": function (hooks, ui) {
 
         /**
-         * Add client JS from BrowserSync Plugins
+         * Add client JS from Browsersync Plugins
          */
         ui.bsPlugins.forEach(function (plugin) {
             if (plugin.has("client:js")) {

@@ -1,3 +1,8 @@
+1.3.0 / 2016-06-09
+------------------
+### Added
+- `filter` option to pre-filter and not walk directories.
+
 1.2.0 / 2016-04-16
 ------------------
 - added support for custom `fs` implementation. Useful for https://github.com/tschaub/mock-fs

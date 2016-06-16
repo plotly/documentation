@@ -1,4 +1,5 @@
 var wrapSingle = require('./wrap-for-optimizing').single;
+var InvalidPropertyError = require('./invalid-property-error');
 
 var split = require('../utils/split');
 var MULTIPLEX_SEPARATOR = ',';
@@ -131,20 +132,25 @@ function borderRadius(property, compactable) {
     }
   }
 
-  if (splitAt == -1)
-    return fourValues(property, compactable);
+  if (splitAt === 0 || splitAt === values.length - 1) {
+    throw new InvalidPropertyError('Invalid border-radius value.');
+  }
 
   var target = _wrapDefault(property.name, property, compactable);
-  target.value = values.slice(0, splitAt);
+  target.value = splitAt > -1 ?
+    values.slice(0, splitAt) :
+    values.slice(0);
   target.components = fourValues(target, compactable);
 
   var remainder = _wrapDefault(property.name, property, compactable);
-  remainder.value = values.slice(splitAt + 1);
+  remainder.value = splitAt > -1 ?
+    values.slice(splitAt + 1) :
+    values.slice(0);
   remainder.components = fourValues(remainder, compactable);
 
   for (var j = 0; j < 4; j++) {
     target.components[j].multiplex = true;
-    target.components[j].value = target.components[j].value.concat([['/']]).concat(remainder.components[j].value);
+    target.components[j].value = target.components[j].value.concat(remainder.components[j].value);
   }
 
   return target.components;

@@ -92,10 +92,13 @@ utils.inBlackList = function inBlackList(url, opts) {
         return false;
     }
 
+    // Check the path only
+    var split = url.split('?')[0];
+
     // second, check that the URL does not contain a
     // file extension that should be ignored by default
     if (opts.ignore.some(function (pattern) {
-            return new RegExp(pattern).test(url);
+            return new RegExp(pattern).test(split);
         })) {
         return true;
     }

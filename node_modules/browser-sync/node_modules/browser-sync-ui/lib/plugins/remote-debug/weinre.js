@@ -156,9 +156,9 @@ function toggleWeinre (socket, clients, ui, bs, value) {
  */
 function enableWeinre (ui, bs) {
 
-    if (weinreApp) {
-        weinreApp.close();
-        weinreApp = false;
+    if (weinreApp && typeof weinreApp.destroy === "function") {
+        weinreApp.destroy();
+        weinreApp = undefined;
     }
 
     var port     = ui.getOptionIn([WEINRE_NAME, "port"]);
@@ -179,6 +179,8 @@ function enableWeinre (ui, bs) {
         debug: false,
         readTimeout: 5,
         deathTimeout: 15 });
+
+    require("server-destroy")(weinreApp);
 
     return ui.options.get(WEINRE_NAME).toJS();
 }

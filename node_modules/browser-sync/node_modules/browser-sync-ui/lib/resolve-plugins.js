@@ -3,7 +3,7 @@ var path        = require("path");
 var Immutable   = require("immutable");
 
 /**
- * Take BrowserSync plugins and determine if
+ * Take Browsersync plugins and determine if
  * any UI is provided by looking at data in the the
  * modules package.json file
  * @param plugins

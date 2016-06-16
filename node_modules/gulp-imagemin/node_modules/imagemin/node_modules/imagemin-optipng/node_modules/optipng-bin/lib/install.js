@@ -11,7 +11,7 @@ bin.run(function (err) {
 		log.info('compiling from source');
 
 		new BinBuild()
-			.src('http://downloads.sourceforge.net/project/optipng/OptiPNG/optipng-0.7.6/optipng-0.7.6.tar.gz')
+			.src('https://downloads.sourceforge.net/project/optipng/OptiPNG/optipng-0.7.6/optipng-0.7.6.tar.gz')
 			.cmd([
 				'./configure --with-system-zlib --prefix="' + bin.dest() + '"',
 				'--bindir="' + bin.dest() + '"'

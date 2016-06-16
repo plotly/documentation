@@ -4,12 +4,19 @@ All notable changes to this project will be documented in this file.
 ## [next]
 ### Features
 
-### Fixed
+### Fixes
 
 ### Tests
 
+## [2.1.2]
+### Fixes
+
+- Remove non-essential files from npm package (@jorrit, #48)
+- Update yargs to version 4.7.1 (@greenkeeperio-bot, #46)
+- Update glob to version 7.0.0 (@greenkeeperio-bot, #36)
+
 ## [2.1.1]
-### Fixed
+### Fixes
 
 - Don't add directory `@import`s to graph - [@niksy](https://github.com/niksy)
 
@@ -18,12 +25,12 @@ All notable changes to this project will be documented in this file.
 
 - Update to lodash 4 - [@nightwolfz](https://github.com/nightwolfz)
 
-### Fixed
+### Fixes
 
 - Fixed directories with extensions being treated as files - [@niksy](https://github.com/niksy)
 
 ## [2.0.1]
-### Fixed
+### Fixes
 - Fixed tests for Windows - [@pleunv](https://github.com/pleunv)
 
 ## [2.0.0]
@@ -33,7 +40,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 - Configurable file extensions - [@dannymidnight](https://github.com/dannymidnight), [@xzyfer](https://github.com/xzyfer)
 
-### Fixed
+### Fixes
 - Prioritize cwd when resolving load paths - [@schnerd](https://github.com/schnerd)
 
 ### Tests
@@ -48,7 +55,7 @@ All notable changes to this project will be documented in this file.
 - Add support for custom imports - [@kevin-smets](https://github.com/kevin-smets)
 
 ## [1.1.0] - 2015-03-18
-### Fixed
+### Fixes
 - Only strip extension for css, scss, sass files - [@nervo](https://github.com/nervo)
 
 ## [1.0.4] - 2015-03-03
@@ -56,15 +63,15 @@ All notable changes to this project will be documented in this file.
 - Added a test for nested imports - [@kevin-smets](https://github.com/kevin-smets)
 
 ## [1.0.3] - 2015-02-02
-### Fixed
+### Fixes
 - Replace incorrect usage of `for..in` loops with simple `for` loops
 
 ## [1.0.2] - 2015-02-02
-### Fixed
+### Fixes
 - Don't iterate over inherited object properties
 
 ## [1.0.1] - 2015-01-05
-### Fixed
+### Fixes
 - Handle errors in the visitor
 
 ## [1.0.0] - 2015-01-05

@@ -93,6 +93,7 @@ module.exports.init = function (ui) {
                 }
 
                 args.server = require("./throttle-server")(args);
+                require('server-destroy')(args.server);
                 args.server.listen(port);
 
                 saveThrottleInfo(args);
@@ -114,7 +115,7 @@ module.exports.init = function (ui) {
          */
         "server:destroy": function (data) {
             if (ui.servers[data.port]) {
-                ui.servers[data.port].close();
+                ui.servers[data.port].destroy();
                 ui.setMany(function (item) {
                     item.deleteIn(serverOptPath.concat([parseInt(data.port, 10)]));
                 });

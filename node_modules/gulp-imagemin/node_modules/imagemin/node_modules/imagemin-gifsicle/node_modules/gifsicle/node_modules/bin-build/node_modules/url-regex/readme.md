@@ -20,6 +20,9 @@ var urlRegex = require('url-regex');
 urlRegex().test('http://github.com foo bar');
 //=> true
 
+urlRegex().test('www.github.com foo bar');
+//=> true
+
 urlRegex({exact: true}).test('http://github.com foo bar');
 //=> false
 
