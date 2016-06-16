@@ -70,7 +70,7 @@ server <- function(input, output){
   stockdata$Date <- as.Date(stockdata$Date)
   
   # Reshape
-  ds <- melt(stockdata, id = "Date")
+  ds <- reshape2::melt(stockdata, id = "Date")
   
   # Set some colors
   plotcolor <- "#F5F1DA"
@@ -102,7 +102,7 @@ server <- function(input, output){
     validate(need(!is.null(eventdata), "Hover over the time series chart to populate this heatmap"))
     
     # Get point number
-    datapoint <- as.numeric(eventdata[2])
+    datapoint <- as.numeric(eventdata$pointNumber)[1]
     
     # Get window length
     window <- as.numeric(input$window)
