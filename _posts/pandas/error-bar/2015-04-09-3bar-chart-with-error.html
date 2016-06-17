@@ -1,0 +1,48 @@
+---
+name: Bar Chart with Error Bars
+plot_url: https://plot.ly/~jackp/10527
+language: pandas
+suite: error-bar
+order: 3
+sitemap: false
+arrangement: horizontal
+---
+# Learn about API authentication here: https://plot.ly/pandas/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+import plotly.plotly as py
+from plotly.graph_objs import *
+import pandas as pd
+
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/tooth_growth_csv')
+df2=df.groupby(['dose','supp']).describe()
+df2.head()
+
+supplements = tuple(df2.index.get_level_values('supp').unique())
+doses = tuple(df2.index.get_level_values('dose').unique())
+
+data = []
+
+for supp in supplements:
+    data.append(
+        go.Bar(
+            x = doses,
+            y = df2.loc[doses,supp,'mean']['len'],
+
+            error_y=dict(
+                type='data',
+                array=df2.loc[doses,supp,'std']['len']
+            ),
+
+            name = supp
+        )
+    )
+
+
+layout = go.Layout( xaxis=XAxis(type='category') )
+fig = Figure( data=data, layout=layout )
+
+# IPython notebook
+# py.iplot(fig, filename='pandas-error-bars-bar-chart')
+
+url = py.plot(fig, filename='pandas-error-bars-bar-chart')
