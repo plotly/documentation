@@ -20,9 +20,10 @@ library(plotly)
 s <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 s <- gather(s[order(s$Men), ], Sex, value, Women, Men)
 s %>%
+  group_by(School) %>%
   plot_ly(x = ~value, y = ~School) %>%
   add_markers( color = ~Sex, colors = c("pink", "blue")) %>%
-  add_paths( showlegend = F, line = list(color = "gray"), data = group_by(s, School)) %>%
+  add_paths( showlegend = F, line = list(color = "gray")) %>%
   layout(
     title = "Gender earnings disparity",
     xaxis = list(title = "Annual Salary (in thousands)"),
