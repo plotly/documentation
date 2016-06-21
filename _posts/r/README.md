@@ -59,7 +59,7 @@
       ```{r, results='hide'}
       library(plotly)
       #Add your R Code Here i.e.:
-      p <- plot_ly(economics, x = date, y = uempmed, name = "unemployment")
+      p <- plot_ly(economics, x = ~date, y = ~uempmed, name = "unemployment")
       P ```
       ```
       ```
