@@ -26,14 +26,20 @@ Sys.setenv("plotly_api_key"="q0lz6r5efr")
 
 library(plotly)
 mtcars <- mtcars[order(mtcars$disp), ]
-p <- plot_ly(mtcars, x = disp, y = mpg, mode = "markers",
-             text = rownames(mtcars), showlegend = FALSE)
-add_trace(p, y = fitted(loess(mpg ~ disp)), mode = "lines",
-          name = "loess smoother", showlegend = TRUE)
+p <- plot_ly(mtcars, x = ~disp) %>%
+  add_markers(
+    y = ~mpg, mode = "markers",
+    text = rownames(mtcars), showlegend = FALSE
+  )
+p %>%
+  add_lines(
+    y = ~fitted(loess(mpg ~ disp)),
+    name = "loess smoother", showlegend = TRUE
+  )
 
 ### Scatterplot with loess smoother and it's uncertaincy estimates
 m <- loess(mpg ~ disp, data = mtcars)
-f <- with(predict(m, se = TRUE), data.frame(fit, se.fit))
+f <- with(predict(m, se = TRUE), data.frame(fit, se.fit, disp=mtcars$disp))
 
 l <- list(
   color = toRGB("gray90", alpha = 0.3),
@@ -41,11 +47,14 @@ l <- list(
 )
 
 p %>%
-  add_trace(p, data = f, y = fit, mode = "lines") %>%
-  add_trace(p, data = f, y = fit + 1.96 * se.fit, mode = "lines",
-            fill = "tonexty", line = l) %>%
-  add_trace(p, data = f, y = fit - 1.96 * se.fit, mode = "lines",
-            fill = "tonexty", line = l)
-
+  add_lines(data = f, y = ~fit, showlegend = FALSE) %>%
+  add_lines(
+    data = f, y = ~fit + 1.96 * se.fit,
+    fill = "tonexty", line = l, showlegend = FALSE
+  ) %>%
+  add_lines(
+    data = f, y = ~fit - 1.96 * se.fit,
+    fill = "tonexty", line = l, showlegend = FALSE
+  )
 
 ```

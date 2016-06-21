@@ -18,12 +18,11 @@ order: 8
 library(tidyr)
 library(plotly)
 s <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
-s <- s[order(s$Men), ]
-gather(s, Sex, value, Women, Men) %>%
-  plot_ly(x = value, y = School, mode = "markers",
-          color = Sex, colors = c("pink", "blue")) %>%
-  add_trace(x = value, y = School, mode = "lines",
-            group = School, showlegend = F, line = list(color = "gray")) %>%
+s <- gather(s[order(s$Men), ], Sex, value, Women, Men)
+s %>%
+  plot_ly(x = ~value, y = ~School) %>%
+  add_markers( color = ~Sex, colors = c("pink", "blue")) %>%
+  add_paths( showlegend = F, line = list(color = "gray"), data = group_by(s, School)) %>%
   layout(
     title = "Gender earnings disparity",
     xaxis = list(title = "Annual Salary (in thousands)"),
