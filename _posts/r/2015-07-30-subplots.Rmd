@@ -262,48 +262,43 @@ Axes objects in maps are different than in cartesian `x`, `y` plots. With maps, 
 ```{r, results='hide'}
 # US map small multiples
 library(plotly)
+library(dplyr)
 df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/1962_2006_walmart_store_openings.csv')
 
 # common map properties
-g <- list(scope = 'usa', showland = T, landcolor = toRGB("gray90"), showcountries = F, subunitcolor = toRGB("white"))
-
-# year text labels
-yrs <- unique(df$YEAR)
-id <- seq_along(yrs)
-df2 <- data.frame(
-  YEAR = yrs,
-  id = id
+g <- list(
+  scope = 'usa', 
+  showland = T, 
+  landcolor = toRGB("gray90"), 
+  showcountries = F, 
+  subunitcolor = toRGB("white")
 )
 
-# id for anchoring traces on different plots
-df$id <- as.integer(factor(df$YEAR))
+one_plot <- function(dat) {
+  dat %>% 
+    plot_ly() %>%
+    add_trace(
+      # setting the geo attribute is _crucial_ here
+      lon = ~LON, lat = ~LAT, type = "scattergeo", geo = "geo",
+      mode = "markers",
+      marker = list(color = toRGB("blue", 0.5))
+    ) %>%
+    add_trace(
+      lon = -78, lat = 47, mode = 'text', text = ~YEAR, type = "scattergeo", geo = "geo"
+    ) %>% layout(geo = g)
+}
 
-p <- plot_ly(
-  df, type = "scattergeo"
-) %>%
-  add_trace(
-    lon = ~LON, lat = ~LAT, color = ~YEAR,
-    type = 'scattergeo', mode = "markers", geo = ~paste0("geo", id),
-    showlegend = F#, marker = list(color = toRGB("blue"), opacity = 0.5)
-  ) %>%
-  add_trace(
-    lon = -78, lat = 47, color = ~YEAR,
-    type = 'scattergeo', mode = 'text',
-    geo = ~paste0("geo", id),
-    text = ~YEAR, data = df2
-  ) %>%
+lapply(split(df, df$YEAR), one_plot) %>% 
+  subplot(nrows = 9) %>% 
   layout(
+    showlegend = FALSE,
     title = 'New Walmart Stores per year 1962-2006<br> Source: <a href="http://www.econ.umn.edu/~holmes/data/WalMart/index.html">University of Minnesota</a>',
-    geo = g,
-    autosize = F,
     width = 1000,
     height = 900,
-    hovermode = F
+    hovermode = FALSE
   )
-
-p <- subplot(p, nrows = 9)
-p
 ```
+
 ```{r, results='asis', echo=FALSE, height=900, message=FALSE}
 plotly_POST(p, filename="subplot/maps")
 ```
