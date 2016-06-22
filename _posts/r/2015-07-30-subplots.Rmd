@@ -24,8 +24,8 @@ Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```{r, results='hide'}
 library(plotly)
 p <- subplot(
-  plot_ly(economics, x = date, y = uempmed),
-  plot_ly(economics, x = date, y = unemploy),
+  plot_ly(economics, x = ~date, y = ~uempmed),
+  plot_ly(economics, x = ~date, y = ~unemploy),
   margin = 0.05
 ) %>% layout(showlegend = FALSE)
 p
@@ -42,8 +42,8 @@ Specify the number of rows with `nrows`.
 # Basic subplot
 library(plotly)
 p <- subplot(
-  plot_ly(economics, x = date, y = uempmed),
-  plot_ly(economics, x = date, y = unemploy),
+  plot_ly(economics, x = ~date, y = ~uempmed),
+  plot_ly(economics, x = ~date, y = ~unemploy),
   margin = 0.05,
   nrows=2
 ) %>% layout(showlegend = FALSE)
@@ -58,23 +58,45 @@ plotly_POST(p, filename="subplot/rows")
 A more powerful way to make subplots is by using the `group` argument to split the data into different plotly "traces" in conjunction with `subplot()`.
 
 ```{r, results='hide'}
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width,
-             group = Species, mode = "markers")
-p
+library(plotly)
+
+lapply(
+  split(iris, iris$Species),
+  function(d){
+    plot_ly(d, x=~Petal.Length, y=~Petal.Width, name=~Species[[1]]) %>%
+      add_markers()
+  }
+) %>%
+  subplot(shareY = TRUE)
+
+iris %>% 
+  group_by(Species) %>%
+  do(
+    p = plot_ly(
+      ., x=~Petal.Length, y=~Petal.Width, name=~Species[[1]]
+    ) %>%
+        add_markers()
+  ) %>%
+  .[["p"]] %>%
+  subplot(shareY = TRUE)
 ```
+
 ```{r, results='asis', echo=FALSE, message=FALSE}
 plotly_POST(p, filename="subplot/group")
 ```
 
-Together, `group` and `subplot()` can be used to anchor traces onto different axes. In this example, each trace binds itself to one of the 3 x axes with one of these arguments: `xaxis = "x1"`, `xaxis = "x2"`, `xaxis = "x3"`.
+`subplot()` can be used to anchor traces onto different axes. In this example, each trace binds itself to one of the 3 x axes with one of these arguments: `xaxis = "x1"`, `xaxis = "x2"`, `xaxis = "x3"`.
 
 ```{r, results='hide'}
 iris$id <- as.integer(iris$Species)
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width, group = Species,
-             xaxis = paste0("x", id), mode = "markers")
-p <- subplot(p)
-p
+plot_ly(
+  iris, x = ~Petal.Length, y = ~Petal.Width, color = ~Species,
+  xaxis = ~paste0("x", id)
+) %>%
+  add_markers() %>%
+  subplot(shareY = TRUE)
 ```
+
 ```{r, results='asis', echo=FALSE, message=FALSE}
 plotly_POST(p, filename="subplot/group2")
 ```
@@ -85,12 +107,15 @@ To achieve a consistent color/variable relationship across the subplots, use the
 
 ```{r, results='hide'}
 p <- subplot(
-	plot_ly(iris, x = Sepal.Length, y = Sepal.Width, color = Species, mode = "markers"),
-	plot_ly(iris, x = Petal.Length, y = Petal.Width, color = Species, mode = "markers"),
+	plot_ly(iris, x = ~Sepal.Length, y = ~Sepal.Width, color = ~Species) %>%
+	  add_markers(),
+	plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, color = ~Species) %>%
+	  add_markers(),
 	margin = 0.05
 )
 p
 ```
+
 ```{r, results='asis', echo=FALSE, message=FALSE}
 plotly_POST(p, filename="subplot/color")
 ```
@@ -100,8 +125,11 @@ plotly_POST(p, filename="subplot/color")
 You can customize each of these axes. "`x1`", "`x2`", "`x3`", etc assigned in the "traces" is related to "`xaxis`", "`xaxis2`", "`xaxis2`", "`xaxis3`" etc inside the plot's `layout`. [View the entire list of configurable axis properties](https://plot.ly/r/reference/#xaxis). Note that it is "`xaxis`" not "`xaxis1`".
 
 ```{r, results='hide'}
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width, group = Species,
-             xaxis = paste0("x", id), mode = "markers")
+p <- plot_ly(
+  iris, x = ~Petal.Length, y = ~Petal.Width, color = ~Species,
+  xaxis = ~paste0("x", id)
+) %>%
+  add_markers()
 
 p <- layout(
     subplot(p),
@@ -124,13 +152,16 @@ If you are familar with [plotly.js](https://plot.ly/javascript), you might notic
 Since `subplot()` does not assume x/y axes are on a common scale, it does not impose any restrictions on the range by default. However, you can change this by pre-specifying the range of the [axis objects](https://plot.ly/r/reference/#xaxis) via the `layout()` function.
 
 ```{r, results='hide'}
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width, group = Species,
-             xaxis = paste0("x", id), mode = "markers")
+p <- plot_ly(
+  iris, x = ~Petal.Length, y = ~Petal.Width, color = ~Species,
+  xaxis = ~paste0("x", id), mode = "markers"
+) %>%
+  add_markers()
 
 p <- layout(
   p,
-  xaxis = list(range = range(Petal.Length) + c(-0.1, 0.1)),
-  yaxis = list(range = range(Petal.Width) + c(-0.1, 0.1))
+  xaxis = list(range = ~range(Petal.Length) + c(-0.1, 0.1)),
+  yaxis = list(range = ~range(Petal.Width) + c(-0.1, 0.1))
 )
 
 p <- subplot(p)
@@ -143,19 +174,22 @@ plotly_POST(p, filename="subplot/custom_axes2")
 Note that the `xaxis` and `yaxis` properties that are specified in `layout` are transferred to all of the `xaxis` and `yaxis` keys that are created in the `subplot` command. The example above could also be written as:
 
 ```{r, results='hide'}
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width, group = Species,
-             xaxis = paste0("x", id), mode = "markers")
+p <- plot_ly(
+  iris, x = ~Petal.Length, y = ~Petal.Width, color = ~Species,
+  xaxis = ~paste0("x", id)
+) %>%
+  add_markers()
 
 p <- subplot(p)
 p <- layout(p,
-  xaxis = list(range = range(iris$Petal.Length) + c(-0.1, 0.1)),
-  yaxis = list(range = range(iris$Petal.Width) + c(-0.1, 0.1)),
+  xaxis = list(range = ~range(iris$Petal.Length) + c(-0.1, 0.1)),
+  yaxis = list(range = ~range(iris$Petal.Width) + c(-0.1, 0.1)),
 
-  xaxis2 = list(range = range(iris$Petal.Length) + c(-0.1, 0.1)),
-  yaxis2 = list(range = range(iris$Petal.Width) + c(-0.1, 0.1)),
+  xaxis2 = list(range = ~range(iris$Petal.Length) + c(-0.1, 0.1)),
+  yaxis2 = list(range = ~range(iris$Petal.Width) + c(-0.1, 0.1)),
 
-  xaxis3 = list(range = range(iris$Petal.Length) + c(-0.1, 0.1)),
-  yaxis3 = list(range = range(iris$Petal.Width) + c(-0.1, 0.1))
+  xaxis3 = list(range = ~range(iris$Petal.Length) + c(-0.1, 0.1)),
+  yaxis3 = list(range = ~range(iris$Petal.Width) + c(-0.1, 0.1))
 )
 p
 ```
@@ -173,8 +207,11 @@ Create an initial subplot:
 
 ```{r, results='hide'}
 iris$id <- as.integer(iris$Species)
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width, group = Species,
-						 xaxis = paste0("x", id), mode = "markers")
+p <- plot_ly(
+  iris, x = ~Petal.Length, y = ~Petal.Width, color = ~Species,
+  xaxis = ~paste0("x", id)
+) %>% 
+  add_markers()
 p <- plotly_build(subplot(p))
 p$filename <- "overwrite_subplot"
 p
@@ -186,7 +223,7 @@ plotly_POST(p, filename="subplot/overwrite_subplot")
 Then update or modify the plot and view the modifications in the same plot.
 
 ```{r, results='hide'}
-p <- layout(title="Overwrite Subplots")
+p <- layout(p, title="Overwrite Subplots")
 p <- plotly_build(subplot(p))
 p$filename <- "overwrite_subplot"
 p
@@ -204,10 +241,14 @@ This example uses `add_trace` instead of `subplot` to create linked subplots. Th
 ```{r, results='hide'}
 library(plotly)
 # Define xaxis and yaxis
-p <- plot_ly(economics, x = date, y = uempmed, xaxis = "x1", yaxis = "y1")
-p <- add_trace(p, x = date, y = unemploy, xaxis = "x1", yaxis = "y2")
-p <- layout(p, showlegend = FALSE, yaxis = list(anchor = 'x', domain = c(0, 0.45)),
-            yaxis2 = list(anchor = 'x', domain = c(0.55, 1), title = 'unemploy'))
+p <- plot_ly(economics, x = ~date) %>%
+  add_lines(y = ~uempmed, xaxis = "x1", yaxis = "y1")
+p <- add_lines(p, y = ~unemploy, xaxis = "x1", yaxis = "y2")
+p <- layout(
+  p, showlegend = FALSE,
+  yaxis = list(anchor = 'x', domain = c(0, 0.45)),
+  yaxis2 = list(anchor = 'x', domain = c(0.55, 1), title = 'unemploy')
+)
 p
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
@@ -237,18 +278,28 @@ df2 <- data.frame(
 # id for anchoring traces on different plots
 df$id <- as.integer(factor(df$YEAR))
 
-p <- plot_ly(df, type = 'scattergeo', lon = LON, lat = LAT, group = YEAR,
-             geo = paste0("geo", id),
-             showlegend = F, marker = list(color = toRGB("blue"), opacity = 0.5)) %>%
-  add_trace(lon = -78, lat = 47, mode = 'text', group = YEAR,
-            geo = paste0("geo", id),
-            text = YEAR, data = df2) %>%
-  layout(title = 'New Walmart Stores per year 1962-2006<br> Source: <a href="http://www.econ.umn.edu/~holmes/data/WalMart/index.html">University of Minnesota</a>',
-         geo = g,
-         autosize = F,
-         width = 1000,
-         height = 900,
-         hovermode = F)
+p <- plot_ly(
+  df, type = "scattergeo"
+) %>%
+  add_trace(
+    lon = ~LON, lat = ~LAT, color = ~YEAR,
+    type = 'scattergeo', mode = "markers", geo = ~paste0("geo", id),
+    showlegend = F#, marker = list(color = toRGB("blue"), opacity = 0.5)
+  ) %>%
+  add_trace(
+    lon = -78, lat = 47, color = ~YEAR,
+    type = 'scattergeo', mode = 'text',
+    geo = ~paste0("geo", id),
+    text = ~YEAR, data = df2
+  ) %>%
+  layout(
+    title = 'New Walmart Stores per year 1962-2006<br> Source: <a href="http://www.econ.umn.edu/~holmes/data/WalMart/index.html">University of Minnesota</a>',
+    geo = g,
+    autosize = F,
+    width = 1000,
+    height = 900,
+    hovermode = F
+  )
 
 p <- subplot(p, nrows = 9)
 p
