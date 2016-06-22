@@ -19,7 +19,7 @@ library(plotly)
 ds <- data.frame(labels = c("A", "B", "C"),
                  values = c(10, 40, 60))
 
-plot_ly(ds, labels = labels, values = values, type = "pie") %>%
+plot_ly(ds, labels = ~labels, values = ~values, type = "pie") %>%
   layout(title = "Basic Pie Chart using Plotly")
 ```
 <iframe src="https://plot.ly/~RPlotBot/2887" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -66,7 +66,7 @@ plot.df <- df %>%
   group_by(manuf) %>%
   summarize(count = n())
 
-plot_ly(plot.df, labels = manuf, values = count, type = "pie", hole = 0.6, showlegend = F) %>%
+plot_ly(plot.df, labels = ~manuf, values = ~count, type = "pie", hole = 0.6, showlegend = F) %>%
   layout(title = "Donut charts using Plotly")
 ```
 

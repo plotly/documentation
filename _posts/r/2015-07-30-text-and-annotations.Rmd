@@ -22,13 +22,15 @@ Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ### Text Mode
 ```{r, message=FALSE}
 library(plotly)
-plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode = "text")
+plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
+  add_text()
 ```
 
 ### Hover Text
 ```{r, message=FALSE}
 library(plotly)
-plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode="markers")
+plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
+  add_markers()
 ```
 
 ### Styling Text
@@ -38,8 +40,9 @@ t <- list(
     size = 18,
     color = toRGB("grey50")
 )
-plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode = "markers+text",
-        textfont = t, textposition = "top middle")
+plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
+  add_markers() %>%
+  add_text(textfont = t, textposition = "top middle")
 ```
 
 ### Single Annotation
@@ -58,7 +61,8 @@ a <- list(
   ay = -40
 )
 
-plot_ly(mtcars, x = wt, y = mpg, mode = "markers") %>%
+plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
+  add_markers() %>%
   layout(annotations = a)
 ```
 
@@ -80,14 +84,18 @@ for (i in seq_len(nrow(mtcars))) {
   )
 }
 
-plot_ly(filename="r-docs/multiple-annotations") %>% layout(annotations = a)
+plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
+  add_markers() %>%
+  layout(annotations = a)
 ```
 
 ### Custom Hover Text
 ```{r, message = F}
-p <- mtcars %>% 
-  plot_ly(x = disp, y = mpg, mode = "markers", color = cyl, size = wt, 
-          hoverinfo = "text",
-          text = paste("Displacement = ", mtcars$disp, "Miles Per Gallon = ", mtcars$mpg)) %>% 
+mtcars %>% 
+  plot_ly(x = ~disp, y = ~mpg, color = ~factor(cyl), size = ~wt) %>%
+  add_markers(
+    hoverinfo = "text",
+    text = paste("Displacement = ", mtcars$disp, "Miles Per Gallon = ", mtcars$mpg)
+  ) %>% 
   layout(title ="Custom Hover Text")
 ```

@@ -23,7 +23,7 @@ z = c(0, 0, 0)
 i = c(0)
 j = c(1)
 k = c(2)
-p<- plot_ly(x = x, y = y, z = z,
+p<- plot_ly(x = ~x, y = ~y, z = ~z,
             i = i, j = j, k = k,
             type = "mesh3d",
             intensity = c(0, 0.5, 1),
@@ -54,7 +54,7 @@ colorscale = list(
   c(1, 'rgb(0, 0, 255)')
 )
 
-p <- plot_ly(x = x, y = y, z = z,
+p <- plot_ly(x = ~x, y = ~y, z = ~z,
             i = i, j = j, k = k,
             type = "mesh3d",
             intensity = intensity,
@@ -84,7 +84,7 @@ colorscale = list(
   c(1, 'rgb(0, 0, 255)')
 )
 
-p <- plot_ly(x = x, y = y, z = z,
+p <- plot_ly(x = ~x, y = ~y, z = ~z,
             i = i, j = j, k = k,
             type = "mesh3d",
             intensity = intensity,

@@ -24,7 +24,7 @@ To create a plotly visualization, start with `plot_ly()`. Your graph will appear
 
 ```{r, results='hide'}
 library(plotly)
-p <- plot_ly(economics, x = date, y = unemploy / pop)
+p <- plot_ly(economics, x = ~date, y = ~unemploy / pop)
 p
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
@@ -36,7 +36,7 @@ If you want to publish your graphs to the web, you can host your graphs in an on
 
 ```{r, results='hide'}
 library(plotly)
-p <- plot_ly(economics, x = date, y = unemploy / pop)
+p <- plot_ly(economics, x = ~date, y = ~unemploy / pop)
 plotly_POST(p, filename="r-user-guide/publishing-example")
 ```
 
@@ -44,7 +44,7 @@ A plotly visualization is composed of one (or more) trace(s), and every trace ha
 
 ```{r, results='hide'}
 library(plotly)
-p <- plot_ly(economics, x = date, y = unemploy / pop,
+p <- plot_ly(economics, x = ~date, y = ~unemploy / pop,
              type = "scatter", mode = "markers+lines")
 p
 ```
@@ -58,8 +58,9 @@ You can manually add a trace to an existing plot with `add_trace()`. In that cas
 
 ```{r, results='hide'}
 m <- loess(unemploy / pop ~ as.numeric(date), data = economics)
-p <- plot_ly(economics, x = date, y = unemploy / pop, name = "raw")
-p <- add_trace(p, x = date, y = fitted(m), name = "loess")
+p <- plot_ly(economics, x = ~date)
+p <- add_lines(p, y = ~unemploy / pop, name = "raw")
+p <- add_lines(p, y = ~fitted(m), name = "loess")
 p
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
@@ -71,8 +72,9 @@ __plotly__ was designed with a [pure, predictable, and pipeable interface](https
 
 ```{r, results='hide'}
 p <- economics %>%
-  plot_ly(x = date, y = unemploy / pop) %>%
-  add_trace(x = date, y = fitted(m)) %>%
+  plot_ly(x = ~date) %>%
+  add_lines(y = ~unemploy / pop) %>%
+  add_lines(y = ~fitted(m)) %>%
   layout(showlegend = F)
 p
 ```
@@ -81,25 +83,26 @@ p <- p %>% plotly_POST(filename="r-user-guide/unemployment-fit")
 cat('<iframe style="border: none; width: 100%; height: 550px" src="', p$url, '.embed"></iframe>', sep='')
 ```
 
-Furthermore, `plot_ly()`, `add_trace()`, and `layout()`, all accept a data frame as their first argument and output a data frame. As a result, we can inter-weave data manipulations and visual mappings in a single pipeline.
+Furthermore, `plot_ly()` accepts a data frame as its first argument, and `add_trace()`, and `layout()` accept a plotly object as their first argument. As a result, we can inter-weave data manipulations and visual mappings in a single pipeline.
 
 ```{r, results='hide'}
-p <- economics %>%
-  transform(rate = unemploy / pop) %>%
-  plot_ly(x = date, y = rate) %>%
-  subset(rate == max(rate)) %>%
+library(dplyr)
+economics %>%
+  mutate(rate = unemploy / pop) %>%
+  plot_ly(x = ~date, y = ~rate) %>%
+  add_lines() %>%
+  filter(rate == max(rate)) %>%
   layout(
     showlegend = F,
-    annotations = list(x = date, y = rate, text = "Peak", showarrow = T)
+    annotations = list(x = ~date, y = ~unemploy/pop, text = "Peak", showarrow = T)
   )
-p
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
 p <- p %>% plotly_POST(filename="r-user-guide/unemployment-layout")
 cat('<iframe style="border: none; width: 100%; height: 550px" src="', p$url, '.embed"></iframe>', sep='')
 ```
 
-Although these functions output special "plotly data frames", `plot_ly()` doesn't require a data frame for input. This makes chart types that accept a `z` argument especially easy to use if you have a numeric matrix:
+`plot_ly()` doesn't require a data frame for input. This makes chart types that accept a `z` argument especially easy to use if you have a numeric matrix:
 
 ```{r, results='hide'}
 p <- plot_ly(z = volcano, type = "surface")
@@ -129,8 +132,8 @@ The __plotly__ function arguments used thus far are documented in [the figure re
 If a ordinal variable (aka a non-ordered factor variable) is assigned to color, then a qualitative color palette is used by default.
 
 ```{r, results='hide'}
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width,
-             color = Species, mode = "markers")
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width,
+             color = ~Species, mode = "markers")
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
 p <- p %>% plotly_POST(filename="r-user-guide/qualitative")
@@ -140,8 +143,8 @@ cat('<iframe style="border: none; width: 100%; height: 550px" src="', p$url, '.e
 If you want to change the default palette, it's recommended that you provide a <http://colorbrewer2.org> qualitative palette name (e.g., "Set1" or "Accent") to the colors argument.
 
 ```{r, results='hide'}
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width,
-             color = Species, colors = "Set1", mode = "markers")
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width,
+             color = ~Species, colors = "Set1", mode = "markers")
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
 p <- p %>% plotly_POST(filename="r-user-guide/custom-color")
@@ -159,8 +162,8 @@ If you'd like more control over the mapping, you can provide a vector of colors 
 
 ```{r, results='hide'}
 cols <- RColorBrewer::brewer.pal(nlevels(iris$Species), "Set1")
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width,
-             color = Species, colors = cols, mode = "markers")
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width,
+             color = ~Species, colors = cols, mode = "markers")
 p
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
@@ -174,8 +177,8 @@ cat('<iframe style="border: none; width: 100%; height: 550px" src="', p$url, '.e
 If either a numeric or an ordered factor is mapped to color, `plot_ly()` applies a sequential color scale by default.
 
 ```{r, results='hide'}
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width,
-             color = as.ordered(Species), mode = "markers")
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width,
+             color = ~as.ordered(Species), mode = "markers")
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
 p <- p %>% plotly_POST(filename="r-user-guide/sequential")
@@ -185,8 +188,8 @@ cat('<iframe style="border: none; width: 100%; height: 550px" src="', p$url, '.e
 In the case of continuous numeric variables, `plot_ly()` performs a linear mapping between the data and an interpolated color palette.
 
 ```{r, results='hide'}
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width,
-             color = Sepal.Length, mode = "markers")
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width,
+             color = ~Sepal.Length, mode = "markers")
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
 p <- p %>% plotly_POST(filename="r-user-guide/linear mapping")
@@ -196,8 +199,8 @@ cat('<iframe style="border: none; width: 100%; height: 550px" src="', p$url, '.e
 The colors argument takes arbitrary color codes of arbitrary length. Here is how we could use it to replicate the default mapping in ggplot2.
 
 ```{r, results='hide'}
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width,
-             color = Sepal.Length, colors = c("#132B43", "#56B1F7"),
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width,
+             color = ~Sepal.Length, colors = c("#132B43", "#56B1F7"),
              mode = "markers")
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
@@ -210,8 +213,8 @@ cat('<iframe style="border: none; width: 100%; height: 550px" src="', p$url, '.e
 To obtain a diverging color mapping, just provide a diverging palette to the colors argument.
 
 ```{r, results='hide'}
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width,
-             color = Sepal.Length, colors = "PuOr", mode = "markers")
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width,
+             color = ~Sepal.Length, colors = "PuOr", mode = "markers")
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
 p <- p %>% plotly_POST(filename="r-user-guide/diverging")
@@ -223,8 +226,8 @@ cat('<iframe style="border: none; width: 100%; height: 550px" src="', p$url, '.e
 To encode values using symbols, use the symbol argument.
 
 ```{r, results='hide'}
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width,
-             symbol = Species, mode = "markers")
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width,
+             symbol = ~Species, mode = "markers")
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
 p <- p %>% plotly_POST(filename="r-user-guide/symbols")
@@ -234,8 +237,8 @@ cat('<iframe style="border: none; width: 100%; height: 550px" src="', p$url, '.e
 To change the default symbols used, use the symbols argument. All the valid symbol types are listed [here](https://plot.ly/r/reference/#scatter-marker-symbol).
 
 ```{r, results='hide'}
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width, mode = "markers",
-             symbol = Species, symbols = c("cross", "square", "triangle-down"))
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, mode = "markers",
+             symbol = ~Species, symbols = c("cross", "square", "triangle-down"))
 ```
 ```{r, results='asis', echo=FALSE, message=FALSE}
 p <- p %>% plotly_POST(filename="r-user-guide/chaning default symbols")
