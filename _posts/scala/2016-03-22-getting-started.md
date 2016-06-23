@@ -12,7 +12,7 @@ language: scala
 To include Plotly in your project, add the following dependency to your `build.sbt` file:
 
 ```
-libraryDependencies += "co.theasi" %% "plotly" % "0.1"
+libraryDependencies += "co.theasi" %% "plotly" % "0.2.0"
 ```
 
 The Scala plotly client is updated frequently. Check that you include the [latest version](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22co.theasi%22) in your script.
