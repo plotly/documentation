@@ -35,3 +35,21 @@ Once you have an account, generate an [API key](https://plot.ly/settings/api/). 
     "api_key": "lr1c37zw81"
 }
 ```
+
+# Your first plot
+
+```
+val xs = (0.0 to 2.0 by 0.1)
+val ys = xs.map { x => x*x }
+
+val plot = Plot().withScatter(xs, ys)
+
+draw(plot, "my-first-plot")
+```
+
+<iframe width="900" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~pbugnion/548.embed"></iframe>
+
+Calling `Plot().withScatter(xs, ys)` constructs a representation of the plot in memory. This representation is dispatched to Plotly with `draw(plot, "my-first-plot")`.
+
+
+For examples of more advanced plots, see the [examples](/scala) section.
