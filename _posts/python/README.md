@@ -76,12 +76,11 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
 
   ```
   from IPython.display import display, HTML
-      
-  display(HTML('<link href="//fonts.googleapis.com/css?family=Open+Sans:600,400,300,200|Inconsolata|Ubuntu+Mono:400,700rel="stylesheet" type="text/css" />'))
-  display(HTML('<link rel="stylesheet" type="text/csshref="http://help.plot.ly/documentation/all_static/css/ipython-notebook-custom.css">'))
-      
+
+  display(HTML('<link href="//fonts.googleapis.com/css?family=Open+Sans:600,400,300,200|Inconsolata|Ubuntu+Mono:400,700" rel="stylesheet" type="text/css" />'))
+  display(HTML('<link rel="stylesheet" type="text/css" href="http://help.plot.ly/documentation/all_static/css/ipython-notebook-custom.css">'))
+
   ! pip install git+https://github.com/plotly/publisher.git --upgrade
-          
   import publisher
   publisher.publish(
       'your-tutorial-chart.ipynb', 'python/your-tutorial-chart/', 'Your Tutorial Chart | plotly',
