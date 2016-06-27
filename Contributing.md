@@ -26,7 +26,7 @@ The full bleed R pages are created with R Markdown. Here's how:
 2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - Install Jekyll version 2.5.3:
 
   ```
-  $ gem install jekyll -v 2.5.3
+  $ gem install jekyll -v 3.1.2
   ```
 3. Install a couple dependencies:
 
