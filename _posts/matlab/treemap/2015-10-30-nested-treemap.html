@@ -1,0 +1,38 @@
+---
+name: Nested Treemaps
+plot_url: https://plot.ly/~chelsea_lyn/8806
+arrangement: horizontal
+language: matlab
+suite: treemaps
+order: 2
+sitemap: false
+---
+%% Download Treemap here: 
+%% http://www.mathworks.com/matlabcentral/fileexchange/17192-treemap
+
+m = 12;
+n = 20;
+data = rand(m,n);
+
+% Lay out the column totals
+level1 = sum(data);
+
+fig=figure;
+
+cla reset
+r = treemap(level1);
+
+% Lay out each column within that column's rectangle from the overall
+% layout
+for j = 1:n
+    colors = (3*repmat(rand(1,3),m,1) + rand(m,3))/4;
+    rNew = treemap(data(:,j),r(3,j),r(4,j));
+    rNew(1,:) = rNew(1,:) + r(1,j);
+    rNew(2,:) = rNew(2,:) + r(2,j);
+    plotRectangles(rNew,[],colors)
+end
+
+outline(r)
+axis([-0.01 1.01 -0.01 1.01])
+
+fig2plotly(fig, 'filename', 'nested-treemaps')

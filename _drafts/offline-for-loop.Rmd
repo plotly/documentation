@@ -1,0 +1,146 @@
+---
+title: "Plotly Offline Template"
+output: html_document
+---
+
+```{r}
+library(plotly)
+set.seed(100)
+d <- diamonds[sample(nrow(diamonds), 1000), ]
+p <- plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
+        mode = "markers", color = carat, size = carat)
+p %>% offline
+```
+
+```{r}
+plot_ly(economics, x = date, y = uempmed) %>%
+  add_trace(y = fitted(loess(uempmed ~ as.numeric(date)))) %>%
+  layout(title = "Median duration of unemployment (in weeks)",
+         showlegend = FALSE) %>%
+  dplyr::filter(uempmed == max(uempmed)) %>%
+  layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T)) %>%
+  offline
+```
+
+Loops
+
+```{r}
+fig <- list(data=list(list(x=rnorm(100))), layout=list(title=paste(c('plot ', 0))))
+```
+
+```{r}
+knit_print.offline(fig)
+knit_print.offline(fig)
+```
+
+
+```{r}
+knit_print.offline(fig %>% offline)
+knit_print.offline(fig %>% offline)
+```
+
+```{r}
+print(knit_print.offline(fig %>% offline))
+print(knit_print.offline(fig %>% offline))
+```
+
+```{r}
+print(fig)
+print(fig)
+```
+
+```{r}
+print(fig %>% offline)
+print(fig %>% offline)
+```
+
+```{r}
+print(fig %>% offline)
+print(fig %>% offline)
+```
+
+```{r, results='asis'}
+for(i in 1:2) {
+    knit_print.offline(fig %>% offline)
+}
+```
+
+```{r}
+for(i in 1:2) {
+    knit_print.offline(fig %>% offline)
+}
+```
+
+```{r}
+new_offline <- function(data, layout, height, width, id) {
+  sprintf(
+    '<div class="%s loading" style="color: rgb(50,50,50);">Drawing...</div><div id="%s" style="height: %s; width: %s;" ></div>\n<script type="text/javascript">Plotly.plot("%s", %s, %s).then(function() {$(".%s.loading").remove();})</script>',
+    id, id, height, width, id, data, layout, id
+  )
+}
+
+p <- with(fig %>% offline, new_offline(data, layout, height, width, id))
+knitr::asis_output(p)
+```
+
+```{r}
+knitr::asis_output(p)
+knitr::asis_output(p)
+```
+
+```{r, results="asis"}
+print(p, type="HTML")
+print(p, type="HTML")
+```
+
+```{r, results="asis"}
+cat(p)
+cat(p)
+```
+
+```{r, results="asis"}
+for(i in 1:2) {
+    cat(p)
+}
+```
+
+
+```{r, results="asis"}
+cat(fig %>% offline)
+```
+
+```{r, results="asis"}
+cat(knit_print.offline(fig %>% offline))
+```
+
+```{r, results="asis"}
+for(i in 1:2) {
+    fig <- list(data=list(list(x=rnorm(100))), layout=list(title=paste(c('plot ', i))))
+    cat(knit_print.offline(fig %>% offline))
+}
+```
+
+```{r, results="asis"}
+for(i in 1:2) {
+    print(p, type="HTML")
+}
+```
+
+```{r}
+for(i in 1:2) {
+    knitr::asis_output(p)
+}
+```
+
+```{r}
+for(i in 1:2) {
+    print(knitr::asis_output(p))
+}
+```
+
+
+```{r, results='asis'}
+for(i in 1:2) {
+    print(knitr::asis_output(p), type='HTML')
+}
+```
