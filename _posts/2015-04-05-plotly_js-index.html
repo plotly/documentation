@@ -25,65 +25,39 @@ redirect_from: /javascript-graphing-library/
 <section class="tutorial-content --tutorial-index --base">
 
 <div class="graph js-splash--responsive-chart-js" class="graph" style="height: 60vh;" id="my-graph"></div>
-<pre class="graph-code"><code class="js-splash--code-block">
-// Some data omitted for clarity on screen!
-var data = [{
-  name: "Asia",
-  text: ["Afghanistan", "Bahrain", "Bangladesh", ..., "Yemen, Rep."],
-  marker: {
-    sizemode: "area",
-    sizeref: 200000,
-    size : [31889923, 708573, 150448339, ..., 22211743]
-  },
-  mode: "markers",
-  y: [974.5803384, 29796.04834, 1391.253792, ..., 2280.769906],
-  x: [43.828, 75.635, 64.062, ..., 62.698],
-  uid: "99da6d"
-},{
-  name:"Europe",
-  text: ["Albania", "Austria", "Belgium", ..., "United Kingdom"],
-  marker: {
-    sizemode: "area",
-    sizeref: 200000,
-    size: [3600523, 8199783, 10392226, ..., 60776238]
-  },
-  mode: "markers",
-  y: [5937.029526, 36126.4927, 33692.60508, ..., 33203.26128],
-  x: [76.423, 79.829, 79.441, ..., 79.425],
-  uid: "9d3ba4"
-},{
-  // more continent data
-},
-{
-  name: "Oceania",
-  text: ["Australia","New Zealand"],
-  marker: {
-    sizemode: "area",
-    sizeref: 200000,
-    size: [20434176, 4115771]
-  },
-  mode: "markers",
-  y: [34435.36744, 25185.00911],
-  x: [81.235, 80.204],
-  uid: "f9fb74"
-};
+<pre class="graph-code"><code class="js-splash--code-block">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv', function(err, rows){
+var YEAR = 2007;
+var continents = ['Asia', 'Europe', 'Africa', 'Oceania', 'Americas'];
+var POP_TO_PX_SIZE = 2e5;
+function unpack(rows, key) {
+  return rows.map(function(row) { return row[key]; });
+}
 
+var data = continents.map(function(continent) {
+  var rowsFiltered = rows.filter(function(row) {
+      return (row.continent === continent) && (+row.year === YEAR);
+  });
+  return {
+      mode: 'markers',
+      name: continent,
+      x: unpack(rowsFiltered, 'lifeExp'),
+      y: unpack(rowsFiltered, 'gdpPercap'),
+      text: unpack(rowsFiltered, 'country'),
+      marker: {
+          sizemode: 'area',
+          size: unpack(rowsFiltered, 'pop'),
+          sizeref: POP_TO_PX_SIZE
+      }
+  };
+});
 var layout = {
-  xaxis: {
-    title: 'Life Expectancy'
-  },
-  yaxis: {
-    title: 'GDP per Capita',
-    type: 'log'
-  },
-  margin: {
-    t: 20
-  },
+  xaxis: {title: 'Life Expectancy'},
+  yaxis: {title: 'GDP per Capita', type: 'log'},
+  margin: {t: 20},
   hovermode: 'closest'
 };
-
-Plotly.plot('my-graph', data, layout);
-</code></pre>
+Plotly.plot('my-graph', data, layout, {showLink: false});
+});</code></pre>
 
 
 <div class="js-splash--section-title">
@@ -104,65 +78,26 @@ Plotly.plot('my-graph', data, layout);
     <div style="border: 1px solid #C2C2C2; width: 100%; text-align: center;">
         <a class="image-link" style="display: inline-block;" href="https://plot.ly/~mdtusz/72.embed"><img style="width: 100%" src="{{site.imgurl}}images/turbulence-simulation.jpg"/></a>
     </div>
-    <pre><code class="js-splash--code-block">
-  var data = [{
-    colorbar: { ypad: 0 },
-    autocolorscale: false,
-    zmax: 2.5,
-    uid: "b65977",
-    colorscale: [
-      [0,"rgb(0, 0, 0)"],
-      [0.3,"rgb(230,  0,  0)"],
-      [0.6,"rgb(255,210,  0)"],
-      [1,"rgb(255,255,255)"]
-    ],
-    zmin: -2.5,
-    reversescale: true,
-    contours: {
-      size: 0.5,
-      showlines: true,
-      coloring: "fill",
-      end: 2.005,
-      start: -2
-    },
-    showscale: false,
-    y: [-1,-0.9841269841269842,-0.9682539682539681,-0.9523809523809523, ..., 0.9841269841269842,1],
-    x: [-1,-0.9841269841269842,-0.9682539682539681,-0.9523809523809523, ..., 0.9841269841269842,1],
-    z: [
-      [null,null,null, ...,null],
-      ...,
-      // lots of null z data
-      [null, ..., null, -3.8427568818263707, -2.775714681523187, -2.912674106416496, ..., null],
-      // lots more z data
-      ...,
-      [null,null,null, ...,null]
-    ],
-    type: "contour"
-  }];
-
+    <pre><code class="js-splash--code-block">Plotly.d3.json('https://plot.ly/~DanielCarrera/13.json', function(figure){
+  var trace = {
+    x: figure.data[0].x, y: figure.data[0].y, z: figure.data[0].z,
+    type: 'contour', autocolorscale: false,
+    colorscale: [[0,"rgb(  0,  0,  0)"],[0.3,"rgb(230,  0,  0)"],[0.6,"rgb(255,210,  0)"],[1,"rgb(255,255,255)"]],
+    reversescale: true, zmax: 2.5, zmin: -2.5
+  };
   var layout = {
-      title: 'turbulence simulation',
-      xaxis: {
-        title: 'radial direction',
-        showline: true,
-        mirror: 'allticks',
-        ticks: 'inside'
-      },
-      yaxis: {
-        title: 'vertical direction',
-        showline: true,
-        mirror: 'allticks',
-        ticks: 'inside'
-      },
-      margin: {l: 40, b: 40, t: 60},
-      annotations: [{
-        showarrow: false,
-        text: 'Credit: <a target="_blank" href="https://plot.ly/~DanielCarrera">Daniel Carrera</a>',
-        x: 0, y: 0, xref: 'paper', yref: 'paper'
-      }]
+    title: 'turbulence simulation',
+    xaxis: {title: 'radial direction', showline: true, mirror: 'allticks', ticks: 'inside'},
+    yaxis: {title: 'vertical direction', showline: true, mirror: 'allticks', ticks: 'inside'},
+    margin: {l: 40, b: 40, t: 60},
+    annotations: [{
+      showarrow: false,
+      text: 'Credit: <a target="_blank" href="https://plot.ly/~DanielCarrera">Daniel Carrera</a>',
+      x: 0, y: 0, xref: 'paper', yref: 'paper'
+    }]
   }
-  Plotly.plot(document.getElementById('contour-plot'), data, layout);
-    </code></pre>
+  Plotly.plot(document.getElementById('contour-plot'), [trace], layout, {showLink: false});
+});</code></pre>
 
 
 
@@ -176,20 +111,30 @@ Plotly.plot('my-graph', data, layout);
 
 
     <div class="graph" style="height: 70vh;" id="wind-speed"></div>
-    <pre><code class="js-splash--code-block">
-    var data = [{
-      y: [22.3, 23, 23.3, ..., 22.2],
-      x: ["2001-06-11 11:00","2001-06-11 11:10","2001-06-11 11:20","2001-06-12 23:40"],
-      line: { width: 1 },
-      error_y: {
-        width: 0,
-        array: [2.73, 1.98, 1.87, ..., 2.19],
-        thickness:0.5
+    <pre><code class="js-splash--code-block">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/wind_speed_laurel_nebraska.csv', function(rows){
+    var trace = {
+      type: 'scatter',                    // set the chart type
+      mode: 'lines',                      // connect points with lines
+      x: rows.map(function(row){          // set the x-data
+        return row['Time'];
+      }),
+      y: rows.map(function(row){          // set the x-data
+        return row['10 Min Sampled Avg'];
+      }),
+      line: {                             // set the width of the line.
+        width: 1
       },
-      uid: "40abaa"
-    }];
+      error_y: {
+        array: rows.map(function(row){    // set the height of the error bars
+          return row['10 Min Std Dev'];
+        }),
+        thickness: 0.5,                   // set the thickness of the error bars
+        width: 0
+      }
+    };
+
     var layout = {
-      yaxis: { title: "Wind Speed"},      // set the y axis title
+      yaxis: {title: "Wind Speed"},       // set the y axis title
       xaxis: {
         showgrid: false,                  // remove the x-axis grid lines
         tickformat: "%B, %Y"              // customize the date format to "month, day"
@@ -199,8 +144,8 @@ Plotly.plot('my-graph', data, layout);
       }
     };
 
-    Plotly.plot(document.getElementById('wind-speed'), data, layout);
-    </code></pre>
+    Plotly.plot(document.getElementById('wind-speed'), [trace], layout, {showLink: false});
+});</code></pre>
 
 
 
