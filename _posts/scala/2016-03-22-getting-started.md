@@ -17,7 +17,7 @@ libraryDependencies += "co.theasi" %% "plotly" % "0.2.0"
 
 The Scala plotly client is updated frequently. Check that you include the [latest version](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22co.theasi%22) in your script.
 
-# API Documentation and source code
+# API Documentation and Source Code
 
 If you need documentation beyond the tutorials presented here, read either the [Scaladocs](http://asidatascience.github.io/scala-plotly-client/) for API documentation, or the [Source code](https://github.com/asidatascience/scala-plotly-client).
 
@@ -36,7 +36,7 @@ Once you have an account, generate an [API key](https://plot.ly/settings/api/). 
 }
 ```
 
-# Your first plot
+# Your First Plot
 
 ```
 val xs = (0.0 to 2.0 by 0.1)
