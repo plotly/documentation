@@ -681,6 +681,90 @@
 		
 		
 		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
 			<li class="lang-nav--item">
                 <a class="lang_nav_button current" href="/scala/line-and-scatter/">
 					<div><img src="http://images.plot.ly/plotly-documentation/thumbnail/scala-small.jpg" alt="scala" class="lang_nav_thum"></div>
@@ -20511,7 +20595,6 @@ val p = Plot()
   .withScatter(xs, ys2, ScatterOptions().mode(ScatterMode.Line).name("line"))
 
 draw(p, "scatter-mode", writer.FileOptions(overwrite=true))
-// returns  PlotFile(pbugnion:338,scatter-mode)
 </code></pre>
           </div>
           
@@ -20519,7 +20602,7 @@ draw(p, "scatter-mode", writer.FileOptions(overwrite=true))
         <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/338.embed"
+            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/550.embed"
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
@@ -20573,7 +20656,7 @@ draw(p, "styled-scatter", writer.FileOptions(overwrite=true))
         <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/324.embed"
+            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/552.embed"
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
@@ -20690,17 +20773,18 @@ val commonAxisOptions = AxisOptions()
 val xAxisOptions = commonAxisOptions.title("GDP per capita (dollars)").noZeroLine
 val yAxisOptions = commonAxisOptions.title("Life expectancy (years)")
 
-val layout = SingleAxisLayout()
-  .xAxisOptions(xAxisOptions)
-  .yAxisOptions(yAxisOptions)
-  .title("Life Expectancy v. Per Capita GDP, 2007")
-
+// The plot itself
 val p = Plot()
-  .layout(layout)
   .withScatter(gdpAmerica, lifeExpectancyAmerica,
     commonOptions.name("Americas").text(labelAmerica))
   .withScatter(gdpEurope, lifeExpectancyEurope,
     commonOptions.name("Europe").text(labelEurope))
+  .xAxisOptions(xAxisOptions)
+  .yAxisOptions(yAxisOptions)
+
+val figure = Figure()
+  .plot(p) // add the plot to the figure
+  .title("Life Expectancy v. Per Capita GDP, 2007")
 
 draw(p, "life-expectancy-per-GDP-2007", writer.FileOptions(overwrite=true))
 </code></pre>
@@ -20710,7 +20794,7 @@ draw(p, "life-expectancy-per-GDP-2007", writer.FileOptions(overwrite=true))
         <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/342.embed"
+            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/469.embed"
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
@@ -20750,18 +20834,28 @@ val commonOptions = ScatterOptions()
     .lineWidth(1)
     .size(16))
 
-// layout
-val layout = SingleAxisLayout()
+val p = Plot()
+  .withScatter(votingPopulation, country, commonOptions
+    .name("Percent of estimated voting age population")
+    .updatedMarker(_.color(156, 165, 196, 0.95).lineColor(156, 165, 196, 1.0)))
+  .withScatter(registeredVoters, country, commonOptions
+    .name("Percent of estimated registered voters")
+    .updatedMarker(_.color(204, 204, 204, 0.95).lineColor(217, 217, 217, 1.0)))
+  .xAxisOptions( // Plot axis options
+    AxisOptions()
+      .noGrid
+      .withLine
+      .lineColor(102, 102, 102)
+      .titleColor(204, 204, 204)
+      .tickFontColor(102, 102, 102)
+      .noAutoTick
+      .tickSpacing(10.0)
+      .tickColor(102, 102, 102))
+
+// Add the plot to the figure
+val figure = Figure()
+  .plot(p)
   .title("Votes cast for ten lowest voting age population in OECD countries")
-  .xAxisOptions(AxisOptions()
-    .noGrid
-    .withLine
-    .lineColor(102, 102, 102)
-    .titleColor(204, 204, 204)
-    .tickFontColor(102, 102, 102)
-    .noAutoTick
-    .tickSpacing(10.0)
-    .tickColor(102, 102, 102))
   .legend(LegendOptions()
     .yAnchor(YAnchor.Middle)
     .xAnchor(XAnchor.Right))
@@ -20774,16 +20868,7 @@ val layout = SingleAxisLayout()
   .paperBackgroundColor(254, 247, 234)
   .plotBackgroundColor(254, 247, 234)
 
-  val p = Plot()
-    .layout(layout)
-    .withScatter(votingPopulation, country, commonOptions
-      .name("Percent of estimated voting age population")
-      .updatedMarker(_.color(156, 165, 196, 0.95).lineColor(156, 165, 196, 1.0)))
-    .withScatter(registeredVoters, country, commonOptions
-      .name("Percent of estimated registered voters")
-      .updatedMarker(_.color(204, 204, 204, 0.95).lineColor(217, 217, 217, 1.0)))
-
-draw(p, "lowest-oecd-votes-cast", writer.FileOptions(overwrite=true))
+draw(figure, "lowest-oecd-votes-cast", writer.FileOptions(overwrite=true))
 </code></pre>
           </div>
           
@@ -20791,7 +20876,7 @@ draw(p, "lowest-oecd-votes-cast", writer.FileOptions(overwrite=true))
         <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/328.embed"
+            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/467.embed"
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>

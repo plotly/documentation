@@ -657,12 +657,96 @@
 		
 		
 		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
 			<li class="lang-nav--item">
                 <a class="lang_nav_button current" href="/scala/subplots/">
 					<div><img src="http://images.plot.ly/plotly-documentation/thumbnail/scala-small.jpg" alt="scala" class="lang_nav_thum"></div>
 					Scala
                 </a>
             </li>
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
 		
 		
 	
@@ -20455,19 +20539,19 @@ val ysLeft = (0 to 100).map { i => Random.nextGaussian }
 val xsRight = (0 to 100).map { i => Random.nextDouble }
 val ysRight = (0 to 100).map { i => Random.nextDouble }
 
-// 2 subplots
-val layout = RowLayout(2)
+val figure = RowFigure(2)
+  .plot(0) { // left-hand plot
+    Plot().withScatter(
+      xsLeft, ysLeft,
+      ScatterOptions().mode(ScatterMode.Marker).name("left"))
+  }
+  .plot(1) { // right-hand plot
+    Plot().withScatter(
+      xsLeft, ysLeft,
+      ScatterOptions().mode(ScatterMode.Marker).name("right"))
+  }
 
-val p = Plot()
-  .layout(layout)
-  .withScatter(xsLeft, ysLeft, ScatterOptions()
-      .onAxes(layout.ref(0)) // left subplot
-      .mode(ScatterMode.Marker))
-  .withScatter(xsRight, ysRight, ScatterOptions()
-      .onAxes(layout.ref(1)) // right subplot
-      .mode(ScatterMode.Marker))
-
-draw(p, "make-subplots", writer.FileOptions(overwrite=true))
+draw(figure, "make-subplots", writer.FileOptions(overwrite=true))
 </code></pre>
           </div>
           
@@ -20475,7 +20559,57 @@ draw(p, "make-subplots", writer.FileOptions(overwrite=true))
         <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/330.embed"
+            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/479.embed"
+              style="width: 100%; height: 550px; border: none;"></iframe>
+                 
+          </div>
+        </div>
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="mixed-2d-and-3d-subplots"><a class="no_underline plot-blue" href="#mixed-2d-and-3d-subplots">Mixed 2D and 3D subplots</a></h4>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          <div class="z-depth-1">
+            <pre><code class="scala">import co.theasi.plotly
+import util.Random
+
+// Left-hand side: Gaussian distributed random variates
+val randomXs = (0 to 100).map { i => Random.nextGaussian }
+val randomYs = (0 to 100).map { i => Random.nextGaussian }
+
+val leftPlot = Plot()
+  .withScatter(randomXs, randomYs, ScatterOptions().mode(ScatterMode.Marker))
+
+// Gaussian PDF
+def gaussian2D(x: Double, y: Double) = Math.exp(-x*x - y*y)
+
+val xs = (-4.0 to 4.0 by 0.1).toVector
+val ys = (-4.0 to 4.0 by 0.1).toVector
+val zs = xs.map { x => ys.map { y => gaussian2D(x, y) } }
+
+val rightPlot = ThreeDPlot().withSurface(xs, ys, zs)
+
+// Figure with two subplots in a row
+val figure = RowFigure(2)
+  .plot(0) { leftPlot }
+  .plot(1) { rightPlot }
+
+draw(figure, "mixed-subplots", writer.FileOptions(overwrite=true))
+</code></pre>
+          </div>
+          
+        </div>
+        <div class="twelve columns">
+          <div class="border" style="text-align:center;">
+            
+            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/554.embed"
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
@@ -20499,35 +20633,21 @@ import util.Random
 val xs = (0 to 100).map { i => Random.nextGaussian }
 def ys = (0 to 100).map { i => Random.nextGaussian }
 
-// 2 rows, 3 columns
-val layout = GridLayout(2, 3)
-
+// Options common to all the series
 val commonOptions = ScatterOptions()
   .mode(ScatterMode.Marker)
   .marker(MarkerOptions().size(5))
 
-val p = Plot()
-  .layout(layout)
-  .withScatter(xs, ys, commonOptions
-    .onAxes(layout.ref(0, 0)) // top left
-    .name("top-left"))
-  .withScatter(xs, ys, commonOptions
-    .onAxes(layout.ref(0, 1)) // top middle
-    .name("top-middle"))
-  .withScatter(xs, ys, commonOptions
-    .onAxes(layout.ref(0, 2)) // top right
-    .name("top-right"))
-  .withScatter(xs, ys, commonOptions
-    .onAxes(layout.ref(1, 0)) // bottom left
-    .name("bottom-left"))
-  .withScatter(xs, ys, commonOptions
-    .onAxes(layout.ref(1, 1)) // bottom middle
-    .name("bottom-middle"))
-  .withScatter(xs, ys, commonOptions
-    .onAxes(layout.ref(1, 2)) // bottom right
-    .name("bottom-right"))
+val figure = GridFigure(2, 3) // 2 rows, 3 columsn
+  .plot(0, 0) { Plot().withScatter(xs, ys, commonOptions.name("top-left")) }
+  .plot(0, 1) { Plot().withScatter(xs, ys, commonOptions.name("top-middle")) }
+  .plot(0, 2) { Plot().withScatter(xs, ys, commonOptions.name("top-right")) }
+  .plot(1, 0) { Plot().withScatter(xs, ys, commonOptions.name("bottom-left")) }
+  .plot(1, 1) { Plot().withScatter(xs, ys, commonOptions.name("bottom-middle")) }
+  .plot(1, 2) { Plot().withScatter(xs, ys, commonOptions.name("bottom-rigth")) }
 
-draw(p, "subplots-grid", writer.FileOptions(overwrite=true))
+
+draw(figure, "subplots-grid", writer.FileOptions(overwrite=true))
 </code></pre>
           </div>
           
@@ -20535,7 +20655,7 @@ draw(p, "subplots-grid", writer.FileOptions(overwrite=true))
         <div class="twelve columns">
           <div class="border" style="text-align:center;">
             
-            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/334.embed"
+            <iframe id="auto-examples" src="https://plot.ly/~pbugnion/477.embed"
               style="width: 100%; height: 550px; border: none;"></iframe>
                  
           </div>
