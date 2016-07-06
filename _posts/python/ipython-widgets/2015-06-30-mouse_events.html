@@ -1,0 +1,523 @@
+---
+permalink: python/mouse-event-widgets
+description: Interactive Data Analysis with Plotly
+name: IPython Widgets | plotly
+has_thumbnail: true
+thumbnail: thumbnail/zoom.jpg
+layout: user-guide
+name: Using Mouse-events with Plotly GraphWidgets
+language: python
+title: Using Mouse-events with Plotly GraphWidgets
+display_as: chart_events
+has_thumbnail: true
+page_type: example_index
+order: 24
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by dowloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Using-the-Zoom-Event-for-Plotly-Graph-Widgets">Using the Zoom Event for Plotly Graph Widgets<a class="anchor-link" href="#Using-the-Zoom-Event-for-Plotly-Graph-Widgets">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="kn">import</span> <span class="n">widgets</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">display</span><span class="p">,</span> <span class="n">clear_output</span>
+<span class="kn">from</span> <span class="nn">plotly.widgets</span> <span class="kn">import</span> <span class="n">GraphWidget</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/IPython/html.py:14: ShimWarning:
+
+The &#96;IPython.html&#96; package has been deprecated. You should import from &#96;notebook&#96; instead. &#96;IPython.html.widgets&#96; has moved to &#96;ipywidgets&#96;.
+
+/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/IPython/utils/traitlets.py:5: UserWarning:
+
+IPython.utils.traitlets has moved to a top-level traitlets package.
+
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+
+
+
+<div id="65f3d2bf-589c-4711-b0a0-25a32a98de40"></div>
+<div class="output_subarea output_javascript ">
+<script type="text/javascript">
+var element = $('#65f3d2bf-589c-4711-b0a0-25a32a98de40');
+window.genUID = function() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+    });
+};
+
+var IPYTHON_VERSION = '3';
+
+require(["widgets/js/widget", "widgets/js/manager"], function (widget, manager) {
+    if (!('DOMWidgetView' in widget)) {
+
+        // we're in IPython2, things moved a bit from 2 --> 3.
+        // construct the expected IPython3 widget API
+        IPYTHON_VERSION = '2';
+        manager = {WidgetManager: widget};
+        widget = {DOMWidgetView: IPython.DOMWidgetView};
+    }
+
+    var GraphView = widget.DOMWidgetView.extend({
+        render: function(){
+            var that = this;
+
+            var graphId = window.genUID();
+            var loadingId = 'loading-'+graphId;
+
+
+            var _graph_url = that.model.get('_graph_url');
+
+            // variable plotlyDomain in the case of enterprise
+            var url_parts = _graph_url.split('/');
+            var plotlyDomain = url_parts[0] + '//' + url_parts[2];
+
+            if(!('plotlyDomains' in window)){
+                window.plotlyDomains = {};
+            }
+            window.plotlyDomains[graphId] = plotlyDomain;
+
+            // Place IFrame in output cell div `$el`
+            that.$el.css('width', '100%');
+            that.$graph = $(['<iframe id="'+graphId+'"',
+                             'src="'+_graph_url+'.embed"',
+                             'seamless',
+                             'style="border: none;"',
+                             'width="100%"',
+                             'height="600">',
+                             '</iframe>'].join(' '));
+            that.$graph.appendTo(that.$el);
+
+            that.$loading = $('<div id="'+loadingId+'">Initializing...</div>')
+                            .appendTo(that.$el);
+
+            // for some reason the 'width' is being changed in IPython 3.0.0
+            // for the containing `div` element. There's a flicker here, but
+            // I was unable to fix it otherwise.
+            setTimeout(function ()  {
+                if (IPYTHON_VERSION === '3') {
+                    $('#' + graphId)[0].parentElement.style.width = '100%';
+                }
+            }, 500);
+
+            // initialize communication with the iframe
+            if(!('pingers' in window)){
+                window.pingers = {};
+            }
+
+            window.pingers[graphId] = setInterval(function() {
+                that.graphContentWindow = $('#'+graphId)[0].contentWindow;
+                that.graphContentWindow.postMessage({task: 'ping'}, plotlyDomain);
+            }, 200);
+
+            // Assign a message listener to the 'message' events
+            // from iframe's postMessage protocol.
+            // Filter the messages by iframe src so that the right message
+            // gets passed to the right widget
+            if(!('messageListeners' in window)){
+                 window.messageListeners = {};
+            }
+
+            window.messageListeners[graphId] = function(e) {
+                if(_graph_url.indexOf(e.origin)>-1) {
+                    var frame = document.getElementById(graphId);
+
+                    if(frame === null){
+                        // frame doesn't exist in the dom anymore, clean up it's old event listener
+                        window.removeEventListener('message', window.messageListeners[graphId]);
+                        clearInterval(window.pingers[graphId]);
+                    } else if(frame.contentWindow === e.source) {
+                        // TODO: Stop event propagation, so each frame doesn't listen and filter
+                        var frameContentWindow = $('#'+graphId)[0].contentWindow;
+                        var message = e.data;
+
+                        if('pong' in message && message.pong) {
+                            $('#loading-'+graphId).hide();
+                            clearInterval(window.pingers[graphId]);
+                            that.send({event: 'pong', graphId: graphId});
+                        } else if (message.type==='hover' ||
+                                   message.type==='zoom'  ||
+                                   message.type==='click' ||
+                                   message.type==='unhover') {
+
+                            // click and hover events contain all of the data in the traces,
+                            // which can be a very large object and may take a ton of time
+                            // to pass to the python backend. Strip out the data, and require
+                            // the user to call get_figure if they need trace information
+                            if(message.type !== 'zoom') {
+                                for(var i in message.points) {
+                                    delete message.points[i].data;
+                                    delete message.points[i].fullData;
+                                }
+                            }
+                            that.send({event: message.type, message: message, graphId: graphId});
+                        } else if (message.task === 'getAttributes') {
+                            that.send({event: 'getAttributes', response: message.response});
+                        }
+                    }
+                }
+            };
+
+            window.removeEventListener('message', window.messageListeners[graphId]);
+            window.addEventListener('message', window.messageListeners[graphId]);
+
+        },
+
+        update: function() {
+            // Listen for messages from the graph widget in python
+            var jmessage = this.model.get('_message');
+            var message = JSON.parse(jmessage);
+
+            // check for duplicate messages
+            if(!('messageIds' in window)){
+                window.messageIds = {};
+            }
+
+            if(!(message.uid in window.messageIds)){
+                // message hasn't been received yet, do stuff
+                window.messageIds[message.uid] = true;
+
+                if (message.fadeTo) {
+                    this.fadeTo(message);
+                } else {
+                    var plot = $('#' + message.graphId)[0].contentWindow;
+                    plot.postMessage(message, window.plotlyDomains[message.graphId]);
+                }
+            }
+
+            return GraphView.__super__.update.apply(this);
+        },
+
+        /**
+         * Wrapper for jquery's `fadeTo` function.
+         *
+         * @param message Contains the id we need to find the element.
+         */
+        fadeTo: function (message) {
+            var plot = $('#' + message.graphId);
+            plot.fadeTo(message.duration, message.opacity);
+        }
+    });
+
+    // Register the GraphView with the widget manager.
+    manager.WidgetManager.register_widget_view('GraphView', GraphView);
+
+});
+
+//@ sourceURL=graphWidget.js
+
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[58]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/yankev/testing/master/datasets/mtcars.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;Unnamed: 0&#39;</span><span class="p">:</span><span class="s">&#39;model&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[58]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>model</th>
+      <th>mpg</th>
+      <th>cyl</th>
+      <th>disp</th>
+      <th>hp</th>
+      <th>drat</th>
+      <th>wt</th>
+      <th>qsec</th>
+      <th>vs</th>
+      <th>am</th>
+      <th>gear</th>
+      <th>carb</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Mazda RX4</td>
+      <td>21.0</td>
+      <td>6</td>
+      <td>160</td>
+      <td>110</td>
+      <td>3.90</td>
+      <td>2.620</td>
+      <td>16.46</td>
+      <td>0</td>
+      <td>1</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Mazda RX4 Wag</td>
+      <td>21.0</td>
+      <td>6</td>
+      <td>160</td>
+      <td>110</td>
+      <td>3.90</td>
+      <td>2.875</td>
+      <td>17.02</td>
+      <td>0</td>
+      <td>1</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Datsun 710</td>
+      <td>22.8</td>
+      <td>4</td>
+      <td>108</td>
+      <td>93</td>
+      <td>3.85</td>
+      <td>2.320</td>
+      <td>18.61</td>
+      <td>1</td>
+      <td>1</td>
+      <td>4</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Hornet 4 Drive</td>
+      <td>21.4</td>
+      <td>6</td>
+      <td>258</td>
+      <td>110</td>
+      <td>3.08</td>
+      <td>3.215</td>
+      <td>19.44</td>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Hornet Sportabout</td>
+      <td>18.7</td>
+      <td>8</td>
+      <td>360</td>
+      <td>175</td>
+      <td>3.15</td>
+      <td>3.440</td>
+      <td>17.02</td>
+      <td>0</td>
+      <td>0</td>
+      <td>3</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now let's generate the plots that we will be using. The first one will be a scatter plot of <code>cylinyders</code> versus <code>weight</code>. This will be the plot that will listen for, and respond to zoom events. The second plot will be a bar chart plotting <code>mpg</code> and the <code>model</code> for the cars taht you zoomed in on in the scatter plot.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[61]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">data1</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;cyl&#39;</span><span class="p">],</span> <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;wt&#39;</span><span class="p">],</span> <span class="s">&#39;text&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;model&#39;</span><span class="p">],</span> <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;scatter&#39;</span><span class="p">,</span> <span class="s">&#39;mode&#39;</span><span class="p">:</span> <span class="s">&#39;markers&#39;</span><span class="p">}]</span>
+<span class="n">layout1</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;xaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Cylinders&#39;</span><span class="p">},</span> <span class="s">&#39;yaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Weight&#39;</span><span class="p">},</span> <span class="s">&#39;hovermode&#39;</span><span class="p">:</span> <span class="s">&#39;closest&#39;</span><span class="p">}</span>
+<span class="n">url</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">plot</span><span class="p">({</span><span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="n">data1</span><span class="p">,</span> <span class="s">&#39;layout&#39;</span><span class="p">:</span> <span class="n">layout1</span><span class="p">},</span> <span class="n">filename</span><span class="o">=</span><span class="s">&quot;mouseevent-scatter1&quot;</span><span class="p">,</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">data2</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;model&#39;</span><span class="p">],</span> <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;mpg&#39;</span><span class="p">],</span> <span class="s">&#39;text&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;model&#39;</span><span class="p">],</span> <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;bar&#39;</span><span class="p">,</span> <span class="s">&#39;marker&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;color&#39;</span><span class="p">:</span> <span class="s">&#39;pink&#39;</span><span class="p">}}]</span>
+<span class="n">layout2</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;xaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Model&#39;</span><span class="p">},</span> <span class="s">&#39;yaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Miles per Gallon&#39;</span><span class="p">},</span> <span class="s">&#39;hovermode&#39;</span><span class="p">:</span> <span class="s">&#39;closest&#39;</span><span class="p">}</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">plot</span><span class="p">({</span><span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="n">data2</span><span class="p">},</span> <span class="n">filename</span><span class="o">=</span><span class="s">&quot;mouseevent-scatter2&quot;</span><span class="p">,</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now let's define the two graph widgets that we'll be working with:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[59]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">g</span> <span class="o">=</span> <span class="n">GraphWidget</span><span class="p">(</span><span class="s">&#39;https://plot.ly/~kevintest/1189/&#39;</span><span class="p">)</span>
+<span class="n">g2</span> <span class="o">=</span> <span class="n">GraphWidget</span><span class="p">(</span><span class="s">&#39;https://plot.ly/~kevintest/1187&#39;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">g2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We now define a message handler to listen for <code>zooms</code> on the <code>scatter plot</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[62]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">message_handler</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+    <span class="nb">xrange</span> <span class="o">=</span> <span class="n">msg</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span>
+    <span class="n">yrange</span> <span class="o">=</span> <span class="n">msg</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span>
+    
+    <span class="n">x_bool</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;=</span><span class="nb">xrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="nb">xrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;cyl&#39;</span><span class="p">])</span>
+    <span class="n">y_bool</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="o">&gt;=</span><span class="n">yrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">yrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;wt&#39;</span><span class="p">])</span>
+    <span class="n">bool_filter</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="ow">and</span> <span class="n">j</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_bool</span><span class="p">,</span><span class="n">y_bool</span><span class="p">)]</span>
+
+    <span class="n">temp_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">bool_filter</span><span class="p">]</span>
+    <span class="n">temp_df</span> <span class="o">=</span> <span class="n">temp_df</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s">&#39;mpg&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">g2</span><span class="o">.</span><span class="n">restyle</span><span class="p">({</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_df</span><span class="p">[</span><span class="s">&#39;model&#39;</span><span class="p">]],</span> <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_df</span><span class="p">[</span><span class="s">&#39;mpg&#39;</span><span class="p">]]})</span>
+    
+<span class="n">g</span><span class="o">.</span><span class="n">on_zoom</span><span class="p">(</span><span class="n">message_handler</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now go and try it out for yourself!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[68]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">html</span>
+&lt;img src=&#39;https://cloud.githubusercontent.com/assets/12302455/16634428/9eb5ac92-439b-11e6-8ea4-a6478104c781.gif&#39;&gt;
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+<div class="output_html rendered_html output_subarea ">
+<img src='https://cloud.githubusercontent.com/assets/12302455/16634428/9eb5ac92-439b-11e6-8ea4-a6478104c781.gif'>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#182;</a></h4><p>See <a href="https://plot.ly/python/">https://plot.ly/python/</a> for more information and examples.</p>
+
+</div>
+</div>
+</div>{% endraw %}
