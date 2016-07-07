@@ -1,6 +1,6 @@
 ---
 title: Embedding Plotly Graphs in HTML with KnitR
-name: Text and Annotations
+name: Embedding Plotly Graphs in HTML
 permalink: r/embedding-plotly-graphs-in-HTML
 description: How to embed Plotly graphs in HTML pages with Plotly's R API
 layout: base
