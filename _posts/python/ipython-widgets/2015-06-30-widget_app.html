@@ -1,17 +1,17 @@
 ---
-permalink: python/mouse-event-notebook
+permalink: python/widget-app/
 description: Interactive Data Analysis with Plotly
 name: IPython Widgets | plotly
 has_thumbnail: true
-thumbnail: thumbnail/zoom.jpg
+thumbnail: thumbnail/multi-widget.jpg
 layout: user-guide
-name: Using Mouse-events with Plotly GraphWidgets
+name: Interactive Data Analysis with IPython Notebooks in Plotly
 language: python
-title: Using Mouse-events with Plotly GraphWidgets
+title: Interactive Data Analysis with IPython Notebooks in Plotly
 display_as: chart_events
 has_thumbnail: true
 page_type: example_index
-order: 24
+order: 23
 ---
 {% raw %}
 <div class="cell border-box-sizing text_cell rendered">
@@ -31,20 +31,24 @@ order: 24
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Using-the-Zoom-Event-for-Plotly-Graph-Widgets">Using the Zoom Event for Plotly Graph Widgets<a class="anchor-link" href="#Using-the-Zoom-Event-for-Plotly-Graph-Widgets">&#182;</a></h4>
+<h4 id="NYC-Flights-Database">NYC Flights Database<a class="anchor-link" href="#NYC-Flights-Database">&#182;</a></h4>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
 <span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
-<span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="kn">import</span> <span class="n">widgets</span>
+
+<span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="kn">import</span> <span class="n">widgets</span> 
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">clear_output</span><span class="p">,</span> <span class="n">Image</span>
 <span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">display</span><span class="p">,</span> <span class="n">clear_output</span>
 <span class="kn">from</span> <span class="nn">plotly.widgets</span> <span class="kn">import</span> <span class="n">GraphWidget</span>
 </pre></div>
 
@@ -53,14 +57,23 @@ order: 24
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We'll be making an application to take a look at delays from all flights out of NYC in the year 2013.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[88]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/yankev/testing/master/datasets/mtcars.csv&#39;</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;Unnamed: 0&#39;</span><span class="p">:</span><span class="s">&#39;model&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/yankev/testing/master/datasets/nycflights.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> 
 </pre></div>
 
 </div>
@@ -73,24 +86,87 @@ order: 24
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now let's generate the plots that we will be using. The first one will be a scatter plot of <code>cylinyders</code> versus <code>weight</code>. This will be the plot that will listen for, and respond to zoom events. The second plot will be a bar chart plotting <code>mpg</code> and the <code>model</code> for the cars taht you zoomed in on in the scatter plot.</p>
+<p>Let's get the set of all the <code>airlines</code>, so that we can type the right things into the search box later.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[61]:</div>
+<div class="prompt input_prompt">In&nbsp;[79]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">data1</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;cyl&#39;</span><span class="p">],</span> <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;wt&#39;</span><span class="p">],</span> <span class="s">&#39;text&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;model&#39;</span><span class="p">],</span> <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;scatter&#39;</span><span class="p">,</span> <span class="s">&#39;mode&#39;</span><span class="p">:</span> <span class="s">&#39;markers&#39;</span><span class="p">}]</span>
-<span class="n">layout1</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;xaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Cylinders&#39;</span><span class="p">},</span> <span class="s">&#39;yaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Weight&#39;</span><span class="p">},</span> <span class="s">&#39;hovermode&#39;</span><span class="p">:</span> <span class="s">&#39;closest&#39;</span><span class="p">}</span>
-<span class="n">url</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">plot</span><span class="p">({</span><span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="n">data1</span><span class="p">,</span> <span class="s">&#39;layout&#39;</span><span class="p">:</span> <span class="n">layout1</span><span class="p">},</span> <span class="n">filename</span><span class="o">=</span><span class="s">&quot;mouseevent-scatter1&quot;</span><span class="p">,</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">df</span><span class="p">[</span><span class="s">&#39;carrier&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</pre></div>
 
-<span class="n">data2</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;model&#39;</span><span class="p">],</span> <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;mpg&#39;</span><span class="p">],</span> <span class="s">&#39;text&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;model&#39;</span><span class="p">],</span> <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;bar&#39;</span><span class="p">,</span> <span class="s">&#39;marker&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;color&#39;</span><span class="p">:</span> <span class="s">&#39;pink&#39;</span><span class="p">}}]</span>
-<span class="n">layout2</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;xaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Model&#39;</span><span class="p">},</span> <span class="s">&#39;yaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Miles per Gallon&#39;</span><span class="p">},</span> <span class="s">&#39;hovermode&#39;</span><span class="p">:</span> <span class="s">&#39;closest&#39;</span><span class="p">}</span>
+</div>
+</div>
+</div>
 
-<span class="n">url</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">plot</span><span class="p">({</span><span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="n">data2</span><span class="p">},</span> <span class="n">filename</span><span class="o">=</span><span class="s">&quot;mouseevent-scatter2&quot;</span><span class="p">,</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[79]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([&apos;UA&apos;, &apos;AA&apos;, &apos;B6&apos;, &apos;DL&apos;, &apos;EV&apos;, &apos;MQ&apos;, &apos;US&apos;, &apos;WN&apos;, &apos;VX&apos;, &apos;FL&apos;, &apos;AS&apos;,
+       &apos;9E&apos;, &apos;F9&apos;, &apos;HA&apos;, &apos;YV&apos;, &apos;OO&apos;], dtype=object)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's assign the widgets that we're going to be using in our app. In general all these widgets will be used to filter the data set, and thus what we visualize.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[81]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">month</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">FloatSlider</span><span class="p">(</span>
+    <span class="n">value</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="nb">min</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="nb">max</span><span class="o">=</span><span class="mf">12.0</span><span class="p">,</span>
+    <span class="n">step</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s">&#39;Month:&#39;</span><span class="p">,</span>
+    <span class="n">continuous_update</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="p">)</span>
+
+<span class="n">use_date</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
+    <span class="n">description</span><span class="o">=</span><span class="s">&#39;Date: &#39;</span><span class="p">,</span>
+    <span class="n">value</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">container</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">use_date</span><span class="p">,</span> <span class="n">month</span><span class="p">]</span> <span class="p">)</span>
+
+<span class="n">textbox</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span>
+    <span class="n">description</span><span class="o">=</span><span class="s">&#39;Airline:   &#39;</span><span class="p">,</span>
+    <span class="n">value</span><span class="o">=</span><span class="s">&#39;Delta&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">origin</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
+    <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">&#39;origin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span>
+    <span class="n">value</span><span class="o">=</span><span class="s">&#39;LGA&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s">&#39;Origin Airport:&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c">### Assign an emptry graph widget with two traces</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">GraphWidget</span><span class="p">(</span><span class="s">&#39;https://plot.ly/~kevintest/1192/&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -103,20 +179,86 @@ order: 24
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now let's define the two graph widgets that we'll be working with:</p>
+<p>Let now write a function that will handle the input from the widgets, and alter the state of the graph.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[59]:</div>
+<div class="prompt input_prompt">In&nbsp;[82]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">g</span> <span class="o">=</span> <span class="n">GraphWidget</span><span class="p">(</span><span class="s">&#39;https://plot.ly/~kevintest/1189/&#39;</span><span class="p">)</span>
-<span class="n">g2</span> <span class="o">=</span> <span class="n">GraphWidget</span><span class="p">(</span><span class="s">&#39;https://plot.ly/~kevintest/1187&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">validate</span><span class="p">():</span>
+    <span class="c"># print &quot;validating&quot;</span>
+    <span class="k">if</span> <span class="n">origin</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;origin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="ow">and</span> <span class="n">textbox</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;carrier&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+<span class="k">def</span> <span class="nf">response</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">validate</span><span class="p">():</span>
+        <span class="c"># print &quot;using date&quot;</span>
+        <span class="k">if</span> <span class="n">use_date</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="n">filter_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="ow">and</span> <span class="n">j</span> <span class="ow">and</span> <span class="n">k</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> 
+                           <span class="nb">zip</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">&#39;month&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">month</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;carrier&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">textbox</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> 
+                               <span class="n">df</span><span class="p">[</span><span class="s">&#39;origin&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">origin</span><span class="o">.</span><span class="n">value</span><span class="p">)]</span>
+            <span class="n">temp_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">filter_list</span><span class="p">]</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="n">temp_df</span><span class="p">[</span><span class="s">&#39;arr_delay&#39;</span><span class="p">]</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="n">temp_df</span><span class="p">[</span><span class="s">&#39;dep_delay&#39;</span><span class="p">]</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">restyle</span><span class="p">({</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">x1</span><span class="p">],</span> <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Arrival Delays&#39;</span><span class="p">,</span> <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;histogram&#39;</span><span class="p">,</span> 
+                       <span class="s">&#39;opacity&#39;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">},</span> <span class="n">indices</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+            <span class="n">g</span><span class="o">.</span><span class="n">restyle</span><span class="p">({</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">x2</span><span class="p">],</span> <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Departure Delays&#39;</span><span class="p">,</span> <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;histogram&#39;</span><span class="p">,</span> 
+                       <span class="s">&#39;opacity&#39;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">},</span> <span class="n">indices</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">relayout</span><span class="p">({</span><span class="s">&#39;barmode&#39;</span><span class="p">:</span> <span class="s">&#39;overlay&#39;</span><span class="p">,</span> <span class="s">&#39;xaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Delay in Minutes&#39;</span><span class="p">},</span>
+                        <span class="s">&#39;yaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Number of Delays&#39;</span><span class="p">}})</span>
+            <span class="c"># print temp_df.head()</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># print &quot;not using date&quot;</span>
+            <span class="n">filter_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="ow">and</span> <span class="n">j</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="ow">in</span> 
+                           <span class="nb">zip</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">&#39;carrier&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;DL&#39;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;origin&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">origin</span><span class="o">.</span><span class="n">value</span><span class="p">)]</span>
+            <span class="n">temp_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">filter_list</span><span class="p">]</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="n">temp_df</span><span class="p">[</span><span class="s">&#39;arr_delay&#39;</span><span class="p">]</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="n">temp_df</span><span class="p">[</span><span class="s">&#39;dep_delay&#39;</span><span class="p">]</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">restyle</span><span class="p">({</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">x1</span><span class="p">],</span> <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Arrival Delays&#39;</span><span class="p">,</span> <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;histogram&#39;</span><span class="p">,</span> 
+                       <span class="s">&#39;opacity&#39;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">},</span> <span class="n">indices</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+            <span class="n">g</span><span class="o">.</span><span class="n">restyle</span><span class="p">({</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">x2</span><span class="p">],</span> <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Departure Delays&#39;</span><span class="p">,</span> <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;histogram&#39;</span><span class="p">,</span> 
+                       <span class="s">&#39;opacity&#39;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">},</span> <span class="n">indices</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">relayout</span><span class="p">({</span><span class="s">&#39;barmode&#39;</span><span class="p">:</span> <span class="s">&#39;overlay&#39;</span><span class="p">})</span>
+            <span class="c"># print temp_df.head()</span>
+    
+
+<span class="n">origin</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s">&quot;value&quot;</span><span class="p">)</span>
+<span class="n">textbox</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s">&quot;value&quot;</span><span class="p">)</span>
+<span class="n">month</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s">&quot;value&quot;</span><span class="p">)</span>
+<span class="n">use_date</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s">&quot;value&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Time to try the app out!!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[89]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">display</span><span class="p">(</span><span class="n">container</span><span class="p">)</span>
+<span class="n">container2</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="n">origin</span><span class="p">,</span> <span class="n">textbox</span><span class="p">])</span>
+<span class="n">display</span><span class="p">(</span><span class="n">container2</span><span class="p">)</span>
 <span class="n">display</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
-<span class="n">display</span><span class="p">(</span><span class="n">g2</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -124,58 +266,13 @@ order: 24
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We now define a message handler to listen for <code>zooms</code> on the <code>scatter plot</code>.</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[62]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">message_handler</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-    <span class="nb">xrange</span> <span class="o">=</span> <span class="n">msg</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span>
-    <span class="n">yrange</span> <span class="o">=</span> <span class="n">msg</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span>
-    
-    <span class="n">x_bool</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;=</span><span class="nb">xrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="nb">xrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;cyl&#39;</span><span class="p">])</span>
-    <span class="n">y_bool</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="o">&gt;=</span><span class="n">yrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">yrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;wt&#39;</span><span class="p">])</span>
-    <span class="n">bool_filter</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="ow">and</span> <span class="n">j</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_bool</span><span class="p">,</span><span class="n">y_bool</span><span class="p">)]</span>
-
-    <span class="n">temp_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">bool_filter</span><span class="p">]</span>
-    <span class="n">temp_df</span> <span class="o">=</span> <span class="n">temp_df</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s">&#39;mpg&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-    <span class="n">g2</span><span class="o">.</span><span class="n">restyle</span><span class="p">({</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_df</span><span class="p">[</span><span class="s">&#39;model&#39;</span><span class="p">]],</span> <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_df</span><span class="p">[</span><span class="s">&#39;mpg&#39;</span><span class="p">]]})</span>
-    
-<span class="n">g</span><span class="o">.</span><span class="n">on_zoom</span><span class="p">(</span><span class="n">message_handler</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Now go and try it out for yourself!</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[68]:</div>
+<div class="prompt input_prompt">In&nbsp;[85]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">html</span>
-&lt;img src=&#39;https://cloud.githubusercontent.com/assets/12302455/16634428/9eb5ac92-439b-11e6-8ea4-a6478104c781.gif&#39;&gt;
+&lt;img src=&#39;https://cloud.githubusercontent.com/assets/12302455/16637308/4e476280-43ac-11e6-9fd3-ada2c9506ee1.gif&#39;&gt;
 </pre></div>
 
 </div>
@@ -189,7 +286,7 @@ order: 24
 <div class="output_area"><div class="prompt"></div>
 
 <div class="output_html rendered_html output_subarea ">
-<img src='https://cloud.githubusercontent.com/assets/12302455/16634428/9eb5ac92-439b-11e6-8ea4-a6478104c781.gif'>
+<img src='https://cloud.githubusercontent.com/assets/12302455/16637308/4e476280-43ac-11e6-9fd3-ada2c9506ee1.gif'>
 </div>
 
 </div>
@@ -209,7 +306,7 @@ order: 24
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[70]:</div>
+<div class="prompt input_prompt">In&nbsp;[86]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">help</span><span class="p">(</span><span class="n">GraphWidget</span><span class="p">)</span>
@@ -1056,7 +1153,7 @@ class GraphWidget(ipywidgets.widgets.widget.DOMWidget)
  |  
  |  widget_types = {&apos;IPython.Accordion&apos;: &lt;class &apos;ipywidgets.widgets.widget...
  |  
- |  widgets = {u&apos;0260f8ee4f10455f984275ac4bc96425&apos;: &lt;plotly.widgets.graph_...
+ |  widgets = {u&apos;007b49a1dd2e45a28c68423a47be764b&apos;: &lt;ipywidgets.widgets.wi...
  |  
  |  ----------------------------------------------------------------------
  |  Data descriptors inherited from traitlets.config.configurable.LoggingConfigurable:
