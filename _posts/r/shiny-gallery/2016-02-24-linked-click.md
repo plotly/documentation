@@ -44,7 +44,7 @@ server <- function(input, output, session) {
   output$selection <- renderPrint({
     s <- event_data("plotly_click")
     if (length(s) == 0) {
-      "Click on a cell in the heatmap to \n display a scatterplot"
+      "Click on a cell in the heatmap to display a scatterplot"
     } else {
       cat("You selected: \n\n")
       as.list(s)
