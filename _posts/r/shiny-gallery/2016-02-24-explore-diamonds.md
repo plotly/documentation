@@ -41,7 +41,7 @@ shinyUI(pageWithSidebar(
 	),
 	
 	mainPanel(
-	  plotlyOutput('trendPlot', height = "800px")
+	  plotlyOutput('trendPlot', height = "900px")
 	)
 ))
 ```
