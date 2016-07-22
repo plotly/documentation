@@ -8,8 +8,8 @@ thumbnail: thumbnail/gauge.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_type
-order: 9
+display_as: basic
+order: 7
 ---
 
 # Gauge Meter Chart in R

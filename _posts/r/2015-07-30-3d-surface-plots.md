@@ -9,7 +9,7 @@ language: r
 page_type: example_index
 has_thumbnail: TRUE
 display_as: 3d_charts
-order: 15
+order: 5
 ---
 
 
