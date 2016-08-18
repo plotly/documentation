@@ -24,19 +24,13 @@ We also have a quick-reference [cheatsheet (new!)](https://images.plot.ly/plotly
 
 
 ```r
+#install.packages("mtvnorm")
 library(plotly)
 s <- matrix(c(1, -.75, -.75, 1), ncol = 2)
 obs <- mvtnorm::rmvnorm(500, sigma = s)
-```
-
-```
-## Error in loadNamespace(name): there is no package called 'mvtnorm'
-```
-
-```r
 plot_ly(x = obs[,1], y = obs[,2], type = "histogram2d")
 ```
 
 ```
-## Error in eval(expr, envir, enclos): objet 'obs' introuvable
+## Error in loadNamespace(name): there is no package called 'webshot'
 ```
