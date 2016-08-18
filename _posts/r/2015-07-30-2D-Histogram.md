@@ -8,21 +8,35 @@ thumbnail: thumbnail/histogram2d.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: statistical
-plottype: histogram
-order: 3
+display_as: chart_type
+order: 5
 ---
 
 
-# 2D Histogram in R
+
+### New to Plotly?
+Plotly's R library is free and open source! [Get started](https://plot.ly/r/getting-started/) by downloading the client and reading [the primer](https://plot.ly/r/getting-started/).
+You can set up Plotly to work [offline](https://plot.ly/r/getting-started/#installation), or host graphs [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account).
+We also have a quick-reference [cheatsheet (new!)](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) to help you get started!
+
+
+### Basic 2D Histogram
 
 
 ```r
-# install.packages('mvtnorm')
 library(plotly)
 s <- matrix(c(1, -.75, -.75, 1), ncol = 2)
 obs <- mvtnorm::rmvnorm(500, sigma = s)
+```
+
+```
+## Error in loadNamespace(name): there is no package called 'mvtnorm'
+```
+
+```r
 plot_ly(x = obs[,1], y = obs[,2], type = "histogram2d")
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/161.embed" width="800" frameBorder="0"></iframe>
+```
+## Error in eval(expr, envir, enclos): objet 'obs' introuvable
+```
