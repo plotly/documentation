@@ -39,7 +39,7 @@ The full bleed R pages are created with R Markdown. Here's how:
   $ git fetch origin
   $ git checkout source-design-merge
   ```
-2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - Install Jekyll version 2.5.3:
+2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - Install Jekyll version 3.1.2:
 
   ```
   $ gem install jekyll -v 3.1.2
