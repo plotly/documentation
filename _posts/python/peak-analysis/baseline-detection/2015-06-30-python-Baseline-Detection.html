@@ -1,0 +1,252 @@
+---
+permalink: python/baseline-detection/
+description: Learn how to detect baselines on data in Python.
+name: Baseline Detection | plotly
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+name: Baseline Detection
+language: python
+title: Baseline Detection in Python | plotly
+display_as: peak-analysis
+has_thumbnail: false
+page_type: example_index
+order: 0
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by dowloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h4><p>The tutorial below imports <a href="http://www.numpy.org/">NumPy</a>, <a href="https://plot.ly/pandas/intro-to-pandas-tutorial/">Pandas</a>, <a href="https://www.scipy.org/">SciPy</a> and <a href="http://pythonhosted.org/PeakUtils/">PeakUtils</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">from</span> <span class="nn">plotly.tools</span> <span class="kn">import</span> <span class="n">FigureFactory</span> <span class="k">as</span> <span class="n">FF</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">peakutils</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Import-Data">Import Data<a class="anchor-link" href="#Import-Data">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For our baseline detection example, we will import some data on milk production by month:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">milk_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/plotly/datasets/master/monthly-milk-production-pounds.csv&#39;</span><span class="p">)</span>
+<span class="n">time_series</span> <span class="o">=</span> <span class="n">milk_data</span><span class="p">[</span><span class="s">&#39;Monthly milk production (pounds per cow)&#39;</span><span class="p">]</span>
+<span class="n">time_series</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">milk_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">15</span><span class="p">]</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">FF</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;milk-production-dataframe&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[11]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/753.embed" height="530px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Detect-Baseline">Detect Baseline<a class="anchor-link" href="#Detect-Baseline">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">baseline_values</span> <span class="o">=</span> <span class="n">peakutils</span><span class="o">.</span><span class="n">baseline</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
+<span class="n">baseline_values</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[14]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([ 547.93081737,  548.88770276,  549.8715258 ,  550.88189822,
+        551.91843175,  552.98073812,  554.06842906,  555.18111628,
+        556.31841153,  557.47992652,  558.66527299,  559.87406266,
+        561.10590726,  562.36041852,  563.63720817,  564.93588792,
+        566.25606952,  567.59736468,  568.95938514,  570.34174262,
+        571.74404885,  573.16591556,  574.60695448,  576.06677733,
+        577.54499583,  579.04122173,  580.55506674,  582.0861426 ,
+        583.63406102,  585.19843374,  586.77887249,  588.37498899,
+        589.98639498,  591.61270217,  593.25352229,  594.90846708,
+        596.57714826,  598.25917756,  599.9541667 ,  601.66172742,
+        603.38147144,  605.11301049,  606.85595629,  608.60992058,
+        610.37451508,  612.14935151,  613.93404162,  615.72819711,
+        617.53142973,  619.3433512 ,  621.16357324,  622.99170759,
+        624.82736597,  626.6701601 ,  628.51970173,  630.37560257,
+        632.23747435,  634.10492879,  635.97757764,  637.85503261,
+        639.73690543,  641.62280783,  643.51235154,  645.40514828,
+        647.30080978,  649.19894778,  651.09917398,  653.00110014,
+        654.90433796,  656.80849919,  658.71319554,  660.61803875,
+        662.52264054,  664.42661264,  666.32956678,  668.23111468,
+        670.13086807,  672.02843868,  673.92343824,  675.81547848,
+        677.70417112,  679.58912789,  681.46996051,  683.34628072,
+        685.21770025,  687.08383081,  688.94428414,  690.79867197,
+        692.64660602,  694.48769802,  696.32155969,  698.14780278,
+        699.96603899,  701.77588007,  703.57693773,  705.36882371,
+        707.15114973,  708.92352753,  710.68556882,  712.43688533,
+        714.17708881,  715.90579096,  717.62260352,  719.32713821,
+        721.01900677,  722.69782092,  724.36319239,  726.0147329 ,
+        727.65205419,  729.27476797,  730.88248599,  732.47481996,
+        734.05138162,  735.61178269,  737.15563489,  738.68254997,
+        740.19213963,  741.68401562,  743.15778966,  744.61307347,
+        746.04947879,  747.46661734,  748.86410084,  750.24154104,
+        751.59854965,  752.9347384 ,  754.24971902,  755.54310323,
+        756.81450277,  758.06352936,  759.28979473,  760.49291061,
+        761.67248872,  762.8281408 ,  763.95947856,  765.06611374,
+        766.14765807,  767.20372327,  768.23392106,  769.23786319,
+        770.21516137,  771.16542733,  772.0882728 ,  772.98330951,
+        773.85014918,  774.68840355,  775.49768433,  776.27760326,
+        777.02777207,  777.74780248,  778.43730622,  779.09589502,
+        779.7231806 ,  780.3187747 ,  780.88228903,  781.41333534,
+        781.91152534,  782.37647076,  782.80778333,  783.20507478,
+        783.56795684,  783.89604123,  784.18893968,  784.44626391,
+        784.66762567,  784.85263666,  785.00090863,  785.11205329])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Plot-It">Plot It<a class="anchor-link" href="#Plot-It">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># calculate baseline y values</span>
+<span class="n">baseline_values</span> <span class="o">=</span> <span class="n">peakutils</span><span class="o">.</span><span class="n">baseline</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
+
+<span class="n">trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">time_series</span><span class="p">))],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">time_series</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">&#39;Original Plot&#39;</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">time_series</span><span class="p">))],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">baseline_values</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s">&#39;markers&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s">&#39;#F78536&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s">&#39;open-circle&#39;</span>
+    <span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">&#39;Baseline&#39;</span>
+<span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace</span><span class="p">,</span> <span class="n">trace2</span><span class="p">]</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;milk-production-plot-with-baseline&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[18]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/757.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}
