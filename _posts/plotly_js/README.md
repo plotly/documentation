@@ -35,7 +35,7 @@ permalink: javascript/add-chart-type-or-topic/
 description: How to make a D3.js-based add-chart-type-or-topic in javascript. Add an additional sentance summarizing chart-type or topic.
 layout: base
 has_thumbnail: true
-thumbnail: thumbnail/add-chart-type-or-topic.jpg *MORE INFO BELOW
+thumbnail: thumbnail/add-chart-type-or-topic.jpg *MORE INFO ON ADDING THUMBNAILS BELOW
 language: plotly_js
 page_type: example_index
 display_as: **SEE BELOW 
@@ -44,13 +44,18 @@ order: ***SEE BELOW
 {% assign examples = site.posts | where:"language","plotly_js" | where:"suite","add-chart-type-or-topic" | sort: "order" %}
 {% include auto_examples.html examples=examples %}
 ```
-- *
-- **
-- *** `order` defines the order in which the tutorials appear on plot.ly/python. Please take a look at https://plot.ly/javascript/ anorder your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
+- **`display_as` sets where your tutorial is displayed 
+    - 'basic' = https://plot.ly/javascipt/#basic-charts
+    - 'statistical' = https://plot.ly/javascipt/#statistical-charts
+    - 'scientific' = https://plot.ly/javascipt/#scientific-charts
+    - 'financial' = https://plot.ly/javascipt/#financial-charts
+    - 'maps' = https://plot.ly/javascipt/#maps
+    - '3d_charts' = https://plot.ly/javascipt/#3d-charts
+    - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/documentation_eg.html#L1)
+- *** `order` defines the order in which the tutorials appear in each section on plot.ly/javascript. Please take a look at https://plot.ly/javascript/ and order your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
 
-3. Create a Codepen example. 
+3. Create a Codepen example. Use Plotly's Codepen account to create an example that clearly demonstrates the feature that you're discussing in the doc.
 4. Add an HTML file for each example
-
 
 6. Best Practices:
   - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displays the order so add a header for each example and try to make headers as informative and concise as possible. Ex: `#### Basic Line Chart`
