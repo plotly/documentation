@@ -91,13 +91,14 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
       language='python', page_type='example_index',
       display_as='chart_type', order=2)  
   ```
-  - `display_as` sets where your tutorial shows up 
+  - `display_as` sets in which section your tutorial is displayed 
     - 'basic' = https://plot.ly/python/#basic-charts
     - 'statistical' = https://plot.ly/python/#statistical-charts
     - 'scientific' = https://plot.ly/python/#scientific-charts
     - 'financial' = https://plot.ly/python/#financial-charts
     - 'maps' = https://plot.ly/python/#maps
     - '3d_charts' = https://plot.ly/python/#3d-charts
+    - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/documentation_eg.html#L1)
   - `order` defines the order in which the tutorials appear on plot.ly/python. Please take a look at https://plot.ly/python/ anorder your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
   
 8. Add Thumbnail Images
