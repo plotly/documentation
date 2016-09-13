@@ -7,8 +7,8 @@ thumbnail: thumbnail/range-selector.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_events
-order: 7
+display_as: basic
+order: 6
 ---
 
 # Range Sliders and Selectors in R | Examples | Plotly

@@ -12,12 +12,12 @@ language: scala
 To include Plotly in your project, add the following dependency to your `build.sbt` file:
 
 ```
-libraryDependencies += "co.theasi" %% "plotly" % "0.1"
+libraryDependencies += "co.theasi" %% "plotly" % "0.2.0"
 ```
 
 The Scala plotly client is updated frequently. Check that you include the [latest version](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22co.theasi%22) in your script.
 
-# API Documentation and source code
+# API Documentation and Source Code
 
 If you need documentation beyond the tutorials presented here, read either the [Scaladocs](http://asidatascience.github.io/scala-plotly-client/) for API documentation, or the [Source code](https://github.com/asidatascience/scala-plotly-client).
 
@@ -35,3 +35,21 @@ Once you have an account, generate an [API key](https://plot.ly/settings/api/). 
     "api_key": "lr1c37zw81"
 }
 ```
+
+# Your First Plot
+
+```
+val xs = (0.0 to 2.0 by 0.1)
+val ys = xs.map { x => x*x }
+
+val plot = Plot().withScatter(xs, ys)
+
+draw(plot, "my-first-plot")
+```
+
+<iframe width="900" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~pbugnion/548.embed"></iframe>
+
+Calling `Plot().withScatter(xs, ys)` constructs a representation of the plot in memory. This representation is dispatched to Plotly with `draw(plot, "my-first-plot")`.
+
+
+For examples of more advanced plots, see the [examples](/scala) section.

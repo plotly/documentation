@@ -26,13 +26,6 @@ Plotly is now on CRAN!
 install.packages("plotly")
 ```
 <br>
-Or install the latest development version ([on GitHub](https://github.com/ropensci/plotly)) via [devtools](http://cran.r-project.org/web/packages/devtools/):
-
-```r
-# install.packages("devtools")
-devtools::install_github("ropensci/plotly")
-```
-<br>
 RStudio users should download the latest [RStudio release](https://www.rstudio.com/products/rstudio/download/) for compatibility with htmlwidgets.
 
 
@@ -93,7 +86,7 @@ If your company has a Plotly On-Premise server, change the R API endpoint so tha
 In your .RProfile write:
 
 ```r
-Sys.setenv("plotly_domain"="https://plotly.your-company.com")  
+Sys.setenv("plotly_domain"="https://plotly.your-company.com")
 Sys.setenv("plotly_api_domain" = "https://api-plotly.your-company.com")
 ```
 

@@ -7,7 +7,23 @@ Check out any of the notebooks in [https://github.com/plotly/documentation/tree/
 
 The last cell of these notebooks will convert the notebook into a github pages friendly html format:
 
-![](http://i.imgur.com/SDcuOkv.png)
+```
+from IPython.display import display, HTML
+
+display(HTML('<link href="//fonts.googleapis.com/css?family=Open+Sans:600,400,300,200|Inconsolata|Ubuntu+Mono:400,700" rel="stylesheet" type="text/css" />'))
+display(HTML('<link rel="stylesheet" type="text/css" href="http://help.plot.ly/documentation/all_static/css/ipython-notebook-custom.css">'))
+
+! pip install git+https://github.com/plotly/publisher.git --upgrade
+import publisher
+publisher.publish(
+    'your-tutorial-chart.ipynb', 'python/your-tutorial-chart/', 'Your Tutorial Chart | plotly',
+    'How to make your-tutorial-chart plots in Python with Plotly.',
+    title = 'Python Your Tutorial Chart | plotly',
+    name = 'Your Tutorial Chart',
+    has_thumbnail='true', thumbnail='thumbnail/your-tutorial-chart.jpg', 
+    language='python', page_type='example_index',
+    display_as='chart_type', order=2)  
+```
 
 ## Converting R Markdown to github pages
 
@@ -23,10 +39,10 @@ The full bleed R pages are created with R Markdown. Here's how:
   $ git fetch origin
   $ git checkout source-design-merge
   ```
-2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - Install Jekyll version 2.5.3:
+2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - Install Jekyll version 3.1.2:
 
   ```
-  $ gem install jekyll -v 2.5.3
+  $ gem install jekyll -v 3.1.2
   ```
 3. Install a couple dependencies:
 

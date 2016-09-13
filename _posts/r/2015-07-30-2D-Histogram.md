@@ -14,7 +14,6 @@ order: 3
 
 
 
-
 # 2D Histogram in R
 
 2D histograms require `x`/`y`, but in contrast to heatmaps, `z` is optional. If `z` is not provided, binning occurs in the browser (see [here](https://plot.ly/r/reference/#histogram2d-histnorm) for a list of binning options). 

@@ -33,7 +33,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
   
     ```
     #### New to Plotly?
-    Plotly's Python library is free and open source! [Get started](https://plot.ly/python/getting-started/) by dowloading the client and [reading the primer](https://plot.ly/python/getting-started/).
+    Plotly's Python library is free and open source! [Get started](https://plot.ly/python/getting-started/) by downloading the client and [reading the primer](https://plot.ly/python/getting-started/).
     <br>You can set up Plotly to work in [online](https://plot.ly/python/getting-started/#initialization-for-online-plotting) or [offline](https://plot.ly/python/getting-started/#initialization-for-offline-plotting) mode, or in [jupyter notebooks](https://plot.ly/python/getting-started/#start-plotting-online).
     <br>We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf) (new!) to help you get started!
     ```
@@ -76,12 +76,11 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
 
   ```
   from IPython.display import display, HTML
-      
-  display(HTML('<link href="//fonts.googleapis.com/css?family=Open+Sans:600,400,300,200|Inconsolata|Ubuntu+Mono:400,700rel="stylesheet" type="text/css" />'))
-  display(HTML('<link rel="stylesheet" type="text/csshref="http://help.plot.ly/documentation/all_static/css/ipython-notebook-custom.css">'))
-      
+
+  display(HTML('<link href="//fonts.googleapis.com/css?family=Open+Sans:600,400,300,200|Inconsolata|Ubuntu+Mono:400,700" rel="stylesheet" type="text/css" />'))
+  display(HTML('<link rel="stylesheet" type="text/css" href="http://help.plot.ly/documentation/all_static/css/ipython-notebook-custom.css">'))
+
   ! pip install git+https://github.com/plotly/publisher.git --upgrade
-          
   import publisher
   publisher.publish(
       'your-tutorial-chart.ipynb', 'python/your-tutorial-chart/', 'Your Tutorial Chart | plotly',
@@ -92,13 +91,14 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
       language='python', page_type='example_index',
       display_as='chart_type', order=2)  
   ```
-  - `display_as` sets where your tutorial shows up 
+  - `display_as` sets in which section your tutorial is displayed 
     - 'basic' = https://plot.ly/python/#basic-charts
     - 'statistical' = https://plot.ly/python/#statistical-charts
     - 'scientific' = https://plot.ly/python/#scientific-charts
     - 'financial' = https://plot.ly/python/#financial-charts
     - 'maps' = https://plot.ly/python/#maps
     - '3d_charts' = https://plot.ly/python/#3d-charts
+    - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/documentation_eg.html#L1)
   - `order` defines the order in which the tutorials appear on plot.ly/python. Please take a look at https://plot.ly/python/ anorder your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
   
 8. Add Thumbnail Images
@@ -110,11 +110,11 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
     - From the <b>Amazon Web Services Console</b> select <b>S3 (Scalable Storage in the Cloud)</b> then select <b>plotly-tutorials</b> -> <b>plotly-documentation</b> -> <b>thumbnail</b>
     - Now from <b>All Buckets /plotly-tutorials/plotly-documentation/thumbnail</b> select the <b>Actions</b> dropdown and <b>upload</b> your .jpg file
     
-##### In the teminal in `documentation`
+##### In the terminal in `documentation`
 9. Commit and Push your tutorial
   - `git add` your .ipynb and .html files
   - `git commit -m "include a message about the tutorial you're adding"`
-  - `git push origin source`
+  - `git push origin source-design-merge`
 
 10. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally 
 11. Deploy with `rake deploy`

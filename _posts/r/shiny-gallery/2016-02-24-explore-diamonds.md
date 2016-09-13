@@ -10,7 +10,7 @@ has_thumbnail: false
 ---
 ## Shiny app
 
-<iframe src="https://plotly.shinyapps.io/Explore_Diamonds/" width="100%" height= "800" scrolling="yes" seamless="seamless" style="border: none"></iframe>
+<iframe src="https://plotly.shinyapps.io/Explore_Diamonds/" width="100%" height= "1000" scrolling="yes" seamless="seamless" style="border: none"></iframe>
 
 ## Code
 
@@ -39,7 +39,7 @@ ui <- fluidPage(
 		            min = 100, max = 2000, value = 1000)
 	),
 	mainPanel(
-	  plotlyOutput('trendPlot', height = "800px")
+	  plotlyOutput('trendPlot', height = "900px")
 	)
 )
 

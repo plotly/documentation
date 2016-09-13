@@ -72,7 +72,7 @@
   `for (i in dir(pattern = "\\.Rmd")) knitr::knit(i)`
   
   Or, in the terminal (`documentation/_posts/r`) with: 
-  `Rscript -e 'for (i in dir(pattern = "\\.Rmd")) knitr::knit(i)'`
+  `Rscript -e 'for (i in dir(pattern = "\\\.Rmd")) knitr::knit(i)'`
   
 3. Add Thumbnail Images
   - Thumbnail images should named `your-tutorial-chart.jpg` and be *EXACTLY* 160px X 160px
