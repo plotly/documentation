@@ -9,7 +9,7 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: maps
-order: 1
+order: 0
 ---
 
 
@@ -32,15 +32,20 @@ g <- list(
   lakecolor = toRGB('white')
 )
 
-plot_ly(df, z = total.exports, text = hover, locations = code, type = 'choropleth',
-        locationmode = 'USA-states', color = total.exports, colors = 'Purples',
+plot_ly(df,
+        z = ~total.exports, text = ~hover, locations = ~code, type = 'choropleth',
+        locationmode = 'USA-states', color = ~total.exports, colors = 'Purples',
         marker = list(line = l), colorbar = list(title = "Millions USD")) %>%
   layout(title = '2011 US Agriculture Exports by State<br>(Hover for breakdown)', geo = g)
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/321.embed" width="800" frameBorder="0"></iframe>
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+
+
+
 
 ### World Choropleth Map
+
 
 ```r
 df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2014_world_gdp_with_codes.csv')
@@ -55,16 +60,19 @@ g <- list(
   projection = list(type = 'Mercator')
 )
 
-plot_ly(df, z = GDP..BILLIONS., text = COUNTRY, locations = CODE, type = 'choropleth',
-        color = GDP..BILLIONS., colors = 'Blues', marker = list(line = l),
+plot_ly(df, z = ~GDP..BILLIONS., text = ~COUNTRY, locations = ~CODE, type = 'choropleth',
+        color = ~GDP..BILLIONS., colors = 'Blues', marker = list(line = l),
         colorbar = list(tickprefix = '$', title = 'GDP Billions US$')) %>%
   layout(title = '2014 Global GDP<br>Source:<a href="https://www.cia.gov/library/publications/the-world-factbook/fields/2195.html">CIA World Factbook</a>',
          geo = g)
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/323.embed" width="800" frameBorder="0"></iframe>
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+
+
 
 ### Choropleth Inset Map
+
 
 ```r
 df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2014_ebola.csv')
@@ -102,15 +110,15 @@ g2 <- c(
   list(domain = list(x = c(0, .6), y = c(0, .6)))
 )
 
-plot_ly(df, type = 'scattergeo', mode = 'markers', locations = Country,
-        locationmode = 'country names', text = paste(Value, "cases"),
-        color = as.ordered(abbrev), marker = list(size = Value/50), inherit = F) %>%
-  add_trace(type = 'scattergeo', mode = 'text', geo = 'geo2', showlegend = F,
-            lon = 21.0936, lat = 7.1881, text = 'Africa') %>%
-  add_trace(type = 'choropleth', locations = Country, locationmode = 'country names',
-            z = Month, colors = "black", showscale = F, geo = 'geo2', data = df9) %>%
+plot_ly(df, sizes = c(1, 600), color = I("black")) %>%
+  add_scattergeo(size = ~Value, color = ~abbrev, text = ~paste(Value, "cases"),
+                 locations = ~Country, locationmode = 'country names') %>%
+  add_scattergeo(mode = "text", lon = 21.0936, lat = 7.1881, text = 'Africa', showlegend = F, geo = "geo2") %>%
+  add_choropleth(data = df9, z = ~Month, locations = ~Country, locationmode = 'country names', showscale = F, geo = 'geo2') %>%
   layout(title = 'Ebola cases reported by month in West Africa 2014<br> Source: <a href="https://data.hdx.rwlabs.org/dataset/rowca-ebola-cases">HDX</a>',
-         geo = g1, geo2 = g2)
+         geo = g1, geo2 = g2) 
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/325.embed" width="800" frameBorder="0"></iframe>
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
+
+

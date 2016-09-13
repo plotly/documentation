@@ -13,29 +13,29 @@ order: 11
 ---
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, results = 'hide')
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
+
 # Error Bars
 
-```{r, message=FALSE}
-
+```{r}
 library(dplyr)
 library(plotly)
 
-data <- ggplot2::mpg %>% group_by(class) %>%
-  summarise(mn = mean(hwy), sd = 1.96 * sd(hwy), mn_c = mean(cty)) %>%
-  arrange(desc(mn))
+data <- mpg %>% 
+  group_by(class) %>%
+  summarise(highway = mean(hwy), sd = 1.96 * sd(hwy), city = mean(cty)) %>%
+  arrange(desc(highway)) %>%
+  tidyr::gather(key, value, highway, city)
 
-p <- data %>%
-  plot_ly(x = ~class, y = ~mn ) %>%
-  add_trace(error_y = list(value=10), type = "bar", name = "Highway") %>%
-  layout(yaxis = list(title = "Miles Per Gallon"))
+data %>%
+  plot_ly(x = ~value, y = ~factor(class, unique(class))) %>%
+  add_markers(color = ~key, error_x = ~list(value = sd)) %>%
+  layout(xaxis = list(title = "miles per gallon"), yaxis = list(title = ""))
+```
 
-p2 <- add_trace(p, y = ~mn_c, error_y = list(value=10),
-                name = "City", type = "bar")
-#by default the `type` for error is `percent`, which takes
-#a percentage of the y value as the error bar.
-p2
+```{r, echo=FALSE}
+plotly_POST(filename="error/1")
 ```

@@ -13,8 +13,8 @@ display_as: get_request
 
 # Downloading Plotly Graphs into R
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+```{r, echo = FALSE}
+knitr::opts_chunk$set(message = FALSE, results = 'hide')
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
@@ -35,32 +35,34 @@ Once the figure is downloaded, you can edit it like any plotly object. This will
 layout(fig, title = paste("Modified on ", Sys.time()))
 ```
 
-### Adding Traces with `get_figure()` and `subplot()`.
+```{r, echo=FALSE}
+plotly_POST(filename="getRequests/modify")
+```
 
-After downloading a figure with subplots, use `plotly_build()` to build the figure. 
+### Adding a trace to a subplot figure
 
-```{r, message=FALSE}
+```{r}
 fig <- get_figure("chelsea_lyn", "6343")
-fig <- plotly_build(fig)
+add_lines(fig, x = c(1, 2), y = c(1, 2), xaxis = "x2", yaxis = "y2")
 ```
 
-Add new traces to `fig$data[[(length(fig$data)+1)]]` as a list
-
-```{r, message=FALSE}
-fig$data[[(length(fig$data)+1)]] <- list(x=c(1,2), y=c(1,2), xaxis="x2", yaxis="y2")
-fig
+```{r, echo=FALSE}
+plotly_POST(filename="getRequests/subplot")
 ```
 
-### Adding custom hover text after downloading a plotly graph
+### Restyle traces
 
-Use `plotly_build()` first and then modify the plotly object as such
+It's easy to add a trace or change the layout of figure, but it's a bit more challenging to modify attributes of an existing trace. If you know the attribute you want to change, and the trace number (starting with 1), use the `style()` function. For example, we could remove the hover text from [this plot](https://plot.ly/~RPlotBot/2833) like so:
 
-```{r, message = F}
+```{r}
 fig <- get_figure("rplotbot", 2833)
-fig <- plotly_build(fig)
-
-fig$data[[1]]$hoverinfo <- "text"
-fig$data[[1]]$text <- paste("Displacement = ", mtcars$disp, "Miles Per Gallon = ", mtcars$mpg)
-
-fig
+fig %>% 
+  style(hoverinfo = "none") %>% 
+  layout(title = "No hover text")
 ```
+
+```{r, echo=FALSE}
+plotly_POST(filename="getRequests/style")
+```
+
+You'll probably want to inspect the traces before you use this function, and I recommend using the `plotly_json()` function to do so.

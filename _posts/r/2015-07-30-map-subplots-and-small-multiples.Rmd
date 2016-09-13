@@ -12,13 +12,14 @@ display_as: maps
 ---
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, results = 'hide')
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
+
 # Map Subplots and Small Multiples
 
-```{r, message=FALSE, height=900}
+```{r, height=900}
 # US map small multiples
 library(plotly)
 library(dplyr)
@@ -36,14 +37,12 @@ g <- list(
 one_plot <- function(dat) {
   dat %>% 
     plot_ly() %>%
-    add_trace(
-      # setting the geo attribute is _crucial_ here
-      lon = ~LON, lat = ~LAT, type = "scattergeo", geo = "geo",
-      mode = "markers",
-      marker = list(color = toRGB("blue", 0.5))
+    add_scattergeo(
+      lon = ~LON, lat = ~LAT,
+      mode = "markers", color = I("blue"), alpha = 0.5
     ) %>%
-    add_trace(
-      lon = list(-78), lat = list(47), mode = 'text', text = ~YEAR, type = "scattergeo", geo = "geo"
+    add_scattergeo(
+      lon = -78, lat = 47, mode = 'text', text = ~unique(YEAR), color = I("black")
     ) %>% layout(geo = g)
 }
 
@@ -56,4 +55,8 @@ lapply(split(df, df$YEAR), one_plot) %>%
     height = 900,
     hovermode = FALSE
   )
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="maps/small-multiple")
 ```

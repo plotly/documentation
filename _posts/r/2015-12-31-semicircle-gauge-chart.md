@@ -1,6 +1,6 @@
 ---
-title: R Gauge Chart | Examples | Plotly
-name: Gauge Chart
+title: R Gauge Charts | Examples | Plotly
+name: Gauge Charts
 permalink: r/gauge-charts/
 description: How to make gauge charts in R with Plotly.
 layout: base
@@ -9,8 +9,10 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: chart_type
-order: 9
+order: 10
 ---
+
+
 
 # Gauge Meter Chart in R
 
@@ -103,9 +105,12 @@ base_plot <- layout(
 base_plot
 ```
 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+
+
 
 For the `filled-triangle`, the first point `(0.235, 0.5)` is left to the center of meter `(0.24, 0.5)`, the second point `(0.24 0.62)` is representing the current position on the `semi-circle` and the third point `(0.245, 0.5)` is just right to the center.
 
 `M` represents the `'Move'` command that moves cursor to a particular point, `L` is the `'Line To'` command and `Z` represents the `'Close Path'` command. This way, this path string makes a triangle with those three points.
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2805.embed" width="800" frameBorder="0"></iframe>
+

@@ -8,9 +8,10 @@ thumbnail: thumbnail/error-bar.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: statistical
-order: 1
+display_as: chart_type
+order: 11
 ---
+
 
 
 # Error Bars
@@ -20,35 +21,22 @@ order: 1
 library(dplyr)
 library(plotly)
 
-p <- ggplot2::mpg %>% group_by(class) %>%
-  summarise(mn = mean(hwy), sd = 1.96 * sd(hwy)) %>%
-  arrange(desc(mn)) %>%
-  plot_ly(x = class, y = mn, error_y = list(array = sd),
-          mode = "markers", name = "Highway") %>%
-  layout(yaxis = list(title = "Miles Per Gallon"))
-p
+data <- mpg %>% 
+  group_by(class) %>%
+  summarise(highway = mean(hwy), sd = 1.96 * sd(hwy), city = mean(cty)) %>%
+  arrange(desc(highway)) %>%
+  tidyr::gather(key, value, highway, city)
+
+data %>%
+  plot_ly(x = ~value, y = ~factor(class, unique(class))) %>%
+  add_markers(color = ~key, error_x = ~list(value = sd)) %>%
+  layout(xaxis = list(title = "miles per gallon"), yaxis = list(title = ""))
 ```
 
-<iframe height="850" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2845.embed" width="800" frameBorder="0"></iframe>
-
-```r
-library(dplyr)
-library(plotly)
-
-data <- ggplot2::mpg %>% group_by(class) %>%
-  summarise(mn = mean(hwy), sd = 1.96 * sd(hwy), mn_c = mean(cty)) %>%
-  arrange(desc(mn))
-
-p <- data %>%
-  plot_ly(x = class, y = mn, error_y = list(value=10),
-          mode = "markers", name = "Highway") %>%
-  layout(yaxis = list(title = "Miles Per Gallon"))
-
-p2 <- add_trace(p, x = class, y = mn_c, error_y = list(value=10),
-                name = "City", data = data)
-#by default the `type` for error is `percent`, which takes
-#a percentage of the y value as the error bar.
-p2
+```
+## Warning in RColorBrewer::brewer.pal(N, "Set2"): minimal value for n is 3, returning requested palette with 3 different levels
 ```
 
-<iframe height="850" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2849.embed" width="800" frameBorder="0"></iframe>
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+
+

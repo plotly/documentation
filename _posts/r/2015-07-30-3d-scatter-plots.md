@@ -8,8 +8,8 @@ thumbnail: thumbnail/3d-scatter.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: 3d_charts
-order: 14
+display_as: chart_type
+order: 0
 ---
 
 
@@ -18,19 +18,23 @@ order: 14
 
 ```r
 # variance-covariance matrix for a multivariate normal distribution
-s <- matrix(c(1, .5, .5,
-              .5, 1, .5,
-              .5, .5, 1), ncol = 3)
+s <- matrix(
+  c(1, .5, .5, .5, 1, .5, .5, .5, 1), 
+  ncol = 3
+)
 # use the mvtnorm package to sample 200 observations
 obs <- mvtnorm::rmvnorm(200, sigma = s)
 # collect everything in a data-frame
 df <- setNames(data.frame(obs), c("x", "y", "z"))
 
 library(plotly)
-plot_ly(df, x = x, y = y, z = z, type = "scatter3d", mode = "markers")
+plot_ly(df, x = ~x, y = ~y, z = ~z) %>% add_markers()
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2000.embed" width="800" frameBorder="0"></iframe>
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+
+
+
 
 ## 3D Scatter Plot with Hover Text
 
@@ -38,8 +42,11 @@ plot_ly(df, x = x, y = y, z = z, type = "scatter3d", mode = "markers")
 ```r
 set.seed(100)
 d <- diamonds[sample(nrow(diamonds), 1000), ]
-plot_ly(d, x = carat, y = price, z=depth, text = paste("Clarity: ", clarity),
-        type="scatter3d", mode="markers")
+plot_ly(d, x = ~carat, y = ~price, z = ~depth) %>%
+  add_markers(text = ~paste("Clarity: ", clarity))
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2002.embed" width="800" frameBorder="0"></iframe>
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+
+
+

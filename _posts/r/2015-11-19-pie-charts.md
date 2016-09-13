@@ -11,65 +11,72 @@ has_thumbnail: true
 display_as: chart_type
 order: 6
 ---
+
+
+
 # Basic Pie Chart
+
 
 ```r
 library(plotly)
 
-ds <- data.frame(labels = c("A", "B", "C"),
-                 values = c(10, 40, 60))
+ds <- data.frame(
+  labels = c("A", "B", "C"),
+  values = c(10, 40, 60)
+)
 
 plot_ly(ds, labels = ~labels, values = ~values, type = "pie") %>%
   layout(title = "Basic Pie Chart using Plotly")
 ```
-<iframe src="https://plot.ly/~RPlotBot/2887" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+```
+## Warning in resolve_vars(new_groups, tbl_vars(.data)): '.Random.seed' is not
+## an integer vector but of type 'NULL', so ignored
+```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+
+
 
 # Basic Pie Chart - Subplots
+
 
 ```r
 library(plotly)
 library(dplyr)
 
-cut <- diamonds %>%
-  group_by(cut) %>%
-  summarize(count = n())
-
-color <- diamonds %>%
-  group_by(color) %>%
-  summarize(count = n())
-
-clarity <- diamonds %>%
-  group_by(clarity) %>%
-  summarize(count = n())
-
-plot_ly(cut, labels = cut, values = count, type = "pie", domain = list(x = c(0, 0.4), y = c(0.4, 1)),
-        name = "Cut", showlegend = F) %>%
-  add_trace(data = color, labels = color, values = count, type = "pie", domain = list(x = c(0.6, 1), y = c(0.4, 1)),
-            name = "Color", showlegend = F) %>%
-  add_trace(data = clarity, labels = clarity, values = count, type = "pie", domain = list(x = c(0.25, 0.75), y = c(0, 0.6)),
-            name = "Clarity", showlegend = F) %>%
-  layout(title = "Pie Charts with Subplots")
+plot_ly(type = "pie") %>%
+  add_trace(data = count(diamonds, cut), labels = ~cut, values = ~n,
+            name = "Cut", domain = list(x = c(0, 0.4), y = c(0.4, 1))) %>%
+  add_trace(data = count(diamonds, color), labels = ~cut, values = ~n,
+            name = "Color", domain = list(x = c(0.6, 1), y = c(0.4, 1))) %>%
+  add_trace(data = count(diamonds, clarity), labels = ~cut, values = ~n,
+            name = "Clarity", domain = list(x = c(0.25, 0.75), y = c(0, 0.6))) %>%
+  layout(title = "Pie Charts with Subplots", showlegend = F)
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2889" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+```
+## Error: Each variable must be a 1d atomic vector or list.
+## Problem variables: 'labels'
+```
+
+
 
 # Donut Chart
 
 
 ```r
-df <- mtcars
-
 # Get Manufacturer
-df$manuf <- sapply(rownames(mtcars), function(x) strsplit(x, split = " ")[[1]][1])
-
-plot.df <- df %>%
+mtcars$manuf <- sapply(strsplit(rownames(mtcars), " "), "[[", 1)
+mtcars %>%
   group_by(manuf) %>%
-  summarize(count = n())
-
-plot_ly(plot.df, labels = ~manuf, values = ~count, type = "pie", hole = 0.6, showlegend = F) %>%
-  layout(title = "Donut charts using Plotly")
+  summarize(count = n()) %>%
+  plot_ly(labels = ~manuf, values = ~count, type = "pie", hole = 0.6) %>%
+  layout(title = "Donut charts using Plotly",  showlegend = F)
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2897" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
+
+
 
 

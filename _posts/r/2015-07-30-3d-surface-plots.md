@@ -8,8 +8,8 @@ thumbnail: thumbnail/3d-surface.jpg
 language: r
 page_type: example_index
 has_thumbnail: TRUE
-display_as: 3d_charts
-order: 15
+display_as: chart_type
+order: 5
 ---
 
 
@@ -22,22 +22,23 @@ library(plotly)
 plot_ly(z = volcano, type = "surface")
 ```
 
-<iframe height="850" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/171.embed" width="800" frameBorder="0"></iframe>
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
 
 ### 2D Kernel Density Estimation
 
 
 ```r
 kd <- with(MASS::geyser, MASS::kde2d(duration, waiting, n = 50))
-with(kd, plot_ly(x = x, y = y, z = z, type = "surface"))
+plot_ly(x = kd$x, y = kd$y, z = kd$z, type = "surface")
 ```
 
-<iframe height="850" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/173.embed" width="800" frameBorder="0"></iframe>
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
 
 
 ### Multiple Surfaces
 
-```{r, message=FALSE, heigh=850}
+
+```r
 library(plotly)
 
 z <- c(
@@ -61,9 +62,11 @@ dim(z) <- c(15,6)
 z2 <- z + 1
 z3 <- z - 1
 
-p <- plot_ly(z=z, type="surface",showscale=FALSE) %>%
-  add_trace(z=z2, type="surface", showscale=FALSE, opacity=0.98) %>%
-  add_trace(z=z3, type="surface", showscale=FALSE, opacity=0.98)
+p <- plot_ly(showscale = FALSE) %>%
+  add_surface(z = z) %>%
+  add_surface(z = z2, opacity = 0.98) %>%
+  add_surface(z = z3, opacity = 0.98)
 p
 ```
-<iframe width="800" height="850", id="igraph", frameborder="0" scrolling="no" src="https://plot.ly/~RPlotBot/2877.embed"></iframe>
+
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)

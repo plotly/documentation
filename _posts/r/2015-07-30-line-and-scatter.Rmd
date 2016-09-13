@@ -2,7 +2,7 @@
 title: Line and Scatter Plots in R | Examples | Plotly
 name: Line and Scatter Plots
 permalink: r/line-and-scatter/
-description: How to create line and scatter plots in R. Seven examples of basic and advanced scatter plots, time series line plots, colored charts, and density plots.
+description: How to create line and scatter plots in R. Examples of basic and advanced scatter plots, time series line plots, colored charts, and density plots.
 layout: base
 thumbnail: thumbnail/line-and-scatter.jpg
 language: r
@@ -12,68 +12,108 @@ display_as: chart_type
 order: 1
 ---
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+```{r, echo = FALSE}
+knitr::opts_chunk$set(message = FALSE, results = 'hide')
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
+
 # Line and Scatter Plots in R
 
-```{r, message=FALSE}
-# Simple scatterplot
+### Simple scatterplot
+
+```{r}
 library(plotly)
-plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length) %>%
-  add_markers()
+p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length)
+p
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="scatter/basic")
 ```
 
 ### Scatter Plot with Qualitative Colorscale
-```{r, message=FALSE}
-plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length) %>%
-  add_markers(color = ~Species)
+
+```{r}
+add_markers(p, color = ~Species)
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="scatter/color")
 ```
 
 ### ColorBrewer Palette Names
-```{r, message=FALSE}
-# By default, colors will 'span the gamut'
-# scales::show_col(RColorBrewer::brewer.pal("Set1"))
-plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length) %>%
-  add_markers(color = ~Species, colors = "Set1")
+
+```{r}
+add_markers(p, color = ~Species, colors = "Set1")
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="scatter/colorbrewer")
 ```
 
 ### Custom Color Scales
-```{r, message=FALSE}
-# pass RGB or hex color codes directly to colors for finer control
-pal <- RColorBrewer::brewer.pal(nlevels(iris$Species), "Set1")
-plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length) %>%
-  add_markers(color = ~Species, colors = pal)
+
+The `colors` argument also accepts a character vector of any valid R color code(s).
+
+```{r}
+pal <- c("red", "blue", "green")
+add_markers(p, color = ~Species, colors = pal)
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="scatter/color-custom")
+```
+
+To ensure a particular data value gets mapped to particular color, provide a character vector of color codes, and match the names attribute accordingly.
+
+```{r}
+pal <- setNames(pal, c("virginica", "setosa", "versicolor"))
+add_markers(p, color = ~Species, colors = pal)
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="scatter/color-custom2")
+```
+
+### Plotting markers and lines, efficiently
+
+```{r}
+add_trace(p, color = ~Species, mode = "markers+lines")
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="scatter/pointsAndLines")
+```
+
+## Mapping data to symbol and linetype
+
+```{r}
+add_trace(p, symbol = ~Species, linetype = ~Species)
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="scatter/symbolAndLinetype")
 ```
 
 ### Adding Color and Size Mapping
-```{r, message=FALSE}
-library(plotly)
-d <- diamonds[sample(nrow(diamonds), 1000), ]
-# note how size is automatically scaled and added as hover text
-plot_ly(d, x = ~carat, y = ~price, size = ~carat) %>%
-  add_markers()
 
+```{r}
+d <- diamonds[sample(nrow(diamonds), 1000), ]
 plot_ly(
   d, x = ~carat, y = ~price,
   text = ~paste("Clarity: ", clarity),
-  color = ~carat, size = ~carat, opacity = ~carat
-) %>%
-  add_markers()
+  color = ~carat, size = ~carat
+)
 ```
 
-### Basic Time Series Plot with Loess Smooth
-```{r, message=FALSE}
-p <- plot_ly(economics, x = ~date, y = ~uempmed) %>%
-  add_lines(name = "unemployment")
-p %>% 
-  add_trace(y = ~fitted(loess(uempmed ~ as.numeric(date))), name = "loess")
+```{r, echo=FALSE}
+plotly_POST(filename="scatter/colorAndSize")
 ```
 
 ### Density Plot
-```{r, message=FALSE}
+
+```{r}
 dens <- with(diamonds, tapply(price, INDEX = cut, density))
 df <- data.frame(
   x = unlist(lapply(dens, "[[", "x")),
@@ -84,8 +124,13 @@ plot_ly(df, x = ~x, y = ~y, color = ~cut) %>%
   add_lines()
 ```
 
+```{r, echo=FALSE}
+plotly_POST(filename="scatter/colorDensity")
+```
+
 ### Line Interpolation Options
-```{r, message=FALSE}
+
+```{r}
 x <- 1:5
 y <- c(1, 3, 2, 3, 1)
 plot_ly(x = ~x) %>%
@@ -95,4 +140,8 @@ plot_ly(x = ~x) %>%
   add_lines(y = y + 15, name = "hvh", line = list(shape = "hvh")) %>%
   add_lines(y = y + 20, name = "vh", line = list(shape = "vh")) %>%
   add_lines(y = y + 25, name = "hv", line = list(shape = "hv"))
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="scatter/interp")
 ```

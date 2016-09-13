@@ -13,16 +13,32 @@ order: 4
 ---
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, results = 'hide')
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
+
 # Filled Area Plots in R
 
-```{r, message=FALSE}
+The `add_area()` function will *always* fill to 0 (on the y-axis).
 
-
+```{r}
 library(plotly)
+p <- plot_ly()
+for (i in c("x", "y", "z")) {
+  d <- density(diamonds[[i]])
+  p <- add_area(p, x = d[["x"]], y = d[["y"]], name = i)
+}
+layout(p, xaxis = list(range = c(0, 10)))
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="area/density")
+```
+
+For more control over the fill mode, use `add_lines()`:
+
+```{r}
 plot_ly() %>%
   add_lines(x = c(1, 2, 3, 4), y = c(0, 2, 3, 5), fill = "tozeroy") %>%
   add_lines(x = c(1, 2, 3, 4), y = c(3, 5, 1, 7), fill = "tonexty")

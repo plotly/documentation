@@ -13,7 +13,7 @@ order: 11
 ---
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, results = 'hide')
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
@@ -24,7 +24,7 @@ Sys.setenv("plotly_api_key"="q0lz6r5efr")
 
 ##### read graph file and update layout
 
-```{r, results='hide', message=FALSE}
+```{r}
 library(igraph)
 library(plotly)
 
@@ -34,30 +34,30 @@ L <- layout.circle(G)
 ```
 
 ##### vertices and edges for the graph
-```{r, results='hide', message=FALSE}
+```{r}
 vs <- V(G)
 es <- as.data.frame(get.edgelist(G))
 ```
 
 ##### count of vertices and edges
-```{r, results='hide', message=FALSE}
+```{r}
 Nv <- length(vs)
 Ne <- length(es[1]$V1)
 ```
 
 ##### node positions
-```{r, results='hide', message=FALSE}
+```{r}
 Xn <- L[,1]
 Yn <- L[,2]
 ```
 
 ##### draw network nodes
-```{r, results='hide', message=FALSE}
-network <- plot_ly(type = "scatter", x = ~Xn, y = ~Yn, mode = "markers", text = vs$label, hoverinfo = "text")
+```{r}
+network <- plot_ly(x = ~Xn, y = ~Yn, mode = "markers", text = vs$label, hoverinfo = "text")
 ```
 
 ##### creates shapes for edges
-```{r, results='hide', message=FALSE}
+```{r}
 edge_shapes <- list()
 for(i in 1:Ne) {
   v0 <- es[i,]$V1
@@ -77,19 +77,18 @@ for(i in 1:Ne) {
 ```
 
 ##### add edges to the network
-```{r, results='hide', message=FALSE}
-network <- layout(
+```{r}
+axis <- list(title = "", showgrid = FALSE, showticklabels = FALSE, zeroline = FALSE)
+
+layout(
   network,
   title = 'Karate Network',
   shapes = edge_shapes,
-  xaxis = list(title = "", showgrid = FALSE, showticklabels = FALSE, zeroline = FALSE),
-  yaxis = list(title = "", showgrid = FALSE, showticklabels = FALSE, zeroline = FALSE)
+  xaxis = axis,
+  yaxis = axis
 )
-
-network
-
 ```
 
-```{r, results='asis', echo=FALSE, message=FALSE}
-plotly_POST(network, filename = "karate-network-r", world_readable=TRUE)
+```{r, echo=FALSE}
+plotly_POST(filename = "karate-network-r")
 ```

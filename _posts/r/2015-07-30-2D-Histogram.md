@@ -8,15 +8,17 @@ thumbnail: thumbnail/histogram2d.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: statistical
-plottype: histogram
-order: 4
+display_as: chart_type
+order: 3
 ---
+
+
 
 
 # 2D Histogram in R
 
 2D histograms require `x`/`y`, but in contrast to heatmaps, `z` is optional. If `z` is not provided, binning occurs in the browser (see [here](https://plot.ly/r/reference/#histogram2d-histnorm) for a list of binning options). 
+
 
 ```r
 # install.packages('mvtnorm')
@@ -30,17 +32,24 @@ subplot(
 )
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~cpsievert/14404.embed" width="800" frameBorder="0"></iframe>
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+
+
+
 
 If `z` is not provided, the only way to control coloring is through the [colorscale attribute](https://plot.ly/r/reference/#histogram2d-colorscale)
+
 
 ```r
 p %>% add_histogram2d(colorscale = "Blues")
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~cpsievert/14406.embed" width="800" frameBorder="0"></iframe>
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+
+
 
 If you want more control for the binning algorithm, you can supply a 2D table or matrix to `z`. In this case, the R package will impose it's colorscale default (and the `colors` argument can be used to control the colorscale from R):
+
 
 ```r
 cnt <- with(diamonds, table(cut, clarity))
@@ -48,4 +57,6 @@ plot_ly(diamonds, x = ~cut, y = ~clarity, z = ~cnt) %>%
   add_histogram2d()
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~cpsievert/14408.embed" width="800" frameBorder="0"></iframe>
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
+
+

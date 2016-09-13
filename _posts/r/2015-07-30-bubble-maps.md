@@ -9,6 +9,7 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: maps
+order: 2
 ---
 
 
@@ -19,10 +20,9 @@ display_as: maps
 ```r
 library(plotly)
 df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2014_us_cities.csv')
-df$hover <- paste(df$name, "Population", df$pop/1e6, " million")
 
-df$q <- with(df, cut(pop, quantile(pop), include.lowest = T))
-levels(df$q) <- paste(c("1st", "2nd", "3rd", "4th"), "Quantile")
+df$q <- with(df, cut(pop, quantile(pop)))
+levels(df$q) <- paste(c("1st", "2nd", "3rd", "4th", "5th"), "Quantile")
 df$q <- as.ordered(df$q)
 
 g <- list(
@@ -36,10 +36,13 @@ g <- list(
   countrycolor = toRGB("white")
 )
 
-plot_ly(df, lon = lon, lat = lat, text = hover,
-        marker = list(size = sqrt(pop/10000) + 1, line = list(width = 0)),
-        color = q, type = 'scattergeo', locationmode = 'USA-states') %>%
+plot_ly(df, lon = ~lon, lat = ~lat, sizes = c(1, 250)) %>%
+  add_scattergeo(color = ~q, size = ~pop, hoverinfo = "text",
+                 text = ~paste(df$name, "<br />", df$pop/1e6, " million"),
+                 locationmode = 'USA-states') %>%
   layout(title = '2014 US city populations<br>(Click legend to toggle)', geo = g)
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2982.embed" width="800" frameBorder="0"></iframe>
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+
+

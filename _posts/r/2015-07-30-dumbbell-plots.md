@@ -14,21 +14,29 @@ order: 8
 
 # Dumbbell plots in R
 
+
+
+# Dot plots in R
+
+
 ```r
-library(tidyr)
-library(plotly)
 s <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
-s <- gather(s[order(s$Men), ], Sex, value, Women, Men)
-s %>%
-  group_by(School) %>%
-  plot_ly(x = ~value, y = ~School) %>%
-  add_markers( color = ~Sex, colors = c("pink", "blue")) %>%
-  add_paths( showlegend = F, line = list(color = "gray")) %>%
+# order factor levels by men's income (plot_ly() will pick up on this ordering)
+s$School <- factor(s$School, levels = s$School[order(s$Men)])
+
+library(plotly)
+p <- plot_ly(s, color = I("gray80")) %>%
+  add_segments(x = ~Women, xend = ~Men, y = ~School, yend = ~School, showlegend = FALSE) %>%
+  add_markers(x = ~Women, y = ~School, name = "Women", color = I("pink")) %>%
+  add_markers(x = ~Men, y = ~School, name = "Men", color = I("blue")) %>%
   layout(
     title = "Gender earnings disparity",
     xaxis = list(title = "Annual Salary (in thousands)"),
     margin = list(l = 65)
   )
+p
 ```
 
-<iframe width="650" height="650" frameborder="0" scrolling="no" src="https://plot.ly/~jackp/14455.embed"></iframe>
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+
+
