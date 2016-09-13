@@ -26,13 +26,13 @@
 Our javascript tutorials are written in HTML files with embeded [codepen](http://codepen.io/plotly/) examples.
 ##### In `documentation/_posts/plotly_js`
 1. Create a folder titled with the chart type or topic you're adding to the documentation (i.e. `bar`)  
-2. `cd` into the folder you created and create an html index file labled: `yyyy-mm-dd-chart_type_index.html`. Copy the index file template below and replace with the necessary information pertaining to the doc you are creating.
+2. `cd` into the folder you created and create an html index file labled: `yyyy-mm-dd-chart_type_plotlyjs_index.html`. Copy the index file template below and replace with the necessary information pertaining to the doc you are creating.
   ```
   ---
   title: Javascript Graphing Library D3.js-based Add-Chart-Type-or-Topic | Examples | Plotly
   name: Add-Chart-Type-or-Topic
   permalink: javascript/add-chart-type-or-topic/
-  description: How to make a D3.js-based add-chart-type-or-topic in javascript. Add an additional sentance summarizing chart-type or topic.
+  description: How to make a D3.js-based add-chart-type-or-topic in javascript. Add an additional sentence summarizing chart-type or topic.
   layout: base
   has_thumbnail: true
   thumbnail: thumbnail/add-chart-type-or-topic.jpg *MORE INFO ON ADDING THUMBNAILS BELOW
