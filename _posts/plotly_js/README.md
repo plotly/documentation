@@ -1,4 +1,4 @@
-# Contribute to Plotly's [Javascript](https://plot.ly/javascript/)
+# Contribute to Plotly's [Javascript Documentation](https://plot.ly/javascript/)
 ## Initial Steps:
 0. Clone the repo and then check out the source-design-merge branch:
 
