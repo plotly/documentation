@@ -1,8 +1,10 @@
 ---
-title: Using Plotly with knitr
-name: Using Plotly with knitr
+title: Using Plotly with rmarkdown/knitr
+name: Using Plotly with rmarkdown/knitr 
 permalink: r/knitr/
-description: How to embed Plotly graphs in knitr documents.
+redirect_from:
+  - r/embedding-plotly-graphs-in-HTML
+description: How to embed Plotly graphs in Rmd files.
 layout: base
 language: r
 page_type: example_index
@@ -11,31 +13,37 @@ display_as: file_settings
 order: 5
 ---
 
-## Embedding plotly graphs in knitr documents
+## Embedding plotly graphs in Rmd files
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, results = 'hide')
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
 
-Simply printing `plotly` objects in the R console will render your chart in the web browser or in RStudio's viewer.
-
-If you are using knitr/R Markdown with HTML output, printing the `plotly` object will embed the graph in the HTML.
-
-
-```{r, results='hide'}
-library(plotly)
-p <- plot_ly(economics, x = ~date, y = ~unemploy / pop)
-p
-```
-
-```{r, echo=FALSE, message=FALSE}
-plotly_POST(p, filename='r-docs/knitr-example')
-```
-
-If your hosting your graphs in your online plotly account through `plotly_POST`, printing the figure will embed the graph as an iframe.
+If you are using [rmarkdown](http://rmarkdown.rstudio.com/) with HTML output, printing a `plotly` object in a code chunk will result in an interactive HTML graph. When using rmarkdown with non-HTML output, printing a `plotly` object will result in a png screenshot of the graph.
 
 ```{r}
-plotly_POST(p, filename='r-docs/knitr-example')
+library(plotly)
+plot_ly(economics, x = ~date, y = ~unemploy / pop)
 ```
+
+```{r, echo=FALSE}
+plotly_POST(filename='r-docs/knitr-example')
+```
+
+You can also host your figures on a plotly server via `plotly_POST()` which returns a figure object. When a figure object is printed in an rmarkdown/knitr document, it embeds the figure as an iframe, displaying the plot as it appears on your plotly account.
+
+```{r}
+f <- plotly_POST(p)
+class(f)
+f
+```
+
+You can control the height/width of that iframe through the `fig.height`/`fig.width` [knitr chunk options](http://yihui.name/knitr/options/), but the figure object also contains the relevant url so you complete control over embedding your figure. The post has more details on how to [embed plotly graphs with HTML iframes](http://help.plot.ly/embed-graphs-in-websites/), but could also use plotly's built-in image export by simply adding a `.png` (or similar) extension.
+
+```{r}
+htmltools::tags$img(src = paste0(f[["url"]], ".png"))
+```
+
+
