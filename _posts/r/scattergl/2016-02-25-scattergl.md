@@ -15,11 +15,7 @@ output:
     theme: null
 ---
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE, eval = F)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-``` 
+
 
 # WebGL vs SVG in R
 
@@ -27,7 +23,8 @@ Recent versions of the R package include the `toWebGL()` function, which convert
 
 ## WebGL with 50,000 points 
 
-```{r}
+
+```r
 library(plotly)
 p <- ggplot(data = diamonds, aes(x = carat, y = price, color = cut)) +
   geom_point(alpha = 0.01)

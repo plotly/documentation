@@ -67,12 +67,12 @@
       plotly_POST(filename="your-chart-type/your-filename")
       ```
 
-2. Convert the R Markdown to Markdown (.md file) with:
+2. Convert all the `.Rmd` files in your current directory:
 
-  `knitr::knit("2015-08-03-your-r-markdown-tutorial.Rmd")`
+  `for (i in dir(pattern = "\\.Rmd")) knitr::knit(i)`
   
   Or, in the terminal (`documentation/_posts/r`) with: 
-  `Rscript -e 'knitr::knit("2015-08-03-your-r-markdown-tutorial.Rmd")'`
+  `Rscript -e 'for (i in dir(pattern = "\\.Rmd")) knitr::knit(i)'`
   
 3. Add Thumbnail Images
   - Thumbnail images should named `your-tutorial-chart.jpg` and be *EXACTLY* 160px X 160px
