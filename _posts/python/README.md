@@ -110,11 +110,11 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
     - From the <b>Amazon Web Services Console</b> select <b>S3 (Scalable Storage in the Cloud)</b> then select <b>plotly-tutorials</b> -> <b>plotly-documentation</b> -> <b>thumbnail</b>
     - Now from <b>All Buckets /plotly-tutorials/plotly-documentation/thumbnail</b> select the <b>Actions</b> dropdown and <b>upload</b> your .jpg file
     
-##### In the teminal in `documentation`
+##### In the terminal in `documentation`
 9. Commit and Push your tutorial
   - `git add` your .ipynb and .html files
   - `git commit -m "include a message about the tutorial you're adding"`
-  - `git push origin source`
+  - `git push origin source-design-merge`
 
 10. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally 
 11. Deploy with `rake deploy`
