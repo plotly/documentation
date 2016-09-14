@@ -50,8 +50,7 @@
         ```{r, echo = FALSE, message=FALSE}
         knitr::opts_chunk$set(message = FALSE, results = 'hide')
         Sys.setenv("plotly_username"="RPlotBot")
-        Sys.setenv("plotly_api_key"="q0lz6r5efr")
-        ```
+        Sys.setenv("plotly_api_key"="q0lz6r5efr")```
       ```
       
     - To include r code and plots in the tutorial format the code snippets and plots in the following format:
@@ -60,14 +59,12 @@
       ```{r}
       library(plotly)
       #Add your R Code Here i.e.:
-      plot_ly(economics, x = ~date, y = ~uempmed, name = "unemployment")
-      ```
+      plot_ly(economics, x = ~date, y = ~uempmed, name = "unemployment")```
    ```
       
     ```
       ```{r, echo=FALSE}
-      plotly_POST(filename="your-chart-type/your-filename")
-      ```
+      plotly_POST(filename="your-chart-type/your-filename")```
     ```
 
 2. Convert all the `.Rmd` files in your current directory:
