@@ -1,16 +1,4 @@
----
-title: 2D Histograms in R | Examples | Plotly
-name: 2D Histograms
-permalink: r/2D-Histogram/
-description: How to make a 2D histogram in R. A 2D histogram is a visualization of a bivariate distribution.
-layout: base
-thumbnail: thumbnail/histogram2d.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: chart_type
-order: 3
----
+# 2D Histograms in R | Examples | Plotly
 
 
 
@@ -31,9 +19,7 @@ subplot(
 )
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
-
-
+<iframe src="https://plot.ly/~RPlotBot/3045.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 
 If `z` is not provided, the only way to control coloring is through the [colorscale attribute](https://plot.ly/r/reference/#histogram2d-colorscale)
@@ -43,9 +29,7 @@ If `z` is not provided, the only way to control coloring is through the [colorsc
 p %>% add_histogram2d(colorscale = "Blues")
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
-
-
+<iframe src="https://plot.ly/~RPlotBot/3045.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 If you want more control for the binning algorithm, you can supply a 2D table or matrix to `z`. In this case, the R package will impose it's colorscale default (and the `colors` argument can be used to control the colorscale from R):
 
@@ -56,6 +40,4 @@ plot_ly(diamonds, x = ~cut, y = ~clarity, z = ~cnt) %>%
   add_histogram2d()
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
-
-
+<iframe src="https://plot.ly/~RPlotBot/3047.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

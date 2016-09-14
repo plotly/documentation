@@ -41,6 +41,9 @@
       has_thumbnail: true
       display_as: chart_type
       order: 9 *see below for order instructions*
+      output: 
+        html_document:
+          keep_md: true
       ---
       ```
       *`order` defines the order in which the tutorials appear on plot.ly/r. Please take a look at https://plot.ly/r/ and order your tutorial next to similar chart types.
@@ -63,16 +66,16 @@
    ```
       
     ```
-      ```{r, echo=FALSE}
+      ```{r, echo=FALSE, results='markup'}
       plotly_POST(filename="your-chart-type/your-filename")```
     ```
 
 2. Convert all the `.Rmd` files in your current directory:
 
-  `for (i in dir(pattern = "\\.Rmd")) knitr::knit(i)`
+  `for (i in dir(pattern = "\\.Rmd")) rmarkdown::render(i)`
   
   Or, in the terminal (`documentation/_posts/r`) with: 
-  `Rscript -e 'for (i in dir(pattern = "\\\.Rmd")) knitr::knit(i)'`
+  `Rscript -e 'for (i in dir(pattern = "\\\.Rmd")) rmarkdown::render(i)'`
   
 3. Add Thumbnail Images
   - Thumbnail images should named `your-tutorial-chart.jpg` and be *EXACTLY* 160px X 160px
