@@ -74,9 +74,6 @@ plot_ly(
 )
 ```
 
-```
-## Error: Variables must be length 1 or 12.
-## Problem variables: 'x', 'y', 'z', 'intensity', 'color'
-```
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 
