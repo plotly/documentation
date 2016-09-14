@@ -46,26 +46,29 @@
       *`order` defines the order in which the tutorials appear on plot.ly/r. Please take a look at https://plot.ly/r/ and order your tutorial next to similar chart types.
       - Under the header, include the following r code snippet. That first line of R code ensures that all subsequent code chunks do not relay message(s) or output results. That's because, in most cases, we want to provide code that produces an "offline" plot, but since [Jekyll and htmlwidgets aren't compatible](https://github.com/yihui/knitr-jekyll/issues/8#issuecomment-104112826), we're forced to embed plots as iframes.
       
-
-      ``` {r, echo = FALSE, message=FALSE}
-      knitr::opts_chunk$set(message = FALSE, results = 'hide')
-      Sys.setenv("plotly_username"="RPlotBot")
-      Sys.setenv("plotly_api_key"="q0lz6r5efr")
       ```
-
+        ```{r, echo = FALSE, message=FALSE}
+        knitr::opts_chunk$set(message = FALSE, results = 'hide')
+        Sys.setenv("plotly_username"="RPlotBot")
+        Sys.setenv("plotly_api_key"="q0lz6r5efr")
+        ```
+      ```
       
     - To include r code and plots in the tutorial format the code snippets and plots in the following format:
       
-      ``` {r}
+    ```
+      ```{r}
       library(plotly)
       #Add your R Code Here i.e.:
       plot_ly(economics, x = ~date, y = ~uempmed, name = "unemployment")
       ```
+   ```
       
-      
-      ``` {r, echo=FALSE}
+    ```
+      ```{r, echo=FALSE}
       plotly_POST(filename="your-chart-type/your-filename")
       ```
+    ```
 
 2. Convert all the `.Rmd` files in your current directory:
 
