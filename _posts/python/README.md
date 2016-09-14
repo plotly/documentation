@@ -91,13 +91,14 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
       language='python', page_type='example_index',
       display_as='chart_type', order=2)  
   ```
-  - `display_as` sets where your tutorial shows up 
+  - `display_as` sets in which section your tutorial is displayed 
     - 'basic' = https://plot.ly/python/#basic-charts
     - 'statistical' = https://plot.ly/python/#statistical-charts
     - 'scientific' = https://plot.ly/python/#scientific-charts
     - 'financial' = https://plot.ly/python/#financial-charts
     - 'maps' = https://plot.ly/python/#maps
     - '3d_charts' = https://plot.ly/python/#3d-charts
+    - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/documentation_eg.html#L1)
   - `order` defines the order in which the tutorials appear on plot.ly/python. Please take a look at https://plot.ly/python/ anorder your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
   
 8. Add Thumbnail Images
@@ -109,11 +110,11 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
     - From the <b>Amazon Web Services Console</b> select <b>S3 (Scalable Storage in the Cloud)</b> then select <b>plotly-tutorials</b> -> <b>plotly-documentation</b> -> <b>thumbnail</b>
     - Now from <b>All Buckets /plotly-tutorials/plotly-documentation/thumbnail</b> select the <b>Actions</b> dropdown and <b>upload</b> your .jpg file
     
-##### In the teminal in `documentation`
+##### In the terminal in `documentation`
 9. Commit and Push your tutorial
   - `git add` your .ipynb and .html files
   - `git commit -m "include a message about the tutorial you're adding"`
-  - `git push origin source`
+  - `git push origin source-design-merge`
 
 10. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally 
 11. Deploy with `rake deploy`
