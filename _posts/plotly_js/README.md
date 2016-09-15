@@ -40,11 +40,13 @@ Our javascript tutorials are written in HTML files with embeded [codepen](http:/
   page_type: example_index
   display_as: **SEE BELOW 
   order: ***SEE BELOW
+  markdown_content: |
+    indented content in markdown format which will prefix an example ****SEE BELOW
   ---
   {% assign examples = site.posts | where:"language","plotly_js" | where:"suite","add-chart-type-or-topic"**** | sort: "order" %}
   {% include auto_examples.html examples=examples %}
   ```
-  - **`display_as` sets where your tutorial is displayed 
+  - \*\*`display_as` sets where your tutorial is displayed 
       - 'basic' = https://plot.ly/javascipt/#basic-charts
       - 'statistical' = https://plot.ly/javascipt/#statistical-charts
       - 'scientific' = https://plot.ly/javascipt/#scientific-charts
@@ -52,7 +54,8 @@ Our javascript tutorials are written in HTML files with embeded [codepen](http:/
       - 'maps' = https://plot.ly/javascipt/#maps
       - '3d_charts' = https://plot.ly/javascipt/#3d-charts
       - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/documentation_eg.html#L1)
-  - *** `order` defines the order in which the tutorials appear in each section on plot.ly/javascript. Please take a look at https://plot.ly/javascript/ and order your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
+  - \*\*\* `order` defines the order in which the tutorials appear in each section on plot.ly/javascript. Please take a look at https://plot.ly/javascript/ and order your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
+  - \*\*\*\* `markdown_content` is rendered directly above the examples. In general, it is best to *avoid* paragraph-formatted explanation and let the simpicity of the example speak for itself, but that's not always possible. Take note that headings in this block *are* reflected in the sidebar.
 
 3. Create a Codepen example. Use Plotly's Codepen account to create an example that clearly demonstrates the feature that you're discussing in the doc.
 
@@ -89,7 +92,7 @@ Our javascript tutorials are written in HTML files with embeded [codepen](http:/
   - Thumbnail images should be clear and interesting. You do not need to capture the ENTIRE chart, but rather focus on the most interesting part of the chart. 
   - Use images.plot.ly for adding new images. 
     - Log-in here: https://661924842005.signin.aws.amazon.com/console
-    - Username: Plotly_Editors
+    - Username: Plotly\_Editors
     - From the <b>Amazon Web Services Console</b> select <b>S3 (Scalable Storage in the Cloud)</b> then select <b>plotly-tutorials</b> -> <b>plotly-documentation</b> -> <b>thumbnail</b>
     - Now from <b>All Buckets /plotly-tutorials/plotly-documentation/thumbnail</b> select the <b>Actions</b> dropdown and <b>upload</b> your .jpg file
     
@@ -107,7 +110,7 @@ Our javascript tutorials are written in HTML files with embeded [codepen](http:/
   <b>PLEASE</b> visit https://plot.ly/javascript/your-tutorial and make sure everything looks correct :)
 
   - Some common problems that you should check for:
-    - Make sure all plots/codepen embeds appear! (*you may want to sign out of your Plotly/codepen account to ensure you didn't accidentally embed private plots)
+    - Make sure all plots/codepen embeds appear! (\*you may want to sign out of your Plotly/codepen account to ensure you didn't accidentally embed private plots)
     - The thumbnail image appears on: https://plot.ly/javascript/ 
 
 Thanks for contributing to our documentation!!
