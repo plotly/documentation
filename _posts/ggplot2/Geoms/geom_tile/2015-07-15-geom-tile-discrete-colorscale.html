@@ -1,0 +1,30 @@
+---
+name: Custom discrete color scale using <code>geom_tile</code>
+plot_url: https://plot.ly/~RPlotBot/2921/custom-discrete-colorscale/
+arrangement: horizontal
+language: ggplot2
+suite: tile
+description: Inspired by <a href="http://stackoverflow.com/questions/10981324/ggplot2-heatmap-with-colors-for-ranged-values">Stack Overflow</a>.
+order: 4
+sitemap: false
+---
+library(plotly)
+library(reshape2)
+library(RColorBrewer)
+
+# Cut into factors
+levels <- cut(volcano, breaks = seq(min(volcano), max(volcano), by = 10), right = F)
+
+# Convert into matrix
+df <- matrix(levels, nrow = nrow(volcano), byrow = F)
+nColor <- length(unique(levels))
+
+# Plot
+p <- df %>%
+  melt() %>%
+  ggplot(aes(Var1, Var2, fill = value)) + geom_tile() +
+  scale_fill_manual(values = brewer.pal(nColor, "Set3"))+
+  ggtitle("Custom Discrete Colorscale")
+
+ggplotly(p)
+
