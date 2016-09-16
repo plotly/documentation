@@ -11,30 +11,42 @@ page_type: example_index
 has_thumbnail: true
 display_as: file_settings
 order: 5
+output:
+  html_document:
+    highlight: null
+    keep_md: yes
+    theme: null
 ---
 
 ## Embedding plotly graphs in Rmd files
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE, results = 'hide')
+knitr::opts_chunk$set(message = FALSE)
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
 
 If you are using [rmarkdown](http://rmarkdown.rstudio.com/) with HTML output, printing a `plotly` object in a code chunk will result in an interactive HTML graph. When using rmarkdown with non-HTML output, printing a `plotly` object will result in a png screenshot of the graph.
 
-```{r}
+```{r, results = "hide"}
 library(plotly)
-plot_ly(economics, x = ~date, y = ~unemploy / pop)
+p <- plot_ly(economics, x = ~date, y = ~unemploy / pop)
+p
 ```
 
 ```{r, echo=FALSE}
 plotly_POST(filename='r-docs/knitr-example')
 ```
 
+Sometimes, you may want to print a _list_ of plotly objects. If, for some reason, you don't want to use the [`subplot()` function](https://plot.ly/r/subplots/), you can print a list of htmlwidgets in a single code chunk using the `tagList()` function from the **htmltools** package:
+
+```{r, results = "hide"}
+htmltools::tagList(list(p, p))
+```
+
 You can also host your figures on a plotly server via `plotly_POST()` which returns a figure object. When a figure object is printed in an rmarkdown/knitr document, it embeds the figure as an iframe, displaying the plot as it appears on your plotly account.
 
-```{r}
+```{r, results='hide'}
 f <- plotly_POST(p)
 class(f)
 f
