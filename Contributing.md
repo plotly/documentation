@@ -39,21 +39,12 @@ The full bleed R pages are created with R Markdown. Here's how:
   $ git fetch origin
   $ git checkout source-design-merge
   ```
-2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - Install Jekyll version 3.1.2:
+2. Install the dependencies with bundler:
 
   ```
-  $ gem install jekyll -v 3.1.2
+  $ bundle install
   ```
-3. Install a couple dependencies:
-
-  ```
-  $ sudo gem install jekyll-redirect-from
-  $ sudo gem install jekyll-sitemap
-  $ sudo gem install terminal-notifier
-  $ sudo gem install jemoji
-  $ sudo gem install redcarpet
-  ```
-4. In the documentation repo: `$ jekyll serve --config _config_dev.yml`
+4. In the documentation repo: `$ bundle exec jekyll serve --config _config_dev.yml`
 5. Visit the pages at: [http://localhost:4000/python/](http://localhost:4000/python/)
 6. When you make changes, jekyll should automatically regenerate for you. Read the messages in your terminal to check it out
 
@@ -82,19 +73,11 @@ and it'll load everything.
 ## Deploying changes
 Our repo has become too big for github to process. Edit files on the `source-design-merge` branch instead of the `gh-pages` branch.
 
-To deploy, first install `_config.yml` package dependencies:
-```
-documentation (source-design-merge) $ sudo gem install jekyll-redirect-from
-documentation (source-design-merge) $ sudo gem install jekyll-sitemap
-documentation (source-design-merge) $ sudo gem install terminal-notifier
-documentation (source-design-merge) $ sudo gem install jemoji
-documentation (source-design-merge) $ sudo gem install redcarpet
-
-```
+To deploy, first run `$ bundle install` to install the dependencies (step 2 above).
 
 Then, deploy changes with:
 ```
-documentation (source-design-merge) $ rake deploy
+documentation (source-design-merge) $ bundle exec rake deploy
 ```
 
 (from the `source-design-merge` branch in the root of the `documentation` repo)
