@@ -1,0 +1,79 @@
+var i, j, t, x, y, name;
+var frames = [];
+var nFrames = 10;
+var n = 80;
+var reverseFrames = [];
+
+for (i = 0; i < nFrames; i++) {
+  var fill = 0.1 + 0.9 * i / (nFrames - 1);
+  x = [-1];
+  y = [0];
+
+  // A wave across the top:
+  for (j = 0; j < n; j++) {
+    t = j / (n - 1);
+    x.push(-1 - fill + (2 + 2 * fill) * t);
+    y.push(fill + 0.05 * Math.sin(t * Math.PI * 2 * i));
+  }
+
+  // Close the loop to draw the water:
+  x.push(1, -1);
+  y.push(0, 0);
+
+  // Choose a name:
+  name = 'frame' + i;
+
+  // Store it in an array so we can animate in reverse order:
+  reverseFrames.unshift(name);
+
+  // Create the frame:
+  frames.push({
+    name: name,
+    data: [{x: x, y: y}],
+    group: i < nFrames / 2 ? 'lower' : 'upper'
+  })
+}
+
+Plotly.plot('graph', [{
+  // Set up the initial water:
+  x: frames[0].data[0].x,
+  y: frames[0].data[0].y,
+  mode: 'lines',
+  fill: 'toself',
+  showlegend: false,
+  line: {simplify: false}
+}, {
+  // Draw a glass:
+  x: [-1, 1, 2.1, -2.1, -1],
+  y: [0, 0, 1.1, 1.1, 0],
+  mode: 'lines',
+  fill: 'toself',
+  showlegend: false,
+  fillcolor: 'rgba(0, 0, 0, 0.1)',
+  line: {color: 'rgba(100,100,100,0.2)'}
+}], {
+  xaxis: {range: [-3, 3]},
+  yaxis: {range: [-0.1, 1.5]}
+}).then(function() {
+  // Add the frames so we can animate them:
+  Plotly.addFrames('graph', frames);
+});
+
+// Stop the animation by animating to an empty set of frames:
+function stopAnimation () {
+  Plotly.animate('graph', [], {mode: 'next'});
+}
+
+function startAnimation (groupOrFrames, mode) {
+  Plotly.animate('graph', groupOrFrames, {
+    transition: {
+      duration: 500,
+      easing: 'linear'
+    },
+    frame: {
+      duration: 500,
+      redraw: false,
+    },
+    mode: mode
+  });
+}
