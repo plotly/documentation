@@ -59,7 +59,7 @@ Our javascript tutorials are written in HTML files with embeded [codepen](http:/
 
 3. Create a Codepen example. Use Plotly's Codepen account to create an example that clearly demonstrates the feature that you're discussing in the doc.
 
-4. Add an HTML file for each example with the codepen example embedded within. The HTML file should have a header (template below), followed by the javascript code used in the codepen example.
+4. Add an HTML file for each example with the codepen example embedded within. The codepen example must be embedded with `https` (not `http`). The HTML file should have a header (template below), followed by the javascript code used in the codepen example.
   ```
   ---
   name: Basic Bar Chart **
