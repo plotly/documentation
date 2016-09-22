@@ -2,25 +2,84 @@
 # Find your api_key here: https://plot.ly/settings/api
 
 import plotly.plotly as py
-from plotly.graph_objs import Scatter, Data, Layout
+import plotly.tools as tls    
+import plotly.graph_objs as go 
 
-data = Data([Scatter(x=[0,1,2,3,4,5,6], y=[0,1,2,3,4,5] )])
+import numpy as np
+from pymatgen.io.vasp import Vasprun
+from pymatgen.electronic_structure.core import Spin
 
-layout = dict(
-        yaxis = dict(
-            type = 'log',
-            tickvals = [ 1.5, 2.53, 5.99999 ]
-        ),
-        xaxis = dict(
-            ticktext = [
-                "<span style=\"fill:green\">green</span> eggs",
-                "&amp; ham",
-                "H<sub>2</sub>O",
-                "Gorgonzola"
-            ],
-            tickvals = [ 0, 1, 2, 3, 4, 5 ]
+dosrun = Vasprun("Si_bands/DOS/vasprun.xml")
+spd_dos = dosrun.complete_dos.get_spd_dos()
+run = Vasprun("Si_bands/Bandes/vasprun.xml", parse_projected_eigen = True)
+bands = run.get_band_structure("Si_bands/Bandes/KPOINTS", line_mode=True, efermi=dosrun.efermi)
+
+emin = 1e100
+emax = -1e100
+for spin in bands.bands.keys():
+    for band in range(bands.nb_bands):
+        emin = min(emin, min(bands.bands[spin][band]))
+        emax = max(emax, max(bands.bands[spin][band]))
+emin = emin - bands.efermi - 1
+emax = emax - bands.efermi + 1
+
+kptslist = range(len(bands.kpoints))
+bandTraces = list()
+for band in range(bands.nb_bands):
+    bandTraces.append(
+        go.Scatter(
+            x=kptslist,
+            y=[e - bands.efermi for e in bands.bands[Spin.up][band]],
+            mode="lines",
+            line=go.Line(color="#666666"),
+            showlegend=False
         )
     )
 
-fig = { 'data':data, 'layout':layout }
-url = py.plot( fig, filename='enumerated-ticks' )
+labels = [r"$L$", r"$\Gamma$", r"$X$", r"$U,K$", r"$\Gamma$"]
+step = len(bands.kpoints) / (len(labels) - 1)
+# vertical lines
+vlines = list()
+for i, label in enumerate(labels):
+    vlines.append(
+        go.Scatter(
+            x=[i * step, i * step],
+            y=[emin, emax],
+            mode="lines",
+            line=go.Line(color="#111111", width=1),
+            showlegend=False
+        )
+    )
+
+bandxaxis = go.XAxis(
+    title="k-points",
+    range=[0, len(bands.kpoints)],
+    showgrid=True,
+    showline=True,
+    ticks="", 
+    showticklabels=True,
+    mirror=True,
+    linewidth=2,
+    ticktext=labels,
+    tickvals=[i * step for i in range(len(labels))]
+)
+bandyaxis = go.YAxis(
+    title="$E - E_f \quad / \quad \\text{eV}$",
+    range=[emin, emax],
+    showgrid=True,
+    showline=True,
+    zeroline=True,
+    mirror="ticks",
+    ticks="inside",
+    linewidth=2,
+    tickwidth=2,
+    zerolinewidth=2
+)
+bandlayout = go.Layout(
+    title="Bands diagram of Silicon",
+    xaxis=bandxaxis,
+    yaxis=bandyaxis,
+)
+
+bandfig = go.Figure(data=bandTraces + vlines, layout=bandlayout)
+plot_url = py.plot(bandfig, filename="Bands_Si", auto_open=False)
