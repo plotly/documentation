@@ -1,16 +1,4 @@
----
-title: R Gauge Charts | Examples | Plotly
-name: Gauge Charts
-permalink: r/gauge-charts/
-description: How to make gauge charts in R with Plotly.
-layout: base
-thumbnail: thumbnail/gauge.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: chart_type
-order: 10
----
+# R Gauge Charts | Examples | Plotly
 
 
 
@@ -104,8 +92,6 @@ base_plot <- layout(
 
 base_plot
 ```
-
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
 
 
 

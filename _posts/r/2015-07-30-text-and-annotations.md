@@ -1,15 +1,4 @@
----
-title: Text and Annotations in R | Examples | Plotly
-name: Text and Annotations
-permalink: r/text-and-annotations/
-description: How to add text labels and annotations to plots in R.
-layout: base
-thumbnail: thumbnail/text-and-annotations.jpg
-language: r
-page_type: example_index
-has_thumbnail: false
-display_as: layout_opt
----
+# Text and Annotations in R | Examples | Plotly
 
 
 
@@ -24,8 +13,6 @@ plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
   add_text()
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
-
 
 
 ### Hover Text
@@ -35,8 +22,6 @@ plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
 plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
   add_markers()
 ```
-
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
 
 
 
@@ -53,8 +38,6 @@ plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
   add_markers() %>%
   add_text(textfont = t, textposition = "top middle")
 ```
-
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 
 
@@ -80,8 +63,6 @@ plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
   add_markers() %>%
   layout(annotations = a)
 ```
-
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png)
 
 
 
@@ -110,8 +91,6 @@ plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
   layout(annotations = a)
 ```
 
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png)
-
 
 
 ### Custom Hover Text
@@ -126,7 +105,5 @@ mtcars %>%
   ) %>% 
   layout(title ="Custom Hover Text")
 ```
-
-![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png)
 
 

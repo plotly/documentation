@@ -1,16 +1,4 @@
----
-title: 3D Scatter Plots in R | Examples | Plotly
-name: 3D Scatter Plots
-permalink: r/3d-scatter-plots/
-description: How to make interactive 3D scatter plots in R.
-layout: base
-thumbnail: thumbnail/3d-scatter.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: chart_type
-order: 0
----
+# 3D Scatter Plots in R | Examples | Plotly
 
 
 # 3D Scatter Plots in R
@@ -31,8 +19,6 @@ library(plotly)
 plot_ly(df, x = ~x, y = ~y, z = ~z) %>% add_markers()
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
-
 
 
 
@@ -45,8 +31,6 @@ d <- diamonds[sample(nrow(diamonds), 1000), ]
 plot_ly(d, x = ~carat, y = ~price, z = ~depth) %>%
   add_markers(text = ~paste("Clarity: ", clarity))
 ```
-
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
 
 
 

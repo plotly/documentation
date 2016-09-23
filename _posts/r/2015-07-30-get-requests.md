@@ -1,15 +1,4 @@
----
-title: Download Plotly Graphs into R
-name: Get Requests
-permalink: r/get-requests/
-description: How to download plotly users's public graphs and data with R.
-layout: base
-thumbnail: thumbnail/get-requests.jpg
-language: r
-page_type: example_index
-has_thumbnail: false
-display_as: get_request
----
+# Download Plotly Graphs into R
 
 # Downloading Plotly Graphs into R
 
@@ -34,18 +23,16 @@ layout(fig, title = paste("Modified on ", Sys.time()))
 ```
 
 ```
-## Warning: 'scatter' traces don't have these attributes: '', 'family'
+## Warning: 'layout' objects don't have these attributes: '', 'family'
 ## Valid attributes include:
-## 'font', 'title', 'titlefont', 'autosize', 'width', 'height', 'margin', 'paper_bgcolor', 'plot_bgcolor', 'separators', 'hidesources', 'smith', 'showlegend', 'dragmode', 'hovermode', 'xaxis', 'yaxis', 'scene', 'geo', 'ternary', 'mapbox', 'legend', 'annotations', 'shapes', 'images', 'updatemenus', 'radialaxis', 'angularaxis', 'direction', 'orientation', 'barmode', 'bargap'
+## 'font', 'title', 'titlefont', 'autosize', 'width', 'height', 'margin', 'paper_bgcolor', 'plot_bgcolor', 'separators', 'hidesources', 'smith', 'showlegend', 'dragmode', 'hovermode', 'xaxis', 'yaxis', 'scene', 'geo', 'legend', 'annotations', 'shapes', 'images', 'updatemenus', 'ternary', 'mapbox', 'radialaxis', 'angularaxis', 'direction', 'orientation', 'barmode', 'bargap', 'mapType'
 ```
-
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
 
 
 ```
-## Warning: 'scatter' traces don't have these attributes: '', 'family'
+## Warning: 'layout' objects don't have these attributes: '', 'family'
 ## Valid attributes include:
-## 'font', 'title', 'titlefont', 'autosize', 'width', 'height', 'margin', 'paper_bgcolor', 'plot_bgcolor', 'separators', 'hidesources', 'smith', 'showlegend', 'dragmode', 'hovermode', 'xaxis', 'yaxis', 'scene', 'geo', 'ternary', 'mapbox', 'legend', 'annotations', 'shapes', 'images', 'updatemenus', 'radialaxis', 'angularaxis', 'direction', 'orientation', 'barmode', 'bargap'
+## 'font', 'title', 'titlefont', 'autosize', 'width', 'height', 'margin', 'paper_bgcolor', 'plot_bgcolor', 'separators', 'hidesources', 'smith', 'showlegend', 'dragmode', 'hovermode', 'xaxis', 'yaxis', 'scene', 'geo', 'legend', 'annotations', 'shapes', 'images', 'updatemenus', 'ternary', 'mapbox', 'radialaxis', 'angularaxis', 'direction', 'orientation', 'barmode', 'bargap', 'mapType'
 ```
 
 ### Adding a trace to a subplot figure
@@ -57,38 +44,36 @@ add_lines(fig, x = c(1, 2), y = c(1, 2), xaxis = "x2", yaxis = "y2")
 ```
 
 ```
-## Warning: 'scatter' traces don't have these attributes: 'enclos'
+## Warning: 'layout' objects don't have these attributes: 'enclos'
 ## Valid attributes include:
-## 'font', 'title', 'titlefont', 'autosize', 'width', 'height', 'margin', 'paper_bgcolor', 'plot_bgcolor', 'separators', 'hidesources', 'smith', 'showlegend', 'dragmode', 'hovermode', 'xaxis', 'yaxis', 'scene', 'geo', 'ternary', 'mapbox', 'legend', 'annotations', 'shapes', 'images', 'updatemenus', 'radialaxis', 'angularaxis', 'direction', 'orientation', 'barmode', 'bargap'
+## 'font', 'title', 'titlefont', 'autosize', 'width', 'height', 'margin', 'paper_bgcolor', 'plot_bgcolor', 'separators', 'hidesources', 'smith', 'showlegend', 'dragmode', 'hovermode', 'xaxis', 'yaxis', 'scene', 'geo', 'legend', 'annotations', 'shapes', 'images', 'updatemenus', 'ternary', 'mapbox', 'radialaxis', 'angularaxis', 'direction', 'orientation', 'barmode', 'bargap', 'mapType'
 ```
 
 ```
-## Warning: 'scatter' traces don't have these attributes: 'inherit'
+## Warning: 'scatter' objects don't have these attributes: 'inherit'
 ## Valid attributes include:
-## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'ids', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'idssrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
+## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
 
-## Warning: 'scatter' traces don't have these attributes: 'inherit'
+## Warning: 'scatter' objects don't have these attributes: 'inherit'
 ## Valid attributes include:
-## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'ids', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'idssrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
+## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
 ```
-
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
 
 
 ```
-## Warning: 'scatter' traces don't have these attributes: 'enclos'
+## Warning: 'layout' objects don't have these attributes: 'enclos'
 ## Valid attributes include:
-## 'font', 'title', 'titlefont', 'autosize', 'width', 'height', 'margin', 'paper_bgcolor', 'plot_bgcolor', 'separators', 'hidesources', 'smith', 'showlegend', 'dragmode', 'hovermode', 'xaxis', 'yaxis', 'scene', 'geo', 'ternary', 'mapbox', 'legend', 'annotations', 'shapes', 'images', 'updatemenus', 'radialaxis', 'angularaxis', 'direction', 'orientation', 'barmode', 'bargap'
+## 'font', 'title', 'titlefont', 'autosize', 'width', 'height', 'margin', 'paper_bgcolor', 'plot_bgcolor', 'separators', 'hidesources', 'smith', 'showlegend', 'dragmode', 'hovermode', 'xaxis', 'yaxis', 'scene', 'geo', 'legend', 'annotations', 'shapes', 'images', 'updatemenus', 'ternary', 'mapbox', 'radialaxis', 'angularaxis', 'direction', 'orientation', 'barmode', 'bargap', 'mapType'
 ```
 
 ```
-## Warning: 'scatter' traces don't have these attributes: 'inherit'
+## Warning: 'scatter' objects don't have these attributes: 'inherit'
 ## Valid attributes include:
-## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'ids', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'idssrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
+## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
 
-## Warning: 'scatter' traces don't have these attributes: 'inherit'
+## Warning: 'scatter' objects don't have these attributes: 'inherit'
 ## Valid attributes include:
-## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'ids', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'idssrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
+## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
 ```
 
 ### Restyle traces
@@ -104,22 +89,20 @@ fig %>%
 ```
 
 ```
-## Warning: 'scatter' traces don't have these attributes: 'inherit', 'sizesrc', 'size'
+## Warning: 'scatter' objects don't have these attributes: 'inherit', 'sizesrc', 'size'
 ## Valid attributes include:
-## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'ids', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'idssrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
+## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
 
-## Warning: 'scatter' traces don't have these attributes: 'inherit', 'sizesrc', 'size'
+## Warning: 'scatter' objects don't have these attributes: 'inherit', 'sizesrc', 'size'
 ## Valid attributes include:
-## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'ids', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'idssrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
+## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
 ```
-
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png)
 
 
 ```
-## Warning: 'scatter' traces don't have these attributes: 'inherit', 'sizesrc', 'size'
+## Warning: 'scatter' objects don't have these attributes: 'inherit', 'sizesrc', 'size'
 ## Valid attributes include:
-## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'ids', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'idssrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
+## 'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'hoverinfo', 'stream', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'text', 'mode', 'hoveron', 'line', 'connectgaps', 'fill', 'fillcolor', 'marker', 'textposition', 'textfont', 'r', 't', 'error_y', 'error_x', 'xaxis', 'yaxis', 'xsrc', 'ysrc', 'textsrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key'
 ```
 
 You'll probably want to inspect the traces before you use this function, and I recommend using the `plotly_json()` function to do so.

@@ -1,16 +1,4 @@
----
-title: Line and Scatter Plots in R | Examples | Plotly
-name: Line and Scatter Plots
-permalink: r/line-and-scatter/
-description: How to create line and scatter plots in R. Examples of basic and advanced scatter plots, time series line plots, colored charts, and density plots.
-layout: base
-thumbnail: thumbnail/line-and-scatter.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: chart_type
-order: 1
----
+# Line and Scatter Plots in R | Examples | Plotly
 
 
 
@@ -25,8 +13,6 @@ p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length)
 p
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
-
 
 
 ### Scatter Plot with Qualitative Colorscale
@@ -36,8 +22,6 @@ p
 add_markers(p, color = ~Species)
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
-
 
 
 ### ColorBrewer Palette Names
@@ -46,8 +30,6 @@ add_markers(p, color = ~Species)
 ```r
 add_markers(p, color = ~Species, colors = "Set1")
 ```
-
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 
 
@@ -61,8 +43,6 @@ pal <- c("red", "blue", "green")
 add_markers(p, color = ~Species, colors = pal)
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png)
-
 
 
 To ensure a particular data value gets mapped to particular color, provide a character vector of color codes, and match the names attribute accordingly.
@@ -73,8 +53,6 @@ pal <- setNames(pal, c("virginica", "setosa", "versicolor"))
 add_markers(p, color = ~Species, colors = pal)
 ```
 
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png)
-
 
 
 ### Plotting markers and lines, efficiently
@@ -84,8 +62,6 @@ add_markers(p, color = ~Species, colors = pal)
 add_trace(p, color = ~Species, mode = "markers+lines")
 ```
 
-![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png)
-
 
 
 ## Mapping data to symbol and linetype
@@ -94,8 +70,6 @@ add_trace(p, color = ~Species, mode = "markers+lines")
 ```r
 add_trace(p, symbol = ~Species, linetype = ~Species)
 ```
-
-![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png)
 
 
 
@@ -110,8 +84,6 @@ plot_ly(
   color = ~carat, size = ~carat
 )
 ```
-
-![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)
 
 
 
@@ -129,8 +101,6 @@ plot_ly(df, x = ~x, y = ~y, color = ~cut) %>%
   add_lines()
 ```
 
-![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png)
-
 
 
 ### Line Interpolation Options
@@ -147,7 +117,5 @@ plot_ly(x = ~x) %>%
   add_lines(y = y + 20, name = "vh", line = list(shape = "vh")) %>%
   add_lines(y = y + 25, name = "hv", line = list(shape = "hv"))
 ```
-
-![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png)
 
 

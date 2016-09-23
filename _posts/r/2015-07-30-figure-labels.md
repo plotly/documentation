@@ -1,15 +1,4 @@
----
-title: Axes Labels in R
-name: Axes Labels
-permalink: r/figure-labels
-description: How to set the title and axis-titles in R
-layout: base
-thumbnail: figure-labels.jpg
-language: r
-page_type: example_index
-has_thumbnail: false
-display_as: layout_opt
----
+# Axes Labels in R
 
 
 
@@ -35,8 +24,6 @@ plot_ly(x = ~rnorm(10), y = ~rnorm(10), mode = "markers") %>%
   layout(xaxis = x, yaxis = y)
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
-
 <iframe src="https://plot.ly/~RPlotBot/2817.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 # Figure Labels for 3d Charts
@@ -59,7 +46,5 @@ plot_ly(x = ~sqrt(1 - u^2) * cos(theta), y = ~sqrt(1 - u^2) * sin(theta), z = ~u
       zaxis = list(title = "Z")
     ))
 ```
-
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
 
 <iframe src="https://plot.ly/~RPlotBot/2814.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

@@ -1,14 +1,4 @@
----
-title: R Filenames, Folders, and Updating Plotly Graphs in R | Examples | Plotly
-name: Filenames, Folders, and Updating Plotly Graphs in R
-permalink: r/file-options/
-description: How to save R graphs to the plotly cloud
-layout: base
-language: r
-page_type: example_index
-has_thumbnail: false
-display_as: file_settings
----
+# R Filenames, Folders, and Updating Plotly Graphs in R | Examples | Plotly
 
 # Setting Filenames and Overwriting Plotly Graphs in R
 

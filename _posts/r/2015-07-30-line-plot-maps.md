@@ -1,16 +1,4 @@
----
-title: Lines on Maps in R | Examples | Plotly
-name: Lines on Maps
-permalink: r/lines-on-maps/
-description: How to draw lines, great circles, and contours on maps in R. Lines on maps can show distance between geographic points or be contour lines (isolines, isopleths, or isarithms).
-layout: base
-thumbnail: thumbnail/flight-paths.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: maps
-order: 3
----
+# Lines on Maps in R | Examples | Plotly
 
 
 
@@ -35,25 +23,22 @@ geo <- list(
   countrycolor = toRGB("gray80")
 )
 
-plot_ly(locationmode = 'USA-states', color = I("red")) %>%
-  add_scattergeo(
-    data = air, lon = ~long, lat = ~lat, text = ~airport,
-    size = ~cnt, mode = "markers", hoverinfo = "text", alpha = 0.5
+plot_geo(locationmode = 'USA-states', color = I("red")) %>%
+  add_markers(
+    data = air, x = ~long, y = ~lat, text = ~airport,
+    size = ~cnt, hoverinfo = "text", alpha = 0.5
   ) %>%
-  add_scattergeo(
+  add_segments(
     data = group_by(flights, id),
-    lat = ~c(start_lat, end_lat),
-    lon = ~c(start_lon, end_lon),
-    alpha = 0.3, size = I(1),
-    mode = 'lines', hoverinfo = "none"
+    x = ~start_lon, xend = ~end_lon,
+    y = ~start_lat, yend = ~end_lat,
+    alpha = 0.3, size = I(1), hoverinfo = "none"
   ) %>%
   layout(
     title = 'Feb. 2011 American Airline flight paths<br>(Hover for airport names)',
     geo = geo, showlegend = FALSE, height=800
-  ) 
+  )
 ```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
 
 
 
@@ -62,8 +47,9 @@ plot_ly(locationmode = 'USA-states', color = I("red")) %>%
 
 ```r
 library(plotly)
-plot_ly(lat = c(40.7127, 51.5072), lon = c(-74.0059, 0.1275)) %>%
-  add_scattergeo(mode = 'lines', color = I("blue"), size = I(2)) %>%
+
+plot_geo(lat = c(40.7127, 51.5072), lon = c(-74.0059, 0.1275)) %>%
+  add_lines(color = I("blue"), size = I(2)) %>%
   layout(
     title = 'London to NYC Great Circle',
     showlegend = FALSE,
@@ -91,8 +77,6 @@ plot_ly(lat = c(40.7127, 51.5072), lon = c(-74.0059, 0.1275)) %>%
     )
   )
 ```
-
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
 
 
 
@@ -138,16 +122,14 @@ geo <- list(
   )
 )
 
-plot_ly(d, lat = ~lat, lon = ~lon) %>%
+plot_geo(d) %>%
   group_by(line) %>%
-  add_scattergeo() %>%
+  add_lines(x = ~lon, y = ~lat) %>%
   layout(
     showlegend = FALSE, geo = geo,
     title = 'Contour lines over globe<br>(Click and drag to rotate)'
   )
 ```
-
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 
 

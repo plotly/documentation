@@ -1,19 +1,9 @@
----
-title: Scatter Plots on Maps in R | Examples | Plotly
-name: Scatter Plots on Maps
-permalink: r/scatter-plots-on-maps/
-description: How to make scatter plots on maps in R. Scatter plots on maps highlight geographic areas and can be colored by value.
-layout: base
-thumbnail: thumbnail/scatter-plot-on-maps.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: maps
----
+# Scatter Plots on Maps in R | Examples | Plotly
 
 
 
 # US Airports Map in R
+
 
 ```r
 library(plotly)
@@ -31,42 +21,16 @@ g <- list(
   subunitwidth = 0.5
 )
 
-# set the title of the colorbar
-m <- list(
-  colorbar = list(title = "Incoming flights<br />February 2011")
-)
-
-plot_ly(df, lat = ~lat, lon = ~long) %>%
-  add_scattergeo(
+plot_geo(df, lat = ~lat, lon = ~long) %>%
+  add_markers(
     text = ~paste(airport, city, state, paste("Arrivals:", cnt), sep = "<br />"), 
-    color = ~cnt, symbol = I("square"), size = I(8), hoverinfo = "text", marker = m
+    color = ~cnt, symbol = I("square"), size = I(8), hoverinfo = "text"
   ) %>%
+  colorbar(title = "Incoming flights<br />February 2011") %>%
   layout(
     title = 'Most trafficked US airports<br />(Hover for airport)', geo = g
   )
 ```
-
-```
-## Warning in min(x, na.rm = na.rm): no non-missing arguments to min;
-## returning Inf
-```
-
-```
-## Warning in max(x, na.rm = na.rm): no non-missing arguments to max;
-## returning -Inf
-```
-
-```
-## Warning in min(x, na.rm = na.rm): no non-missing arguments to min;
-## returning Inf
-```
-
-```
-## Warning in max(x, na.rm = na.rm): no non-missing arguments to max;
-## returning -Inf
-```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
 
 
 ```r
@@ -113,32 +77,12 @@ g <- list(
   )
 )
 
-plot_ly(df, lat = ~Lat, lon = ~Lon, color = ~Globvalue) %>%
-  add_scattergeo(text = ~paste(df$Globvalue, "inches"), hoverinfo = "text") %>%
+plot_geo(df, lat = ~Lat, lon = ~Lon, color = ~Globvalue) %>%
+  add_markers(
+    text = ~paste(df$Globvalue, "inches"), hoverinfo = "text"
+  ) %>%
   layout(title = 'US Precipitation 06-30-2015<br>Source: NOAA', geo = g)
 ```
-
-```
-## Warning in min(x, na.rm = na.rm): no non-missing arguments to min;
-## returning Inf
-```
-
-```
-## Warning in max(x, na.rm = na.rm): no non-missing arguments to max;
-## returning -Inf
-```
-
-```
-## Warning in min(x, na.rm = na.rm): no non-missing arguments to min;
-## returning Inf
-```
-
-```
-## Warning in max(x, na.rm = na.rm): no non-missing arguments to max;
-## returning -Inf
-```
-
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
 
 
 ```r

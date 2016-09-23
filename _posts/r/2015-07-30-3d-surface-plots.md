@@ -1,16 +1,4 @@
----
-title: 3D Surface Plots in R
-name: 3D Surface Plots
-permalink: r/3d-surface-plots/
-description: How to make interactive 3D surface plots in R.
-layout: base
-thumbnail: thumbnail/3d-surface.jpg
-language: r
-page_type: example_index
-has_thumbnail: TRUE
-display_as: chart_type
-order: 5
----
+# 3D Surface Plots in R
 
 
 # 3D Surface Plots in R
@@ -19,28 +7,25 @@ order: 5
 ```r
 library(plotly)
 # volcano is a numeric matrix that ships with R
-plot_ly(z = volcano, type = "surface")
+plot_ly(z = ~volcano) %>% add_surface()
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+<iframe src="https://plot.ly/~RPlotBot/3380.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### 2D Kernel Density Estimation
 
 
 ```r
 kd <- with(MASS::geyser, MASS::kde2d(duration, waiting, n = 50))
-plot_ly(x = kd$x, y = kd$y, z = kd$z, type = "surface")
+plot_ly(x = kd$x, y = kd$y, z = kd$z) %>% add_surface()
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
-
+<iframe src="https://plot.ly/~RPlotBot/3382.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Multiple Surfaces
 
 
 ```r
-library(plotly)
-
 z <- c(
   c(8.83,8.89,8.81,8.87,8.9,8.87),
   c(8.89,8.94,8.85,8.94,8.96,8.92),
@@ -62,11 +47,10 @@ dim(z) <- c(15,6)
 z2 <- z + 1
 z3 <- z - 1
 
-p <- plot_ly(showscale = FALSE) %>%
-  add_surface(z = z) %>%
-  add_surface(z = z2, opacity = 0.98) %>%
-  add_surface(z = z3, opacity = 0.98)
-p
+plot_ly(showscale = FALSE) %>%
+  add_surface(z = ~z) %>%
+  add_surface(z = ~z2, opacity = 0.98) %>%
+  add_surface(z = ~z3, opacity = 0.98)
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+<iframe src="https://plot.ly/~RPlotBot/3384.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

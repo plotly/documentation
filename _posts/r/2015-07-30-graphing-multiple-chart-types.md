@@ -1,16 +1,4 @@
----
-title: Layering Graphical Elements in R | Examples | Plotly
-name: Graphing Multiple Chart Types
-permalink: r/graphing-multiple-chart-types/
-description: How to design figures with multiple chart types in R. An example of a line chart with a line of best fit and an uncertainty band.
-layout: base
-thumbnail: thumbnail/mixed.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: chart_type
-order: 9
----
+# Layering Graphical Elements in R | Examples | Plotly
 
 
 
@@ -28,8 +16,6 @@ p <- plot_ly(mtcars, x = ~disp, color = I("black")) %>%
 p
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
-
 
   
 ### Loess smoother with uncertainty bounds
@@ -46,8 +32,6 @@ p %>%
     color = I("red"), name = "standard error"
   )
 ```
-
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
 
 
 
@@ -68,7 +52,5 @@ plot_ly() %>%
               color = I("gray80"), name = "80% confidence") %>%
   add_lines(x = time(fore$mean), y = fore$mean, color = I("blue"), name = "prediction")
 ```
-
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 

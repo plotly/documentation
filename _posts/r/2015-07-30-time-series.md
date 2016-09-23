@@ -1,15 +1,4 @@
----
-title: Time Series in R | Examples | Plotly
-name: Time Series
-permalink: r/time-series/
-description: How to plot date and time in R. An example of a time series plot with the POSIXct and Sys.Date classes.
-layout: base
-thumbnail: thumbnail/time-series.jpg
-language: r
-page_type: example_index
-has_thumbnail: false
-display_as: chart_type
----
+# Time Series in R | Examples | Plotly
 
 
 
@@ -26,8 +15,6 @@ y <- rnorm(length(x))
 plot_ly(x = ~x, y = ~y, text = paste(tm, "seconds from now in GMT"))
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
-
 ### POSIXct date time class without timezone
 
 
@@ -39,8 +26,6 @@ y <- rnorm(length(x))
 plot_ly(x = ~x, y = ~y, text = paste(tm, "seconds from now in", Sys.timezone()))
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
-
 ### Dates
 
 
@@ -51,5 +36,3 @@ x <- today - tm
 y <- rnorm(length(x))
 plot_ly(x = ~x, y = ~y, text = paste(tm, "days from today"))
 ```
-
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)

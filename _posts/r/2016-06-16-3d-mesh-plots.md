@@ -1,16 +1,4 @@
----
-title: 3D Mesh Plots in R | Examples | Plotly
-name: 3D Mesh Plots
-permalink: r/3d-mesh/
-description: How to make interactive 3D mesh plots in R.
-layout: base
-thumbnail: thumbnail/3d-mesh.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: 3d_charts
-order: 16
----
+# 3D Mesh Plots in R | Examples | Plotly
 
 
 
@@ -27,8 +15,6 @@ plot_ly(
   showscale = FALSE
 )
 ```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
 
 
 
@@ -51,8 +37,6 @@ plot_ly(
 )
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
-
 
 
 # Cube Mesh Plot
@@ -73,7 +57,5 @@ plot_ly(
   colors = colorRamp(rainbow(8))
 )
 ```
-
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 

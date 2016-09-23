@@ -1,16 +1,4 @@
----
-title: 3D Line Plots in R | Examples | Plotly
-name: 3D Line Plots
-permalink: r/3d-line-plots/
-description: How to make interactive 3D line plots in R.
-layout: base
-thumbnail: thumbnail/3d-line.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: chart_type
-order: 2
----
+# 3D Line Plots in R | Examples | Plotly
 
 
 
@@ -30,7 +18,5 @@ df <- setNames(
 library(plotly)
 plot_ly(df, x = ~x, y = ~y, z = ~z, color = ~time) %>% add_lines()
 ```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
 
 

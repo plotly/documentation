@@ -1,16 +1,4 @@
----
-title: Adding Dropdowns
-name: Dropdown Events
-permalink: r/dropdowns
-description: How to add dropdowns to R plots
-layout: base
-thumbnail: thumbnail/dropdown.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as:
-order: 7
----
+# Adding Dropdowns
 
 
 
@@ -49,7 +37,7 @@ p <- plot_ly(df, x = ~x, y = ~y, alpha = 0.3) %>%
     ))
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3294.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
 
 ### Add Two Dropdown Menus to Restyle Graph
 
@@ -94,6 +82,4 @@ plot_ly(df, x = ~x) %>%
   )
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
 
-<iframe src="https://plot.ly/~RPlotBot/3323.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

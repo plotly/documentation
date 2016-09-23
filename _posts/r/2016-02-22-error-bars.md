@@ -1,16 +1,4 @@
----
-title: Error Bars in R | Examples | Plotly
-name: Error Bars
-permalink: r/error-bars/
-description: How to add error bars to scatter plots in R.
-layout: base
-thumbnail: thumbnail/error-bar.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: chart_type
-order: 11
----
+# Error Bars in R | Examples | Plotly
 
 
 
@@ -37,6 +25,7 @@ data %>%
 ## Warning in RColorBrewer::brewer.pal(N, "Set2"): minimal value for n is 3, returning requested palette with 3 different levels
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
 
-
+```
+## Warning in RColorBrewer::brewer.pal(N, "Set2"): minimal value for n is 3, returning requested palette with 3 different levels
+```

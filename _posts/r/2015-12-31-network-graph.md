@@ -1,16 +1,4 @@
----
-title: R Network Graph | Examples | Plotly
-name: Network Graph
-permalink: r/network-graphs/
-description: How to make network graphs in R with Plotly.
-layout: base
-thumbnail: thumbnail/net.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: chart_type
-order: 11
----
+# R Network Graph | Examples | Plotly
 
 
 
@@ -91,7 +79,5 @@ layout(
   yaxis = axis
 )
 ```
-
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png)
 
 
