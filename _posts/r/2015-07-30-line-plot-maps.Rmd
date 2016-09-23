@@ -20,7 +20,7 @@ Sys.setenv("plotly_api_key"="q0lz6r5efr")
 
 # USA Flight Paths Map
 
-```{r, height=800}
+```{r}
 library(plotly)
 library(dplyr)
 # airport locations
@@ -38,25 +38,24 @@ geo <- list(
   countrycolor = toRGB("gray80")
 )
 
-plot_ly(locationmode = 'USA-states', color = I("red")) %>%
-  add_scattergeo(
-    data = air, lon = ~long, lat = ~lat, text = ~airport,
-    size = ~cnt, mode = "markers", hoverinfo = "text", alpha = 0.5
+plot_geo(locationmode = 'USA-states', color = I("red")) %>%
+  add_markers(
+    data = air, x = ~long, y = ~lat, text = ~airport,
+    size = ~cnt, hoverinfo = "text", alpha = 0.5
   ) %>%
-  add_scattergeo(
+  add_segments(
     data = group_by(flights, id),
-    lat = ~c(start_lat, end_lat),
-    lon = ~c(start_lon, end_lon),
-    alpha = 0.3, size = I(1),
-    mode = 'lines', hoverinfo = "none"
+    x = ~start_lon, xend = ~end_lon,
+    y = ~start_lat, yend = ~end_lat,
+    alpha = 0.3, size = I(1), hoverinfo = "none"
   ) %>%
   layout(
     title = 'Feb. 2011 American Airline flight paths<br>(Hover for airport names)',
     geo = geo, showlegend = FALSE, height=800
-  ) 
+  )
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, height=800}
 plotly_POST(filename="map/flights")
 ```
 
@@ -64,8 +63,9 @@ plotly_POST(filename="map/flights")
 
 ```{r}
 library(plotly)
-plot_ly(lat = c(40.7127, 51.5072), lon = c(-74.0059, 0.1275)) %>%
-  add_scattergeo(mode = 'lines', color = I("blue"), size = I(2)) %>%
+
+plot_geo(lat = c(40.7127, 51.5072), lon = c(-74.0059, 0.1275)) %>%
+  add_lines(color = I("blue"), size = I(2)) %>%
   layout(
     title = 'London to NYC Great Circle',
     showlegend = FALSE,
@@ -139,9 +139,9 @@ geo <- list(
   )
 )
 
-plot_ly(d, lat = ~lat, lon = ~lon) %>%
+plot_geo(d) %>%
   group_by(line) %>%
-  add_scattergeo() %>%
+  add_lines(x = ~lon, y = ~lat) %>%
   layout(
     showlegend = FALSE, geo = geo,
     title = 'Contour lines over globe<br>(Click and drag to rotate)'

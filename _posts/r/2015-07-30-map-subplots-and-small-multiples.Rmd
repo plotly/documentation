@@ -19,7 +19,7 @@ Sys.setenv("plotly_api_key"="q0lz6r5efr")
 
 # Map Subplots and Small Multiples
 
-```{r, height=900}
+```{r}
 # US map small multiples
 library(plotly)
 library(dplyr)
@@ -34,19 +34,16 @@ g <- list(
   subunitcolor = toRGB("white")
 )
 
-one_plot <- function(dat) {
-  dat %>% 
-    plot_ly() %>%
-    add_scattergeo(
-      lon = ~LON, lat = ~LAT,
-      mode = "markers", color = I("blue"), alpha = 0.5
-    ) %>%
-    add_scattergeo(
-      lon = -78, lat = 47, mode = 'text', text = ~unique(YEAR), color = I("black")
-    ) %>% layout(geo = g)
+one_map <- function(dat) {
+  plot_geo(dat) %>%
+    add_markers(x = ~LON, y = ~LAT, color = I("blue"), alpha = 0.5) %>%
+    add_text(x = -78, y = 47, text = ~unique(YEAR), color = I("black")) %>% 
+    layout(geo = g)
 }
 
-lapply(split(df, df$YEAR), one_plot) %>% 
+df %>%
+  group_by(YEAR) %>%
+  do(map = one_map(.)) %>%
   subplot(nrows = 9) %>% 
   layout(
     showlegend = FALSE,
@@ -57,6 +54,6 @@ lapply(split(df, df$YEAR), one_plot) %>%
   )
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, height=900}
 plotly_POST(filename="maps/small-multiple")
 ```

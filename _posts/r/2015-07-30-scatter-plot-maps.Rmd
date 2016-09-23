@@ -18,7 +18,8 @@ Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
 
 # US Airports Map in R
-```{r, message=FALSE}
+
+```{r}
 library(plotly)
 df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv')
 
@@ -34,16 +35,12 @@ g <- list(
   subunitwidth = 0.5
 )
 
-# set the title of the colorbar
-m <- list(
-  colorbar = list(title = "Incoming flights<br />February 2011")
-)
-
-plot_ly(df, lat = ~lat, lon = ~long) %>%
-  add_scattergeo(
+plot_geo(df, lat = ~lat, lon = ~long) %>%
+  add_markers(
     text = ~paste(airport, city, state, paste("Arrivals:", cnt), sep = "<br />"), 
-    color = ~cnt, symbol = I("square"), size = I(8), hoverinfo = "text", marker = m
+    color = ~cnt, symbol = I("square"), size = I(8), hoverinfo = "text"
   ) %>%
+  colorbar(title = "Incoming flights<br />February 2011") %>%
   layout(
     title = 'Most trafficked US airports<br />(Hover for airport)', geo = g
   )
@@ -55,7 +52,7 @@ plotly_POST(filename = "maps/traffic")
 
 ### North American Precipitation Map from NOAA
 
-```{r, height=800}
+```{r}
 library(plotly)
 df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2015_06_30_precipitation.csv')
 
@@ -92,11 +89,13 @@ g <- list(
   )
 )
 
-plot_ly(df, lat = ~Lat, lon = ~Lon, color = ~Globvalue) %>%
-  add_scattergeo(text = ~paste(df$Globvalue, "inches"), hoverinfo = "text") %>%
+plot_geo(df, lat = ~Lat, lon = ~Lon, color = ~Globvalue) %>%
+  add_markers(
+    text = ~paste(df$Globvalue, "inches"), hoverinfo = "text"
+  ) %>%
   layout(title = 'US Precipitation 06-30-2015<br>Source: NOAA', geo = g)
 ```
 
-```{r}
+```{r, height=800}
 plotly_POST(filename = "maps/noaa")
 ```
