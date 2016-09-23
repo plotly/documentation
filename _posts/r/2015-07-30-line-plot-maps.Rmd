@@ -10,18 +10,22 @@ page_type: example_index
 has_thumbnail: true
 display_as: maps
 order: 3
+output: 
+  html_document:
+    keep_md: true
 ---
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, results = 'hide')
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
 
 # USA Flight Paths Map
 
-```{r, message=FALSE, height=800}
+```{r}
 library(plotly)
+library(dplyr)
 # airport locations
 air <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv')
 # flights between airports
@@ -37,23 +41,34 @@ geo <- list(
   countrycolor = toRGB("gray80")
 )
 
-plot_ly(air, lon = long, lat = lat, text = airport, type = 'scattergeo',
-        locationmode = 'USA-states', marker = list(size = 2, color = 'red'),
-        inherit = FALSE) %>%
-  add_trace(lon = list(start_lon, end_lon), lat = list(start_lat, end_lat),
-            group = id, opacity = cnt/max(cnt), data = flights,
-            mode = 'lines', line = list(width = 1, color = 'red'),
-            type = 'scattergeo', locationmode = 'USA-states') %>%
-  layout(title = 'Feb. 2011 American Airline flight paths<br>(Hover for airport names)',
-         geo = geo, showlegend = FALSE, height=800)
+plot_geo(locationmode = 'USA-states', color = I("red")) %>%
+  add_markers(
+    data = air, x = ~long, y = ~lat, text = ~airport,
+    size = ~cnt, hoverinfo = "text", alpha = 0.5
+  ) %>%
+  add_segments(
+    data = group_by(flights, id),
+    x = ~start_lon, xend = ~end_lon,
+    y = ~start_lat, yend = ~end_lat,
+    alpha = 0.3, size = I(1), hoverinfo = "none"
+  ) %>%
+  layout(
+    title = 'Feb. 2011 American Airline flight paths<br>(Hover for airport names)',
+    geo = geo, showlegend = FALSE, height=800
+  )
+```
+
+```{r, echo=FALSE, height=800}
+plotly_POST(filename="map/flights")
 ```
 
 ### London to NYC Great Circle
 
-```{r, message=FALSE}
+```{r}
 library(plotly)
-plot_ly(lat = c(40.7127, 51.5072), lon = c(-74.0059, 0.1275), type = 'scattergeo',
-        mode = 'lines', line = list(width = 2, color = 'blue')) %>%
+
+plot_geo(lat = c(40.7127, 51.5072), lon = c(-74.0059, 0.1275)) %>%
+  add_lines(color = I("blue"), size = I(2)) %>%
   layout(
     title = 'London to NYC Great Circle',
     showlegend = FALSE,
@@ -82,9 +97,13 @@ plot_ly(lat = c(40.7127, 51.5072), lon = c(-74.0059, 0.1275), type = 'scattergeo
   )
 ```
 
+```{r, echo=FALSE}
+plotly_POST(filename="map/london")
+```
+
 ### Contour lines on globe
+
 ```{r, message=FALSE, height=800}
-library(plotly)
 df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/globe_contours.csv')
 df$id <- seq_len(nrow(df))
 
@@ -93,12 +112,6 @@ d <- df %>%
   gather(key, value, -id) %>%
   separate(key, c("l", "line"), "\\.") %>%
   spread(l, value)
-
-p <- plot_ly(type = 'scattergeo', mode = 'lines',
-             line = list(width = 2, color = 'violet'))
-
-for (i in unique(d$line))
-  p <- add_trace(p, lat = lat, lon = lon, data = subset(d, line == i))
 
 geo <- list(
   showland = TRUE,
@@ -129,6 +142,16 @@ geo <- list(
   )
 )
 
-layout(p, showlegend = FALSE, geo = geo,
-       title = 'Contour lines over globe<br>(Click and drag to rotate)')
+plot_geo(d) %>%
+  group_by(line) %>%
+  add_lines(x = ~lon, y = ~lat) %>%
+  layout(
+    showlegend = FALSE, geo = geo,
+    title = 'Contour lines over globe<br>(Click and drag to rotate)'
+  )
+```
+
+
+```{r, echo=FALSE}
+plotly_POST(filename="map/contour")
 ```

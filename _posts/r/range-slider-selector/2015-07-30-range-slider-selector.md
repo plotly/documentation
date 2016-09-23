@@ -1,23 +1,23 @@
 ---
+title: Range Sliders and Selectors in R | Examples | Plotly
 name: Range Sliders and Selectors
-permalink: r/range-sliders-selectors/
+permalink: r/Range-sliders-selectors
 description: How to use range-sliders and range-selectors in R
 layout: base
-thumbnail: thumbnail/range-selector.jpg
+thumbnail: thumbnail/sliders.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: basic
-order: 6
+display_as: chart_type
+order: 1
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
-# Range Sliders and Selectors in R | Examples | Plotly
 
-Now you can implement range sliders and range selectors in your Plotly graphs with R !
 
-New to our R API?  
-Learn about API authentication here: [https://plot.ly/r/getting-started](https://plot.ly/r/getting-started)  
-Find your api_key here: [https://plot.ly/settings/api](https://plot.ly/settings/api)
+Now you can implement range sliders and range selectors in your Plotly graphs with R!!!
 
 
 ```r
@@ -28,11 +28,16 @@ library(quantmod)
 getSymbols(Symbols = c("AAPL", "MSFT"))
 ```
 
+```
+## [1] "AAPL" "MSFT"
+```
+
 ```r
 ds <- data.frame(Date = index(AAPL), AAPL[,6], MSFT[,6])
 
-plot_ly(ds, x = Date, y = AAPL.Adjusted, mode = "lines + markers", name = "Apple") %>% 
-  add_trace(x = Date, y = MSFT.Adjusted, name = "Microsoft") %>% 
+plot_ly(ds, x = ~Date) %>%
+  add_lines(y = ~AAPL.Adjusted, name = "Apple") %>% 
+  add_lines(y = ~MSFT.Adjusted, name = "Microsoft") %>% 
   layout(
     title = "Stock Prices",
     xaxis = list(
@@ -64,4 +69,10 @@ plot_ly(ds, x = Date, y = AAPL.Adjusted, mode = "lines + markers", name = "Apple
     
     yaxis = list(title = "Price"))
 ```
-<iframe src="https://plot.ly/~RPlotBot/2941" width="1024" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+
+
+```
+## Error in UseMethod("plotly_build"): no applicable method for 'plotly_build' applied to an object of class "character"
+```

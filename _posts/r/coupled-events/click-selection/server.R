@@ -1,3 +1,4 @@
+
 # server.R definition
 server <- function(input, output){
   
@@ -16,7 +17,7 @@ server <- function(input, output){
     # the number of malignant cases as size
     # Note the use of 'source' argument
     output$Plot1 <- renderPlotly({
-      plot_ly(plot.df, x = x, y = y, mode = "markers", color = Class, source = "subset",
+      plot_ly(plot.df, x = ~x, y = ~y, mode = "markers", type = "scatter", color = ~Class, source = "subset",
               marker = list(size = 30)) %>%
         layout(title = paste(input$featureInput1, "vs ", input$featureInput2),
                xaxis = list(title = input$featureInput1),
@@ -33,7 +34,7 @@ server <- function(input, output){
         group_by(x, y, Class) %>%
         summarize(Count = n()) %>%
         filter(Class == "malignant") %>%
-        plot_ly(x = x, y = y, z = Count, type = "contour") %>%
+        plot_ly(x = ~x, y = ~y, z = ~Count, type = "contour") %>%
         layout(title = "Contour map of number of malignant cases",
                xaxis = list(title = input$featureInput1),
                yaxis = list(title = input$featureInput2))
@@ -70,7 +71,7 @@ server <- function(input, output){
     
     
     # Plot
-    plot_ly(plot.summ, x = Class, y = Count, type = "bar", source = "select", color = Class) %>% 
+    plot_ly(plot.summ, x = ~Class, y = ~Count, type = "bar", source = "select", color = ~Class) %>% 
       layout(title = "No. of Malignant and Benign cases <br> in Selection",
              plot_bgcolor = "6A446F",
              yaxis = list(domain = c(0, 0.9)))
@@ -104,11 +105,11 @@ server <- function(input, output){
     }else{
       tab <- subset(plot.summ, Class == "benign")
       
-      p1 <- plot_ly(tab, x = x, y = Count, type = "box", showlegend = F) %>% 
+      p1 <- plot_ly(tab, x = ~x, y = ~Count, type = "box", showlegend = F) %>% 
         layout(yaxis = list(title = "Count"),
                xaxis = list(title = input$featureInput1))
       
-      p2 <- plot_ly(tab, x = y, y = Count, type = "box", showlegend = F) %>% 
+      p2 <- plot_ly(tab, x = ~y, y = ~Count, type = "box", showlegend = F) %>% 
         layout(title = "Box plot for Benign cases",
                yaxis = list(title = "Count"),
                xaxis = list(title = input$featureInput2))

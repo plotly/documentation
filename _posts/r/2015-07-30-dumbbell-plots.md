@@ -1,34 +1,28 @@
----
-title: Dumbbell plots in R | Examples | Plotly
-name: Dumbbell plots
-permalink: r/dumbbell-plots/
-description: How to make a dumbbell plot in R. Dumbbell plots show changes between two points in time or between two conditions.
-layout: base
-thumbnail: thumbnail/dumbbell-plot.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: chart_type
-order: 9
----
+# Dumbbell plots in R | Examples | Plotly
 
 # Dumbbell plots in R
 
+
+
+# Dot plots in R
+
+
 ```r
-library(tidyr)
-library(plotly)
 s <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
-s <- s[order(s$Men), ]
-gather(s, Sex, value, Women, Men) %>%
-  plot_ly(x = value, y = School, mode = "markers",
-          color = Sex, colors = c("pink", "blue")) %>%
-  add_trace(x = value, y = School, mode = "lines",
-            group = School, showlegend = F, line = list(color = "gray")) %>%
+# order factor levels by men's income (plot_ly() will pick up on this ordering)
+s$School <- factor(s$School, levels = s$School[order(s$Men)])
+
+library(plotly)
+p <- plot_ly(s, color = I("gray80")) %>%
+  add_segments(x = ~Women, xend = ~Men, y = ~School, yend = ~School, showlegend = FALSE) %>%
+  add_markers(x = ~Women, y = ~School, name = "Women", color = I("pink")) %>%
+  add_markers(x = ~Men, y = ~School, name = "Men", color = I("blue")) %>%
   layout(
     title = "Gender earnings disparity",
     xaxis = list(title = "Annual Salary (in thousands)"),
     margin = list(l = 65)
   )
+p
 ```
 
-<iframe width="650" height="650" frameborder="0" scrolling="no" src="https://plot.ly/~jackp/14455.embed"></iframe>
+

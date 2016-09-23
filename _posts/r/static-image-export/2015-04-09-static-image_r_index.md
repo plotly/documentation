@@ -12,36 +12,66 @@ display_as: get_request
 sitemap: false
 ---
 
-<div class="content-box">
-<p>First, you'll need to set the following environment variables:</P><br>
+Recent versions of the R package include an `export()` function, which does image export locally, but requires the webshot package:
 
-<pre><code>Sys.setenv("plotly_username" = "YOUR USER NAME")
+
+```r
+if (!require("webshot")) install.packages("webshot")
+tmpFile <- tempfile(fileext = ".png")
+export(plot_ly(), file = tmpFile)
+```
+
+```
+## Warning: No trace type specified and no positional attributes specified
+```
+
+```
+## No trace type specified:
+##   Based on info supplied, a 'scatter' trace seems appropriate.
+##   Read more about this trace type -> https://plot.ly/r/reference/#scatter
+```
+
+```
+## No scatter mode specifed:
+##   Setting the mode to markers
+##   Read more about this attribute -> https://plot.ly/r/reference/#scatter-mode
+```
+
+```r
+browseURL(tmpFile)
+```
+
+Another option is to do image export through your plotly account. First, if you haven't already, let the R package know about your credentials
+
+
+```r
+Sys.setenv("plotly_username" = "YOUR USER NAME")
 Sys.setenv("plotly_api_key" = "YOUR API KEY")
-</pre></code>	
-
-<p>You can save static images using the following syntax:</p><br>
-
-<pre><code>library(plotly)
-
-# p is a plotly object created using plot_ly
-plotly_IMAGE(p, format = "png", out_file = "output.png")
-</code></pre>
-
-<p>You can also display a plotly interactive image in R-Markdown as such:</p><br>
-
-<pre><code>p <- plot_ly(x = rnorm(1000), y = rnorm(1000), mode = "markers")
-p
-</code></pre>
-
-<p>Combine this with a GET request on a plot you (or someone else) has already created:</p><br>
-
-<pre><code>p <- get_figure('demos', '1571')
-plotly_IMAGE(p, format = "png", out_file = "output.png")
-</code></pre>
+```
 
 
-<p>This will save a static image of a plot you've pulled from Plotly's Servers.</p><br>
+```r
+library(plotly)
+plotly_IMAGE(plot_ly(x = 1, y = 1), format = "png", out_file = "output.png")
+```
 
-<p>You can view the static version of any Plotly graph by appending <code class="no-padding">.png</code>,
-<code class="no-padding">.pdf</code>, <codeclass="no-padding">.eps</code>, or <code class="no-padding">.svg</code> to the end of the URL.</p><br>
-<p>For example, view the static image of <a href="https://plot.ly/~chris/1638">https://plot.ly/~chris/1638</a> at <a href="https://plot.ly/~chris/1638.png">https://plot.ly/~chris/1638.png</a>.</p><br>
+```
+## No trace type specified:
+##   Based on info supplied, a 'scatter' trace seems appropriate.
+##   Read more about this trace type -> https://plot.ly/r/reference/#scatter
+```
+
+```
+## No scatter mode specifed:
+##   Setting the mode to markers
+##   Read more about this attribute -> https://plot.ly/r/reference/#scatter-mode
+```
+
+```
+## Error in process.image(append_class(resp, "image")): Internal Server Error (HTTP 500).
+```
+
+This will export the image on plotly's servers and write the contents to a local file `"output.png"` in your working directory.
+
+You can also view the static version of any Plotly graph by appending `.png`,
+`.pdf`, `.eps`, or `.svg` to the end of the URL. For example, view the static image of <https://plot.ly/~chris/1638> at <https://plot.ly/~chris/1638.png>. See [Using Plotly with rmarkdown/knitr](https://plot.ly/r/knitr/) for a way to embed these links in rmarkdown/knitr (Rmd) files.

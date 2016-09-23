@@ -1,16 +1,4 @@
----
-title: Lines on Maps in R | Examples | Plotly
-name: Lines on Maps
-permalink: r/lines-on-maps/
-description: How to draw lines, great circles, and contours on maps in R. Lines on maps can show distance between geographic points or be contour lines (isolines, isopleths, or isarithms).
-layout: base
-thumbnail: thumbnail/flight-paths.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: maps
-order: 3
----
+# Lines on Maps in R | Examples | Plotly
 
 
 
@@ -19,6 +7,7 @@ order: 3
 
 ```r
 library(plotly)
+library(dplyr)
 # airport locations
 air <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv')
 # flights between airports
@@ -34,26 +23,33 @@ geo <- list(
   countrycolor = toRGB("gray80")
 )
 
-plot_ly(air, lon = long, lat = lat, text = airport, type = 'scattergeo',
-        locationmode = 'USA-states', marker = list(size = 2, color = 'red'),
-        inherit = FALSE) %>%
-  add_trace(lon = list(start_lon, end_lon), lat = list(start_lat, end_lat),
-            group = id, opacity = cnt/max(cnt), data = flights,
-            mode = 'lines', line = list(width = 1, color = 'red'),
-            type = 'scattergeo', locationmode = 'USA-states') %>%
-  layout(title = 'Feb. 2011 American Airline flight paths<br>(Hover for airport names)',
-         geo = geo, showlegend = FALSE, height=800)
+plot_geo(locationmode = 'USA-states', color = I("red")) %>%
+  add_markers(
+    data = air, x = ~long, y = ~lat, text = ~airport,
+    size = ~cnt, hoverinfo = "text", alpha = 0.5
+  ) %>%
+  add_segments(
+    data = group_by(flights, id),
+    x = ~start_lon, xend = ~end_lon,
+    y = ~start_lat, yend = ~end_lat,
+    alpha = 0.3, size = I(1), hoverinfo = "none"
+  ) %>%
+  layout(
+    title = 'Feb. 2011 American Airline flight paths<br>(Hover for airport names)',
+    geo = geo, showlegend = FALSE, height=800
+  )
 ```
 
-<iframe height="800" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/336" width="800" frameBorder="0"></iframe>
+
 
 ### London to NYC Great Circle
 
 
 ```r
 library(plotly)
-plot_ly(lat = c(40.7127, 51.5072), lon = c(-74.0059, 0.1275), type = 'scattergeo',
-        mode = 'lines', line = list(width = 2, color = 'blue')) %>%
+
+plot_geo(lat = c(40.7127, 51.5072), lon = c(-74.0059, 0.1275)) %>%
+  add_lines(color = I("blue"), size = I(2)) %>%
   layout(
     title = 'London to NYC Great Circle',
     showlegend = FALSE,
@@ -82,12 +78,12 @@ plot_ly(lat = c(40.7127, 51.5072), lon = c(-74.0059, 0.1275), type = 'scattergeo
   )
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/331" width="800" frameBorder="0"></iframe>
+
 
 ### Contour lines on globe
 
+
 ```r
-library(plotly)
 df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/globe_contours.csv')
 df$id <- seq_len(nrow(df))
 
@@ -96,14 +92,6 @@ d <- df %>%
   gather(key, value, -id) %>%
   separate(key, c("l", "line"), "\\.") %>%
   spread(l, value)
-
-p <- plot_ly(type = 'scattergeo', mode = 'lines',
-             line = list(width = 2, color = 'violet'))
-
-for (i in unique(d$line))
-  p <- add_trace(p, lat = lat, lon = lon, data = subset(d, line == i),
-                 type = 'scattergeo', mode = 'lines',
-                 line = list(width = 2, color = 'violet'))
 
 geo <- list(
   showland = TRUE,
@@ -134,8 +122,14 @@ geo <- list(
   )
 )
 
-layout(p, showlegend = FALSE, geo = geo,
-       title = 'Contour lines over globe<br>(Click and drag to rotate)')
+plot_geo(d) %>%
+  group_by(line) %>%
+  add_lines(x = ~lon, y = ~lat) %>%
+  layout(
+    showlegend = FALSE, geo = geo,
+    title = 'Contour lines over globe<br>(Click and drag to rotate)'
+  )
 ```
 
-<iframe height="800" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/333" width="800" frameBorder="0"></iframe>
+
+
