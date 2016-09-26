@@ -10,22 +10,20 @@ page_type: example_index
 has_thumbnail: true
 display_as: chart_type
 order: 9
-output: 
+output:
   html_document:
     keep_md: true
 ---
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(message = FALSE, results = 'hide')
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
 
-# Graphing Multiple Chart Types in R
+#### Scatterplot with Loess Smoother
 
-### Scatterplot with loess smoother
-
-```{r}
+```{r, results = 'hide'}
 library(plotly)
 p <- plot_ly(mtcars, x = ~disp, color = I("black")) %>%
   add_markers(y = ~mpg, text = rownames(mtcars), showlegend = F) %>%
@@ -37,17 +35,17 @@ p
 ```{r, echo=FALSE}
 plotly_POST(filename="multiple/loess")
 ```
-  
-### Loess smoother with uncertainty bounds
 
-```{r}
+#### Loess smoother with uncertainty bounds
+
+```{r, results = 'hide'}
 m <- loess(mpg ~ disp, data = mtcars)
 
 p %>%
   add_ribbons(
     data = broom::augment(m),
-    ymin = ~.fitted - 1.96 * .se.fit, 
-    ymax = ~.fitted + 1.96 * .se.fit, 
+    ymin = ~.fitted - 1.96 * .se.fit,
+    ymax = ~.fitted + 1.96 * .se.fit,
     color = I("red"), name = "standard error"
   )
 ```
@@ -56,15 +54,15 @@ p %>%
 plotly_POST(filename="multiple/loess-se")
 ```
 
-### Plotting forecast objects
+#### Plotting Forecast Objects
 
-```{r}
+```{r, results = 'hide'}
 library(forecast)
 fit <- ets(USAccDeaths)
 fore <- forecast(fit, h = 48, level = c(80, 95))
 
 plot_ly() %>%
-  add_lines(x = time(USAccDeaths), y = USAccDeaths, 
+  add_lines(x = time(USAccDeaths), y = USAccDeaths,
             color = I("black"), name = "observed") %>%
   add_ribbons(x = time(fore$mean), ymin = fore$lower[, 2], ymax = fore$upper[, 2],
               color = I("gray95"), name = "95% confidence") %>%

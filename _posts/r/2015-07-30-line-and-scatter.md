@@ -1,10 +1,23 @@
-# Line and Scatter Plots in R | Examples | Plotly
+---
+title: Line and Scatter Plots in R | Examples | Plotly
+name: Line and Scatter Plots
+permalink: r/line-and-scatter/
+description: How to create line and scatter plots in R. Examples of basic and advanced scatter plots, time series line plots, colored charts, and density plots.
+layout: base
+thumbnail: thumbnail/line-and-scatter.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: chart_type
+order: 1
+output:
+  html_document:
+    keep_md: true
+---
 
 
 
-# Line and Scatter Plots in R
-
-### Simple scatterplot
+### Basic Scatterplot
 
 
 ```r
@@ -13,7 +26,7 @@ p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length)
 p
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3438.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Scatter Plot with Qualitative Colorscale
 
@@ -22,7 +35,7 @@ p
 add_markers(p, color = ~Species)
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3440.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### ColorBrewer Palette Names
 
@@ -31,7 +44,7 @@ add_markers(p, color = ~Species)
 add_markers(p, color = ~Species, colors = "Set1")
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3442.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Custom Color Scales
 
@@ -43,7 +56,7 @@ pal <- c("red", "blue", "green")
 add_markers(p, color = ~Species, colors = pal)
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3444.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 To ensure a particular data value gets mapped to particular color, provide a character vector of color codes, and match the names attribute accordingly.
 
@@ -53,7 +66,7 @@ pal <- setNames(pal, c("virginica", "setosa", "versicolor"))
 add_markers(p, color = ~Species, colors = pal)
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3446.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Plotting markers and lines, efficiently
 
@@ -62,7 +75,7 @@ add_markers(p, color = ~Species, colors = pal)
 add_trace(p, color = ~Species, mode = "markers+lines")
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3448.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ## Mapping data to symbol and linetype
 
@@ -71,7 +84,7 @@ add_trace(p, color = ~Species, mode = "markers+lines")
 add_trace(p, symbol = ~Species, linetype = ~Species)
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3450.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Adding Color and Size Mapping
 
@@ -85,7 +98,7 @@ plot_ly(
 )
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3452.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Density Plot
 
@@ -101,7 +114,7 @@ plot_ly(df, x = ~x, y = ~y, color = ~cut) %>%
   add_lines()
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3454.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Line Interpolation Options
 
@@ -118,4 +131,4 @@ plot_ly(x = ~x) %>%
   add_lines(y = y + 25, name = "hv", line = list(shape = "hv"))
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3456.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
