@@ -1,10 +1,23 @@
-# Dumbbell plots in R | Examples | Plotly
+---
+title: Dumbbell plots in R | Examples | Plotly
+name: Dumbbell plots
+permalink: r/dumbbell-plots/
+description: How to make a dumbbell plot in R. Dumbbell plots show changes between two points in time or between two conditions.
+layout: base
+thumbnail: thumbnail/dumbbell-plot.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: chart_type
+order: 8
+output:
+  html_document:
+    keep_md: true
+---
 
-# Dumbbell plots in R
 
 
-
-# Dot plots in R
+# Dot and Dumbbell Plots
 
 
 ```r
@@ -25,4 +38,4 @@ p <- plot_ly(s, color = I("gray80")) %>%
 p
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3120.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

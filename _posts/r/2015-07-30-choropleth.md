@@ -1,4 +1,19 @@
-# Choropleth Maps in R | Examples | Plotly
+---
+title: Choropleth Maps in R | Examples | Plotly
+name: Choropleth Maps
+permalink: r/choropleth-maps/
+description: How to make a choropleth map in R. A choropleth map shades geographic regions by value.
+layout: base
+thumbnail: thumbnail/choropleth.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: maps
+order: 0
+output: 
+  html_document:
+    keep_md: true
+---
 
 
 
@@ -6,6 +21,13 @@
 
 ```r
 library(plotly)
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.2.4
+```
+
+```r
 df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")
 df$hover <- with(df, paste(state, '<br>', "Beef", beef, "Dairy", dairy, "<br>",
                            "Fruits", total.fruits, "Veggies", total.veggies,
