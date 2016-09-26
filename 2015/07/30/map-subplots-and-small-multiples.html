@@ -1,0 +1,36 @@
+<h1>Map Subplots And Small Multiples</h1>
+
+<h1>Map Subplots and Small Multiples</h1>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># US map small multiples
+</span><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span>
+<span class="n">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">&lt;-</span> <span class="n">read.csv</span><span class="p">(</span><span class="s1">'https://raw.githubusercontent.com/plotly/datasets/master/1962_2006_walmart_store_openings.csv'</span><span class="p">)</span>
+
+<span class="c1"># common map properties
+</span><span class="n">g</span> <span class="o">&lt;-</span> <span class="n">list</span><span class="p">(</span>
+  <span class="n">scope</span> <span class="o">=</span> <span class="s1">'usa'</span><span class="p">,</span> 
+  <span class="n">showland</span> <span class="o">=</span> <span class="n">T</span><span class="p">,</span> 
+  <span class="n">landcolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"gray90"</span><span class="p">),</span> 
+  <span class="n">showcountries</span> <span class="o">=</span> <span class="n">F</span><span class="p">,</span> 
+  <span class="n">subunitcolor</span> <span class="o">=</span> <span class="n">toRGB</span><span class="p">(</span><span class="s2">"white"</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">one_map</span> <span class="o">&lt;-</span> <span class="k">function</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">plot_geo</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">add_markers</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="o">~</span><span class="n">LON</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="o">~</span><span class="n">LAT</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">I</span><span class="p">(</span><span class="s2">"blue"</span><span class="p">),</span> <span class="n">alpha</span> <span class="o">=</span> <span class="m">0.5</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">add_text</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="m">-78</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="m">47</span><span class="p">,</span> <span class="n">text</span> <span class="o">=</span> <span class="o">~</span><span class="n">unique</span><span class="p">(</span><span class="n">YEAR</span><span class="p">),</span> <span class="n">color</span> <span class="o">=</span> <span class="n">I</span><span class="p">(</span><span class="s2">"black"</span><span class="p">))</span> <span class="o">%&gt;%</span> 
+    <span class="n">layout</span><span class="p">(</span><span class="n">geo</span> <span class="o">=</span> <span class="n">g</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">df</span> <span class="o">%&gt;%</span>
+  <span class="n">group_by</span><span class="p">(</span><span class="n">YEAR</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">do</span><span class="p">(</span><span class="n">map</span> <span class="o">=</span> <span class="n">one_map</span><span class="p">(</span><span class="err">.</span><span class="p">))</span> <span class="o">%&gt;%</span>
+  <span class="n">subplot</span><span class="p">(</span><span class="n">nrows</span> <span class="o">=</span> <span class="m">9</span><span class="p">)</span> <span class="o">%&gt;%</span> 
+  <span class="n">layout</span><span class="p">(</span>
+    <span class="n">showlegend</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">,</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">'New Walmart Stores per year 1962-2006&lt;br&gt; Source: &lt;a href="http://www.econ.umn.edu/~holmes/data/WalMart/index.html"&gt;University of Minnesota&lt;/a&gt;'</span><span class="p">,</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="m">1000</span><span class="p">,</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="m">900</span><span class="p">,</span>
+    <span class="n">hovermode</span> <span class="o">=</span> <span class="n">FALSE</span>
+  <span class="p">)</span>
+</code></pre></div>
