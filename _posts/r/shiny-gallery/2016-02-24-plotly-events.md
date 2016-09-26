@@ -13,13 +13,13 @@ has_thumbnail: false
 <iframe src="https://plotly.shinyapps.io/Plotly-Events/" width="100%" height= "800" scrolling="yes" seamless="seamless" style="border: none"></iframe>
 
 ## Code
-### ui.r
+### app.r
+
 ```r
 library(plotly)
 library(shiny)
 
-
-fluidPage(
+ui <- fluidPage(
   radioButtons("plotType", "Plot Type:", choices = c("ggplotly", "plotly")),
   plotlyOutput("plot"),
   verbatimTextOutput("hover"),
@@ -27,10 +27,7 @@ fluidPage(
   verbatimTextOutput("brush"),
   verbatimTextOutput("zoom")
 )
-```
 
-### server.r
-```r
 server <- function(input, output, session) {
   
   output$plot <- renderPlotly({
@@ -41,7 +38,7 @@ server <- function(input, output, session) {
         geom_point()
       ggplotly(p) %>% layout(dragmode = "select")
     } else {
-      plot_ly(mtcars, x = mpg, y = wt, key = key, mode = "markers") %>%
+      plot_ly(mtcars, x = ~mpg, y = ~wt, key = ~key) %>%
         layout(dragmode = "select")
     }
   })
@@ -67,5 +64,7 @@ server <- function(input, output, session) {
   })
   
 }
+
+shinyApp(ui, server)
 
 ```

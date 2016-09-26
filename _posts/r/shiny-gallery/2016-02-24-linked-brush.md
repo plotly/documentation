@@ -13,12 +13,15 @@ has_thumbnail: false
 <iframe src="https://plotly.shinyapps.io/Linked-Brush/" width="100%" height= "800" scrolling="no" seamless="seamless" style="border: none"></iframe>
 
 ## Code
-### ui.r
+
+### app.r
+
 ```r
 library(plotly)
 library(shiny)
 
-fluidPage(
+# user interface
+ui <- fluidPage(
   titlePanel("Linked highlighting with plotly and shiny"),
   mainPanel(
     htmltools::div(style = "display:inline-block", plotlyOutput("x", width = 400, height = 250)),
@@ -34,10 +37,7 @@ fluidPage(
     htmltools::div(style = "display:inline-block", plotlyOutput("y", width = 250, height = 400))
   )
 )
-```
 
-### server.r
-```r
 # marker objects
 m <- list(color = toRGB("black"))
 m2 <- list(color = toRGB("black", 0.2))
@@ -91,12 +91,12 @@ server <- function(input, output, session) {
   
   output$xy <- renderPlotly({
     cars %>% 
-      plot_ly(x = speed, y = dist, 
+      plot_ly(x = ~speed, y = ~dist, 
               mode = "markers", marker = m) %>%
       layout(dragmode = "select")
   })
   
 }
 
-
+shinyApp(ui, server)
 ```

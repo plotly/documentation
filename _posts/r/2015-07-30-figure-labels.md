@@ -1,18 +1,9 @@
----
-title: Axes Labels in R
-name: Axes Labels
-permalink: r/figure-labels
-description: How to set the title and axis-titles in R
-layout: base
-thumbnail: figure-labels.jpg
-language: r
-page_type: example_index
-has_thumbnail: false
-display_as: layout_opt
----
+# Axes Labels in R
 
 
-### Setting Axes Labels
+
+# Figure Labels
+
 
 ```r
 library(plotly)
@@ -29,14 +20,13 @@ y <- list(
   title = "y Axis",
   titlefont = f
 )
-p <- plot_ly(x = rnorm(10), y = rnorm(10), mode = "markers") %>%
+plot_ly(x = ~rnorm(10), y = ~rnorm(10), mode = "markers") %>%
   layout(xaxis = x, yaxis = y)
-p
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2821" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/2817.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Setting Axes Labels for 3d Charts
+# Figure Labels for 3d Charts
 
 
 ```r
@@ -44,19 +34,17 @@ library(plotly)
 set.seed(123)
 
 n <- 100
-theta <- runif(n,0,2*pi)
-u <- runif(n,-1,1)
-x <- sqrt(1 - u^2)*cos(theta)
-y <- sqrt(1 - u^2)*sin(theta)
-z <- u
+theta <- runif(n, 0, 2*pi)
+u <- runif(n, -1, 1)
 
-p <- plot_ly(x = x, y = y, z = z, type = "scatter3d", mode = "markers", color = z) %>% 
-  layout(title = "Layout options in a 3d scatter plot",
-         scene = list(
-           xaxis = list(title = "Cos"), 
-           yaxis = list(title = "Sin"), 
-           zaxis = list(title = "Z")))
-p
+plot_ly(x = ~sqrt(1 - u^2) * cos(theta), y = ~sqrt(1 - u^2) * sin(theta), z = ~u) %>%
+  layout(
+    title = "Layout options in a 3d scatter plot",
+    scene = list(
+      xaxis = list(title = "Cos"), 
+      yaxis = list(title = "Sin"), 
+      zaxis = list(title = "Z")
+    ))
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2823" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/2814.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

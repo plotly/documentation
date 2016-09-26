@@ -8,38 +8,50 @@ thumbnail: thumbnail/3d-scatter.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_type
-order: 14
+display_as: 3d_charts
+order: 0
+output:
+  html_document:
+    keep_md: true
 ---
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
-# 3D Scatter Plots in R
 
-```{r, message=FALSE}
+#### 3D Scatter Plots in R
 
-
+```{r, results = 'hide'}
 # variance-covariance matrix for a multivariate normal distribution
-s <- matrix(c(1, .5, .5,
-              .5, 1, .5,
-              .5, .5, 1), ncol = 3)
+s <- matrix(
+  c(1, .5, .5, .5, 1, .5, .5, .5, 1),
+  ncol = 3
+)
 # use the mvtnorm package to sample 200 observations
 obs <- mvtnorm::rmvnorm(200, sigma = s)
 # collect everything in a data-frame
 df <- setNames(data.frame(obs), c("x", "y", "z"))
 
 library(plotly)
-plot_ly(df, x = x, y = y, z = z, type = "scatter3d", mode = "markers")
+plot_ly(df, x = ~x, y = ~y, z = ~z) %>% add_markers()
 ```
 
-## 3D Scatter Plot with Hover Text
+```{r, echo=FALSE}
+plotly_POST(filename="scatter3d/markers")
+```
 
-```{r, message=FALSE}
+
+#### 3D Scatter Plot with Hover Text
+
+```{r, results = 'hide'}
 set.seed(100)
 d <- diamonds[sample(nrow(diamonds), 1000), ]
-plot_ly(d, x = carat, y = price, z=depth, text = paste("Clarity: ", clarity),
-        type="scatter3d", mode="markers")
+plot_ly(d, x = ~carat, y = ~price, z = ~depth) %>%
+  add_markers(text = ~paste("Clarity: ", clarity))
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="scatter3d/text")
 ```
