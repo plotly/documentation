@@ -10,7 +10,7 @@ page_type: example_index
 has_thumbnail: true
 display_as: maps
 order: 0
-output: 
+output:
   html_document:
     keep_md: true
 ---
@@ -21,13 +21,6 @@ output:
 
 ```r
 library(plotly)
-```
-
-```
-## Warning: package 'ggplot2' was built under R version 3.2.4
-```
-
-```r
 df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")
 df$hover <- with(df, paste(state, '<br>', "Beef", beef, "Dairy", dairy, "<br>",
                            "Fruits", total.fruits, "Veggies", total.veggies,
@@ -44,17 +37,17 @@ g <- list(
 
 plot_geo(df, locationmode = 'USA-states') %>%
   add_trace(
-    z = ~total.exports, text = ~hover, locations = ~code, 
+    z = ~total.exports, text = ~hover, locations = ~code,
     color = ~total.exports, colors = 'Purples'
   ) %>%
   colorbar(title = "Millions USD") %>%
   layout(
-    title = '2011 US Agriculture Exports by State<br>(Hover for breakdown)', 
+    title = '2011 US Agriculture Exports by State<br>(Hover for breakdown)',
     geo = g
   )
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3108.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 
 ### World Choropleth Map
@@ -85,7 +78,7 @@ plot_geo(df) %>%
   )
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3110.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Choropleth Inset Map
 
@@ -131,14 +124,14 @@ df %>%
     locationmode = 'country names', sizes = c(1, 600), color = I("black")
   ) %>%
   add_markers(
-    y = ~Lat, x = ~Lon, locations = ~Country, 
+    y = ~Lat, x = ~Lon, locations = ~Country,
     size = ~Value, color = ~abbrev, text = ~paste(Value, "cases")
   ) %>%
   add_text(
     x = 21.0936, y = 7.1881, text = 'Africa', showlegend = F, geo = "geo2"
   ) %>%
   add_trace(
-    data = df9, z = ~Month, locations = ~Country, 
+    data = df9, z = ~Month, locations = ~Country,
     showscale = F, geo = "geo2"
   ) %>%
   layout(
@@ -147,4 +140,4 @@ df %>%
   )
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3112.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
