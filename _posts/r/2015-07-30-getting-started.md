@@ -27,8 +27,9 @@ install.packages("plotly")
 ```
 
 Or install the latest development version (on Github) via devtools:
+
 ```r
-install.packages("plotly")
+devtools::install_github("ropensci/plotly")
 ```
 
 <br>
