@@ -25,6 +25,12 @@ Plotly is now on CRAN!
 ```r
 install.packages("plotly")
 ```
+
+Or install the latest development version (on Github) via devtools:
+```r
+install.packages("plotly")
+```
+
 <br>
 RStudio users should download the latest [RStudio release](https://www.rstudio.com/products/rstudio/download/) for compatibility with htmlwidgets.
 
@@ -34,7 +40,7 @@ RStudio users should download the latest [RStudio release](https://www.rstudio.c
 
 ```r
 library(plotly)
-p <- plot_ly(midwest, x = percollege, color = state, type = "box")
+p <- plot_ly(midwest, x = ~percollege, color = ~state, type = "box")
 p
 ```
 
@@ -69,13 +75,11 @@ Save these commands in your [.Rprofile](http://www.statmethods.net/interface/cus
 
 ```r
 library(plotly)
-p <- plot_ly(midwest, x = percollege, color = state, type = "box")
-plotly_POST(p, filename = "r-docs/midwest-boxplots", world_readable=TRUE)
+p <- plot_ly(midwest, x = ~percollege, color = ~state, type = "box")
+plotly_POST(p, filename = "r-docs/midwest-boxplots")
 ```
 
 `filename` sets the name of the file inside your online plotly account.
-
-`world_readable` sets the privacy of your chart. If `TRUE`, the graph is publically viewable, if `FALSE`, only you can view it.
 
 #### Special Instructions for Plotly On-Premise Users
 
