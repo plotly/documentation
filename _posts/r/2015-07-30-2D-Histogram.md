@@ -8,29 +8,53 @@ thumbnail: thumbnail/histogram2d.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_type
-order: 5
+display_as: statistical
+order: 3
+output:
+  html_document:
+    keep_md: true
 ---
 
 
 
-### New to Plotly?
-Plotly's R library is free and open source! [Get started](https://plot.ly/r/getting-started/) by downloading the client and reading [the primer](https://plot.ly/r/getting-started/).
-You can set up Plotly to work [offline](https://plot.ly/r/getting-started/#installation), or host graphs [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account).
-We also have a quick-reference [cheatsheet (new!)](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) to help you get started!
+#### Basic 2D Histogram
 
-
-### Basic 2D Histogram
+2D histograms require `x`/`y`, but in contrast to heatmaps, `z` is optional. If `z` is not provided, binning occurs in the browser (see [here](https://plot.ly/r/reference/#histogram2d-histnorm) for a list of binning options).
 
 
 ```r
-#install.packages("mtvnorm")
+# install.packages('mvtnorm')
 library(plotly)
+
 s <- matrix(c(1, -.75, -.75, 1), ncol = 2)
 obs <- mvtnorm::rmvnorm(500, sigma = s)
-plot_ly(x = obs[,1], y = obs[,2], type = "histogram2d")
+p <- plot_ly(x = obs[,1], y = obs[,2])
+subplot(
+  p %>% add_markers(alpha = 0.2),
+  p %>% add_histogram2d()
+)
 ```
 
+<iframe src="https://plot.ly/~RPlotBot/3430.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Colorscale
+If `z` is not provided, the only way to control coloring is through the [colorscale attribute](https://plot.ly/r/reference/#histogram2d-colorscale)
+
+
+```r
+p %>% add_histogram2d(colorscale = "Blues")
 ```
-## Error in loadNamespace(name): there is no package called 'webshot'
+
+<iframe src="https://plot.ly/~RPlotBot/3045.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Z Matrix
+If you want more control for the binning algorithm, you can supply a 2D table or matrix to `z`. In this case, the R package will impose it's colorscale default (and the `colors` argument can be used to control the colorscale from R):
+
+
+```r
+cnt <- with(diamonds, table(cut, clarity))
+plot_ly(diamonds, x = ~cut, y = ~clarity, z = ~cnt) %>%
+  add_histogram2d()
 ```
+
+<iframe src="https://plot.ly/~RPlotBot/3047.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

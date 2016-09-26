@@ -8,37 +8,47 @@ thumbnail: thumbnail/contour.jpg
 language: r
 page_type: example_index
 has_thumbnail: false
-display_as: chart_type
+display_as: scientific
 order: 6
+output:
+  html_document:
+    keep_md: true
 ---
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
-# Contour Plots
 
-```{r, message=FALSE}
+### Basic Contour
 
-### Basic contour
+```{r, results = 'hide'}
 library(plotly)
-plot_ly(z = volcano, type = "contour")
+plot_ly(z = ~volcano, type = "contour")
 ```
+
+```{r, echo=FALSE}
+plotly_POST(filename="contour/basic")
+```
+
 
 ### 2D Density Contour Plot
 
-```{r, message=FALSE}
+```{r, results = 'hide'}
 x <- rnorm(200)
 y <- rnorm(200)
-p1 <- plot_ly(x = x, type = "histogram")
-p2 <- plot_ly(x = x, y = y, type = "histogram2dcontour")
-p3 <- plot_ly(y = y, type = "histogram")
-a1 <- list(domain = c(0, .85))
-a2 <- list(domain = c(.85, 1))
-subplot(
-  layout(p1, xaxis = a1, yaxis = a2),
-  layout(p2, xaxis = a1, yaxis = a1),
-  layout(p3, xaxis = a2, yaxis = a1)
+s <- subplot(
+  plot_ly(x = x, type = "histogram"),
+  plotly_empty(),
+  plot_ly(x = x, y = y, type = "histogram2dcontour"),
+  plot_ly(y = y, type = "histogram"),
+  nrows = 2, heights = c(0.2, 0.8), widths = c(0.8, 0.2), margin = 0,
+  shareX = TRUE, shareY = TRUE, titleX = FALSE, titleY = FALSE
 )
+layout(s, showlegend = FALSE)
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="contour/joint")
 ```

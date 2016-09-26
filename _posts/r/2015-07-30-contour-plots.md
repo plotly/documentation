@@ -7,22 +7,26 @@ layout: base
 thumbnail: thumbnail/contour.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
+has_thumbnail: false
 display_as: scientific
-order: 1
+order: 6
+output:
+  html_document:
+    keep_md: true
 ---
 
 
-# Contour Plots
+
+### Basic Contour
 
 
 ```r
-### Basic contour
 library(plotly)
-plot_ly(z = volcano, type = "contour")
+plot_ly(z = ~volcano, type = "contour")
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/209.embed" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3115.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
 
 ### 2D Density Contour Plot
 
@@ -31,14 +35,14 @@ plot_ly(z = volcano, type = "contour")
 x <- rnorm(200)
 y <- rnorm(200)
 s <- subplot(
-  plot_ly(x = x, type = "histogram", showlegend=FALSE),
+  plot_ly(x = x, type = "histogram"),
   plotly_empty(),
-  plot_ly(x = x, y = y, type = "histogram2dcontour", showlegend=FALSE),
-  plot_ly(y = y, type = "histogram", showlegend=FALSE),
-  nrows = 2, heights = c(0.2, 0.8), widths = c(0.8, 0.2),
+  plot_ly(x = x, y = y, type = "histogram2dcontour"),
+  plot_ly(y = y, type = "histogram"),
+  nrows = 2, heights = c(0.2, 0.8), widths = c(0.8, 0.2), margin = 0,
   shareX = TRUE, shareY = TRUE, titleX = FALSE, titleY = FALSE
 )
-layout(s)
+layout(s, showlegend = FALSE)
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/3014.embed" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3117.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

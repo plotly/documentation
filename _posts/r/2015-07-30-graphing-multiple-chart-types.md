@@ -1,5 +1,5 @@
 ---
-title: Graphing Multiple Chart Types in R | Examples | Plotly
+title: Layering Graphical Elements in R | Examples | Plotly
 name: Graphing Multiple Chart Types
 permalink: r/graphing-multiple-chart-types/
 description: How to design figures with multiple chart types in R. An example of a line chart with a line of best fit and an uncertainty band.
@@ -8,44 +8,90 @@ thumbnail: thumbnail/mixed.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: basic
-order: 10
+display_as: chart_type
+order: 9
+output:
+  html_document:
+    keep_md: true
 ---
 
 
-# Graphing Multiple Chart Types in R
+
+#### Scatterplot with Loess Smoother
 
 
 ```r
-### Scatterplot with loess smoother
-
 library(plotly)
-mtcars <- mtcars[order(mtcars$disp), ]
-p <- plot_ly(mtcars, x = disp, y = mpg, mode = "markers",
-             text = rownames(mtcars), showlegend = FALSE)
-add_trace(p, x = disp, y = fitted(loess(mpg ~ disp)), mode = "lines",
-          name = "loess smoother", showlegend = TRUE)
+p <- plot_ly(mtcars, x = ~disp, color = I("black")) %>%
+  add_markers(y = ~mpg, text = rownames(mtcars), showlegend = F) %>%
+  add_lines(y = ~fitted(loess(mpg ~ disp)), color = I("red"),
+            name = "loess smoother", showlegend = T)
+p
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/223.embed" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3235.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Loess smoother with uncertainty bounds
+
 
 ```r
-### Scatterplot with loess smoother and it's uncertaincy estimates
 m <- loess(mpg ~ disp, data = mtcars)
-f <- with(predict(m, se = TRUE), data.frame(fit, se.fit))
-
-l <- list(
-  color = toRGB("gray90", alpha = 0.3),
-  fillcolor = toRGB("gray90", alpha = 0.3)
-)
 
 p %>%
-  add_trace(x = disp, y = f$fit, mode = "lines") %>%
-  add_trace(x = disp, y = f$fit + 1.96 * f$se.fit, mode = "lines",
-            fill = "tonexty", line = l) %>%
-  add_trace(x = disp, y = f$fit - 1.96 * f$se.fit, mode = "lines",
-            fill = "tonexty", line = l) %>%
-  layout(hovermode = "x")
+  add_ribbons(
+    data = broom::augment(m),
+    ymin = ~.fitted - 1.96 * .se.fit,
+    ymax = ~.fitted + 1.96 * .se.fit,
+    color = I("red"), name = "standard error"
+  )
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/225.embed" width="800" frameBorder="0"></iframe>
+```
+## Error in loadNamespace(name): there is no package called 'broom'
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3237.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Plotting Forecast Objects
+
+
+```r
+library(forecast)
+```
+
+```
+## Error in library(forecast): there is no package called 'forecast'
+```
+
+```r
+fit <- ets(USAccDeaths)
+```
+
+```
+## Error in eval(expr, envir, enclos): could not find function "ets"
+```
+
+```r
+fore <- forecast(fit, h = 48, level = c(80, 95))
+```
+
+```
+## Error in eval(expr, envir, enclos): could not find function "forecast"
+```
+
+```r
+plot_ly() %>%
+  add_lines(x = time(USAccDeaths), y = USAccDeaths,
+            color = I("black"), name = "observed") %>%
+  add_ribbons(x = time(fore$mean), ymin = fore$lower[, 2], ymax = fore$upper[, 2],
+              color = I("gray95"), name = "95% confidence") %>%
+  add_ribbons(x = time(fore$mean), ymin = fore$lower[, 1], ymax = fore$upper[, 1],
+              color = I("gray80"), name = "80% confidence") %>%
+  add_lines(x = time(fore$mean), y = fore$mean, color = I("blue"), name = "prediction")
+```
+
+```
+## Error in time(fore$mean): object 'fore' not found
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3239.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

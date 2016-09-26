@@ -13,7 +13,9 @@ has_thumbnail: false
 <iframe src="https://plotly.shinyapps.io/Explore_Diamonds/" width="100%" height= "1000" scrolling="yes" seamless="seamless" style="border: none"></iframe>
 
 ## Code
-### ui.r
+
+### app.r
+
 ```r
 library(shiny)
 library(plotly)
@@ -21,15 +23,12 @@ library(plotly)
 data(diamonds, package = "ggplot2")
 nms <- names(diamonds)
 
-shinyUI(pageWithSidebar(
+ui <- fluidPage(
 	
 	headerPanel("Diamonds Explorer"),
-	
 	sidebarPanel(
-		
 		sliderInput('sampleSize', 'Sample Size', min = 1, max = nrow(diamonds),
 								value = 1000, step = 500, round = 0),
-		
 		selectInput('x', 'X', choices = nms, selected = "carat"),
 		selectInput('y', 'Y', choices = nms, selected = "price"),
 		selectInput('color', 'Color', choices = nms, selected = "clarity"),
@@ -39,20 +38,12 @@ shinyUI(pageWithSidebar(
 		sliderInput('plotHeight', 'Height of plot (in pixels)', 
 		            min = 100, max = 2000, value = 1000)
 	),
-	
 	mainPanel(
 	  plotlyOutput('trendPlot', height = "900px")
 	)
-))
-```
+)
 
-### server.r
-```r
-library(shiny)
-library(plotly)
-data(diamonds, package = "ggplot2")
-
-shinyServer(function(input, output, session) {
+server <- function(input, output) {
   
   #add reactive data information. Dataset = built in diamonds data
   dataset <- reactive({
@@ -68,17 +59,14 @@ shinyServer(function(input, output, session) {
     # if at least one facet column/row is specified, add it
     facets <- paste(input$facet_row, '~', input$facet_col)
     if (facets != '. ~ .') p <- p + facet_grid(facets)
-    # return the ggplot object and renderPlotly() will know how to handle it
     
-    
-    # just verify that this is reactive as expected to the height slider
-    height = input$plotHeight
-    
-    ggp <- as.widget(ggplotly(p, height = height) %>% layout(autosize=TRUE))
-    ggp$x$layout$height = height
-    ggp
+    ggplotly(p) %>% 
+      layout(height = input$plotHeight, autosize=TRUE)
     
   })
   
-})
+}
+
+shinyApp(ui, server)
+
 ```

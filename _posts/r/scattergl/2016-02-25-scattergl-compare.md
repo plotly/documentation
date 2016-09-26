@@ -1,51 +1,47 @@
 ---
 title: WebGL vs SVG| Examples | Plotly
 name: WebGL vs SVG in R
-permalink: r/compare-webgl-svg/
-description: Compare WebGL and SVG in R
+permalink: r/webgl-vs-svg/
+description: How to create plots using WebGL
 layout: user-guide
 language: r
-order: 1
 page_type: example_index
+has_thumbnail: true
+display_as: get_request
+output: 
+  html_document: 
+    highlight: null
+    keep_md: yes
+    theme: null
 ---
-# Compare WebGL and SVG in R
 
-### Scatterplots with 75000 random points
+
+
+# Compare WebGL and SVG in R
 
 ### WebGL
 
+
 ```r
 library(plotly)
-
-n <- 75000
-x <- rnorm(n)
-y <- 2*x + rnorm(n, sd = 5)
-
-p <- plot_ly(x = x, y = y, type = "scattergl", mode = "markers", marker = list(line = list(width = 2)))
-p
+p <- ggplot(data = diamonds, aes(x = carat, y = price, color = cut)) +
+  geom_point(alpha = 0.01)
+ggplotly(p) %>% toWebGL()
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2869"width="950" height="600px" scrolling="no" seamless="seamless"></iframe>
 
-### SVG
+
+### SVG 
+
 > The draw time for this plot will be slow for all clients.
 
 
 ```r
 library(plotly)
-
-n <- 75000
-x <- rnorm(n)
-y <- 2*x + rnorm(n, sd = 5)
-
-p <- plot_ly(x = x, y = y, type = "scatter", mode = "markers", marker = list(line = list(width = 2)))
-p
+library(plotly)
+p <- ggplot(data = diamonds, aes(x = carat, y = price, color = cut)) +
+  geom_point(alpha = 0.01)
+ggplotly(p)
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2871/y-vs-x/" width="950px" height="600px" scrolling="no" seamless="seamless"></iframe>
 
-# References
-See below for more information:
-
-- [scattergl](https://plot.ly/r/reference/#scattergl)
-- [scatter](https://plot.ly/r/reference/#scatter)

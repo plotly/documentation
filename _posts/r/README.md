@@ -24,7 +24,7 @@
 
 ## Create R Documentation:
 ##### In `documentation/_posts/r`
-1. Write your tutorial in R Markdown (.Rmd file)
+1. Write your tutorial in R Markdown (Rmd) file (**IMPORTANT:** do not edit the markdown (md) files by hand! All edits should happen in the .Rmd file!)
   - Your .Rmd file should be named in the following format: `yyyy-mm-dd-chart-type.Rmd`
   - Please base your tutorial off of one of our exsisting tutorials (i.e. `documentation/_posts/r/2015-11-19-shapes.Rmd`)
       - Include the following header (*replacing `your-tutorial-chart` with the type of chart you're creating in the tutorial.) :
@@ -41,38 +41,41 @@
       has_thumbnail: true
       display_as: chart_type
       order: 9 *see below for order instructions*
+      output: 
+        html_document:
+          keep_md: true
       ---
       ```
       *`order` defines the order in which the tutorials appear on plot.ly/r. Please take a look at https://plot.ly/r/ and order your tutorial next to similar chart types.
-      - Under the header, include the following r code snippet:
+      - Under the header, include the following r code snippet. That first line of R code ensures that all subsequent code chunks do not relay message(s) or output results. That's because, in most cases, we want to provide code that produces an "offline" plot, but since [Jekyll and htmlwidgets aren't compatible](https://github.com/yihui/knitr-jekyll/issues/8#issuecomment-104112826), we're forced to embed plots as iframes.
+      
       ```
         ```{r, echo = FALSE, message=FALSE}
-        knitr::opts_chunk$set(message = FALSE)
+        knitr::opts_chunk$set(message = FALSE, results = 'hide')
         Sys.setenv("plotly_username"="RPlotBot")
-        Sys.setenv("plotly_api_key"="q0lz6r5efr")``` 
+        Sys.setenv("plotly_api_key"="q0lz6r5efr")```
       ```
-
       
     - To include r code and plots in the tutorial format the code snippets and plots in the following format:
       
-      ```
-      ```{r, results='hide'}
+    ```
+      ```{r}
       library(plotly)
       #Add your R Code Here i.e.:
-      p <- plot_ly(economics, x = date, y = uempmed, name = "unemployment")
-      P ```
-      ```
-      ```
-      ```{r, results='asis', echo=FALSE, message=FALSE}
-      plotly_POST(p, filename="your-chart-type/your-filename")```
-      ```
+      plot_ly(economics, x = ~date, y = ~uempmed, name = "unemployment")```
+   ```
+      
+    ```
+      ```{r, echo=FALSE, results='markup'}
+      plotly_POST(filename="your-chart-type/your-filename")```
+    ```
 
-2. Convert the R Markdown to Markdown (.md file) with:
+2. Convert all the `.Rmd` files in your current directory:
 
-  `knitr::knit("2015-08-03-your-r-markdown-tutorial.Rmd")`
+  `for (i in dir(pattern = "\\.Rmd")) rmarkdown::render(i)`
   
   Or, in the terminal (`documentation/_posts/r`) with: 
-  `Rscript -e 'knitr::knit("2015-08-03-your-r-markdown-tutorial.Rmd")'`
+  `Rscript -e 'for (i in dir(pattern = "\\\.Rmd")) rmarkdown::render(i)'`
   
 3. Add Thumbnail Images
   - Thumbnail images should named `your-tutorial-chart.jpg` and be *EXACTLY* 160px X 160px

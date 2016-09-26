@@ -10,6 +10,9 @@ page_type: example_index
 has_thumbnail: TRUE
 display_as: 3d_charts
 order: 5
+output:
+  html_document:
+    keep_md: true
 ---
 
 
@@ -19,27 +22,25 @@ order: 5
 ```r
 library(plotly)
 # volcano is a numeric matrix that ships with R
-plot_ly(z = volcano, type = "surface")
+plot_ly(z = ~volcano) %>% add_surface()
 ```
 
-<iframe height="850" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/171.embed" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3380.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### 2D Kernel Density Estimation
 
 
 ```r
 kd <- with(MASS::geyser, MASS::kde2d(duration, waiting, n = 50))
-with(kd, plot_ly(x = x, y = y, z = z, type = "surface"))
+plot_ly(x = kd$x, y = kd$y, z = kd$z) %>% add_surface()
 ```
 
-<iframe height="850" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/173.embed" width="800" frameBorder="0"></iframe>
-
+<iframe src="https://plot.ly/~RPlotBot/3382.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Multiple Surfaces
 
-```{r, message=FALSE, heigh=850}
-library(plotly)
 
+```r
 z <- c(
   c(8.83,8.89,8.81,8.87,8.9,8.87),
   c(8.89,8.94,8.85,8.94,8.96,8.92),
@@ -61,9 +62,10 @@ dim(z) <- c(15,6)
 z2 <- z + 1
 z3 <- z - 1
 
-p <- plot_ly(z=z, type="surface",showscale=FALSE) %>%
-  add_trace(z=z2, type="surface", showscale=FALSE, opacity=0.98) %>%
-  add_trace(z=z3, type="surface", showscale=FALSE, opacity=0.98)
-p
+plot_ly(showscale = FALSE) %>%
+  add_surface(z = ~z) %>%
+  add_surface(z = ~z2, opacity = 0.98) %>%
+  add_surface(z = ~z3, opacity = 0.98)
 ```
-<iframe width="800" height="850", id="igraph", frameborder="0" scrolling="no" src="https://plot.ly/~RPlotBot/2877.embed"></iframe>
+
+<iframe src="https://plot.ly/~RPlotBot/3384.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

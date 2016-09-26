@@ -10,59 +10,54 @@ page_type: example_index
 has_thumbnail: true
 display_as: chart_type
 order: 9
+output: 
+  html_document:
+    keep_md: true
 ---
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, results = 'hide')
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
+
 # Shapes
 
 ##### Check out our <b>[reference page](https://plot.ly/r/reference/#layout-shapes)</b> for more information on using shapes!
 
-### Rectangles
-```{r, results='hide'}
-s <-c();t<-c()
-for (i in 0:15)
-  {s[i] <- i
-  t[i] <- cos(i)}
-p <-plot_ly(x=s,y=t)
+### Lines
 
-# add shapes to the layout
-p <- layout(p, title = 'Highlighting with Lines',
-             shapes = list(
-               list(type = "line",
-                    line = list(color = "pink"), 
-                    x0 =0, x1 = 2, xref = "x",
-                    y0 = 0.5403023, y1 = 0.5403023, yref = "y"),
-                list(type = "line",
-                 line = list(color = "pink"), 
-                  x0 = 3, x1 = 5, xref = "x",
-                  y0 = -0.6536436, y1 = -0.6536436, yref = "y"),
-               list(type = "line",
-                    line = list(color = "pink"),
-                    x0 = 7, x1 = 9, xref = "x",
-                    y0 = -0.1455, y1 = -0.1455, yref = "y"),
-               list(type = "line",
-                    line = list(color = "pink"),
-                    x0 = 13, x1 = 15, xref = "x",
-                    y0 = 0.1367372, y1 = 0.1367372, yref = "y"),
-               list(type = "line",
-                    line = list(color = "pink"),
-                    x0 = 5, x1 = 7, xref = "x",
-                    y0 = 0.9601703, y1 = 0.9601703, yref = "y")
-               ))
-p
+```{r}
+s <- seq.int(0, 15)
+p <- plot_ly(x = ~s, y = ~sin(s), mode = "lines")
+
+# initiate a line shape object
+line <- list(
+  type = "line",
+  line = list(color = "pink"), 
+  xref = "x",
+  yref = "y"
+)
+
+lines <- list()
+for (i in c(0, 3, 5, 7, 9, 13)) {
+  line[["x0"]] <- i
+  line[["x1"]] <- i + 2
+  line[c("y0", "y1")] <- sin(i + 1)
+  lines <- c(lines, list(line))
+}
+
+layout(p, title = 'Highlighting with Lines', shapes = lines)
 ```
+
 ```{r, results='asis', echo=FALSE, message=FALSE}
 plotly_POST(p, filename="shapes/unemployment")
 ```
 
 ### Rectangles
-```{r, results='hide'}
+```{r}
 library(plotly)
-p <- plot_ly(economics, x = date, y = uempmed, name = "unemployment")
+p <- plot_ly(economics, x = ~date, y = ~uempmed, name = "unemployment")
 
 # add shapes to the layout
 p <- layout(p, title = 'Highlighting with Rectangles', 
@@ -77,16 +72,20 @@ p <- layout(p, title = 'Highlighting with Rectangles',
                  y0 = 4, y1 = 12.5, yref = "y"))) 
 p
 ```
-```{r, results='asis', echo=FALSE, message=FALSE}
+
+```{r, echo=FALSE}
 plotly_POST(p, filename="shapes/unemployment")
 ```
+
 ### Circles
+
 Circles are centered around  ((`x0`+`x1`)/2, (`y0`+`y1`)/2))
-```{r, results='hide'}
+
+```{r}
 library(plotly)
 d <- diamonds[sample(nrow(diamonds), 1000), ]
-d <- plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
-             mode = "markers", color = carat, size = carat, opacity = carat)
+d <- plot_ly(d, x = ~carat, y = ~price, text = ~paste("Clarity: ", clarity),
+             mode = "markers", color = ~carat, size = ~carat, opacity = ~carat)
 d <- layout(d, title = 'Highlighting Regions with Circles', 
             shapes = list(
               list(type = 'circle',
@@ -106,6 +105,7 @@ d <- layout(d, title = 'Highlighting Regions with Circles',
                    opacity = 0.2)))
 d
 ```
-```{r, results='asis', echo=FALSE, message=FALSE}
+
+```{r, echo=FALSE}
 plotly_POST(d, filename="shapes/diamonds")
 ```

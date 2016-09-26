@@ -1,44 +1,76 @@
 ---
-title: Embedding Plotly Graphs in HTML with KnitR
-name: Embedding Plotly Graphs in HTML
+title: Embed Graphs in HTML
+name: Embed Graphs in HTML
 permalink: r/embedding-plotly-graphs-in-HTML
-description: How to embed Plotly graphs in HTML pages with Plotly's R API
+description: How to embed plotly graphs in HTML pages with plotly for R
 layout: base
-thumbnail: thumbnail/text-and-annotations.jpg
+thumbnail: text-and-annotations.jpg
 language: r
 page_type: example_index
 has_thumbnail: false
-display_as: get_request
+display_as: layout_opt
 ---
 
-# Embedding Plotly Graphs in HTML
-
-If you have a plotly account, printing plotly objects in the R console will create a new plotly figure (via plotly's REST API). If you're using knitr/R Markdown with HTML output, printing not only creates the plot, but also embeds it as an HTML iframe.
 
 
+As of version 2.0, plotly's R package utilizes the [htmlwidgets](http://www.htmlwidgets.org/) framework. As a result, printing objects of class "plotly" in [rmarkdown/knitr HTML documents](http://rmarkdown.rstudio.com/html_document_format.html) will embed the necessary HTML/JavaScript to create the client-side visualization (via [plotly.js](http://plot.ly/javascript)).
 
 
 ```r
 library(plotly)
-p <- plot_ly(iris, x = Petal.Length, y = Petal.Width,
-        color = Species, mode = "markers")
+p <- plot_ly(midwest, x = percollege, color = state, type = "box")
+```
+
+```
+## Error in plot_ly(midwest, x = percollege, color = state, type = "box"): object 'percollege' not found
+```
+
+```r
+class(p)
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'p' not found
+```
+
+```r
 p
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/501.embed" width="800" frameBorder="0"></iframe>
-
-Plotly graphs hosted on [https://plot.ly](https://plot.ly) can be embedded in webpages as iframes or images. Just add `.embed` or `.png` to the end of the graph URL.
-
-```html
-<iframe src="https://plot.ly/~RPlotBot/501.embed"
-		height="600" width="100%"
-		scrolling="no" seamless="seamless"
-		frameBorder="0">
-</iframe>
+```
+## Error in eval(expr, envir, enclos): object 'p' not found
 ```
 
-```html
-<img src="https://plot.ly/~RPlotBot/501.png">
+
+```
+## Error in plotly_build(x): object 'p' not found
 ```
 
-[Learn more about embedding graphs in HTML pages, blogs, and websites in our tutorial](http://help.plot.ly/embed-graphs-in-websites/).
+You can also host your figures on a plotly server by calling `plotly_POST()`. This function returns an object of class figure. When you print a figure object in an rmarkdown/knitr document, it embeds the figure as an iframe which is served from your plotly account.
+
+
+```r
+f <- plotly_POST(p)
+```
+
+```
+## Error in plotly_build(x): object 'p' not found
+```
+
+```r
+class(f)
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'f' not found
+```
+
+```r
+f
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'f' not found
+```
+
+If you want more control over embedding graphs hosted on <https://plot.ly>, [learn how to embed plotly graphs with HTML iframes](http://help.plot.ly/embed-graphs-in-websites/)
