@@ -1,8 +1,22 @@
-# Scatter Plots on Maps in R | Examples | Plotly
+---
+title: Scatter Plots on Maps in R | Examples | Plotly
+name: Scatter Plots on Maps
+permalink: r/scatter-plots-on-maps/
+description: How to make scatter plots on maps in R. Scatter plots on maps highlight geographic areas and can be colored by value.
+layout: base
+thumbnail: thumbnail/scatter-plot-on-maps.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: maps
+output:
+  html_document:
+    keep_md: true
+---
 
 
 
-# US Airports Map in R
+### Basic Scatter on Map
 
 
 ```r
@@ -23,7 +37,7 @@ g <- list(
 
 plot_geo(df, lat = ~lat, lon = ~long) %>%
   add_markers(
-    text = ~paste(airport, city, state, paste("Arrivals:", cnt), sep = "<br />"), 
+    text = ~paste(airport, city, state, paste("Arrivals:", cnt), sep = "<br />"),
     color = ~cnt, symbol = I("square"), size = I(8), hoverinfo = "text"
   ) %>%
   colorbar(title = "Incoming flights<br />February 2011") %>%
@@ -32,12 +46,9 @@ plot_geo(df, lat = ~lat, lon = ~long) %>%
   )
 ```
 
+<iframe src="https://plot.ly/~RPlotBot/3160.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-```r
-plotly_POST(filename = "maps/traffic")
-```
-
-### North American Precipitation Map from NOAA
+### Style Scatter Map Layout
 
 
 ```r
@@ -84,7 +95,4 @@ plot_geo(df, lat = ~Lat, lon = ~Lon, color = ~Globvalue) %>%
   layout(title = 'US Precipitation 06-30-2015<br>Source: NOAA', geo = g)
 ```
 
-
-```r
-plotly_POST(filename = "maps/noaa")
-```
+<iframe src="https://plot.ly/~RPlotBot/3162.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
