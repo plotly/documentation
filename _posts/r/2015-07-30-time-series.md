@@ -62,4 +62,3 @@ plot_ly(x = ~x, y = ~y, text = paste(tm, "seconds from now in", Sys.timezone()))
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3463.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
