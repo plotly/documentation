@@ -7,7 +7,7 @@ layout: base
 thumbnail: thumbnail/time-series.jpg
 language: r
 page_type: example_index
-has_thumbnail: false
+has_thumbnail: true
 display_as: chart_type
 output:
   html_document:
@@ -28,12 +28,12 @@ plot_ly(x = ~x, y = ~y, text = paste(tm, "days from today"))
 ```
 
 ```
-## Error in eval(expr, envir, enclos): could not find function "plot_ly"
+## Error in eval(expr, envir, enclos): impossible de trouver la fonction "plot_ly"
 ```
 
 
 ```
-## Error in eval(expr, envir, enclos): could not find function "plotly_POST"
+## Error in eval(expr, envir, enclos): impossible de trouver la fonction "plotly_POST"
 ```
 
 ### POSIXlt date time class with timezone
