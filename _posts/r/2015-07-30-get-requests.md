@@ -9,13 +9,15 @@ language: r
 page_type: example_index
 has_thumbnail: false
 display_as: get_request
+output:
+  html_document:
+    keep_md: true
 ---
 
-# Downloading Plotly Graphs into R
 
+#### Download Plotly Graphs into R
 
-
-Download Plotly figures directly into R with `get_figure`. This takes the `username` and the `plot_id` as arguments.
+Download Plotly figures directly into R with `get_figure()`. This takes the `username` and the `plot_id` as arguments.
 
 For example, to download [https://plot.ly/~cpsievert/559](https://plot.ly/~cpsievert/559) into R, call:
 
@@ -25,7 +27,12 @@ library(plotly)
 fig <- get_figure("cpsievert", "559")
 ```
 
-<br>
+
+```
+## Error in UseMethod("plotly_build"): no applicable method for 'plotly_build' applied to an object of class "NULL"
+```
+
+#### Edit Downloaded Graph
 Once the figure is downloaded, you can edit it like any plotly object. This will create a new figure unless you specify the same filename as the figure that you downloaded.
 
 
@@ -33,41 +40,30 @@ Once the figure is downloaded, you can edit it like any plotly object. This will
 layout(fig, title = paste("Modified on ", Sys.time()))
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1989.embed" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3131.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Adding Traces with `get_figure` and `subplot`.
-
-After downloading a figure with subplots, use `plotly_build` to build the figure. 
+### Adding a trace to a subplot figure
 
 
 ```r
 fig <- get_figure("chelsea_lyn", "6343")
-fig <- plotly_build(fig)
+add_lines(fig, x = c(1, 2), y = c(1, 2), xaxis = "x2", yaxis = "y2")
 ```
 
-Add new traces to `fig$data[[(length(fig$data)+1)]]` as a list
+<iframe src="https://plot.ly/~RPlotBot/3133.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
+### Restyle Traces
 
-```r
-fig$data[[(length(fig$data)+1)]] <- list(x=c(1,2), y=c(1,2), xaxis="x2", yaxis="y2")
-fig
-```
+It's easy to add a trace or change the layout of figure, but it's a bit more challenging to modify attributes of an existing trace. If you know the attribute you want to change, and the trace number (starting with 1), use the `style()` function. For example, we could remove the hover text from [this plot](https://plot.ly/~RPlotBot/2833) like so:
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1935.embed" width="800" frameBorder="0"></iframe>
-
-### Adding custom hover text after downloading a plotly graph
-
-Use `plotly_build()` first and then modify the plotly object as such
 
 ```r
 fig <- get_figure("rplotbot", 2833)
-fig <- plotly_build(fig)
-
-fig$data[[1]]$hoverinfo <- "text"
-fig$data[[1]]$text <- paste("Displacement = ", mtcars$disp, "Miles Per Gallon = ", mtcars$mpg)
-
-fig
+fig %>%
+  style(hoverinfo = "none") %>%
+  layout(title = "No hover text")
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/2835.embed" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3135.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
+You'll probably want to inspect the traces before you use this function, and I recommend using the `plotly_json()` function to do so.

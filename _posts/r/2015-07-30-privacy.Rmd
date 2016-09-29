@@ -9,15 +9,12 @@ language: r
 page_type: example_index
 has_thumbnail: false
 display_as: file_settings
+output:
+  html_document:
+    keep_md: true
 ---
 
-# Privacy Settings in R
-
-Since Version 2.0 (November 15, 2015), Plotly for R renders graphs locally.
-You can publish these graphs to the web with the command `plotly_POST`.
-
-By default, plotly graphs are public.
-You can make them private by setting the `world_readable` argument to `FALSE`.
+Since Version 2.0 (November 15, 2015), Plotly for R renders entirely locally by default, but you can also publish these graphs to the web via the `plotly_POST()` function. By default, `plotly_POST()` creates public graphs (which are free to create), but with a [plotly subscription](https://plot.ly/products/cloud/) you can easily make them private via the `sharing` argument.
 
 
 ```{r, echo = FALSE, message=FALSE}
@@ -26,19 +23,25 @@ Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
 
-```{r, message=FALSE}
+### Public Graph
+This is the default privacy option
+
+```{r}
 library(plotly)
-
-p <- plot_ly(x = c(0, 2, 4), y = c(0, 4, 2))
-
-# rendered locally
-p
-
-# public
-plotly_POST(p, filename="r-docs/public-graph")
-
-# private
-plotly_POST(p, world_readable = FALSE, filename="r-docs/private-graph")
+plot_ly(x = c(0, 2, 4), y = c(0, 4, 2), type = 'scatter', mode = 'markers')
+plotly_POST(filename = "public-graph")
 ```
 
-Creating public graphs on Plotly is free. To create more than one private graphs, [sign up for a Plotly subscription](https://plot.ly/products/cloud/).
+### Private Graph
+```{r}
+library(plotly)
+plot_ly(x = c(0, 2, 4), y = c(0, 4, 2), type = 'scatter', mode = 'markers')
+plotly_POST(filename = "public-graph", sharing = "private")
+```
+
+### Secret Graph
+```{r}
+library(plotly)
+plot_ly(x = c(0, 2, 4), y = c(0, 4, 2), type = 'scatter', mode = 'markers')
+plotly_POST(filename = "public-graph", sharing = "secret")
+```

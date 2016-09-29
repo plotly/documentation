@@ -8,47 +8,72 @@ thumbnail: thumbnail/heatmap.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_type
+display_as: scientific
 order: 7
+output:
+  html_document:
+    keep_md: true
 ---
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
-# Heatmaps in R
 
-```{r, message=FALSE}
+#### Basic Heatmap
+
+```{r, results = 'hide'}
 library(plotly)
 plot_ly(z = volcano, type = "heatmap")
 ```
 
-### Categorical Axes
-```{r, message=FALSE}
+```{r, echo=FALSE}
+plotly_POST(filename="heatmap/simple")
+```
+
+
+#### Categorical Axes
+
+```{r, results = 'hide'}
 m <- matrix(rnorm(9), nrow = 3, ncol = 3)
-plot_ly(z = m,
+plot_ly(
 	x = c("a", "b", "c"), y = c("d", "e", "f"),
-	type = "heatmap")
+	z = m, type = "heatmap"
+)
 ```
 
-### Sequential Colorscales: Hot
-```{r, message=FALSE}
-plot_ly(z = volcano, colorscale = "Hot", type = "heatmap")
+```{r, echo=FALSE}
+plotly_POST(filename="heatmap/cat")
 ```
 
-### Sequential Colorscales: Greys
-```{r, message=FALSE}
+#### Sequential Colorscales: Greys
+
+The `colors` argument understands color brewer palettes (see `RColorBrewer::brewer.pal.info` for valid names).
+
+```{r, results = 'hide'}
 plot_ly(z = volcano, colorscale = "Greys", type = "heatmap")
 ```
 
-### Sequential Colorscale: Greens
-```{r, message=FALSE}
-plot_ly(z = volcano, colorscale = "Greens", type = "heatmap")
+```{r, echo=FALSE}
+plotly_POST(filename="heatmap/gray")
 ```
 
-### Custom colorscales
-```{r, message=FALSE}
+#### Custom colorscales
+
+The `colors` argument also accepts a color interpolation function like `colorRamp()`
+
+```{r, results = 'hide'}
+plot_ly(z = volcano, colors = colorRamp(c("red", "green")), type = "heatmap")
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="heatmap/ramp")
+```
+
+Or, you can do the scaling yourself and use the colorscale attribute directly...
+
+```{r, results = 'hide'}
 vals <- unique(scales::rescale(c(volcano)))
 o <- order(vals, decreasing = FALSE)
 cols <- scales::col_numeric("Blues", domain = NULL)(vals)
@@ -56,7 +81,7 @@ colz <- setNames(data.frame(vals[o], cols[o]), NULL)
 plot_ly(z = volcano, colorscale = colz, type = "heatmap")
 ```
 
-```{r, message=FALSE}
-library(viridis)
-plot_ly(z = volcano, colors = viridis(256), type = "heatmap")
+```{r, echo=FALSE}
+plotly_POST(filename="heatmap/custom")
 ```
+

@@ -13,10 +13,16 @@ has_thumbnail: false
 <iframe src="https://plotly.shinyapps.io/Linked-Click/" width="100%" height= "800" scrolling="no" seamless="seamless" style="border: none"></iframe>
 
 ## Code
-### ui.r
-```r
+
+### app.r
+
+```
 library(plotly)
 library(shiny)
+
+# compute a correlation matrix
+correlation <- round(cor(mtcars), 3)
+nms <- names(mtcars)
 
 ui <- fluidPage(
   mainPanel(
@@ -25,13 +31,6 @@ ui <- fluidPage(
   ),
   verbatimTextOutput("selection")
 )
-```
-
-### server.r
-```r
-# compute a correlation matrix
-correlation <- round(cor(mtcars), 3)
-nms <- names(mtcars)
 
 server <- function(input, output, session) {
   output$heat <- renderPlotly({
@@ -57,15 +56,18 @@ server <- function(input, output, session) {
       vars <- c(s[["x"]], s[["y"]])
       d <- setNames(mtcars[vars], c("x", "y"))
       yhat <- fitted(lm(y ~ x, data = d))
-      plot_ly(d, x = x, y = y, mode = "markers") %>%
-        add_trace(x = x, y = yhat, mode = "lines") %>%
+      plot_ly(d, x = ~x) %>%
+        add_markers(y = ~y) %>%
+        add_lines(y = ~yhat) %>%
         layout(xaxis = list(title = s[["x"]]), 
                yaxis = list(title = s[["y"]]), 
                showlegend = FALSE)
     } else {
-      plot_ly()
+      plotly_empty()
     }
   })
   
 }
+
+shinyApp(ui, server)
 ```

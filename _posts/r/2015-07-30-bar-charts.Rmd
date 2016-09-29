@@ -2,7 +2,7 @@
 title: Bar Charts in R | Examples | Plotly
 name: Bar Charts
 permalink: r/bar-charts/
-description: How to make a bar chart in R. Seven examples of grouped, stacked, overlaid, and colored bar charts.
+description: How to make a bar chart in R. Examples of grouped, stacked, overlaid, and colored bar charts.
 layout: base
 thumbnail: thumbnail/bar.jpg
 language: r
@@ -10,49 +10,75 @@ page_type: example_index
 has_thumbnail: true
 display_as: chart_type
 order: 2
+output:
+  html_document:
+    keep_md: true
 ---
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
-# Bar Charts in R
 
-```{r, message=FALSE}
+### Basic Bar Charts in R
 
-
+```{r, results = 'hide'}
 library(plotly)
+
 p <- plot_ly(
   x = c("giraffes", "orangutans", "monkeys"),
   y = c(20, 14, 23),
   name = "SF Zoo",
-  type = "bar",
-  filename="r-docs/simple-bar"
+  type = "bar"
 )
 p
+```
 
-p2 <- add_trace(
-  p,
-  x = c("giraffes", "orangutans", "monkeys"),
-  y = c(12, 18, 29),
-  name = "LA Zoo",
-  filename="r-docs/simple-bars"
-)
-p2
+```{r, echo=FALSE}
+plotly_POST(p, filename="bar/1")
+```
 
-layout(p2, barmode = "stack")
+```{r, results = 'hide'}
+p2 <- add_trace(p, y = c(12, 18, 29), name = "LA Zoo")
+```
 
-## customizing colors
+```{r, echo=FALSE}
+plotly_POST(filename="bar/2")
+```
 
+```{r, results = 'hide'}
+p3 <- layout(p2, barmode = "stack")
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="bar/3")
+```
+
+### Customizing Colors
+
+```{r, results = 'hide'}
+library(plotly)
 library(dplyr)
-ggplot2::diamonds %>% count(cut) %>%
-  plot_ly(x = cut, y = n, type = "bar", marker = list(color = toRGB("black")))
 
-# mapping a color variable
+ggplot2::diamonds %>% count(cut) %>%
+  plot_ly(x = ~cut, y = ~n, color = I("black"))
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="bar/4")
+```
+
+### Mapping a Color Variable
+
+```{r, results = 'hide'}
+library(plotly)
+library(dplyr)
 
 ggplot2::diamonds %>% count(cut, clarity) %>%
-  plot_ly(x = cut, y = n, type = "bar", color = clarity)
+  plot_ly(x = ~cut, y = ~n, color = ~clarity)
+```
 
-
+```{r, echo=FALSE}
+plotly_POST(filename="bar/5")
 ```

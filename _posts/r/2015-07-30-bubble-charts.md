@@ -8,26 +8,31 @@ thumbnail: thumbnail/bubble.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: basic
+display_as: chart_type
 order: 2
+output:
+  html_document:
+    keep_md: true
 ---
 
 
-# Bubble Charts
+
+# Basic Bubble Chart
 
 
 ```r
 library(plotly)
 d <- diamonds[sample(nrow(diamonds), 1000), ]
-# note how size is automatically scaled and added as hover text
-plot_ly(d, x = carat, y = price, size = carat, mode = "markers")
+# note how size is automatically scaled
+plot_ly(d, x = ~carat, y = ~price, size = ~carat)
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/205.embed" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3100.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
 
 ```r
-plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
-        mode = "markers", color = carat, size = carat, opacity = carat)
+plot_ly(d, x = ~carat, y = ~price, text = ~paste("Clarity: ", clarity),
+        color = ~carat, size = ~carat)
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/207.embed" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3102.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

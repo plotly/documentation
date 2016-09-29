@@ -7,10 +7,10 @@
   $ git fetch origin
   $ git checkout source-design-merge
   ```
-1. [Install jekyll](http://jekyllrb.com/docs/installation/). <b>IMPORTANT</b> - [Install the same version that Github Pages is using: 3.0.3](https://pages.github.com/versions/):
+1. [Install jekyll](http://jekyllrb.com/docs/installation/). <b>IMPORTANT</b> - [Install the same version that Github Pages is using: 3.1.2](https://pages.github.com/versions/):
 
   ```
-  $ gem install jekyll -v 3.0.3
+  $ gem install jekyll -v 3.1.2
   ```
 2. Install some dependencies:
 

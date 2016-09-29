@@ -2,30 +2,26 @@
 title: Scatter Plots on Maps in R | Examples | Plotly
 name: Scatter Plots on Maps
 permalink: r/scatter-plots-on-maps/
-description: How to make scatter plots on maps in Python. Scatter plots on maps highlight geographic areas and can be colored by value.
+description: How to make scatter plots on maps in R. Scatter plots on maps highlight geographic areas and can be colored by value.
 layout: base
 thumbnail: thumbnail/scatter-plot-on-maps.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
 display_as: maps
-order: 1
+output:
+  html_document:
+    keep_md: true
 ---
 
 
 
-# US Airports Map in R
+### Basic Scatter on Map
+
 
 ```r
 library(plotly)
 df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv')
-df$hover <- with(df, paste(airport, city, state, "Arrivals: ", cnt))
-
-# marker styling
-m <- list(
-  colorbar = list(title = "Incoming flights February 2011"),
-  size = 8, opacity = 0.8, symbol = 'square'
-)
 
 # geo styling
 g <- list(
@@ -39,20 +35,25 @@ g <- list(
   subunitwidth = 0.5
 )
 
-plot_ly(df, lat = lat, lon = long, text = hover, color = cnt,
-        type = 'scattergeo', locationmode = 'USA-states', mode = 'markers',
-        marker = m) %>%
-  layout(title = 'Most trafficked US airports<br>(Hover for airport)', geo = g)
+plot_geo(df, lat = ~lat, lon = ~long) %>%
+  add_markers(
+    text = ~paste(airport, city, state, paste("Arrivals:", cnt), sep = "<br />"),
+    color = ~cnt, symbol = I("square"), size = I(8), hoverinfo = "text"
+  ) %>%
+  colorbar(title = "Incoming flights<br />February 2011") %>%
+  layout(
+    title = 'Most trafficked US airports<br />(Hover for airport)', geo = g
+  )
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/329" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3160.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### North American Precipitation Map from NOAA
+### Style Scatter Map Layout
+
 
 ```r
 library(plotly)
 df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2015_06_30_precipitation.csv')
-df$hover <- paste(df$Globvalue, "inches")
 
 # change default color scale title
 m <- list(colorbar = list(title = "Total Inches"))
@@ -71,9 +72,7 @@ g <- list(
   resolution = 50,
   projection = list(
     type = 'conic conformal',
-    rotation = list(
-      lon = -100
-    )
+    rotation = list(lon = -100)
   ),
   lonaxis = list(
     showgrid = TRUE,
@@ -89,9 +88,11 @@ g <- list(
   )
 )
 
-plot_ly(df, lat = Lat, lon = Lon, text = hover, color = Globvalue,
-        type = 'scattergeo', marker = m) %>%
+plot_geo(df, lat = ~Lat, lon = ~Lon, color = ~Globvalue) %>%
+  add_markers(
+    text = ~paste(df$Globvalue, "inches"), hoverinfo = "text"
+  ) %>%
   layout(title = 'US Precipitation 06-30-2015<br>Source: NOAA', geo = g)
 ```
 
-<iframe height="800" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/334" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3162.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

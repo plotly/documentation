@@ -9,41 +9,66 @@ language: r
 page_type: example_index
 has_thumbnail: false
 display_as: layout_opt
+output:
+  html_document:
+    keep_md: true
 ---
 
 ```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
 
-# Adding Text and Annotations in R
-
 ### Text Mode
-```{r, message=FALSE}
+
+```{r, results = 'hide'}
 library(plotly)
-plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode = "text")
+
+p <- plot_ly(
+  x = c("giraffes", "orangutans", "monkeys"),
+  y = c(20, 14, 23),
+  name = "SF Zoo",
+  type = "bar"
+)
+p
+```
+
+```{r, echo=FALSE}
+plotly_POST(p, filename="bar/1")
 ```
 
 ### Hover Text
-```{r, message=FALSE}
-library(plotly)
-plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode="markers")
+
+```{r, results = 'hide'}
+plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
+  add_markers()
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="text/hover")
 ```
 
 ### Styling Text
-```{r, message=FALSE}
+
+```{r, results = 'hide'}
 t <- list(
-    family = "sans serif",
-    size = 18,
-    color = toRGB("grey50")
+  family = "sans serif",
+  size = 18,
+  color = toRGB("grey50")
 )
-plot_ly(mtcars, x = wt, y = mpg, text = rownames(mtcars), mode = "markers+text",
-        textfont = t, textposition = "top middle")
+plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
+  add_markers() %>%
+  add_text(textfont = t, textposition = "top middle")
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="text/style")
 ```
 
 ### Single Annotation
-```{r, message=FALSE}
+
+```{r, results = 'hide'}
 m <- mtcars[which.max(mtcars$mpg), ]
 
 a <- list(
@@ -58,12 +83,18 @@ a <- list(
   ay = -40
 )
 
-plot_ly(mtcars, x = wt, y = mpg, mode = "markers") %>%
+plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
+  add_markers() %>%
   layout(annotations = a)
 ```
 
+```{r, echo=FALSE}
+plotly_POST(filename="annotation/single")
+```
+
 ### Multiple Annotations
-```{r, message=FALSE}
+
+```{r, results = 'hide'}
 a <- list()
 for (i in seq_len(nrow(mtcars))) {
   m <- mtcars[i, ]
@@ -80,14 +111,27 @@ for (i in seq_len(nrow(mtcars))) {
   )
 }
 
-plot_ly(filename="r-docs/multiple-annotations") %>% layout(annotations = a)
+plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
+  add_markers() %>%
+  layout(annotations = a)
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="annotation/multiple")
 ```
 
 ### Custom Hover Text
-```{r, message = F}
-p <- mtcars %>% 
-  plot_ly(x = disp, y = mpg, mode = "markers", color = cyl, size = wt, 
-          hoverinfo = "text",
-          text = paste("Displacement = ", mtcars$disp, "Miles Per Gallon = ", mtcars$mpg)) %>% 
+
+```{r, results = 'hide'}
+mtcars %>%
+  plot_ly(x = ~disp, y = ~mpg, color = ~factor(cyl), size = ~wt) %>%
+  add_markers(
+    hoverinfo = "text",
+    text = ~paste("Displacement = ", disp, "Miles Per Gallon = ", mpg)
+  ) %>%
   layout(title ="Custom Hover Text")
+```
+
+```{r, echo=FALSE}
+plotly_POST(filename="text/custom")
 ```

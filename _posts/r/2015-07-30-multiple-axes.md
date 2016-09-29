@@ -8,12 +8,16 @@ thumbnail: thumbnail/multiple-axes.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: layout_opt
+display_as: multiple_axes
 order: 1
+output:
+  html_document:
+    keep_md: true
 ---
 
 
-# Multiple Axes
+
+### Multiple Y Axes
 
 
 ```r
@@ -21,11 +25,17 @@ library(plotly)
 ay <- list(
   tickfont = list(color = "red"),
   overlaying = "y",
-  side = "right"
+  side = "right",
+  title = "second y axis"
 )
-plot_ly(x = 1:3, y = 10*(1:3), name = "slope of 10") %>%
-  add_trace(x = 2:4, y = 1:3, name = "slope of 1", yaxis = "y2") %>%
-  layout(title = "Double Y Axis", yaxis2 = ay)
+plot_ly() %>%
+  add_lines(x = ~1:3, y = ~10*(1:3), name = "slope of 10") %>%
+  add_lines(x = ~2:4, y = ~1:3, name = "slope of 1", yaxis = "y2") %>%
+  layout(
+    title = "Double Y Axis", yaxis2 = ay,
+    xaxis = list(title="x")
+  )
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/1055.embed" width="800" frameBorder="0"></iframe>
+
+<iframe src="https://plot.ly/~RPlotBot/3171.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

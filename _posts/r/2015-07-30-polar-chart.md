@@ -8,37 +8,44 @@ thumbnail: thumbnail/polar.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: scientific
-order: 3
+display_as: chart_type
+order: 12
+output:
+  html_document:
+    keep_md: true
 ---
 
 
 
-# Polar Charts in R
+### Polar Scatter Chart
 
 
 ```r
 library(plotly)
-p <- plot_ly(plotly::mic, r = r, t = t, color = nms, mode = "lines")
+p <- plot_ly(
+  plotly::mic, r = ~r, t = ~t, color = ~nms, alpha = 0.5, type = "scatter"
+)
 layout(p, title = "Mic Patterns", orientation = -90)
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/309" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3165.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Polar Scatter Chart
 
 ```r
-p <- plot_ly(plotly::hobbs, r = r, t = t, color = nms, opacity = 0.7, mode = "markers")
+p <- plot_ly(
+  plotly::hobbs, r = ~r, t = ~t, color = ~nms, alpha = 0.5, type = "scatter"
+)
 layout(p, title = "Hobbs-Pearson Trials", plot_bgcolor = toRGB("grey90"))
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/311" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3167.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Polar Area Chart
 
+
 ```r
-p <- plot_ly(plotly::wind, r = r, t = t, color = nms, type = "area")
+p <- plot_ly(plotly::wind, r = ~r, t = ~t) %>% add_area(color = ~nms)
 layout(p, radialaxis = list(ticksuffix = "%"), orientation = 270)
 ```
 
-<iframe height="600" id="igraph" scrolling="no" seamless="seamless" src="https://plot.ly/~RPlotBot/313" width="800" frameBorder="0"></iframe>
+<iframe src="https://plot.ly/~RPlotBot/3169.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

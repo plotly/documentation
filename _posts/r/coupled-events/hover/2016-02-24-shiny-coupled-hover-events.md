@@ -80,10 +80,10 @@ server <- function(input, output){
   output$timeseries <- renderPlotly({
     p <- ds %>% 
       filter(variable != "GSPC") %>% 
-      plot_ly(x = Date, y = value, color = variable, mode = "lines", line = list(width = 3), hovermode = "closest", source = "source")
+      plot_ly(x = ~Date, y = ~value, color = ~variable, mode = "lines", line = list(width = 3), hovermode = "closest", source = "source")
     
     # Add SP500
-    p <- add_trace(p, data = stockdata, x = Date, y = GSPC, mode = "lines", yaxis = "y2", name = "SP500", opacity = 0.3,
+    p <- add_trace(p, data = stockdata, x = ~Date, y = ~GSPC, mode = "lines", yaxis = "y2", name = "SP500", opacity = 0.3,
                    line = list(width = 5)) %>% 
       layout(title = "Stock prices for different stocks overlaid with SP500",
              xaxis = list(title = "Dates", gridcolor = "#bfbfbf", domain = c(0, 0.98)),
