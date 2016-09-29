@@ -20,6 +20,7 @@ output:
 
 
 ```r
+library(plotly)
 today <- Sys.Date()
 tm <- seq(0, 600, by = 10)
 x <- today - tm
@@ -27,14 +28,7 @@ y <- rnorm(length(x))
 plot_ly(x = ~x, y = ~y, text = paste(tm, "days from today"))
 ```
 
-```
-## Error in eval(expr, envir, enclos): impossible de trouver la fonction "plot_ly"
-```
-
-
-```
-## Error in eval(expr, envir, enclos): impossible de trouver la fonction "plotly_POST"
-```
+<iframe src="https://plot.ly/~RPlotBot/3467.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### POSIXlt date time class with timezone
 
@@ -54,6 +48,7 @@ plot_ly(x = ~x, y = ~y, text = paste(tm, "seconds from now in GMT"))
 
 
 ```r
+library(plotly)
 now_ct <- as.POSIXct(Sys.time())
 tm <- seq(0, 600, by = 10)
 x <- now_ct - tm
