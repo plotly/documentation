@@ -1,19 +1,37 @@
-# Text and Annotations in R | Examples | Plotly
+---
+title: Text and Annotations in R | Examples | Plotly
+name: Text and Annotations
+permalink: r/text-and-annotations/
+description: How to add text labels and annotations to plots in R.
+layout: base
+thumbnail: thumbnail/text-and-annotations.jpg
+language: r
+page_type: example_index
+has_thumbnail: false
+display_as: layout_opt
+output:
+  html_document:
+    keep_md: true
+---
 
 
-
-# Adding Text and Annotations in R
 
 ### Text Mode
 
 
 ```r
 library(plotly)
-plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
-  add_text()
+
+p <- plot_ly(
+  x = c("giraffes", "orangutans", "monkeys"),
+  y = c(20, 14, 23),
+  name = "SF Zoo",
+  type = "bar"
+)
+p
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3080.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Hover Text
 
@@ -23,7 +41,7 @@ plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
   add_markers()
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3145.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Styling Text
 
@@ -39,7 +57,7 @@ plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
   add_text(textfont = t, textposition = "top middle")
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3147.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Single Annotation
 
@@ -64,7 +82,7 @@ plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
   layout(annotations = a)
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3150.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Multiple Annotations
 
@@ -91,19 +109,19 @@ plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
   layout(annotations = a)
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3152.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Custom Hover Text
 
 
 ```r
-mtcars %>% 
+mtcars %>%
   plot_ly(x = ~disp, y = ~mpg, color = ~factor(cyl), size = ~wt) %>%
   add_markers(
     hoverinfo = "text",
     text = ~paste("Displacement = ", disp, "Miles Per Gallon = ", mpg)
-  ) %>% 
+  ) %>%
   layout(title ="Custom Hover Text")
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3154.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
