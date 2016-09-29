@@ -14,15 +14,12 @@ output:
     keep_md: true
 ---
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE, warning=FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
+
 
 ### Dates
 
-```{r, results = 'hide'}
+
+```r
 today <- Sys.Date()
 tm <- seq(0, 600, by = 10)
 x <- today - tm
@@ -30,13 +27,19 @@ y <- rnorm(length(x))
 plot_ly(x = ~x, y = ~y, text = paste(tm, "days from today"))
 ```
 
-```{r, echo=FALSE}
-plotly_POST(filename="timeseries/1")
+```
+## Error in eval(expr, envir, enclos): could not find function "plot_ly"
+```
+
+
+```
+## Error in eval(expr, envir, enclos): could not find function "plotly_POST"
 ```
 
 ### POSIXlt date time class with timezone
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 now_lt <- as.POSIXlt(Sys.time(), tz = "GMT")
 tm <- seq(0, 600, by = 10)
@@ -45,13 +48,12 @@ y <- rnorm(length(x))
 plot_ly(x = ~x, y = ~y, text = paste(tm, "seconds from now in GMT"))
 ```
 
-```{r, echo=FALSE}
-plotly_POST(filename="timeseries/2")
-```
+<iframe src="https://plot.ly/~RPlotBot/3461.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### POSIXct date time class without timezone
 
-```{r, results = 'hide'}
+
+```r
 now_ct <- as.POSIXct(Sys.time())
 tm <- seq(0, 600, by = 10)
 x <- now_ct - tm
@@ -59,7 +61,5 @@ y <- rnorm(length(x))
 plot_ly(x = ~x, y = ~y, text = paste(tm, "seconds from now in", Sys.timezone()))
 ```
 
-```{r, echo=FALSE}
-plotly_POST(filename="timeseries/3")
-```
+<iframe src="https://plot.ly/~RPlotBot/3463.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
