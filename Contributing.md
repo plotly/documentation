@@ -53,6 +53,8 @@ The full bleed R pages are created with R Markdown. Here's how:
   $ sudo gem install jemoji
   $ sudo gem install redcarpet
   ```
+
+4. When we deploy, a function is run to update the plot schema. To do this successfully you have to make sure you have the `requests` python package: `pip install requests`
 4. In the documentation repo: `$ jekyll serve --config _config_dev.yml`
 5. Visit the pages at: [http://localhost:4000/python/](http://localhost:4000/python/)
 6. When you make changes, jekyll should automatically regenerate for you. Read the messages in your terminal to check it out
