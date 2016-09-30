@@ -49,3 +49,6 @@ layout(p, radialaxis = list(ticksuffix = "%"), orientation = 270)
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3169.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Reference
+See [https://plot.ly/python/reference/#area](https://plot.ly/python/reference/#area) for more information and chart attribute options!
