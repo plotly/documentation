@@ -7,7 +7,7 @@ layout: base
 thumbnail: thumbnail/contour.jpg
 language: r
 page_type: example_index
-has_thumbnail: false
+has_thumbnail: true
 display_as: scientific
 order: 6
 output:
@@ -80,3 +80,6 @@ layout(s, showlegend = FALSE)
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3117.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Reference
+See [https://plot.ly/python/reference/#contour](https://plot.ly/python/reference/#contour) for more information and chart attribute options!
