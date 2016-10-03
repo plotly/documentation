@@ -6,9 +6,9 @@ description: How to add dropdowns to R plots
 layout: base
 thumbnail: thumbnail/dropdown.jpg
 language: r
-page_type: chart_type
+page_type: example_index
 has_thumbnail: true
-display_as:
+display_as: chart_type
 order: 10
 output:
   html_document:
