@@ -15,15 +15,12 @@ output:
     keep_md: true
 ---
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE, warning=FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
+
 
 ### Simple Dropdown Menu Example
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 library(MASS)
 
@@ -53,13 +50,12 @@ p <- plot_ly(df, x = ~x, y = ~y, alpha = 0.3) %>%
     ))
 ```
 
-```{r, echo=FALSE}
-plotly_POST(p, filename="dropdown/simple")
-```
+<iframe src="https://plot.ly/~RPlotBot/3294.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Add Two Dropdown Menus to Restyle Graph
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 
 x <- seq(-2 * pi, 2 * pi, length.out = 1000)
@@ -99,6 +95,4 @@ plot_ly(df, x = ~x) %>%
   )
 ```
 
-```{r, echo=FALSE}
-plotly_POST(filename="dropdown/2")
-```
+<iframe src="https://plot.ly/~RPlotBot/3323.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
