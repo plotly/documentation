@@ -41,14 +41,14 @@ order: 8
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Google-Maps-API">Google Maps API<a class="anchor-link" href="#Google-Maps-API">&#182;</a></h4><p>In order to user the <code>Google Maps API</code>, you need to create an account with Google and get your API key <a href="https://github.com/googlemaps/google-maps-services-python">here</a>.</p>
+<h4 id="Google-Maps-API">Google Maps API<a class="anchor-link" href="#Google-Maps-API">&#182;</a></h4><p>In order to use the <code>Google Maps - Directions API</code>, you need to create an account with Google and get your API key <a href="https://developers.google.com/maps/documentation/directions/">here</a>.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
@@ -58,6 +58,8 @@ order: 8
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">googlemaps</span>
+
+<span class="kn">import</span> <span class="nn">my_google_maps_api_key</span>
 </pre></div>
 
 </div>
@@ -77,7 +79,7 @@ order: 8
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.tesla.com/en_CA/findus#/bounds/70,-50,42,-142,d?search=supercharger,&amp;name=Canada&#39;</span><span class="p">)</span>
@@ -174,7 +176,7 @@ order: 8
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
@@ -203,7 +205,7 @@ order: 8
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/1014.embed" height="380px" width="100%"></iframe>
@@ -220,7 +222,93 @@ order: 8
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Plot-the-Route">Plot the Route<a class="anchor-link" href="#Plot-the-Route">&#182;</a></h4>
+<h4 id="Plot-the-Route">Plot the Route<a class="anchor-link" href="#Plot-the-Route">&#182;</a></h4><p>The server_key should be replaced with your own Google Maps Directions API key.</p>
+
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">plot_route_between_tesla_stations</span><span class="p">(</span><span class="n">address_start</span><span class="p">,</span> <span class="n">address_end</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">endpt_size</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="n">supercharger_locations</span><span class="p">[</span><span class="n">address_start</span><span class="p">][</span><span class="s1">&#39;latitude&#39;</span><span class="p">],</span> <span class="n">supercharger_locations</span><span class="p">[</span><span class="n">address_start</span><span class="p">][</span><span class="s1">&#39;longitude&#39;</span><span class="p">])</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="n">supercharger_locations</span><span class="p">[</span><span class="n">address_end</span><span class="p">][</span><span class="s1">&#39;latitude&#39;</span><span class="p">],</span> <span class="n">supercharger_locations</span><span class="p">[</span><span class="n">address_end</span><span class="p">][</span><span class="s1">&#39;longitude&#39;</span><span class="p">])</span>
+    
+    <span class="n">directions</span> <span class="o">=</span> <span class="n">gmaps</span><span class="o">.</span><span class="n">directions</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+    <span class="n">steps</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>  <span class="c1"># add starting coordinate to trip</span>
+    
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">directions</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;legs&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;steps&#39;</span><span class="p">])):</span>
+        <span class="n">start_coords</span> <span class="o">=</span> <span class="n">directions</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;legs&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;steps&#39;</span><span class="p">][</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;start_location&#39;</span><span class="p">]</span>
+        <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start_coords</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">],</span> <span class="n">start_coords</span><span class="p">[</span><span class="s1">&#39;lng&#39;</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">directions</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;legs&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;steps&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">end_coords</span> <span class="o">=</span> <span class="n">directions</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;legs&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;steps&#39;</span><span class="p">][</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;end_location&#39;</span><span class="p">]</span>
+            <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">end_coords</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">],</span> <span class="n">end_coords</span><span class="p">[</span><span class="s1">&#39;lng&#39;</span><span class="p">]))</span>
+
+    <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>  <span class="c1"># add ending coordinate to trip</span>
+
+    <span class="n">mapbox_access_token</span> <span class="o">=</span> <span class="s1">&#39;pk.eyJ1IjoiY2hlbHNlYXBsb3RseSIsImEiOiJjaXFqeXVzdDkwMHFrZnRtOGtlMGtwcGs4In0.SLidkdBMEap9POJGIe1eGw&#39;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">([</span>
+        <span class="n">Scattermapbox</span><span class="p">(</span>
+            <span class="n">lat</span><span class="o">=</span><span class="p">[</span><span class="n">item_x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">item_x</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">],</span>
+            <span class="n">lon</span><span class="o">=</span><span class="p">[</span><span class="n">item_y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">item_y</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers+lines&#39;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="n">Marker</span><span class="p">(</span>
+                <span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="n">endpt_size</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="n">endpt_size</span><span class="p">]</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">])</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span>
+        <span class="n">autosize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span><span class="p">,</span>
+        <span class="n">mapbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">accesstoken</span><span class="o">=</span><span class="n">mapbox_access_token</span><span class="p">,</span>
+            <span class="n">bearing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">style</span><span class="o">=</span><span class="s1">&#39;streets&#39;</span><span class="p">,</span>
+            <span class="n">center</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="n">lat</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">step</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">]),</span>
+                <span class="n">lon</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">step</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">]),</span>
+            <span class="p">),</span>
+            <span class="n">pitch</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">zoom</span><span class="o">=</span><span class="n">zoom</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fig</span>
+
+<span class="n">server_key</span> <span class="o">=</span> <span class="n">my_google_maps_api_key</span><span class="o">.</span><span class="n">server_key</span>
+<span class="n">gmaps</span> <span class="o">=</span> <span class="n">googlemaps</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">server_key</span><span class="p">)</span>
+<span class="n">address_start</span> <span class="o">=</span> <span class="s1">&#39;2410 Marine Avenue&#39;</span>
+<span class="n">address_end</span> <span class="o">=</span> <span class="s1">&#39;1 Rocket Rd&#39;</span>
+<span class="n">zoom</span><span class="o">=</span><span class="mf">12.2</span>
+<span class="n">endpt_size</span><span class="o">=</span><span class="mi">20</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_route_between_tesla_stations</span><span class="p">(</span><span class="n">address_start</span><span class="p">,</span> <span class="n">address_end</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mf">12.2</span><span class="p">,</span> <span class="n">endpt_size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;tesla-driving-directions-between-superchargers&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[7]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/1016.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>{% endraw %}
