@@ -18,7 +18,7 @@ output:
 
 
 
-Now you can implement range sliders and range selectors in your Plotly graphs with R!!!
+### Basic Range Slider and Selector Buttons
 
 
 ```r
@@ -65,7 +65,4 @@ plot_ly(ds, x = ~Date) %>%
     yaxis = list(title = "Price"))
 ```
 
-
-```
-## Error in UseMethod("plotly_build"): no applicable method for 'plotly_build' applied to an object of class "character"
-```
+<iframe src="https://plot.ly/~RPlotBot/3502.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
