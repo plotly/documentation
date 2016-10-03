@@ -15,16 +15,13 @@ output:
     keep_md: yes
 ---
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE, warning=FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
+
 
 
 Now you can implement range sliders and range selectors in your Plotly graphs with R!!!
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 library(quantmod)
 
@@ -68,6 +65,7 @@ plot_ly(ds, x = ~Date) %>%
     yaxis = list(title = "Price"))
 ```
 
-```{r, echo = FALSE}
-plotly_POST("r-range-selector-slider")
+
+```
+## Error in UseMethod("plotly_build"): no applicable method for 'plotly_build' applied to an object of class "character"
 ```
