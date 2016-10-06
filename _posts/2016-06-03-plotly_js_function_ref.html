@@ -24,7 +24,7 @@ var plotData = plotDiv.data;
 
 <h4 id="plotly-newplot"><a>Plotly.newPlot</a></h4>
 
-Use <code>newPlot</code> to create a new plot in an empty <code>&lt;div&gt;</code> element.
+Creates a new plot in an empty <code>&lt;div&gt;</code> element.
 A note on sizing: You can either supply height and width in <code>layout</code>, or give <code>graphDiv</code> a height and width in css.
 
 <pre><code class="language-javascript hljs" data-lang="javascript">
@@ -83,21 +83,21 @@ A more efficient means of changing attributes in the data array. When restyling,
 // restyle a single trace using attribute strings
 var update = {
     opacity: 0.4,
-    marker.color: 'red'
+    'marker.color': 'red'
 };
 Plotly.restyle(graphDiv, update, 0);
 
 // restyle all traces using attribute strings
 var update = {
     opacity: 0.4,
-    marker.color: 'red'
+    'marker.color': 'red'
 };
 Plotly.restyle(graphDiv, update);
 
 // restyle two traces using attribute strings
 var update = {
     opacity: 0.4,
-    marker.color: 'red'
+    'marker.color': 'red'
 };
 Plotly.restyle(graphDiv, update, [1, 2]);
 </code></pre>
@@ -114,13 +114,13 @@ The above examples have applied values across single or multiple traces. However
 <pre><code class="language-javascript hljs" data-lang="javascript">
 // restyle the first trace's marker color 'red' and the second's 'green'
 var update = {
-    marker.color: ['red', 'green']
+    'marker.color': ['red', 'green']
 };
 Plotly.restyle(graphDiv, update, [0, 1])
 
 // alternate between red and green for all traces (note omission of traces)
 var update = {
-    marker.color: ['red', 'green']
+    'marker.color': ['red', 'green']
 };
 Plotly.restyle(graphDiv, update)
 </code></pre>
@@ -137,7 +137,7 @@ In restyle, arrays are assumed to be used in conjunction with the trace indices 
 // update the color attribute of the first trace so that the markers within the same trace
 // have different colors
 var update = {
-    marker.color: [['red', 'green']]
+    'marker.color': [['red', 'green']]
 }
 Plotly.restyle(graphDiv, update, [0])
 
@@ -172,13 +172,13 @@ Plotly.restyle(graphDiv, update, [0])
 
 <h4 id="plotly-relayout"><a class="no_underline plot-blue" href="#plotly-relayout">Plotly.relayout</a></h4>
 
-A more efficient means of updating just the layout in a graphDiv. The call signature and arguments for relayout are similar (but simpler) to restyle. Because there are no indices to deal with, arrays need not be wrapped. Also, no argument specifying applicable trace indices is passed in.
+A more efficient means of updating just the layout for a plot. Note that the <code>update</code> parameter is *not* the same format as the <code>layout</code> parameter in <code>newPlot</code> and is similar to (but simpler than) the <code>update</code> parameter for restyle. Compared to <code>restyle</code>, you won't need to deal with indices and arrays need not be wrapped. Also, no argument specifying applicable trace indices is passed in.
 
 <pre><code class="language-javascript hljs" data-lang="javascript">
 // update only values within nested objects
 var update = {
     title: 'some new title',
-    xaxis.range: [0, 5]
+    'xaxis.range': [0, 5]
 };
 Plotly.relayout(graphDiv, update)
 </code></pre>
@@ -249,7 +249,7 @@ Plotly.deleteTraces(graphDiv, [-2, -1]);
 
 <br>
 
-<h4 id="plotly-movetraces"><a class="no_underline plot-blue" href="#plotly-movetraces">Move Traces with <code>Plotly.moveTraces</code></a></h4>
+<h4 id="plotly-movetraces"><a class="no_underline plot-blue" href="#plotly-movetraces">Plotly.moveTraces</a></h4>
 
 This allows you to reorder traces in an existing <code>graphDiv</code>. This will change the ordering of the layering and the legend.
 
@@ -274,7 +274,7 @@ Plotly.moveTraces(graphDiv, [1, 4, 5], [0, 3, 2]);
 
 <br>
 
-<h4 id="plotly-redraw"><a class="no_underline plot-blue" href="#plotly-redraw">Redraw with <code>Plotly.redraw</code></a></h4>
+<h4 id="plotly-redraw"><a class="no_underline plot-blue" href="#plotly-redraw">Plotly.redraw</a></h4>
 
 Use <code>redraw</code> to trigger a complete recalculation and redraw of the graph. This is not the fastest way to change single attributes, but may be the simplest way. You can make any arbitrary change to the data and layout objects, including completely replacing them, then call redraw.
 
@@ -314,7 +314,7 @@ As well as <code>plotly\_click</code>, there is <code>plotly\_beforehover</code>
 
 <br>
 
-<h4 id="plotly-purge"><a class="no_underline plot-blue" href="#plotly-purge">Purging plotting surface with <code>Plotly.purge</code></a></h4>
+<h4 id="plotly-purge"><a class="no_underline plot-blue" href="#plotly-purge">Plotly.purge</a></h4>
 
 Using <code>purge</code> will clear the div, and remove any Plotly plots that have been placed in it.
 <pre><code class="language-javascript hljs" data-lang="javascript">
@@ -329,13 +329,15 @@ Plotly.purge(graphDiv);
 
 <br>
 
-<h4 id="plotly-toImage"><a class="no_underline plot-blue" href="#plotly-toImage">Generating Image Strings with <code>Plotly.toImage</code></a></h4>
+<h4 id="plotly-toImage"><a class="no_underline plot-blue" href="#plotly-toImage">Plotly.toImage</a></h4>
 
-<code>toImage</code> will turn an existing plot into a image string, which could the be used to retrieve a copy of the image.
+<code>toImage</code> will generate a promise to an image of the plot in data URL format.
 <pre><code class="language-javascript hljs" data-lang="javascript">
-// Plotly.toImage will turn the plot in the given div into a retrievable image string
-// toImage will accept the div as the first argument and an object specifying image properties as the other
-Plotly.toImage(graphDiv, {format: 'png', width: 800, height: 600});
+// Plotly.toImage will turn the plot in the given div into a data URL string
+// toImage takes the div as the first argument and an object specifying image properties as the other
+Plotly.toImage(graphDiv, {format: 'png', width: 800, height: 600}).then(function(dataUrl) {
+    // use the dataUrl
+})
 </code></pre>
 
 <br>
@@ -345,7 +347,7 @@ Plotly.toImage(graphDiv, {format: 'png', width: 800, height: 600});
 
 <br>
 
-<h4 id="plotly-downloadImage"><a class="no_underline plot-blue" href="#plotly-downloadImage">Downloading Images of Plots with <code>Plotly.downloadImage</code></a></h4>
+<h4 id="plotly-downloadImage"><a class="no_underline plot-blue" href="#plotly-downloadImage">Plotly.downloadImage</a></h4>
 
 <code>downloadImage</code> will trigger a request to download the image of a Plotly plot.
 <pre><code class="language-javascript hljs" data-lang="javascript">
@@ -360,7 +362,7 @@ Plotly.downloadImage(graphDiv, {format: 'png', width: 800, height: 600, filename
 
 <br>
 
-<h4 id="plotly-plot"><a class="no_underline plot-blue" href="#note-plotly-plot">A note on <code>Plotly.plot</code></a></h4>
+<h4 id="plotly-plot"><a class="no_underline plot-blue" href="#note-plotly-plot">Plotly.plot</a></h4>
 
 <code>Plotly.plot</code> is like <code>newPlot</code>, but it isn't idempotent (you can't call it multiple times in a row).
     </div>
