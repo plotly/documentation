@@ -200,7 +200,7 @@ subplot(p1, p2) %>%
          paper_bgcolor = 'rgb(248, 248, 255)',
          plot_bgcolor = 'rgb(248, 248, 255)') %>%
   add_annotations(xref = 'paper', yref = 'paper',
-                  x = -0.14, y = -0.2,
+                  x = -0.14, y = -0.15,
                   text = paste('OECD (2015), Household savings (indicator), Household net worth (indicator). doi: 10.1787/cfc6f499-en (Accessed on 05 June 2015)'),
                   font = list(family = 'Arial', size = 10, color = 'rgb(150,150,150)'),
                   showarrow = FALSE)
