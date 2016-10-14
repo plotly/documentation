@@ -32,7 +32,8 @@ function hashsum(options) {
 		dest: process.cwd(),
 		hash: 'sha1',
 		force: false,
-		delimiter: '  '
+		delimiter: '  ',
+		json: false
 	});
 	options = _.defaults(options, { filename: options.hash.toUpperCase() + 'SUMS' });
 
@@ -57,10 +58,17 @@ function hashsum(options) {
 	}
 
 	function writeSums() {
-		var lines = _.keys(hashes).sort().map(function (key) {
-			return hashes[key] + options.delimiter + key + '\n';
-		});
-		var data = new Buffer(lines.join(''));
+		var contents;
+		if (options.json) {
+			contents = JSON.stringify(hashes);
+		}
+		else {
+			var lines = _.keys(hashes).sort().map(function (key) {
+				return hashes[key] + options.delimiter + key + '\n';
+			});
+			contents = lines.join('');
+		}
+		var data = new Buffer(contents);
 
 		if (options.force || !fs.existsSync(hashesFilePath) || compareBuffer(fs.readFileSync(hashesFilePath), data) !== 0) {
 			mkdirp(path.dirname(hashesFilePath));

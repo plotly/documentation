@@ -298,4 +298,29 @@ describe('gulp-hashsum', function () {
 		expect(function () { stream.write(file); }).to.Throw();
 		done();
 	});
+
+	it('should generate JSON when option is set', function (done) {
+		var files = ['/dir1/file1', '/dir1/file2'];
+		var stream = hashsum({
+			json: true
+		});
+
+		stream.on('end', function () {
+			var data = fs.readFileSync(path.resolve(process.cwd(), 'SHA1SUMS')).toString();
+			var json;
+			try {
+				json = JSON.parse(data);
+			}
+			catch (exception) {
+				json = null;
+			}
+			expect(json).to.deep.equal({
+				"../../../../dir1/file1": "3ff1f9baca7bf41fe4a12222436025c036ba88bf",
+				"../../../../dir1/file2": "14de86e007f14bc0c6bc9a84d21cb9da908495ae"
+			});
+			done();
+		});
+
+		streamFiles(stream, files);
+	});
 });
