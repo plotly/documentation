@@ -133,7 +133,7 @@ data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Penns
                           'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana', 
                           'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
 
-plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
+plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
         marker = list(opacity = 0.5, sizemode = 'diameter', 
                 #Controlling for the size of the bubbles:
 				sizeref = 1.5),
@@ -144,16 +144,7 @@ plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'ma
          showlegend = FALSE)
 ```
 
-```
-## Error: Each variable must have a unique name.
-## Problem variables: 'text'
-```
-
-
-```
-## Error: Each variable must have a unique name.
-## Problem variables: 'text'
-```
+<iframe src="https://plot.ly/~RPlotBot/3607.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Hover Text with Bubble Charts
 
