@@ -30,27 +30,16 @@ For more informations and options about the `fill` option checkout [https://plot
 
 
 ```r
+library(plotly)
+
 density <- density(diamonds$carat)
-```
 
-```
-## Error in density(diamonds$carat): objet 'diamonds' introuvable
-```
-
-```r
 plot_ly(x = ~density$x, y = ~density$y, type = 'scatter', mode = 'lines', fill = 'tozeroy') %>%
   layout(xaxis = list(title = 'Carat'),
          yaxis = list(title = 'Density'))
 ```
 
-```
-## Error in eval(expr, envir, enclos): impossible de trouver la fonction "%>%"
-```
-
-
-```
-## Error in eval(expr, envir, enclos): impossible de trouver la fonction "plotly_POST"
-```
+<iframe src="https://plot.ly/~RPlotBot/3621.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Filled Area Plot with Multiple Traces
 
