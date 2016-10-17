@@ -23,6 +23,8 @@
   ```
 
 ## Create R Documentation:
+Note when editing the index page, edit the `2015-07-30-r-index.md` file directly.
+
 ##### In `documentation/_posts/r`
 1. Write your tutorial in R Markdown (Rmd) file (**IMPORTANT:** do not edit the markdown (md) files by hand! All edits should happen in the .Rmd file!)
   - Your .Rmd file should be named in the following format: `yyyy-mm-dd-chart-type.Rmd`
