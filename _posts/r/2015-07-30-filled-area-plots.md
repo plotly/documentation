@@ -135,7 +135,7 @@ plot_ly(data, x = ~month, y = ~high_2014, type = 'scatter', mode = 'lines',
   add_trace(y = ~low_2014, type = 'scatter', mode = 'lines',
             fill = 'tonexty', fillcolor='rgba(0,100,80,0.2)', line = list(color = 'rgba(0,100,80,1)'),
             showlegend = FALSE, name = 'Low 2014') %>%
-  layout(title = "Average, High and Low Temperatures in New York", 
+  layout(title = "High and Low Temperatures in New York", 
          paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
          xaxis = list(title = "Months",
                       gridcolor = 'rgb(255,255,255)',
@@ -156,6 +156,59 @@ plot_ly(data, x = ~month, y = ~high_2014, type = 'scatter', mode = 'lines',
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3619.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Stacked Area Chart with Original Values
+
+
+```r
+library(plotly)
+
+data <- t(USPersonalExpenditure)
+data <- data.frame("year"=rownames(data), data)
+
+plot_ly(data, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type = 'scatter', mode = 'none', fill = 'tozeroy', fillcolor = '#F5FF8D') %>%
+  add_trace(y = ~Household.Operation, name = 'Household Operation', fillcolor = '#50CB86') %>%
+  add_trace(y = ~Medical.and.Health, name = 'Medical and Health', fillcolor = '#4C74C9') %>%
+  add_trace(y = ~Personal.Care, name = 'Personal Care', fillcolor = '#700961') %>%
+  add_trace(y = ~Private.Education, name = 'Private Education', fillcolor = '#312F44') %>%
+  layout(title = 'United States Personal Expenditures by Categories',
+         xaxis = list(title = "",
+                      showgrid = FALSE),
+         yaxis = list(title = "Expenditures (in billions of dollars)",
+                      showgrid = FALSE))
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3623.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Stacked Area Chart with Cumulative Values
+
+
+```r
+library(plotly)
+
+data <- t(USPersonalExpenditure)
+data2 <- data/rowSums(data)*100
+data2 <- data.frame("year"=rownames(data2), data2)
+
+# Transforming into a cumulative table:
+for (i in c(6:3)) {
+  data2[,i-1] <- data2[,i-1] + data2[,i]
+}
+
+plot_ly(data2, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type = 'scatter', mode = 'none', fill = 'tozeroy', fillcolor = '#F5FF8D') %>%
+  add_trace(y = ~Household.Operation, name = 'Household Operation', fillcolor = '#50CB86') %>%
+  add_trace(y = ~Medical.and.Health, name = 'Medical and Health', fillcolor = '#4C74C9') %>%
+  add_trace(y = ~Personal.Care, name = 'Personal Care', fillcolor = '#700961') %>%
+  add_trace(y = ~Private.Education, name = 'Private Education', fillcolor = '#312F44') %>%
+  layout(title = 'United States Personal Expenditures by Categories',
+         xaxis = list(title = "",
+                      showgrid = FALSE),
+         yaxis = list(title = "Proportion from the Total Expenditures",
+                      showgrid = FALSE,
+                      ticksuffix = '%'))
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3625.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
