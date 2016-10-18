@@ -88,25 +88,17 @@ plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
 
 
 ```r
-a <- list()
-for (i in seq_len(nrow(mtcars))) {
-  m <- mtcars[i, ]
-  a[[i]] <- list(
-    x = m$wt,
-    y = m$mpg,
-    text = rownames(m),
-    xref = "x",
-    yref = "y",
-    showarrow = TRUE,
-    arrowhead = 7,
-    ax = 20,
-    ay = -40
-  )
-}
-
-plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
-  add_markers() %>%
-  layout(annotations = a)
+plot_ly(mtcars, x = ~wt, y = ~mpg, marker=list(size=10)) %>%
+  add_annotations(x = mtcars$wt,
+                  y = mtcars$mpg,
+                  text = rownames(mtcars),
+                  xref = "x",
+                  yref = "y",
+                  showarrow = TRUE,
+                  arrowhead = 4,
+                  arrowsize = .5,
+                  ax = 20,
+                  ay = -40)
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3152.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
