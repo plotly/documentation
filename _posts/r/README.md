@@ -57,7 +57,24 @@ Note when editing the index page, edit the `2015-07-30-r-index.md` file directly
         Sys.setenv("plotly_username"="RPlotBot")
         Sys.setenv("plotly_api_key"="q0lz6r5efr")```
       ```
-      
+    - New to Plotly and Version Check sections: 
+      ```
+        ### New to Plotly?
+
+        Plotly's R library is free and open source!<br>
+        [Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+        You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+        We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+        ### Version Check
+
+        Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+        Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+          ```{r}
+          library(plotly)
+          packageVersion('plotly')```
+      ```
+    
     - To include r code and plots in the tutorial format the code snippets and plots in the following format:
       
     ```
@@ -65,19 +82,18 @@ Note when editing the index page, edit the `2015-07-30-r-index.md` file directly
       library(plotly)
       #Add your R Code Here i.e.:
       plot_ly(economics, x = ~date, y = ~uempmed, name = "unemployment")```
-   ```
+    ```
       
     ```
       ```{r, echo=FALSE, results='markup'}
       plotly_POST(filename="your-chart-type/your-filename")```
     ```
 
-2. Convert all the `.Rmd` files in your current directory:
 
-  `for (i in dir(pattern = "\\.Rmd")) rmarkdown::render(i)`
-  
-  Or, in the terminal (`documentation/_posts/r`) with: 
-  `Rscript -e 'for (i in dir(pattern = "\\\.Rmd")) rmarkdown::render(i)'`
+2. Convert the `.Rmd` file to a `.md` file.
+  - Single `.Rmd` file: convert the `.Rmd` file that you changed to a `.md` file by running: `Rscript -e 'knitr::knit("YOUR_FILE.Rmd")'` in your terminal. 
+
+  -Convert all the `.Rmd` files in your current directory: `for (i in dir(pattern = "\\.Rmd")) knitr::knit(i)` Or, in the terminal (`documentation/_posts/r`) with: `Rscript -e 'for (i in dir(pattern = "\\\.Rmd")) knitr::knit(i)'`
   
 3. Add Thumbnail Images
   - Thumbnail images should named `your-tutorial-chart.jpg` and be *EXACTLY* 160px X 160px
