@@ -61,15 +61,8 @@ plot_ly(mtcars, x = ~disp, color = I("black")) %>%
             line = list(color = '#07A4B5'),
             name = "Loess Smoother", showlegend = TRUE) %>%
   layout(xaxis = list(title = 'Displacement (cu.in.)'),
-         yaxis = list(title = 'Miles/(US) gallon').
+         yaxis = list(title = 'Miles/(US) gallon'),
          legend = list(x = 0.80, y = 0.90))
-```
-
-```
-## Error: <text>:9:51: unexpected symbol
-## 8:   layout(xaxis = list(title = 'Displacement (cu.in.)'),
-## 9:          yaxis = list(title = 'Miles/(US) gallon').
-##                                                      ^
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3235.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
