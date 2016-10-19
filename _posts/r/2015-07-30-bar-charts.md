@@ -37,12 +37,6 @@ packageVersion('plotly')
 ## [1] '4.5.5.9000'
 ```
 
-### New to Plotly?
-
-Plotly's R library is free and open source! [Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).
-You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.
-We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
-
 ### Basic Bar Chart
 
 

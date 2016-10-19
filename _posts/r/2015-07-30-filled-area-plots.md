@@ -34,14 +34,8 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.2'
+## [1] '4.5.5.9000'
 ```
-
-### New to Plotly?
-
-Plotly's R library is free and open source! [Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).
-You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.
-We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
 
 ### Basic Filled Area Plot
 
@@ -128,14 +122,7 @@ plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'none', name 
          yaxis = list(title = 'Density'))
 ```
 
-```
-## Error in traces[[i]][[obj]]: attempt to select less than one element
-```
-
-
-```
-## Error in traces[[i]][[obj]]: attempt to select less than one element
-```
+<iframe src="https://plot.ly/~RPlotBot/3617.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Interior Filling for Area Chart
 
@@ -205,14 +192,7 @@ plot_ly(data, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type 
                       showgrid = FALSE))
 ```
 
-```
-## Error in traces[[i]][[obj]]: attempt to select less than one element
-```
-
-
-```
-## Error in traces[[i]][[obj]]: attempt to select less than one element
-```
+<iframe src="https://plot.ly/~RPlotBot/3623.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Stacked Area Chart with Cumulative Values
 
@@ -242,14 +222,7 @@ plot_ly(data2, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type
                       ticksuffix = '%'))
 ```
 
-```
-## Error in traces[[i]][[obj]]: attempt to select less than one element
-```
-
-
-```
-## Error in traces[[i]][[obj]]: attempt to select less than one element
-```
+<iframe src="https://plot.ly/~RPlotBot/3625.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
