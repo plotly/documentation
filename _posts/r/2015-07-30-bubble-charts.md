@@ -1,26 +1,31 @@
----
-title: Bubble Charts in R | Examples | Plotly
-name: Bubble Charts
-permalink: r/bubble-charts/
-description: How to make a bubble chart in R. A bubble chart is a scatter plot whose markers have variable color and size.
-layout: base
-thumbnail: thumbnail/bubble.jpg
-language: r
-page_type: example_index
-has_thumbnail: true
-display_as: chart_type
-order: 2
-output:
-  html_document:
-    keep_md: true
----
-
+# Bubble Charts in R | Examples | Plotly
 
 
 ### New to Plotly?
 
-Plotly's R library is free and open source! [Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/). 
-You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode. 
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+
+```r
+library(plotly)
+packageVersion('plotly')
+```
+
+```
+## [1] '4.5.2'
+```
+
+### New to Plotly?
+
+Plotly's R library is free and open source! [Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.
 We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
 
 ### Simple Bubble Chart
@@ -31,7 +36,7 @@ library(plotly)
 
 data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 
-plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', 
+plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers',
         marker = list(size = ~gap, opacity = 0.5)) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
@@ -48,7 +53,7 @@ library(plotly)
 
 data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 
-plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', 
+plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers',
         marker = list(size = ~gap, opacity = 0.5, color = 'rgb(255, 65, 54)')) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
@@ -66,8 +71,8 @@ library(plotly)
 data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 
 colors <- c('rgba(204,204,204,1)', 'rgba(222,45,38,0.8)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-            'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 
-            'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 
+            'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
+            'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
             'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
             'rgba(204,204,204,1)')
 # Note: The colors will be assigned to each observations based on the order of the observations in the dataframe.
@@ -107,8 +112,8 @@ library(plotly)
 
 data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 
-data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Pennsylvania', 'New Jersey', 'Illinois', 'Washington DC', 
-                          'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana', 
+data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Pennsylvania', 'New Jersey', 'Illinois', 'Washington DC',
+                          'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
                           'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
 
 plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
@@ -129,12 +134,12 @@ library(plotly)
 
 data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 
-data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Pennsylvania', 'New Jersey', 'Illinois', 'Washington DC', 
-                          'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana', 
+data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Pennsylvania', 'New Jersey', 'Illinois', 'Washington DC',
+                          'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
                           'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
 
 plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
-        marker = list(opacity = 0.5, sizemode = 'diameter', 
+        marker = list(opacity = 0.5, sizemode = 'diameter',
                 #Controlling for the size of the bubbles:
 				sizeref = 1.5),
         text = ~paste('School:', School, '<br>Gender gap:', gap)) %>%
@@ -154,12 +159,12 @@ library(plotly)
 
 data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 
-data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Pennsylvania', 'New Jersey', 'Illinois', 'Washington DC', 
-                          'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana', 
+data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Pennsylvania', 'New Jersey', 'Illinois', 'Washington DC',
+                          'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
                           'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
 
 plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
-        marker = list(opacity = 0.5, sizemode = 'diameter', 
+        marker = list(opacity = 0.5, sizemode = 'diameter',
         sizeref = 1.5),
         text = ~paste('School:', School, '<br>Gender gap:', gap)) %>%
   layout(title = 'Gender Gap in Earnings per University',
@@ -185,7 +190,7 @@ data_2007$size <- sqrt(data_2007$pop*slope)
 colors <- c('#4AC6B7', '#1972A4', '#965F8A', '#FF7070', '#C61951')
 
 plot_ly(data_2007, x = ~gdpPercap, y = ~lifeExp, color = ~continent, colors = colors, type = 'scatter', mode = 'markers',
-        marker = list(symbol = 'circle', size = ~size, sizemode = 'diameter', sizeref = 0.85, 
+        marker = list(symbol = 'circle', size = ~size, sizemode = 'diameter', sizeref = 0.85,
                       line = list(width = 2, color = '#FFFFFF')),
         text = ~paste('Country:', country, '<br>Life Expectancy:', lifeExp, '<br>GDP:', gdpPercap,
                       '<br>Pop.:', pop)) %>%

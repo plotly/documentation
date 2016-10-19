@@ -1,19 +1,4 @@
----
-title: 3D Surface Plots in R
-name: 3D Surface Plots
-permalink: r/3d-surface-plots/
-description: How to make interactive 3D surface plots in R.
-layout: base
-thumbnail: thumbnail/3d-surface.jpg
-language: r
-page_type: example_index
-has_thumbnail: TRUE
-display_as: 3d_charts
-order: 5
-output:
-  html_document:
-    keep_md: true
----
+# 3D Surface Plots in R
 
 
 ### New to Plotly?
