@@ -8,7 +8,7 @@ thumbnail: thumbnail/pie-chart.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_type
+display_as: statistical
 order: 7
 output:
   html_document:
@@ -33,6 +33,10 @@ library(plotly)
 packageVersion('plotly')
 ```
 
+```
+## [1] '4.5.2'
+```
+
 ### Basic Pie Chart
 
 
@@ -48,14 +52,9 @@ plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie') %>%
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 ```
 
-```
-## Warning in arrange_impl(.data, dots): '.Random.seed' n'est pas un vecteur
-## d'entiers, mais est de type 'NULL', et sera donc ignoré
-```
+<iframe src="https://plot.ly/~RPlotBot/3821.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-
-
-### Subplots
+### Pie Chart Subplots
 
 
 ```r
@@ -74,7 +73,7 @@ plot_ly() %>%
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3823.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 See more examples of subplots [here](https://plot.ly/r/subplots/).
 
@@ -97,8 +96,8 @@ mtcars %>%
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 ```
 
+<iframe src="https://plot.ly/~RPlotBot/3248.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-
-#Reference
+### Reference
 
 See [https://plot.ly/r/reference/#pie](https://plot.ly/r/reference/#pie) for more information and chart attribute options!
