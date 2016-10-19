@@ -16,11 +16,31 @@ output:
 ---
 
 
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+
+```r
+library(plotly)
+packageVersion('plotly')
+```
+
+```
+## [1] '4.5.2'
+```
 
 ### New to Plotly?
 
-Plotly's R library is free and open source! [Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/). 
-You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode. 
+Plotly's R library is free and open source! [Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.
 We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
 
 ### Basic Filled Area Plot
@@ -75,7 +95,7 @@ density1 <- density(diamonds1$carat)
 diamonds2 <- diamonds[which(diamonds$cut == "Ideal"),]
 density2 <- density(diamonds2$carat)
 
-plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'lines', name = 'Fair cut', fill = 'tozeroy', 
+plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'lines', name = 'Fair cut', fill = 'tozeroy',
         fillcolor = 'rgba(168, 216, 234, 0.5)',
         line = list(width = 0.5)) %>%
   add_trace(x = ~density2$x, y = ~density2$y, name = 'Ideal cut', fill = 'tozeroy',
@@ -100,7 +120,7 @@ density1 <- density(diamonds1$carat)
 diamonds2 <- diamonds[which(diamonds$cut == "Ideal"),]
 density2 <- density(diamonds2$carat)
 
-plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'none', name = 'Fair cut', fill = 'tozeroy', 
+plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'none', name = 'Fair cut', fill = 'tozeroy',
         fillcolor = 'rgba(168, 216, 234, 0.5)') %>%
   add_trace(x = ~density2$x, y = ~density2$y, name = 'Ideal cut', fill = 'tozeroy',
             fillcolor = 'rgba(255, 212, 96, 0.5)') %>%
@@ -108,7 +128,14 @@ plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'none', name 
          yaxis = list(title = 'Density'))
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3617.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+```
+## Error in traces[[i]][[obj]]: attempt to select less than one element
+```
+
+
+```
+## Error in traces[[i]][[obj]]: attempt to select less than one element
+```
 
 ### Interior Filling for Area Chart
 
@@ -129,13 +156,13 @@ data$average_2014 <- rowMeans(data[,c("high_2014", "low_2014")])
 #The default order will be alphabetized unless specified as below:
 data$month <- factor(data$month, levels = data[["month"]])
 
-plot_ly(data, x = ~month, y = ~high_2014, type = 'scatter', mode = 'lines', 
+plot_ly(data, x = ~month, y = ~high_2014, type = 'scatter', mode = 'lines',
         line = list(color = 'rgba(0,100,80,1)'),
         showlegend = FALSE, name = 'High 2014') %>%
   add_trace(y = ~low_2014, type = 'scatter', mode = 'lines',
             fill = 'tonexty', fillcolor='rgba(0,100,80,0.2)', line = list(color = 'rgba(0,100,80,1)'),
             showlegend = FALSE, name = 'Low 2014') %>%
-  layout(title = "High and Low Temperatures in New York", 
+  layout(title = "High and Low Temperatures in New York",
          paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
          xaxis = list(title = "Months",
                       gridcolor = 'rgb(255,255,255)',
@@ -178,7 +205,14 @@ plot_ly(data, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type 
                       showgrid = FALSE))
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3623.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+```
+## Error in traces[[i]][[obj]]: attempt to select less than one element
+```
+
+
+```
+## Error in traces[[i]][[obj]]: attempt to select less than one element
+```
 
 ### Stacked Area Chart with Cumulative Values
 
@@ -208,7 +242,14 @@ plot_ly(data2, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type
                       ticksuffix = '%'))
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3625.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+```
+## Error in traces[[i]][[obj]]: attempt to select less than one element
+```
+
+
+```
+## Error in traces[[i]][[obj]]: attempt to select less than one element
+```
 
 #Reference
 
