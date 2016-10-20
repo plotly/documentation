@@ -55,34 +55,6 @@ plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie') %>%
 
 
 
-### Styled Pie Chart
-
-
-```r
-library(plotly)
-
-USPersonalExpenditure <- data.frame("Categorie" = rownames(USPersonalExpenditure), USPersonalExpenditure)
-data <- USPersonalExpenditure[, c('Categorie', 'X1960')]
-
-colors <- c('#F85F73', '#FECEA8', '#928A97', '#283C63', '#392F2F')
-
-plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie',
-        textposition = 'inside', 
-        textinfo = 'label+percent',
-        insidetextfont = list(color = '#FFFFFF'),
-        hoverinfo = 'text', 
-        text = ~paste('$', X1960, ' billions'),
-        marker = list(colors = colors,
-                      line = list(color = '#FFFFFF', width = 1)),
-                      #The 'pull' attribute can also be used to create space between the sectors
-        showlegend = FALSE) %>%
-  layout(title = 'United States Personal Expenditures by Categories in 1960',
-         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
-```
-
-
-
 ### Subplots
 
 
@@ -92,14 +64,11 @@ library(dplyr)
 
 plot_ly() %>%
   add_pie(data = count(diamonds, cut), labels = ~cut, values = ~n,
-          name = "Cut", domain = list(x = c(0, 0.4), y = c(0.4, 1)),
-          textinfo = 'label+percent') %>%
-  add_pie(data = count(diamonds, color), labels = ~color, values = ~n,
-          name = "Color", domain = list(x = c(0.6, 1), y = c(0.4, 1)),
-          textinfo = 'label+percent') %>%
-  add_pie(data = count(diamonds, clarity), labels = ~clarity, values = ~n,
-          name = "Clarity", domain = list(x = c(0.25, 0.75), y = c(0, 0.6)),
-          textinfo = 'label+percent') %>%
+          name = "Cut", domain = list(x = c(0, 0.4), y = c(0.4, 1))) %>%
+  add_pie(data = count(diamonds, color), labels = ~cut, values = ~n,
+          name = "Color", domain = list(x = c(0.6, 1), y = c(0.4, 1))) %>%
+  add_pie(data = count(diamonds, clarity), labels = ~cut, values = ~n,
+          name = "Clarity", domain = list(x = c(0.25, 0.75), y = c(0, 0.6))) %>%
   layout(title = "Pie Charts with Subplots", showlegend = F,
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
@@ -121,7 +90,7 @@ mtcars$manuf <- sapply(strsplit(rownames(mtcars), " "), "[[", 1)
 mtcars %>%
   group_by(manuf) %>%
   summarize(count = n()) %>%
-  plot_ly(labels = ~manuf, values = ~count, textinfo = 'label+percent') %>%
+  plot_ly(labels = ~manuf, values = ~count) %>%
   add_pie(hole = 0.6) %>%
   layout(title = "Donut charts using Plotly",  showlegend = F,
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
