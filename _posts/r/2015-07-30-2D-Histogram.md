@@ -60,14 +60,6 @@ subplot(
 ```
 
 ```r
-p
-```
-
-```
-## Error in file(con, "rb"): cannot open the connection
-```
-
-```r
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="histogram2d/basic")
@@ -82,14 +74,6 @@ If `z` is not provided, the only way to control coloring is through the [colorsc
 
 ```r
 p %>% add_histogram2d(colorscale = "Blues")
-```
-
-```
-## Error in file(con, "rb"): cannot open the connection
-```
-
-```r
-p
 ```
 
 ```
@@ -113,14 +97,7 @@ If you want more control for the binning algorithm, you can supply a 2D table or
 cnt <- with(diamonds, table(cut, clarity))
 p <- plot_ly(diamonds, x = ~cut, y = ~clarity, z = ~cnt) %>%
   add_histogram2d()
-p
-```
 
-```
-## Error in file(con, "rb"): cannot open the connection
-```
-
-```r
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="histogram2d/no-binning")
