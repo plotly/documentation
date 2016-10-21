@@ -15,11 +15,7 @@ output:
     keep_md: true
 ---
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE, results = 'hide')
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
+
 ### New to Plotly?
 
 Plotly's R library is free and open source!<br>
@@ -31,8 +27,16 @@ We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-docume
 
 Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
 Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
-```{r}
+
+```r
 library(plotly)
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.2.4
+```
+
+```r
 packageVersion('plotly')
 ```
 
@@ -45,8 +49,8 @@ This `semi-circular` meter will be overlapped on a base donut chart to create th
 
 To make a `gauge meter` with 5 equally sized sections, we will create 6 sections in the base chart. So that center(position of label) aligns with the edges of each section.
 
-```{r}
 
+```r
 library(plotly)
 
 base_plot <- plot_ly(
@@ -63,7 +67,6 @@ base_plot <- plot_ly(
   marker = list(colors = c('rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgb(255, 255, 255)')),
   showlegend = FALSE
 )
-
 ```
 
 ##### Meter Chart
@@ -71,8 +74,8 @@ base_plot <- plot_ly(
 Now we will superimpose out `semi-circular` meter on top of this.
 For that, we will also use 6 sections, but one of them will be invisible to form the lower half (colored same as the background).
 
-```{r}
 
+```r
 base_plot <- add_trace(
   base_plot,
   type = "pie",
@@ -88,7 +91,6 @@ base_plot <- add_trace(
   marker = list(colors = c('rgb(255, 255, 255)', 'rgb(232,226,202)', 'rgb(226,210,172)', 'rgb(223,189,139)', 'rgb(223,162,103)', 'rgb(226,126,64)')),
   showlegend= FALSE
 )
-
 ```
 
 We are using `rotation` and `direction` parameters to start the sections from 3 o'clock `[rotation=90]` instead of the default value of 12 o'clock `[rotation=0]`.
@@ -99,8 +101,8 @@ Now we need a `dial` to show the current position in the meter at a particular t
 `Plotly`'s [path shape](https://plot.ly/r/reference/#layout-shapes-path) can be used for this. A nice explanation of `SVG` path is available [here](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths) by Mozilla.
 We can use a `filled triangle` to create our `Dial`.
 
-```{r}
 
+```r
 base_plot <- layout(
   base_plot,
   shapes = list(
@@ -125,12 +127,14 @@ base_plot <- layout(
 )
 
 base_plot
-
 ```
 
-```{r, echo=FALSE}
-plotly_POST(base_plot, filename="gauge-meter-in-r")
 ```
+## Warning in arrange_impl(.data, dots): '.Random.seed' is not an integer
+## vector but of type 'NULL', so ignored
+```
+
+
 
 For the `filled-triangle`, the first point `(0.235, 0.5)` is left to the center of meter `(0.24, 0.5)`, the second point `(0.24 0.62)` is representing the current position on the `semi-circle` and the third point `(0.245, 0.5)` is just right to the center.
 

@@ -15,11 +15,7 @@ output:
     keep_md: true
 ---
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE, warning=FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
+
 ### New to Plotly?
 
 Plotly's R library is free and open source!<br>
@@ -31,42 +27,110 @@ We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-docume
 
 Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
 Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
-```{r}
+
+```r
 library(plotly)
 packageVersion('plotly')
+```
+
+```
+## [1] '4.5.2'
 ```
 
 ### Read Graph File
 We are using the well-known social network of `Zachary's karate club`. GML format file can be collected from [here](https://gist.github.com/pravj/9168fe52823c1702a07b).
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 library(igraph)
 
 data(karate, package="igraphdata")
+```
+
+```
+## Error in find.package(package, lib.loc, verbose = verbose): there is no package called 'igraphdata'
+```
+
+```r
 G <- upgrade_graph(karate)
+```
+
+```
+## Error in match(x, table, nomatch = 0L): object 'karate' not found
+```
+
+```r
 L <- layout.circle(G)
 ```
 
-### Create Vertices and Edges
-```{r, results = 'hide'}
-vs <- V(G)
-es <- as.data.frame(get.edgelist(G))
+```
+## Error in make_call(f, ..., .args): object 'G' not found
+```
 
+### Create Vertices and Edges
+
+```r
+vs <- V(G)
+```
+
+```
+## Error in match(x, table, nomatch = 0L): object 'G' not found
+```
+
+```r
+es <- as.data.frame(get.edgelist(G))
+```
+
+```
+## Error in match(x, table, nomatch = 0L): object 'G' not found
+```
+
+```r
 Nv <- length(vs)
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'vs' not found
+```
+
+```r
 Ne <- length(es[1]$V1)
 ```
 
-### Create Nodes
-```{r, results = 'hide'}
-Xn <- L[,1]
-Yn <- L[,2]
+```
+## Error in eval(expr, envir, enclos): object 'es' not found
+```
 
+### Create Nodes
+
+```r
+Xn <- L[,1]
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'L' not found
+```
+
+```r
+Yn <- L[,2]
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'L' not found
+```
+
+```r
 network <- plot_ly(x = ~Xn, y = ~Yn, mode = "markers", text = vs$label, hoverinfo = "text")
 ```
 
+```
+## Error in plot_ly(x = ~Xn, y = ~Yn, mode = "markers", text = vs$label, : object 'vs' not found
+```
+
 ### Creates Edges
-```{r, results = 'hide'}
+
+```r
 edge_shapes <- list()
 for(i in 1:Ne) {
   v0 <- es[i,]$V1
@@ -85,8 +149,13 @@ for(i in 1:Ne) {
 }
 ```
 
+```
+## Error in eval(expr, envir, enclos): object 'Ne' not found
+```
+
 ### Create Network
-```{r, results = 'hide'}
+
+```r
 axis <- list(title = "", showgrid = FALSE, showticklabels = FALSE, zeroline = FALSE)
 
 layout(
@@ -98,8 +167,13 @@ layout(
 )
 ```
 
-```{r, echo=FALSE}
-plotly_POST(filename = "karate-network-r")
+```
+## Error in layout(network, title = "Karate Network", shapes = edge_shapes, : object 'network' not found
+```
+
+
+```
+## Error in UseMethod("plotly_build"): no applicable method for 'plotly_build' applied to an object of class "NULL"
 ```
 
 ### Reference

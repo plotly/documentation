@@ -15,11 +15,7 @@ output:
     keep_md: true
 ---
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(message = FALSE, results = 'hide')
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
+
 ### New to Plotly?
 
 Plotly's R library is free and open source!<br>
@@ -31,14 +27,16 @@ We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-docume
 
 Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
 Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
-```{r}
+
+```r
 library(plotly)
 packageVersion('plotly')
 ```
 
 ### Basic Pie Chart
 
-```{r}
+
+```r
 library(plotly)
 
 USPersonalExpenditure <- data.frame("Categorie"=rownames(USPersonalExpenditure), USPersonalExpenditure)
@@ -50,13 +48,17 @@ plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie') %>%
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 ```
 
-```{r, echo=FALSE}
-plotly_POST(filename="pie/basic")
 ```
+## Warning in arrange_impl(.data, dots): '.Random.seed' n'est pas un vecteur
+## d'entiers, mais est de type 'NULL', et sera donc ignoré
+```
+
+
 
 ### Subplots
 
-```{r}
+
+```r
 library(plotly)
 library(dplyr)
 
@@ -72,15 +74,14 @@ plot_ly() %>%
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 ```
 
-```{r, echo=FALSE}
-plotly_POST(filename="pie/subplots")
-```
+
 
 See more examples of subplots [here](https://plot.ly/r/subplots/).
 
 ### Donut Chart
 
-```{r}
+
+```r
 library(plotly)
 
 # Get Manufacturer
@@ -96,9 +97,7 @@ mtcars %>%
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 ```
 
-```{r, echo=FALSE}
-plotly_POST(filename="pie/donut")
-```
+
 
 #Reference
 
