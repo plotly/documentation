@@ -70,7 +70,7 @@ Note when editing the index page, edit the `2015-07-30-r-index.md` file directly
 
         Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
         Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
-          ```{r}
+          ```{r, results = 'hide'}
           library(plotly)
           packageVersion('plotly')```
       ```
