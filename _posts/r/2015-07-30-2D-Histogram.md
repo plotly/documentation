@@ -71,6 +71,7 @@ p
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="histogram2d/basic")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3430.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -99,6 +100,7 @@ p
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="histogram2d/colorscale")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3045.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -122,6 +124,7 @@ p
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="histogram2d/no-binning")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3047.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
