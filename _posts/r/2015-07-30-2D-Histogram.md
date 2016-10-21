@@ -55,15 +55,19 @@ subplot(
 )
 ```
 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+
+```r
+p
 ```
-## Error in file(con, "rb"): cannot open the connection
-```
+
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-2.png)
 
 ```r
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="histogram2d/basic")
-chart_link
+# chart_link = plotly_POST(p, filename="histogram2d/basic")
+# chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3430.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -76,15 +80,19 @@ If `z` is not provided, the only way to control coloring is through the [colorsc
 p %>% add_histogram2d(colorscale = "Blues")
 ```
 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+
+```r
+p
 ```
-## Error in file(con, "rb"): cannot open the connection
-```
+
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-2.png)
 
 ```r
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="histogram2d/colorscale")
-chart_link
+# chart_link = plotly_POST(p, filename="histogram2d/colorscale")
+# chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3045.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -92,16 +100,6 @@ chart_link
 #### Z Matrix
 If you want more control for the binning algorithm, you can supply a 2D table or matrix to `z`. In this case, the R package will impose it's colorscale default (and the `colors` argument can be used to control the colorscale from R):
 
-
-```r
-cnt <- with(diamonds, table(cut, clarity))
-p <- plot_ly(diamonds, x = ~cut, y = ~clarity, z = ~cnt) %>%
-  add_histogram2d()
-
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="histogram2d/no-binning")
-chart_link
-```
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png)
 
 <iframe src="https://plot.ly/~RPlotBot/3047.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
