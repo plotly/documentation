@@ -40,6 +40,24 @@ subplot(
 )
 ```
 
+```
+## Error in loadNamespace(name): there is no package called 'webshot'
+```
+
+```r
+p
+```
+
+```
+## Error in loadNamespace(name): there is no package called 'webshot'
+```
+
+```r
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="histogram2d/basic")
+```
+
 <iframe src="https://plot.ly/~RPlotBot/3430.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #### Colorscale
@@ -50,6 +68,24 @@ If `z` is not provided, the only way to control coloring is through the [colorsc
 p %>% add_histogram2d(colorscale = "Blues")
 ```
 
+```
+## Error in loadNamespace(name): there is no package called 'webshot'
+```
+
+```r
+p
+```
+
+```
+## Error in loadNamespace(name): there is no package called 'webshot'
+```
+
+```r
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="histogram2d/colorscale")
+```
+
 <iframe src="https://plot.ly/~RPlotBot/3045.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #### Z Matrix
@@ -58,8 +94,19 @@ If you want more control for the binning algorithm, you can supply a 2D table or
 
 ```r
 cnt <- with(diamonds, table(cut, clarity))
-plot_ly(diamonds, x = ~cut, y = ~clarity, z = ~cnt) %>%
+p <- plot_ly(diamonds, x = ~cut, y = ~clarity, z = ~cnt) %>%
   add_histogram2d()
+p
+```
+
+```
+## Error in loadNamespace(name): there is no package called 'webshot'
+```
+
+```r
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="histogram2d/no-binning")
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3047.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
