@@ -86,12 +86,13 @@ Note when editing the index page, edit the `2015-07-30-r-index.md` file directly
 
       # Create a shareable link to your chart
       # Set up API credentials: https://plot.ly/r/getting-started
-      chart_link = plotly_POST(p, filename="your-chart-type/your-filename")```
+      # chart_link = plotly_POST(p, filename="your-chart-type/your-filename")
+      # chart_link```
     ```
 
     ```
       ```{r, echo=FALSE, results='markup'}
-      chart_link```
+      plotly_POST(p, filename="your-chart-type/your-filename")```
     ```
 
 
