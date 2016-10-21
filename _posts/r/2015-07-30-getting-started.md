@@ -14,10 +14,6 @@ Plotly is an R package for creating interactive web-based graphs via the open so
 As of version 2.0 (November 17, 2015), Plotly graphs are rendered *locally* through the [htmlwidgets](http://www.htmlwidgets.org/) framework.
 
 
-<a href="https://travis-ci.org/ropensci/plotly">
-    <img alt="Build Status" style="margin: 0;" src="https://travis-ci.org/ropensci/plotly.png?branch=master">
-</a>
-
 #### Installation
 
 Plotly is now on CRAN!
