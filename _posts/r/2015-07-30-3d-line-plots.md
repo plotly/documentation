@@ -35,10 +35,6 @@ library(plotly)
 ```
 
 ```
-## Warning: package 'ggplot2' was built under R version 3.2.4
-```
-
-```
 ## 
 ## Attaching package: 'plotly'
 ```
@@ -65,10 +61,6 @@ library(plotly)
 packageVersion('plotly')
 ```
 
-```
-## [1] '4.5.2'
-```
-
 
 
 # 3D Line Plots in R
@@ -85,7 +77,12 @@ df <- setNames(
   c("x", "y", "z", "time")
 )
 library(plotly)
-plot_ly(df, x = ~x, y = ~y, z = ~z, color = ~time) %>% add_lines()
+p <- plot_ly(df, x = ~x, y = ~y, z = ~z, color = ~time) %>% add_lines()
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="scatter3d/colorscale")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3054.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
