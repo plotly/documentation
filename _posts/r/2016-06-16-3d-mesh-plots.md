@@ -1,25 +1,21 @@
 ---
-title: 3D Tri-Surf Plots in R | Examples | Plotly
-name: 3D Tri-Surf Plots
-permalink: r/trisurf/
+title: 3D Mesh Plots in R | Examples | Plotly
+name: 3D Mesh Plots
+permalink: r/3d-mesh/
 description: How to make interactive 3D mesh plots in R.
 layout: base
-thumbnail: thumbnail/trisurf.jpg
+thumbnail: thumbnail/3d-mesh.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
 display_as: 3d_charts
-order: 17
+order: 16
 output:
   html_document:
     keep_md: true
 ---
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(message = FALSE, results = 'hide')
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
+
 ### New to Plotly?
 
 Plotly's R library is free and open source!<br>
@@ -31,13 +27,46 @@ We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-docume
 
 Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
 Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
-```{r}
+
+```r
 library(plotly)
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.2.4
+```
+
+```r
 packageVersion('plotly')
 ```
-### Basic Tri-Surf Plot
+### Basic 3D Mesh Plot
 
-```{r, results = 'hide'}
+
+```r
+library(plotly)
+plot_ly(
+  x = c(0, 0, 1), y = c(0, 1, 0), z = c(0, 0, 0),
+  i = 0, j = 1, k = 2,
+  intensity = c(0, 0.5, 1),
+  color = c(0, 0.5, 1),
+  showscale = FALSE
+)
+```
+
+```
+## Warning in arrange_impl(.data, dots): '.Random.seed' is not an integer
+## vector but of type 'NULL', so ignored
+```
+
+
+```
+## Error in curl::curl_fetch_memory(url, handle = handle): Couldn't resolve host name
+```
+
+### Tetrahedron Mesh Plot
+
+
+```r
 library(plotly)
 
 plot_ly(
@@ -47,32 +76,37 @@ plot_ly(
   i = c(0, 0, 0, 1),
   j = c(1, 2, 3, 2),
   k = c(2, 3, 1, 3),
-  facecolor = toRGB(viridisLite::viridis(4))
+  intensity = c(0, 0.33, 0.66, 1),
+  color = c(0, 0.33, 0.66, 1),
+  colors = colorRamp(c("red", "green", "blue"))
 )
 ```
 
-```{r, echo=FALSE}
-plotly_POST(filename="trisurf/1")
+
+```
+## Error in curl::curl_fetch_memory(url, handle = handle): Couldn't resolve host name
 ```
 
+### Cube Mesh Plot
 
-### Cube with Different Face Colors
 
-```{r, results = 'hide'}
+```r
 library(plotly)
 
 plot_ly(
   x = c(0, 0, 1, 1, 0, 0, 1, 1),
   y = c(0, 1, 1, 0, 0, 1, 1, 0),
   z = c(0, 0, 0, 0, 1, 1, 1, 1),
-  i = c(7, 0, 0, 0, 4, 4, 2, 6, 4, 0, 3, 7),
-  j = c(3, 4, 1, 2, 5, 6, 5, 5, 0, 1, 2, 2),
-  k = c(0, 7, 2, 3, 6, 7, 1, 2, 5, 5, 7, 6),
-  facecolor = rep(toRGB(viridisLite::inferno(6)), each = 2)
+  i = c(7, 0, 0, 0, 4, 4, 6, 6, 4, 0, 3, 2),
+  j = c(3, 4, 1, 2, 5, 6, 5, 2, 0, 1, 6, 3),
+  k = c(0, 7, 2, 3, 6, 7, 1, 1, 5, 5, 7, 6),
+  intensity = seq(0, 1, length = 8),
+  color = seq(0, 1, length = 8),
+  colors = colorRamp(rainbow(8))
 )
 ```
 
-```{r, echo=FALSE}
-plotly_POST(filename="trisurf/2")
-```
 
+```
+## Error in curl::curl_fetch_memory(url, handle = handle): Couldn't resolve host name
+```
