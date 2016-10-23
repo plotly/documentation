@@ -150,11 +150,10 @@ data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Penns
                           'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
                           'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
 
-plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
-        marker = list(opacity = 0.5, sizemode = 'diameter',
-                #Controlling for the size of the bubbles:
-				sizeref = 1.5),
-        text = ~paste('School:', School, '<br>Gender gap:', gap)) %>%
+plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
+        #Choosing the range of the bubbles' sizes:
+        sizes = c(10, 50),
+        marker = list(opacity = 0.5, sizemode = 'diameter')) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE),
@@ -177,8 +176,9 @@ data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Penns
                           'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
 
 plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
-        marker = list(opacity = 0.5, sizemode = 'diameter',
-        sizeref = 1.5),
+        sizes = c(10, 50),
+        marker = list(opacity = 0.5, sizemode = 'diameter'),
+        hoverinfo = 'text',
         text = ~paste('School:', School, '<br>Gender gap:', gap)) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
@@ -200,11 +200,12 @@ data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/gapmi
 data_2007 <- data[which(data$year == 2007),]
 data_2007 <- data_2007[order(data_2007$continent, data_2007$country),]
 slope <- 2.666051223553066e-05
-data_2007$size <- sqrt(data_2007$pop*slope)
+data_2007$size <- sqrt(data_2007$pop * slope)
 colors <- c('#4AC6B7', '#1972A4', '#965F8A', '#FF7070', '#C61951')
 
-plot_ly(data_2007, x = ~gdpPercap, y = ~lifeExp, color = ~continent, colors = colors, type = 'scatter', mode = 'markers',
-        marker = list(symbol = 'circle', size = ~size, sizemode = 'diameter', sizeref = 0.85,
+plot_ly(data_2007, x = ~gdpPercap, y = ~lifeExp, color = ~continent, size = ~size, colors = colors, 
+        type = 'scatter', mode = 'markers', sizes = c(min(data_2007$size), max(data_2007$size)),
+        marker = list(symbol = 'circle', sizemode = 'diameter',
                       line = list(width = 2, color = '#FFFFFF')),
         text = ~paste('Country:', country, '<br>Life Expectancy:', lifeExp, '<br>GDP:', gdpPercap,
                       '<br>Pop.:', pop)) %>%
