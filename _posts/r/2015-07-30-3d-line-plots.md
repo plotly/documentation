@@ -1,4 +1,19 @@
-# 3D Line Plots in R | Examples | Plotly
+---
+title: 3D Line Plots in R | Examples | Plotly
+name: 3D Line Plots
+permalink: r/3d-line-plots/
+description: How to make interactive 3D line plots in R.
+layout: base
+thumbnail: thumbnail/3d-line.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: 3d_charts
+order: 2
+output:
+  html_document:
+    keep_md: true
+---
 ### New to Plotly?
 
 Plotly's R library is free and open source!<br>
@@ -13,6 +28,40 @@ Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-abov
 
 ```r
 library(plotly)
+```
+
+```
+## Loading required package: ggplot2
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.2.4
+```
+
+```
+## 
+## Attaching package: 'plotly'
+```
+
+```
+## The following object is masked from 'package:ggplot2':
+## 
+##     last_plot
+```
+
+```
+## The following object is masked from 'package:stats':
+## 
+##     filter
+```
+
+```
+## The following object is masked from 'package:graphics':
+## 
+##     layout
+```
+
+```r
 packageVersion('plotly')
 ```
 
