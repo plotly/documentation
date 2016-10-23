@@ -33,22 +33,23 @@ library(plotly)
 packageVersion('plotly')
 ```
 
-```
-## [1] '4.5.5.9000'
-```
-
 ### Basic Bar Chart
 
 
 ```r
 library(plotly)
 
-plot_ly(
+p <- plot_ly(
   x = c("giraffes", "orangutans", "monkeys"),
   y = c(20, 14, 23),
   name = "SF Zoo",
   type = "bar"
 )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/basic")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3543.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -64,9 +65,14 @@ SF_Zoo <- c(20, 14, 23)
 LA_Zoo <- c(12, 18, 29)
 data <- data.frame(Animals, SF_Zoo, LA_Zoo)
 
-plot_ly(data, x = ~Animals, y = ~SF_Zoo, type = 'bar', name = 'SF Zoo') %>%
+p <- plot_ly(data, x = ~Animals, y = ~SF_Zoo, type = 'bar', name = 'SF Zoo') %>%
   add_trace(y = ~LA_Zoo, name = 'LA Zoo') %>%
   layout(yaxis = list(title = 'Count'), barmode = 'group')
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/grouped")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3512.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -82,9 +88,14 @@ SF_Zoo <- c(20, 14, 23)
 LA_Zoo <- c(12, 18, 29)
 data <- data.frame(Animals, SF_Zoo, LA_Zoo)
 
-plot_ly(data, x = ~Animals, y = ~SF_Zoo, type = 'bar', name = 'SF Zoo') %>%
+p <- plot_ly(data, x = ~Animals, y = ~SF_Zoo, type = 'bar', name = 'SF Zoo') %>%
   add_trace(y = ~LA_Zoo, name = 'LA Zoo') %>%
   layout(yaxis = list(title = 'Count'), barmode = 'stack')
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/stacked")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3514.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -100,13 +111,18 @@ y <- c(20, 14, 23)
 text <- c('27% market share', '24% market share', '19% market share')
 data <- data.frame(x, y, text)
 
-plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
+p <- plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
         marker = list(color = 'rgb(158,202,225)',
                       line = list(color = 'rgb(8,48,107)',
                       			  width = 1.5))) %>%
   layout(title = "January 2013 Sales Report",
          xaxis = list(title = ""),
          yaxis = list(title = ""))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/text")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3516.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -122,7 +138,7 @@ y <- c(20, 14, 23)
 text <- c('27% market share', '24% market share', '19% market share')
 data <- data.frame(x, y, text)
 
-plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
+p <- plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
         marker = list(color = 'rgb(158,202,225)',
                       line = list(color = 'rgb(8,48,107)', width = 1.5))) %>%
   layout(title = "January 2013 Sales Report",
@@ -131,6 +147,11 @@ plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
          annotations = list(x = x, y = y, text = y,
                             xanchor = 'center', yanchor = 'bottom',
                             showarrow = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/labels")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3518.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -149,12 +170,17 @@ data <- data.frame(x, y1, y2)
 #The default order will be alphabetized unless specified as below:
 data$x <- factor(data$x, levels = data[["x"]])
 
-plot_ly(data, x = ~x, y = ~y1, type = 'bar', name = 'Primary Product', marker = list(color = 'rgb(49,130,189)')) %>%
+p <- plot_ly(data, x = ~x, y = ~y1, type = 'bar', name = 'Primary Product', marker = list(color = 'rgb(49,130,189)')) %>%
   add_trace(y = ~y2, name = 'Secondary Product', marker = list(color = 'rgb(204,204,204)')) %>%
   layout(xaxis = list(title = "", tickangle = -45),
          yaxis = list(title = ""),
          margin = list(b = 100),
          barmode = 'group')
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/rotated")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3520.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -169,10 +195,15 @@ x <- c('Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E')
 y <- c(20, 14, 23, 25, 22)
 data <- data.frame(x, y)
 
-plot_ly(data, x = ~x, y = ~y, type = 'bar', color = I("black")) %>%
+p <- plot_ly(data, x = ~x, y = ~y, type = 'bar', color = I("black")) %>%
   layout(title = "Features",
          xaxis = list(title = ""),
          yaxis = list(title = ""))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/color")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3522.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -187,13 +218,18 @@ x <- c('Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E')
 y <- c(20, 14, 23, 25, 22)
 data <- data.frame(x, y)
 
-plot_ly(data, x = ~x, y = ~y, type = 'bar',
+p <- plot_ly(data, x = ~x, y = ~y, type = 'bar',
         marker = list(color = c('rgba(204,204,204,1)', 'rgba(222,45,38,0.8)',
                                 'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
                                 'rgba(204,204,204,1)'))) %>%
   layout(title = "Least Used Features",
          xaxis = list(title = ""),
          yaxis = list(title = ""))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/colors")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3524.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -205,8 +241,13 @@ plot_ly(data, x = ~x, y = ~y, type = 'bar',
 library(plotly)
 library(dplyr)
 
-ggplot2::diamonds %>% count(cut, clarity) %>%
+p <- ggplot2::diamonds %>% count(cut, clarity) %>%
   plot_ly(x = ~cut, y = ~n, color = ~clarity)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/colorvar")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3526.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -222,7 +263,7 @@ roW <- c(219, 146, 112, 127, 124, 180, 236, 207, 236, 263, 350, 430, 474, 526, 4
 China <- c(16, 13, 10, 11, 28, 37, 43, 55, 56, 88, 105, 156, 270, 299, 340, 403, 549, 499)
 data <- data.frame(x, roW, China)
 
-plot_ly(data, x = ~x, y = ~roW, type = 'bar', name = 'Rest of the World',
+p <- plot_ly(data, x = ~x, y = ~roW, type = 'bar', name = 'Rest of the World',
         marker = list(color = 'rgb(55, 83, 109)')) %>%
   add_trace(y = ~China, name = 'China', marker = list(color = 'rgb(26, 118, 255)')) %>%
   layout(title = 'US Export of Plastic Scrap',
@@ -241,6 +282,11 @@ plot_ly(data, x = ~x, y = ~roW, type = 'bar', name = 'Rest of the World',
              color = 'rgb(107, 107, 107)')),
          legend = list(x = 0, y = 1, bgcolor = 'rgba(255, 255, 255, 0)', bordercolor = 'rgba(255, 255, 255, 0)'),
          barmode = 'group', bargap = 0.15, bargroupgap = 0.1)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/style")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3528.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -263,7 +309,7 @@ data <- data.frame(x, base, revenue, costs, profit, text)
 #The default order will be alphabetized unless specified as below:
 data$x <- factor(data$x, levels = data[["x"]])
 
-plot_ly(data, x = ~x, y = ~base, type = 'bar', marker = list(color = 'rgba(1,1,1, 0.0)')) %>%
+p <- plot_ly(data, x = ~x, y = ~base, type = 'bar', marker = list(color = 'rgba(1,1,1, 0.0)')) %>%
   add_trace(y = ~revenue, marker = list(color = 'rgba(55, 128, 191, 0.7)',
                                         line = list(color = 'rgba(55, 128, 191, 0.7)',
                                                     width = 2))) %>%
@@ -289,6 +335,11 @@ plot_ly(data, x = ~x, y = ~base, type = 'bar', marker = list(color = 'rgba(1,1,1
                               size = 14,
                               color = 'rgba(245, 246, 249, 1)'),
                   showarrow = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/waterfall")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3530.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -307,7 +358,7 @@ y4 <- c(-1, 3, -3, -4)
 
 data <- data.frame(x, y1, y2, y3, y4)
 
-plot_ly(data, x = ~x, y = ~y1, type = 'bar', name = 'Trace 1') %>%
+p <- plot_ly(data, x = ~x, y = ~y1, type = 'bar', name = 'Trace 1') %>%
   add_trace(y = ~y2, name = 'Trace 2') %>%
   add_trace(y = ~y3, name = 'Trace 3') %>%
   add_trace(y = ~y4, name = 'Trace 4') %>%
@@ -315,11 +366,16 @@ plot_ly(data, x = ~x, y = ~y1, type = 'bar', name = 'Trace 1') %>%
          xaxis = list(title = 'X axis'),
          yaxis = list(title = 'Y axis'),
          barmode = 'relative')
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/relative")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3532.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Horizontale Bar Chart
+### Horizontal Bar Chart
 
 See examples of horizontal bar charts [here](https://plot.ly/r/horizontal-bar-charts/).
 
