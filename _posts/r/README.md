@@ -53,9 +53,9 @@ Note when editing the index page, edit the `2015-07-30-r-index.md` file directly
 
       ```
         ```{r, echo = FALSE, message=FALSE}
-        knitr::opts_chunk$set(message = FALSE, results = 'hide')
-        Sys.setenv("plotly_username"="RPlotBot")
-        Sys.setenv("plotly_api_key"="q0lz6r5efr")```
+            knitr::opts_chunk$set(message = FALSE, warning=FALSE)
+            Sys.setenv("plotly_username"="RPlotBot")
+            Sys.setenv("plotly_api_key"="q0lz6r5efr")```
       ```
     - New to Plotly and Version Check sections:
       ```
@@ -78,7 +78,7 @@ Note when editing the index page, edit the `2015-07-30-r-index.md` file directly
     - To include r code and plots in the tutorial format the code snippets and plots in the following format:
 
     ```
-      ```{r}
+      ```{r, results = 'hide'}
       library(plotly)
       #Add your R Code Here i.e.:
       p <- plot_ly(economics, x = ~date, y = ~uempmed, name = "unemployment")
@@ -91,7 +91,7 @@ Note when editing the index page, edit the `2015-07-30-r-index.md` file directly
     ```
 
     ```
-      ```{r, echo=FALSE, results='markup'}
+      ```{r, echo=FALSE}
       plotly_POST(p, filename="your-chart-type/your-filename")```
     ```
 
