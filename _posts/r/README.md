@@ -78,7 +78,7 @@ Note when editing the index page, edit the `2015-07-30-r-index.md` file directly
     - To include r code and plots in the tutorial format the code snippets and plots in the following format:
 
     ```
-      ```{r}
+      ```{r, results = 'hide'}
       library(plotly)
       #Add your R Code Here i.e.:
       p <- plot_ly(economics, x = ~date, y = ~uempmed, name = "unemployment")
