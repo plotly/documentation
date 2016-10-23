@@ -33,10 +33,6 @@ library(plotly)
 packageVersion('plotly')
 ```
 
-```
-## [1] '4.5.2'
-```
-
 #### 3D Scatter Plots in R
 
 
@@ -52,7 +48,12 @@ obs <- mvtnorm::rmvnorm(200, sigma = s)
 df <- setNames(data.frame(obs), c("x", "y", "z"))
 
 library(plotly)
-plot_ly(df, x = ~x, y = ~y, z = ~z) %>% add_markers()
+p <- plot_ly(df, x = ~x, y = ~y, z = ~z) %>% add_markers()
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="scatter3d/markers")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3056.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -64,8 +65,13 @@ plot_ly(df, x = ~x, y = ~y, z = ~z) %>% add_markers()
 ```r
 set.seed(100)
 d <- diamonds[sample(nrow(diamonds), 1000), ]
-plot_ly(d, x = ~carat, y = ~price, z = ~depth) %>%
+p <- plot_ly(d, x = ~carat, y = ~price, z = ~depth) %>%
   add_markers(text = ~paste("Clarity: ", clarity))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="scatter3d/text")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3058.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
