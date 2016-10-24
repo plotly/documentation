@@ -10,7 +10,7 @@
 1. [Install jekyll](http://jekyllrb.com/docs/installation/). <b>IMPORTANT</b> - [Install the same version that Github Pages is using: 3.0.3](https://pages.github.com/versions/):
 
   ```
-  $ gem install jekyll -v 3.0.3
+  $ gem install jekyll -v 3.2.1
   ```
 2. Install some dependencies:
 
@@ -23,10 +23,9 @@
   ```
 
 ## Create R Documentation:
-Note when editing the index page, edit the `2015-07-30-r-index.md` file directly.
 
 ##### In `documentation/_posts/r`
-1. Write your tutorial in R Markdown (Rmd) file (**IMPORTANT:** do not edit the markdown (md) files by hand! All edits should happen in the .Rmd file!)
+1. Write your tutorial in R Markdown (Rmd) file (**IMPORTANT:** do not edit the markdown (md) files by hand! All edits should happen in the .Rmd file! The *only* exception to this is the index file: `2015-07-30-r-index.md` which you should edit directly.)
   - Your .Rmd file should be named in the following format: `yyyy-mm-dd-chart-type.Rmd`
   - Please base your tutorial off of one of our exsisting tutorials (i.e. `documentation/_posts/r/2015-11-19-shapes.Rmd`)
       - Include the following header (*replacing `your-tutorial-chart` with the type of chart you're creating in the tutorial.) :
