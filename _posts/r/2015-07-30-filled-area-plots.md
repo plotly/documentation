@@ -9,7 +9,7 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: chart_type
-order: 6
+order: 3.5
 output:
   html_document:
     keep_md: true
@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.5.9000'
+## [1] '4.5.2'
 ```
 
 ### Basic Filled Area Plot
@@ -122,7 +122,14 @@ plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'none', name 
          yaxis = list(title = 'Density'))
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3617.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+```
+## Error in traces[[i]][[obj]]: attempt to select less than one element
+```
+
+
+```
+## Error in traces[[i]][[obj]]: attempt to select less than one element
+```
 
 ### Interior Filling for Area Chart
 
@@ -192,7 +199,14 @@ plot_ly(data, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type 
                       showgrid = FALSE))
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3623.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+```
+## Error in traces[[i]][[obj]]: attempt to select less than one element
+```
+
+
+```
+## Error in traces[[i]][[obj]]: attempt to select less than one element
+```
 
 ### Stacked Area Chart with Cumulative Values
 
@@ -222,7 +236,14 @@ plot_ly(data2, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type
                       ticksuffix = '%'))
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3625.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+```
+## Error in traces[[i]][[obj]]: attempt to select less than one element
+```
+
+
+```
+## Error in traces[[i]][[obj]]: attempt to select less than one element
+```
 
 #Reference
 

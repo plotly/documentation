@@ -1,6 +1,6 @@
 ---
-title: Line and Scatter Plots in R | Examples | Plotly
-name: Line and Scatter Plots
+title: Scatter and Line Plots in R | Examples | Plotly
+name: Scatter and Line Plots
 permalink: r/line-and-scatter/
 description: How to create line and scatter plots in R. Examples of basic and advanced scatter plots, time series line plots, colored charts, and density plots.
 layout: base
@@ -47,7 +47,7 @@ library(plotly)
 plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length)
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3797.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3831.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Styled Scatter Plot
 
@@ -65,7 +65,7 @@ plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length,
          xaxis = list(zeroline = FALSE))
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3799.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3833.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Scatter Plot with Qualitative Colorscale
 
@@ -76,7 +76,7 @@ library(plotly)
 plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species)
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3801.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3835.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### ColorBrewer Palette Names
 
@@ -87,7 +87,7 @@ library(plotly)
 plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species, colors = "Set1")
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3803.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3837.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Custom Color Scales
 
@@ -101,7 +101,7 @@ pal <- c("red", "blue", "green")
 plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species, colors = pal)
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3805.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3839.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 To ensure a particular data value gets mapped to particular color, provide a character vector of color codes, and match the names attribute accordingly.
 
@@ -115,7 +115,7 @@ pal <- setNames(pal, c("virginica", "setosa", "versicolor"))
 plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species, colors = pal)
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3807.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3841.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Mapping Data to Symbol
 
@@ -127,7 +127,7 @@ plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, type = 'scatter', mod
         symbol = ~Species, color = I('black'), marker = list(size = 9))
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3809.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3843.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Adding Color and Size Mapping
 
@@ -143,7 +143,7 @@ plot_ly(
 )
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3811.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3845.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Data Labels on Hover
 
@@ -161,7 +161,7 @@ plot_ly(
 )
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3813.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3847.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Plotting markers and lines, efficiently
 
@@ -200,7 +200,7 @@ plot_ly(data, x = ~x, y = ~trace_0, name = 'trace 0', type = 'scatter', mode = '
   add_trace(y = ~trace_2, name = 'trace 2', mode = 'markers')
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3815.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3849.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Line Chart
 

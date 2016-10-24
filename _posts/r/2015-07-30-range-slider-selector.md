@@ -8,8 +8,8 @@ thumbnail: thumbnail/sliders.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_type
-order: 11
+display_as: chart_events
+order: 0
 output:
   html_document:
     keep_md: yes

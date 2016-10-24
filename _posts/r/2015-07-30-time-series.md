@@ -9,7 +9,7 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: chart_type
-order: 10
+order: 3.4
 output:
   html_document:
     keep_md: true
