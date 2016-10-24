@@ -33,7 +33,11 @@ library(plotly)
 packageVersion('plotly')
 ```
 
-#### 3D Scatter Plots in R
+```
+## [1] '4.5.2'
+```
+
+#### Basic 3D Scatter Plot
 
 
 ```r

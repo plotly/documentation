@@ -33,7 +33,11 @@ library(plotly)
 packageVersion('plotly')
 ```
 
-# 3D Surface Plots in R
+```
+## [1] '4.5.2'
+```
+
+# Basic 3D Surface Plot
 
 
 ```r
