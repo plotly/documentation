@@ -14,10 +14,6 @@ Plotly is an R package for creating interactive web-based graphs via the open so
 As of version 2.0 (November 17, 2015), Plotly graphs are rendered *locally* through the [htmlwidgets](http://www.htmlwidgets.org/) framework.
 
 
-<a href="https://travis-ci.org/ropensci/plotly">
-    <img alt="Build Status" style="margin: 0;" src="https://travis-ci.org/ropensci/plotly.png?branch=master">
-</a>
-
 #### Installation
 
 Plotly is now on CRAN!
@@ -35,9 +31,9 @@ devtools::install_github("ropensci/plotly")
 <br>
 RStudio users should download the latest [RStudio release](https://www.rstudio.com/products/rstudio/download/) for compatibility with htmlwidgets.
 
+#### Initialization for Offline Plotting
 
-#### Simple example
-
+By default, Plotly for R runs locally in your web browser or in the R Studio viewer.
 
 ```r
 library(plotly)
@@ -45,24 +41,20 @@ p <- plot_ly(midwest, x = ~percollege, color = ~state, type = "box")
 p
 ```
 
-Simply printing the plotly object will render the chart locally in your web browser or in the R Studio viewer.
+Simply printing the Plotly object will render the chart locally in your web browser or in the R Studio viewer.
 
 <iframe style="border: none; width: 100%; height: 500px;" src="https://plot.ly/~chriddyp/1799.embed"></iframe>
 
 Plotly graphs are interactive. Click on legend entries to toggle traces, click-and-drag on the chart to zoom, double-click to autoscale, shift-and-drag to pan.
 
-#### Hosting graphs in your online plotly account
+#### Initialization for Online Plotting
 
-By default, plotly for R runs locally in your web browser or in the R Studio viewer.
-You can publish your charts to the web with plotly's web service.
+You can publish your charts to the web with Plotly's web service.
 
-1 - [Create a free plotly account](https://plot.ly/ssu)
+1 - [Create a free Plotly account](https://plot.ly/ssu):<br>
+A Plotly account is required to publish charts online. It's free to get started, and you control the privacy of your charts.
 
-A plotly account is required to publish charts online. It's free to get started, and you control the privacy of your charts.
-
-
-2 - Save your authentication credentials
-
+2 - Save your authentication credentials<br>
 Find your authentication API keys [in your online settings](https://plot.ly/settings/api). Set them in your R session with:
 
 ```r
@@ -70,9 +62,9 @@ Sys.setenv("plotly_username"="your_plotly_username")
 Sys.setenv("plotly_api_key"="your_api_key")
 ```
 
-Save these commands in your [.Rprofile](http://www.statmethods.net/interface/customizing.html) file to be run everytime you start R.
+Save these commands in your [.Rprofile](http://www.statmethods.net/interface/customizing.html) file to be run every time you start R.
 
-3 - Publish your graphs to plotly with `plotly_POST`
+3 - Publish your graphs to Plotly with `plotly_POST`
 
 ```r
 library(plotly)
@@ -101,3 +93,4 @@ Remember to replace "your-company" with the URL of your Plotly On-Premise server
     <a href="/r/" class="button no_underline">Make your first graph</a>
 </div>
 
+### Online Plot Privacy

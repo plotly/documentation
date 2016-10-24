@@ -15,6 +15,26 @@ output:
 ---
 
 
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+
+```r
+library(plotly)
+packageVersion('plotly')
+```
+
+```
+## [1] '4.5.2'
+```
 
 ### Text Mode
 
@@ -88,25 +108,17 @@ plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
 
 
 ```r
-a <- list()
-for (i in seq_len(nrow(mtcars))) {
-  m <- mtcars[i, ]
-  a[[i]] <- list(
-    x = m$wt,
-    y = m$mpg,
-    text = rownames(m),
-    xref = "x",
-    yref = "y",
-    showarrow = TRUE,
-    arrowhead = 7,
-    ax = 20,
-    ay = -40
-  )
-}
-
-plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
-  add_markers() %>%
-  layout(annotations = a)
+plot_ly(mtcars, x = ~wt, y = ~mpg, marker=list(size=10)) %>%
+  add_annotations(x = mtcars$wt,
+                  y = mtcars$mpg,
+                  text = rownames(mtcars),
+                  xref = "x",
+                  yref = "y",
+                  showarrow = TRUE,
+                  arrowhead = 4,
+                  arrowsize = .5,
+                  ax = 20,
+                  ay = -40)
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3152.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
