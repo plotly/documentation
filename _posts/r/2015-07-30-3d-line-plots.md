@@ -14,6 +14,8 @@ output:
   html_document:
     keep_md: true
 ---
+
+
 ### New to Plotly?
 
 Plotly's R library is free and open source!<br>
@@ -28,50 +30,23 @@ Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-abov
 
 ```r
 library(plotly)
-```
-
-```
-## Loading required package: ggplot2
-```
-
-```
-## 
-## Attaching package: 'plotly'
-```
-
-```
-## The following object is masked from 'package:ggplot2':
-## 
-##     last_plot
-```
-
-```
-## The following object is masked from 'package:stats':
-## 
-##     filter
-```
-
-```
-## The following object is masked from 'package:graphics':
-## 
-##     layout
-```
-
-```r
 packageVersion('plotly')
 ```
 
+```
+## [1] '4.5.2'
+```
 
-
-# 3D Line Plots in R
+### Basic 3D Line Plot
 
 
 ```r
-# initiate a 100 x 3 matrix filled with zeros
+# Initiate a 100 x 3 matrix filled with zeros
 m <- matrix(numeric(300), ncol = 3)
-# simulate a 3D random-walk
+
+# Simulate a 3D random-walk
 for (i in 2:100) m[i, ] <- m[i-1, ] + rnorm(3)
-# collect everything in a data-frame
+
 df <- setNames(
   data.frame(m, seq(1, 100)),
   c("x", "y", "z", "time")
