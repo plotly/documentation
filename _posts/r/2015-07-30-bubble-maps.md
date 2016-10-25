@@ -1,4 +1,19 @@
-# Bubble Maps in R | Examples | Plotly
+---
+title: Bubble Maps in R | Examples | Plotly
+name: Bubble Maps
+permalink: r/bubble-maps/
+description: How to make a bubble chart and map in R.
+layout: base
+thumbnail: thumbnail/bubble-map.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: maps
+order: 2
+output:
+  html_document:
+    keep_md: true
+---
 
 
 ### New to Plotly?
@@ -44,12 +59,17 @@ g <- list(
   countrycolor = toRGB("white")
 )
 
-plot_geo(df, locationmode = 'USA-states', sizes = c(1, 250)) %>%
+p <- plot_geo(df, locationmode = 'USA-states', sizes = c(1, 250)) %>%
   add_markers(
     x = ~lon, y = ~lat, size = ~pop, color = ~q, hoverinfo = "text",
     text = ~paste(df$name, "<br />", df$pop/1e6, " million")
   ) %>%
   layout(title = '2014 US city populations<br>(Click legend to toggle)', geo = g)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="scattergeo/bubble")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3105.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
