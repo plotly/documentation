@@ -38,7 +38,7 @@ packageVersion('plotly')
 ## [1] '4.5.2'
 ```
 
-### Basic Scatterplot
+### Basic Scatter Plot
 
 
 ```r
@@ -47,7 +47,7 @@ library(plotly)
 plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length)
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3831.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3851.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Styled Scatter Plot
 
@@ -65,105 +65,9 @@ plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length,
          xaxis = list(zeroline = FALSE))
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3833.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3853.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Scatter Plot with Qualitative Colorscale
-
-
-```r
-library(plotly)
-
-plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species)
-```
-
-<iframe src="https://plot.ly/~RPlotBot/3835.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-### ColorBrewer Palette Names
-
-
-```r
-library(plotly)
-
-plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species, colors = "Set1")
-```
-
-<iframe src="https://plot.ly/~RPlotBot/3837.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-### Custom Color Scales
-
-The `colors` argument also accepts a character vector of any valid R color code(s).
-
-
-```r
-library(plotly)
-
-pal <- c("red", "blue", "green")
-plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species, colors = pal)
-```
-
-<iframe src="https://plot.ly/~RPlotBot/3839.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-To ensure a particular data value gets mapped to particular color, provide a character vector of color codes, and match the names attribute accordingly.
-
-
-```r
-library(plotly)
-
-pal <- c("red", "blue", "green")
-pal <- setNames(pal, c("virginica", "setosa", "versicolor"))
-
-plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species, colors = pal)
-```
-
-<iframe src="https://plot.ly/~RPlotBot/3841.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-### Mapping Data to Symbol
-
-
-```r
-library(plotly)
-
-plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, type = 'scatter', mode = 'markers',
-        symbol = ~Species, color = I('black'), marker = list(size = 9))
-```
-
-<iframe src="https://plot.ly/~RPlotBot/3843.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-### Adding Color and Size Mapping
-
-
-```r
-library(plotly)
-
-d <- diamonds[sample(nrow(diamonds), 1000), ]
-
-plot_ly(
-  d, x = ~carat, y = ~price,
-  color = ~carat, size = ~carat
-)
-```
-
-<iframe src="https://plot.ly/~RPlotBot/3845.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-### Data Labels on Hover
-
-
-```r
-library(plotly)
-
-d <- diamonds[sample(nrow(diamonds), 1000), ]
-
-plot_ly(
-  d, x = ~carat, y = ~price,
-  # Hover text:
-  text = ~paste("Price: ", price, '$<br>Cut:', cut),
-  color = ~carat, size = ~carat
-)
-```
-
-<iframe src="https://plot.ly/~RPlotBot/3847.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-### Plotting markers and lines, efficiently
+### Plotting Markers and Lines
 
 
 ```r
@@ -200,11 +104,106 @@ plot_ly(data, x = ~x, y = ~trace_0, name = 'trace 0', type = 'scatter', mode = '
   add_trace(y = ~trace_2, name = 'trace 2', mode = 'markers')
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3849.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-### Line Chart
+<iframe src="https://plot.ly/~RPlotBot/3855.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 See more examples of line charts [here](https://plot.ly/r/line-charts/).
+
+### Qualitative Colorscales
+
+
+```r
+library(plotly)
+
+plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species)
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3857.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### ColorBrewer Palette Names
+
+
+```r
+library(plotly)
+
+plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species, colors = "Set1")
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3859.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Custom Color Scales
+
+The `colors` argument also accepts a character vector of any valid R color code(s).
+
+
+```r
+library(plotly)
+
+pal <- c("red", "blue", "green")
+plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species, colors = pal)
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3861.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+To ensure a particular data value gets mapped to particular color, provide a character vector of color codes, and match the names attribute accordingly.
+
+
+```r
+library(plotly)
+
+pal <- c("red", "blue", "green")
+pal <- setNames(pal, c("virginica", "setosa", "versicolor"))
+
+plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species, colors = pal)
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3863.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Mapping Data to Symbols
+
+
+```r
+library(plotly)
+
+plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, type = 'scatter',
+  mode = 'markers', symbol = ~Species, symbols = c('circle','x','o'),
+  color = I('black'), marker = list(size = 10))
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3865.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Adding Color and Size Mapping
+
+
+```r
+library(plotly)
+
+d <- diamonds[sample(nrow(diamonds), 1000), ]
+
+plot_ly(
+  d, x = ~carat, y = ~price,
+  color = ~carat, size = ~carat
+)
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3867.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Data Labels on Hover
+
+
+```r
+library(plotly)
+
+d <- diamonds[sample(nrow(diamonds), 1000), ]
+
+plot_ly(
+  d, x = ~carat, y = ~price,
+  # Hover text:
+  text = ~paste("Price: ", price, '$<br>Cut:', cut),
+  color = ~carat, size = ~carat
+)
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3869.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
