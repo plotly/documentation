@@ -44,6 +44,22 @@ packageVersion('plotly')
 library(plotly)
 
 plot_ly(x = c(20, 14, 23), y = c('giraffes', 'orangutans', 'monkeys'), type = 'bar', orientation = 'h')
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="horizontalbar/basic")
+```
+
+```
+## Error in plotly_build(x): objet 'p' introuvable
+```
+
+```r
+chart_link
+```
+
+```
+## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3535.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -70,6 +86,22 @@ plot_ly(data, x = ~SF_Zoo, y = ~y, type = 'bar', orientation = 'h', name = 'SF Z
   layout(barmode = 'stack',
          xaxis = list(title = ""),
          yaxis = list(title =""))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="horizontalbar/colored")
+```
+
+```
+## Error in plotly_build(x): objet 'p' introuvable
+```
+
+```r
+chart_link
+```
+
+```
+## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3537.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -163,6 +195,22 @@ plot_ly(data, x = ~x1, y = ~y, type = 'bar', orientation = 'h',
                   font = list(family = 'Arial', size = 12,
                               color = 'rgb(67, 67, 67)'),
                   showarrow = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="horizontalbar/palette")
+```
+
+```
+## Error in plotly_build(x): objet 'p' introuvable
+```
+
+```r
+chart_link
+```
+
+```
+## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3539.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -218,6 +266,22 @@ subplot(p1, p2) %>%
                   text = paste('OECD (2015), Household savings (indicator), Household net worth (indicator). doi: 10.1787/cfc6f499-en (Accessed on 05 June 2015)'),
                   font = list(family = 'Arial', size = 10, color = 'rgb(150,150,150)'),
                   showarrow = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="horizontalbar/subplots")
+```
+
+```
+## Error in plotly_build(x): objet 'p' introuvable
+```
+
+```r
+chart_link
+```
+
+```
+## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3541.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
