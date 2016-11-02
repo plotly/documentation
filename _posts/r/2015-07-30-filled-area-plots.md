@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.2'
+## [1] '4.5.5.9000'
 ```
 
 ### Basic Filled Area Plot
@@ -48,9 +48,14 @@ library(plotly)
 
 density <- density(diamonds$carat)
 
-plot_ly(x = ~density$x, y = ~density$y, type = 'scatter', mode = 'lines', fill = 'tozeroy') %>%
+p <- plot_ly(x = ~density$x, y = ~density$y, type = 'scatter', mode = 'lines', fill = 'tozeroy') %>%
   layout(xaxis = list(title = 'Carat'),
          yaxis = list(title = 'Density'))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="area/basic")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3621.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -69,10 +74,15 @@ density1 <- density(diamonds1$carat)
 diamonds2 <- diamonds[which(diamonds$cut == "Ideal"),]
 density2 <- density(diamonds2$carat)
 
-plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'lines', name = 'Fair cut', fill = 'tozeroy') %>%
+p <- plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'lines', name = 'Fair cut', fill = 'tozeroy') %>%
   add_trace(x = ~density2$x, y = ~density2$y, name = 'Ideal cut', fill = 'tozeroy') %>%
   layout(xaxis = list(title = 'Carat'),
          yaxis = list(title = 'Density'))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="area/basic2")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3613.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -89,13 +99,18 @@ density1 <- density(diamonds1$carat)
 diamonds2 <- diamonds[which(diamonds$cut == "Ideal"),]
 density2 <- density(diamonds2$carat)
 
-plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'lines', name = 'Fair cut', fill = 'tozeroy',
+p <- plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'lines', name = 'Fair cut', fill = 'tozeroy',
         fillcolor = 'rgba(168, 216, 234, 0.5)',
         line = list(width = 0.5)) %>%
   add_trace(x = ~density2$x, y = ~density2$y, name = 'Ideal cut', fill = 'tozeroy',
             fillcolor = 'rgba(255, 212, 96, 0.5)') %>%
   layout(xaxis = list(title = 'Carat'),
          yaxis = list(title = 'Density'))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="area/colors")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3615.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -114,22 +129,20 @@ density1 <- density(diamonds1$carat)
 diamonds2 <- diamonds[which(diamonds$cut == "Ideal"),]
 density2 <- density(diamonds2$carat)
 
-plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'none', name = 'Fair cut', fill = 'tozeroy',
+p <- plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'none', name = 'Fair cut', fill = 'tozeroy',
         fillcolor = 'rgba(168, 216, 234, 0.5)') %>%
   add_trace(x = ~density2$x, y = ~density2$y, name = 'Ideal cut', fill = 'tozeroy',
             fillcolor = 'rgba(255, 212, 96, 0.5)') %>%
   layout(xaxis = list(title = 'Carat'),
          yaxis = list(title = 'Density'))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="area/nolines")
+chart_link
 ```
 
-```
-## Error in traces[[i]][[obj]]: attempt to select less than one element
-```
-
-
-```
-## Error in traces[[i]][[obj]]: attempt to select less than one element
-```
+<iframe src="https://plot.ly/~RPlotBot/3617.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Interior Filling for Area Chart
 
@@ -150,7 +163,7 @@ data$average_2014 <- rowMeans(data[,c("high_2014", "low_2014")])
 #The default order will be alphabetized unless specified as below:
 data$month <- factor(data$month, levels = data[["month"]])
 
-plot_ly(data, x = ~month, y = ~high_2014, type = 'scatter', mode = 'lines',
+p <- plot_ly(data, x = ~month, y = ~high_2014, type = 'scatter', mode = 'lines',
         line = list(color = 'rgba(0,100,80,1)'),
         showlegend = FALSE, name = 'High 2014') %>%
   add_trace(y = ~low_2014, type = 'scatter', mode = 'lines',
@@ -174,6 +187,11 @@ plot_ly(data, x = ~month, y = ~high_2014, type = 'scatter', mode = 'lines',
                       tickcolor = 'rgb(127,127,127)',
                       ticks = 'outside',
                       zeroline = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="area/interior")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3619.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -187,7 +205,7 @@ library(plotly)
 data <- t(USPersonalExpenditure)
 data <- data.frame("year"=rownames(data), data)
 
-plot_ly(data, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type = 'scatter', mode = 'none', fill = 'tozeroy', fillcolor = '#F5FF8D') %>%
+p <- plot_ly(data, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type = 'scatter', mode = 'none', fill = 'tozeroy', fillcolor = '#F5FF8D') %>%
   add_trace(y = ~Household.Operation, name = 'Household Operation', fillcolor = '#50CB86') %>%
   add_trace(y = ~Medical.and.Health, name = 'Medical and Health', fillcolor = '#4C74C9') %>%
   add_trace(y = ~Personal.Care, name = 'Personal Care', fillcolor = '#700961') %>%
@@ -197,16 +215,14 @@ plot_ly(data, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type 
                       showgrid = FALSE),
          yaxis = list(title = "Expenditures (in billions of dollars)",
                       showgrid = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="area/stackedoriginal")
+chart_link
 ```
 
-```
-## Error in traces[[i]][[obj]]: attempt to select less than one element
-```
-
-
-```
-## Error in traces[[i]][[obj]]: attempt to select less than one element
-```
+<iframe src="https://plot.ly/~RPlotBot/3623.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Stacked Area Chart with Cumulative Values
 
@@ -223,7 +239,7 @@ for (i in c(6:3)) {
   data2[,i-1] <- data2[,i-1] + data2[,i]
 }
 
-plot_ly(data2, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type = 'scatter', mode = 'none', fill = 'tozeroy', fillcolor = '#F5FF8D') %>%
+p <- plot_ly(data2, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type = 'scatter', mode = 'none', fill = 'tozeroy', fillcolor = '#F5FF8D') %>%
   add_trace(y = ~Household.Operation, name = 'Household Operation', fillcolor = '#50CB86') %>%
   add_trace(y = ~Medical.and.Health, name = 'Medical and Health', fillcolor = '#4C74C9') %>%
   add_trace(y = ~Personal.Care, name = 'Personal Care', fillcolor = '#700961') %>%
@@ -234,16 +250,14 @@ plot_ly(data2, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type
          yaxis = list(title = "Proportion from the Total Expenditures",
                       showgrid = FALSE,
                       ticksuffix = '%'))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="area/stackedcum")
+chart_link
 ```
 
-```
-## Error in traces[[i]][[obj]]: attempt to select less than one element
-```
-
-
-```
-## Error in traces[[i]][[obj]]: attempt to select less than one element
-```
+<iframe src="https://plot.ly/~RPlotBot/3625.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 

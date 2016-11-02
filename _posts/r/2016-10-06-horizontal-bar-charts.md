@@ -43,23 +43,12 @@ packageVersion('plotly')
 ```r
 library(plotly)
 
-plot_ly(x = c(20, 14, 23), y = c('giraffes', 'orangutans', 'monkeys'), type = 'bar', orientation = 'h')
+p <- plot_ly(x = c(20, 14, 23), y = c('giraffes', 'orangutans', 'monkeys'), type = 'bar', orientation = 'h')
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="horizontalbar/basic")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3535.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -75,7 +64,7 @@ SF_Zoo <- c(20, 14, 23)
 LA_Zoo <- c(12, 18, 29)
 data <- data.frame(y, SF_Zoo, LA_Zoo)
 
-plot_ly(data, x = ~SF_Zoo, y = ~y, type = 'bar', orientation = 'h', name = 'SF Zoo',
+p <- plot_ly(data, x = ~SF_Zoo, y = ~y, type = 'bar', orientation = 'h', name = 'SF Zoo',
         marker = list(color = 'rgba(246, 78, 139, 0.6)',
                       line = list(color = 'rgba(246, 78, 139, 1.0)',
                                   width = 3))) %>%
@@ -90,18 +79,7 @@ plot_ly(data, x = ~SF_Zoo, y = ~y, type = 'bar', orientation = 'h', name = 'SF Z
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="horizontalbar/colored")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3537.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -126,7 +104,7 @@ data <- data.frame(y, x1, x2, x3, x4, x5)
 
 top_labels <- c('Strongly<br>agree', 'Agree', 'Neutral', 'Disagree', 'Strongly<br>disagree')
 
-plot_ly(data, x = ~x1, y = ~y, type = 'bar', orientation = 'h',
+p <- plot_ly(data, x = ~x1, y = ~y, type = 'bar', orientation = 'h',
         marker = list(color = 'rgba(38, 24, 74, 0.8)',
                       line = list(color = 'rgb(248, 248, 249)', width = 1))) %>%
   add_trace(x = ~x2, marker = list(color = 'rgba(71, 58, 131, 0.8)')) %>%
@@ -199,18 +177,7 @@ plot_ly(data, x = ~x1, y = ~y, type = 'bar', orientation = 'h',
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="horizontalbar/palette")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3539.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -254,7 +221,7 @@ p2 <- plot_ly(x = ~x_net_worth, y = ~reorder(y, x_saving), name = 'Household net
                   font = list(family = 'Arial', size = 12, color = 'rgb(128, 0, 128)'),
                   showarrow = FALSE)
 
-subplot(p1, p2) %>%
+p <- subplot(p1, p2) %>%
   layout(title = 'Household savings & net worth for eight OECD countries',
          legend = list(x = 0.029, y = 1.038,
                        font = list(size = 10)),
@@ -270,18 +237,7 @@ subplot(p1, p2) %>%
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="horizontalbar/subplots")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3541.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

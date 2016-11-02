@@ -47,7 +47,7 @@ library(plotly)
 USPersonalExpenditure <- data.frame("Categorie"=rownames(USPersonalExpenditure), USPersonalExpenditure)
 data <- USPersonalExpenditure[,c('Categorie', 'X1960')]
 
-plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie') %>%
+p <- plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie') %>%
   layout(title = 'United States Personal Expenditures by Categories in 1960',
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
@@ -55,18 +55,7 @@ plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie') %>%
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="pie/basic")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3821.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -82,7 +71,7 @@ data <- USPersonalExpenditure[, c('Categorie', 'X1960')]
 
 colors <- c('rgb(211,94,96)', 'rgb(128,133,133)', 'rgb(144,103,167)', 'rgb(171,104,87)', 'rgb(114,147,203)')
 
-plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie',
+p <- plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie',
         textposition = 'inside',
         textinfo = 'label+percent',
         insidetextfont = list(color = '#FFFFFF'),
@@ -95,28 +84,14 @@ plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie',
   layout(title = 'United States Personal Expenditures by Categories in 1960',
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
-```
 
-<!--html_preserve--><div id="htmlwidget-cc31aeaaa1d614847b94" style="width:504px;height:504px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-cc31aeaaa1d614847b94">{"x":{"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"United States Personal Expenditures by Categories in 1960","xaxis":{"domain":[0,1],"showgrid":false,"zeroline":false,"showticklabels":false},"yaxis":{"domain":[0,1],"showgrid":false,"zeroline":false,"showticklabels":false}},"config":{"modeBarButtonsToRemove":["sendDataToCloud"]},"base_url":"https://plot.ly","source":"A","data":[{"labels":["Food and Tobacco","Household Operation","Medical and Health","Personal Care","Private Education"],"values":[86.8,46.2,21.1,5.4,3.64],"textposition":"inside","textinfo":"label+percent","insidetextfont":{"color":"#FFFFFF"},"hoverinfo":"text","text":["$ 86.8  billions","$ 46.2  billions","$ 21.1  billions","$ 5.4  billions","$ 3.64  billions"],"marker":{"fillcolor":"rgba(31,119,180,1)","color":"rgba(31,119,180,1)","colors":["rgb(211,94,96)","rgb(128,133,133)","rgb(144,103,167)","rgb(171,104,87)","rgb(114,147,203)"],"line":{"color":"#FFFFFF","width":1}},"showlegend":false,"type":"pie"}]},"evals":[],"jsHooks":[]}</script><!--/html_preserve-->
-
-```r
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="pie/styled")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
 ```
 
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
-```
+<iframe src="https://plot.ly/~RPlotBot/3829.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 <iframe src="https://plot.ly/~RPlotBot/3829.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
@@ -127,7 +102,7 @@ chart_link
 library(plotly)
 library(dplyr)
 
-plot_ly() %>%
+p <- plot_ly() %>%
   add_pie(data = count(diamonds, cut), labels = ~cut, values = ~n,
           name = "Cut", domain = list(x = c(0, 0.4), y = c(0.4, 1))) %>%
   add_pie(data = count(diamonds, color), labels = ~cut, values = ~n,
@@ -141,18 +116,7 @@ plot_ly() %>%
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="pie/subplots")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3823.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -168,7 +132,7 @@ library(plotly)
 # Get Manufacturer
 mtcars$manuf <- sapply(strsplit(rownames(mtcars), " "), "[[", 1)
 
-mtcars %>%
+p <- mtcars %>%
   group_by(manuf) %>%
   summarize(count = n()) %>%
   plot_ly(labels = ~manuf, values = ~count) %>%
@@ -180,18 +144,7 @@ mtcars %>%
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="pie/donut")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3248.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

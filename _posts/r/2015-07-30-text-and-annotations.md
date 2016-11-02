@@ -47,7 +47,7 @@ Bodywt <- c(10.0, 207.0, 62.0, 6.8, 52.2)
 Brainwt <- c(115, 406, 1320, 179, 440)
 data <- data.frame(Primates, Bodywt, Brainwt)
 
-plot_ly(data, x = ~Bodywt, y = ~Brainwt, type = 'scatter',
+p <- plot_ly(data, x = ~Bodywt, y = ~Brainwt, type = 'scatter',
         mode = 'text', text = ~Primates, textposition = 'middle right',
         textfont = list(color = '#000000', size = 16)) %>%
   layout(title = 'Primates Brain and Body Weight',
@@ -60,24 +60,11 @@ plot_ly(data, x = ~Bodywt, y = ~Brainwt, type = 'scatter',
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="text/mode")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
 ```
 
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
-```
+<iframe src="https://plot.ly/~RPlotBot/3877.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
 See more options on the textposition argument [here](https://plot.ly/r/reference/#scatter-textposition).
 
 ### Styling Text
@@ -93,7 +80,7 @@ t <- list(
   size = 14,
   color = toRGB("grey50"))
 
-plot_ly(data, x = ~wt, y = ~mpg, text = rownames(data)) %>%
+p <- plot_ly(data, x = ~wt, y = ~mpg, text = rownames(data)) %>%
   add_markers() %>%
   add_text(textfont = t, textposition = "top right") %>%
   layout(xaxis = list(range = c(1.6, 3.2)),
@@ -102,18 +89,7 @@ plot_ly(data, x = ~wt, y = ~mpg, text = rownames(data)) %>%
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="text/style")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3147.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -124,24 +100,13 @@ chart_link
 ```r
 library(plotly)
 
-plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, type = 'scatter', mode = 'markers',
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, type = 'scatter', mode = 'markers',
         text = ~paste('Species: ', Species))
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="text/hover1")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3871.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -152,7 +117,7 @@ chart_link
 ```r
 library(plotly)
 
-plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, type = 'scatter', mode = 'markers',
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, type = 'scatter', mode = 'markers',
         hoverinfo = 'text',
         text = ~paste('Species: ', Species, 
                       '</br> Petal Lenght: ', Petal.Length,
@@ -161,18 +126,7 @@ plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, type = 'scatter', mode = 'mar
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="text/hover2")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3873.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -197,25 +151,14 @@ a <- list(
   ay = -40
 )
 
-plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
+p <- plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
   add_markers() %>%
   layout(annotations = a)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="annotation/single")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3150.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -228,7 +171,7 @@ library(plotly)
 
 data <- mtcars[which(mtcars$am == 1 & mtcars$gear == 4),]
 
-plot_ly(data, x = ~wt, y = ~mpg, type = 'scatter', mode = 'markers',
+p <- plot_ly(data, x = ~wt, y = ~mpg, type = 'scatter', mode = 'markers',
         marker = list(size = 10)) %>%
   add_annotations(x = data$wt,
                   y = data$mpg,
@@ -244,18 +187,7 @@ plot_ly(data, x = ~wt, y = ~mpg, type = 'scatter', mode = 'markers',
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="annotation/multiple")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3152.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -268,7 +200,7 @@ library(plotly)
 
 data <- mtcars[which(mtcars$am == 1 & mtcars$gear == 4),]
 
-plot_ly(data, x = ~wt, y = ~mpg, type = 'scatter', mode = 'markers',
+p <- plot_ly(data, x = ~wt, y = ~mpg, type = 'scatter', mode = 'markers',
         marker = list(size = 10)) %>%
   add_annotations(x = data$wt,
                   y = data$mpg,
@@ -288,18 +220,7 @@ plot_ly(data, x = ~wt, y = ~mpg, type = 'scatter', mode = 'markers',
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="annotation/style")
-```
-
-```
-## Error in plotly_build(x): objet 'p' introuvable
-```
-
-```r
 chart_link
-```
-
-```
-## Error in eval(expr, envir, enclos): objet 'chart_link' introuvable
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3875.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
