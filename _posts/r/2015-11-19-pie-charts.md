@@ -93,8 +93,6 @@ chart_link
 
 <iframe src="https://plot.ly/~RPlotBot/3829.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-<iframe src="https://plot.ly/~RPlotBot/3829.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
 ### Subplots
 
 
