@@ -30,13 +30,6 @@ Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-abov
 
 ```r
 library(plotly)
-```
-
-```
-## Warning: package 'ggplot2' was built under R version 3.2.4
-```
-
-```r
 packageVersion('plotly')
 ```
 ### Basic 3D Mesh Plot
@@ -44,24 +37,22 @@ packageVersion('plotly')
 
 ```r
 library(plotly)
-plot_ly(
-  x = c(0, 0, 1), y = c(0, 1, 0), z = c(0, 0, 0),
-  i = 0, j = 1, k = 2,
-  intensity = c(0, 0.5, 1),
-  color = c(0, 0.5, 1),
-  showscale = FALSE
-)
+
+set.seed(1234)
+
+x <- runif(50, 0, 1)
+y <- runif(50, 0, 1)
+z <- runif(50, 0, 1)
+
+p <- plot_ly(x = ~x, y = ~y, z = ~z, type = 'mesh3d')
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="mesh3d/basic")
+chart_link
 ```
 
-```
-## Warning in arrange_impl(.data, dots): '.Random.seed' is not an integer
-## vector but of type 'NULL', so ignored
-```
 
-
-```
-## Error in curl::curl_fetch_memory(url, handle = handle): Couldn't resolve host name
-```
 
 ### Tetrahedron Mesh Plot
 
@@ -69,7 +60,7 @@ plot_ly(
 ```r
 library(plotly)
 
-plot_ly(
+p <- plot_ly(type = 'mesh3d',
   x = c(0, 1, 2, 0),
   y = c(0, 0, 1, 2),
   z = c(0, 2, 0, 1),
@@ -80,11 +71,16 @@ plot_ly(
   color = c(0, 0.33, 0.66, 1),
   colors = colorRamp(c("red", "green", "blue"))
 )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="mesh3d/tetra")
+chart_link
 ```
 
 
 ```
-## Error in curl::curl_fetch_memory(url, handle = handle): Couldn't resolve host name
+## Error in eval(expr, envir, enclos): objet 'cahrt_link' introuvable
 ```
 
 ### Cube Mesh Plot
@@ -93,7 +89,7 @@ plot_ly(
 ```r
 library(plotly)
 
-plot_ly(
+p <- plot_ly(type = 'mesh3d',
   x = c(0, 0, 1, 1, 0, 0, 1, 1),
   y = c(0, 1, 1, 0, 0, 1, 1, 0),
   z = c(0, 0, 0, 0, 1, 1, 1, 1),
@@ -104,9 +100,16 @@ plot_ly(
   color = seq(0, 1, length = 8),
   colors = colorRamp(rainbow(8))
 )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="mesh3d/cube")
+chart_link
 ```
 
 
-```
-## Error in curl::curl_fetch_memory(url, handle = handle): Couldn't resolve host name
-```
+
+#Reference
+
+See [https://plot.ly/r/reference/#mesh3d](https://plot.ly/r/reference/#mesh3d) for more information and chart attribute options!
+
