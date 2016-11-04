@@ -1,4 +1,19 @@
-# Dumbbell plots in R | Examples | Plotly
+---
+title: Dumbbell plots in R | Examples | Plotly
+name: Dumbbell plots
+permalink: r/dumbbell-plots/
+description: How to make a dumbbell plot in R. Dumbbell plots show changes between two points in time or between two conditions.
+layout: base
+thumbnail: thumbnail/dumbbell-plot.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: chart_type
+order: 8
+output:
+  html_document:
+    keep_md: true
+---
 
 
 ### New to Plotly?
@@ -40,7 +55,11 @@ p <- plot_ly(s, color = I("gray80")) %>%
     xaxis = list(title = "Annual Salary (in thousands)"),
     margin = list(l = 65)
   )
-p
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="dumbell-plots/income")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3120.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
