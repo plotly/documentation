@@ -1,4 +1,19 @@
-# Contour Plots in R | Examples | Plotly
+---
+title: Contour Plots in R | Examples | Plotly
+name: Contour Plots
+permalink: r/contour-plots/
+description: How to make a contour plot in R. Two examples of contour plots of matrices and 2D distributions.
+layout: base
+thumbnail: thumbnail/contour.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: scientific
+order: 6
+output:
+  html_document:
+    keep_md: true
+---
 
 
 ### New to Plotly?
@@ -28,7 +43,12 @@ packageVersion('plotly')
 ```r
 library(plotly)
 
-plot_ly(z = ~volcano, type = "contour")
+p <- plot_ly(z = ~volcano, type = "contour")
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="contour/basic")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3115.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -62,7 +82,12 @@ names(mtrx.melt) <- c('wt', 'hp', 'qsec')
 mtrx.melt$wt <- as.numeric(str_sub(mtrx.melt$wt, str_locate(mtrx.melt$wt, '=')[1,1] + 1))
 mtrx.melt$hp <- as.numeric(str_sub(mtrx.melt$hp, str_locate(mtrx.melt$hp, '=')[1,1] + 1))
 
-plot_ly(mtrx.melt, x = ~wt, y = ~hp, z = ~qsec, type = "contour") %>% layout(autosize = F, width = 600, height = 500)
+p <- plot_ly(mtrx.melt, x = ~wt, y = ~hp, z = ~qsec, type = "contour") %>% layout(autosize = F, width = 600, height = 500)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="contour/advanced")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3469.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -81,7 +106,12 @@ s <- subplot(
   nrows = 2, heights = c(0.2, 0.8), widths = c(0.8, 0.2), margin = 0,
   shareX = TRUE, shareY = TRUE, titleX = FALSE, titleY = FALSE
 )
-layout(s, showlegend = FALSE)
+p <- layout(s, showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="contour/joint")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3117.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
