@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.5.9000'
+## [1] '4.5.2'
 ```
 
 ### Bar and Line Chart
@@ -46,7 +46,7 @@ library(plotly)
 airquality_sept <- airquality[which(airquality$Month == 9),]
 airquality_sept$Date <- as.Date(paste(airquality_sept$Month, airquality_sept$Day, 1973, sep = "."), format = "%m.%d.%Y")
 
-plot_ly(airquality_sept) %>%
+p <- plot_ly(airquality_sept) %>%
   add_trace(x = ~Date, y = ~Wind, type = 'bar', name = 'Wind',
             marker = list(color = '#C9EFF9'),
             hoverinfo = "text",
@@ -59,6 +59,11 @@ plot_ly(airquality_sept) %>%
          xaxis = list(title = ""),
          yaxis = list(side = 'left', title = 'Wind in mph', showgrid = FALSE, zeroline = FALSE),
          yaxis2 = list(side = 'right', overlaying = "y", title = 'Temperature in degrees F', showgrid = FALSE, zeroline = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="multiple/bar_line")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3789.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -69,7 +74,7 @@ plot_ly(airquality_sept) %>%
 ```r
 library(plotly)
 
-plot_ly(mtcars, x = ~disp, color = I("black")) %>%
+p <- plot_ly(mtcars, x = ~disp, color = I("black")) %>%
   add_markers(y = ~mpg, text = rownames(mtcars), showlegend = FALSE) %>%
   add_lines(y = ~fitted(loess(mpg ~ disp)),
             line = list(color = '#07A4B5'),
@@ -77,6 +82,11 @@ plot_ly(mtcars, x = ~disp, color = I("black")) %>%
   layout(xaxis = list(title = 'Displacement (cu.in.)'),
          yaxis = list(title = 'Miles/(US) gallon'),
          legend = list(x = 0.80, y = 0.90))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="multiple/loess")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3235.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -90,7 +100,7 @@ library(broom)
 
 m <- loess(mpg ~ disp, data = mtcars)
 
-plot_ly(mtcars, x = ~disp, color = I("black")) %>%
+p <- plot_ly(mtcars, x = ~disp, color = I("black")) %>%
   add_markers(y = ~mpg, text = rownames(mtcars), showlegend = FALSE) %>%
   add_lines(y = ~fitted(loess(mpg ~ disp)),
             line = list(color = 'rgba(7, 164, 181, 1)'),
@@ -104,6 +114,11 @@ plot_ly(mtcars, x = ~disp, color = I("black")) %>%
   layout(xaxis = list(title = 'Displacement (cu.in.)'),
          yaxis = list(title = 'Miles/(US) gallon'),
          legend = list(x = 0.80, y = 0.90))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="multiple/loess-se")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3237.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -118,7 +133,7 @@ library(forecast)
 fit <- ets(USAccDeaths)
 fore <- forecast(fit, h = 48, level = c(80, 95))
 
-plot_ly() %>%
+p <- plot_ly() %>%
   add_lines(x = time(USAccDeaths), y = USAccDeaths,
             color = I("black"), name = "observed") %>%
   add_ribbons(x = time(fore$mean), ymin = fore$lower[, 2], ymax = fore$upper[, 2],
@@ -126,6 +141,11 @@ plot_ly() %>%
   add_ribbons(x = time(fore$mean), ymin = fore$lower[, 1], ymax = fore$upper[, 1],
               color = I("gray80"), name = "80% confidence") %>%
   add_lines(x = time(fore$mean), y = fore$mean, color = I("blue"), name = "prediction")
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="multiple/forecast")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3239.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
