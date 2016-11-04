@@ -1,4 +1,19 @@
-# Choropleth Maps in R | Examples | Plotly
+---
+title: Choropleth Maps in R | Examples | Plotly
+name: Choropleth Maps
+permalink: r/choropleth-maps/
+description: How to make a choropleth map in R. A choropleth map shades geographic regions by value.
+layout: base
+thumbnail: thumbnail/choropleth.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: maps
+order: 0
+output:
+  html_document:
+    keep_md: true
+---
 
 
 ### New to Plotly?
@@ -40,7 +55,7 @@ g <- list(
   lakecolor = toRGB('white')
 )
 
-plot_geo(df, locationmode = 'USA-states') %>%
+p <- plot_geo(df, locationmode = 'USA-states') %>%
   add_trace(
     z = ~total.exports, text = ~hover, locations = ~code,
     color = ~total.exports, colors = 'Purples'
@@ -50,6 +65,11 @@ plot_geo(df, locationmode = 'USA-states') %>%
     title = '2011 US Agriculture Exports by State<br>(Hover for breakdown)',
     geo = g
   )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="choropleth/ag")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3108.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -71,7 +91,7 @@ g <- list(
   projection = list(type = 'Mercator')
 )
 
-plot_geo(df) %>%
+p <- plot_geo(df) %>%
   add_trace(
     z = ~GDP..BILLIONS., color = ~GDP..BILLIONS., colors = 'Blues',
     text = ~COUNTRY, locations = ~CODE, marker = list(line = l)
@@ -81,6 +101,11 @@ plot_geo(df) %>%
     title = '2014 Global GDP<br>Source:<a href="https://www.cia.gov/library/publications/the-world-factbook/fields/2195.html">CIA World Factbook</a>',
     geo = g
   )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="choropleth/world")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3110.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -124,7 +149,7 @@ g2 <- c(
   list(domain = list(x = c(0, .6), y = c(0, .6)))
 )
 
-df %>%
+p <- df %>%
   plot_geo(
     locationmode = 'country names', sizes = c(1, 600), color = I("black")
   ) %>%
@@ -143,6 +168,11 @@ df %>%
     title = 'Ebola cases reported by month in West Africa 2014<br> Source: <a href="https://data.hdx.rwlabs.org/dataset/rowca-ebola-cases">HDX</a>',
     geo = g1, geo2 = g2
   )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="choropleth/africa")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3112.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
