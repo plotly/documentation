@@ -15,11 +15,7 @@ output:
     keep_md: true
 ---
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE, warning=FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
+
 
 ### New to Plotly?
 
@@ -32,14 +28,16 @@ We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-docume
 
 Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
 Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 packageVersion('plotly')
 ```
 
 ### Bar Chart with Error Bars
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 library(plyr)
 
@@ -60,13 +58,12 @@ chart_link = plotly_POST(p, filename="error/bar")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/3915.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Scatterplot with Error Bars
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 library(plyr)
 
@@ -88,13 +85,12 @@ chart_link = plotly_POST(p, filename="error/scatter")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/3917.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Line Graph with Error Bars
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 library(plyr)
 
@@ -116,9 +112,7 @@ chart_link = plotly_POST(p, filename="error/line")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/3919.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
