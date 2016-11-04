@@ -34,30 +34,145 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.2'
+## [1] '4.5.5.9000'
 ```
 
 ### Basic 3D Line Plot
 
 
 ```r
-# Initiate a 100 x 3 matrix filled with zeros
-m <- matrix(numeric(300), ncol = 3)
-
-# Simulate a 3D random-walk
-for (i in 2:100) m[i, ] <- m[i-1, ] + rnorm(3)
-
-df <- setNames(
-  data.frame(m, seq(1, 100)),
-  c("x", "y", "z", "time")
-)
 library(plotly)
-p <- plot_ly(df, x = ~x, y = ~y, z = ~z, color = ~time) %>% add_lines()
+
+data <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/3d-line1.csv')
+data$color <- as.factor(data$color)
+
+p <- plot_ly(data, x = ~x, y = ~y, z = ~z, type = 'scatter3d', mode = 'lines',
+        opacity = 1, line = list(width = 6, color = ~color, reverscale = FALSE))
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter3d/colorscale")
+chart_link = plotly_POST(p, filename="line3d/basic")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3054.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3922.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### 3D Line and Markers Plot
+
+
+```r
+library(plotly)
+
+x <- c()
+y <- c()
+z <- c()
+c <- c()
+
+for (i in 1:62) {
+  r <- 20 * cos(i / 20)
+  x <- c(x, r * cos(i))
+  y <- c(y, r * sin(i))
+  z <- c(z, i)
+  c <- c(c, i)
+}  
+
+data <- data.frame(x, y, z, c)
+
+p <- plot_ly(data, x = ~x, y = ~y, z = ~z, type = 'scatter3d', mode = 'lines+markers',
+        line = list(width = 6, color = ~c, colorscale = 'Viridis'),
+        marker = list(size = 3.5, color = ~c, colorscale = 'Greens', cmin = -20, cmax = 50))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="line3d/markers")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3924.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Custom Color Scale
+
+
+```r
+llibrary(plotly)
+```
+
+```
+## Error in eval(expr, envir, enclos): impossible de trouver la fonction "llibrary"
+```
+
+```r
+count <- 3000
+
+x <- c()
+y <- c()
+z <- c()
+c <- c()
+
+for (i in 1:count) {
+  r <- i * (count - i)
+  x <- c(x, r * cos(i / 30))
+  y <- c(y, r * sin(i / 30))
+  z <- c(z, i)
+  c <- c(c, i)
+}  
+
+data <- data.frame(x, y, z, c)
+
+p <- plot_ly(data, x = ~x, y = ~y, z = ~z, type = 'scatter3d', mode = 'lines',
+        line = list(width = 4, color = ~c, colorscale = list(c(0,'#BA52ED'), c(1,'#FCB040'))))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="line3d/color")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3926.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### 3D Random Walk Plot
+
+``{r, results = 'hide'}
+library(plotly)
+
+data <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/_3d-line-plot.csv')
+  
+p <- plot_ly(data, x = ~x1, y = ~y1, z = ~z1, type = 'scatter3d', mode = 'lines',
+        line = list(color = '#1f77b4', width = 1)) %>%
+  add_trace(x = ~x2, y = ~y2, z = ~z2, 
+            line = list(color = 'rgb(44, 160, 44)', width = 1)) %>%
+  add_trace(x = ~x3, y = ~y3, z = ~z3, 
+            line = list(color = 'bcbd22', width = 1))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link plotly_POST(p, filename="line3d/randomwalk")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3926.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### 3D Density Plot
+
+``{r, results = 'hide'}
+library(plotly)
+
+dens <- with(diamonds, tapply(price, INDEX = cut, density))
+data <- data.frame(
+  x = unlist(lapply(dens, "[[", "x")),
+  y = unlist(lapply(dens, "[[", "y")),
+  cut = rep(names(dens), each = length(dens[[1]]$x)))
+
+p <- plot_ly(data, x = ~x, y = ~y, z = ~cut, type = 'scatter3d', mode = 'lines', color = ~cut) 
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link plotly_POST(p, filename="line3d/density")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3926.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#Reference
+
+See [https://plot.ly/r/reference/#scatter3d](https://plot.ly/r/reference/#scatter3d) for more information and chart attribute options!
