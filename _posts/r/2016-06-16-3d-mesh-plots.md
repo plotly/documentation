@@ -32,13 +32,16 @@ Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-abov
 library(plotly)
 packageVersion('plotly')
 ```
+
+```
+## [1] '4.5.5.9000'
+```
+
 ### Basic 3D Mesh Plot
 
 
 ```r
 library(plotly)
-
-set.seed(1234)
 
 x <- runif(50, 0, 1)
 y <- runif(50, 0, 1)
@@ -52,7 +55,7 @@ chart_link = plotly_POST(p, filename="mesh3d/basic")
 chart_link
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3929.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Tetrahedron Mesh Plot
 
@@ -78,10 +81,7 @@ chart_link = plotly_POST(p, filename="mesh3d/tetra")
 chart_link
 ```
 
-
-```
-## Error in eval(expr, envir, enclos): objet 'cahrt_link' introuvable
-```
+<iframe src="https://plot.ly/~RPlotBot/3931.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Cube Mesh Plot
 
@@ -107,7 +107,7 @@ chart_link = plotly_POST(p, filename="mesh3d/cube")
 chart_link
 ```
 
-
+<iframe src="https://plot.ly/~RPlotBot/3933.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 

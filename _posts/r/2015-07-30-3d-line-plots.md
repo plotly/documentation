@@ -16,6 +16,7 @@ output:
 ---
 
 
+
 ### New to Plotly?
 
 Plotly's R library is free and open source!<br>
@@ -132,7 +133,8 @@ chart_link
 
 ### 3D Random Walk Plot
 
-``{r, results = 'hide'}
+
+```r
 library(plotly)
 
 data <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/_3d-line-plot.csv')
@@ -148,6 +150,13 @@ p <- plot_ly(data, x = ~x1, y = ~y1, z = ~z1, type = 'scatter3d', mode = 'lines'
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link plotly_POST(p, filename="line3d/randomwalk")
 chart_link
+```
+
+```
+## Error: <text>:14:12: unexpected symbol
+## 13: # Set up API credentials: https://plot.ly/r/getting-started
+## 14: chart_link plotly_POST
+##                ^
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3926.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

@@ -33,6 +33,10 @@ library(plotly)
 packageVersion('plotly')
 ```
 
+```
+## [1] '4.5.5.9000'
+```
+
 ### Basic Bar Chart
 
 
