@@ -95,14 +95,8 @@ chart_link
 
 
 ```r
-llibrary(plotly)
-```
+library(plotly)
 
-```
-## Error in eval(expr, envir, enclos): impossible de trouver la fonction "llibrary"
-```
-
-```r
 count <- 3000
 
 x <- c()
@@ -148,22 +142,16 @@ p <- plot_ly(data, x = ~x1, y = ~y1, z = ~z1, type = 'scatter3d', mode = 'lines'
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link plotly_POST(p, filename="line3d/randomwalk")
+chart_link = plotly_POST(p, filename="line3d/randomwalk")
 chart_link
 ```
 
-```
-## Error: <text>:14:12: unexpected symbol
-## 13: # Set up API credentials: https://plot.ly/r/getting-started
-## 14: chart_link plotly_POST
-##                ^
-```
-
-<iframe src="https://plot.ly/~RPlotBot/3926.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3941.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### 3D Density Plot
 
-``{r, results = 'hide'}
+
+```r
 library(plotly)
 
 dens <- with(diamonds, tapply(price, INDEX = cut, density))
@@ -176,11 +164,11 @@ p <- plot_ly(data, x = ~x, y = ~y, z = ~cut, type = 'scatter3d', mode = 'lines',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link plotly_POST(p, filename="line3d/density")
+chart_link = plotly_POST(p, filename="line3d/density")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3926.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3943.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
