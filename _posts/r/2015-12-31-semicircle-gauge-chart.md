@@ -30,14 +30,11 @@ Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-abov
 
 ```r
 library(plotly)
-```
-
-```
-## Warning: package 'ggplot2' was built under R version 3.2.4
-```
-
-```r
 packageVersion('plotly')
+```
+
+```
+## [1] '4.5.2'
 ```
 
 ##### Outline
@@ -103,7 +100,21 @@ We can use a `filled triangle` to create our `Dial`.
 
 
 ```r
-base_plot <- layout(
+a <- list(
+  showticklabels = FALSE,
+  autotick = FALSE,
+  showgrid = FALSE,
+  zeroline = FALSE)
+
+b <- list(
+  xref = 'paper',
+  yref = 'paper',
+  x = 0.23,
+  y = 0.45,
+  showarrow = FALSE,
+  text = '50')
+
+base_chart <- layout(
   base_plot,
   shapes = list(
     list(
@@ -114,27 +125,18 @@ base_plot <- layout(
       fillcolor = 'rgba(44, 160, 101, 0.5)'
     )
   ),
-  annotations = list(
-    list(
-      xref = 'paper',
-      yref = 'paper',
-      x = 0.23,
-      y = 0.45,
-      showarrow = FALSE,
-      text = '50'
-    )
-  )
+  xaxis = a, 
+  yaxis = a,
+  annotations = b
 )
 
-base_plot
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(base_chart, filename="gauge-meter-in-r")
+chart_link
 ```
 
-```
-## Warning in arrange_impl(.data, dots): '.Random.seed' is not an integer
-## vector but of type 'NULL', so ignored
-```
-
-
+<iframe src="https://plot.ly/~RPlotBot/2795.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 For the `filled-triangle`, the first point `(0.235, 0.5)` is left to the center of meter `(0.24, 0.5)`, the second point `(0.24 0.62)` is representing the current position on the `semi-circle` and the third point `(0.245, 0.5)` is just right to the center.
 
