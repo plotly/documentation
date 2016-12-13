@@ -14,6 +14,7 @@ page_type: example_index
 order: 0
 ---
 {% raw %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js" type="text/javascript"></script>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
@@ -82,24 +83,10 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Offline-Mode">Offline Mode<a class="anchor-link" href="#Offline-Mode">&#182;</a></h4><p><code>Animations</code> can be created either <code>offline</code> or <code>online</code>. When choosing to plot offline, make sure you run the following code snippet at the start of each script or session:</p>
+<h4 id="Offline-Mode">Offline Mode<a class="anchor-link" href="#Offline-Mode">&#182;</a></h4><p><code>Animations</code> can be created either <code>offline</code> or <code>online</code>. To learn about how to set up working offline, check out the <a href="https://plot.ly/python/offline/">offline documentation</a>.</p>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">plotly.offline</span> <span class="kn">import</span> <span class="n">init_notebook_mode</span><span class="p">,</span> <span class="n">iplot</span>
-<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -669,13 +656,24 @@ Refer to the examples below to see the buttons in action!</li>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Online-Mode">Online Mode<a class="anchor-link" href="#Online-Mode">&#182;</a></h4><p>To make <code>online</code> animations with either <code>embedplot</code> or <code>shareplot</code>, you can use the <code>plotly.plotly.icreate_animations()</code> or <code>plotly.plotly.create_animations()</code> respectively.</p>
+<h4 id="Online-Mode">Online Mode<a class="anchor-link" href="#Online-Mode">&#182;</a></h4><p>You can use <code>plotly.plotly.icreate_animations()</code> or <code>plotly.plotly.create_animations()</code> to make <code>online</code> animations that you save on the Plotly cloud.</p>
 <p>There are two steps for making an online animation:</p>
 <ol>
 <li>Make a grid</li>
 <li>Make the plot with data from the grid</li>
 </ol>
-<p>To make a grid, you need to make columns out of lists and them put them toegther in a grid which you then need to upload:</p>
+<p>The reason for making a grid is because animations are created through our <a href="https://api.plot.ly/v2/">v2 api</a>. In this process, we create a <a href="https://api.plot.ly/v2/#grids">grid</a> composed of columns, and then make a plot which contains referenced data from the grid columns. You can see more examples at our <a href="http://moderndata.plot.ly/simple-rest-apis-for-charts-and-datasets/">moderndata post</a>.</p>
+<p>A grid consists of columns which fundamentally are 1D lists of numerical data with an associated name. They are instantiated with the <code>grid_objs</code> class <code>Column</code>. To make a column, simply assign a varaible with a Column:</p>
+$$
+\begin{align*}
+Column([...], name)
+\end{align*}
+$$<p>The <code>Grid</code> class is also part of the <code>grid_objs</code> module. A <code>Grid</code> takes a list of columns:</p>
+$$
+\begin{align*}
+grid = Grid([column_1, column_2, ...])
+\end{align*}
+$$<p>Then all you need to do is upload the grid:</p>
 
 </div>
 </div>
@@ -723,7 +721,8 @@ Refer to the examples below to see the buttons in action!</li>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now you need to grab the columns from the grid that you just uploaded. You can do so by using the built-in grid method <code>get_column_reference()</code> which takes the <em>column name</em> as its argument and returns the reference to the data in the grid. Now just make a figure and create your animated plot!</p>
+<p>Now you need to reference the columns from the grid that you just uploaded. You can do so by using the built-in grid method <code>get_column_reference()</code> which takes the <em>column name</em> as its argument and returns the reference to the data in the grid. Since we are dealing with <em>referenced data</em> which is pointing to data and <em>not</em> <em>raw data</em>, we use <code>xsrc</code> and <code>ysrc</code> in the <code>figure</code> to represent the <code>x</code> and <code>y</code> analogues that are normally used.</p>
+<p>Make your figure and create an animated plot!</p>
 
 </div>
 </div>
@@ -747,8 +746,8 @@ Refer to the examples below to see the buttons in action!</li>
                <span class="s1">&#39;updatemenus&#39;</span><span class="p">:</span> <span class="p">[{</span>
                    <span class="s1">&#39;buttons&#39;</span><span class="p">:</span> <span class="p">[</span>
                        <span class="p">{</span><span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">None</span><span class="p">],</span>
-                        <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">u&#39;Play&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">u&#39;animate&#39;</span><span class="p">}</span>
+                        <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;Play&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;animate&#39;</span><span class="p">}</span>
                <span class="p">],</span>
                <span class="s1">&#39;pad&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">87</span><span class="p">},</span>
                <span class="s1">&#39;showactive&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
@@ -847,8 +846,8 @@ Refer to the examples below to see the buttons in action!</li>
                <span class="s1">&#39;updatemenus&#39;</span><span class="p">:</span> <span class="p">[{</span>
                    <span class="s1">&#39;buttons&#39;</span><span class="p">:</span> <span class="p">[</span>
                        <span class="p">{</span><span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">None</span><span class="p">],</span>
-                        <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">u&#39;Play&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">u&#39;animate&#39;</span><span class="p">}</span>
+                        <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;Play&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;animate&#39;</span><span class="p">}</span>
                <span class="p">],</span>
                <span class="s1">&#39;pad&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">87</span><span class="p">},</span>
                <span class="s1">&#39;showactive&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
