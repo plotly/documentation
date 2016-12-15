@@ -1,0 +1,411 @@
+---
+title: Line Plots in R | Examples | Plotly
+name: Line Plots
+permalink: r/line-charts/
+description: How to create line aplots in R. Examples of basic and advanced line plots, time series line plots, colored charts, and density plots.
+layout: base
+thumbnail: thumbnail/line-plot.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: chart_type
+order: 3
+output:
+  html_document:
+    keep_md: true
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+```{r}
+library(plotly)
+packageVersion('plotly')
+```
+
+### Basic Line Plot
+
+```{r, results = 'hide'}
+library(plotly)
+
+x <- c(1:100)
+random_y <- rnorm(100, mean = 0)
+data <- data.frame(x, random_y)
+
+p <- plot_ly(data, x = ~x, y = ~random_y, type = 'scatter', mode = 'lines')
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="line/basic")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Line Plots Mode
+
+```{r, results = 'hide'}
+library(plotly)
+
+trace_0 <- rnorm(100, mean = 5)
+trace_1 <- rnorm(100, mean = 0)
+trace_2 <- rnorm(100, mean = -5)
+x <- c(1:100)
+
+data <- data.frame(x, trace_0, trace_1, trace_2)
+
+p <- plot_ly(data, x = ~x) %>%
+  add_trace(y = ~trace_0, name = 'trace 0',mode = 'lines') %>%
+  add_trace(y = ~trace_1, name = 'trace 1', mode = 'lines+markers') %>%
+  add_trace(y = ~trace_2, name = 'trace 2', mode = 'markers')
+```
+
+It is also possible to pass the first trace in the plot_ly function. In such cases, the type of graph has to be specified, as shown below:
+
+```{r, results = 'hide'}
+library(plotly)
+
+trace_0 <- rnorm(100, mean = 5)
+trace_1 <- rnorm(100, mean = 0)
+trace_2 <- rnorm(100, mean = -5)
+x <- c(1:100)
+
+data <- data.frame(x, trace_0, trace_1, trace_2)
+
+p <- plot_ly(data, x = ~x, y = ~trace_0, name = 'trace 0', type = 'scatter', mode = 'lines') %>%
+  add_trace(y = ~trace_1, name = 'trace 1', mode = 'lines+markers') %>%
+  add_trace(y = ~trace_2, name = 'trace 2', mode = 'markers')
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="line/mode1")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Style Line Plots
+
+```{r, results = 'hide'}
+library(plotly)
+
+month <- c('January', 'February', 'March', 'April', 'May', 'June', 'July',
+         'August', 'September', 'October', 'November', 'December')
+high_2000 <- c(32.5, 37.6, 49.9, 53.0, 69.1, 75.4, 76.5, 76.6, 70.7, 60.6, 45.1, 29.3)
+low_2000 <- c(13.8, 22.3, 32.5, 37.2, 49.9, 56.1, 57.7, 58.3, 51.2, 42.8, 31.6, 15.9)
+high_2007 <- c(36.5, 26.6, 43.6, 52.3, 71.5, 81.4, 80.5, 82.2, 76.0, 67.3, 46.1, 35.0)
+low_2007 <- c(23.6, 14.0, 27.0, 36.8, 47.6, 57.7, 58.9, 61.2, 53.3, 48.5, 31.0, 23.6)
+high_2014 <- c(28.8, 28.5, 37.0, 56.8, 69.7, 79.7, 78.5, 77.8, 74.1, 62.6, 45.3, 39.9)
+low_2014 <- c(12.7, 14.3, 18.6, 35.5, 49.9, 58.0, 60.0, 58.6, 51.7, 45.2, 32.2, 29.1)
+
+data <- data.frame(month, high_2000, low_2000, high_2007, low_2007, high_2014, low_2014)
+
+#The default order will be alphabetized unless specified as below:
+data$month <- factor(data$month, levels = data[["month"]])
+
+p <- plot_ly(data, x = ~month, y = ~high_2014, name = 'High 2014', type = 'scatter', mode = 'lines',
+        line = list(color = 'rgb(205, 12, 24)', width = 4)) %>%
+  add_trace(y = ~low_2014, name = 'Low 2014', line = list(color = 'rgb(22, 96, 167)', width = 4)) %>%
+  add_trace(y = ~high_2007, name = 'High 2007', line = list(color = 'rgb(205, 12, 24)', width = 4, dash = 'dash')) %>%
+  add_trace(y = ~low_2007, name = 'Low 2007', line = list(color = 'rgb(22, 96, 167)', width = 4, dash = 'dash')) %>%
+  add_trace(y = ~high_2000, name = 'High 2000', line = list(color = 'rgb(205, 12, 24)', width = 4, dash = 'dot')) %>%
+  add_trace(y = ~low_2000, name = 'Low 2000', line = list(color = 'rgb(22, 96, 167)', width = 4, dash = 'dot')) %>%
+  layout(title = "Average High and Low Temperatures in New York",
+         xaxis = list(title = "Months"),
+         yaxis = list (title = "Temperature (degrees F)"))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="line/style")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+## Mapping data to linetype
+
+```{r, results = 'hide'}
+library(plotly)
+library(plyr)
+
+tg <- ddply(ToothGrowth, c("supp", "dose"), summarise, length=mean(len))
+
+p <- plot_ly(tg, x = ~dose, y = ~length, type = 'scatter', mode = 'lines', linetype = ~supp, color = I('black')) %>%
+  layout(title = 'The Effect of Vitamin C on Tooth Growth in Guinea Pigs by Supplement Type',
+         xaxis = list(title = 'Dose in milligrams/day'),
+         yaxis = list (title = 'Tooth length'))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="scatter/linetype")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Connect Data Gaps
+
+```{r, results = 'hide'}
+library(plotly)
+
+x <- c(1:15)
+y <- c(10, 20, NA, 15, 10, 5, 15, NA, 20, 10, 10, 15, 25, 20, 10)
+
+data <- data.frame(x, y)
+
+p <- plot_ly(data, x = ~x, y = ~y, name = "Gaps", type = 'scatter', mode = 'lines') %>%
+  add_trace(y = ~y - 5, name = "<b>No</b> Gaps", connectgaps = TRUE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="line/gaps")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Line Interpolation Options
+
+```{r, results = 'hide'}
+library(plotly)
+
+x <- c(1:5)
+y <- c(1, 3, 2, 3, 1)
+
+p <- plot_ly(x = ~x) %>%
+  add_lines(y = ~y, name = "linear", line = list(shape = "linear")) %>%
+  add_lines(y = y + 5, name = "spline", line = list(shape = "spline")) %>%
+  add_lines(y = y + 10, name = "vhv", line = list(shape = "vhv")) %>%
+  add_lines(y = y + 15, name = "hvh", line = list(shape = "hvh")) %>%
+  add_lines(y = y + 20, name = "vh", line = list(shape = "vh")) %>%
+  add_lines(y = y + 25, name = "hv", line = list(shape = "hv"))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="line/interp")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Label Lines with Annotations
+
+```{r, results = 'hide'}
+library(plotly)
+
+x <- c(2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013)
+y_television <- c(74, 82, 80, 74, 73, 72, 74, 70, 70, 66, 66, 69)
+y_internet <- c(13, 14, 20, 24, 20, 24, 24, 40, 35, 41, 43, 50)
+data <- data.frame(x, y_television, y_internet)
+
+xaxis <- list(title = "",
+             showline = TRUE,
+             showgrid = FALSE,
+             showticklabels = TRUE,
+             linecolor = 'rgb(204, 204, 204)',
+             linewidth = 2,
+             autotick = FALSE,
+             ticks = 'outside',
+             tickcolor = 'rgb(204, 204, 204)',
+             tickwidth = 2,
+             ticklen = 5,
+             tickfont = list(family = 'Arial',
+                             size = 12,
+                             color = 'rgb(82, 82, 82)'))
+
+yaxis <- list(title = "",
+             showgrid = FALSE,
+             zeroline = FALSE,
+             showline = FALSE,
+             showticklabels = FALSE)
+
+margin <- list(autoexpand = FALSE,
+              l = 100,
+              r = 100,
+              t = 110)
+
+# Build the annotations
+
+television_1 <- list(
+  xref = 'paper',
+  yref = 'y',
+  x = 0.05,
+  y = y_television[1],
+  xanchor = 'right',
+  yanchor = 'middle',
+  text = ~paste('Television ', y_television[1], '%'),
+  font = list(family = 'Arial',
+              size = 16,
+              color = 'rgba(67,67,67,1)'),
+  showarrow = FALSE)
+
+internet_1 <- list(
+  xref = 'paper',
+  yref = 'y',
+  x = 0.05,
+  y = y_internet[1],
+  xanchor = 'right',
+  yanchor = 'middle',
+  text = ~paste('Internet ', y_internet[1], '%'),
+  font = list(family = 'Arial',
+              size = 16,
+              color = 'rgba(49,130,189, 1)'),
+  showarrow = FALSE)
+
+television_2 <- list(
+  xref = 'paper',
+  x = 0.95,
+  y = y_television[12],
+  xanchor = 'left',
+  yanchor = 'middle',
+  text = paste('Television ', y_television[12], '%'),
+    font = list(family = 'Arial',
+                size = 16,
+                color = 'rgba(67,67,67,1)'),
+  showarrow = FALSE)
+
+internet_2 <- list(
+  xref = 'paper',
+  x = 0.95,
+  y = y_internet[12],
+  xanchor = 'left',
+  yanchor = 'middle',
+  text = paste('Internet ', y_internet[12], '%'),
+    font = list(family = 'Arial',
+                size = 16,
+                color = 'rgba(67,67,67,1)'),
+  showarrow = FALSE)
+
+p <- plot_ly(data, x = ~x) %>%
+  add_trace(y = ~y_television, type = 'scatter', mode = 'lines', line = list(color = 'rgba(67,67,67,1)', width = 2))  %>%
+  add_trace(y = ~y_internet, type = 'scatter', mode = 'lines', line = list(color = 'rgba(49,130,189, 1)', width = 4)) %>%
+  add_trace(x = ~c(x[1], x[12]), y = ~c(y_television[1], y_television[12]), type = 'scatter', mode = 'markers', marker = list(color = 'rgba(67,67,67,1)', size = 8)) %>%
+  add_trace(x = ~c(x[1], x[12]), y = ~c(y_internet[1], y_internet[12]), type = 'scatter', mode = 'markers', marker = list(color = 'rgba(49,130,189, 1)', size = 12)) %>%
+  layout(title = "Main Source for News", xaxis = xaxis, yaxis = yaxis, margin = margin,
+         autosize = FALSE,
+         showlegend = FALSE,
+         annotations = television_1) %>%
+  layout(annotations = internet_1) %>%
+  layout(annotations = television_2) %>%
+  layout(annotations = internet_2)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="line/annotations")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Filled Lines
+
+```{r, results = 'hide'}
+library(plotly)
+
+month <- c('January', 'February', 'March', 'April', 'May', 'June', 'July',
+           'August', 'September', 'October', 'November', 'December')
+high_2014 <- c(28.8, 28.5, 37.0, 56.8, 69.7, 79.7, 78.5, 77.8, 74.1, 62.6, 45.3, 39.9)
+low_2014 <- c(12.7, 14.3, 18.6, 35.5, 49.9, 58.0, 60.0, 58.6, 51.7, 45.2, 32.2, 29.1)
+data <- data.frame(month, high_2014, low_2014)
+data$average_2014 <- rowMeans(data[,c("high_2014", "low_2014")])
+
+#The default order will be alphabetized unless specified as below:
+data$month <- factor(data$month, levels = data[["month"]])
+
+p <- plot_ly(data, x = ~month, y = ~high_2014, type = 'scatter', mode = 'lines',
+        line = list(color = 'transparent'),
+        showlegend = FALSE, name = 'High 2014') %>%
+  add_trace(y = ~low_2014, type = 'scatter', mode = 'lines',
+            fill = 'tonexty', fillcolor='rgba(0,100,80,0.2)', line = list(color = 'transparent'),
+            showlegend = FALSE, name = 'Low 2014') %>%
+  add_trace(x = ~month, y = ~average_2014, type = 'scatter', mode = 'lines',
+            line = list(color='rgb(0,100,80)'),
+            name = 'Average') %>%
+  layout(title = "Average, High and Low Temperatures in New York",
+         paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
+         xaxis = list(title = "Months",
+                      gridcolor = 'rgb(255,255,255)',
+                      showgrid = TRUE,
+                      showline = FALSE,
+                      showticklabels = TRUE,
+                      tickcolor = 'rgb(127,127,127)',
+                      ticks = 'outside',
+                      zeroline = FALSE),
+         yaxis = list(title = "Temperature (degrees F)",
+                      gridcolor = 'rgb(255,255,255)',
+                      showgrid = TRUE,
+                      showline = FALSE,
+                      showticklabels = TRUE,
+                      tickcolor = 'rgb(127,127,127)',
+                      ticks = 'outside',
+                      zeroline = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="line/filled")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+See more examples of filled line charts [here](https://plot.ly/r/filled-area-plots/).
+
+### Density Plot
+
+```{r, results = 'hide'}
+library(plotly)
+
+dens <- with(diamonds, tapply(price, INDEX = cut, density))
+df <- data.frame(
+  x = unlist(lapply(dens, "[[", "x")),
+  y = unlist(lapply(dens, "[[", "y")),
+  cut = rep(names(dens), each = length(dens[[1]]$x))
+)
+
+p <- plot_ly(df, x = ~x, y = ~y, color = ~cut) %>%
+  add_lines()
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="scatter/colorDensity")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+#Reference
+
+See [https://plot.ly/r/reference/#scatter](https://plot.ly/r/reference/#scatter) for more information and chart attribute options!
+
+

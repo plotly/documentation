@@ -1,0 +1,540 @@
+---
+permalink: scikit-learn/wikipedia-principal-eigenvector/
+description: 
+name: Wikipedia Principal Eigenvector | plotly
+has_thumbnail: true
+thumbnail: thumbnail/scikit-default.jpg
+layout: user-guide
+name: Wikipedia Principal Eigenvector
+language: scikit-learn
+title: Wikipedia Principal Eigenvector | plotly
+display_as: real_dataset
+has_thumbnail: true
+page_type: example_index
+order: 6
+ipynb: ~Diksha_Gabha/2677
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A classical way to assert the relative importance of vertices in a graph is to compute the principal eigenvector of the adjacency matrix so as to assign to each vertex the values of the components of the first eigenvector as a centrality score:</p>
+<p><a href="https://en.wikipedia.org/wiki/Eigenvector_centrality">https://en.wikipedia.org/wiki/Eigenvector_centrality</a></p>
+<p>On the graph of webpages and links those values are called the PageRank scores by Google.
+The goal of this example is to analyze the graph of links inside wikipedia articles to rank articles by relative importance according to this eigenvector centrality.
+The traditional way to compute the principal eigenvector is to use the power iteration method:</p>
+<p><a href="https://en.wikipedia.org/wiki/Power_iteration">https://en.wikipedia.org/wiki/Power_iteration</a></p>
+<p>Here the computation is achieved thanks to Martinsson’s Randomized SVD algorithm implemented in the scikit.
+The graph data is fetched from the DBpedia dumps. DBpedia is an extraction of the latent structured data of the Wikipedia content.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&apos;0.18&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">bz2</span> <span class="kn">import</span> <span class="n">BZ2File</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">randomized_svd</span>
+<span class="kn">from</span> <span class="nn">sklearn.externals.joblib</span> <span class="kn">import</span> <span class="n">Memory</span>
+<span class="kn">from</span> <span class="nn">sklearn.externals.six.moves.urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">from</span> <span class="nn">sklearn.externals.six</span> <span class="kn">import</span> <span class="n">iteritems</span>
+
+
+<span class="k">print</span><span class="p">(</span><span class="n">__doc__</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Automatically created module for IPython interactive environment
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Where to download the data, if not already on disk</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">redirects_url</span> <span class="o">=</span> <span class="s2">&quot;http://downloads.dbpedia.org/3.5.1/en/redirects_en.nt.bz2&quot;</span>
+<span class="n">redirects_filename</span> <span class="o">=</span> <span class="n">redirects_url</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">page_links_url</span> <span class="o">=</span> <span class="s2">&quot;http://downloads.dbpedia.org/3.5.1/en/page_links_en.nt.bz2&quot;</span>
+<span class="n">page_links_filename</span> <span class="o">=</span> <span class="n">page_links_url</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">resources</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="n">redirects_url</span><span class="p">,</span> <span class="n">redirects_filename</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">page_links_url</span><span class="p">,</span> <span class="n">page_links_filename</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">url</span><span class="p">,</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">resources</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Downloading data from &#39;</span><span class="si">%s</span><span class="s2">&#39;, please wait...&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
+        <span class="n">opener</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">opener</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">print</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Loading the redirect files</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">memory</span> <span class="o">=</span> <span class="n">Memory</span><span class="p">(</span><span class="n">cachedir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find the index of an article name after redirect resolution&quot;&quot;&quot;</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">redirects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">index_map</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_map</span><span class="p">))</span>
+
+
+<span class="n">DBPEDIA_RESOURCE_PREFIX_LEN</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="s2">&quot;http://dbpedia.org/resource/&quot;</span><span class="p">)</span>
+<span class="n">SHORTNAME_SLICE</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">DBPEDIA_RESOURCE_PREFIX_LEN</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">short_name</span><span class="p">(</span><span class="n">nt_uri</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove the &lt; and &gt; URI markers and the common URI prefix&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">nt_uri</span><span class="p">[</span><span class="n">SHORTNAME_SLICE</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">get_redirects</span><span class="p">(</span><span class="n">redirects_filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parse the redirections and build a transitively closed map out of it&quot;&quot;&quot;</span>
+    <span class="n">redirects</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Parsing the NT redirect file&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">BZ2File</span><span class="p">(</span><span class="n">redirects_filename</span><span class="p">)):</span>
+        <span class="n">split</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;ignoring malformed line: &quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">redirects</span><span class="p">[</span><span class="n">short_name</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="n">short_name</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="o">%</span> <span class="mi">1000000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[</span><span class="si">%s</span><span class="s2">] line: </span><span class="si">%08d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="n">l</span><span class="p">))</span>
+
+    <span class="c1"># compute the transitive closure</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Computing the transitive closure of the redirect relation&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">source</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">redirects</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="n">transitive_target</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">redirects</span><span class="p">[</span><span class="n">source</span><span class="p">]</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">source</span><span class="p">])</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">transitive_target</span> <span class="o">=</span> <span class="n">target</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">redirects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+        <span class="n">redirects</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">transitive_target</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="o">%</span> <span class="mi">1000000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[</span><span class="si">%s</span><span class="s2">] line: </span><span class="si">%08d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="n">l</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">redirects</span>
+
+
+<span class="c1"># disabling joblib as the pickling of large dicts seems much too slow</span>
+<span class="c1">#@memory.cache</span>
+<span class="k">def</span> <span class="nf">get_adjacency_matrix</span><span class="p">(</span><span class="n">redirects_filename</span><span class="p">,</span> <span class="n">page_links_filename</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extract the adjacency graph as a scipy sparse matrix</span>
+
+<span class="sd">    Redirects are resolved first.</span>
+
+<span class="sd">    Returns X, the scipy sparse adjacency matrix, redirects as python</span>
+<span class="sd">    dict from article names to article names and index_map a python dict</span>
+<span class="sd">    from article names to python int (article indexes).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Computing the redirect map&quot;</span><span class="p">)</span>
+    <span class="n">redirects</span> <span class="o">=</span> <span class="n">get_redirects</span><span class="p">(</span><span class="n">redirects_filename</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Computing the integer index map&quot;</span><span class="p">)</span>
+    <span class="n">index_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">links</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">BZ2File</span><span class="p">(</span><span class="n">page_links_filename</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)):</span>
+        <span class="n">split</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;ignoring malformed line: &quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">index</span><span class="p">(</span><span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span><span class="p">,</span> <span class="n">short_name</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">index</span><span class="p">(</span><span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span><span class="p">,</span> <span class="n">short_name</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="o">%</span> <span class="mi">1000000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[</span><span class="si">%s</span><span class="s2">] line: </span><span class="si">%08d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="n">l</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">l</span> <span class="o">&gt;=</span> <span class="n">limit</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Computing the adjacency matrix&quot;</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">lil_matrix</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">index_map</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_map</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
+        <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="k">del</span> <span class="n">links</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Converting to CSR representation&quot;</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;CSR conversion done&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span>
+
+
+<span class="c1"># stop after 5M links to make it possible to work in RAM</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span> <span class="o">=</span> <span class="n">get_adjacency_matrix</span><span class="p">(</span>
+    <span class="n">redirects_filename</span><span class="p">,</span> <span class="n">page_links_filename</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5000000</span><span class="p">)</span>
+<span class="n">names</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">index_map</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Computing the principal singular vectors using randomized_svd&quot;</span><span class="p">)</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="n">U</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">randomized_svd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%0.3f</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+
+<span class="c1"># print the names of the wikipedia related strongest components of the</span>
+<span class="c1"># principal singular vector which should be similar to the highest eigenvector</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Top wikipedia pages according to principal singular vectors&quot;</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">([</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]])</span>
+<span class="n">pprint</span><span class="p">([</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]])</span>
+
+
+<span class="k">def</span> <span class="nf">centrality_scores</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Power iteration computation of the principal eigenvector</span>
+
+<span class="sd">    This method is also known as Google PageRank and the implementation</span>
+<span class="sd">    is based on the one from the NetworkX project (BSD licensed too)</span>
+<span class="sd">    with copyrights by:</span>
+
+<span class="sd">      Aric Hagberg &lt;hagberg@lanl.gov&gt;</span>
+<span class="sd">      Dan Schult &lt;dschult@colgate.edu&gt;</span>
+<span class="sd">      Pieter Swart &lt;swart@lanl.gov&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">incoming_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Normalizing the graph&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">incoming_counts</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">X</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">X</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">incoming_counts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">dangle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>  <span class="c1"># initial guess</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;power iteration #</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">prev_scores</span> <span class="o">=</span> <span class="n">scores</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">scores</span> <span class="o">*</span> <span class="n">X</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dangle</span><span class="p">,</span> <span class="n">prev_scores</span><span class="p">))</span>
+                  <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">prev_scores</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+        <span class="c1"># check convergence: normalized l_inf norm</span>
+        <span class="n">scores_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">scores_max</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">scores_max</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">scores</span> <span class="o">-</span> <span class="n">prev_scores</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">/</span> <span class="n">scores_max</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;error: </span><span class="si">%0.6f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">err</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">err</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">*</span> <span class="n">tol</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">scores</span>
+
+    <span class="k">return</span> <span class="n">scores</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Computing principal eigenvector score using a power iteration method&quot;</span><span class="p">)</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="n">centrality_scores</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%0.3f</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+<span class="n">pprint</span><span class="p">([</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Computing the redirect map
+Parsing the NT redirect file
+[2016-11-03T22:06:59.153450] line: 00000000
+[2016-11-03T22:07:08.892231] line: 01000000
+[2016-11-03T22:07:19.669552] line: 02000000
+[2016-11-03T22:07:27.035018] line: 03000000
+[2016-11-03T22:07:33.749849] line: 04000000
+Computing the transitive closure of the redirect relation
+[2016-11-03T22:07:34.456301] line: 00000000
+[2016-11-03T22:07:35.584369] line: 01000000
+[2016-11-03T22:07:36.678192] line: 02000000
+[2016-11-03T22:07:37.803847] line: 03000000
+[2016-11-03T22:07:38.943277] line: 04000000
+Computing the integer index map
+[2016-11-03T22:07:39.158285] line: 00000000
+[2016-11-03T22:07:47.741059] line: 01000000
+[2016-11-03T22:07:54.770050] line: 02000000
+[2016-11-03T22:08:01.567734] line: 03000000
+[2016-11-03T22:08:08.569797] line: 04000000
+Computing the adjacency matrix
+Converting to CSR representation
+CSR conversion done
+Computing the principal singular vectors using randomized_svd
+done in 6.959s
+Top wikipedia pages according to principal singular vectors
+[&apos;1989&apos;,
+ &apos;1971&apos;,
+ &apos;1975&apos;,
+ &apos;1970&apos;,
+ &apos;2006&apos;,
+ &apos;1972&apos;,
+ &apos;1996&apos;,
+ &apos;1966&apos;,
+ &apos;1967&apos;,
+ &apos;2007&apos;]
+[&apos;Soviet_Union&apos;,
+ &apos;Spain&apos;,
+ &apos;Italy&apos;,
+ &apos;Canada&apos;,
+ &apos;Japan&apos;,
+ &apos;Germany&apos;,
+ &apos;World_War_II&apos;,
+ &apos;France&apos;,
+ &apos;United_Kingdom&apos;,
+ &apos;United_States&apos;]
+Computing principal eigenvector score using a power iteration method
+Normalizing the graph
+power iteration #0
+error: 0.988448
+power iteration #1
+error: 0.495765
+power iteration #2
+error: 0.304177
+power iteration #3
+error: 0.206610
+power iteration #4
+error: 0.149243
+power iteration #5
+error: 0.112218
+power iteration #6
+error: 0.086735
+power iteration #7
+error: 0.068370
+power iteration #8
+error: 0.054681
+power iteration #9
+error: 0.044216
+power iteration #10
+error: 0.036059
+power iteration #11
+error: 0.029603
+power iteration #12
+error: 0.024433
+power iteration #13
+error: 0.020252
+power iteration #14
+error: 0.016845
+power iteration #15
+error: 0.014051
+power iteration #16
+error: 0.011748
+power iteration #17
+error: 0.009841
+power iteration #18
+error: 0.008257
+power iteration #19
+error: 0.006937
+power iteration #20
+error: 0.005834
+power iteration #21
+error: 0.004912
+power iteration #22
+error: 0.004138
+power iteration #23
+error: 0.003489
+power iteration #24
+error: 0.002943
+power iteration #25
+error: 0.002484
+power iteration #26
+error: 0.002097
+power iteration #27
+error: 0.001771
+power iteration #28
+error: 0.001496
+power iteration #29
+error: 0.001264
+power iteration #30
+error: 0.001068
+power iteration #31
+error: 0.000903
+power iteration #32
+error: 0.000763
+power iteration #33
+error: 0.000645
+power iteration #34
+error: 0.000546
+power iteration #35
+error: 0.000461
+power iteration #36
+error: 0.000390
+power iteration #37
+error: 0.000330
+power iteration #38
+error: 0.000279
+power iteration #39
+error: 0.000236
+power iteration #40
+error: 0.000200
+power iteration #41
+error: 0.000169
+power iteration #42
+error: 0.000143
+power iteration #43
+error: 0.000121
+power iteration #44
+error: 0.000102
+done in 1.726s
+[&apos;Africa&apos;,
+ &apos;Animal&apos;,
+ &apos;New_York&apos;,
+ &apos;Jews&apos;,
+ &apos;Philosophy&apos;,
+ &apos;Byzantine_Empire&apos;,
+ &apos;New_York_City&apos;,
+ &apos;World_War_I&apos;,
+ &apos;France&apos;,
+ &apos;United_States&apos;]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3><p>Author:</p>
+
+<pre><code>    Olivier Grisel &lt;olivier.grisel@ensta.org&gt;
+</code></pre>
+<p>License:</p>
+
+<pre><code>    BSD 3 clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}

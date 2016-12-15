@@ -1,0 +1,28 @@
+---
+name: <code>geom_boxplot</code> ignore outliers
+plot_url: https://plot.ly/~riddhiman/180/ignore-outliers-in-ggplot2/
+arrangement: horizontal
+language: ggplot2
+suite: box
+description: Inspired by <a href="http://stackoverflow.com/questions/5677885/ignore-outliers-in-ggplot2-boxplot">Stack Overflow</a>.
+order: 7
+sitemap: false
+---
+library(plotly)
+set.seed(123)
+
+df <- diamonds[sample(1:nrow(diamonds), size = 1000),]
+
+p <- ggplot(df, aes(cut, price, fill = cut)) + 
+  geom_boxplot(outlier.shape = NA) + 
+  ggtitle("Ignore outliers in ggplot2")
+
+# Need to modify the plotly object and make outlier points have opacity equal to 0
+p <- plotly_build(p)
+
+p$data <- lapply(p$data, FUN = function(x){
+  x$marker = list(opacity = 0)
+  return(x)
+})
+
+p

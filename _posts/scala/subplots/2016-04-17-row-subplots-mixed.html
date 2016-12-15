@@ -1,0 +1,35 @@
+---
+name: Mixed 2D and 3D subplots
+plot_url: https://plot.ly/~pbugnion/554
+language: scala
+suite: subplots
+order: 2
+sitemap: false
+arrangement: horizontal
+---
+
+import co.theasi.plotly
+import util.Random
+
+// Left-hand side: Gaussian distributed random variates
+val randomXs = (0 to 100).map { i => Random.nextGaussian }
+val randomYs = (0 to 100).map { i => Random.nextGaussian }
+
+val leftPlot = Plot()
+  .withScatter(randomXs, randomYs, ScatterOptions().mode(ScatterMode.Marker))
+
+// Gaussian PDF
+def gaussian2D(x: Double, y: Double) = Math.exp(-x*x - y*y)
+
+val xs = (-4.0 to 4.0 by 0.1).toVector
+val ys = (-4.0 to 4.0 by 0.1).toVector
+val zs = xs.map { x => ys.map { y => gaussian2D(x, y) } }
+
+val rightPlot = ThreeDPlot().withSurface(xs, ys, zs)
+
+// Figure with two subplots in a row
+val figure = RowFigure(2)
+  .plot(0) { leftPlot }
+  .plot(1) { rightPlot }
+
+draw(figure, "mixed-subplots", writer.FileOptions(overwrite=true))
