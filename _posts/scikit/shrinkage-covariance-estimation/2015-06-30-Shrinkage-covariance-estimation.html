@@ -1,0 +1,359 @@
+---
+permalink: scikit-learn/plot-covariance-estimation/
+description:  
+name: Shrinkage Covariance Estimation LedoitWolf vs OAS and max-likelihood | plotly
+has_thumbnail: true
+thumbnail: thumbnail/covariance.jpg
+layout: user-guide
+name: Shrinkage Covariance Estimation LedoitWolf vs OAS and max-likelihood
+language: scikit-learn
+title: Shrinkage Covariance Estimation LedoitWolf vs OAS and max-likelihood | plotly
+display_as: covariance_estimation
+has_thumbnail: true
+page_type: example_index
+order: 3
+ipynb: ~Diksha_Gabha/2883
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When working with covariance estimation, the usual approach is to use a maximum likelihood estimator, such as the <a href="http://scikit-learn.org/stable/modules/generated/sklearn.covariance.EmpiricalCovariance.html#sklearn.covariance.EmpiricalCovariance">sklearn.covariance.EmpiricalCovariance</a>. It is unbiased, i.e. it converges to the true (population) covariance when given many observations. However, it can also be beneficial to regularize it, in order to reduce its variance; this, in turn, introduces some bias. This example illustrates the simple regularization used in <a href="http://scikit-learn.org/stable/modules/covariance.html#shrunk-covariance">Shrunk Covariance</a> estimators. In particular, it focuses on how to set the amount of regularization, i.e. how to choose the bias-variance trade-off.</p>
+<p>Here we compare 3 approaches:</p>
+<ul>
+<li>Setting the parameter by cross-validating the likelihood on three folds according to a grid of potential shrinkage parameters.</li>
+<li>A close formula proposed by <a href="http://scikit-learn.org/stable/modules/generated/sklearn.covariance.LedoitWolf.html#sklearn.covariance.LedoitWolf">Ledoit and Wolf</a> to compute the asymptotically optimal regularization parameter (minimizing a MSE criterion), yielding the sklearn.covariance.LedoitWolf covariance estimate.</li>
+<li>An improvement of the Ledoit-Wolf shrinkage, the <a href="http://scikit-learn.org/stable/modules/generated/sklearn.covariance.OAS.html#sklearn.covariance.OAS">sklearn.covariance.OAS</a>, proposed by Chen et al. Its convergence is significantly better under the assumption that the data are Gaussian, in particular for small samples.</li>
+</ul>
+<p>To quantify estimation error, we plot the likelihood of unseen data for different values of the shrinkage parameter. 
+We also show the choices by cross-validation, or with the LedoitWolf and OAS estimates.</p>
+<p>Note that the maximum likelihood estimate corresponds to no shrinkage, and thus performs poorly. The Ledoit-Wolf estimate performs really well, as it is close to the optimal and is computational not costly. In this example, the OAS estimate is a bit further away. Interestingly, both approaches outperform cross-validation, which is significantly most computationally costly.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&apos;0.18&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.covariance.LedoitWolf.html#sklearn.covariance.LedoitWolf">LedoitWolf</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.covariance.OAS.html#sklearn.covariance.OAS">OAS</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.covariance.ShrunkCovariance.html#sklearn.covariance.ShrunkCovariance">ShrunkCovariance</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.covariance.empirical_covariance.html#sklearn.covariance.empirical_covariance">empirical_covariance</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV">GridSearchCV</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">__doc__</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">linalg</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.covariance</span> <span class="kn">import</span> <span class="n">LedoitWolf</span><span class="p">,</span> <span class="n">OAS</span><span class="p">,</span> <span class="n">ShrunkCovariance</span><span class="p">,</span> \
+    <span class="n">log_likelihood</span><span class="p">,</span> <span class="n">empirical_covariance</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Automatically created module for IPython interactive environment
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Generate sample data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n_features</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">20</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">base_X_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+<span class="n">base_X_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+
+<span class="c1"># Color samples</span>
+<span class="n">coloring_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">base_X_train</span><span class="p">,</span> <span class="n">coloring_matrix</span><span class="p">)</span>
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">base_X_test</span><span class="p">,</span> <span class="n">coloring_matrix</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Compute the likelihood on test data</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># spanning a range of possible shrinkage coefficient values</span>
+<span class="n">shrinkages</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="n">negative_logliks</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">ShrunkCovariance</span><span class="p">(</span><span class="n">shrinkage</span><span class="o">=</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">shrinkages</span><span class="p">]</span>
+
+<span class="c1"># under the ground-truth model, which we would not have access to in real</span>
+<span class="c1"># settings</span>
+<span class="n">real_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">coloring_matrix</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">coloring_matrix</span><span class="p">)</span>
+<span class="n">emp_cov</span> <span class="o">=</span> <span class="n">empirical_covariance</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">loglik_real</span> <span class="o">=</span> <span class="o">-</span><span class="n">log_likelihood</span><span class="p">(</span><span class="n">emp_cov</span><span class="p">,</span> <span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">real_cov</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Compare different approaches to setting the parameter</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># GridSearch for an optimal shrinkage coefficient</span>
+<span class="n">tuned_parameters</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;shrinkage&#39;</span><span class="p">:</span> <span class="n">shrinkages</span><span class="p">}]</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">ShrunkCovariance</span><span class="p">(),</span> <span class="n">tuned_parameters</span><span class="p">)</span>
+<span class="n">cv</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+
+<span class="c1"># Ledoit-Wolf optimal shrinkage coefficient estimate</span>
+<span class="n">lw</span> <span class="o">=</span> <span class="n">LedoitWolf</span><span class="p">()</span>
+<span class="n">loglik_lw</span> <span class="o">=</span> <span class="n">lw</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="c1"># OAS coefficient estimate</span>
+<span class="n">oa</span> <span class="o">=</span> <span class="n">OAS</span><span class="p">()</span>
+<span class="n">loglik_oa</span> <span class="o">=</span> <span class="n">oa</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-Results">Plot Results<a class="anchor-link" href="#Plot-Results">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># range shrinkage curve</span>
+<span class="n">shrinkage1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">shrinkages</span><span class="p">,</span> 
+                        <span class="n">y</span><span class="o">=</span><span class="n">negative_logliks</span><span class="p">,</span>
+                        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Negative log-likelihood&quot;</span><span class="p">)</span>
+
+<span class="n">shrinkage2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">shrinkages</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">shrinkages</span><span class="p">)],</span>
+                        <span class="n">y</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="p">[</span><span class="n">loglik_real</span><span class="p">],</span> 
+                        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                        <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>
+                                  <span class="n">dash</span><span class="o">=</span><span class="s1">&#39;dash&#39;</span><span class="p">,</span>
+                                  <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Real covariance likelihood&quot;</span><span class="p">)</span>
+
+<span class="c1"># adjust view</span>
+<span class="n">lik_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">negative_logliks</span><span class="p">)</span>
+<span class="n">lik_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">negative_logliks</span><span class="p">)</span>
+<span class="n">ymin</span> <span class="o">=</span> <span class="n">lik_min</span> <span class="o">-</span> <span class="mf">6.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="nb">max</span><span class="p">(</span><span class="n">negative_logliks</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">negative_logliks</span><span class="p">)))</span>
+<span class="n">ymax</span> <span class="o">=</span> <span class="n">lik_max</span> <span class="o">+</span> <span class="mf">10.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">lik_max</span> <span class="o">-</span> <span class="n">lik_min</span><span class="p">)</span>
+<span class="n">xmin</span> <span class="o">=</span> <span class="n">shrinkages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">xmax</span> <span class="o">=</span> <span class="n">shrinkages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># LW likelihood</span>
+<span class="n">lw_likelihood</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">lw</span><span class="o">.</span><span class="n">shrinkage_</span><span class="p">,</span> <span class="n">lw</span><span class="o">.</span><span class="n">shrinkage_</span><span class="p">],</span> 
+                           <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">ymin</span><span class="p">,</span> <span class="o">-</span><span class="n">loglik_lw</span><span class="p">],</span> 
+                           <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                           <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;magenta&#39;</span><span class="p">,</span>
+                                     <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+                           <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Ledoit-Wolf estimate&#39;</span><span class="p">)</span>
+<span class="c1"># OAS likelihood</span>
+<span class="n">oas_likelihood</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">oa</span><span class="o">.</span><span class="n">shrinkage_</span><span class="p">,</span> <span class="n">oa</span><span class="o">.</span><span class="n">shrinkage_</span><span class="p">],</span> 
+                            <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">ymin</span><span class="p">,</span> <span class="o">-</span><span class="n">loglik_oa</span><span class="p">],</span>
+                            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                            <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">,</span>
+                                     <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+                            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;OAS estimate&#39;</span>
+                            <span class="p">)</span>
+<span class="c1"># best CV estimator likelihood</span>
+<span class="n">cv_estimator</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">cv</span><span class="o">.</span><span class="n">best_estimator_</span><span class="o">.</span><span class="n">shrinkage</span><span class="p">,</span><span class="n">cv</span><span class="o">.</span><span class="n">best_estimator_</span><span class="o">.</span><span class="n">shrinkage</span><span class="p">],</span> 
+                          <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">ymin</span><span class="p">,</span> <span class="o">-</span><span class="n">cv</span><span class="o">.</span><span class="n">best_estimator_</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">)],</span>
+                          <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                          <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;cyan&#39;</span><span class="p">,</span>
+                                    <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+                          <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Cross-validation best estimate&#39;</span>
+                         <span class="p">)</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Regularized covariance: likelihood and shrinkage coefficient&quot;</span><span class="p">,</span>
+                   <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                   <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Regularizaton parameter: shrinkage coefficient&#39;</span><span class="p">,</span>
+                   <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span>
+                   <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+                   <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                   <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Error: negative log-likelihood on test data&#39;</span><span class="p">,</span>
+                   <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span>
+                   <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                  <span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">shrinkage1</span><span class="p">,</span> <span class="n">shrinkage2</span><span class="p">,</span> <span class="n">lw_likelihood</span><span class="p">,</span> <span class="n">cv_estimator</span><span class="p">,</span> <span class="n">oas_likelihood</span><span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[7]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2881.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}
