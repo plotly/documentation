@@ -476,6 +476,18 @@
 		
 		
 		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
 			<li class="lang-nav--item">
                 <a class="lang_nav_button current" href="/javascript/plotlyjs-events/">
 					<div><img src="https://images.plot.ly/language-icons/api-home/js-logo.png" alt="plotly.js" class="lang_nav_thum"></div>
@@ -22146,6 +22158,8 @@
           
             <p>Plotly graphs emit events prefixed with plotly_ (i.e. <code>&#39;plotly_click&#39;</code>, <code>&#39;plotly_hover&#39;</code>, <code>&#39;plotly_restyle&#39;</code>) when interacted with (clicked, hovered, zoomed). Event handlers can be bound to events using the <code>.on</code> method that is exposed by the plot div object. Please note: it is possible to use jQuery events, but plotly.js no longer bundles jQuery, so we recommend using the plotly.js implementation.</p>
 
+<p>In addition to the event handler, some events emit additional information about the point(s) or plot  interacted with. The following documentation organizes Plotly events based on the accessible information emitted with the event: <a href="">eventData</a>, <a href="">update</a>, or <a href="">null</a>. The following page provides a description and example of each Plotly event as well as the structure of the data or update returned with the event.</p>
+
           
           <div class="z-depth-1">
             <pre><code class="plotly_js">graphDiv.on('plotly_event', function(){
@@ -22203,28 +22217,6 @@ myPlot.on('plotly_click', function(){
             </div>
           </div>
       
-      </div>
-        </div>
-
-    </div>
-
-    <div class="section">
-        <div class="row auto-eg-padding">
-      <div class=" row twelve columns">
-        <h4 id="data-returned"><a class="no_underline plot-blue" href="#data-returned">Data Returned</a></h4>
-      </div>
-      <div class="row">
-        <div class="twelve columns">
-          
-            <p>In addition to the event handler, many events emit additional information about the point or plot that was interacted with. The following documentation organizes Plotly events based on the accessible information emitted with the event: <a href="">eventData</a>, <a href="">update</a>, or <a href="">null</a>. The following page provides a description and example of each Plotly event as well as the structure of the data or update returned with the event.</p>
-
-          
-          <div class="z-depth-1">
-            <pre><code class="plotly_js"></code></pre>
-          </div>
-          
-        </div>
-        
       </div>
         </div>
 
@@ -22297,124 +22289,6 @@ The following events emit event data: <a href=""><code>plotly_click</code></a>, 
           
         </div>
         
-      </div>
-        </div>
-
-    </div>
-
-    <div class="section">
-        <div class="row auto-eg-padding">
-      <div class=" row twelve columns">
-        <h4 id="select-event"><a class="no_underline plot-blue" href="#select-event">Select Event</a></h4>
-      </div>
-      <div class="row">
-        <div class="twelve columns">
-          
-            <p>Here&#39;s a simple example using the data returned from the <code>plotly_selected</code> event. <code>plotly_selected</code> returns event data for all points selected simultaneously. After creating a scatter plot with random data and two histograms that display the x and y distributions of that random data, we can select points by clicking and dragging on the plot. Upon <code>plotly_selected</code> the histograms will update to display the distribution of the x and y values of the selected points. The color of the scatter plot will be updated as well to highlight the selected points. For more examples of using <code>plotly_slected</code> and <code>plotly_selecting</code> events, see: https://plot.ly/javascript/lasso-selection/</p>
-
-          
-          <div class="z-depth-1">
-            <pre><code class="plotly_js">var graphDiv = document.getElementById('graph');
-var N = 1000;
-var color1 = '#7b3294';
-var color1Light = '#c2a5cf';
-var colorX = '#ffa7b5';
-var colorY = '#fdae61';
-
-function randomArray() {
-  var out = new Array(N);
-  for(var i = 0; i < N; i++) {
-    out[i] = Math.random();
-  }
-  return out;
-}
-var x = randomArray();
-var y = randomArray();
-
-Plotly.plot(graphDiv, [{
-  type: 'scatter',
-  mode: 'markers',
-  x: x,
-  y: y,
-  xaxis: 'x',
-  yaxis: 'y',
-  name: 'random data',
-  marker: {color: color1, size: 10}
-}, {
-  type: 'histogram',
-  x: x,
-  xaxis: 'x2',
-  yaxis: 'y2',
-  name: 'x coord dist.',
-  marker: {color: colorX}
-}, {
-  type: 'histogram',
-  x: y,
-  xaxis: 'x3',
-  yaxis: 'y3',
-  name: 'y coord dist.',
-  marker: {color: colorY}
-}], {
-  title: 'Lasso around the scatter points to see sub-distributions',
-  dragmode: 'lasso',
-  xaxis: {
-    zeroline: false,
-  },
-  yaxis: {
-    domain: [0.55, 1],
-  },
-  xaxis2: {
-    domain: [0, 0.45],
-    anchor: 'y2',
-  },
-  yaxis2: {
-    domain: [0, 0.45],
-    anchor: 'x2'
-  },
-  xaxis3: {
-    domain: [0.55, 1],
-    anchor: 'y3'
-  },
-  yaxis3: {
-    domain: [0, 0.45],
-    anchor: 'x3'
-  }
-});
-
-graphDiv.on('plotly_selected', function(eventData) {
-  var x = [];
-  var y = [];
-
-  var colors = [];
-  for(var i = 0; i < N; i++) colors.push(color1Light);
-
-  eventData.points.forEach(function(pt) {
-    x.push(pt.x);
-    y.push(pt.y);
-    colors[pt.pointNumber] = color1;
-  });
-
-  Plotly.restyle(graphDiv, {
-    x: [x, y],
-    xbins: {}
-  }, [1, 2]);
-
-  Plotly.restyle(graphDiv, 'marker.color', [colors], [0]);
-});
-</code></pre>
-          </div>
-          
-        </div>
-        
-          <div class="twelve columns">
-            <div class="border" style="text-align:center;">
-              
-              <iframe id="auto-examples" src="https://codepen.io/plotly/embed/BpayyX/?height=500&theme-id=15263&default-tab=result"
-                style="width: 100%; height: 550px; border: none;"></iframe>
-              
-            </div>
-          </div>
-      
       </div>
         </div>
 
@@ -22550,6 +22424,180 @@ myPlot.on('plotly_unhover', function(data){
             </div>
           </div>
       
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="select-event"><a class="no_underline plot-blue" href="#select-event">Select Event</a></h4>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          
+            <p>Here&#39;s a simple example using the data returned from the <code>plotly_selected</code> event. <code>plotly_selected</code> returns event data for all points selected simultaneously. After creating a scatter plot with random data and two histograms that display the x and y distributions of that random data, we can select points by clicking and dragging on the plot. Upon <code>plotly_selected</code> the histograms will update to display the distribution of the x and y values of the selected points. The color of the scatter plot will be updated as well to highlight the selected points. For more examples of using <code>plotly_slected</code> and <code>plotly_selecting</code> events, see: https://plot.ly/javascript/lasso-selection/</p>
+
+          
+          <div class="z-depth-1">
+            <pre><code class="plotly_js">var graphDiv = document.getElementById('graph');
+var N = 1000;
+var color1 = '#7b3294';
+var color1Light = '#c2a5cf';
+var colorX = '#ffa7b5';
+var colorY = '#fdae61';
+
+function randomArray() {
+  var out = new Array(N);
+  for(var i = 0; i < N; i++) {
+    out[i] = Math.random();
+  }
+  return out;
+}
+var x = randomArray();
+var y = randomArray();
+
+Plotly.plot(graphDiv, [{
+  type: 'scatter',
+  mode: 'markers',
+  x: x,
+  y: y,
+  xaxis: 'x',
+  yaxis: 'y',
+  name: 'random data',
+  marker: {color: color1, size: 10}
+}, {
+  type: 'histogram',
+  x: x,
+  xaxis: 'x2',
+  yaxis: 'y2',
+  name: 'x coord dist.',
+  marker: {color: colorX}
+}, {
+  type: 'histogram',
+  x: y,
+  xaxis: 'x3',
+  yaxis: 'y3',
+  name: 'y coord dist.',
+  marker: {color: colorY}
+}], {
+  title: 'Lasso around the scatter points to see sub-distributions',
+  dragmode: 'lasso',
+  xaxis: {
+    zeroline: false,
+  },
+  yaxis: {
+    domain: [0.55, 1],
+  },
+  xaxis2: {
+    domain: [0, 0.45],
+    anchor: 'y2',
+  },
+  yaxis2: {
+    domain: [0, 0.45],
+    anchor: 'x2'
+  },
+  xaxis3: {
+    domain: [0.55, 1],
+    anchor: 'y3'
+  },
+  yaxis3: {
+    domain: [0, 0.45],
+    anchor: 'x3'
+  }
+});
+
+graphDiv.on('plotly_selected', function(eventData) {
+  var x = [];
+  var y = [];
+
+  var colors = [];
+  for(var i = 0; i < N; i++) colors.push(color1Light);
+
+  eventData.points.forEach(function(pt) {
+    x.push(pt.x);
+    y.push(pt.y);
+    colors[pt.pointNumber] = color1;
+  });
+
+  Plotly.restyle(graphDiv, {
+    x: [x, y],
+    xbins: {}
+  }, [1, 2]);
+
+  Plotly.restyle(graphDiv, 'marker.color', [colors], [0]);
+});
+</code></pre>
+          </div>
+          
+        </div>
+        
+          <div class="twelve columns">
+            <div class="border" style="text-align:center;">
+              
+              <iframe id="auto-examples" src="https://codepen.io/plotly/embed/BpayyX/?height=500&theme-id=15263&default-tab=result"
+                style="width: 100%; height: 550px; border: none;"></iframe>
+              
+            </div>
+          </div>
+      
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="update-data"><a class="no_underline plot-blue" href="#update-data">Update Data</a></h4>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          
+            <p>The following Plotly events emit update information when the event is triggered: <a href=""><code>plotly_restyle</code></a> and <a href=""><code>plotly_relayout</code></a>. The update structure for .</p>
+
+          
+          <div class="z-depth-1">
+            <pre><code class="plotly_js">// plotly_restyle update
+{
+
+}
+
+// plotly_relayout update
+{
+
+}</code></pre>
+          </div>
+          
+        </div>
+        
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="additional-events"><a class="no_underline plot-blue" href="#additional-events">Additional Events</a></h4>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          
+            <p>The following Plotly events do not emit additional data or update information: <a href=""><code>plotly_afterplot</code></a>, <a href=""><code>plotly_autosize</code></a>, <a href=""><code>plotly_deselect</code></a>, <a href=""><code>plotly_doubleclick</code></a>, <a href="">plotly_redraw</a>, and <a href=""><code>plotly_animated</code></a>. These event handlers can be used to notify or trigger an additional event with the following syntax:</p>
+
+          
+          <div class="z-depth-1">
+            <pre><code class="plotly_js">function eventTriggeredHandler() {
+   /*  add your event triggered handler here */
+}
+
+graphDiv.on('plotly_event', eventTriggeredHandler);</code></pre>
+          </div>
+          
+        </div>
+        
       </div>
         </div>
 
