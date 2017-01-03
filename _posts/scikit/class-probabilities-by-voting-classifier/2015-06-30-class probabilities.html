@@ -1,0 +1,254 @@
+---
+permalink: scikit-learn/plot-voting-probas/
+description:  
+name: Class Probabilities Calculated by the VotingClassifier | plotly
+has_thumbnail: true
+thumbnail: thumbnail/class-probabilities.jpg
+layout: user-guide
+name: Class Probabilities Calculated by the VotingClassifier
+language: scikit-learn
+title: Class Probabilities Calculated by the VotingClassifier | plotly
+display_as: ensemble_methods
+has_thumbnail: true
+page_type: example_index
+order: 9
+ipynb: ~Diksha_Gabha/3017
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Plot the class probabilities of the first sample in a toy dataset predicted by three different classifiers and averaged by the VotingClassifier.</p>
+<p>First, three examplary classifiers are initialized (LogisticRegression, GaussianNB, and RandomForestClassifier) and used to initialize a soft-voting</p>
+<p>VotingClassifier with weights [1, 1, 5], which means that the predicted probabilities of the RandomForestClassifier count 5 times as much as the weights of the other classifiers when the averaged probability is calculated.</p>
+<p>To visualize the probability weighting, we fit each classifier on the training set and plot the predicted class probabilities for the first sample in this example dataset.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;0.18.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression">LogisticRegression</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB">GaussianNB</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#sklearn.ensemble.RandomForestClassifier">RandomForestClassifier</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.VotingClassifier.html#sklearn.ensemble.VotingClassifier">VotingClassifier</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">__doc__</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="nn">sklearn.naive_bayes</span> <span class="kn">import</span> <span class="n">GaussianNB</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">VotingClassifier</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Automatically created module for IPython interactive environment
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">clf1</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">clf2</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">clf3</span> <span class="o">=</span> <span class="n">GaussianNB</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.4</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">3.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">]])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+<span class="n">eclf</span> <span class="o">=</span> <span class="n">VotingClassifier</span><span class="p">(</span><span class="n">estimators</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;lr&#39;</span><span class="p">,</span> <span class="n">clf1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;rf&#39;</span><span class="p">,</span> <span class="n">clf2</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;gnb&#39;</span><span class="p">,</span> <span class="n">clf3</span><span class="p">)],</span>
+                        <span class="n">voting</span><span class="o">=</span><span class="s1">&#39;soft&#39;</span><span class="p">,</span>
+                        <span class="n">weights</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+
+<span class="c1"># predict class probabilities for all classifiers</span>
+<span class="n">probas</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="n">clf1</span><span class="p">,</span> <span class="n">clf2</span><span class="p">,</span> <span class="n">clf3</span><span class="p">,</span> <span class="n">eclf</span><span class="p">)]</span>
+
+<span class="c1"># get class probabilities for the first sample in the dataset</span>
+<span class="n">class1_1</span> <span class="o">=</span> <span class="p">[</span><span class="n">pr</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">pr</span> <span class="ow">in</span> <span class="n">probas</span><span class="p">]</span>
+<span class="n">class2_1</span> <span class="o">=</span> <span class="p">[</span><span class="n">pr</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pr</span> <span class="ow">in</span> <span class="n">probas</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-Results">Plot Results<a class="anchor-link" href="#Plot-Results">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># number of groups</span>
+
+<span class="n">x_axis</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LogisticRegression&lt;br&gt;weight 1&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;GaussianNB&lt;br&gt;weight 1&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;RandomForestClassifier&lt;br&gt;weight 5&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;VotingClassifier&lt;br&gt;(average probabilities)&#39;</span>
+         <span class="p">]</span>
+
+<span class="c1"># bars for classifier 1-3</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x_axis</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">class1_1</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])),</span> 
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">),</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;class1&#39;</span>
+           <span class="p">)</span>
+
+<span class="n">p2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x_axis</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">class2_1</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])),</span> 
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightgreen&#39;</span><span class="p">),</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;class2&#39;</span>
+           <span class="p">)</span>
+
+<span class="c1"># bars for VotingClassifier</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x_axis</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">class1_1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> 
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">),</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span>
+           <span class="p">)</span>
+<span class="n">p4</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x_axis</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">class2_1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;steelblue&#39;</span><span class="p">),</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span>
+           <span class="p">)</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Class probabilities for sample 1 by different classifiers&#39;</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">,</span> <span class="n">p4</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/3007.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}
