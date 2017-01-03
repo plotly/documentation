@@ -1,0 +1,274 @@
+---
+permalink: scikit-learn/plot-ensemble-oob/
+description:  
+name: OOB Errors for Random Forests | plotly
+has_thumbnail: true
+thumbnail: thumbnail/oob-errors.jpg
+layout: user-guide
+name: OOB Errors for Random Forests
+language: scikit-learn
+title: OOB Errors for Random Forests | plotly
+display_as: ensemble_methods
+has_thumbnail: true
+page_type: example_index
+order: 11
+ipynb: ~Diksha_Gabha/3021
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>RandomForestClassifier</code> is trained using bootstrap aggregation, where each new tree is fit from a bootstrap sample of the training observations <code>z_i = (x_i, y_i)</code>. The out-of-bag (OOB) error is the average error for each z_i calculated using predictions from the trees that do not contain <code>z_i</code> in their respective bootstrap sample. This allows the <code>RandomForestClassifier</code> to be fit and validated whilst being trained [1].</p>
+<p>The example below demonstrates how the OOB error can be measured at the addition of each new tree during training.</p>
+<p>The resulting plot allows a practitioner to approximate a suitable value of n_estimators at which the error stabilizes.</p>
+<p>[1]    T. Hastie, R. Tibshirani and J. Friedman, “Elements of Statistical Learning Ed. 2”, p592-593, Springer, 2009.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;0.18.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html#sklearn.datasets.make_classification">make_classification</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#sklearn.ensemble.RandomForestClassifier">RandomForestClassifier</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span><span class="p">,</span> <span class="n">ExtraTreesClassifier</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">RANDOM_STATE</span> <span class="o">=</span> <span class="mi">123</span>
+
+<span class="c1"># Generate a binary classification dataset.</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+                           <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+                           <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">)</span>
+
+<span class="c1"># NOTE: Setting the `warm_start` construction parameter to `True` disables</span>
+<span class="c1"># support for parallelized ensembles but is necessary for tracking the OOB</span>
+<span class="c1"># error trajectory during training.</span>
+<span class="n">ensemble_clfs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;RandomForestClassifier,&lt;br&gt;max_features=&#39;sqrt&#39;&quot;</span><span class="p">,</span>
+        <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">warm_start</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">oob_score</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                               <span class="n">max_features</span><span class="o">=</span><span class="s2">&quot;sqrt&quot;</span><span class="p">,</span>
+                               <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">&quot;RandomForestClassifier,&lt;br&gt;max_features=&#39;log2&#39;&quot;</span><span class="p">,</span>
+        <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">warm_start</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span><span class="s1">&#39;log2&#39;</span><span class="p">,</span>
+                               <span class="n">oob_score</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                               <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">&quot;RandomForestClassifier,&lt;br&gt;max_features=None&quot;</span><span class="p">,</span>
+        <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">warm_start</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                               <span class="n">oob_score</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                               <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">))</span>
+<span class="p">]</span>
+
+<span class="c1"># Map a classifier name to a list of (&lt;n_estimators&gt;, &lt;error rate&gt;) pairs.</span>
+<span class="n">error_rate</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span><span class="n">label</span><span class="p">,</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">ensemble_clfs</span><span class="p">)</span>
+
+<span class="c1"># Range of `n_estimators` values to explore.</span>
+<span class="n">min_estimators</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">max_estimators</span> <span class="o">=</span> <span class="mi">175</span>
+
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">clf</span> <span class="ow">in</span> <span class="n">ensemble_clfs</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_estimators</span><span class="p">,</span> <span class="n">max_estimators</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">clf</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># Record the OOB error for each `n_estimators=i` setting.</span>
+        <span class="n">oob_error</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">clf</span><span class="o">.</span><span class="n">oob_score_</span>
+        <span class="n">error_rate</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">oob_error</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-Results">Plot Results<a class="anchor-link" href="#Plot-Results">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">clf_err</span> <span class="ow">in</span> <span class="n">error_rate</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">clf_err</span><span class="p">)</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">ys</span><span class="p">,</span>
+                       <span class="n">name</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span>
+                      <span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+    
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;n_estimators&#39;</span><span class="p">),</span>
+                   <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;OOB error rate&#39;</span><span class="p">),</span>
+                   <span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span>
+                  <span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/3013.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Author:</p>
+
+<pre><code>    Kian Ho &lt;hui.kian.ho@gmail.com&gt;
+
+    Gilles Louppe &lt;g.louppe@gmail.com&gt;
+
+    Andreas Mueller &lt;amueller@ais.uni-bonn.de&gt;
+
+</code></pre>
+<p>License:</p>
+
+<pre><code>    BSD 3 Clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}
