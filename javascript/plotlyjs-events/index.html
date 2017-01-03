@@ -488,6 +488,18 @@
 		
 		
 		
+		
+		
+	
+		
+		
+		
+
+		
+		
+		
+		
+		
 			<li class="lang-nav--item">
                 <a class="lang_nav_button current" href="/javascript/plotlyjs-events/">
 					<div><img src="https://images.plot.ly/language-icons/api-home/js-logo.png" alt="plotly.js" class="lang_nav_thum"></div>
@@ -22251,13 +22263,17 @@ myPlot.on('plotly_click', function(){
         <div class="twelve columns">
           
             <p>Many Plotly events emit event data when the event is triggered. Event data is information about the data point related to the event (i.e. the point clicked).<br>
-The following events emit event data:
-* <code>plotly_click</code>
-* <code>plotly_hover</code>
-* <code>plotly_unhover</code>
-* <code>plotly_selecting</code>
-* <code>plotly_selected</code>
-<br>Event data differs depending on the type of plot the user is interacting with. The event data structure for Cartesian (2D) plots, 3D plots, and maps can be found below, along with examples of how to use event data.</p>
+The following events emit event data:</p>
+
+<ul>
+<li><p><code>plotly_click</code></p></li>
+<li><p><code>plotly_hover</code></p></li>
+<li><p><code>plotly_unhover</code></p></li>
+<li><p><code>plotly_selecting</code></p></li>
+<li><p><code>plotly_selected</code></p></li>
+</ul>
+
+<p><br>Event data differs depending on the type of plot the user is interacting with. The event data structure for Cartesian (2D) plots, 3D plots, and maps can be found below, along with examples of how to use event data.</p>
 
           
           <div class="z-depth-1">
@@ -22372,6 +22388,82 @@ The following events emit event data:
           
         </div>
         
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="hover-event"><a class="no_underline plot-blue" href="#hover-event">Hover Event</a></h4>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          
+            <p>Here&#39;s a simple example of using the data returned from the <code>plotly_hover</code> and <code>plotly_unhover</code> events to restyle the graph. After creating a plot, we can change the color of the point hovered on by updating the <code>marker.color</code> array at the index of the point we hovered on then using <code>Plotly.restyle()</code> to apply the update. Then we can use <code>plotly_unhover</code> to change the <code>marker.color</code> back to the original color. For more examples of using <code>plotly_hover</code> events, see: https://plot.ly/javascript/hover-events/</p>
+
+          
+          <div class="z-depth-1">
+            <pre><code class="plotly_js">var myPlot = document.getElementById('myDiv'),
+    x = [1, 2, 3, 4, 5, 6, 7],
+    y = [1, 2, 3, 2, 3, 4, 3],
+    colors =['#00000','#00000','#00000',
+             '#00000','#00000','#00000',
+             '#00000'],
+    data = [{x:x, y:y,
+             type:'scatter',
+             mode:'markers', marker:{size:16, color:colors}}],
+    layout = {
+        hovermode:'closest',
+        title:'Hover on a Point<br>to Change Color'
+     };
+
+Plotly.newPlot('myDiv', data, layout);
+
+myPlot.on('plotly_hover', function(data){
+  var pn='',
+      tn='',
+      colors=[];
+  for(var i=0; i < data.points.length; i++){
+    pn = data.points[i].pointNumber;
+    tn = data.points[i].curveNumber;
+    colors = data.points[i].data.marker.color;
+  };
+  colors[pn] = '#C54C82';
+
+  var update = {'marker':{color: colors, size:16}};
+  Plotly.restyle('myDiv', update, [tn]);
+});
+
+myPlot.on('plotly_unhover', function(data){
+  var pn='',
+      tn='',
+      colors=[];
+  for(var i=0; i < data.points.length; i++){
+    pn = data.points[i].pointNumber;
+    tn = data.points[i].curveNumber;
+    colors = data.points[i].data.marker.color;
+  };
+  colors[pn] = '#00000';
+
+  var update = {'marker':{color: colors, size:16}};
+  Plotly.restyle('myDiv', update, [tn]);
+});
+</code></pre>
+          </div>
+          
+        </div>
+        
+          <div class="twelve columns">
+            <div class="border" style="text-align:center;">
+              
+              <iframe id="auto-examples" src="https://codepen.io/plotly/embed/xgxbrj/?height=500&theme-id=15263&default-tab=result"
+                style="width: 100%; height: 550px; border: none;"></iframe>
+              
+            </div>
+          </div>
+      
       </div>
         </div>
 
