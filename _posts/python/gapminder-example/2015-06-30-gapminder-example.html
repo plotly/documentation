@@ -32,7 +32,7 @@ order: 2
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#182;</a></h4><p>Note: Animations are available in version 1.12.10+
-Run pip install plotly --upgrade to update your Plotly version. Please note that all of these examples are using <a href="https://plot.ly/python/offline/">Python Offline</a>.</p>
+Run pip install plotly --upgrade to update your Plotly version. Please note that all of these examples are using Python Online.</p>
 
 </div>
 </div>
@@ -72,17 +72,8 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="What-is-Gapminder?">What is Gapminder?<a class="anchor-link" href="#What-is-Gapminder?">&#182;</a></h4><p>Often if one wants to show off the capabilities of their animation plotting tool, a <code>Gapminder</code> example is used to do that. The name derives from the <a href="https://www.gapminder.org/">non-profit organization</a> responsible for carrying out and presenting various statistical charts. The tutorial below walks you through how to make an example which presents the <code>GDP per Capita</code> vs <code>Life Expectancy</code> across the years 1952 to 2007 in an animated <a href="https://plot.ly/python/bubble-charts/">Bubble Chart</a>, in which the bubbles represent countries and their sizes representing the population.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Import-Data">Import Data<a class="anchor-link" href="#Import-Data">&#182;</a></h4><p>First, import the Gapminder data that we will be using for the example and store in a dataframe:</p>
+<h4 id="Import-Data">Import Data<a class="anchor-link" href="#Import-Data">&#182;</a></h4><p>This tutorial walks you through how to make an example using the <a href="https://plot.ly/~AdamKulidjian/2162">Gapminder dataset</a> to present the GDP per Capita vs Life Expectancy across the years 1952 to 2007 in an animated Bubble Chart, in which the bubbles represent countries and their sizes represent the population.</p>
+<p>First import the Gapminder data that we will be using for the example and store in a dataframe:</p>
 
 </div>
 </div>
@@ -97,6 +88,7 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 <span class="kn">from</span> <span class="nn">plotly.tools</span> <span class="kn">import</span> <span class="n">FigureFactory</span> <span class="k">as</span> <span class="n">FF</span> 
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">time</span>
 
 <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv&#39;</span>
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
@@ -141,11 +133,15 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">years</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;1952&#39;</span><span class="p">,</span> <span class="s1">&#39;1962&#39;</span><span class="p">,</span> <span class="s1">&#39;1967&#39;</span><span class="p">,</span> <span class="s1">&#39;1972&#39;</span><span class="p">,</span> <span class="s1">&#39;1977&#39;</span><span class="p">,</span> <span class="s1">&#39;1982&#39;</span><span class="p">,</span> <span class="s1">&#39;1987&#39;</span><span class="p">,</span> <span class="s1">&#39;1992&#39;</span><span class="p">,</span> <span class="s1">&#39;1997&#39;</span><span class="p">,</span> <span class="s1">&#39;2002&#39;</span><span class="p">,</span> <span class="s1">&#39;2007&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">years_from_col</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">])</span>
+<span class="n">years_ints</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">years_from_col</span><span class="p">))</span>
+<span class="n">years</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years_ints</span><span class="p">]</span>
+<span class="n">years</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;1957&#39;</span><span class="p">)</span>
+
 <span class="c1"># make list of continents</span>
 <span class="n">continents</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">continent</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;continent&#39;</span><span class="p">]:</span>
-    <span class="k">if</span> <span class="n">continent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">continents</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">continent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">continents</span><span class="p">:</span> 
         <span class="n">continents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">continent</span><span class="p">)</span>
 
 <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
@@ -164,7 +160,7 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 
 <span class="c1"># upload grid</span>
 <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
-<span class="n">url</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">grid_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="s1">&#39;gapminder_grid&#39;</span><span class="p">,</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">url</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">grid_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="s1">&#39;gapminder_grid&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()),</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 <span class="n">url</span>
 </pre></div>
 
@@ -180,7 +176,7 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>u&#39;https://plot.ly/~AdamKulidjian/2161/&#39;</pre>
+<pre>u&#39;https://plot.ly/~AdamKulidjian/2168/&#39;</pre>
 </div>
 
 </div>
@@ -194,7 +190,40 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Make-the-Figure">Make the Figure<a class="anchor-link" href="#Make-the-Figure">&#182;</a></h4><p>Now we can construct the <code>figure</code>, which takes the arguments <code>data</code>, <code>layout</code>, <code>frames</code>, and <code>config</code>. For the <em>slider</em> to appear, we need to add <code>slider</code> and <code>sliders</code> to <code>layout</code>. The <code>slider</code> dictionary is set in the following way:</p>
+<h4 id="Make-Figure">Make Figure<a class="anchor-link" href="#Make-Figure">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">figure</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s1">&#39;frames&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;config&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;scrollzoom&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># fill in most of layout</span>
+<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;xaxis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">85</span><span class="p">],</span> <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Life Expectancy&#39;</span><span class="p">,</span> <span class="s1">&#39;gridcolor&#39;</span><span class="p">:</span> <span class="s1">&#39;#FFFFFF&#39;</span><span class="p">}</span>
+<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;yaxis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;GDP per Capita&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="s1">&#39;gridcolor&#39;</span><span class="p">:</span> <span class="s1">&#39;#FFFFFF&#39;</span><span class="p">}</span>
+<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;hovermode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;closest&#39;</span>
+<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;plot_bgcolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;rgb(223, 232, 243)&#39;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-Slider-and-Sliders">Add Slider and Sliders<a class="anchor-link" href="#Add-Slider-and-Sliders">&#182;</a></h4><p>Now we can construct the <code>figure</code>, which takes the arguments <code>data</code>, <code>layout</code>, <code>frames</code>, and <code>config</code>. For the <em>slider</em> to appear, we need to add <code>slider</code> and <code>sliders</code> to <code>layout</code>. The <code>slider</code> dictionary is set in the following way:</p>
 
 <pre><code>figure['layout']['slider'] = {
     'args': [
@@ -209,7 +238,7 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
     'visible': True
 }</code></pre>
 <ul>
-<li><code>duration</code> represents the length of time for the slider to move from value to value (ms)</li>
+<li><code>duration</code> represents the length of time for the slider to move from value to value (ms) </li>
 <li><code>ease</code> is the algorithm that is used to move from one value to another</li>
 <li><code>initialValue</code> is the first value of the list being used for the values that slider moves between</li>
 <li><code>values</code> <em>is</em> that list of values. (For our example, it's the list <code>years</code>)</li>
@@ -222,23 +251,10 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># make figure</span>
-<span class="n">figure</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s1">&#39;frames&#39;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s1">&#39;config&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;scrollzoom&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
-<span class="p">}</span>
-
-<span class="c1"># fill in most of layout</span>
-<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;xaxis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">85</span><span class="p">],</span> <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Life Expectancy&#39;</span><span class="p">,</span> <span class="s1">&#39;gridcolor&#39;</span><span class="p">:</span> <span class="s1">&#39;#FFFFFF&#39;</span><span class="p">}</span>
-<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;yaxis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;GDP per Capita&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="s1">&#39;gridcolor&#39;</span><span class="p">:</span> <span class="s1">&#39;#FFFFFF&#39;</span><span class="p">}</span>
-<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;hovermode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;closest&#39;</span>
-<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;plot_bgcolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;rgb(223, 232, 243)&#39;</span>
-<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;slider&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;slider&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">[</span>
         <span class="s1">&#39;slider.value&#39;</span><span class="p">,</span> <span class="p">{</span>
             <span class="s1">&#39;duration&#39;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
@@ -250,6 +266,7 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
     <span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="n">years</span><span class="p">,</span>
     <span class="s1">&#39;visible&#39;</span><span class="p">:</span> <span class="bp">True</span>
 <span class="p">}</span>
+
 <span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;updatemenus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">{</span>
         <span class="s1">&#39;buttons&#39;</span><span class="p">:</span> <span class="p">[</span>
@@ -290,7 +307,7 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In addition to <code>slider</code>, there is the <code>sliders</code> argument that has the following form:</p>
 
-<pre><code>figure['layout']['slider] = {
+<pre><code>figure['layout']['sliders] = {
     'active': 0,
     'yanchor': 'top',
     'xanchor': 'left',
@@ -330,14 +347,14 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 <li>the first item in the list <code>args</code> is a list containing the slider-value on <em>that</em> frame</li>
 <li><code>label</code> is the text that appears next to the <code>prefix</code> arg mentioned in the <code>slider</code> section (eg. <em>Year: 1952</em>)</li>
 </ul>
-<p>For more information, check out the <a href="https://plot.ly/python/reference/#layout-sliders-steps">documentation</a>.</p>
+<p>For more information, check out the <a href="https://plot.ly/python/reference/#layout-sliders">documentation</a>.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">sliders_dict</span> <span class="o">=</span> <span class="p">{</span>
@@ -377,7 +394,7 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">custom_colors</span> <span class="o">=</span> <span class="p">{</span>
@@ -385,7 +402,8 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
     <span class="s1">&#39;Europe&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(230, 99, 250)&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Africa&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(99, 110, 250)&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Americas&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(25, 211, 243)&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Oceania&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(9, 255, 255)&#39;</span>   
+    <span class="c1">#&#39;Oceania&#39;: &#39;rgb(9, 255, 255)&#39; </span>
+    <span class="s1">&#39;Oceania&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(50, 170, 255)&#39;</span>
 <span class="p">}</span>
 
 <span class="n">col_name_template</span> <span class="o">=</span> <span class="s1">&#39;{year}_{continent}_{header}_gapminder_grid&#39;</span>
@@ -438,7 +456,7 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
@@ -480,7 +498,7 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 
 <span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;sliders&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">sliders_dict</span><span class="p">]</span>
 
-<span class="n">py</span><span class="o">.</span><span class="n">icreate_animations</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="s1">&#39;gapminder_example&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">icreate_animations</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="s1">&#39;gapminder_example&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
 </pre></div>
 
 </div>
@@ -491,10 +509,10 @@ Run pip install plotly --upgrade to update your Plotly version. Please note that
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[7]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
-<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/2162.embed" height="525px" width="100%"></iframe>
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/2169.embed" height="525px" width="100%"></iframe>
 </div>
 
 </div>
