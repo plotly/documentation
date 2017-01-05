@@ -86,3 +86,100 @@ chart_link
 chart_link
 ```
 
+### Helicopter
+
+```{r, results = 'hide'}
+library(plotly)
+library(geomorph)
+
+plyFile <- 'http://people.sc.fsu.edu/~jburkardt/data/ply/chopper.ply'
+dest <- basename(plyFile)
+if (!file.exists(dest)) {
+  download.file(plyFile, dest)
+}
+
+mesh <- read.ply(dest)
+# see getS3method("shade3d", "mesh3d") for details on how to plot 
+
+# plot point cloud
+x <- mesh$vb["xpts",]
+y <- mesh$vb["ypts",]
+z <- mesh$vb["zpts",]
+m <- matrix(c(x,y,z), ncol=3, dimnames=list(NULL,c("x","y","z")))
+
+# now figure out the colormap
+zmean <- apply(t(mesh$it),MARGIN=1,function(row){mean(m[row,3])})
+
+library(scales)
+facecolor = colour_ramp(
+  brewer_pal(palette="RdBu")(9)
+)(rescale(x=zmean))
+
+p <- plot_ly(
+  x = x, y = y, z = z,
+  i = mesh$it[1,]-1, j = mesh$it[2,]-1, k = mesh$it[3,]-1,
+  facecolor = facecolor,
+  type = "mesh3d"
+)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="trisurf/chopper")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Maps
+
+```{r, results = 'hide'}
+#install.packages("rgl")
+#install.packages("RTriangle")
+#install.packages("graticule")
+#devtools::install_github("r-gris/rangl")
+
+library(rangl)
+library(maptools)
+library(plotly)
+data(wrld_simpl)
+
+## max area in native units of the map data
+## globe() just reprojects to geocent, but stores in rangl's normal way (objects, primitives, vertices)
+mesh <- plot(globe(rangl(subset(wrld_simpl, 
+                                NAME %in% c("Indonesia", "Papua New Guinea", "New Zealand", "Australia")), 
+                         max_area = 0.5)))
+
+# plot point cloud
+x <- mesh$vb[1,]
+y <- mesh$vb[2, ]
+z <- mesh$vb[3,]
+m <- matrix(c(x,y,z), ncol=3, dimnames=list(NULL,c("x","y","z")))
+
+# colours in z don't make sense here, need to map object aesthetics above
+zmean <- apply(t(mesh$it),MARGIN=1,function(row){mean(m[row,3])})
+
+library(scales)
+facecolor = colour_ramp(
+  brewer_pal(palette="RdBu")(9)
+)(rescale(x=zmean))
+
+p <- plot_ly(
+  x = x, y = y, z = z,
+  i = mesh$it[1,]-1, j = mesh$it[2,]-1, k = mesh$it[3,]-1,
+  facecolor = facecolor,
+  type = "mesh3d"
+)
+
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="trisurf/maps")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+Inspired by <a href="http://rpubs.com/cyclemumner/rangl-plotly"> Michael Sumner</a> 

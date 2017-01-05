@@ -33,7 +33,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.5.9000'
+## [1] '4.5.6.9000'
 ```
 
 ### Text Mode
@@ -224,6 +224,69 @@ chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3875.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Subplot Annotations
+
+
+```r
+library(plotly)
+
+m <- economics[which.max(economics$unemploy), ]
+n <- economics[which.max(economics$uempmed), ]
+
+# annotations
+a <- list(
+  x = m$date,
+  y = m$unemploy,
+  text = "annotation a",
+  xref = "x",
+  yref = "y",
+  showarrow = TRUE,
+  arrowhead = 7,
+  ax = 20,
+  ay = -40
+)
+
+b <- list(
+  x = n$date,
+  y = n$uempmed,
+  text = "annotation b",
+  xref = "x2",
+  yref = "y2",
+  showarrow = TRUE,
+  arrowhead = 7,
+  ax = 20,
+  ay = -40
+)
+
+# figure labels
+f <- list(
+  family = "Courier New, monospace",
+  size = 18,
+  color = "#7f7f7f ")
+x <- list(
+  title = "x Axis",
+  titlefont = f)
+y <- list(
+  title = "y Axis",
+  titlefont = f)
+
+p1 <- plot_ly(economics, x = ~date, y = ~unemploy) %>%
+  add_lines(name = ~"unemploy") %>%
+  layout(annotations = a, xaxis = x, yaxis = y)
+p2 <- plot_ly(economics, x = ~date, y = ~uempmed) %>%
+  add_lines(name = ~"uempmed") %>%
+  layout(annotations = b, xaxis = x, yaxis = y)
+p <- subplot(p1, p2, titleX = TRUE, titleY = TRUE) %>%
+  layout(showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="annotation/subplot")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3973.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
