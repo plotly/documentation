@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.5.9000'
+## [1] '4.5.2'
 ```
 
 ### Simple Bubble Chart
@@ -45,11 +45,16 @@ library(plotly)
 
 data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 
-plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers',
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers',
         marker = list(size = ~gap, opacity = 0.5)) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bubble/simple")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3597.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -62,11 +67,16 @@ library(plotly)
 
 data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 
-plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers',
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers',
         marker = list(size = ~gap, opacity = 0.5, color = 'rgb(255, 65, 54)')) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bubble/color1")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3599.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -87,11 +97,16 @@ colors <- c('rgba(204,204,204,1)', 'rgba(222,45,38,0.8)', 'rgba(204,204,204,1)',
 # Note: The colors will be assigned to each observations based on the order of the observations in the dataframe.
 
 
-plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers',
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers',
         marker = list(size = ~gap, opacity = 0.5, color = colors)) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bubble/color2")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3601.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -104,11 +119,16 @@ library(plotly)
 
 data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 
-plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', color = ~gap, colors = 'Reds',
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', color = ~gap, colors = 'Reds',
         marker = list(size = ~gap, opacity = 0.5)) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bubble/color3")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3603.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -125,12 +145,17 @@ data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Penns
                           'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
                           'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
 
-plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
         marker = list(opacity = 0.5, sizemode = 'diameter')) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE),
          showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bubble/color4")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3605.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -147,7 +172,7 @@ data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Penns
                           'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
                           'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
 
-plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
         #Choosing the range of the bubbles' sizes:
         sizes = c(10, 50),
         marker = list(opacity = 0.5, sizemode = 'diameter')) %>%
@@ -155,6 +180,11 @@ plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'ma
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE),
          showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bubble/size")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3607.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -171,7 +201,7 @@ data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Penns
                           'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
                           'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
 
-plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
+p <- plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
         sizes = c(10, 50),
         marker = list(opacity = 0.5, sizemode = 'diameter'),
         hoverinfo = 'text',
@@ -180,6 +210,11 @@ plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', size = ~
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE),
          showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bubble/hovertext")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3609.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -198,7 +233,7 @@ slope <- 2.666051223553066e-05
 data_2007$size <- sqrt(data_2007$pop * slope)
 colors <- c('#4AC6B7', '#1972A4', '#965F8A', '#FF7070', '#C61951')
 
-plot_ly(data_2007, x = ~gdpPercap, y = ~lifeExp, color = ~continent, size = ~size, colors = colors, 
+p <- plot_ly(data_2007, x = ~gdpPercap, y = ~lifeExp, color = ~continent, size = ~size, colors = colors, 
         type = 'scatter', mode = 'markers', sizes = c(min(data_2007$size), max(data_2007$size)),
         marker = list(symbol = 'circle', sizemode = 'diameter',
                       line = list(width = 2, color = '#FFFFFF')),
@@ -220,6 +255,11 @@ plot_ly(data_2007, x = ~gdpPercap, y = ~lifeExp, color = ~continent, size = ~siz
                       gridwith = 2),
          paper_bgcolor = 'rgb(243, 243, 243)',
          plot_bgcolor = 'rgb(243, 243, 243)')
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bubble/styled")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3611.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

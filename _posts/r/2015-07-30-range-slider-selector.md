@@ -49,7 +49,7 @@ getSymbols(Symbols = c("AAPL", "MSFT"))
 
 ds <- data.frame(Date = index(AAPL), AAPL[,6], MSFT[,6])
 
-plot_ly(ds, x = ~Date) %>%
+p <- plot_ly(ds, x = ~Date) %>%
   add_lines(y = ~AAPL.Adjusted, name = "Apple") %>%
   add_lines(y = ~MSFT.Adjusted, name = "Microsoft") %>%
   layout(
@@ -82,6 +82,11 @@ plot_ly(ds, x = ~Date) %>%
       rangeslider = list(type = "date")),
 
     yaxis = list(title = "Price"))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="rangeslider")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3502.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

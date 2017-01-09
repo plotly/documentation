@@ -33,7 +33,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.2'
+## [1] '4.5.6.9000'
 ```
 
 ### Text Mode
@@ -42,47 +42,101 @@ packageVersion('plotly')
 ```r
 library(plotly)
 
-p <- plot_ly(
-  x = c("giraffes", "orangutans", "monkeys"),
-  y = c(20, 14, 23),
-  name = "SF Zoo",
-  type = "bar"
-)
-p
+Primates <- c('Potar monkey', 'Gorilla', 'Human', 'Rhesus monkey', 'Chimp')
+Bodywt <- c(10.0, 207.0, 62.0, 6.8, 52.2)
+Brainwt <- c(115, 406, 1320, 179, 440)
+data <- data.frame(Primates, Bodywt, Brainwt)
+
+p <- plot_ly(data, x = ~Bodywt, y = ~Brainwt, type = 'scatter',
+        mode = 'text', text = ~Primates, textposition = 'middle right',
+        textfont = list(color = '#000000', size = 16)) %>%
+  layout(title = 'Primates Brain and Body Weight',
+         xaxis = list(title = 'Body Weight (kg)',
+                      zeroline = TRUE,
+                      range = c(0, 250)),
+         yaxis = list(title = 'Brain Weight (g)',
+                      range = c(0,1400)))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="text/mode")
+chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3080.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3877.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Hover Text
-
-
-```r
-plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
-  add_markers()
-```
-
-<iframe src="https://plot.ly/~RPlotBot/3145.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+See more options on the textposition argument [here](https://plot.ly/r/reference/#scatter-textposition).
 
 ### Styling Text
 
 
 ```r
+library(plotly)
+
+data <- mtcars[which(mtcars$am == 1 & mtcars$gear == 4),]
+
 t <- list(
   family = "sans serif",
-  size = 18,
-  color = toRGB("grey50")
-)
-plot_ly(mtcars, x = ~wt, y = ~mpg, text = rownames(mtcars)) %>%
+  size = 14,
+  color = toRGB("grey50"))
+
+p <- plot_ly(data, x = ~wt, y = ~mpg, text = rownames(data)) %>%
   add_markers() %>%
-  add_text(textfont = t, textposition = "top middle")
+  add_text(textfont = t, textposition = "top right") %>%
+  layout(xaxis = list(range = c(1.6, 3.2)),
+         showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="text/style")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3147.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Adding Informations to Default Hover Text
+
+
+```r
+library(plotly)
+
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, type = 'scatter', mode = 'markers',
+        text = ~paste('Species: ', Species))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="text/hover1")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3871.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Custom Hover Text
+
+
+```r
+library(plotly)
+
+p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, type = 'scatter', mode = 'markers',
+        hoverinfo = 'text',
+        text = ~paste('Species: ', Species, 
+                      '</br> Petal Lenght: ', Petal.Length,
+                      '</br> Petal Width: ', Petal.Width))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="text/hover2")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3873.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Single Annotation
 
 
 ```r
+library(plotly)
+
 m <- mtcars[which.max(mtcars$mpg), ]
 
 a <- list(
@@ -97,9 +151,14 @@ a <- list(
   ay = -40
 )
 
-plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
+p <- plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
   add_markers() %>%
   layout(annotations = a)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="annotation/single")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3150.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -108,10 +167,15 @@ plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
 
 
 ```r
-plot_ly(mtcars, x = ~wt, y = ~mpg, marker=list(size=10)) %>%
-  add_annotations(x = mtcars$wt,
-                  y = mtcars$mpg,
-                  text = rownames(mtcars),
+library(plotly)
+
+data <- mtcars[which(mtcars$am == 1 & mtcars$gear == 4),]
+
+p <- plot_ly(data, x = ~wt, y = ~mpg, type = 'scatter', mode = 'markers',
+        marker = list(size = 10)) %>%
+  add_annotations(x = data$wt,
+                  y = data$mpg,
+                  text = rownames(data),
                   xref = "x",
                   yref = "y",
                   showarrow = TRUE,
@@ -119,21 +183,112 @@ plot_ly(mtcars, x = ~wt, y = ~mpg, marker=list(size=10)) %>%
                   arrowsize = .5,
                   ax = 20,
                   ay = -40)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="annotation/multiple")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3152.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Custom Hover Text
+### Styling Annotations
 
 
 ```r
-mtcars %>%
-  plot_ly(x = ~disp, y = ~mpg, color = ~factor(cyl), size = ~wt) %>%
-  add_markers(
-    hoverinfo = "text",
-    text = ~paste("Displacement = ", disp, "Miles Per Gallon = ", mpg)
-  ) %>%
-  layout(title ="Custom Hover Text")
+library(plotly)
+
+data <- mtcars[which(mtcars$am == 1 & mtcars$gear == 4),]
+
+p <- plot_ly(data, x = ~wt, y = ~mpg, type = 'scatter', mode = 'markers',
+        marker = list(size = 10)) %>%
+  add_annotations(x = data$wt,
+                  y = data$mpg,
+                  text = rownames(data),
+                  xref = "x",
+                  yref = "y",
+                  showarrow = TRUE,
+                  arrowhead = 4,
+                  arrowsize = .5,
+                  ax = 20,
+                  ay = -40,
+                  # Styling annotations' text:
+                  font = list(color = '#264E86',
+                              family = 'sans serif',
+                              size = 14))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="annotation/style")
+chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3154.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3875.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Subplot Annotations
+
+
+```r
+library(plotly)
+
+m <- economics[which.max(economics$unemploy), ]
+n <- economics[which.max(economics$uempmed), ]
+
+# annotations
+a <- list(
+  x = m$date,
+  y = m$unemploy,
+  text = "annotation a",
+  xref = "x",
+  yref = "y",
+  showarrow = TRUE,
+  arrowhead = 7,
+  ax = 20,
+  ay = -40
+)
+
+b <- list(
+  x = n$date,
+  y = n$uempmed,
+  text = "annotation b",
+  xref = "x2",
+  yref = "y2",
+  showarrow = TRUE,
+  arrowhead = 7,
+  ax = 20,
+  ay = -40
+)
+
+# figure labels
+f <- list(
+  family = "Courier New, monospace",
+  size = 18,
+  color = "#7f7f7f ")
+x <- list(
+  title = "x Axis",
+  titlefont = f)
+y <- list(
+  title = "y Axis",
+  titlefont = f)
+
+p1 <- plot_ly(economics, x = ~date, y = ~unemploy) %>%
+  add_lines(name = ~"unemploy") %>%
+  layout(annotations = a, xaxis = x, yaxis = y)
+p2 <- plot_ly(economics, x = ~date, y = ~uempmed) %>%
+  add_lines(name = ~"uempmed") %>%
+  layout(annotations = b, xaxis = x, yaxis = y)
+p <- subplot(p1, p2, titleX = TRUE, titleY = TRUE) %>%
+  layout(showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="annotation/subplot")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3973.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#Reference
+
+See [https://plot.ly/r/reference/#layout-annotations](https://plot.ly/r/reference/#layout-annotations) for more information and chart attribute options!
+

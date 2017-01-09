@@ -46,8 +46,13 @@ m <- list(
   t = 100,
   pad = 4
 )
-plot_ly(x = seq(0, 8), y = seq(0, 8)) %>%
+p <- plot_ly(x = seq(0, 8), y = seq(0, 8)) %>%
   layout(autosize = F, width = 500, height = 500, margin = m)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="sizing/1")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3157.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

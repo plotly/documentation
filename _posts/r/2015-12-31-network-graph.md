@@ -46,86 +46,27 @@ library(plotly)
 library(igraph)
 
 data(karate, package="igraphdata")
-```
-
-```
-## Error in find.package(package, lib.loc, verbose = verbose): there is no package called 'igraphdata'
-```
-
-```r
 G <- upgrade_graph(karate)
-```
-
-```
-## Error in match(x, table, nomatch = 0L): object 'karate' not found
-```
-
-```r
 L <- layout.circle(G)
-```
-
-```
-## Error in make_call(f, ..., .args): object 'G' not found
 ```
 
 ### Create Vertices and Edges
 
 ```r
 vs <- V(G)
-```
-
-```
-## Error in match(x, table, nomatch = 0L): object 'G' not found
-```
-
-```r
 es <- as.data.frame(get.edgelist(G))
-```
 
-```
-## Error in match(x, table, nomatch = 0L): object 'G' not found
-```
-
-```r
 Nv <- length(vs)
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'vs' not found
-```
-
-```r
 Ne <- length(es[1]$V1)
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'es' not found
 ```
 
 ### Create Nodes
 
 ```r
 Xn <- L[,1]
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'L' not found
-```
-
-```r
 Yn <- L[,2]
-```
 
-```
-## Error in eval(expr, envir, enclos): object 'L' not found
-```
-
-```r
 network <- plot_ly(x = ~Xn, y = ~Yn, mode = "markers", text = vs$label, hoverinfo = "text")
-```
-
-```
-## Error in plot_ly(x = ~Xn, y = ~Yn, mode = "markers", text = vs$label, : object 'vs' not found
 ```
 
 ### Creates Edges
@@ -149,32 +90,26 @@ for(i in 1:Ne) {
 }
 ```
 
-```
-## Error in eval(expr, envir, enclos): object 'Ne' not found
-```
-
 ### Create Network
 
 ```r
 axis <- list(title = "", showgrid = FALSE, showticklabels = FALSE, zeroline = FALSE)
 
-layout(
+p <- layout(
   network,
   title = 'Karate Network',
   shapes = edge_shapes,
   xaxis = axis,
   yaxis = axis
 )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="karate-network-r")
+chart_link
 ```
 
-```
-## Error in layout(network, title = "Karate Network", shapes = edge_shapes, : object 'network' not found
-```
-
-
-```
-## Error in UseMethod("plotly_build"): no applicable method for 'plotly_build' applied to an object of class "NULL"
-```
+<iframe src="https://plot.ly/~RPlotBot/2797.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Reference
 See [https://plot.ly/python/reference/#scatter](https://plot.ly/python/reference/#scatter) for more information and chart attribute options!

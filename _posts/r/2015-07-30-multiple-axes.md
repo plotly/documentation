@@ -48,14 +48,19 @@ ay <- list(
   side = "right",
   title = "second y axis"
 )
-plot_ly() %>%
+p <- plot_ly() %>%
   add_lines(x = ~1:3, y = ~10*(1:3), name = "slope of 10") %>%
   add_lines(x = ~2:4, y = ~1:3, name = "slope of 1", yaxis = "y2") %>%
   layout(
     title = "Double Y Axis", yaxis2 = ay,
     xaxis = list(title="x")
   )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="axes/mulitple")
+chart_link
 ```
 
 
-<iframe src="https://plot.ly/~RPlotBot/3171.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3945.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

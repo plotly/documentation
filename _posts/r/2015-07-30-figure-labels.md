@@ -1,4 +1,18 @@
-# Axes Labels in R
+---
+title: Axes Labels in R
+name: Axes Labels
+permalink: r/figure-labels
+description: How to set the title and axis-titles in R
+layout: base
+thumbnail: figure-labels.jpg
+language: r
+page_type: example_index
+has_thumbnail: false
+display_as: layout_opt
+output:
+  html_document:
+    keep_md: true
+---
 
 
 ### New to Plotly?
@@ -39,8 +53,13 @@ y <- list(
   title = "y Axis",
   titlefont = f
 )
-plot_ly(x = ~rnorm(10), y = ~rnorm(10), mode = "markers") %>%
+p <- plot_ly(x = ~rnorm(10), y = ~rnorm(10), mode = "markers") %>%
   layout(xaxis = x, yaxis = y)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="scatter2d/axis-labels")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/2817.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -56,7 +75,7 @@ n <- 100
 theta <- runif(n, 0, 2*pi)
 u <- runif(n, -1, 1)
 
-plot_ly(x = ~sqrt(1 - u^2) * cos(theta), y = ~sqrt(1 - u^2) * sin(theta), z = ~u) %>%
+p <- plot_ly(x = ~sqrt(1 - u^2) * cos(theta), y = ~sqrt(1 - u^2) * sin(theta), z = ~u) %>%
   layout(
     title = "Layout options in a 3d scatter plot",
     scene = list(
@@ -64,6 +83,11 @@ plot_ly(x = ~sqrt(1 - u^2) * cos(theta), y = ~sqrt(1 - u^2) * sin(theta), z = ~u
       yaxis = list(title = "Sin"),
       zaxis = list(title = "Z")
     ))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="scatter3d/axis-labels")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/2814.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

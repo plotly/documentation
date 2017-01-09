@@ -42,7 +42,12 @@ packageVersion('plotly')
 
 ```r
 library(plotly)
-plot_ly(x = ~rnorm(50), type = "histogram")
+p <- plot_ly(x = ~rnorm(50), type = "histogram")
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="histogram/1")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3219.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -51,10 +56,15 @@ plot_ly(x = ~rnorm(50), type = "histogram")
 
 
 ```r
-plot_ly(alpha = 0.6) %>%
+p <- plot_ly(alpha = 0.6) %>%
   add_histogram(x = ~rnorm(500)) %>%
   add_histogram(x = ~rnorm(500) + 1) %>%
   layout(barmode = "overlay")
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="histogram/2")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3221.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

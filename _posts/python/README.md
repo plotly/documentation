@@ -70,7 +70,8 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
   
   and/or provide a help call:
     `help(FF.create_table)` (*This applies to documentation on FigureFactory functions)
-8. Finally, convert your .ipynb to a .html file by adding the following code snippet as the last cell of your notebook.
+
+8. Convert your .ipynb to a .html file by adding the following code snippet as the last cell of your notebook.
   - Replace `your-tutorial-chart` with the type of chart you're creating in the tutorial.) 
   - Please be dilligent about adding this information completely and in the order as it appears here (this is really helpful if future edits are necessary :D )
 
@@ -89,7 +90,8 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
       name = 'Your Tutorial Chart',
       has_thumbnail='true', thumbnail='thumbnail/your-tutorial-chart.jpg', 
       language='python', page_type='example_index',
-      display_as='chart_type', order=2)  
+      display_as='chart_type', order=2,
+      ipynb= '~notebook_demo/1')
   ```
   - `display_as` sets in which section your tutorial is displayed 
     - 'basic' = https://plot.ly/python/#basic-charts
@@ -101,7 +103,16 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
     - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/documentation_eg.html#L1)
   - `order` defines the order in which the tutorials appear on plot.ly/python. Please take a look at https://plot.ly/python/ anorder your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
   
-8. Add Thumbnail Images
+9. Now we can upload/download jupyter (ipython) notebooks to Plotly!!!! 
+  - There is a button in our side navigation bar of the python docs so users can click the button and see the notebook hosted on plot.ly where they can download it and run it to follow along with the documentation. 
+  - Use the bubble chart doc: https://plot.ly/python/bubble-charts/ as an example.
+  - Here are step by step instructions of how to enable the `Download THIS Notebook` button:
+    1. Copy the notebook from the folder. For example from the [bubble folder](https://github.com/plotly/documentation/tree/source-design-merge/_posts/python/bubble), copy `bubble.ipynb`. 
+    2. Run `ipython notebook` or `jupyter notebook` and remove the publisher cell from your copy. (The publisher cell is the last cell that we add to our doc notebooks to convert the `.ipynb` to `html`. We do not need to upload this. _Do not remove this cell from the .ipynb in the doc repo_). Save.
+    3. Upload the copy to the `notebook_demo` Plotly account. 
+    4. View the notebook: the link is: https://plot.ly/~notebook_demo/1/new-to-plotly-plotlys-python-library-i/ Grab the username + file id # from the link: `~notebook_demo/1` and add it to the publisher cell in the original .ipynb file in the doc repo. See example publisher cell below.
+    
+10. Add Thumbnail Images
   - Thumbnail images should named `your-tutorial-chart.jpg` and be *EXACTLY* 160px X 160px
   - Thumbnail images should be clear and interesting. You do not need to capture the ENTIRE chart, but rather focus on the most interesting part of the chart. 
   - Use images.plot.ly for adding new images. 
