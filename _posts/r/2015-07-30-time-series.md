@@ -47,7 +47,12 @@ today <- Sys.Date()
 tm <- seq(0, 600, by = 10)
 x <- today - tm
 y <- rnorm(length(x))
-plot_ly(x = ~x, y = ~y, text = paste(tm, "days from today"))
+p <- plot_ly(x = ~x, y = ~y, text = paste(tm, "days from today"))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="timeseries/1")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3467.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -61,7 +66,12 @@ now_lt <- as.POSIXlt(Sys.time(), tz = "GMT")
 tm <- seq(0, 600, by = 10)
 x <- now_lt - tm
 y <- rnorm(length(x))
-plot_ly(x = ~x, y = ~y, text = paste(tm, "seconds from now in GMT"))
+p <- plot_ly(x = ~x, y = ~y, text = paste(tm, "seconds from now in GMT"))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="timeseries/2")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3461.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -75,7 +85,12 @@ now_ct <- as.POSIXct(Sys.time())
 tm <- seq(0, 600, by = 10)
 x <- now_ct - tm
 y <- rnorm(length(x))
-plot_ly(x = ~x, y = ~y, text = paste(tm, "seconds from now in", Sys.timezone()))
+p <- plot_ly(x = ~x, y = ~y, text = paste(tm, "seconds from now in", Sys.timezone()))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="timeseries/3")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3463.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

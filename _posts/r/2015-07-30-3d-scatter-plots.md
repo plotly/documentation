@@ -34,48 +34,112 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.2'
+## [1] '4.5.5.9000'
 ```
 
 #### Basic 3D Scatter Plot
 
 
 ```r
-# variance-covariance matrix for a multivariate normal distribution
-s <- matrix(
-  c(1, .5, .5, .5, 1, .5, .5, .5, 1),
-  ncol = 3
-)
-# use the mvtnorm package to sample 200 observations
-obs <- mvtnorm::rmvnorm(200, sigma = s)
-# collect everything in a data-frame
-df <- setNames(data.frame(obs), c("x", "y", "z"))
-
 library(plotly)
-p <- plot_ly(df, x = ~x, y = ~y, z = ~z) %>% add_markers()
+
+mtcars$am[which(mtcars$am == 0)] <- 'Automatic'
+mtcars$am[which(mtcars$am == 1)] <- 'Manual'
+mtcars$am <- as.factor(mtcars$am)
+
+p <- plot_ly(mtcars, x = ~wt, y = ~hp, z = ~qsec, color = ~am, colors = c('#BF382A', '#0C4B8E')) %>%
+  add_markers() %>%
+  layout(scene = list(xaxis = list(title = 'Weight'),
+			         yaxis = list(title = 'Gross horsepower'),
+			         zaxis = list(title = '1/4 mile time')))
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter3d/markers")
+chart_link = plotly_POST(p, filename="scatter3d/basic")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3056.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3911.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-
-#### 3D Scatter Plot with Hover Text
+#### 3D Scatter Plot with Color Scaling
 
 
 ```r
-set.seed(100)
-d <- diamonds[sample(nrow(diamonds), 1000), ]
-p <- plot_ly(d, x = ~carat, y = ~price, z = ~depth) %>%
-  add_markers(text = ~paste("Clarity: ", clarity))
+library(plotly)
+
+p <- plot_ly(mtcars, x = ~wt, y = ~hp, z = ~qsec, 
+        marker = list(color = ~mpg, colorscale = c('#FFE1A1', '#683531'), showscale = TRUE)) %>%
+  add_markers() %>%
+  layout(scene = list(xaxis = list(title = 'Weight'),
+			         yaxis = list(title = 'Gross horsepower'),
+			         zaxis = list(title = '1/4 mile time')),
+         annotations = list(
+           x = 1.13,
+           y = 1.05,
+           text = 'Miles/(US) gallon',
+           xref = 'paper',
+           yref = 'paper',
+           showarrow = FALSE
+         ))
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter3d/text")
+chart_link = plotly_POST(p, filename="scatter3d/colorscale")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3058.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3054.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### 3D Bubble Plot
+
+
+```r
+library(plotly)
+
+data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv")
+
+data_2007 <- data[which(data$year == 2007),]
+data_2007 <- data_2007[order(data_2007$continent, data_2007$country),]
+data_2007$size <- data_2007$pop
+colors <- c('#4AC6B7', '#1972A4', '#965F8A', '#FF7070', '#C61951')
+
+p <- plot_ly(data_2007, x = ~gdpPercap, y = ~lifeExp, z = ~pop, color = ~continent, size = ~size, colors = colors, 
+             marker = list(symbol = 'circle', sizemode = 'diameter'), sizes = c(5, 150),
+             text = ~paste('Country:', country, '<br>Life Expectancy:', lifeExp, '<br>GDP:', gdpPercap,
+                           '<br>Pop.:', pop)) %>%
+  layout(title = 'Life Expectancy v. Per Capita GDP, 2007',
+         scene = list(xaxis = list(title = 'GDP per capita (2000 dollars)',
+                      gridcolor = 'rgb(255, 255, 255)',
+                      range = c(2.003297660701705, 5.191505530708712),
+                      type = 'log',
+                      zerolinewidth = 1,
+                      ticklen = 5,
+                      gridwidth = 2),
+               yaxis = list(title = 'Life Expectancy (years)',
+                      gridcolor = 'rgb(255, 255, 255)',
+                      range = c(36.12621671352166, 91.72921793264332),
+                      zerolinewidth = 1,
+                      ticklen = 5,
+                      gridwith = 2),
+               zaxis = list(title = 'Population',
+                            gridcolor = 'rgb(255, 255, 255)',
+                            type = 'log',
+                            zerolinewidth = 1,
+                            ticklen = 5,
+                            gridwith = 2)),
+         paper_bgcolor = 'rgb(243, 243, 243)',
+         plot_bgcolor = 'rgb(243, 243, 243)')
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="scatter3d/bubble")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3913.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#Reference
+
+See [https://plot.ly/r/reference/#scatter3d](https://plot.ly/r/reference/#scatter3d) for more information and chart attribute options!
+
+

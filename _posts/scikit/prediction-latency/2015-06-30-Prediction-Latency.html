@@ -1,0 +1,608 @@
+---
+permalink: scikit-learn/plot-prediction-latency/
+description:  
+name: Prediction Latency | plotly
+has_thumbnail: true
+thumbnail: thumbnail/prediction-latency.jpg
+layout: user-guide
+name: Prediction Latency
+language: scikit-learn
+title: Prediction Latency | plotly
+display_as: real_dataset
+has_thumbnail: true
+page_type: example_index
+order: 9
+ipynb: ~Diksha_Gabha/2674
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is an example showing the prediction latency of various scikit-learn estimators.</p>
+<p>The goal is to measure the latency one can expect when doing predictions either in bulk or atomic (i.e. one by one) mode.</p>
+<p>The plots represent the distribution of the prediction latency as a boxplot.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&apos;0.18&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler">StandardScaler</a>,  <a href="http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split">train_test_split</a>,  <a href="http://docs.scipy.org/doc/scipy-0.11.0/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile">scoreatpercentile</a>,   <a href="http://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_regression.html#sklearn.datasets.make_regression">make_regression</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html#sklearn.ensemble.RandomForestRegressor">RandomForestRegressor</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge">Ridge</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDRegressor.html#sklearn.linear_model.SGDRegressor">SGDRegressor</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html#sklearn.svm.SVR">SVR</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.utils.shuffle.html#sklearn.utils.shuffle">shuffle</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">from</span> <span class="nn">plotly</span> <span class="kn">import</span> <span class="n">tools</span>
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">gc</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">scoreatpercentile</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets.samples_generator</span> <span class="kn">import</span> <span class="n">make_regression</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble.forest</span> <span class="kn">import</span> <span class="n">RandomForestRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model.ridge</span> <span class="kn">import</span> <span class="n">Ridge</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model.stochastic_gradient</span> <span class="kn">import</span> <span class="n">SGDRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.svm.classes</span> <span class="kn">import</span> <span class="n">SVR</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="kn">import</span> <span class="n">shuffle</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig1</span> <span class="o">=</span> <span class="n">tools</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                          <span class="n">subplot_titles</span><span class="o">=</span><span class="p">(</span>
+                          <span class="s1">&#39;Prediction Time per instance - Atomic, 100 feats&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Prediction Time per instance - Bulk(100), 100 feats&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Evolution of Prediction Time with #Features &#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Prediction Throughput for different estimators (</span><span class="si">%d</span><span class="s1"> &#39;</span>
+                          <span class="s1">&#39;features)&#39;</span> <span class="o">%</span> <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;n_features&#39;</span><span class="p">]))</span>
+
+<span class="k">def</span> <span class="nf">_not_in_sphinx</span><span class="p">():</span>
+    <span class="c1"># Hack to detect whether we are running by the sphinx builder</span>
+    <span class="k">return</span> <span class="s1">&#39;__file__&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">atomic_benchmark_estimator</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Measure runtime prediction of each instance.&quot;&quot;&quot;</span>
+    <span class="n">n_instances</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">runtimes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_instances</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_instances</span><span class="p">):</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="n">X_test</span><span class="p">[[</span><span class="n">i</span><span class="p">],</span> <span class="p">:]</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+        <span class="n">runtimes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;atomic_benchmark runtimes:&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">runtimes</span><span class="p">),</span> <span class="n">scoreatpercentile</span><span class="p">(</span>
+            <span class="n">runtimes</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">runtimes</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">runtimes</span>
+
+
+<span class="k">def</span> <span class="nf">bulk_benchmark_estimator</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">n_bulk_repeats</span><span class="p">,</span> <span class="n">verbose</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Measure runtime prediction of the whole input.&quot;&quot;&quot;</span>
+    <span class="n">n_instances</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">runtimes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_bulk_repeats</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_bulk_repeats</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+        <span class="n">runtimes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="n">runtimes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_instances</span><span class="p">),</span> <span class="n">runtimes</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;bulk_benchmark runtimes:&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">runtimes</span><span class="p">),</span> <span class="n">scoreatpercentile</span><span class="p">(</span>
+            <span class="n">runtimes</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">runtimes</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">runtimes</span>
+
+
+<span class="k">def</span> <span class="nf">benchmark_estimator</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">n_bulk_repeats</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Measure runtimes of prediction in both atomic and bulk mode.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    estimator : already trained estimator supporting `predict()`</span>
+<span class="sd">    X_test : test input</span>
+<span class="sd">    n_bulk_repeats : how many times to repeat when evaluating bulk mode</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    atomic_runtimes, bulk_runtimes : a pair of `np.array` which contain the</span>
+<span class="sd">    runtimes in seconds.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">atomic_runtimes</span> <span class="o">=</span> <span class="n">atomic_benchmark_estimator</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+    <span class="n">bulk_runtimes</span> <span class="o">=</span> <span class="n">bulk_benchmark_estimator</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">n_bulk_repeats</span><span class="p">,</span>
+                                             <span class="n">verbose</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">atomic_runtimes</span><span class="p">,</span> <span class="n">bulk_runtimes</span>
+
+
+<span class="k">def</span> <span class="nf">generate_dataset</span><span class="p">(</span><span class="n">n_train</span><span class="p">,</span> <span class="n">n_test</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate a regression dataset with the given parameters.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;generating dataset...&quot;</span><span class="p">)</span>
+
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">coef</span> <span class="o">=</span> <span class="n">make_regression</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_train</span> <span class="o">+</span> <span class="n">n_test</span><span class="p">,</span>
+                                 <span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span> <span class="n">coef</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">random_seed</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">train_size</span><span class="o">=</span><span class="n">n_train</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">shuffle</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+
+    <span class="n">X_scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+    <span class="n">X_train</span> <span class="o">=</span> <span class="n">X_scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+    <span class="n">X_test</span> <span class="o">=</span> <span class="n">X_scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+    <span class="n">y_scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+    <span class="n">y_train</span> <span class="o">=</span> <span class="n">y_scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">y_train</span><span class="p">[:,</span> <span class="bp">None</span><span class="p">])[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">y_test</span> <span class="o">=</span> <span class="n">y_scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y_test</span><span class="p">[:,</span> <span class="bp">None</span><span class="p">])[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span>
+
+
+
+<span class="k">def</span> <span class="nf">benchmark</span><span class="p">(</span><span class="n">configuration</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Run the whole benchmark.&quot;&quot;&quot;</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">generate_dataset</span><span class="p">(</span>
+        <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;n_train&#39;</span><span class="p">],</span> <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;n_test&#39;</span><span class="p">],</span>
+        <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;n_features&#39;</span><span class="p">])</span>
+
+    <span class="n">stats</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">estimator_conf</span> <span class="ow">in</span> <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;estimators&#39;</span><span class="p">]:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Benchmarking&quot;</span><span class="p">,</span> <span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;instance&#39;</span><span class="p">])</span>
+        <span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;instance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">benchmark_estimator</span><span class="p">(</span><span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;instance&#39;</span><span class="p">],</span> <span class="n">X_test</span><span class="p">)</span>
+        <span class="n">stats</span><span class="p">[</span><span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;atomic&#39;</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span> <span class="s1">&#39;bulk&#39;</span><span class="p">:</span> <span class="n">b</span><span class="p">}</span>
+
+    <span class="n">cls_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">estimator_conf</span> <span class="ow">in</span> <span class="n">configuration</span><span class="p">[</span>
+        <span class="s1">&#39;estimators&#39;</span><span class="p">]]</span>
+    <span class="n">runtimes</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1e6</span> <span class="o">*</span> <span class="n">stats</span><span class="p">[</span><span class="n">clf_name</span><span class="p">][</span><span class="s1">&#39;atomic&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">clf_name</span> <span class="ow">in</span> <span class="n">cls_names</span><span class="p">]</span>
+    
+    <span class="n">boxplot_runtimes</span><span class="p">(</span><span class="n">runtimes</span><span class="p">,</span> <span class="s1">&#39;atomic&#39;</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">runtimes</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1e6</span> <span class="o">*</span> <span class="n">stats</span><span class="p">[</span><span class="n">clf_name</span><span class="p">][</span><span class="s1">&#39;bulk&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">clf_name</span> <span class="ow">in</span> <span class="n">cls_names</span><span class="p">]</span>
+    
+    <span class="n">boxplot_runtimes</span><span class="p">(</span><span class="n">runtimes</span><span class="p">,</span> <span class="s1">&#39;bulk (</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;n_test&#39;</span><span class="p">],</span>
+                     <span class="n">configuration</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">n_feature_influence</span><span class="p">(</span><span class="n">estimators</span><span class="p">,</span> <span class="n">n_train</span><span class="p">,</span> <span class="n">n_test</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">percentile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate influence of the number of features on prediction time.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    estimators : dict of (name (str), estimator) to benchmark</span>
+<span class="sd">    n_train : nber of training instances (int)</span>
+<span class="sd">    n_test : nber of testing instances (int)</span>
+<span class="sd">    n_features : list of feature-space dimensionality to test (int)</span>
+<span class="sd">    percentile : percentile at which to measure the speed (int [0-100])</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    percentiles : dict(estimator_name,</span>
+<span class="sd">                       dict(n_features, percentile_perf_in_us))</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">percentiles</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">defaultdict</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_features</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;benchmarking with </span><span class="si">%d</span><span class="s2"> features&quot;</span> <span class="o">%</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">generate_dataset</span><span class="p">(</span><span class="n">n_train</span><span class="p">,</span> <span class="n">n_test</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">cls_name</span><span class="p">,</span> <span class="n">estimator</span> <span class="ow">in</span> <span class="n">estimators</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+            <span class="n">runtimes</span> <span class="o">=</span> <span class="n">bulk_benchmark_estimator</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+            <span class="n">percentiles</span><span class="p">[</span><span class="n">cls_name</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">*</span> <span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">runtimes</span><span class="p">,</span>
+                                                               <span class="n">percentile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">percentiles</span>
+
+
+<span class="k">def</span> <span class="nf">benchmark_throughputs</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="n">duration_secs</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;benchmark throughput for different estimators.&quot;&quot;&quot;</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">generate_dataset</span><span class="p">(</span>
+        <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;n_train&#39;</span><span class="p">],</span> <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;n_test&#39;</span><span class="p">],</span>
+        <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;n_features&#39;</span><span class="p">])</span>
+    <span class="n">throughputs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">estimator_config</span> <span class="ow">in</span> <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;estimators&#39;</span><span class="p">]:</span>
+        <span class="n">estimator_config</span><span class="p">[</span><span class="s1">&#39;instance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">n_predictions</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">duration_secs</span><span class="p">:</span>
+            <span class="n">estimator_config</span><span class="p">[</span><span class="s1">&#39;instance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">[[</span><span class="mi">0</span><span class="p">]])</span>
+            <span class="n">n_predictions</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">throughputs</span><span class="p">[</span><span class="n">estimator_config</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">n_predictions</span> <span class="o">/</span> <span class="n">duration_secs</span>
+    <span class="k">return</span> <span class="n">throughputs</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]
+[ (2,1) x2,y2 ]
+[ (3,1) x3,y3 ]
+[ (4,1) x4,y4 ]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-Results">Plot Results<a class="anchor-link" href="#Plot-Results">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Boxplot Runtimes</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">boxplot_runtimes</span><span class="p">(</span><span class="n">runtimes</span><span class="p">,</span> <span class="n">pred_type</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">subplot</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot a new `Figure` with boxplots of prediction runtimes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    runtimes : list of `np.array` of latencies in micro-seconds</span>
+<span class="sd">    cls_names : list of estimator class names that generated the runtimes</span>
+<span class="sd">    pred_type : &#39;bulk&#39; or &#39;atomic&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cls_infos</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&lt;br&gt;(</span><span class="si">%d</span><span class="s1"> </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                                  <span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;complexity_computer&#39;</span><span class="p">](</span>
+                                      <span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;instance&#39;</span><span class="p">]),</span>
+                                  <span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;complexity_label&#39;</span><span class="p">])</span> <span class="k">for</span>
+                 <span class="n">estimator_conf</span> <span class="ow">in</span> <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;estimators&#39;</span><span class="p">]]</span>
+    
+    <span class="n">box_plot1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">runtimes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="n">cls_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                       <span class="n">fillcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0.4,225, 128, 128)&#39;</span><span class="p">,</span>
+                       <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                     
+    <span class="n">box_plot2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">runtimes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="n">cls_infos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                      <span class="n">fillcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0.4,225, 128, 128)&#39;</span><span class="p">,</span>
+                      <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">box_plot3</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">runtimes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="n">cls_infos</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                       <span class="n">fillcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0.4,225, 128, 128)&#39;</span><span class="p">,</span>
+                      <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    
+    <span class="n">fig1</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">box_plot1</span><span class="p">,</span> <span class="n">subplot</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> 
+    <span class="n">fig1</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">box_plot2</span><span class="p">,</span> <span class="n">subplot</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> 
+    <span class="n">fig1</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">box_plot3</span><span class="p">,</span> <span class="n">subplot</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    
+    <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;yaxis&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">subplot</span><span class="p">)</span>
+    <span class="n">fig1</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prediction Time (us)&#39;</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;xaxis&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">subplot</span><span class="p">)</span>
+    <span class="n">fig1</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ticks</span><span class="o">=</span><span class="s1">&#39;Prediction Time (us)&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Plot n_features influence.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">plot_n_features_influence</span><span class="p">(</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">percentile</span><span class="p">):</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cls_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">percentiles</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">sorted</span><span class="p">([</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">percentiles</span><span class="p">[</span><span class="n">cls_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()]))</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">percentiles</span><span class="p">[</span><span class="n">cls_name</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span>
+        <span class="n">line_plot</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+                               <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                               <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                               <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">))</span>
+
+    <span class="n">fig1</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">line_plot</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> 
+    
+    <span class="n">fig1</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;xaxis3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;#Features&#39;</span><span class="p">)</span>
+    <span class="n">fig1</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;yaxis3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Prediction Time at </span><span class="si">%d%%</span><span class="s1">-ile (us)&#39;</span> <span class="o">%</span> <span class="n">percentile</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">plot_benchmark_throughput</span><span class="p">(</span><span class="n">throughputs</span><span class="p">,</span> <span class="n">configuration</span><span class="p">):</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+   
+    <span class="n">cls_infos</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&lt;br&gt;(</span><span class="si">%d</span><span class="s1"> </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                                  <span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;complexity_computer&#39;</span><span class="p">](</span>
+                                      <span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;instance&#39;</span><span class="p">]),</span>
+                                  <span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;complexity_label&#39;</span><span class="p">])</span> <span class="k">for</span>
+                 <span class="n">estimator_conf</span> <span class="ow">in</span> <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;estimators&#39;</span><span class="p">]]</span>
+    <span class="n">cls_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">throughputs</span><span class="p">[</span><span class="n">estimator_conf</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="k">for</span> <span class="n">estimator_conf</span> <span class="ow">in</span>
+                  <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;estimators&#39;</span><span class="p">]]</span>
+    
+    <span class="n">bar_plot</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">cls_infos</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span> <span class="n">cls_values</span><span class="p">,</span>
+                      <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                        <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">]))</span>
+    <span class="n">fig1</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">bar_plot</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    
+    <span class="n">fig1</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;yaxis4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Throughput (predictions/sec)&#39;</span><span class="p">)</span>
+
+    
+    
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Plot data</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="c1"># benchmark bulk/atomic prediction speed for various regressors</span>
+<span class="n">configuration</span> <span class="o">=</span> <span class="p">{</span>
+<span class="s1">&#39;n_train&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e3</span><span class="p">),</span>
+<span class="s1">&#39;n_test&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e2</span><span class="p">),</span>
+<span class="s1">&#39;n_features&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e2</span><span class="p">),</span>
+<span class="s1">&#39;estimators&#39;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Linear Model&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;instance&#39;</span><span class="p">:</span> <span class="n">SGDRegressor</span><span class="p">(</span><span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;elasticnet&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+                              <span class="n">l1_ratio</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+     <span class="s1">&#39;complexity_label&#39;</span><span class="p">:</span> <span class="s1">&#39;non-zero coefficients&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;complexity_computer&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">clf</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">clf</span><span class="o">.</span><span class="n">coef_</span><span class="p">)},</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;RandomForest&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;instance&#39;</span><span class="p">:</span> <span class="n">RandomForestRegressor</span><span class="p">(),</span>
+     <span class="s1">&#39;complexity_label&#39;</span><span class="p">:</span> <span class="s1">&#39;estimators&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;complexity_computer&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">clf</span><span class="p">:</span> <span class="n">clf</span><span class="o">.</span><span class="n">n_estimators</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;SVR&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;instance&#39;</span><span class="p">:</span> <span class="n">SVR</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;rbf&#39;</span><span class="p">),</span>
+     <span class="s1">&#39;complexity_label&#39;</span><span class="p">:</span> <span class="s1">&#39;support vectors&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;complexity_computer&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">clf</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">clf</span><span class="o">.</span><span class="n">support_vectors_</span><span class="p">)},</span>
+<span class="p">]</span>
+<span class="p">}</span>
+<span class="n">benchmark</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
+
+<span class="c1"># benchmark n_features influence on prediction speed</span>
+<span class="n">percentile</span> <span class="o">=</span> <span class="mi">90</span>
+<span class="n">percentiles</span> <span class="o">=</span> <span class="n">n_feature_influence</span><span class="p">({</span><span class="s1">&#39;ridge&#39;</span><span class="p">:</span> <span class="n">Ridge</span><span class="p">()},</span>
+                              <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;n_train&#39;</span><span class="p">],</span>
+                              <span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;n_test&#39;</span><span class="p">],</span>
+                              <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span> <span class="n">percentile</span><span class="p">)</span>
+<span class="n">plot_n_features_influence</span><span class="p">(</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">percentile</span><span class="p">)</span>
+
+<span class="c1"># benchmark throughput</span>
+<span class="n">throughputs</span> <span class="o">=</span> <span class="n">benchmark_throughputs</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
+<span class="n">plot_benchmark_throughput</span><span class="p">(</span><span class="n">throughputs</span><span class="p">,</span> <span class="n">configuration</span><span class="p">)</span>
+
+<span class="n">stop_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;example run in </span><span class="si">%.2f</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">stop_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Benchmarking SGDRegressor(alpha=0.01, average=False, epsilon=0.1, eta0=0.01,
+       fit_intercept=True, l1_ratio=0.25, learning_rate=&apos;invscaling&apos;,
+       loss=&apos;squared_loss&apos;, n_iter=5, penalty=&apos;elasticnet&apos;, power_t=0.25,
+       random_state=None, shuffle=True, verbose=0, warm_start=False)
+Benchmarking RandomForestRegressor(bootstrap=True, criterion=&apos;mse&apos;, max_depth=None,
+           max_features=&apos;auto&apos;, max_leaf_nodes=None,
+           min_impurity_split=1e-07, min_samples_leaf=1,
+           min_samples_split=2, min_weight_fraction_leaf=0.0,
+           n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+           verbose=0, warm_start=False)
+Benchmarking SVR(C=1.0, cache_size=200, coef0=0.0, degree=3, epsilon=0.1, gamma=&apos;auto&apos;,
+  kernel=&apos;rbf&apos;, max_iter=-1, shrinking=True, tol=0.001, verbose=False)
+benchmarking with 100 features
+benchmarking with 250 features
+benchmarking with 500 features
+example run in 3.50s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig1</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig1</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[11]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2647.embed" height="2000px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3><p>Authors:</p>
+
+<pre><code>    Eustache Diemert &lt;eustache@diemert.fr&gt;
+
+</code></pre>
+<p>License:</p>
+
+<pre><code>    BSD 3 clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}

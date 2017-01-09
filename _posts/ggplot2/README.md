@@ -60,11 +60,16 @@
       library(plotly)
       #Add your R Code Here i.e.:
       p <- plot_ly(economics, x = date, y = uempmed, name = "unemployment")
-      P ```
+      P 
+      
+      # Create a shareable link to your chart
+      # Set up API credentials: https://plot.ly/r/getting-started
+      chart_link = plotly_POST(p, filename="your-chart-type/your-filename")
+      chart_link```
       ```
       ```
       ```{r, results='asis', echo=FALSE, message=FALSE}
-      plotly_POST(p, filename="your-chart-type/your-filename")```
+      chart_link```
       ```
 
 2. Convert the R Markdown to Markdown (.md file) with:

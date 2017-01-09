@@ -47,13 +47,51 @@ library(plotly)
 USPersonalExpenditure <- data.frame("Categorie"=rownames(USPersonalExpenditure), USPersonalExpenditure)
 data <- USPersonalExpenditure[,c('Categorie', 'X1960')]
 
-plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie') %>%
+p <- plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie') %>%
   layout(title = 'United States Personal Expenditures by Categories in 1960',
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="pie/basic")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3821.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Styled Pie Chart
+
+
+```r
+library(plotly)
+
+USPersonalExpenditure <- data.frame("Categorie" = rownames(USPersonalExpenditure), USPersonalExpenditure)
+data <- USPersonalExpenditure[, c('Categorie', 'X1960')]
+
+colors <- c('rgb(211,94,96)', 'rgb(128,133,133)', 'rgb(144,103,167)', 'rgb(171,104,87)', 'rgb(114,147,203)')
+
+p <- plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie',
+        textposition = 'inside',
+        textinfo = 'label+percent',
+        insidetextfont = list(color = '#FFFFFF'),
+        hoverinfo = 'text',
+        text = ~paste('$', X1960, ' billions'),
+        marker = list(colors = colors,
+                      line = list(color = '#FFFFFF', width = 1)),
+                      #The 'pull' attribute can also be used to create space between the sectors
+        showlegend = FALSE) %>%
+  layout(title = 'United States Personal Expenditures by Categories in 1960',
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="pie/styled")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/3829.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Subplots
 
@@ -62,7 +100,7 @@ plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie') %>%
 library(plotly)
 library(dplyr)
 
-plot_ly() %>%
+p <- plot_ly() %>%
   add_pie(data = count(diamonds, cut), labels = ~cut, values = ~n,
           name = "Cut", domain = list(x = c(0, 0.4), y = c(0.4, 1))) %>%
   add_pie(data = count(diamonds, color), labels = ~cut, values = ~n,
@@ -72,6 +110,11 @@ plot_ly() %>%
   layout(title = "Pie Charts with Subplots", showlegend = F,
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="pie/subplots")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3823.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -87,7 +130,7 @@ library(plotly)
 # Get Manufacturer
 mtcars$manuf <- sapply(strsplit(rownames(mtcars), " "), "[[", 1)
 
-mtcars %>%
+p <- mtcars %>%
   group_by(manuf) %>%
   summarize(count = n()) %>%
   plot_ly(labels = ~manuf, values = ~count) %>%
@@ -95,6 +138,11 @@ mtcars %>%
   layout(title = "Donut charts using Plotly",  showlegend = F,
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="pie/donut")
+chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3248.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
