@@ -8,8 +8,8 @@ thumbnail: thumbnail/dropdown.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_events
-order: 1
+display_as: controls
+order: 2
 output:
   html_document:
     keep_md: true
