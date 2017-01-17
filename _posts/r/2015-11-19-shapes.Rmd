@@ -1,0 +1,138 @@
+---
+title: Shapes in R | Examples | Plotly
+name: Shapes
+permalink: r/shapes/
+description: How to use shapes in R. Two examples on highlighting regions by adding shapes to your R charts.
+layout: base
+thumbnail: thumbnail/shape.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: chart_type
+order: 9
+output:
+  html_document:
+    keep_md: true
+---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+```{r}
+library(plotly)
+packageVersion('plotly')
+```
+
+### Lines
+
+```{r, results = 'hide'}
+s <- seq.int(0, 15)
+p <- plot_ly(x = ~s, y = ~sin(s), mode = "lines")
+
+# initiate a line shape object
+line <- list(
+  type = "line",
+  line = list(color = "pink"),
+  xref = "x",
+  yref = "y"
+)
+
+lines <- list()
+for (i in c(0, 3, 5, 7, 9, 13)) {
+  line[["x0"]] <- i
+  line[["x1"]] <- i + 2
+  line[c("y0", "y1")] <- sin(i + 1)
+  lines <- c(lines, list(line))
+}
+
+p <- layout(p, title = 'Highlighting with Lines', shapes = lines)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="shapes/lines")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Rectangles
+```{r, results = 'hide'}
+library(plotly)
+p <- plot_ly(economics, x = ~date, y = ~uempmed, name = "unemployment")
+
+# add shapes to the layout
+p <- layout(p, title = 'Highlighting with Rectangles',
+             shapes = list(
+               list(type = "rect",
+                    fillcolor = "blue", line = list(color = "blue"), opacity = 0.3,
+                    x0 = "1980-01-01", x1 = "1985-01-01", xref = "x",
+                    y0 = 4, y1 = 12.5, yref = "y"),
+               list(type = "rect",
+                 fillcolor = "blue", line = list(color = "blue"), opacity = 0.2,
+                 x0 = "2000-01-01", x1 = "2005-01-01", xref = "x",
+                 y0 = 4, y1 = 12.5, yref = "y")))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="shapes/unemployment")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Circles
+
+Circles are centered around  ((`x0`+`x1`)/2, (`y0`+`y1`)/2))
+
+```{r, results = 'hide'}
+library(plotly)
+d <- diamonds[sample(nrow(diamonds), 1000), ]
+d <- plot_ly(d, x = ~carat, y = ~price, text = ~paste("Clarity: ", clarity),
+             mode = "markers", color = ~carat, size = ~carat, opacity = ~carat)
+d <- layout(d, title = 'Highlighting Regions with Circles',
+            shapes = list(
+              list(type = 'circle',
+                   xref = 'x', x0 = .2, x1 = .7,
+                   yref = 'y', y0 = 20, y1 = 3000,
+                   fillcolor = 'rgb(50, 20, 90)', line = list(color = 'rgb(50, 20, 90)'),
+                   opacity = 0.2),
+              list(type = 'circle',
+                   xref = 'x', x0 = .75, x1 = 1.5,
+                   yref = 'y', y0 = 2500, y1 = 7500,
+                   fillcolor = 'rgb(30, 100, 120)', line = list(color = 'rgb(30, 100, 120)'),
+                   opacity = 0.2),
+               list(type = 'circle',
+                   xref = 'x', x0 = 1.6, x1 = 2.5,
+                   yref = 'y', y0 = 12500, y1 = 18500,
+                   fillcolor = 'rgb(90, 200, 75)', line = list(color = 'rgb(90, 200, 75)'),
+                   opacity = 0.2)))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(d, filename="shapes/diamonds")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Reference
+Check out our <b>[reference page](https://plot.ly/r/reference/#layout-shapes)</b> for more information on using shapes!

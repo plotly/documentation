@@ -1,0 +1,587 @@
+---
+permalink: python/dashboards-api/
+description: How to make dashboards in Python with Plotly.
+name: Python Dashboards
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+name: Dashboards
+language: python
+title: Dashboards
+has_thumbnail: false
+page_type: example_index
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+<h4 id="Plotly-Dashboards-2.0">Plotly Dashboards 2.0<a class="anchor-link" href="#Plotly-Dashboards-2.0">&#182;</a></h4><p>Plotly now supports online interactive dashboards. Plotly dashboards can be created with our online <a href="https://plot.ly/dashboards/create">drag-and-drop dashboard creator</a> or programatically in Python, R, or MATLAB. Dashboards are great for showcasing a collection of graphs like your KPIs, experimental results, or the real-time status of your systems.
+<br>
+Like Plotly graphs, datasets, and presentations, you can create dashboards entirely programatically with our APIs. This tutorial explains how to create dashboards programatically with Python. No HTML, CSS, or Javascript is required to create these dashboards, it's all pure Python!
+<br>
+Plotly's dashboards aren't part of the official Plotly python API yet but they will be in the coming months. In the meantime, we'll make requests with the <code>requests</code> library to <a href="https://api.plot.ly/v2/dashboards">Plotly's V2 API</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">plotly</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">webbrowser</span>
+
+<span class="kn">from</span> <span class="nn">IPython</span> <span class="kn">import</span> <span class="n">display</span>
+
+<span class="n">api_key</span> <span class="o">=</span> <span class="n">plotly</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">get_credentials_file</span><span class="p">()[</span><span class="s">&#39;api_key&#39;</span><span class="p">]</span>
+
+<span class="c"># Wrapper around requests.get</span>
+<span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;chelsea_lyn&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;Plotly-Client-Platform&#39;</span><span class="p">:</span> <span class="s">&#39;nteract&#39;</span><span class="p">},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="c"># upload dashboard to your plotly account</span>
+<span class="k">def</span> <span class="nf">create_dashboard</span><span class="p">(</span><span class="n">dashboard_object</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">world_readable</span><span class="p">,</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+  	<span class="c"># There are a few short-comings to this function. These will get worked out once this is part of the official plotly python library.</span>
+    <span class="c"># - filename needs to be able to support `/` to create or use folders. This&#39;ll require a few API calls.</span>
+    <span class="c"># - this function only works if the filename is unique. Need to call `update` if this file already exists to </span>
+    <span class="c"># 	overwrite the file</span>
+    <span class="c"># - world_readable really should be `sharing` and allow `public`, `private`, or `secret` like in `py.plot`</span>
+  	<span class="c"># - dashboard content should be validated before sending it off</span>
+    <span class="c"># - auto_open parameter for opening the result</span>
+
+	<span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+      <span class="s">&#39;https://api.plot.ly/v2/dashboards&#39;</span><span class="p">,</span>
+      <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;chelsea_lyn&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="p">),</span>
+      <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">&#39;Plotly-Client-Platform&#39;</span><span class="p">:</span> <span class="s">&#39;nteract&#39;</span>
+      <span class="p">},</span>
+      <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">&#39;content&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dashboard_object</span><span class="p">),</span>
+        <span class="s">&#39;filename&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span>
+        <span class="s">&#39;world_readable&#39;</span><span class="p">:</span> <span class="n">world_readable</span>
+      <span class="p">}</span>
+    <span class="p">)</span>
+	<span class="n">res</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+
+ 	<span class="n">url</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s">&#39;web_url&#39;</span><span class="p">]</span>
+	<span class="n">webbrowser</span><span class="o">.</span><span class="n">open_new</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s">&#39;web_url&#39;</span><span class="p">])</span>
+	<span class="k">return</span> <span class="n">url</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Viewing-and-downloading-dashboards-that-you-have-created">Viewing and downloading dashboards that you have created<a class="anchor-link" href="#Viewing-and-downloading-dashboards-that-you-have-created">&#182;</a></h4><p>Get started by playing around with the <a href="https://plot.ly/dashboards/create">online dashboard editor</a>. Once you've created a few dashboards, we can download the contents with the API.
+<br>
+You can get a list of the current dashboards by viewing the REST API docs at <a href="https://api.plot.ly/v2/dashboards">https://api.plot.ly/v2/dashboards</a>
+<br>
+You can view your dashboards in your list of files at <a href="https://plot.ly/organize/">https://plot.ly/organize/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">dashboards</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="s">&#39;https://api.plot.ly/v2/dashboards&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<span class="n">dashboards</span> <span class="o">+=</span> <span class="p">[</span><span class="n">dashboard</span> <span class="k">for</span> <span class="n">dashboard</span> <span class="ow">in</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;results&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">dashboard</span><span class="p">[</span><span class="s">&#39;deleted&#39;</span><span class="p">]]</span>
+<span class="k">while</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;next&#39;</span><span class="p">]:</span> <span class="c"># paginated</span>
+	<span class="n">response</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s">&#39;next&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+	<span class="n">dashboards</span> <span class="o">+=</span> <span class="p">[</span><span class="n">dashboard</span> <span class="k">for</span> <span class="n">dashboard</span> <span class="ow">in</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;results&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">dashboard</span><span class="p">[</span><span class="s">&#39;deleted&#39;</span><span class="p">]]</span>
+
+<span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;filename&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dashboards</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[24]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[u&apos;Tern Plots&apos;, u&apos;Dashboard Tutorial - Energy Example&apos;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Similar to Plotly graphs, dashboards are described declarively in an open JSON format.</p>
+<p>Let's take a look at a simple dashboard: <a href="https://plot.ly/dashboard/chris:17748/present">https://plot.ly/dashboard/chris:17748/present</a>.
+<img src="https://cdn.pbrd.co/images/IAqBYVjj.png" alt="Simple dashboard example"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can look at the JSON description of this dashboard by downloading it through the API:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># Everything that Plotly stores about the dashboard is in this response</span>
+<span class="n">dashboard</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">dashboards</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;api_urls&#39;</span><span class="p">][</span><span class="s">&#39;dashboards&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<span class="c"># In particular, view the JSON representation of one </span>
+<span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">dashboard</span><span class="p">[</span><span class="s">&#39;content&#39;</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{u&apos;layout&apos;: {u&apos;direction&apos;: u&apos;vertical&apos;,
+             u&apos;first&apos;: {u&apos;direction&apos;: u&apos;vertical&apos;,
+                        u&apos;first&apos;: {u&apos;direction&apos;: u&apos;vertical&apos;,
+                                   u&apos;first&apos;: {u&apos;direction&apos;: u&apos;vertical&apos;,
+                                              u&apos;first&apos;: {u&apos;direction&apos;: u&apos;horizontal&apos;,
+                                                         u&apos;first&apos;: {u&apos;boxType&apos;: u&apos;plot&apos;,
+                                                                    u&apos;fileId&apos;: u&apos;chelsea_lyn:13091&apos;,
+                                                                    u&apos;shareKey&apos;: u&apos;KIfuEpo259nkweMFWe7NFM&apos;,
+                                                                    u&apos;type&apos;: u&apos;box&apos;},
+                                                         u&apos;second&apos;: {u&apos;boxType&apos;: u&apos;plot&apos;,
+                                                                     u&apos;fileId&apos;: u&apos;chelsea_lyn:13095&apos;,
+                                                                     u&apos;shareKey&apos;: u&apos;T2W34xmiL4QejA88LStF8J&apos;,
+                                                                     u&apos;type&apos;: u&apos;box&apos;},
+                                                         u&apos;size&apos;: 50,
+                                                         u&apos;sizeUnit&apos;: u&apos;%&apos;,
+                                                         u&apos;type&apos;: u&apos;split&apos;},
+                                              u&apos;second&apos;: {u&apos;boxType&apos;: u&apos;plot&apos;,
+                                                          u&apos;fileId&apos;: u&apos;chelsea_lyn:13086&apos;,
+                                                          u&apos;shareKey&apos;: None,
+                                                          u&apos;type&apos;: u&apos;box&apos;},
+                                              u&apos;size&apos;: 657,
+                                              u&apos;sizeUnit&apos;: u&apos;px&apos;,
+                                              u&apos;type&apos;: u&apos;split&apos;},
+                                   u&apos;second&apos;: {u&apos;boxType&apos;: u&apos;text&apos;,
+                                               u&apos;text&apos;: u&apos;&apos;,
+                                               u&apos;type&apos;: u&apos;box&apos;},
+                                   u&apos;size&apos;: 1150,
+                                   u&apos;sizeUnit&apos;: u&apos;px&apos;,
+                                   u&apos;type&apos;: u&apos;split&apos;},
+                        u&apos;second&apos;: {u&apos;boxType&apos;: u&apos;webpage&apos;,
+                                    u&apos;type&apos;: u&apos;box&apos;,
+                                    u&apos;url&apos;: u&apos;&apos;},
+                        u&apos;size&apos;: 1500,
+                        u&apos;sizeUnit&apos;: u&apos;px&apos;,
+                        u&apos;type&apos;: u&apos;split&apos;},
+             u&apos;second&apos;: {u&apos;boxType&apos;: u&apos;empty&apos;, u&apos;type&apos;: u&apos;box&apos;},
+             u&apos;size&apos;: 1850,
+             u&apos;sizeUnit&apos;: u&apos;px&apos;,
+             u&apos;type&apos;: u&apos;split&apos;},
+ u&apos;settings&apos;: {u&apos;backgroundColor&apos;: u&apos;#FFFFFF&apos;,
+               u&apos;boxBackgroundColor&apos;: u&apos;#ffffff&apos;,
+               u&apos;boxBorderColor&apos;: u&apos;#d8d8d8&apos;,
+               u&apos;boxHeaderBackgroundColor&apos;: u&apos;#f8f8f8&apos;,
+               u&apos;foregroundColor&apos;: u&apos;#333333&apos;,
+               u&apos;headerBackgroundColor&apos;: u&apos;#4372a1&apos;,
+               u&apos;headerForegroundColor&apos;: u&apos;#FFFFFF&apos;,
+               u&apos;links&apos;: [{u&apos;title&apos;: u&apos;Google&apos;, u&apos;url&apos;: u&apos;google.ca&apos;},
+                          {u&apos;title&apos;: u&apos;Link&apos;, u&apos;url&apos;: u&apos;&apos;}],
+               u&apos;logoUrl&apos;: u&apos;&apos;,
+               u&apos;title&apos;: u&apos;Tern Plots&apos;},
+ u&apos;version&apos;: 2}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This content completely describes the dashboard. Although we created this dashboard in the online editor, we can re-create it programatically by uploading that same content to Plotly's API.</p>
+<p>Here's the same description of the dashboard, annotated with some comments. The full dashboards spec is further below.
+<br>
+Declaritvely describe the dashboard:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">dashboard_1</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s">&#39;layout&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="c"># parent node</span>
+    <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;split&#39;</span><span class="p">,</span>
+    <span class="s">&#39;direction&#39;</span><span class="p">:</span> <span class="s">&#39;vertical&#39;</span><span class="p">,</span>
+    <span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+    <span class="s">&#39;sizeUnit&#39;</span><span class="p">:</span> <span class="s">&#39;px&#39;</span><span class="p">,</span>
+
+    <span class="c"># Each object that is type `split` must have 2 children. </span>
+    <span class="c"># These children have the keys `first` and `second` and can contain </span>
+    <span class="c"># plots, text, or can be a container for more cells</span>
+    <span class="s">&#39;first&#39;</span><span class="p">:</span> <span class="p">{</span>
+
+      	<span class="c"># Another container component (&#39;type&#39;: &#39;split&#39;)</span>
+        <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;split&#39;</span><span class="p">,</span>
+        <span class="s">&#39;direction&#39;</span><span class="p">:</span> <span class="s">&#39;horizontal&#39;</span><span class="p">,</span> <span class="c"># first and second nodes are split horizontally</span>
+
+        <span class="c"># First plot</span>
+        <span class="s">&#39;first&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;box&#39;</span><span class="p">,</span> 				<span class="c"># if the node contains a plot or text, it must be type &#39;box&#39;</span>
+            <span class="s">&#39;boxType&#39;</span><span class="p">:</span> <span class="s">&#39;plot&#39;</span><span class="p">,</span> 			<span class="c"># &#39;plot&#39; or &#39;text&#39;</span>
+            <span class="s">&#39;fileId&#39;</span><span class="p">:</span> <span class="s">&#39;chris:17674&#39;</span>		<span class="c"># URL of the plot</span>
+        <span class="p">},</span>
+
+        <span class="c"># Second plot</span>
+        <span class="s">&#39;second&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;box&#39;</span><span class="p">,</span>
+            <span class="s">&#39;boxType&#39;</span><span class="p">:</span> <span class="s">&#39;plot&#39;</span><span class="p">,</span>
+            <span class="s">&#39;url&#39;</span><span class="p">:</span> <span class="s">&#39;chris:17564&#39;</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+
+    <span class="c"># every `split` container node has to contain 2 children (first and second)</span>
+    <span class="c"># In this case, don&#39;t render the second child by setting `boxType` to `empty`</span>
+    <span class="s">&#39;second&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&#39;boxType&#39;</span><span class="p">:</span> <span class="s">&#39;empty&#39;</span><span class="p">,</span>
+        <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;box&#39;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="s">&#39;settings&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;Simple Example 1&#39;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now let's send that dashboard description up to our plotly account. Plotly will return with a URL of the dashboard and we can always view it by visiting your <a href="https://plot.ly/organize">list of files in your plotly account</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">create_dashboard</span><span class="p">(</span><span class="n">dashboard_1</span><span class="p">,</span> <span class="s">&#39;Dashboard Tutorial - Ex 2&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[27]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>u&apos;https://plot.ly/~chelsea_lyn/13120/&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Take a peak at the newly created dashboard! <a href="https://plot.ly/~chelsea_lyn/13120/">https://plot.ly/~chelsea_lyn/13120/</a></p>
+<h4 id="More-about-the-JSON-dashboard-spec">More about the JSON dashboard spec<a class="anchor-link" href="#More-about-the-JSON-dashboard-spec">&#182;</a></h4><p>The layout of dashboards are described in a tree where each node can have at most 2 branches. These nodes have the keys <code>first</code> and <code>second</code>. These branches may go vertically (to create a new row) or horizontally (to create a new column).</p>
+<p>Each leaf node has a few properties:</p>
+<ul>
+<li><code>boxType</code> - whether to render a <code>plot</code> or a <code>text</code> block. This will include more types in the future.</li>
+<li><code>title</code> - the title of the block. Titles can also be supplied in the plots themselves</li>
+<li><code>size</code> - the width of the container</li>
+<li><code>sizeUnit</code> - <code>%</code></li>
+<li><code>fileId</code> - the plotly identifier of the plot. This is in the form <code>username:numeric_id</code>. The numeric ID can be found from the URl of the plot or from the lookup API. For example, the plot <a href="https://plot.ly/~chris/1638">https://plot.ly/~chris/1638</a> has the <code>fileId</code> <code>chris:1638</code></li>
+<li><code>type</code> - Equal to <code>box</code>.</li>
+</ul>
+<p>Leaf nodes are contained in container nodes that controls the orientation of the items (<code>horizontal</code> or <code>vertical</code>) and the size of the container. Container nodes have the following properties:</p>
+<ul>
+<li><code>type</code> - Equal to <code>split</code> - this indicates the the node is a container node</li>
+<li><code>first</code> - Contains one of the two leaf nodes (as described above)</li>
+<li><code>second</code> - Contains the other leaf node</li>
+<li><code>direction</code> - 'vertical' or 'horizontal'</li>
+<li><code>size</code> - 600</li>
+<li><code>sizeUnit</code> - 'px' or '%'</li>
+</ul>
+<p>Finally, other dashboard settings can be found in the <code>settings</code> object. These include:</p>
+<ul>
+<li><code>backgroundColor</code> - e.g. '#FFFFFF'</li>
+<li><code>boxBackgroundColor</code> - e.g. '#ffffff'</li>
+<li><code>boxBorderColor</code> - e.g. '#d8d8d8'</li>
+<li><code>boxHeaderBackgroundColor</code> - e.g. '#f8f8f8'</li>
+<li><code>foregroundColor</code> - e.g. '#333333'</li>
+<li><code>headerBackgroundColor</code> - e.g. '#fbfbfb'</li>
+<li><code>headerForegroundColor</code> - e.g. '#2b2b2b'</li>
+<li><code>links</code> - a list of links in the header. set to [] to show no links. Otherwise, include links as dict with <code>title</code> and <code>url</code> as keys, e.g. [{'title': 'More Dashboard Examples', 'url': u'<a href="http://plot.ly/dashboards'}">http://plot.ly/dashboards'}</a>]</li>
+<li><code>logoUrl</code> - an image URL to show in the header</li>
+<li><code>title</code> - the title of the dashboard e.g. 'Example Dashboard'
+<br>
+By far the easiest way to create these dashboards programatically is to create a template with the editor and then download the JSON with the API.</li>
+</ul>
+<p>Let's take a look at a more complicated example (<a href="https://plot.ly/dashboard/chris:17750/present">View the live dashboard</a>).</p>
+<p><a href="https://plot.ly/dashboard/chris:17750/present"><img src="https://cdn.pbrd.co/images/J8vO8r8d.png" alt="Energy dashboard"></a>
+<br>
+Let's download this dashboard:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="p">[</span><span class="n">dashboard</span><span class="p">[</span><span class="s">&#39;filename&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">dashboard</span> <span class="ow">in</span> <span class="n">dashboards</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[31]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[u&apos;Tern Plots&apos;, u&apos;Dashboard Tutorial - Energy Example&apos;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># In this case, I&#39;m interested in &#39;Energy Dashboard&#39;, the 3rd one that I&#39;ve created </span>
+
+<span class="n">energy_dashboard</span> <span class="o">=</span> <span class="n">dashboards</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">dashboard</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">energy_dashboard</span><span class="p">[</span><span class="s">&#39;api_urls&#39;</span><span class="p">][</span><span class="s">&#39;dashboards&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<span class="c"># Pretty print the content</span>
+<span class="n">energy_dashboard_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">dashboard</span><span class="p">[</span><span class="s">&#39;content&#39;</span><span class="p">])</span>
+<span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">energy_dashboard_json</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{u&apos;layout&apos;: {u&apos;direction&apos;: u&apos;vertical&apos;,
+             u&apos;first&apos;: {u&apos;direction&apos;: u&apos;vertical&apos;,
+                        u&apos;first&apos;: {u&apos;direction&apos;: u&apos;vertical&apos;,
+                                   u&apos;first&apos;: {u&apos;direction&apos;: u&apos;vertical&apos;,
+                                              u&apos;first&apos;: {u&apos;direction&apos;: u&apos;vertical&apos;,
+                                                         u&apos;first&apos;: {u&apos;direction&apos;: u&apos;vertical&apos;,
+                                                                    u&apos;first&apos;: {u&apos;boxType&apos;: u&apos;text&apos;,
+                                                                               u&apos;text&apos;: u&apos;# Dashboards for a new generation of energy technology\n\nPlotly provides best-in-class data visualization tools for oil and gas firms like C12 Energy, energy software providers like Opower, and renewable energy companies like Ambri and Sighten. Plotly graphs help them quickly and easily digest large quantities of data.\n\nC-12 Energy\u2019s technology team built their real-time data acquisition, visualization and analysis platform on Plotly\u2019s data visualization and dashboard technology. Their platform uses a mix of Python, Javascript and Plotly.js to capture and analyze large data sets.&apos;,
+                                                                               u&apos;type&apos;: u&apos;box&apos;},
+                                                                    u&apos;second&apos;: {u&apos;boxType&apos;: u&apos;text&apos;,
+                                                                                u&apos;text&apos;: u&apos;### Wind Power Prospecting and Analysis&apos;,
+                                                                                u&apos;type&apos;: u&apos;box&apos;},
+                                                                    u&apos;size&apos;: 232,
+                                                                    u&apos;sizeUnit&apos;: u&apos;px&apos;,
+                                                                    u&apos;type&apos;: u&apos;split&apos;},
+                                                         u&apos;second&apos;: {u&apos;direction&apos;: u&apos;horizontal&apos;,
+                                                                     u&apos;first&apos;: {u&apos;boxType&apos;: u&apos;plot&apos;,
+                                                                                u&apos;fileId&apos;: u&apos;jackp:12599&apos;,
+                                                                                u&apos;title&apos;: u&apos;NPS 100C-24 turbine&apos;,
+                                                                                u&apos;type&apos;: u&apos;box&apos;},
+                                                                     u&apos;second&apos;: {u&apos;boxType&apos;: u&apos;plot&apos;,
+                                                                                 u&apos;fileId&apos;: u&apos;jackp:12614&apos;,
+                                                                                 u&apos;title&apos;: u&apos;D400 turbine power curve&apos;,
+                                                                                 u&apos;type&apos;: u&apos;box&apos;},
+                                                                     u&apos;size&apos;: 50,
+                                                                     u&apos;sizeUnit&apos;: u&apos;%&apos;,
+                                                                     u&apos;type&apos;: u&apos;split&apos;},
+                                                         u&apos;size&apos;: 382,
+                                                         u&apos;sizeUnit&apos;: u&apos;px&apos;,
+                                                         u&apos;type&apos;: u&apos;split&apos;},
+                                              u&apos;second&apos;: {u&apos;boxType&apos;: u&apos;text&apos;,
+                                                          u&apos;text&apos;: u&apos;## Household Renewable Energy Production&apos;,
+                                                          u&apos;title&apos;: u&apos;&apos;,
+                                                          u&apos;type&apos;: u&apos;box&apos;},
+                                              u&apos;size&apos;: 962,
+                                              u&apos;sizeUnit&apos;: u&apos;px&apos;,
+                                              u&apos;type&apos;: u&apos;split&apos;},
+                                   u&apos;second&apos;: {u&apos;boxType&apos;: u&apos;plot&apos;,
+                                               u&apos;fileId&apos;: u&apos;jackp:12255&apos;,
+                                               u&apos;title&apos;: u&apos;Household Renewable Energy Production&apos;,
+                                               u&apos;type&apos;: u&apos;box&apos;},
+                                   u&apos;size&apos;: 1112,
+                                   u&apos;sizeUnit&apos;: u&apos;px&apos;,
+                                   u&apos;type&apos;: u&apos;split&apos;},
+                        u&apos;second&apos;: {u&apos;direction&apos;: u&apos;horizontal&apos;,
+                                    u&apos;first&apos;: {u&apos;boxType&apos;: u&apos;plot&apos;,
+                                               u&apos;fileId&apos;: u&apos;jackp:12239&apos;,
+                                               u&apos;title&apos;: u&apos;Electricity Usage by Month&apos;,
+                                               u&apos;type&apos;: u&apos;box&apos;},
+                                    u&apos;second&apos;: {u&apos;boxType&apos;: u&apos;plot&apos;,
+                                                u&apos;fileId&apos;: u&apos;jackp:12215&apos;,
+                                                u&apos;title&apos;: u&apos;&apos;,
+                                                u&apos;type&apos;: u&apos;box&apos;},
+                                    u&apos;size&apos;: 72,
+                                    u&apos;sizeUnit&apos;: u&apos;%&apos;,
+                                    u&apos;type&apos;: u&apos;split&apos;},
+                        u&apos;size&apos;: 1607,
+                        u&apos;sizeUnit&apos;: u&apos;px&apos;,
+                        u&apos;type&apos;: u&apos;split&apos;},
+             u&apos;second&apos;: {u&apos;boxType&apos;: u&apos;empty&apos;, u&apos;type&apos;: u&apos;box&apos;},
+             u&apos;size&apos;: 2307,
+             u&apos;sizeUnit&apos;: u&apos;px&apos;,
+             u&apos;type&apos;: u&apos;split&apos;},
+ u&apos;settings&apos;: {u&apos;backgroundColor&apos;: u&apos;#FFFFFF&apos;,
+               u&apos;boxBackgroundColor&apos;: u&apos;#ffffff&apos;,
+               u&apos;boxBorderColor&apos;: u&apos;#ffffff&apos;,
+               u&apos;boxHeaderBackgroundColor&apos;: u&apos;#ffffff&apos;,
+               u&apos;foregroundColor&apos;: u&apos;#333333&apos;,
+               u&apos;headerBackgroundColor&apos;: u&apos;#ffffff&apos;,
+               u&apos;headerForegroundColor&apos;: u&apos;#484848&apos;,
+               u&apos;links&apos;: [{u&apos;title&apos;: u&apos;More Dashboard Examples&apos;,
+                           u&apos;url&apos;: u&apos;http://plot.ly/dashboards&apos;}],
+               u&apos;logoUrl&apos;: u&apos;&apos;,
+               u&apos;title&apos;: u&apos;Energy Dashboard&apos;},
+ u&apos;version&apos;: 2}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I'll just re-upload this JSON description to my plotly account to create a new dashboard. In practice, you can create your dashboard templates with the editor and then download the contents or build up the JSON from scratch.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">create_dashboard</span><span class="p">(</span><span class="n">energy_dashboard_json</span><span class="p">,</span> <span class="s">&#39;Dashboard Tutorial - Energy Example 2&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[34]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>u&apos;https://plot.ly/~chelsea_lyn/13121/&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#182;</a></h4><ul>
+<li><a href="https://plot.ly/dashboards">View more dashboard examples</a></li>
+<li><a href="https://plot.ly/dashboard/create">Create dashboards online</a></li>
+<li><a href="https://plot.ly/python">Create Plotly graphs in Python</a></li>
+<li>You can also embed your plotly graphs in our new <a href="https://formidable.com/open-source/spectacle-editor/">presentations editor</a>.</li>
+<li>This tutorial was written using Jupyter notebooks and our new <a href="http://nteract.io/">Jupter notebook desktop app, nteract</a>. You can upload and share Jupter notebooks in plotly too. Like plots and datasets, notebooks shared in plotly can be public, private, or shared privately with a secret URL.</li>
+<li>Creating public dashboards is free. To create private dashboards, <a href="https://plot.ly/products/cloud/">subscribe to a pro plan</a>.</li>
+</ul>
+
+</div>
+</div>
+</div>{% endraw %}

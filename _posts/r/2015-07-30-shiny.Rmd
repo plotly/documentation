@@ -1,0 +1,70 @@
+---
+title: Getting Started with Shiny and Plotly | Examples | Plotly
+name: Getting Started with Shiny and Plotly
+permalink: r/shiny-tutorial/
+redirect_from:
+  - ggplot2/shiny-tutorial/
+  - r/shiny/
+  - ggplot2/shiny/
+description: Getting Started with Shiny and Plotly
+layout: base
+thumbnail: thumbnail/shiny-r.jpg
+language: r
+page_type: example_index
+has_thumbnail: false
+display_as: get_request
+output:
+  html_document:
+    keep_md: true
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+```{r}
+library(plotly)
+packageVersion('plotly')
+```
+### Plotly Graphs in Shiny
+
+Since plotly adheres to the [htmlwidgets](http://www.htmlwidgets.org/) framework, it's easy to embed plotly graphs in [shiny](http://shiny.rstudio.com/) apps. Not only does this make it easy for your plotly graphs to change dynamically according to input values, but (thanks to `event_data()`) it is also easy to access user events with plotly graphs! Here is a fairly basic example of accessing hover events server-side:
+
+<iframe src="https://plotly.shinyapps.io/Movies" width="100%" height=700 scrolling="no" seamless="seamless" style="border: none"></iframe>
+
+```{r}
+library(shiny)
+library(plotly)
+
+ui <- fluidPage(
+  plotlyOutput("plot"),
+  verbatimTextOutput("event")
+)
+
+server <- function(input, output) {
+
+  # renderPlotly() also understands ggplot2 objects!
+  output$plot <- renderPlotly({
+    plot_ly(mtcars, x = ~mpg, y = ~wt)
+  })
+
+  output$event <- renderPrint({
+    d <- event_data("plotly_hover")
+    if (is.null(d)) "Hover on a point!" else d
+  })
+}
+
+shinyApp(ui, server)
+```
+
+Check out our [shiny gallery](https://plot.ly/r/shiny-gallery/) for more examples!

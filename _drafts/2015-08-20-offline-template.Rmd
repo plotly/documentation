@@ -1,0 +1,50 @@
+---
+title: "Plotly Offline Template"
+output: html_document
+---
+
+To run, do:
+
+```
+tmp <- knitr::knit_meta(clean=TRUE)
+knitr::knit('2015-08-20-offline-template.Rmd', 'test-plotly-offline.md')
+markdown::markdownToHTML('test-plotly-offline.md', 'test-plotly-offline.html')
+```
+
+
+```{r}
+library(plotly)
+set.seed(100)
+d <- diamonds[sample(nrow(diamonds), 1000), ]
+p <- plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
+        mode = "markers", color = carat, size = carat)
+p %>% offline
+```
+
+```{r}
+plot_ly(economics, x = date, y = uempmed) %>%
+  add_trace(y = fitted(loess(uempmed ~ as.numeric(date)))) %>%
+  layout(title = "Median duration of unemployment (in weeks)",
+         showlegend = FALSE) %>%
+  dplyr::filter(uempmed == max(uempmed)) %>%
+  layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T)) %>%
+  offline
+```
+
+Loops
+
+```{r, results="asis"}
+for(i in 1:3) {
+    fig <- list(data=list(list(x=rnorm(100), type="histogram")), layout=list(title=paste(c('plot', i, sep=" "))))
+    cat(knit_print.offline(fig %>% offline))
+}
+```
+
+Sizing
+
+```{r, results="asis"}
+for(i in 1:3) {
+    fig <- list(data=list(list(x=rnorm(100), type="histogram")), layout=list(title=paste(c('plot', i, sep=" "))))
+    cat(knit_print.offline(offline(fig, height=900, width=800)))
+}
+```

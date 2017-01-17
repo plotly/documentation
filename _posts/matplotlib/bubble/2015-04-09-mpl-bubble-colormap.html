@@ -1,0 +1,48 @@
+---
+name: Matplotlib Bubble Chart using Colormap (<code>cmap</code>)
+plot_url: https://plot.ly/~PlotBot/182
+arrangement: horizontal
+language: matplotlib
+suite: bubble
+order: 2
+sitemap: false
+---
+import matplotlib.pyplot as plt
+import numpy as np
+import plotly.plotly as py
+
+# Learn about API authentication here: https://plot.ly/python/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+# decay and frequency for position and signal
+w1 = 4.
+w2 = 3/w1
+a1 = 2
+a2 = .5
+
+# time, position, signal
+t = np.linspace(0, 1, 400)
+yt = np.e**(-a1*t)*np.cos(2*np.pi*w1*t)
+sig = np.e**(1j*2*np.pi*w2*yt)
+
+# open up a figure
+fig, ax = plt.subplots()
+
+# define the color map we'll use for the imaginary axis
+cm = plt.cm.get_cmap('rainbow')
+
+# make those bubbles!
+ax.scatter(t, yt, s=np.real(sig)**2*2000, c=np.imag(sig), cmap=cm)
+
+# annotate in axes coordinates
+ax.text(.97, .97, "Color = imag(sig)\nSize = real(sig)",
+        transform=ax.transAxes,
+        horizontalalignment='right',
+        verticalalignment='top',
+        size=11)
+
+# label axes
+ax.set_ylabel('position')
+ax.set_xlabel('time')
+
+plot_url = py.plot_mpl(fig, filename='mpl-bubble-colormap')
