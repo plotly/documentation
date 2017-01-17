@@ -1,0 +1,318 @@
+---
+permalink: python/normalization/
+description: Learn how to normalize data by fitting to intervals on the real line and dividing by a constant
+name: Normalization | plotly
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+name: Normalization
+language: python
+title: Normalization in Python. | plotly
+display_as: mathematics
+has_thumbnail: false
+page_type: example_index
+order: 2
+ipynb: ~notebook_demo/103
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by dowloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h4><p>The tutorial below imports <a href="http://www.numpy.org/">NumPy</a>, <a href="https://plot.ly/pandas/intro-to-pandas-tutorial/">Pandas</a>, and <a href="https://www.scipy.org/">SciPy</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tools</span>
+<span class="kn">from</span> <span class="nn">plotly.tools</span> <span class="kn">import</span> <span class="n">FigureFactory</span> <span class="k">as</span> <span class="n">FF</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Import-Data">Import Data<a class="anchor-link" href="#Import-Data">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To properly visualize our data and normalization, let us import a dataset of Apple Stock prices in 2014:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">apple_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2014_apple_stock.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">apple_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">FF</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;apple-data-sample&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/727.embed" height="380px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Normalize-by-a-Constant">Normalize by a Constant<a class="anchor-link" href="#Normalize-by-a-Constant">&#182;</a></h4><p>Normalize a dataset by dividing each data point by a constant, such as the standard deviation of the data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">apple_data</span><span class="p">[</span><span class="s1">&#39;AAPL_y&#39;</span><span class="p">]</span>
+
+<span class="n">data_norm_by_std</span> <span class="o">=</span> <span class="p">[</span><span class="n">number</span><span class="o">/</span><span class="n">scipy</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;data&#39;</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">data_norm_by_std</span><span class="p">,</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;normalized by std = &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">)),</span>
+<span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">tools</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Normalize by a Constant&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;apple-data-normalize-constant&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]
+[ (2,1) x2,y2 ]
+
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt output_prompt">Out[4]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/733.embed" height="600px" width="800px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Normalize-to-[0,-1]">Normalize to [0, 1]<a class="anchor-link" href="#Normalize-to-[0,-1]">&#182;</a></h4><p>Normalize a dataset by dividing each data point by the norm of the dataset.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data_norm_to_0_1</span> <span class="o">=</span> <span class="p">[</span><span class="n">number</span><span class="o">/</span><span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">data_norm_to_0_1</span><span class="p">,</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;normalized to [0,1]&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">tools</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Normalize to [0,1]&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;apple-data-normalize-0-1&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]
+[ (2,1) x2,y2 ]
+
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/735.embed" height="600px" width="800px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Normalizing-to-any-Interval">Normalizing to any Interval<a class="anchor-link" href="#Normalizing-to-any-Interval">&#182;</a></h4><p>Normalize a dataset to an interval [a, b] where a, b are real numbers.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">data_norm_to_a_b</span> <span class="o">=</span> <span class="p">[(</span><span class="n">number</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">data_norm_to_a_b</span><span class="p">,</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;normalized to [10,50]&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">tools</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Normalize to [10,50]&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;apple-data-normalize-a-b&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]
+[ (2,1) x2,y2 ]
+
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/737.embed" height="600px" width="800px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}

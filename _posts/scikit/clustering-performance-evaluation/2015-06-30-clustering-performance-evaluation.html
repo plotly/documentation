@@ -1,0 +1,385 @@
+---
+permalink: scikit-learn/plot-adjusted-for-chance-measures/
+description:  
+name: Adjustment for chance in Clustering Performance Evaluation | plotly
+has_thumbnail: true
+thumbnail: thumbnail/clustering-performance.jpg
+layout: user-guide
+name: Adjustment for chance in Clustering Performance Evaluation
+language: scikit-learn
+title: Adjustment for chance in Clustering Performance Evaluation | plotly
+display_as: clustering
+has_thumbnail: true
+page_type: example_index
+order: 16
+ipynb: ~Diksha_Gabha/2865
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The following plots demonstrate the impact of the number of clusters and number of samples on various clustering performance evaluation metrics.</p>
+<p>Non-adjusted measures such as the V-Measure show a dependency between the number of clusters and the number of samples: the mean V-Measure of random labeling increases significantly as the number of clusters is closer to the total number of samples used to compute the measure.</p>
+<p>Adjusted for chance measure such as ARI display some random variations centered around a mean score of 0.0 for any number of samples and clusters.</p>
+<p>Only adjusted measures can hence safely be used as a consensus index to evaluate the average stability of clustering algorithms for a given value of k on various overlapping sub-samples of the dataset.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&apos;0.18&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">uniform_labelings_scores</span><span class="p">(</span><span class="n">score_func</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_clusters_range</span><span class="p">,</span>
+                             <span class="n">fixed_n_classes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">n_runs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute score for 2 random uniform cluster labelings.</span>
+
+<span class="sd">    Both random labelings have the same number of clusters for each value</span>
+<span class="sd">    possible value in ``n_clusters_range``.</span>
+
+<span class="sd">    When fixed_n_classes is not None the first labeling is considered a ground</span>
+<span class="sd">    truth class assignment with fixed number of classes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">random_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span><span class="o">.</span><span class="n">randint</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">n_clusters_range</span><span class="p">),</span> <span class="n">n_runs</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">fixed_n_classes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">labels_a</span> <span class="o">=</span> <span class="n">random_labels</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">fixed_n_classes</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n_clusters_range</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_runs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">fixed_n_classes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">labels_a</span> <span class="o">=</span> <span class="n">random_labels</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
+            <span class="n">labels_b</span> <span class="o">=</span> <span class="n">random_labels</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
+            <span class="n">scores</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">score_func</span><span class="p">(</span><span class="n">labels_a</span><span class="p">,</span> <span class="n">labels_b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">scores</span>
+
+<span class="n">score_funcs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">metrics</span><span class="o">.</span><span class="n">adjusted_rand_score</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">.</span><span class="n">v_measure_score</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">.</span><span class="n">adjusted_mutual_info_score</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">.</span><span class="n">mutual_info_score</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Independent-random-clusterings-with-equal-cluster-number">Independent random clusterings with equal cluster number<a class="anchor-link" href="#Independent-random-clusterings-with-equal-cluster-number">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">n_clusters_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+<span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">score_func</span> <span class="ow">in</span> <span class="n">score_funcs</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Computing </span><span class="si">%s</span><span class="s2"> for </span><span class="si">%d</span><span class="s2"> values of n_clusters and n_samples=</span><span class="si">%d</span><span class="s2">&quot;</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">score_func</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_clusters_range</span><span class="p">),</span> <span class="n">n_samples</span><span class="p">))</span>
+
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">uniform_labelings_scores</span><span class="p">(</span><span class="n">score_func</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_clusters_range</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%0.3f</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+    
+    <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">n_clusters_range</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">score_func</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                <span class="n">error_y</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">arrayminus</span><span class="o">=</span><span class="n">scores</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>
+                <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+            <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Computing adjusted_rand_score for 10 values of n_clusters and n_samples=100
+done in 0.043s
+Computing v_measure_score for 10 values of n_clusters and n_samples=100
+done in 0.058s
+Computing adjusted_mutual_info_score for 10 values of n_clusters and n_samples=100
+done in 0.393s
+Computing mutual_info_score for 10 values of n_clusters and n_samples=100
+done in 0.049s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Clustering measures for 2 random uniform labelings&lt;br&gt;&quot;</span>
+                          <span class="s2">&quot;with equal number of clusters&quot;</span><span class="p">,</span>
+                   <span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span><span class="p">,</span>
+                   <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Number of clusters (Number of samples is fixed to </span><span class="si">%d</span><span class="s1">)&#39;</span> 
+                                     <span class="o">%</span> <span class="n">n_samples</span><span class="p">),</span>
+                   <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Score value&#39;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">plots</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2848.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Random-labeling-with-varying-n_clusters-against-ground-class-labels">Random labeling with varying n_clusters against ground class labels<a class="anchor-link" href="#Random-labeling-with-varying-n_clusters-against-ground-class-labels">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">n_clusters_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+<span class="n">n_classes</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">score_func</span> <span class="ow">in</span> <span class="n">score_funcs</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Computing </span><span class="si">%s</span><span class="s2"> for </span><span class="si">%d</span><span class="s2"> values of n_clusters and n_samples=</span><span class="si">%d</span><span class="s2">&quot;</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">score_func</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_clusters_range</span><span class="p">),</span> <span class="n">n_samples</span><span class="p">))</span>
+
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">uniform_labelings_scores</span><span class="p">(</span><span class="n">score_func</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_clusters_range</span><span class="p">,</span>
+                                      <span class="n">fixed_n_classes</span><span class="o">=</span><span class="n">n_classes</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%0.3f</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+    <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">n_clusters_range</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">score_func</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                <span class="n">error_y</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">arrayminus</span><span class="o">=</span><span class="n">scores</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>
+                <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+            <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Computing adjusted_rand_score for 10 values of n_clusters and n_samples=1000
+done in 0.069s
+Computing v_measure_score for 10 values of n_clusters and n_samples=1000
+done in 0.061s
+Computing adjusted_mutual_info_score for 10 values of n_clusters and n_samples=1000
+done in 0.235s
+Computing mutual_info_score for 10 values of n_clusters and n_samples=1000
+done in 0.047s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Clustering measures for random uniform labeling&lt;br&gt;&quot;</span>
+                          <span class="s2">&quot;against reference assignment with </span><span class="si">%d</span><span class="s2"> classes&quot;</span> <span class="o">%</span> <span class="n">n_classes</span><span class="p">,</span>
+                   <span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span><span class="p">,</span>
+                   <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Number of clusters (Number of samples is fixed to </span><span class="si">%d</span><span class="s1">)&#39;</span> 
+                                     <span class="o">%</span> <span class="n">n_samples</span><span class="p">),</span>
+                   <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Score value&#39;</span><span class="p">))</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">plots</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2850.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Author:</p>
+
+<pre><code>    Olivier Grisel &lt;olivier.grisel@ensta.org&gt;
+
+</code></pre>
+<p>License:</p>
+
+<pre><code>    BSD 3 clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}

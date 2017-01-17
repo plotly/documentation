@@ -1,0 +1,270 @@
+---
+permalink: python/peak-finding/
+description: Learn how to find peaks and valleys on datasets in Python
+name: Peak Finding | plotly
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+name: Peak Finding
+language: python
+title: Peak Finding in Python | plotly
+display_as: peak-analysis
+has_thumbnail: false
+page_type: example_index
+order: 3
+ipynb: ~notebook_demo/120
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h4><p>The tutorial below imports <a href="http://www.numpy.org/">NumPy</a>, <a href="https://plot.ly/pandas/intro-to-pandas-tutorial/">Pandas</a>, <a href="https://www.scipy.org/">SciPy</a> and <a href="http://pythonhosted.org/PeakUtils/">PeakUtils</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">from</span> <span class="nn">plotly.tools</span> <span class="kn">import</span> <span class="n">FigureFactory</span> <span class="k">as</span> <span class="n">FF</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">peakutils</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Import-Data">Import Data<a class="anchor-link" href="#Import-Data">&#182;</a></h4><p>To start detecting peaks, we will import some data on milk production by month:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">milk_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/monthly-milk-production-pounds.csv&#39;</span><span class="p">)</span>
+<span class="n">time_series</span> <span class="o">=</span> <span class="n">milk_data</span><span class="p">[</span><span class="s1">&#39;Monthly milk production (pounds per cow)&#39;</span><span class="p">]</span>
+<span class="n">time_series</span> <span class="o">=</span> <span class="n">time_series</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">milk_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">15</span><span class="p">]</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">FF</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;milk-production-dataframe&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/753.embed" height="530px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Original-Plot">Original Plot<a class="anchor-link" href="#Original-Plot">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">time_series</span><span class="p">))],</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">time_series</span><span class="p">,</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span>
+<span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace</span><span class="p">]</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;milk-production-plot&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/707.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="With-Peak-Detection">With Peak Detection<a class="anchor-link" href="#With-Peak-Detection">&#182;</a></h4><p>We need to find the x-axis indices for the peaks in order to determine where the peaks are located.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">cb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">peakutils</span><span class="o">.</span><span class="n">indexes</span><span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="n">thres</span><span class="o">=</span><span class="mf">0.02</span><span class="o">/</span><span class="nb">max</span><span class="p">(</span><span class="n">cb</span><span class="p">),</span> <span class="n">min_dist</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="n">trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">time_series</span><span class="p">))],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">time_series</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Original Plot&#39;</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">indices</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">time_series</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">],</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(255,0,0)&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;cross&#39;</span>
+    <span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Detected Peaks&#39;</span>
+<span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace</span><span class="p">,</span> <span class="n">trace2</span><span class="p">]</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;milk-production-plot-with-peaks&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[4]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/755.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Only-Highest-Peaks">Only Highest Peaks<a class="anchor-link" href="#Only-Highest-Peaks">&#182;</a></h4><p>We can attempt to set our threshold so that we identify as many of the <em>highest peaks</em> that we can.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">cb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">peakutils</span><span class="o">.</span><span class="n">indexes</span><span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="n">thres</span><span class="o">=</span><span class="mf">0.678</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="n">trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">time_series</span><span class="p">))],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">time_series</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Original Plot&#39;</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">indices</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">time_series</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">],</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(255,0,0)&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;cross&#39;</span>
+    <span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Detected Peaks&#39;</span>
+<span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace</span><span class="p">,</span> <span class="n">trace2</span><span class="p">]</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;milk-production-plot-with-higher-peaks&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/862.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}

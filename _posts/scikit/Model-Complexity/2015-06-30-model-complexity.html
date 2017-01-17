@@ -1,0 +1,563 @@
+---
+permalink: scikit-learn/plot-model-complexity-influence/
+description:  
+name: Model Complexity Influence | plotly
+has_thumbnail: true
+thumbnail: thumbnail/model-complexity.jpg
+layout: user-guide
+name: Model Complexity Influence
+language: scikit-learn
+title: Model Complexity Influence | plotly
+display_as: real_dataset
+has_thumbnail: true
+page_type: example_index
+order: 4
+ipynb: ~Diksha_Gabha/2669
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Demonstrate how model complexity influences both prediction accuracy and computational performance.</p>
+<p>The dataset is the Boston Housing dataset (resp. 20 Newsgroups) for regression (resp. classification).</p>
+<p>For each class of models we make the model complexity vary through the choice of relevant model parameters and measure the influence on both computational performance (latency) and predictive power (MSE or Hamming Loss).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&apos;0.18&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://docs.scipy.org/doc/scipy-0.11.0/reference/generated/scipy.sparse.csr_matrix.getH.html#scipy.sparse.csr_matrix">csr_matrix</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.utils.shuffle.html#sklearn.utils.shuffle">shuffle</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_squared_error.html#sklearn.metrics.mean_squared_error">mean_squared_error</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.svm.NuSVR.html#sklearn.svm.NuSVR">NuSVR</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html#sklearn.ensemble.GradientBoostingRegressor">GradientBoostingRegressor</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html#sklearn.linear_model.SGDClassifier">SGDClassifier</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.hamming_loss.html#sklearn.metrics.hamming_loss">hamming_loss</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">__doc__</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">plotly</span> 
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1.parasite_axes</span> <span class="kn">import</span> <span class="n">host_subplot</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.axisartist.axislines</span> <span class="kn">import</span> <span class="n">Axes</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.csr</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
+
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="kn">import</span> <span class="n">shuffle</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="kn">from</span> <span class="nn">sklearn.svm.classes</span> <span class="kn">import</span> <span class="n">NuSVR</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble.gradient_boosting</span> <span class="kn">import</span> <span class="n">GradientBoostingRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model.stochastic_gradient</span> <span class="kn">import</span> <span class="n">SGDClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">hamming_loss</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Automatically created module for IPython interactive environment
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Routines</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">generate_data</span><span class="p">(</span><span class="n">case</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate regression/classification data.&quot;&quot;&quot;</span>
+    <span class="n">bunch</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;regression&#39;</span><span class="p">:</span>
+        <span class="n">bunch</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_boston</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;classification&#39;</span><span class="p">:</span>
+        <span class="n">bunch</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">fetch_20newsgroups_vectorized</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">shuffle</span><span class="p">(</span><span class="n">bunch</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">bunch</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:</span><span class="n">offset</span><span class="p">],</span> <span class="n">y</span><span class="p">[:</span><span class="n">offset</span><span class="p">]</span>
+    <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">offset</span><span class="p">:],</span> <span class="n">y</span><span class="p">[</span><span class="n">offset</span><span class="p">:]</span>
+    <span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+        <span class="n">X_train</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+        <span class="n">X_test</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">X_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+        <span class="n">X_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">y_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
+    <span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;X_train&#39;</span><span class="p">:</span> <span class="n">X_train</span><span class="p">,</span> <span class="s1">&#39;X_test&#39;</span><span class="p">:</span> <span class="n">X_test</span><span class="p">,</span> <span class="s1">&#39;y_train&#39;</span><span class="p">:</span> <span class="n">y_train</span><span class="p">,</span>
+            <span class="s1">&#39;y_test&#39;</span><span class="p">:</span> <span class="n">y_test</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+<span class="k">def</span> <span class="nf">benchmark_influence</span><span class="p">(</span><span class="n">conf</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Benchmark influence of :changing_param: on both MSE and latency.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">prediction_times</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">prediction_powers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">complexities</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">param_value</span> <span class="ow">in</span> <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;changing_param_values&#39;</span><span class="p">]:</span>
+        <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;tuned_params&#39;</span><span class="p">][</span><span class="n">conf</span><span class="p">[</span><span class="s1">&#39;changing_param&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">param_value</span>
+        <span class="n">estimator</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;estimator&#39;</span><span class="p">](</span><span class="o">**</span><span class="n">conf</span><span class="p">[</span><span class="s1">&#39;tuned_params&#39;</span><span class="p">])</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Benchmarking </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">estimator</span><span class="p">)</span>
+        <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;X_train&#39;</span><span class="p">],</span> <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;y_train&#39;</span><span class="p">])</span>
+        <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;postfit_hook&#39;</span><span class="p">](</span><span class="n">estimator</span><span class="p">)</span>
+        <span class="n">complexity</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;complexity_computer&#39;</span><span class="p">](</span><span class="n">estimator</span><span class="p">)</span>
+        <span class="n">complexities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">complexity</span><span class="p">)</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s1">&#39;n_samples&#39;</span><span class="p">]):</span>
+            <span class="n">y_pred</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;X_test&#39;</span><span class="p">])</span>
+        <span class="n">elapsed_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s1">&#39;n_samples&#39;</span><span class="p">])</span>
+        <span class="n">prediction_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elapsed_time</span><span class="p">)</span>
+        <span class="n">pred_score</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;prediction_performance_computer&#39;</span><span class="p">](</span>
+            <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;y_test&#39;</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">)</span>
+        <span class="n">prediction_powers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pred_score</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Complexity: </span><span class="si">%d</span><span class="s2"> | </span><span class="si">%s</span><span class="s2">: </span><span class="si">%.4f</span><span class="s2"> | Pred. Time: </span><span class="si">%f</span><span class="s2">s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">complexity</span><span class="p">,</span> <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;prediction_performance_label&#39;</span><span class="p">],</span> <span class="n">pred_score</span><span class="p">,</span>
+            <span class="n">elapsed_time</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">prediction_powers</span><span class="p">,</span> <span class="n">prediction_times</span><span class="p">,</span> <span class="n">complexities</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Plot influence of model complexity on both accuracy and latency.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">plot_influence</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">mse_values</span><span class="p">,</span> <span class="n">prediction_times</span><span class="p">,</span> <span class="n">complexities</span><span class="p">):</span>
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">complexities</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mse_values</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;prediction error&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+                    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">))</span>
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">complexities</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span> <span class="n">prediction_times</span><span class="p">,</span> 
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;latency&quot;</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
+                    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Influence of Model Complexity - </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;estimator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+        <span class="n">xaxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Model Complexity (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;complexity_label&#39;</span><span class="p">],</span>
+            <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,),</span>
+        <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">conf</span><span class="p">[</span><span class="s1">&#39;prediction_performance_label&#39;</span><span class="p">],</span>
+            <span class="n">titlefont</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">),</span>
+            <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+        <span class="n">yaxis2</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span>
+            <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">titlefont</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">),</span>
+            <span class="n">overlaying</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+            <span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span>
+    <span class="p">))</span>
+   
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fig</span>
+
+<span class="k">def</span> <span class="nf">_count_nonzero_coefficients</span><span class="p">(</span><span class="n">estimator</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">coef_</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Main-Code">Main Code<a class="anchor-link" href="#Main-Code">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">regression_data</span> <span class="o">=</span> <span class="n">generate_data</span><span class="p">(</span><span class="s1">&#39;regression&#39;</span><span class="p">)</span>
+<span class="n">classification_data</span> <span class="o">=</span> <span class="n">generate_data</span><span class="p">(</span><span class="s1">&#39;classification&#39;</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">configurations</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;estimator&#39;</span><span class="p">:</span> <span class="n">SGDClassifier</span><span class="p">,</span>
+     <span class="s1">&#39;tuned_params&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;penalty&#39;</span><span class="p">:</span> <span class="s1">&#39;elasticnet&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span> <span class="s1">&#39;loss&#39;</span><span class="p">:</span>
+                      <span class="s1">&#39;modified_huber&#39;</span><span class="p">,</span> <span class="s1">&#39;fit_intercept&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">},</span>
+     <span class="s1">&#39;changing_param&#39;</span><span class="p">:</span> <span class="s1">&#39;l1_ratio&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;changing_param_values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
+     <span class="s1">&#39;complexity_label&#39;</span><span class="p">:</span> <span class="s1">&#39;non_zero coefficients&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;complexity_computer&#39;</span><span class="p">:</span> <span class="n">_count_nonzero_coefficients</span><span class="p">,</span>
+     <span class="s1">&#39;prediction_performance_computer&#39;</span><span class="p">:</span> <span class="n">hamming_loss</span><span class="p">,</span>
+     <span class="s1">&#39;prediction_performance_label&#39;</span><span class="p">:</span> <span class="s1">&#39;Hamming Loss (Misclassification Ratio)&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;postfit_hook&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">sparsify</span><span class="p">(),</span>
+     <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">classification_data</span><span class="p">,</span>
+     <span class="s1">&#39;n_samples&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;estimator&#39;</span><span class="p">:</span> <span class="n">NuSVR</span><span class="p">,</span>
+     <span class="s1">&#39;tuned_params&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mf">1e3</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mi">2</span> <span class="o">**</span> <span class="o">-</span><span class="mi">15</span><span class="p">},</span>
+     <span class="s1">&#39;changing_param&#39;</span><span class="p">:</span> <span class="s1">&#39;nu&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;changing_param_values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
+     <span class="s1">&#39;complexity_label&#39;</span><span class="p">:</span> <span class="s1">&#39;n_support_vectors&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;complexity_computer&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">support_vectors_</span><span class="p">),</span>
+     <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">regression_data</span><span class="p">,</span>
+     <span class="s1">&#39;postfit_hook&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
+     <span class="s1">&#39;prediction_performance_computer&#39;</span><span class="p">:</span> <span class="n">mean_squared_error</span><span class="p">,</span>
+     <span class="s1">&#39;prediction_performance_label&#39;</span><span class="p">:</span> <span class="s1">&#39;MSE&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;n_samples&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;estimator&#39;</span><span class="p">:</span> <span class="n">GradientBoostingRegressor</span><span class="p">,</span>
+     <span class="s1">&#39;tuned_params&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="s1">&#39;ls&#39;</span><span class="p">},</span>
+     <span class="s1">&#39;changing_param&#39;</span><span class="p">:</span> <span class="s1">&#39;n_estimators&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;changing_param_values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span>
+     <span class="s1">&#39;complexity_label&#39;</span><span class="p">:</span> <span class="s1">&#39;n_trees&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;complexity_computer&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">n_estimators</span><span class="p">,</span>
+     <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">regression_data</span><span class="p">,</span>
+     <span class="s1">&#39;postfit_hook&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
+     <span class="s1">&#39;prediction_performance_computer&#39;</span><span class="p">:</span> <span class="n">mean_squared_error</span><span class="p">,</span>
+     <span class="s1">&#39;prediction_performance_label&#39;</span><span class="p">:</span> <span class="s1">&#39;MSE&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;n_samples&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
+<span class="p">]</span>
+
+<span class="n">model_compexity_influence_plot</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">configurations</span><span class="p">:</span>
+    <span class="n">prediction_performances</span><span class="p">,</span> <span class="n">prediction_times</span><span class="p">,</span> <span class="n">complexities</span> <span class="o">=</span> \
+        <span class="n">benchmark_influence</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">plot_influence</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">prediction_performances</span><span class="p">,</span> <span class="n">prediction_times</span><span class="p">,</span>
+                   <span class="n">complexities</span><span class="p">)</span>
+    <span class="n">model_compexity_influence_plot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+   
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Benchmarking SGDClassifier(alpha=0.001, average=False, class_weight=None, epsilon=0.1,
+       eta0=0.0, fit_intercept=True, l1_ratio=0.25,
+       learning_rate=&apos;optimal&apos;, loss=&apos;modified_huber&apos;, n_iter=5, n_jobs=1,
+       penalty=&apos;elasticnet&apos;, power_t=0.5, random_state=None, shuffle=True,
+       verbose=0, warm_start=False)
+Complexity: 4454 | Hamming Loss (Misclassification Ratio): 0.2501 | Pred. Time: 0.024822s
+
+Benchmarking SGDClassifier(alpha=0.001, average=False, class_weight=None, epsilon=0.1,
+       eta0=0.0, fit_intercept=True, l1_ratio=0.5, learning_rate=&apos;optimal&apos;,
+       loss=&apos;modified_huber&apos;, n_iter=5, n_jobs=1, penalty=&apos;elasticnet&apos;,
+       power_t=0.5, random_state=None, shuffle=True, verbose=0,
+       warm_start=False)
+Complexity: 1624 | Hamming Loss (Misclassification Ratio): 0.2923 | Pred. Time: 0.020898s
+
+Benchmarking SGDClassifier(alpha=0.001, average=False, class_weight=None, epsilon=0.1,
+       eta0=0.0, fit_intercept=True, l1_ratio=0.75,
+       learning_rate=&apos;optimal&apos;, loss=&apos;modified_huber&apos;, n_iter=5, n_jobs=1,
+       penalty=&apos;elasticnet&apos;, power_t=0.5, random_state=None, shuffle=True,
+       verbose=0, warm_start=False)
+Complexity: 873 | Hamming Loss (Misclassification Ratio): 0.3191 | Pred. Time: 0.015077s
+
+Benchmarking SGDClassifier(alpha=0.001, average=False, class_weight=None, epsilon=0.1,
+       eta0=0.0, fit_intercept=True, l1_ratio=0.9, learning_rate=&apos;optimal&apos;,
+       loss=&apos;modified_huber&apos;, n_iter=5, n_jobs=1, penalty=&apos;elasticnet&apos;,
+       power_t=0.5, random_state=None, shuffle=True, verbose=0,
+       warm_start=False)
+Complexity: 655 | Hamming Loss (Misclassification Ratio): 0.3252 | Pred. Time: 0.013285s
+
+Benchmarking NuSVR(C=1000.0, cache_size=200, coef0=0.0, degree=3, gamma=3.0517578125e-05,
+   kernel=&apos;rbf&apos;, max_iter=-1, nu=0.1, shrinking=True, tol=0.001,
+   verbose=False)
+Complexity: 69 | MSE: 31.8133 | Pred. Time: 0.000330s
+
+Benchmarking NuSVR(C=1000.0, cache_size=200, coef0=0.0, degree=3, gamma=3.0517578125e-05,
+   kernel=&apos;rbf&apos;, max_iter=-1, nu=0.25, shrinking=True, tol=0.001,
+   verbose=False)
+Complexity: 136 | MSE: 25.6140 | Pred. Time: 0.000664s
+
+Benchmarking NuSVR(C=1000.0, cache_size=200, coef0=0.0, degree=3, gamma=3.0517578125e-05,
+   kernel=&apos;rbf&apos;, max_iter=-1, nu=0.5, shrinking=True, tol=0.001,
+   verbose=False)
+Complexity: 243 | MSE: 22.3315 | Pred. Time: 0.001050s
+
+Benchmarking NuSVR(C=1000.0, cache_size=200, coef0=0.0, degree=3, gamma=3.0517578125e-05,
+   kernel=&apos;rbf&apos;, max_iter=-1, nu=0.75, shrinking=True, tol=0.001,
+   verbose=False)
+Complexity: 350 | MSE: 21.3679 | Pred. Time: 0.002377s
+
+Benchmarking NuSVR(C=1000.0, cache_size=200, coef0=0.0, degree=3, gamma=3.0517578125e-05,
+   kernel=&apos;rbf&apos;, max_iter=-1, nu=0.9, shrinking=True, tol=0.001,
+   verbose=False)
+Complexity: 404 | MSE: 21.0915 | Pred. Time: 0.002316s
+
+Benchmarking GradientBoostingRegressor(alpha=0.9, criterion=&apos;friedman_mse&apos;, init=None,
+             learning_rate=0.1, loss=&apos;ls&apos;, max_depth=3, max_features=None,
+             max_leaf_nodes=None, min_impurity_split=1e-07,
+             min_samples_leaf=1, min_samples_split=2,
+             min_weight_fraction_leaf=0.0, n_estimators=10, presort=&apos;auto&apos;,
+             random_state=None, subsample=1.0, verbose=0, warm_start=False)
+Complexity: 10 | MSE: 28.9793 | Pred. Time: 0.000074s
+
+Benchmarking GradientBoostingRegressor(alpha=0.9, criterion=&apos;friedman_mse&apos;, init=None,
+             learning_rate=0.1, loss=&apos;ls&apos;, max_depth=3, max_features=None,
+             max_leaf_nodes=None, min_impurity_split=1e-07,
+             min_samples_leaf=1, min_samples_split=2,
+             min_weight_fraction_leaf=0.0, n_estimators=50, presort=&apos;auto&apos;,
+             random_state=None, subsample=1.0, verbose=0, warm_start=False)
+Complexity: 50 | MSE: 8.3398 | Pred. Time: 0.000210s
+
+Benchmarking GradientBoostingRegressor(alpha=0.9, criterion=&apos;friedman_mse&apos;, init=None,
+             learning_rate=0.1, loss=&apos;ls&apos;, max_depth=3, max_features=None,
+             max_leaf_nodes=None, min_impurity_split=1e-07,
+             min_samples_leaf=1, min_samples_split=2,
+             min_weight_fraction_leaf=0.0, n_estimators=100,
+             presort=&apos;auto&apos;, random_state=None, subsample=1.0, verbose=0,
+             warm_start=False)
+Complexity: 100 | MSE: 7.0096 | Pred. Time: 0.000301s
+
+Benchmarking GradientBoostingRegressor(alpha=0.9, criterion=&apos;friedman_mse&apos;, init=None,
+             learning_rate=0.1, loss=&apos;ls&apos;, max_depth=3, max_features=None,
+             max_leaf_nodes=None, min_impurity_split=1e-07,
+             min_samples_leaf=1, min_samples_split=2,
+             min_weight_fraction_leaf=0.0, n_estimators=200,
+             presort=&apos;auto&apos;, random_state=None, subsample=1.0, verbose=0,
+             warm_start=False)
+Complexity: 200 | MSE: 6.1836 | Pred. Time: 0.000559s
+
+Benchmarking GradientBoostingRegressor(alpha=0.9, criterion=&apos;friedman_mse&apos;, init=None,
+             learning_rate=0.1, loss=&apos;ls&apos;, max_depth=3, max_features=None,
+             max_leaf_nodes=None, min_impurity_split=1e-07,
+             min_samples_leaf=1, min_samples_split=2,
+             min_weight_fraction_leaf=0.0, n_estimators=500,
+             presort=&apos;auto&apos;, random_state=None, subsample=1.0, verbose=0,
+             warm_start=False)
+Complexity: 500 | MSE: 6.3426 | Pred. Time: 0.000905s
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plotting-Model-Complexity-Influence">Plotting Model Complexity Influence<a class="anchor-link" href="#Plotting-Model-Complexity-Influence">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span> <span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">model_compexity_influence_plot</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2635.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span> <span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">model_compexity_influence_plot</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2637.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span> <span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">model_compexity_influence_plot</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[10]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2639.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Author:</p>
+
+<pre><code>    Eustache Diemert &lt;eustache@diemert.fr&gt;
+</code></pre>
+<p>License:</p>
+
+<pre><code>    BSD 3 clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}

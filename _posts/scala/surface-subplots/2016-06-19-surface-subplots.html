@@ -1,0 +1,46 @@
+---
+name: 3D surface subplots
+plot_url: https://plot.ly/~pbugnion/546
+language: scala
+suite: 3d-subplots
+order: 2
+sitemap: false
+arrangement: horizontal
+---
+
+val xs = (-3.0 to 3.0 by 0.2).toVector
+val ys = (-3.0 to 3.0 by 0.2).toVector
+
+// 2-dimensional quantum harmonic oscillator energy levels
+def gaussian2D(x: Double, y: Double): Double = Math.exp(-x*x - y*y)
+val z00 = xs.map { x => ys.map { y => gaussian2D(x, y) } } 
+val z01 = xs.map { x => ys.map { y => y*gaussian2D(x, y) } }
+val z11 = xs.map { x => ys.map { y => x*y*gaussian2D(x, y) } }
+val z20 = xs.map { x => ys.map { y => (1-2*x*x)*gaussian2D(x, y) } }
+
+val options = SurfaceOptions().noScale
+
+val figure = GridFigure(2, 2) // four plots split over two rows
+  .title("Eigenfunctions of the 2D quantum harmonic oscillator")
+  .plot(0, 0) { // top left
+    ThreeDPlot()
+      .withSurface(xs, ys, z00, options)
+      .zAxisOptions(AxisOptions().title("psi_00"))
+  }
+  .plot(0, 1) { // top right
+    ThreeDPlot()
+      .withSurface(xs, ys, z01, options)
+      .zAxisOptions(AxisOptions().title("psi_01"))
+  }
+  .plot(1, 0) { // bottom left
+    ThreeDPlot()
+      .withSurface(xs, ys, z11, options)
+      .zAxisOptions(AxisOptions().title("psi_11"))
+  }
+  .plot(1, 1) { // bottom right
+    ThreeDPlot()
+      .withSurface(xs, ys, z20, options)
+      .zAxisOptions(AxisOptions().title("psi_20"))
+  }
+
+draw(figure, "qho-eigenfunctions")
