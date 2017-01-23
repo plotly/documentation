@@ -76,11 +76,6 @@ ternaryAxes <- list(
 )
 ```
 
-
-```
-## Error in eval(expr, envir, enclos): object 'chart_link' not found
-```
-
 ### Add Markers
 
 
