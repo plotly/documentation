@@ -4,11 +4,11 @@ name: Font Styles
 permalink: r/font/
 description: How to create font styles in R with Plotly.
 layout: base
-thumbnail: 
+thumbnail: thumbnail/your-tutorial-chart.jpg
 language: r
 page_type: example_index
-has_thumbnail: 
-display_as: layout_options
+has_thumbnail: true
+display_as: layout_opt
 order: 
 output:
   html_document:
