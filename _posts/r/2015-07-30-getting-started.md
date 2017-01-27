@@ -92,4 +92,37 @@ Remember to replace "your-company" with the URL of your Plotly On-Premise server
     <a href="/r/" class="button no_underline">Make your first graph</a>
 </div>
 
-### Online Plot Privacy
+#### Online Plot Privacy
+
+Plots can be set to three different type of privacies: public, private or secret. 
+
+* **public:**
+ 
+     Anyone can view this graph. It will appear in your profile
+     and can appear in search engines. You do not need to be
+     logged in to Plotly to view this chart.
+ 
+* **private:**
+
+     Only you can view this plot. It will not appear in the
+     Plotly feed, your profile, or search engines. You must be
+     logged in to Plotly to view this graph. You can privately
+     share this graph with other Plotly users in your online
+     Plotly account and they will need to be logged in to
+     view this plot.
+ 
+* **secret:**
+ 
+     Anyone with this secret link can view this chart. It will
+     not appear in the Plotly feed, your profile, or search
+     engines. If it is embedded inside a webpage or an IPython
+     notebook, anybody who is viewing that page will be able to
+     view the graph. You do not need to be logged in to view
+     this plot.
+
+By default all plots are set to public. Users with free account have the permission to keep one private plot. If you have additional private storage need, please visit [Plotly products page](https://plot.ly/products). If you're a [PRO USER](https://plot.ly/settings/subscription/?modal=true&utm_source=api-docs&utm_medium=support-oss) and would like the setting for your plots to be private, you can specify sharing as private:
+
+```r
+plotly_POST(filename = "private-graph", sharing = "private")
+```
+For more examples on privacy settings please visit [R privacy documentation](https://plot.ly/r/privacy/)
