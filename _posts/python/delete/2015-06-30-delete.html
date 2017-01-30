@@ -376,4 +376,88 @@ Note: a successful permanent delete request will return a <code>Response [204]</
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Delete-All-Plots-and-Grids">Delete All Plots and Grids<a class="anchor-link" href="#Delete-All-Plots-and-Grids">&#182;</a></h4><p>In order to delete all your plots and grids, you first need to make all of your files public so you can access them with the Rest API. You can learn more about setting the privacy of your plots at the <a href="https://plot.ly/python/privacy/#make-all-existing-plots-private">privacy tutorial</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">get_pages</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">page_size</span><span class="p">):</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://api.plot.ly/v2/folders/all?user=&#39;</span><span class="o">+</span><span class="n">username</span><span class="o">+</span><span class="s1">&#39;&amp;page_size=&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">page_size</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">page</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="n">page</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="s1">&#39;next&#39;</span><span class="p">]</span> 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">resource</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">page</span>
+        
+<span class="k">def</span> <span class="nf">make_all_plots_and_grids_public</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">get_pages</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">page_size</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">page</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="s1">&#39;results&#39;</span><span class="p">])):</span>
+            <span class="n">fid</span> <span class="o">=</span> <span class="n">page</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">][</span><span class="s1">&#39;fid&#39;</span><span class="p">]</span>
+            <span class="n">requests</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s1">&#39;https://api.plot.ly/v2/files/&#39;</span><span class="o">+</span><span class="n">fid</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;world_readable&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">},</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    
+<span class="n">make_all_plots_and_grids_public</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since you need a grid to make a plot, we must first delete all the plots then all the associated grids:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">permanently_delete_files</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">filetype_to_delete</span><span class="o">=</span><span class="s1">&#39;plot&#39;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">get_pages</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">page_size</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">page</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="s1">&#39;results&#39;</span><span class="p">])):</span>
+            <span class="n">fid</span> <span class="o">=</span> <span class="n">page</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">][</span><span class="s1">&#39;fid&#39;</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://api.plot.ly/v2/files/&#39;</span> <span class="o">+</span> <span class="n">fid</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="n">json_res</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">json_res</span><span class="p">[</span><span class="s1">&#39;filetype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">filetype_to_delete</span><span class="p">:</span>
+                    <span class="c1"># move to trash</span>
+                    <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;https://api.plot.ly/v2/files/&#39;</span><span class="o">+</span><span class="n">fid</span><span class="o">+</span><span class="s1">&#39;/trash&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+                    <span class="c1"># permanently delete</span>
+                    <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;https://api.plot.ly/v2/files/&#39;</span><span class="o">+</span><span class="n">fid</span><span class="o">+</span><span class="s1">&#39;/permanent_delete&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+<span class="n">permanently_delete_files</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">filetype_to_delete</span><span class="o">=</span><span class="s1">&#39;plot&#39;</span><span class="p">)</span>
+<span class="n">permanently_delete_files</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">filetype_to_delete</span><span class="o">=</span><span class="s1">&#39;grid&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
 </div>{% endraw %}
