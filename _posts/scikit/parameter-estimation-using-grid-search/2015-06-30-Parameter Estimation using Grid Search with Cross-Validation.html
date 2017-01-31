@@ -1,0 +1,304 @@
+---
+permalink: scikit-learn/grid-search-digits/
+description:  
+name: Parameter Estimation using Grid Search with Cross-Validation | plotly
+has_thumbnail: true
+thumbnail: thumbnail/scikit-default.jpg
+layout: user-guide
+name: Parameter Estimation using Grid Search with Cross-Validation
+language: scikit-learn
+title: Parameter Estimation using Grid Search with Cross-Validation | plotly
+display_as: model_selection
+has_thumbnail: true
+page_type: example_index
+order: 5
+ipynb: ~Diksha_Gabha/3420
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This examples shows how a classifier is optimized by cross-validation, which is done using the <a href="http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV">sklearn.model_selection.GridSearchCV</a> object on a development set that comprises only half of the available labeled data.</p>
+<p>The performance of the selected hyper-parameters and trained model is then measured on a dedicated evaluation set that was not used during the model selection step.
+More details on tools available for model selection can be found in the sections on <a href="http://scikit-learn.org/stable/modules/cross_validation.html#cross-validation">Cross-validation: evaluating estimator performance</a> and <a href="http://scikit-learn.org/stable/modules/grid_search.html#grid-search">Tuning the hyper-parameters of an estimator</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;0.18.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split">train_test_split</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV">GridSearchCV</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html#sklearn.metrics.classification_report">classification_report</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC">SVC</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">classification_report</span>
+<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVC</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">__doc__</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Automatically created module for IPython interactive environment
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Loading the Digits dataset</span>
+<span class="n">digits</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_digits</span><span class="p">()</span>
+
+<span class="c1"># To apply an classifier on this data, we need to flatten the image, to</span>
+<span class="c1"># turn the data in a (samples, feature) matrix:</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">target</span>
+
+<span class="c1"># Split the dataset in two equal parts</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Set the parameters by cross-validation</span>
+<span class="n">tuned_parameters</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rbf&#39;</span><span class="p">],</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">],</span>
+                     <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]},</span>
+                    <span class="p">{</span><span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;linear&#39;</span><span class="p">],</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]}]</span>
+
+<span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;precision&#39;</span><span class="p">,</span> <span class="s1">&#39;recall&#39;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">scores</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;# Tuning hyper-parameters for </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">score</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">()</span>
+
+    <span class="n">clf</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">SVC</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">tuned_parameters</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                       <span class="n">scoring</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_macro&#39;</span> <span class="o">%</span> <span class="n">score</span><span class="p">)</span>
+    <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Best parameters set found on development set:&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">clf</span><span class="o">.</span><span class="n">best_params_</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Grid scores on development set:&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">()</span>
+    <span class="n">means</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">&#39;mean_test_score&#39;</span><span class="p">]</span>
+    <span class="n">stds</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">&#39;std_test_score&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">means</span><span class="p">,</span> <span class="n">stds</span><span class="p">,</span> <span class="n">clf</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">]):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%0.3f</span><span class="s2"> (+/-</span><span class="si">%0.03f</span><span class="s2">) for </span><span class="si">%r</span><span class="s2">&quot;</span>
+              <span class="o">%</span> <span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">()</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Detailed classification report:&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;The model is trained on the full development set.&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;The scores are computed on the full evaluation set.&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">()</span>
+    <span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">()</span>
+
+<span class="c1"># Note the problem is too easy: the hyperparameter plateau is too flat and the</span>
+<span class="c1"># output model is the same for precision and recall with ties in quality.</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre># Tuning hyper-parameters for precision
+
+Best parameters set found on development set:
+
+{&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 10, &#39;gamma&#39;: 0.001}
+
+Grid scores on development set:
+
+0.986 (+/-0.016) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 1, &#39;gamma&#39;: 0.001}
+0.959 (+/-0.029) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 1, &#39;gamma&#39;: 0.0001}
+0.988 (+/-0.017) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 10, &#39;gamma&#39;: 0.001}
+0.982 (+/-0.026) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 10, &#39;gamma&#39;: 0.0001}
+0.988 (+/-0.017) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 100, &#39;gamma&#39;: 0.001}
+0.982 (+/-0.025) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 100, &#39;gamma&#39;: 0.0001}
+0.988 (+/-0.017) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 1000, &#39;gamma&#39;: 0.001}
+0.982 (+/-0.025) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 1000, &#39;gamma&#39;: 0.0001}
+0.975 (+/-0.014) for {&#39;kernel&#39;: &#39;linear&#39;, &#39;C&#39;: 1}
+0.975 (+/-0.014) for {&#39;kernel&#39;: &#39;linear&#39;, &#39;C&#39;: 10}
+0.975 (+/-0.014) for {&#39;kernel&#39;: &#39;linear&#39;, &#39;C&#39;: 100}
+0.975 (+/-0.014) for {&#39;kernel&#39;: &#39;linear&#39;, &#39;C&#39;: 1000}
+
+Detailed classification report:
+
+The model is trained on the full development set.
+The scores are computed on the full evaluation set.
+
+             precision    recall  f1-score   support
+
+          0       1.00      1.00      1.00        89
+          1       0.97      1.00      0.98        90
+          2       0.99      0.98      0.98        92
+          3       1.00      0.99      0.99        93
+          4       1.00      1.00      1.00        76
+          5       0.99      0.98      0.99       108
+          6       0.99      1.00      0.99        89
+          7       0.99      1.00      0.99        78
+          8       1.00      0.98      0.99        92
+          9       0.99      0.99      0.99        92
+
+avg / total       0.99      0.99      0.99       899
+
+
+# Tuning hyper-parameters for recall
+
+Best parameters set found on development set:
+
+{&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 10, &#39;gamma&#39;: 0.001}
+
+Grid scores on development set:
+
+0.986 (+/-0.019) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 1, &#39;gamma&#39;: 0.001}
+0.957 (+/-0.029) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 1, &#39;gamma&#39;: 0.0001}
+0.987 (+/-0.019) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 10, &#39;gamma&#39;: 0.001}
+0.981 (+/-0.028) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 10, &#39;gamma&#39;: 0.0001}
+0.987 (+/-0.019) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 100, &#39;gamma&#39;: 0.001}
+0.981 (+/-0.026) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 100, &#39;gamma&#39;: 0.0001}
+0.987 (+/-0.019) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 1000, &#39;gamma&#39;: 0.001}
+0.981 (+/-0.026) for {&#39;kernel&#39;: &#39;rbf&#39;, &#39;C&#39;: 1000, &#39;gamma&#39;: 0.0001}
+0.972 (+/-0.012) for {&#39;kernel&#39;: &#39;linear&#39;, &#39;C&#39;: 1}
+0.972 (+/-0.012) for {&#39;kernel&#39;: &#39;linear&#39;, &#39;C&#39;: 10}
+0.972 (+/-0.012) for {&#39;kernel&#39;: &#39;linear&#39;, &#39;C&#39;: 100}
+0.972 (+/-0.012) for {&#39;kernel&#39;: &#39;linear&#39;, &#39;C&#39;: 1000}
+
+Detailed classification report:
+
+The model is trained on the full development set.
+The scores are computed on the full evaluation set.
+
+             precision    recall  f1-score   support
+
+          0       1.00      1.00      1.00        89
+          1       0.97      1.00      0.98        90
+          2       0.99      0.98      0.98        92
+          3       1.00      0.99      0.99        93
+          4       1.00      1.00      1.00        76
+          5       0.99      0.98      0.99       108
+          6       0.99      1.00      0.99        89
+          7       0.99      1.00      0.99        78
+          8       1.00      0.98      0.99        92
+          9       0.99      0.99      0.99        92
+
+avg / total       0.99      0.99      0.99       899
+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}
