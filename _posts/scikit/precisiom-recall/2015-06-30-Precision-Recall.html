@@ -1,0 +1,366 @@
+---
+permalink: scikit-learn/plot-precision-recall/
+description:  
+name: Precision-Recall | plotly
+has_thumbnail: true
+thumbnail: thumbnail/precision-recall.jpg
+layout: user-guide
+name: Precision-Recall
+language: scikit-learn
+title: Precision-Recall | plotly
+display_as: model_selection
+has_thumbnail: true
+page_type: example_index
+order: 9
+ipynb: ~Diksha_Gabha/3437
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Example of Precision-Recall metric to evaluate classifier output quality.</p>
+<p>In information retrieval, precision is a measure of result relevancy, while recall is a measure of how many truly relevant results are returned. A high area under the curve represents both high recall and high precision, where high precision relates to a low false positive rate, and high recall relates to a low false negative rate. High scores for both show that the classifier is returning accurate results (high precision), as well as returning a majority of all positive results (high recall).</p>
+<p>A system with high recall but low precision returns many results, but most of its predicted labels are incorrect when compared to the training labels. A system with high precision but low recall is just the opposite, returning very few results, but most of its predicted labels are correct when compared to the training labels. An ideal system with high precision and high recall will return many results, with all results labeled correctly.</p>
+<p>Precision (P) is defined as the number of true positives (T_p) over the number of true positives plus the number of false positives (F_p).</p>
+<p>P = \frac{T_p}{T_p+F_p}</p>
+<p>Recall (R) is defined as the number of true positives (T_p) over the number of true positives plus the number of false negatives (F_n).</p>
+<p>R = \frac{T_p}{T_p + F_n}</p>
+<p>These quantities are also related to the (F_1) score, which is defined as the harmonic mean of precision and recall.</p>
+<p>F1 = 2\frac{P \times R}{P+R}</p>
+<p>It is important to note that the precision may not decrease with recall. The definition of precision (\frac{T_p}{T_p + F_p}) shows that lowering the threshold of a classifier may increase the denominator, by increasing the number of results returned. If the threshold was previously set too high, the new results may all be true positives, which will increase precision. If the previous threshold was about right or too low, further lowering the threshold will introduce false positives, decreasing precision.</p>
+<p>Recall is defined as \frac{T_p}{T_p+F_n}, where T_p+F_n does not depend on the classifier threshold. This means that lowering the classifier threshold may increase recall, by increasing the number of true positive results. It is also possible that lowering the threshold may leave recall unchanged, while the precision fluctuates.</p>
+<p>The relationship between recall and precision can be observed in the stairstep area of the plot - at the edges of these steps a small change in the threshold considerably reduces precision, with only a minor gain in recall. See the corner at recall = .59, precision = .8 for an example of this phenomenon.</p>
+<p>Precision-recall curves are typically used in binary classification to study the output of a classifier. In order to extend Precision-recall curve and average precision to multi-class or multi-label classification, it is necessary to binarize the output. One curve can be drawn per label, but one can also draw a precision-recall curve by considering each element of the label indicator matrix as a binary prediction (micro-averaging).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;0.18.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_curve.html#sklearn.metrics.precision_recall_curve">precision_recall_curveaverage_precision_score</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html#sklearn.metrics.average_precision_score">average_precision_score</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split">train_test_split</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.label_binarize.html#sklearn.preprocessing.label_binarize">label_binarize</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.multiclass.OneVsRestClassifier.html#sklearn.multiclass.OneVsRestClassifier">OneVsRestClassifier</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">__doc__</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
+
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">svm</span><span class="p">,</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">precision_recall_curve</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">average_precision_score</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">label_binarize</span>
+<span class="kn">from</span> <span class="nn">sklearn.multiclass</span> <span class="kn">import</span> <span class="n">OneVsRestClassifier</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Automatically created module for IPython interactive environment
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># import some data to play with</span>
+<span class="n">iris</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_iris</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">data</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span>
+
+<span class="c1"># setup plot details</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">([</span><span class="s1">&#39;navy&#39;</span><span class="p">,</span> <span class="s1">&#39;turquoise&#39;</span><span class="p">,</span> <span class="s1">&#39;darkorange&#39;</span><span class="p">,</span> <span class="s1">&#39;cornflowerblue&#39;</span><span class="p">,</span> <span class="s1">&#39;teal&#39;</span><span class="p">])</span>
+<span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="c1"># Binarize the output</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">label_binarize</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">n_classes</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># Add noisy features</span>
+<span class="n">random_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">X</span><span class="p">,</span> <span class="n">random_state</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">200</span> <span class="o">*</span> <span class="n">n_features</span><span class="p">)]</span>
+
+<span class="c1"># Split into training and test</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span>
+                                                    <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
+
+<span class="c1"># Run classifier</span>
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">OneVsRestClassifier</span><span class="p">(</span><span class="n">svm</span><span class="o">.</span><span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                 <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">))</span>
+<span class="n">y_score</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="c1"># Compute Precision-Recall and plot curve</span>
+<span class="n">precision</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">recall</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">average_precision</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_classes</span><span class="p">):</span>
+    <span class="n">precision</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">recall</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">_</span> <span class="o">=</span> <span class="n">precision_recall_curve</span><span class="p">(</span><span class="n">y_test</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span>
+                                                        <span class="n">y_score</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+    <span class="n">average_precision</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">average_precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">y_score</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+
+<span class="c1"># Compute micro-average ROC curve and ROC area</span>
+<span class="n">precision</span><span class="p">[</span><span class="s2">&quot;micro&quot;</span><span class="p">],</span> <span class="n">recall</span><span class="p">[</span><span class="s2">&quot;micro&quot;</span><span class="p">],</span> <span class="n">_</span> <span class="o">=</span> <span class="n">precision_recall_curve</span><span class="p">(</span><span class="n">y_test</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span>
+    <span class="n">y_score</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+<span class="n">average_precision</span><span class="p">[</span><span class="s2">&quot;micro&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">average_precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span>
+                                                     <span class="n">average</span><span class="o">=</span><span class="s2">&quot;micro&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-Precision-Recall-Curve">Plot Precision-Recall Curve<a class="anchor-link" href="#Plot-Precision-Recall-Curve">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">recall</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">precision</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;navy&#39;</span><span class="p">),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Precision-Recall curve&#39;</span><span class="p">)</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Precision-Recall example: AUC={0:0.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">average_precision</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                   <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Recall&#39;</span><span class="p">),</span>
+                   <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Precision&#39;</span><span class="p">))</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">trace1</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/3431.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-Precision-Recall-curve-for-each-class">Plot Precision-Recall curve for each class<a class="anchor-link" href="#Plot-Precision-Recall-curve-for-each-class">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">recall</span><span class="p">[</span><span class="s2">&quot;micro&quot;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">precision</span><span class="p">[</span><span class="s2">&quot;micro&quot;</span><span class="p">],</span> 
+                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;gold&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;micro-average Precision-recall curve (area = {0:0.2f})&#39;</span>
+                          <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">average_precision</span><span class="p">[</span><span class="s2">&quot;micro&quot;</span><span class="p">]))</span>
+<span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace2</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_classes</span><span class="p">),</span> <span class="n">colors</span><span class="p">):</span>
+    <span class="n">trace3</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">recall</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">precision</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                        <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">),</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Precision-recall curve of class {0} (area = {1:0.2f})&#39;</span>
+                              <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">average_precision</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace3</span><span class="p">)</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Extension of Precision-Recall curve to multi-class&#39;</span><span class="p">,</span>
+                   <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Recall&#39;</span><span class="p">),</span>
+                   <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Precision&#39;</span><span class="p">))</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/3435.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="See-Also">See Also<a class="anchor-link" href="#See-Also">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li><p><a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html#sklearn.metrics.average_precision_score">sklearn.metrics.average_precision_score</a></p>
+</li>
+<li><p><a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.recall_score.html#sklearn.metrics.recall_score">sklearn.metrics.recall_score</a></p>
+</li>
+<li><p><a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_score.html#sklearn.metrics.precision_score">sklearn.metrics.precision_score</a></p>
+</li>
+<li><p><a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html#sklearn.metrics.f1_score">sklearn.metrics.f1_score</a></p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>{% endraw %}
