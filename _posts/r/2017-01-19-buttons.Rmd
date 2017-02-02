@@ -36,7 +36,7 @@ library(plotly)
 packageVersion('plotly')
 ```
 
-### Styles
+### Basic Button Example
 
 ```{r, results = 'hide'}
 library(plotly)
@@ -77,60 +77,74 @@ chart_link
 chart_link
 ```
 
-### Chart Types
+### Update Multiple Attributes 
 
 ```{r, results = 'hide'}
 library(plotly)
 
-p <- plot_ly(z = ~volcano, type = "heatmap", colorscale='Viridis')
+p <- plot_ly(z = ~volcano, type = "heatmap", colorscale='Rainbow')
 
+# chart option buttons
+chart_types <- list(
+  type = "buttons",
+  direction = "right",
+  xanchor = 'center',
+  yanchor = "top",
+  pad = list('r'= 0, 't'= 10, 'b' = 10),
+  x = 0.5,
+  y = 1.27,
+  buttons = list(
+    
+    list(method = "restyle",
+         args = list("type", "heatmap"),
+         label = "Heatmap"),
+    
+    list(method = "restyle",
+         args = list("type", "contour"),
+         label = "Contour"),
+    
+    list(method = "restyle",
+         args = list("type", "surface"),
+         label = "Surface")
+  ))
+
+# color option buttons  
+color_types <- list(
+  type = "buttons",
+  direction = "right",
+  xanchor = 'center',
+  yanchor = "top",
+  pad = list('r'= 0, 't'= 10, 'b' = 10),
+  x = 0.5,
+  y = 1.17,
+  buttons = list(
+    
+    list(method = "restyle",
+         args = list("colorscale", "Rainbow"),
+         label = "Rainbow"),
+    
+    list(method = "restyle",
+         args = list("colorscale", "Jet"),
+         label = "Jet"),
+    
+    list(method = "restyle",
+         args = list("colorscale", "Earth"),
+         label = "Earth"),
+    
+    list(method = "restyle",
+         args = list("colorscale", "Electric"),
+         label = "Electric")
+  ))
+
+annot <- list(list(text = "Chart<br>Type", x=0.2, y=1.25, xref='paper', yref='paper', showarrow=FALSE),
+              list(text = "Color<br>Type", x=0.2, y=1.15, xref='paper', yref='paper', showarrow=FALSE))
+
+# plot
 p <- p %>% layout(
-  title = "Buttons",
   xaxis = list(domain = c(0.1, 1)),
   yaxis = list(title = "y"),
-  updatemenus = list(
-    list(
-      type = "buttons",
-      direction = "right",
-      xanchor = 'center',
-      yanchor = "top",
-      x = 0.5,
-      y = 1,
-      buttons = list(
-        
-        list(method = "restyle",
-             args = list("type", "heatmap"),
-             label = "heatmap"),
-        
-        list(method = "restyle",
-             args = list("type", "contour"),
-             label = "contour"),
-        
-        list(method = "restyle",
-             args = list("type", "surface"),
-             label = "surface"),
-        
-        list(method = "restyle",
-             args = list("reversescale", TRUE),
-             label = "Reverse"),
-        
-        list(method = "restyle",
-            args = list("colorscale", "Rainbow"),
-            label = "Rainbow"),
-        
-        list(method = "restyle",
-             args = list("colorscale", "Jet"),
-             label = "Jet"),
-        
-        list(method = "restyle",
-             args = list("colorscale", "Earth"),
-             label = "Earth"),
-        
-        list(method = "restyle",
-             args = list("colorscale", "Electric"),
-             label = "Electric")
-        ))
-  ))
+  updatemenus = list(chart_types,color_types),
+  annotations = annot)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
@@ -142,7 +156,7 @@ chart_link
 chart_link
 ```
 
-### Wind Energy Farms
+### Styling Buttons
 
 ```{r, results = 'hide'}
 library(plotly)
@@ -193,7 +207,7 @@ satellite <- list(method = "relayout",
 p <- plot_mapbox(df_sub, lat = ~lat_DD, lon = ~long_DD, mode = 'scattermapbox',
                  split = ~manufac, size=3) %>%
   add_annotations(x = 0.05, y = 0.05,
-                  text = "Click the buttons!",
+                  text = "All US wind turbines (scroll to zoom)",
                   xref = "page",
                   yref = "page",
                   showarrow = FALSE,
@@ -206,36 +220,35 @@ p <- plot_mapbox(df_sub, lat = ~lat_DD, lon = ~long_DD, mode = 'scattermapbox',
                        zoom = 3, style = 'dark'),
          updatemenus = list(
            
-                            list(type='buttons',
-                                 direction = "right",
-                                 xanchor = 'center',
-                                 yanchor = "top",
-                                 pad = list('r'= 0, 't'= 10, 'b' = 10),
-                                 x = 0.5,
-                                 y = 1,
-                                 showactive = FALSE,
-                                 buttons=list(usa, buttons(1),
-                                              buttons(2), buttons(3), 
-                                              buttons(4), buttons(5))),
-                            
-                            list(type='buttons',
-                                 direction = "right",
-                                 xanchor = 'center',
-                                 yanchor = "top",
-                                 pad = list('r'= 0, 't'= 10),
-                                 x = 0.5,
-                                 y = 0.95,
-                                 showactive = FALSE,
-                                 buttons=list(buttons(6), buttons(7),
-                                              buttons(8), buttons(9),
-                                              buttons(10), buttons(11))),
-                            
-                            list(type='buttons',
-                                 direction = "right",
-                                 yanchor = "bottom",
-                                 x = 1,
-                                 y = 0,
-                                 buttons=list(dark,basic,satellite)))) 
+           list(type='buttons',
+                direction = "right",
+                xanchor = 'center',
+                yanchor = "top",
+                pad = list('r'= 0, 't'= 10, 'b' = 10),
+                x = 0.5,
+                y = 1,
+                showactive = FALSE,
+                buttons=list(usa, buttons(1),
+                             buttons(2), buttons(3), 
+                             buttons(4))),
+           
+           list(type='buttons',
+                direction = "right",
+                xanchor = 'center',
+                yanchor = "top",
+                pad = list('r'= 0, 't'= 10, 'b' = 10),
+                x = 0.5,
+                y = 0.935,
+                showactive = FALSE,
+                buttons=list(buttons(6), buttons(7),
+                             buttons(8), buttons(9))),
+           
+           list(type='buttons',
+                direction = "right",
+                yanchor = "bottom",
+                x = 1,
+                y = 0,
+                buttons=list(dark,basic,satellite)))) 
 
 
 # Create a shareable link to your chart
