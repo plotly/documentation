@@ -15,6 +15,26 @@ output:
 ---
 
 
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+
+```r
+library(plotly)
+packageVersion('plotly')
+```
+
+```
+## [1] '4.5.6.9000'
+```
 #### Download Plotly Graphs into R
 
 Download Plotly figures directly into R with `get_figure()`. This takes the `username` and the `plot_id` as arguments.
@@ -27,17 +47,14 @@ library(plotly)
 fig <- get_figure("cpsievert", "559")
 ```
 
-
-```
-## Error in UseMethod("plotly_build"): no applicable method for 'plotly_build' applied to an object of class "NULL"
-```
+<iframe src="https://plot.ly/~RPlotBot/4294.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #### Edit Downloaded Graph
 Once the figure is downloaded, you can edit it like any plotly object. This will create a new figure unless you specify the same filename as the figure that you downloaded.
 
 
 ```r
-layout(fig, title = paste("Modified on ", Sys.time()))
+p <- layout(fig, title = paste("Modified on ", Sys.time()))
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3131.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -47,23 +64,8 @@ layout(fig, title = paste("Modified on ", Sys.time()))
 
 ```r
 fig <- get_figure("chelsea_lyn", "6343")
-add_lines(fig, x = c(1, 2), y = c(1, 2), xaxis = "x2", yaxis = "y2")
+
+p <- add_lines(fig, x = c(1, 2), y = c(1, 2), xaxis = "x2", yaxis = "y2")
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3133.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-### Restyle Traces
-
-It's easy to add a trace or change the layout of figure, but it's a bit more challenging to modify attributes of an existing trace. If you know the attribute you want to change, and the trace number (starting with 1), use the `style()` function. For example, we could remove the hover text from [this plot](https://plot.ly/~RPlotBot/2833) like so:
-
-
-```r
-fig <- get_figure("rplotbot", 2833)
-fig %>%
-  style(hoverinfo = "none") %>%
-  layout(title = "No hover text")
-```
-
-<iframe src="https://plot.ly/~RPlotBot/3135.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-You'll probably want to inspect the traces before you use this function, and I recommend using the `plotly_json()` function to do so.
