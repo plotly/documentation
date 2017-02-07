@@ -199,7 +199,7 @@ Plotly.restyle(graphDiv, update, [0])
 
 <br>
 
-<h4 id="plotly-relayout"><a class="no_underline plot-blue" href="#plotly-relayout">Update layout attributes with <code>Plotly.relayout</code></a></h4>
+<h4 id="plotly-relayout"><a class="no_underline plot-blue" href="#plotly-relayout">Plotly.relayout</a></h4>
 
 A more efficient means of updating just the layout in a graphDiv. The call signature and arguments for relayout are similar (but simpler) to restyle. Because there are no indices to deal with, arrays need not be wrapped. Also, no argument specifying applicable trace indices is passed in.
 
