@@ -46,17 +46,36 @@ If you are using [rmarkdown](http://rmarkdown.rstudio.com/) with HTML output, pr
 ```{r, results = "hide"}
 library(plotly)
 p <- plot_ly(economics, x = ~date, y = ~unemploy / pop)
-p
 ```
 
 ```{r, echo=FALSE}
-plotly_POST(filename='r-docs/knitr-example')
+plotly_POST(p, filename='r-docs/knitr-example')
 ```
 
 Sometimes, you may want to print a _list_ of plotly objects. If, for some reason, you don't want to use the [`subplot()` function](https://plot.ly/r/subplots/), you can print a list of htmlwidgets in a single code chunk using the `tagList()` function from the **htmltools** package:
 
 ```{r, results = "hide"}
 htmltools::tagList(list(p, p))
+```
+
+Another way to print multiple objects is by using a `lapply`:
+
+```{r, results = "hide"}
+library(plotly)
+
+htmltools::tagList(lapply(1:3, function(x) { plot_ly(x = rnorm(10)) }))
+```
+
+Alternatively, you can use for loops:
+
+```{r, results = "hide"}
+library(plotly)
+
+l <- htmltools::tagList()
+for (i in 1:3) {
+  l[[i]] <- plot_ly(x = rnorm(10))
+}
+l
 ```
 
 You can also host your figures on a plotly server via `plotly_POST()` which returns a figure object. When a figure object is printed in an rmarkdown/knitr document, it embeds the figure as an iframe, displaying the plot as it appears on your plotly account.
