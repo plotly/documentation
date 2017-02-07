@@ -1,0 +1,302 @@
+---
+permalink: scikit-learn/plot-species-kde/
+description:  
+name: Kernel Density Estimate of Species Distributions | plotly
+has_thumbnail: true
+thumbnail: thumbnail/species-kde.jpg
+layout: user-guide
+name: Kernel Density Estimate of Species Distributions
+language: scikit-learn
+title: Kernel Density Estimate of Species Distributions | plotly
+display_as: nearest_neighbors
+has_thumbnail: true
+page_type: example_index
+order: 5
+ipynb: ~Diksha_Gabha/3470
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This shows an example of a neighbors-based query (in particular a kernel density estimate) on geospatial data, using a Ball Tree built upon the Haversine distance metric – i.e. distances over points in latitude/longitude. The dataset is provided by Phillips et. al. (2006). If available, the example uses <a href="http://matplotlib.org/basemap">basemap</a> to plot the coast lines and national boundaries of South America.</p>
+<p>This example does not perform any learning over the data (see Species distribution modeling for an example of classification based on the attributes in this dataset). It simply shows the kernel density estimate of observed data points in geospatial coordinates.</p>
+<p>The two species are:</p>
+<ul>
+<li><p><a href="http://www.iucnredlist.org/apps/redlist/details/3038/0">“Bradypus variegatus”</a> , the Brown-throated Sloth.</p>
+</li>
+<li><p><a href="http://www.iucnredlist.org/details/13408/0">“Microryzomys minutus”</a> , also known as the Forest Small Rice Rat, a rodent that lives in Peru, Colombia, Ecuador, Peru, and Venezuela.</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;0.18.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_species_distributions.html#sklearn.datasets.fetch_species_distributions">fetch_species_distributions</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KernelDensity.html#sklearn.neighbors.KernelDensity">KernelDensity</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">from</span> <span class="nn">plotly</span> <span class="kn">import</span> <span class="n">tools</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">fetch_species_distributions</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets.species_distributions</span> <span class="kn">import</span> <span class="n">construct_grids</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KernelDensity</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Get matrices/arrays of species IDs and locations</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">fetch_species_distributions</span><span class="p">()</span>
+<span class="n">species_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Bradypus Variegatus&#39;</span><span class="p">,</span> <span class="s1">&#39;Microryzomys Minutus&#39;</span><span class="p">]</span>
+
+<span class="n">Xtrain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;dd lat&#39;</span><span class="p">],</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;dd long&#39;</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span>
+<span class="n">ytrain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;micro&#39;</span><span class="p">)</span>
+                  <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;species&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+<span class="n">Xtrain</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span>  <span class="c1"># Convert lat/long to radians</span>
+
+<span class="c1"># Set up the data grid for the contour plot</span>
+<span class="n">xgrid</span><span class="p">,</span> <span class="n">ygrid</span> <span class="o">=</span> <span class="n">construct_grids</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">xgrid</span><span class="p">[::</span><span class="mi">5</span><span class="p">],</span> <span class="n">ygrid</span><span class="p">[::</span><span class="mi">5</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">land_reference</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">coverages</span><span class="p">[</span><span class="mi">6</span><span class="p">][::</span><span class="mi">5</span><span class="p">,</span> <span class="p">::</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">land_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">land_reference</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">9999</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+<span class="n">xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">Y</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">X</span><span class="o">.</span><span class="n">ravel</span><span class="p">()])</span><span class="o">.</span><span class="n">T</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">xy</span><span class="p">[</span><span class="n">land_mask</span><span class="p">]</span>
+<span class="n">xy</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-Results">Plot Results<a class="anchor-link" href="#Plot-Results">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">tools</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                          <span class="n">subplot_titles</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">species_names</span><span class="p">),</span>
+                          <span class="n">print_grid</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+    <span class="c1"># construct a kernel density estimate of the distribution</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot; - computing KDE in spherical coordinates&quot;</span><span class="p">)</span>
+    <span class="n">kde</span> <span class="o">=</span> <span class="n">KernelDensity</span><span class="p">(</span><span class="n">bandwidth</span><span class="o">=</span><span class="mf">0.04</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;haversine&#39;</span><span class="p">,</span>
+                        <span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;ball_tree&#39;</span><span class="p">)</span>
+    <span class="n">kde</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xtrain</span><span class="p">[</span><span class="n">ytrain</span> <span class="o">==</span> <span class="n">i</span><span class="p">])</span>
+
+    <span class="c1"># evaluate only on the land: -9999 indicates ocean</span>
+    <span class="n">Z</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">land_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">Z</span><span class="p">[</span><span class="n">land_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">kde</span><span class="o">.</span><span class="n">score_samples</span><span class="p">(</span><span class="n">xy</span><span class="p">))</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    
+    <span class="c1"># plot contours of the density</span>
+    <span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Contour</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">xgrid</span><span class="p">[::</span><span class="mi">5</span><span class="p">],</span>
+                        <span class="n">y</span><span class="o">=</span><span class="n">ygrid</span><span class="p">[::</span><span class="mi">5</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="n">z</span><span class="o">=</span><span class="n">Z</span><span class="p">,</span>
+                        <span class="n">contours</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">coloring</span><span class="o">=</span><span class="s1">&#39;heatmap&#39;</span><span class="p">,</span>
+                                      <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">Z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+                                      <span class="n">size</span><span class="o">=</span><span class="mi">25</span><span class="p">),</span>
+                        <span class="n">colorscale</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">]],</span> <span class="n">showscale</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot; - plot coastlines from coverage&quot;</span><span class="p">)</span>
+    
+    <span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Contour</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">xgrid</span><span class="p">[::</span><span class="mi">5</span><span class="p">],</span>
+                        <span class="n">y</span><span class="o">=</span><span class="n">ygrid</span><span class="p">[::</span><span class="mi">5</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> 
+                        <span class="n">z</span><span class="o">=</span><span class="n">land_reference</span><span class="p">,</span>
+                        <span class="n">contours</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">coloring</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                                      <span class="n">start</span><span class="o">=-</span><span class="mi">9999</span><span class="p">,</span> <span class="n">end</span><span class="o">=-</span><span class="mi">9998</span><span class="p">,</span>
+                                      <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                        <span class="n">showscale</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">colorscale</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;black&#39;</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">]])</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+  
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> - computing KDE in spherical coordinates
+ - plot coastlines from coverage
+ - computing KDE in spherical coordinates
+ - plot coastlines from coverage
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;yaxis&#39;</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;xaxis&#39;</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span><span class="p">)</span>
+        
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/3468.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Author:</p>
+
+<pre><code>    Jake Vanderplas &lt;jakevdp@cs.washington.edu&gt;
+
+</code></pre>
+<p>License:</p>
+
+<pre><code>    BSD 3 clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}

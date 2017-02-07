@@ -1,0 +1,437 @@
+---
+permalink: scikit-learn/plot-approximate-nearest-neighbors-scalability/
+description:  
+name: Scalability of Approximate Nearest Neighbors | plotly
+has_thumbnail: true
+thumbnail: thumbnail/scalability1.jpg
+layout: user-guide
+name: Scalability of Approximate Nearest Neighbors
+language: scikit-learn
+title: Scalability of Approximate Nearest Neighbors | plotly
+display_as: nearest_neighbors
+has_thumbnail: true
+page_type: example_index
+order: 8
+ipynb: ~Diksha_Gabha/3487
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This example studies the scalability profile of approximate 10-neighbors queries using the LSHForest with n_estimators=20 and n_candidates=200 when varying the number of samples in the dataset.
+The first plot demonstrates the relationship between query time and index size of LSHForest. Query time is compared with the brute force method in exact nearest neighbor search for the same index sizes. The brute force queries have a very predictable linear scalability with the index (full scan). LSHForest index have sub-linear scalability profile but can be slower for small datasets.</p>
+<p>The second plot shows the speedup when using approximate queries vs brute force exact queries. The speedup tends to increase with the dataset size but should reach a plateau typically when doing queries on datasets with millions of samples and a few hundreds of dimensions. Higher dimensional datasets tends to benefit more from LSHForest indexing.</p>
+<p>The break even point (speedup = 1) depends on the dimensionality and structure of the indexed data and the parameters of the LSHForest index.</p>
+<p>The precision of approximate queries should decrease slowly with the dataset size. The speed of the decrease depends mostly on the LSHForest parameters and the dimensionality of the data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;0.18.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="k">print</span><span class="p">(</span><span class="n">__doc__</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets.samples_generator</span> <span class="kn">import</span> <span class="n">make_blobs</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">LSHForest</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">NearestNeighbors</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Automatically created module for IPython interactive environment
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Parameters of the study</span>
+<span class="n">n_samples_min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e3</span><span class="p">)</span>
+<span class="n">n_samples_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e5</span><span class="p">)</span>
+<span class="n">n_features</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">n_centers</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">n_queries</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">n_steps</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">n_iter</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c1"># Initialize the range of `n_samples`</span>
+<span class="n">n_samples_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">n_samples_min</span><span class="p">),</span>
+                               <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">n_samples_max</span><span class="p">),</span>
+                               <span class="n">n_steps</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+<span class="c1"># Generate some structured data</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">all_data</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">make_blobs</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples_max</span> <span class="o">+</span> <span class="n">n_queries</span><span class="p">,</span>
+                         <span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span> <span class="n">centers</span><span class="o">=</span><span class="n">n_centers</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                         <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">queries</span> <span class="o">=</span> <span class="n">all_data</span><span class="p">[:</span><span class="n">n_queries</span><span class="p">]</span>
+<span class="n">index_data</span> <span class="o">=</span> <span class="n">all_data</span><span class="p">[</span><span class="n">n_queries</span><span class="p">:]</span>
+
+<span class="c1"># Metrics to collect for the plots</span>
+<span class="n">average_times_exact</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">average_times_approx</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">std_times_approx</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">accuracies</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">std_accuracies</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">average_speedups</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">std_speedups</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Calculate the average query time</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">n_samples</span> <span class="ow">in</span> <span class="n">n_samples_values</span><span class="p">:</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">index_data</span><span class="p">[:</span><span class="n">n_samples</span><span class="p">]</span>
+    <span class="c1"># Initialize LSHForest for queries of a single neighbor</span>
+    <span class="n">lshf</span> <span class="o">=</span> <span class="n">LSHForest</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_candidates</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                     <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">nbrs</span> <span class="o">=</span> <span class="n">NearestNeighbors</span><span class="p">(</span><span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;brute&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+                            <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">time_approx</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">time_exact</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iter</span><span class="p">):</span>
+        <span class="c1"># pick one query at random to study query time variability in LSHForest</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">queries</span><span class="p">[[</span><span class="n">rng</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_queries</span><span class="p">)]]</span>
+
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">exact_neighbors</span> <span class="o">=</span> <span class="n">nbrs</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">return_distance</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">time_exact</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span>
+
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">approx_neighbors</span> <span class="o">=</span> <span class="n">lshf</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">return_distance</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">time_approx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span>
+
+        <span class="n">accuracy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">approx_neighbors</span><span class="p">,</span> <span class="n">exact_neighbors</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+
+    <span class="n">average_time_exact</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">time_exact</span><span class="p">)</span>
+    <span class="n">average_time_approx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">time_approx</span><span class="p">)</span>
+    <span class="n">speedup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time_exact</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time_approx</span><span class="p">)</span>
+    <span class="n">average_speedup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">speedup</span><span class="p">)</span>
+    <span class="n">mean_accuracy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">accuracy</span><span class="p">)</span>
+    <span class="n">std_accuracy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">accuracy</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Index size: </span><span class="si">%d</span><span class="s2">, exact: </span><span class="si">%0.3f</span><span class="s2">s, LSHF: </span><span class="si">%0.3f</span><span class="s2">s, speedup: </span><span class="si">%0.1f</span><span class="s2">, &quot;</span>
+          <span class="s2">&quot;accuracy: </span><span class="si">%0.2f</span><span class="s2"> +/-</span><span class="si">%0.2f</span><span class="s2">&quot;</span> <span class="o">%</span>
+          <span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">average_time_exact</span><span class="p">,</span> <span class="n">average_time_approx</span><span class="p">,</span> <span class="n">average_speedup</span><span class="p">,</span>
+           <span class="n">mean_accuracy</span><span class="p">,</span> <span class="n">std_accuracy</span><span class="p">))</span>
+
+    <span class="n">accuracies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean_accuracy</span><span class="p">)</span>
+    <span class="n">std_accuracies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">std_accuracy</span><span class="p">)</span>
+    <span class="n">average_times_exact</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">average_time_exact</span><span class="p">)</span>
+    <span class="n">average_times_approx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">average_time_approx</span><span class="p">)</span>
+    <span class="n">std_times_approx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">time_approx</span><span class="p">))</span>
+    <span class="n">average_speedups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">average_speedup</span><span class="p">)</span>
+    <span class="n">std_speedups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">speedup</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Index size: 1000, exact: 0.001s, LSHF: 0.006s, speedup: 0.1, accuracy: 1.00 +/-0.00
+Index size: 2511, exact: 0.002s, LSHF: 0.007s, speedup: 0.2, accuracy: 1.00 +/-0.00
+Index size: 6309, exact: 0.005s, LSHF: 0.008s, speedup: 0.7, accuracy: 1.00 +/-0.00
+Index size: 15848, exact: 0.015s, LSHF: 0.010s, speedup: 1.5, accuracy: 1.00 +/-0.00
+Index size: 39810, exact: 0.027s, LSHF: 0.009s, speedup: 2.9, accuracy: 1.00 +/-0.00
+Index size: 100000, exact: 0.070s, LSHF: 0.016s, speedup: 4.8, accuracy: 0.98 +/-0.04
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-average-query-time-against-n_samples">Plot average query time against n_samples<a class="anchor-link" href="#Plot-average-query-time-against-n_samples">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">p1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">n_samples_values</span><span class="p">,</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">average_times_approx</span><span class="p">,</span>
+                <span class="n">error_y</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+                             <span class="n">arrayminus</span><span class="o">=</span><span class="n">std_times_approx</span><span class="p">),</span>
+                <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;LSHForest&#39;</span><span class="p">)</span>
+
+<span class="n">p2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">n_samples_values</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">average_times_exact</span><span class="p">,</span>
+                <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;NearestNeighbors(algorithm=&#39;brute&#39;, metric=&#39;cosine&#39;)&quot;</span><span class="p">)</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Impact of index size on response time for first &quot;</span>
+                            <span class="s2">&quot;nearest neighbors queries&quot;</span><span class="p">,</span>
+                   <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;n_samples&quot;</span><span class="p">),</span>
+                   <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Average query time in seconds&quot;</span><span class="p">))</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/3481.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-average-query-speedup-versus-index-size">Plot average query speedup versus index size<a class="anchor-link" href="#Plot-average-query-speedup-versus-index-size">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">p1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">n_samples_values</span><span class="p">,</span> 
+                <span class="n">y</span><span class="o">=</span><span class="n">average_speedups</span><span class="p">,</span> 
+                <span class="n">error_y</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+                             <span class="n">arrayminus</span><span class="o">=</span><span class="n">std_speedups</span><span class="p">),</span>
+                <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Speedup of the approximate NN queries vs brute force&quot;</span><span class="p">,</span>
+                   <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;n_samples&quot;</span><span class="p">),</span>
+                   <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Average speedup&quot;</span><span class="p">))</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">p1</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/3483.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-average-precision-versus-index-size">Plot average precision versus index size<a class="anchor-link" href="#Plot-average-precision-versus-index-size">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">p1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">n_samples_values</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">accuracies</span><span class="p">,</span>
+                <span class="n">error_y</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+                             <span class="n">arrayminus</span><span class="o">=</span><span class="n">std_accuracies</span><span class="p">),</span>
+                <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Precision of 10-nearest-neighbors queries with index size&quot;</span><span class="p">,</span>
+                   <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;n_samples&quot;</span><span class="p">),</span>
+                   <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;precision@10&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">]))</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">p1</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[7]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/3485.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Authors:</p>
+
+<pre><code>    Maheshakya Wijewardena &lt;maheshakya.10@cse.mrt.ac.lk&gt;
+
+    Olivier Grisel &lt;olivier.grisel@ensta.org&gt;
+
+</code></pre>
+<p>License:</p>
+
+<pre><code>     BSD 3 clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}
