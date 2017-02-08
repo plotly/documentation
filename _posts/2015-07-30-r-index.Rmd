@@ -1,0 +1,124 @@
+###############################################################################
+
+
+
+
+
+
+
+
+This page is out of sync with `r-index.md` until https://github.com/plotly/documentation/pull/213#issuecomment-157031089
+gets resolved.
+
+For now, edit your content on the 2015-07-30-r-index.md.
+
+
+
+
+
+
+
+###############################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+title: R Graphing Library | Plotly
+permalink: r/
+description: Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of how to make line plots, scatter plots, area charts, bar charts, error bars, box plots, histograms, heatmaps, subplots, multiple-axes, polar charts and bubble charts.
+layout: langindex
+language: r
+---
+
+<h1 class="centered">Plotly R Library 2.0</h1>
+<div class="row centered btnrow">
+	<a href="/r/getting-started/" class="button no_underline">Getting Started</a>
+	<a href="/r/user-guide/" class="button no_underline">User Guide</a>
+	<a href="https://plot.ly/r/reference/" class="button no_underline">Figure Reference</a>
+  <a href="https://plot.ly/r/shiny-tutorial/" class="button no_underline">Shiny</a>
+</div>
+
+<div>Plotly for R is an interactive, browser-based charting library built on the open source javascript graphing library,
+<a href="https://plot.ly/javascript" target="_blank">plotly.js</a>.
+</div>
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```
+
+```{r, message=FALSE}
+library(plotly)
+set.seed(100)
+d <- diamonds[sample(nrow(diamonds), 1000), ]
+plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
+        mode = "markers", color = carat, size = carat)
+
+```
+Plotly graphs are interactive. Click-drag to zoom, shift-click to pan, double-click to autoscale.
+
+
+#### Know and love `ggplot2`? Try `ggplotly`
+
+```{r, message=FALSE}
+p <- ggplot(data = d, aes(x = carat, y = price)) +
+  geom_point(aes(text = paste("Clarity:", clarity)), size = 4) +
+  geom_smooth(aes(colour = cut, fill = cut)) + facet_wrap(~ cut)
+
+(gg <- ggplotly(p))
+```
+
+
+#### Mix data manipulation and visualization verbs
+
+Plotly objects are data frames with a class of plotly and an environment that tracks the mapping from data to visual properties.
+
+```{r, eval = TRUE}
+str(p <- plot_ly(economics, x = date, y = uempmed))
+```
+
+This allows us to mix data manipulation and visualization verbs in a [pure(ly) functional, predictable and pipeable](https://dl.dropboxusercontent.com/u/41902/pipe-dsls.pdf) manner. Here, we take advantage of [dplyr](http://cran.r-project.org/web/packages/dplyr/index.html)'s `filter()` verb to label the highest peak in the time series:
+
+```{r, message = FALSE, warning = FALSE, height=650}
+p %>%
+  add_trace(y = fitted(loess(uempmed ~ as.numeric(date)))) %>%
+  layout(title = "Median duration of unemployment (in weeks)",
+         showlegend = FALSE) %>%
+  dplyr::filter(uempmed == max(uempmed)) %>%
+  layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T))
+```
+
+#### 3D WebGL and more
+
+Although data frames can be thought of as the central object in this package, plotly visualizations don't actually _require_ a data frame. This makes chart types that accept a `z` argument especially easy to use if you have a numeric matrix:
+
+```{r, message=FALSE, height=800}
+plot_ly(z = volcano, type = "surface")
+```
+
+{% assign languagelistimg = site.posts | where:"page_type":"example_index" | where:"language","r"  | where:"has_thumbnail",true | sort: "order"  %}
+{% assign languagelist = site.posts | where:"page_type":"example_index" | where:"language","r" %}
+
+{% include documentation_eg.html %}
