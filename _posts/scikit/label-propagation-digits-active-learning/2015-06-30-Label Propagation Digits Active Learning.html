@@ -1,0 +1,509 @@
+---
+permalink: scikit-learn/plot-label-propagation-digits-active-learning/
+description:  
+name: Label Propagation Digits Active Learning | plotly
+has_thumbnail: true
+thumbnail: thumbnail/label-propagation-digits.jpg
+layout: user-guide
+name: Label Propagation Digits Active Learning
+language: scikit-learn
+title: Label Propagation Digits Active Learning | plotly
+display_as: semi_supervised
+has_thumbnail: true
+page_type: example_index
+order: 4
+ipynb: ~Diksha_Gabha/3529
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Demonstrates an active learning technique to learn handwritten digits using label propagation.</p>
+<p>We start by training a label propagation model with only 10 labeled points, then we select the top five most uncertain points to label. Next, we train with 15 labeled points (original 10 + 5 new ones). We repeat this process four times to have a model trained with 30 labeled examples.</p>
+<p>A plot will appear showing the top 5 most uncertain digits for each iteration of training. These may or may not contain mistakes, but we will train the next model with their true labels.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;0.18.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html#sklearn.metrics.classification_report">classification_report</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html#sklearn.metrics.confusion_matrix">confusion_matrix</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">__doc__</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">from</span> <span class="nn">plotly</span> <span class="kn">import</span> <span class="n">tools</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn.semi_supervised</span> <span class="kn">import</span> <span class="n">label_propagation</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">classification_report</span><span class="p">,</span> <span class="n">confusion_matrix</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Automatically created module for IPython interactive environment
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">digits</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_digits</span><span class="p">()</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">digits</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+<span class="n">rng</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">indices</span><span class="p">[:</span><span class="mi">330</span><span class="p">]]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">target</span><span class="p">[</span><span class="n">indices</span><span class="p">[:</span><span class="mi">330</span><span class="p">]]</span>
+<span class="n">images</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">indices</span><span class="p">[:</span><span class="mi">330</span><span class="p">]]</span>
+
+<span class="n">n_total_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">n_labeled_points</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">unlabeled_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_total_samples</span><span class="p">)[</span><span class="n">n_labeled_points</span><span class="p">:]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-Results">Plot Results<a class="anchor-link" href="#Plot-Results">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">titles</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span> <span class="nf">matplotlib_to_plotly</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">pl_entries</span><span class="p">):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">pl_entries</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pl_colorscale</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pl_entries</span><span class="p">):</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cmap</span><span class="p">(</span><span class="n">k</span><span class="o">*</span><span class="n">h</span><span class="p">)[:</span><span class="mi">3</span><span class="p">])</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span>
+        <span class="n">pl_colorscale</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">k</span><span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="s1">&#39;rgb&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]))])</span>
+        
+    <span class="k">return</span> <span class="n">pl_colorscale</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">y_train</span><span class="p">[</span><span class="n">unlabeled_indices</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="n">lp_model</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="o">.</span><span class="n">LabelSpreading</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">lp_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+    <span class="n">predicted_labels</span> <span class="o">=</span> <span class="n">lp_model</span><span class="o">.</span><span class="n">transduction_</span><span class="p">[</span><span class="n">unlabeled_indices</span><span class="p">]</span>
+    <span class="n">true_labels</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">unlabeled_indices</span><span class="p">]</span>
+
+    <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">true_labels</span><span class="p">,</span> <span class="n">predicted_labels</span><span class="p">,</span>
+                          <span class="n">labels</span><span class="o">=</span><span class="n">lp_model</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Iteration </span><span class="si">%i</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">70</span> <span class="o">*</span> <span class="s1">&#39;_&#39;</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Label Spreading model: </span><span class="si">%d</span><span class="s2"> labeled &amp; </span><span class="si">%d</span><span class="s2"> unlabeled (</span><span class="si">%d</span><span class="s2"> total)&quot;</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">n_labeled_points</span><span class="p">,</span> <span class="n">n_total_samples</span> <span class="o">-</span> <span class="n">n_labeled_points</span><span class="p">,</span> <span class="n">n_total_samples</span><span class="p">))</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">true_labels</span><span class="p">,</span> <span class="n">predicted_labels</span><span class="p">))</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Confusion matrix&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+
+    <span class="c1"># compute the entropies of transduced label distributions</span>
+    <span class="n">pred_entropies</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">entropy</span><span class="p">(</span>
+        <span class="n">lp_model</span><span class="o">.</span><span class="n">label_distributions_</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="c1"># select five digit examples that the classifier is most uncertain about</span>
+    <span class="n">uncertainty_index</span> <span class="o">=</span> <span class="n">uncertainty_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">pred_entropies</span><span class="p">)[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span>
+
+    <span class="c1"># keep track of indices that we get labels for</span>
+    <span class="n">delete_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+    <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;model </span><span class="si">%d</span><span class="s2">&lt;br&gt;fit with&lt;br&gt;</span><span class="si">%d</span><span class="s2"> labels&quot;</span> <span class="o">%</span> <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">10</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">image_index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uncertainty_index</span><span class="p">):</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="n">image_index</span><span class="p">]</span>
+
+        <span class="n">trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Heatmap</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">showscale</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> 
+                           <span class="n">colorscale</span><span class="o">=</span><span class="n">matplotlib_to_plotly</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">gray_r</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+        
+        <span class="n">titles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;predict: </span><span class="si">%i</span><span class="s1">&lt;br&gt;true: </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">lp_model</span><span class="o">.</span><span class="n">transduction_</span><span class="p">[</span><span class="n">image_index</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">image_index</span><span class="p">]))</span>
+        
+
+        <span class="c1"># labeling 5 points, remote from labeled set</span>
+        <span class="n">delete_index</span><span class="p">,</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">unlabeled_indices</span> <span class="o">==</span> <span class="n">image_index</span><span class="p">)</span>
+        <span class="n">delete_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">delete_indices</span><span class="p">,</span> <span class="n">delete_index</span><span class="p">))</span>
+
+    <span class="n">unlabeled_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">unlabeled_indices</span><span class="p">,</span> <span class="n">delete_indices</span><span class="p">)</span>
+    <span class="n">n_labeled_points</span> <span class="o">+=</span> <span class="mi">5</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Iteration 0 ______________________________________________________________________
+Label Spreading model: 10 labeled &amp; 320 unlabeled (330 total)
+             precision    recall  f1-score   support
+
+          0       0.00      0.00      0.00        24
+          1       0.49      0.90      0.63        29
+          2       0.88      0.97      0.92        31
+          3       0.00      0.00      0.00        28
+          4       0.00      0.00      0.00        27
+          5       0.89      0.49      0.63        35
+          6       0.86      0.95      0.90        40
+          7       0.75      0.92      0.83        36
+          8       0.54      0.79      0.64        33
+          9       0.41      0.86      0.56        37
+
+avg / total       0.52      0.63      0.55       320
+
+Confusion matrix
+[[26  1  0  0  1  0  1]
+ [ 1 30  0  0  0  0  0]
+ [ 0  0 17  6  0  2 10]
+ [ 2  0  0 38  0  0  0]
+ [ 0  3  0  0 33  0  0]
+ [ 7  0  0  0  0 26  0]
+ [ 0  0  2  0  0  3 32]]
+Iteration 1 ______________________________________________________________________
+Label Spreading model: 15 labeled &amp; 315 unlabeled (330 total)
+             precision    recall  f1-score   support
+
+          0       1.00      1.00      1.00        23
+          1       0.61      0.59      0.60        29
+          2       0.91      0.97      0.94        31
+          3       1.00      0.56      0.71        27
+          4       0.79      0.88      0.84        26
+          5       0.89      0.46      0.60        35
+          6       0.86      0.95      0.90        40
+          7       0.97      0.92      0.94        36
+          8       0.54      0.84      0.66        31
+          9       0.70      0.81      0.75        37
+
+avg / total       0.82      0.80      0.79       315
+
+Confusion matrix
+[[23  0  0  0  0  0  0  0  0  0]
+ [ 0 17  1  0  2  0  0  1  7  1]
+ [ 0  1 30  0  0  0  0  0  0  0]
+ [ 0  0  0 15  0  0  0  0 10  2]
+ [ 0  3  0  0 23  0  0  0  0  0]
+ [ 0  0  0  0  1 16  6  0  2 10]
+ [ 0  2  0  0  0  0 38  0  0  0]
+ [ 0  0  2  0  1  0  0 33  0  0]
+ [ 0  5  0  0  0  0  0  0 26  0]
+ [ 0  0  0  0  2  2  0  0  3 30]]
+Iteration 2 ______________________________________________________________________
+Label Spreading model: 20 labeled &amp; 310 unlabeled (330 total)
+             precision    recall  f1-score   support
+
+          0       1.00      1.00      1.00        23
+          1       0.68      0.59      0.63        29
+          2       0.91      0.97      0.94        31
+          3       0.96      1.00      0.98        23
+          4       0.81      1.00      0.89        25
+          5       0.89      0.46      0.60        35
+          6       0.86      0.95      0.90        40
+          7       0.97      0.92      0.94        36
+          8       0.68      0.84      0.75        31
+          9       0.75      0.81      0.78        37
+
+avg / total       0.85      0.84      0.83       310
+
+Confusion matrix
+[[23  0  0  0  0  0  0  0  0  0]
+ [ 0 17  1  0  2  0  0  1  7  1]
+ [ 0  1 30  0  0  0  0  0  0  0]
+ [ 0  0  0 23  0  0  0  0  0  0]
+ [ 0  0  0  0 25  0  0  0  0  0]
+ [ 0  0  0  1  1 16  6  0  2  9]
+ [ 0  2  0  0  0  0 38  0  0  0]
+ [ 0  0  2  0  1  0  0 33  0  0]
+ [ 0  5  0  0  0  0  0  0 26  0]
+ [ 0  0  0  0  2  2  0  0  3 30]]
+Iteration 3 ______________________________________________________________________
+Label Spreading model: 25 labeled &amp; 305 unlabeled (330 total)
+             precision    recall  f1-score   support
+
+          0       1.00      1.00      1.00        23
+          1       0.70      0.85      0.77        27
+          2       1.00      0.90      0.95        31
+          3       1.00      1.00      1.00        23
+          4       1.00      1.00      1.00        25
+          5       0.96      0.74      0.83        34
+          6       1.00      0.95      0.97        40
+          7       0.90      1.00      0.95        35
+          8       0.83      0.81      0.82        31
+          9       0.75      0.83      0.79        36
+
+avg / total       0.91      0.90      0.90       305
+
+Confusion matrix
+[[23  0  0  0  0  0  0  0  0  0]
+ [ 0 23  0  0  0  0  0  0  4  0]
+ [ 0  1 28  0  0  0  0  2  0  0]
+ [ 0  0  0 23  0  0  0  0  0  0]
+ [ 0  0  0  0 25  0  0  0  0  0]
+ [ 0  0  0  0  0 25  0  0  0  9]
+ [ 0  2  0  0  0  0 38  0  0  0]
+ [ 0  0  0  0  0  0  0 35  0  0]
+ [ 0  5  0  0  0  0  0  0 25  1]
+ [ 0  2  0  0  0  1  0  2  1 30]]
+Iteration 4 ______________________________________________________________________
+Label Spreading model: 30 labeled &amp; 300 unlabeled (330 total)
+             precision    recall  f1-score   support
+
+          0       1.00      1.00      1.00        23
+          1       0.77      0.88      0.82        26
+          2       1.00      0.90      0.95        31
+          3       1.00      1.00      1.00        23
+          4       1.00      1.00      1.00        25
+          5       0.94      0.97      0.95        32
+          6       1.00      0.97      0.99        39
+          7       0.90      1.00      0.95        35
+          8       0.89      0.81      0.85        31
+          9       0.94      0.89      0.91        35
+
+avg / total       0.94      0.94      0.94       300
+
+Confusion matrix
+[[23  0  0  0  0  0  0  0  0  0]
+ [ 0 23  0  0  0  0  0  0  3  0]
+ [ 0  1 28  0  0  0  0  2  0  0]
+ [ 0  0  0 23  0  0  0  0  0  0]
+ [ 0  0  0  0 25  0  0  0  0  0]
+ [ 0  0  0  0  0 31  0  0  0  1]
+ [ 0  1  0  0  0  0 38  0  0  0]
+ [ 0  0  0  0  0  0  0 35  0  0]
+ [ 0  5  0  0  0  0  0  0 25  1]
+ [ 0  0  0  0  0  2  0  2  0 31]]
+</pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">tools</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                          <span class="n">subplot_titles</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">titles</span><span class="p">),</span>
+                          <span class="n">print_grid</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">],</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">26</span><span class="p">)):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;yaxis&#39;</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;xaxis&#39;</span> <span class="o">+</span> <span class="n">i</span>
+        
+        <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">autorange</span><span class="o">=</span><span class="s1">&#39;reversed&#39;</span><span class="p">,</span>
+                                <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        
+<span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">5</span><span class="p">)):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;yaxis&#39;</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;xaxis&#39;</span> <span class="o">+</span> <span class="n">i</span>
+        
+        <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">text</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+                                <span class="n">autorange</span><span class="o">=</span><span class="s1">&#39;reversed&#39;</span><span class="p">,</span>
+                                <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Active learning with Label Propagation.&lt;br&gt;&quot;</span>
+                     <span class="o">+</span><span class="s2">&quot;Rows show 5 most uncertain labels to learn with the next model.&quot;</span><span class="p">,</span>
+                     <span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">200</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>The draw time for this plot will be slow for all clients.
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt output_prompt">Out[11]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/3527.embed" height="1000px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Authors:</p>
+
+<pre><code>      Clay Woolam &lt;clay@woolam.org&gt;
+
+</code></pre>
+<p>License:</p>
+
+<pre><code>      BSD</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}

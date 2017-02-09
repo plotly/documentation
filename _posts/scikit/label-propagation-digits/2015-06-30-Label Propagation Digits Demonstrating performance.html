@@ -1,0 +1,396 @@
+---
+permalink: scikit-learn/plot-label-propagation-digits/
+description:  
+name: Label Propagation Digits Demonstrating performance | plotly
+has_thumbnail: true
+thumbnail: thumbnail/label-propagation-digits.jpg
+layout: user-guide
+name: Label Propagation Digits Demonstrating performance
+language: scikit-learn
+title: Label Propagation Digits Demonstrating performance | plotly
+display_as: semi_supervised
+has_thumbnail: true
+page_type: example_index
+order: 2
+ipynb: ~Diksha_Gabha/3517
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This example demonstrates the power of semisupervised learning by training a Label Spreading model to classify handwritten digits with sets of very few labels.</p>
+<p>The handwritten digit dataset has 1797 total points. The model will be trained using all points, but only 30 will be labeled. Results in the form of a confusion matrix and a series of metrics over each class will be very good.
+At the end, the top 10 most uncertain predictions will be shown.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;0.18.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html#sklearn.metrics.classification_report">classification_report</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html#sklearn.metrics.confusion_matrix">confusion_matrix</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">__doc__</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">from</span> <span class="nn">plotly</span> <span class="kn">import</span> <span class="n">tools</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn.semi_supervised</span> <span class="kn">import</span> <span class="n">label_propagation</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">classification_report</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Automatically created module for IPython interactive environment
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">digits</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_digits</span><span class="p">()</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">digits</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+<span class="n">rng</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">indices</span><span class="p">[:</span><span class="mi">330</span><span class="p">]]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">target</span><span class="p">[</span><span class="n">indices</span><span class="p">[:</span><span class="mi">330</span><span class="p">]]</span>
+<span class="n">images</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">indices</span><span class="p">[:</span><span class="mi">330</span><span class="p">]]</span>
+
+<span class="n">n_total_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">n_labeled_points</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_total_samples</span><span class="p">)</span>
+
+<span class="n">unlabeled_set</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">n_labeled_points</span><span class="p">:]</span>
+
+<span class="c1"># shuffle everything around</span>
+<span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">y_train</span><span class="p">[</span><span class="n">unlabeled_set</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Learn with LabelSpreading</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">lp_model</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="o">.</span><span class="n">LabelSpreading</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">lp_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">predicted_labels</span> <span class="o">=</span> <span class="n">lp_model</span><span class="o">.</span><span class="n">transduction_</span><span class="p">[</span><span class="n">unlabeled_set</span><span class="p">]</span>
+<span class="n">true_labels</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">unlabeled_set</span><span class="p">]</span>
+
+<span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">true_labels</span><span class="p">,</span> <span class="n">predicted_labels</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">lp_model</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Label Spreading model: </span><span class="si">%d</span><span class="s2"> labeled &amp; </span><span class="si">%d</span><span class="s2"> unlabeled points (</span><span class="si">%d</span><span class="s2"> total)&quot;</span> <span class="o">%</span>
+      <span class="p">(</span><span class="n">n_labeled_points</span><span class="p">,</span> <span class="n">n_total_samples</span> <span class="o">-</span> <span class="n">n_labeled_points</span><span class="p">,</span> <span class="n">n_total_samples</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">true_labels</span><span class="p">,</span> <span class="n">predicted_labels</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Confusion matrix&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+
+<span class="c1"># calculate uncertainty values for each transduced distribution</span>
+<span class="n">pred_entropies</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">entropy</span><span class="p">(</span><span class="n">lp_model</span><span class="o">.</span><span class="n">label_distributions_</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="c1"># pick the top 10 most uncertain labels</span>
+<span class="n">uncertainty_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">pred_entropies</span><span class="p">)[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Label Spreading model: 30 labeled &amp; 300 unlabeled points (330 total)
+             precision    recall  f1-score   support
+
+          0       1.00      1.00      1.00        23
+          1       0.58      0.54      0.56        28
+          2       0.96      0.93      0.95        29
+          3       0.00      0.00      0.00        28
+          4       0.91      0.80      0.85        25
+          5       0.96      0.79      0.87        33
+          6       0.97      0.97      0.97        36
+          7       0.89      1.00      0.94        34
+          8       0.48      0.83      0.61        29
+          9       0.54      0.77      0.64        35
+
+avg / total       0.73      0.77      0.74       300
+
+Confusion matrix
+[[23  0  0  0  0  0  0  0  0]
+ [ 0 15  1  0  0  1  0 11  0]
+ [ 0  0 27  0  0  0  2  0  0]
+ [ 0  5  0 20  0  0  0  0  0]
+ [ 0  0  0  0 26  0  0  1  6]
+ [ 0  1  0  0  0 35  0  0  0]
+ [ 0  0  0  0  0  0 34  0  0]
+ [ 0  5  0  0  0  0  0 24  0]
+ [ 0  0  0  2  1  0  2  3 27]]
+</pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-Results">Plot Results<a class="anchor-link" href="#Plot-Results">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">matplotlib_to_plotly</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">pl_entries</span><span class="p">):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">pl_entries</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pl_colorscale</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pl_entries</span><span class="p">):</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cmap</span><span class="p">(</span><span class="n">k</span><span class="o">*</span><span class="n">h</span><span class="p">)[:</span><span class="mi">3</span><span class="p">])</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span>
+        <span class="n">pl_colorscale</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">k</span><span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="s1">&#39;rgb&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]))])</span>
+        
+    <span class="k">return</span> <span class="n">pl_colorscale</span>
+
+<span class="n">cmap</span> <span class="o">=</span> <span class="n">matplotlib_to_plotly</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">gray_r</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">titles</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">image_index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uncertainty_index</span><span class="p">):</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="n">image_index</span><span class="p">]</span>
+
+    
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Heatmap</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> 
+                           <span class="n">colorscale</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+                           <span class="n">showscale</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+    <span class="n">titles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;predict: </span><span class="si">%i</span><span class="s1">&lt;br&gt;true: </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                   <span class="n">lp_model</span><span class="o">.</span><span class="n">transduction_</span><span class="p">[</span><span class="n">image_index</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">image_index</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">tools</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">print_grid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                          <span class="n">subplot_titles</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">titles</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="o">/</span><span class="mi">5</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="o">%</span><span class="k">5</span>+1)
+    
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;yaxis&#39;</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;xaxis&#39;</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">autorange</span><span class="o">=</span><span class="s1">&#39;reversed&#39;</span><span class="p">,</span>
+                                <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Learning with small amount of labeled data&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/3515.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Authors:</p>
+
+<pre><code>    Clay Woolam &lt;clay@woolam.org&gt;
+
+</code></pre>
+<p>License:</p>
+
+<pre><code>    BSD</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}
