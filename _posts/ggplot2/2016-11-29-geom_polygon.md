@@ -243,13 +243,7 @@ library(plotly)
 library(plyr)
 library(maps)
 library(mapproj)
-```
 
-```
-## Error in library(mapproj): there is no package called 'mapproj'
-```
-
-```r
 us_ag <- 
   read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")
 
@@ -273,25 +267,12 @@ p <- ggplot(data = map_data, aes(x = long, y = lat, group = group)) +
   theme_bw()
 
 p <- ggplotly(p)
-```
 
-```
-## Error in loadNamespace(name): there is no package called 'mapproj'
-```
-
-```r
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="geom_polygon/maps")
-```
-
-```
-## Error in loadNamespace(name): there is no package called 'mapproj'
-```
-
-```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4157.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4159.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
