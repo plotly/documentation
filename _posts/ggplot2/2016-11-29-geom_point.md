@@ -1,0 +1,294 @@
+---
+title: geom_point | Examples | Plotly
+name: geom_point
+permalink: ggplot2/geom_point/
+description: How to make a scatter chart in ggplot2. Examples of scatter charts and line charts with fits and regressions.
+layout: base
+thumbnail: thumbnail/gg-themes.jpg
+language: ggplot2
+page_type: example_index
+has_thumbnail: true
+display_as: basic
+order: 6
+redirect_from: ggplot2/line-and-scatter/
+output:
+  html_document:
+    keep_md: true
+---
+
+
+
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+
+
+```r
+library(plotly)
+packageVersion('plotly')
+```
+
+```
+## [1] '4.5.6.9000'
+```
+
+### Scatter Chart
+
+
+```r
+library(plotly)
+
+set.seed(955)
+# Make some noisily increasing data
+dat <- data.frame(cond = rep(c("A", "B"), each=10),
+                  xvar = 1:20 + rnorm(20,sd=3),
+                  yvar = 1:20 + rnorm(20,sd=3))
+
+p <- ggplot(dat, aes(x=xvar, y=yvar)) +
+    geom_point(shape=1)      # Use hollow circles
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_point/scatter")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4103.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Liner Regression w/ smooth
+
+
+```r
+library(plotly)
+
+set.seed(955)
+# Make some noisily increasing data
+dat <- data.frame(cond = rep(c("A", "B"), each=10),
+                  xvar = 1:20 + rnorm(20,sd=3),
+                  yvar = 1:20 + rnorm(20,sd=3))
+
+p <- ggplot(dat, aes(x=xvar, y=yvar)) +
+    geom_point(shape=1) +    # Use hollow circles
+    geom_smooth(method=lm)   # Add linear regression line
+
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_point/linear-reg")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4105.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Without Shading
+
+
+```r
+library(plotly)
+
+set.seed(955)
+# Make some noisily increasing data
+dat <- data.frame(cond = rep(c("A", "B"), each=10),
+                  xvar = 1:20 + rnorm(20,sd=3),
+                  yvar = 1:20 + rnorm(20,sd=3))
+
+p <- ggplot(dat, aes(x=xvar, y=yvar)) +
+    geom_point(shape=1) +    # Use hollow circles
+    geom_smooth(method=lm,   # Add linear regression line
+                se=FALSE)    # Don't add shaded confidence region
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_point/no-shading")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4107.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Loess Smoothed Fit
+
+
+```r
+library(plotly)
+
+set.seed(955)
+# Make some noisily increasing data
+dat <- data.frame(cond = rep(c("A", "B"), each=10),
+                  xvar = 1:20 + rnorm(20,sd=3),
+                  yvar = 1:20 + rnorm(20,sd=3))
+
+p <- ggplot(dat, aes(x=xvar, y=yvar)) +
+    geom_point(shape=1) +    # Use hollow circles
+    geom_smooth()            # Add a loess smoothed fit curve with confidence region
+# > geom_smooth: method="auto" and size of largest group is less than 1000, so using loess.
+# Use 'method = x' to change the smoothing method.
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_point/loess")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4109.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Constrained Slope
+
+
+```r
+library(plotly)
+
+set.seed(1234)
+
+n <- 20
+
+x1 <- rnorm(n); x2 <- rnorm(n)
+y1 <- 2 * x1 + rnorm(n)
+y2 <- 3 * x2 + (2 + rnorm(n))
+A <- as.factor(rep(c(1, 2), each = n))
+df <- data.frame(x = c(x1, x2), y = c(y1, y2), A = A)
+fm <- lm(y ~ x + A, data = df)
+
+p <- ggplot(data = cbind(df, pred = predict(fm)), aes(x = x, y = y, color = A))
+p <- p + geom_point() + geom_line(aes(y = pred))
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_point/slope")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4111.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+Inspire by <a #href="http://stackoverflow.com/questions/4251294/constraining-slope-in-stat-smooth-with-ggplot-plotting-ancova">Stack Overflow</a>
+
+### Stat Summary
+
+
+```r
+library(plotly)
+
+hist <- data.frame(date=Sys.Date() + 0:13, counts=1:14)
+hist <- transform(hist, weekday=factor(weekdays(date), levels=c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')))
+
+p <- ggplot(hist, aes(x=weekday, y=counts, group=1)) +
+    geom_point(stat='summary', fun.y=sum) +
+    stat_summary(fun.y=sum, geom="line")
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_point/stat-summary")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4113.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+Inspire by <a #href="http://stackoverflow.com/questions/16350720/using-geom-line-with-x-axis-being-factors">Stack Overflow</a> 
+
+### Control Line Order
+
+
+```r
+library(plotly)
+
+dat <- data.frame(x = sample(1:10), y = sample(1:10), order = sample(1:10))
+p <- ggplot(dat[order(dat$order),], aes(x, y)) + geom_point() + geom_text(aes(y = y + 0.25,label =      order)) +
+     geom_path()
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_point/control-line")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4115.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Horizontal Line w/ Segment
+
+
+```r
+library(plotly)
+
+p <- ggplot(mtcars,aes(mpg,qsec))+geom_point() +
+  geom_segment(aes(x=15,xend=20,y=18,yend=18))
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_point/horizontal-line")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4117.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+Inspired by <a #href="http://stackoverflow.com/questions/20311718/add-horizontal-line-to-ggplot-for-specified-interval-of-x-axis">Stack Overflow</a>
+
+### Add Points
+
+
+```r
+library(plotly)
+
+df <- data.frame(time=as.factor(c(1,1,2,2,3,3,4,4,5,5)), 
+               value=as.numeric(c(7, 8, 9, 10, 10, 11, 10.5, 11.4, 10.9, 11.6)), 
+               side=as.factor(c("E","F","E","F","E","F","E","F","E","F")))
+
+
+p <- ggplot(df, aes(time, value, group=side, colour=side)) + 
+     geom_line(size=1)
+p <- p + geom_point()
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_point/add-points")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4119.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Add Regression w/ Abline
+
+
+```r
+library(plotly)
+
+set.seed(1)
+x <-  1:10
+dd <- rbind(data.frame(x=x,fac="a", y=x+rnorm(10)),
+            data.frame(x=2*x,fac="b", y=x+rnorm(10)))
+coef <- lm(y~x:fac, data=dd)$coefficients
+p <- qplot(data=dd, x=x, y=y, color=fac)+
+    geom_abline(slope=coef["x:faca"], intercept=coef["(Intercept)"])+
+    geom_abline(slope=coef["x:facb"], intercept=coef["(Intercept)"])
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_point/regression")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4121.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+Inspired by <a #href="http://stats.stackexchange.com/questions/39233/regression-lines-with-same-intercept">Stats Exchange</a>

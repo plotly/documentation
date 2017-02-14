@@ -1,0 +1,380 @@
+---
+title: geom_line| Examples | Plotly
+name: geom_line
+permalink: ggplot2/geom_line/
+description: How to make line plots in ggplot2 with geom_line. Examples with code and interactive charts
+layout: base
+thumbnail: thumbnail/line_shapes.jpg
+language: ggplot2
+page_type: example_index
+has_thumbnail: true
+display_as: basic
+order: 5
+redirect_from: ggplot2/themes/
+output:
+  html_document:
+    keep_md: true
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```
+
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+
+```{r}
+library(plotly)
+packageVersion('plotly')
+```
+
+### Basic Line Plot
+
+```{r, results='hide'}
+library(plotly)
+
+dat1 <- data.frame(
+    sex = factor(c("Female","Female","Male","Male")),
+    time = factor(c("Lunch","Dinner","Lunch","Dinner"), levels=c("Lunch","Dinner")),
+    total_bill = c(13.53, 16.81, 16.24, 17.42)
+)
+
+p <- ggplot(data=dat1, aes(x=time, y=total_bill, group=sex)) +
+    geom_line() +
+    geom_point()
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_line/basic")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+### Add Points
+
+```{r, results='hide'}
+library(plotly)
+
+dat1 <- data.frame(
+    sex = factor(c("Female","Female","Male","Male")),
+    time = factor(c("Lunch","Dinner","Lunch","Dinner"), levels=c("Lunch","Dinner")),
+    total_bill = c(13.53, 16.81, 16.24, 17.42)
+)
+
+# Map sex to different point shape, and use larger points
+p <- ggplot(data=dat1, aes(x=time, y=total_bill, group=sex, shape=sex)) +
+    geom_line() +
+    geom_point()
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_line/larger")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+### Styles & Themes
+
+```{r, results='hide'}
+library(plotly)
+
+dat1 <- data.frame(
+    sex = factor(c("Female","Female","Male","Male")),
+    time = factor(c("Lunch","Dinner","Lunch","Dinner"), levels=c("Lunch","Dinner")),
+    total_bill = c(13.53, 16.81, 16.24, 17.42)
+)
+
+p <- ggplot(data=dat1, aes(x=time, y=total_bill, group=sex, shape=sex, colour=sex)) +
+    geom_line(aes(linetype=sex), size=1) +     # Set linetype by sex
+    geom_point(size=5) +         # Use larger points, fill with white
+    scale_colour_hue(name="Sex",      # Set legend title
+                     l=30)  +                  # Use darker colors (lightness=30)
+    scale_shape_manual(name="Sex",
+                       values=c(22,21)) +      # Use points with a fill color
+    scale_linetype_discrete(name="Sex") +
+    xlab("Time of day") + ylab("Total bill") + # Set axis labels
+    ggtitle("Average bill for 2 people") +     # Set title
+    theme_bw()
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_line/themes")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+### Continuous
+
+```{r, results='hide'}
+library(plotly)
+
+datn <- read.table(header=TRUE, text='
+supp dose length
+  OJ  0.5  13.23
+  OJ  1.0  22.70
+  OJ  2.0  26.06
+  VC  0.5   7.98
+  VC  1.0  16.77
+  VC  2.0  26.14
+')
+
+p <- ggplot(data=datn, aes(x=dose, y=length, group=supp, colour=supp)) +
+    geom_line() +
+    geom_point()
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_line/continuous")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+### Categorical
+
+```{r, results='hide'}
+library(plotly)
+
+datn <- read.table(header=TRUE, text='
+supp dose length
+  OJ  0.5  13.23
+  OJ  1.0  22.70
+  OJ  2.0  26.06
+  VC  0.5   7.98
+  VC  1.0  16.77
+  VC  2.0  26.14
+')
+
+datn2 <- datn
+datn2$dose <- factor(datn2$dose)
+p <- ggplot(data=datn2, aes(x=dose, y=length, group=supp, colour=supp)) +
+    geom_line() +
+    geom_point()
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_line/categorical")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+### Multiple Variables
+
+```{r, results='hide'}
+library(reshape2)
+library(plotly)
+
+test_data <-
+  data.frame(
+    var0 = 100 + c(0, cumsum(runif(49, -20, 20))),
+    var1 = 150 + c(0, cumsum(runif(49, -10, 10))),
+    date = seq(as.Date("2002-01-01"), by="1 month", length.out=100)
+  )
+
+test_data_long <- melt(test_data, id="date")  # convert to long format
+
+p <- ggplot(data=test_data_long,
+       aes(x=date, y=value, colour=variable)) +
+    geom_line()
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_line/multi-variables")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+### Mulitple Points
+
+```{r, results='hide'}
+library(plotly)
+
+# install.packages("data.table")
+library(data.table)
+
+d=data.table(x=seq(0, 100, by=0.1), y=seq(0,1000))
+p <- ggplot(d, aes(x=x, y=y))+geom_line()
+#Change the length parameter for fewer or more points
+thinned <- floor(seq(from=1,to=dim(d)[1],length=70))
+p <- ggplot(d, aes(x=x, y=y))+geom_line()+geom_point(data=d[thinned,],aes(x=x,y=y))
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_line/multi-points")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+### Styled Lines
+
+```{r, results='hide'}
+library(plotly)
+
+x <- c(10, 20, 50, 10, 20, 50)
+mean = c(52.4, 98.2, 97.9, 74.1, 98.1, 97.6)
+group = c(1, 1, 1, 2,2,2)
+upper = c(13.64, 89, 86.4, 13.64, 89, 86.4)
+lower = c(95.4, 99.8, 99.7, 95.4, 99.8, 99.7)
+data <- data.frame(x=x,y=mean, group, upper, lower)
+
+p <- ggplot(data, aes(x = x, y= mean, group = as.factor(data$group),
+                          colour=as.factor(data$group))) +
+  geom_line() + geom_point() +
+  geom_line(aes(y=lower),linetype="dotted") +
+  geom_line(aes(y=upper),linetype="dotted")+
+  scale_color_manual(name="Groups",values=c("red", "blue"))+
+  guides(colour = guide_legend(override.aes = list(linetype = 1)))
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_line/styled")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+### Mapping to Groups
+
+```{r, results='hide'}
+library(plotly)
+
+# Data frame with two continuous variables and two factors
+set.seed(0)
+x <- rep(1:10, 4)
+y <- c(rep(1:10, 2)+rnorm(20)/5, rep(6:15, 2) + rnorm(20)/5)
+treatment <- gl(2, 20, 40, labels=letters[1:2])
+replicate <- gl(2, 10, 40)
+d <- data.frame(x=x, y=y, treatment=treatment, replicate=replicate)
+
+p <- ggplot(d, aes(x=x, y=y, colour=treatment, group=interaction(treatment, replicate))) +
+    geom_point() + geom_line()
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_line/groups")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+### Add Segment
+
+```{r, results='hide'}
+library(plotly)
+
+x <- rep(1:10, 2)
+y <- c(1:10, 1:10+5)
+fac <- gl(2, 10)
+df <- data.frame(x=x, y=y, fac=fac)
+
+p <- ggplot(df, aes(x=x, y=y, linetype=fac)) +
+    geom_line() +
+    geom_segment(aes(x=2, y=7, xend=7, yend=7), colour="red") +
+    scale_linetype_discrete(guide=guide_legend(override.aes=aes(colour="blue")))
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_line/segment")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+### Add Error Bar
+
+```{r, results='hide'}
+library(plotly)
+
+# sample data
+df <- data.frame(condition = rep(LETTERS[1:4], each = 5),
+                 E = rep(1:5, times = 4),
+                 avg = rnorm(20),
+                 se = .3)
+# plotting command
+p <- ggplot(data = df, aes(x = E,
+                      y = avg,
+                      color = condition,
+                      linetype = condition,
+                      shape = condition,
+                      fill = condition)) +
+  geom_line(size=1) +
+  geom_point(size=3) +
+  scale_color_manual(values = c(A = "red", B = "red", C = "blue", D = "blue"),
+                     guide = "none") +
+  scale_linetype_manual(values = c(A = "solid", B = "dashed", C = "solid", D = "dashed"),
+                        guide = "none") +
+  scale_shape_manual(values = c(A = 24, B = 24, C = 21, D = 21),
+                     guide = "none") +
+  scale_fill_manual(values = c(A = "white", B = "red", C = "white", D = "blue"),
+                    guide = "none") +
+  geom_errorbar(aes(x = E, ymin = avg-se, ymax = avg+se, color = NULL, linetype = NULL),
+                width=.1, position=position_dodge(width = .1))
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_line/error-bar")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
