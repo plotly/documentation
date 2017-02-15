@@ -101,7 +101,7 @@ p <- df %>%
   plot_ly(x = ~Date, type="ohlc", 
           open = ~AAPL.Open, close = ~AAPL.Close, 
           high = ~AAPL.High, low = ~AAPL.Low) %>%
-  layout(title = "Apple Stock", 
+  layout(title = "Custom Colors", 
          annotations = a,
          shapes = l)
 
@@ -112,6 +112,37 @@ chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/4301.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Custom OHLC Chart Colors
+
+
+```r
+library(plotly)
+library(quantmod)
+
+getSymbols("AAPL",src='yahoo')
+
+# basic example of ohlc charts
+df <- data.frame(Date=index(AAPL),coredata(AAPL))
+df <- tail(df, 30) 
+
+# cutom colors
+i <- list(line = list(color = '#FFD700'))
+d <- list(line = list(color = '#0000ff'))
+
+p <- df %>%
+  plot_ly(x = ~Date, type="ohlc", 
+          open = ~AAPL.Open, close = ~AAPL.Close, 
+          high = ~AAPL.High, low = ~AAPL.Low,
+          increasing = i, decreasing = d)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="finance/ohlc-colors")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4303.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
