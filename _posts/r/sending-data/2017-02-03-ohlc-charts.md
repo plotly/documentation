@@ -1,25 +1,21 @@
 ---
-title: Candlestick Charts in R | Examples | Plotly
-name: Candlestick Charts
-permalink: r/candlestick-charts/
-description: How to create candlestick charts in R.
+title: OHLC Charts in R | Examples | Plotly
+name: OHLC Charts
+permalink: r/ohlc-charts/
+description: How to create OHLC charts in R.
 layout: base
-thumbnail: thumbnail/candlestick.jpg
+thumbnail: thumbnail/ohlc.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
 display_as: financial
-order: 2
+order: 1
 output:
   html_document:
     keep_md: true
 ---
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE, warning=FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
+
 
 ### New to Plotly?
 
@@ -32,42 +28,46 @@ We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-docume
 
 Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
 Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
-```{r}
+
+```r
 library(plotly)
 packageVersion('plotly')
 ```
 
-### Basic Candlestick
+```
+## [1] '4.5.6.9000'
+```
 
-```{r, results = 'hide'}
+### Basic OHLC Chart
+
+
+```r
 library(plotly)
 library(quantmod)
 
 getSymbols("AAPL",src='yahoo')
 
-# basic example of ohlc charts
 df <- data.frame(Date=index(AAPL),coredata(AAPL))
 df <- tail(df, 30) 
 
 p <- df %>%
-  plot_ly(x = ~Date, type="candlestick", 
+  plot_ly(x = ~Date, type="ohlc", 
           open = ~AAPL.Open, close = ~AAPL.Close, 
           high = ~AAPL.High, low = ~AAPL.Low) %>%
-  layout(title = "Basic Candlestick Chart")
+  layout(title = "Basic OHLC Chart")
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="finance/candlestick-basic")
+chart_link = plotly_POST(p, filename="finance/ohlc-basic")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/4299.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Customise the Figure with Shapes and Annotations
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 library(quantmod)
 
@@ -83,7 +83,7 @@ a <- list(text = "Stock Split",
           yref = 'paper',
           xanchor = 'left',
           showarrow = FALSE
-)
+          )
 
 # use shapes to create a line
 l <- list(type = line,
@@ -95,10 +95,10 @@ l <- list(type = line,
           yref = 'paper',
           line = list(color = 'black',
                       width = 0.5)
-)
+          )
 
 p <- df %>%
-  plot_ly(x = ~Date, type="candlestick", 
+  plot_ly(x = ~Date, type="ohlc", 
           open = ~AAPL.Open, close = ~AAPL.Close, 
           high = ~AAPL.High, low = ~AAPL.Low) %>%
   layout(title = "Apple Stock", 
@@ -107,17 +107,16 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="finance/candlestick-custom")
+chart_link = plotly_POST(p, filename="finance/ohlc-shapes-annot")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/4301.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Custom Candlestick Colors
+### Custom OHLC Chart Colors
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 library(quantmod)
 
@@ -132,79 +131,19 @@ i <- list(line = list(color = '#FFD700'))
 d <- list(line = list(color = '#0000ff'))
 
 p <- df %>%
-  plot_ly(x = ~Date, type="candlestick", 
+  plot_ly(x = ~Date, type="ohlc", 
           open = ~AAPL.Open, close = ~AAPL.Close, 
           high = ~AAPL.High, low = ~AAPL.Low,
           increasing = i, decreasing = d)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="finance/candlestick-colors")
+chart_link = plotly_POST(p, filename="finance/ohlc-colors")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
-
-### Add a Trace to Candlestick Chart
-
-```{r, results = 'hide'}
-library(plotly)
-library(quantmod)
-
-getSymbols("AAPL",src='yahoo')
-
-df <- data.frame(Date=index(AAPL),coredata(AAPL))
-df <- tail(df, 365)
-
-p <- df %>%
-  plot_ly(x = ~Date, type="candlestick", 
-          open = ~AAPL.Open, close = ~AAPL.Close, 
-          high = ~AAPL.High, low = ~AAPL.Low) %>%
-  add_lines(y = ~AAPL.Open, line = list(color = 'black', width = 0.75)) %>%
-  layout(showlegend = FALSE)
-
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="finance/candlestick-trace")
-chart_link
-```
-
-```{r, echo=FALSE}
-chart_link
-```
-
-### Candlestick Using Segments
-
-```{r, results = 'hide'}
-library(plotly)
-library(quantmod)
-
-msft <- getSymbols("MSFT", auto.assign = F)
-dat <- as.data.frame(msft)
-dat$date <- index(msft)
-dat <- subset(dat, date >= "2016-01-01")
-
-names(dat) <- sub("^MSFT\\.", "", names(dat))
-
-p <- plot_ly(dat, x = ~date, xend = ~date, color = ~Close > Open, 
-             colors = c("red", "forestgreen"), hoverinfo = "none") %>%
-       add_segments(y = ~Low, yend = ~High, size = I(1)) %>%
-       add_segments(y = ~Open, yend = ~Close, size = I(3)) %>%
-       layout(showlegend = FALSE, yaxis = list(title = "Price")) %>%
-       rangeslider()
-
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="finance/candlestick-segments")
-chart_link
-```
-
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/4303.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
-See [https://plot.ly/r/reference](https://plot.ly/r/reference) for more information and chart attribute options!
+See [https://plot.ly/r/reference/#ohlc](https://plot.ly/r/reference/#ohlc) for more information and chart attribute options!
