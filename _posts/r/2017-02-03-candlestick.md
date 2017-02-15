@@ -145,6 +145,33 @@ chart_link
 
 <iframe src="https://plot.ly/~RPlotBot/4309.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
+### Add a Trace to Candlestick Chart
+
+
+```r
+library(plotly)
+library(quantmod)
+
+getSymbols("AAPL",src='yahoo')
+
+df <- data.frame(Date=index(AAPL),coredata(AAPL))
+df <- tail(df, 365)
+
+p <- df %>%
+  plot_ly(x = ~Date, type="candlestick", 
+          open = ~AAPL.Open, close = ~AAPL.Close, 
+          high = ~AAPL.High, low = ~AAPL.Low) %>%
+  add_lines(y = ~AAPL.Open, line = list(color = 'black', width = 0.75)) %>%
+  layout(showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="finance/candlestick-trace")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4313.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
 ### Candlestick Using Segments
 
 
