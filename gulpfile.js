@@ -52,7 +52,7 @@ gulp.task('watch', function () {
     gulp.watch('scss/**/*', ['sass']);
 
     browserSync({
-        proxy: "api.plotly.dev",   // Set this to whatever you want and then point it to /_site (in mamp or your favorite method)
+        proxy: "http://127.0.0.1:4000/",   // Set this to whatever you want and then point it to /_site (in mamp or your favorite method)
         files: ["_site/*.html"]
 
     });
