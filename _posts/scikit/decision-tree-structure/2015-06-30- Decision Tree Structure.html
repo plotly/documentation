@@ -1,0 +1,422 @@
+---
+permalink: scikit-learn/plot-unveil-tree-structure/
+description: 
+name:  Decision Tree Structure | plotly
+has_thumbnail: true
+thumbnail: thumbnail/scikit-default.jpg
+layout: user-guide
+name:  Decision Tree Structure
+language: scikit-learn
+title:  Decision Tree Structure | plotly
+display_as: decision_trees
+has_thumbnail: true
+page_type: example_index
+order: 4
+ipynb: ~Diksha_Gabha/3599
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The decision tree structure can be analysed to gain further insight on the relation between the features and the target to predict. In this example, we show how to retrieve:</p>
+<ul>
+<li><p>the binary tree structure;</p>
+</li>
+<li><p>the depth of each node and whether or not it’s a leaf;</p>
+</li>
+<li><p>the nodes that were reached by a sample using the decision_path method;</p>
+</li>
+<li><p>the leaf that was reached by a sample using the apply method;</p>
+</li>
+<li><p>the rules that were used to predict a sample;</p>
+</li>
+<li><p>the decision path shared by a group of samples.</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;0.18.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split">train_test_split</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html#sklearn.datasets.load_iris">load_iris</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier">DecisionTreeClassifier</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_iris</span>
+<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">iris</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">data</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_leaf_nodes</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>DecisionTreeClassifier(class_weight=None, criterion=&#39;gini&#39;, max_depth=None,
+            max_features=None, max_leaf_nodes=3, min_impurity_split=1e-07,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, presort=False, random_state=0,
+            splitter=&#39;best&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The decision estimator has an attribute called tree<em>  which stores the entire tree structure and allows access to low level attributes. The binary tree tree</em> is represented as a number of parallel arrays. The i-th element of each
+ array holds information about the node <code>i</code>. Node 0 is the tree's root. NOTE: Some of the arrays only apply to either leaves or split nodes, resp. In this case the values of nodes of the other type are arbitrary!</p>
+<p>Among those arrays, we have:</p>
+
+<pre><code>- left_child, id of the left child of the node
+- right_child, id of the right child of the node
+- feature, feature used for splitting the node
+- threshold, threshold value at the node
+
+
+</code></pre>
+<p>Using those arrays, we can parse the tree structure:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n_nodes</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">tree_</span><span class="o">.</span><span class="n">node_count</span>
+<span class="n">children_left</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">tree_</span><span class="o">.</span><span class="n">children_left</span>
+<span class="n">children_right</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">tree_</span><span class="o">.</span><span class="n">children_right</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">tree_</span><span class="o">.</span><span class="n">feature</span>
+<span class="n">threshold</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">tree_</span><span class="o">.</span><span class="n">threshold</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The tree structure can be traversed to compute various properties such as the depth of each node and whether or not it is a leaf.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">node_depth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">n_nodes</span><span class="p">)</span>
+<span class="n">is_leaves</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+<span class="n">stack</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>  <span class="c1"># seed is the root node id and its parent depth</span>
+<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">node_id</span><span class="p">,</span> <span class="n">parent_depth</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="n">node_depth</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent_depth</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="c1"># If we have a test node</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">children_left</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">!=</span> <span class="n">children_right</span><span class="p">[</span><span class="n">node_id</span><span class="p">]):</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">children_left</span><span class="p">[</span><span class="n">node_id</span><span class="p">],</span> <span class="n">parent_depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">children_right</span><span class="p">[</span><span class="n">node_id</span><span class="p">],</span> <span class="n">parent_depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">is_leaves</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;The binary tree structure has </span><span class="si">%s</span><span class="s2"> nodes and has &quot;</span>
+      <span class="s2">&quot;the following tree structure:&quot;</span>
+      <span class="o">%</span> <span class="n">n_nodes</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_nodes</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">is_leaves</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">node=</span><span class="si">%s</span><span class="s2"> leaf node.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node_depth</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">node=</span><span class="si">%s</span><span class="s2"> test node: go to node </span><span class="si">%s</span><span class="s2"> if X[:, </span><span class="si">%s</span><span class="s2">] &lt;= </span><span class="si">%s</span><span class="s2">s else to &quot;</span>
+              <span class="s2">&quot;node </span><span class="si">%s</span><span class="s2">.&quot;</span>
+              <span class="o">%</span> <span class="p">(</span><span class="n">node_depth</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
+                 <span class="n">i</span><span class="p">,</span>
+                 <span class="n">children_left</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                 <span class="n">feature</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                 <span class="n">threshold</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                 <span class="n">children_right</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                 <span class="p">))</span>
+<span class="k">print</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>The binary tree structure has 5 nodes and has the following tree structure:
+node=0 test node: go to node 1 if X[:, 3] &lt;= 0.800000011921s else to node 2.
+	node=1 leaf node.
+	node=2 test node: go to node 3 if X[:, 2] &lt;= 4.94999980927s else to node 4.
+		node=3 leaf node.
+		node=4 leaf node.
+()
+</pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First let's retrieve the decision path of each sample. The decision_path  method allows to retrieve the node indicator functions. A non zero element of indicator matrix at the position (i, j) indicates that the sample i goes
+ through the node j.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">node_indicator</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">decision_path</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="c1"># Similarly, we can also have the leaves ids reached by each sample.</span>
+
+<span class="n">leave_id</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, it's possible to get the tests that were used to predict a sample or a group of samples. First, let's make it for the sample.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">sample_id</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">node_index</span> <span class="o">=</span> <span class="n">node_indicator</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="n">node_indicator</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="n">sample_id</span><span class="p">]:</span>
+                                    <span class="n">node_indicator</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="n">sample_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Rules used to predict sample </span><span class="si">%s</span><span class="s1">: &#39;</span> <span class="o">%</span> <span class="n">sample_id</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="n">node_index</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">leave_id</span><span class="p">[</span><span class="n">sample_id</span><span class="p">]</span> <span class="o">!=</span> <span class="n">node_id</span><span class="p">:</span>
+        <span class="k">continue</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="n">sample_id</span><span class="p">,</span> <span class="n">feature</span><span class="p">[</span><span class="n">node_id</span><span class="p">]]</span> <span class="o">&lt;=</span> <span class="n">threshold</span><span class="p">[</span><span class="n">node_id</span><span class="p">]):</span>
+        <span class="n">threshold_sign</span> <span class="o">=</span> <span class="s2">&quot;&lt;=&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">threshold_sign</span> <span class="o">=</span> <span class="s2">&quot;&gt;&quot;</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;decision id node </span><span class="si">%s</span><span class="s2"> : (X[</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">] (= </span><span class="si">%s</span><span class="s2">) </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">)&quot;</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">node_id</span><span class="p">,</span>
+             <span class="n">sample_id</span><span class="p">,</span>
+             <span class="n">feature</span><span class="p">[</span><span class="n">node_id</span><span class="p">],</span>
+             <span class="n">X_test</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">feature</span><span class="p">[</span><span class="n">node_id</span><span class="p">]],</span>
+             <span class="n">threshold_sign</span><span class="p">,</span>
+             <span class="n">threshold</span><span class="p">[</span><span class="n">node_id</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Rules used to predict sample 0: 
+decision id node 4 : (X[0, -2] (= 1.5) &gt; -2.0)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For a group of samples, we have the following common node.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">sample_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">common_nodes</span> <span class="o">=</span> <span class="p">(</span><span class="n">node_indicator</span><span class="o">.</span><span class="n">toarray</span><span class="p">()[</span><span class="n">sample_ids</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">sample_ids</span><span class="p">))</span>
+
+<span class="n">common_node_id</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_nodes</span><span class="p">)[</span><span class="n">common_nodes</span><span class="p">]</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The following samples </span><span class="si">%s</span><span class="s2"> share the node </span><span class="si">%s</span><span class="s2"> in the tree&quot;</span>
+      <span class="o">%</span> <span class="p">(</span><span class="n">sample_ids</span><span class="p">,</span> <span class="n">common_node_id</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;It is </span><span class="si">%s</span><span class="s2"> </span><span class="si">%%</span><span class="s2"> of all nodes.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">common_node_id</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_nodes</span><span class="p">,))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+The following samples [0, 1] share the node [0 2] in the tree
+It is 40 % of all nodes.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}
