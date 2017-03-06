@@ -8,7 +8,7 @@ thumbnail: thumbnail/mixed.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_type
+display_as: basic
 order: 7
 output:
   html_document:
@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.2'
+## [1] '4.5.6.9000'
 ```
 
 ### Bar and Line Chart
@@ -129,10 +129,29 @@ chart_link
 ```r
 library(plotly)
 library(forecast)
+```
 
+```
+## Error in library(forecast): there is no package called 'forecast'
+```
+
+```r
 fit <- ets(USAccDeaths)
-fore <- forecast(fit, h = 48, level = c(80, 95))
+```
 
+```
+## Error in eval(expr, envir, enclos): could not find function "ets"
+```
+
+```r
+fore <- forecast(fit, h = 48, level = c(80, 95))
+```
+
+```
+## Error in eval(expr, envir, enclos): could not find function "forecast"
+```
+
+```r
 p <- plot_ly() %>%
   add_lines(x = time(USAccDeaths), y = USAccDeaths,
             color = I("black"), name = "observed") %>%
@@ -141,7 +160,13 @@ p <- plot_ly() %>%
   add_ribbons(x = time(fore$mean), ymin = fore$lower[, 1], ymax = fore$upper[, 1],
               color = I("gray80"), name = "80% confidence") %>%
   add_lines(x = time(fore$mean), y = fore$mean, color = I("blue"), name = "prediction")
+```
 
+```
+## Error in time(fore$mean): object 'fore' not found
+```
+
+```r
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="multiple/forecast")

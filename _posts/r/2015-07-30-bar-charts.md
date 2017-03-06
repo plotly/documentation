@@ -8,7 +8,7 @@ thumbnail: thumbnail/bar.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_type
+display_as: basic
 order: 4
 output:
   html_document:
@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.5.9000'
+## [1] '4.5.6.9000'
 ```
 
 ### Basic Bar Chart

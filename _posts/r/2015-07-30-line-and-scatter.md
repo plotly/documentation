@@ -8,7 +8,7 @@ thumbnail: thumbnail/line-and-scatter.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_type
+display_as: basic
 order: 1
 output:
   html_document:
@@ -35,7 +35,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.5.9000'
+## [1] '4.5.6.9000'
 ```
 
 ### Basic Scatter Plot
@@ -52,7 +52,7 @@ chart_link = plotly_POST(p, filename="scatter/basic")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3879.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4324.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Styled Scatter Plot
 
@@ -75,7 +75,7 @@ chart_link = plotly_POST(p, filename="scatter/styled")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3881.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4326.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Plotting Markers and Lines
 
@@ -124,7 +124,7 @@ chart_link = plotly_POST(p, filename="scatter/modes")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3885.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4330.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 See more examples of line charts [here](https://plot.ly/r/line-charts/).
 
@@ -142,7 +142,7 @@ chart_link = plotly_POST(p, filename="scatter/color")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3887.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4332.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### ColorBrewer Palette Names
 
@@ -158,7 +158,7 @@ chart_link = plotly_POST(p, filename="scatter/colorbrewer")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3889.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4334.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Custom Color Scales
 
@@ -178,7 +178,7 @@ chart_link = plotly_POST(p, filename="scatter/color-custom")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3891.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4336.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 To ensure a particular data value gets mapped to particular color, provide a character vector of color codes, and match the names attribute accordingly.
 
@@ -197,7 +197,7 @@ chart_link = plotly_POST(p, filename="scatter/color-custom2")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3893.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4338.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Mapping Data to Symbols
 
@@ -215,7 +215,7 @@ chart_link = plotly_POST(p, filename="scatter/symbol")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3895.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4340.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Adding Color and Size Mapping
 
@@ -236,7 +236,7 @@ chart_link = plotly_POST(p, filename="scatter/colorAndSize")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3897.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4342.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Data Labels on Hover
 
@@ -259,7 +259,7 @@ chart_link = plotly_POST(p, filename="scatter/hovertext")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3899.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4344.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
