@@ -8,7 +8,7 @@ thumbnail: thumbnail/area.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
-display_as: chart_type
+display_as: basic
 order: 3.5
 output:
   html_document:
@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.5.9000'
+## [1] '4.5.6.9000'
 ```
 
 ### Basic Filled Area Plot
