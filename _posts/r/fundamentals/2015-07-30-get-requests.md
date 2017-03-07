@@ -7,8 +7,8 @@ layout: base
 thumbnail: thumbnail/get-requests.jpg
 language: r
 page_type: example_index
-has_thumbnail: false
-display_as: get_request
+has_thumbnail: true
+display_as: file_settings
 output:
   html_document:
     keep_md: true

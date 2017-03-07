@@ -3,7 +3,7 @@ title: requests.exceptions.ConnectionError - Getting Around Corporate Proxies
 name: Making Requests Behind Corporate Proxies
 permalink: python/proxy-configuration/
 description: How to configure Plotly's Python API to work with corporate proxies
-layout: base
+layout: user-guide
 language: python
 has_thumbnail: true
 display_as: file_settings
