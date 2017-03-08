@@ -17,7 +17,7 @@ order: 20
 	<div class="--welcome-body">
 		<!--div.--wrap-inner-->
 		<div class="--title">
-			<div class="--category-img"><img src="https://plot.ly/gh-pages/documentation/static/images/python-small.png" alt=""></div>
+			<div class="--category-img"><img src="https://plot.ly/gh-pages/documentation/static/images/r-small.png" alt=""></div>
 			<div class="--body">
 				<h1>Plotly R Library</h1>
 				<p>{{page.description}}</consectetur>
