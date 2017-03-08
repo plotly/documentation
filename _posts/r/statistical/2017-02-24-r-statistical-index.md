@@ -1,11 +1,10 @@
 ---
-permalink: r/fundamentals/
-title: R Graphing Library Plotly Fundamentals
-description: Plotly's R graphing library makes interactive, publication-quality graphs online. Tutorials and tips about fundamental features of Plotly's R API.
-name: More Plotly Fundamentals
+permalink: r/statistical-charts/
+title: R Graphing Library Plotly Statistical Charts
+description: Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of how to make statistical charts.
 layout: langindex
 language: r
-display_as: file_settings
+display_as: statistical
 has_thumbnail: true
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
@@ -19,7 +18,7 @@ order: 20
 		<div class="--title">
 			<div class="--category-img"><img src="https://plot.ly/gh-pages/documentation/static/images/python-small.png" alt=""></div>
 			<div class="--body">
-				<h1>Plotly R Library</h1>
+				<h1>Plotly R Library Statistical Charts</h1>
 				<p>{{page.description}}</consectetur>
 				</p>
 			</div>
@@ -27,5 +26,5 @@ order: 20
 	</div>
 </header>
 
-		{% assign languagelistimg = site.posts | where:"language","r" | where:"display_as","file_settings" | where:"has_thumbnail",true | where: "layout","user-guide" | sort: "order" %}
+		{% assign languagelistimg = site.posts | where:"language","r" | where:"display_as","statistical" | where:"has_thumbnail",true | where: "layout","user-guide" | sort: "order" %}
         {% include documentation_eg.html %}

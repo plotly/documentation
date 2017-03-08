@@ -3,7 +3,7 @@ title: Scatter and Line Plots in R | Examples | Plotly
 name: Scatter and Line Plots
 permalink: r/line-and-scatter/
 description: How to create line and scatter plots in R. Examples of basic and advanced scatter plots, time series line plots, colored charts, and density plots.
-layout: base
+layout: user-guide
 thumbnail: thumbnail/line-and-scatter.jpg
 language: r
 page_type: example_index
