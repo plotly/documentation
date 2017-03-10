@@ -3,7 +3,7 @@ title: Ternary Plots in R | Examples | Plotly
 name: Ternary Plots
 permalink: r/ternary-plots/
 description: How to create ternary plots in R with Plotly.
-layout: base
+layout: user-guide
 thumbnail: thumbnail/ternary.jpg
 language: r
 page_type: example_index
@@ -52,10 +52,10 @@ df <- dplyr::bind_rows(ds, .id = "id")
 # reusable function for creating annotation object
 label <- function(txt) {
   list(
-    text = txt, 
+    text = txt,
     x = 0.1, y = 1,
     ax = 0, ay = 0,
-    xref = "paper", yref = "paper", 
+    xref = "paper", yref = "paper",
     align = "center",
     font = list(family = "serif", size = 15, color = "white"),
     bgcolor = "#b3b3b3", bordercolor = "black", borderwidth = 2
@@ -70,8 +70,8 @@ axis <- function(txt) {
 }
 
 ternaryAxes <- list(
-  aaxis = axis("Clay"), 
-  baxis = axis("Sand"), 
+  aaxis = axis("Clay"),
+  baxis = axis("Sand"),
   caxis = axis("Silt")
 )
 ```
@@ -82,7 +82,7 @@ ternaryAxes <- list(
 ```r
 library(plotly)
 library(jsonlite)
- 
+
 p <- plot_ly(
   df, a = ~clay, b = ~sand, c = ~silt, color = I("black"), type = "scatterternary"
 ) %>%
@@ -104,9 +104,9 @@ chart_link
 ```r
 library(plotly)
 library(jsonlite)
- 
+
 p <- plot_ly(
-  df, a = ~clay, b = ~sand, c = ~silt, color = I("black"), type = "scatterternary", 
+  df, a = ~clay, b = ~sand, c = ~silt, color = I("black"), type = "scatterternary",
   split = ~id, mode = "lines"
 ) %>%
   layout(
@@ -127,7 +127,7 @@ chart_link
 ```r
 library(plotly)
 library(jsonlite)
- 
+
 p <- plot_ly(
   df, a = ~clay, b = ~sand, c = ~silt, color = ~id, type = "scatterternary",
   fill = "toself", mode = "lines"

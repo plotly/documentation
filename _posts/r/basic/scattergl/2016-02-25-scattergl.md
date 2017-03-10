@@ -3,25 +3,20 @@ title: WebGL vs SVG| Examples | Plotly
 name: WebGL vs SVG in R
 permalink: r/webgl-vs-svg/
 description: How to create plots using WebGL
-layout: base
+layout: user-guide
 thumbnail: thumbnail/webgl.jpg
 language: r
-page_type: example_index
 has_thumbnail: true
 display_as: basic
 order: 0.5
-output: 
-  html_document: 
+output:
+  html_document:
     highlight: null
     keep_md: true
     theme: null
 ---
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE, warning = FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-``` 
+
 
 ### New to Plotly?
 
@@ -35,7 +30,8 @@ We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-docume
 Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
 Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 packageVersion('plotly')
 ```
@@ -44,9 +40,10 @@ packageVersion('plotly')
 
 Recent versions of the R package include the `toWebGL()` function, which converts any eligible SVG graph into a WebGL plot. With WebGL, we can render way more elements in the browser.
 
-## WebGL with 50,000 points 
+## WebGL with 50,000 points
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 p <- ggplot(data = diamonds, aes(x = carat, y = price, color = cut)) +
   geom_point(alpha = 0.01)
@@ -58,9 +55,7 @@ chart_link = plotly_POST(p, filename="webgl/1")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/3959.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ## More examples
 

@@ -9,7 +9,7 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: financial
-order: 1
+order: 3
 output:
   html_document:
     keep_md: true

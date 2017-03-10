@@ -3,7 +3,7 @@ title: Multiple Axes in R | Plotly
 name: Multiple Axes
 permalink: r/multiple-axes/
 description: How to make a graph with multiple axes in R with Plotly.
-layout: base
+layout: user-guide
 thumbnail: thumbnail/multiple-axes.jpg
 language: r
 page_type: example_index
