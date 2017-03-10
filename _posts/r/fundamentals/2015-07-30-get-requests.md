@@ -6,7 +6,6 @@ description: How to download plotly users's public graphs and data with R.
 layout: user-guide
 thumbnail: thumbnail/get-requests.jpg
 language: r
-page_type: example_index
 has_thumbnail: true
 display_as: file_settings
 output:

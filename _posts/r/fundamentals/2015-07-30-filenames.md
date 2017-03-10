@@ -1,13 +1,15 @@
 ---
-title: R Filenames, Folders, and Updating Plotly Graphs in R | Examples | Plotly
-name: Filenames, Folders, and Updating Plotly Graphs in R
+title: Updating Plotly Graphs in R | Examples | Plotly
+name: Updating Plotly Graphs in R
 permalink: r/file-options/
-description: How to save R graphs to the plotly cloud
+description: R Filenames, folders, and updating Plotly graphs in the plotly cloud.
 layout: user-guide
 language: r
 page_type: example_index
 has_thumbnail: true
+thumbnail: thumbnail/horizontal-bar.jpg
 display_as: file_settings
+order: 2
 output:
   html_document:
     keep_md: true
