@@ -3,7 +3,7 @@ title: Scattermapbox in R | Examples | Plotly
 name: Scattermapbox
 permalink: r/scattermapbox/
 description: How to create scattermapbox plots in R with Plotly.
-layout: base
+layout: user-guide
 thumbnail: thumbnail/scatter-mapbox.jpg
 language: r
 page_type: example_index
@@ -56,11 +56,11 @@ library(plotly)
 
 dat <- map_data("world", "canada") %>% group_by(group)
 
-p <- plot_mapbox(dat, x = ~long, y = ~lat) %>% 
+p <- plot_mapbox(dat, x = ~long, y = ~lat) %>%
   add_paths(size = I(2)) %>%
   add_segments(x = -100, xend = -50, y = 50, 75) %>%
   layout(mapbox = list(zoom = 0,
-                       center = list(lat = ~median(lat), 
+                       center = list(lat = ~median(lat),
                                      lon = ~median(long))
   ))
 
@@ -81,8 +81,8 @@ library(plotly)
 df = read.csv('https://raw.githubusercontent.com/bcdunbar/datasets/master/meteorites_subset.csv')
 
 p <- df %>%
-  plot_mapbox(lat = ~reclat, lon = ~reclong, 
-              split = ~class, size=2, 
+  plot_mapbox(lat = ~reclat, lon = ~reclong,
+              split = ~class, size=2,
               mode = 'scattermapbox', hoverinfo='name') %>%
   layout(title = 'Meteorites by Class',
          font = list(color='white'),

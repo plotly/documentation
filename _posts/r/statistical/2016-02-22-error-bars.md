@@ -3,14 +3,14 @@ title: Error Bars in R | Examples | Plotly
 name: Error Bars
 permalink: r/error-bars/
 description: How to add error bars to plots in R.
-layout: base
+layout: user-guide
 thumbnail: thumbnail/error-bar.jpg
 language: r
 page_type: example_index
 has_thumbnail: true
 display_as: statistical
 order: 0.5
-output: 
+output:
   html_document:
     keep_md: true
 ---
@@ -48,7 +48,7 @@ data <- rename(data, c("data_sd.length" = "sd"))
 data$dose <- as.factor(data$dose)
 
 p <- plot_ly(data = data[which(data$supp == 'OJ'),], x = ~dose, y = ~length, type = 'bar', name = 'OJ',
-        error_y = ~list(value = sd, 
+        error_y = ~list(value = sd,
                         color = '#000000')) %>%
   add_trace(data = data[which(data$supp == 'VC'),], name = 'VC')
 
@@ -75,7 +75,7 @@ data$dose <- as.factor(data$dose)
 
 p <- plot_ly(data = data[which(data$supp == 'OJ'),], x = ~dose, y = ~length, type = 'scatter', mode = 'markers',
         name = 'OJ',
-        error_y = ~list(value = sd, 
+        error_y = ~list(value = sd,
                         color = '#000000')) %>%
   add_trace(data = data[which(data$supp == 'VC'),], name = 'VC')
 
@@ -102,7 +102,7 @@ data$dose <- as.factor(data$dose)
 
 p <- plot_ly(data = data[which(data$supp == 'OJ'),], x = ~dose, y = ~length, type = 'scatter', mode = 'lines+markers',
         name = 'OJ',
-        error_y = ~list(value = sd, 
+        error_y = ~list(value = sd,
                         color = '#000000')) %>%
   add_trace(data = data[which(data$supp == 'VC'),], name = 'VC')
 

@@ -3,7 +3,7 @@ title: Bubble Maps in R | Examples | Plotly
 name: Bubble Maps
 permalink: r/bubble-maps/
 description: How to make a bubble chart and map in R.
-layout: base
+layout: user-guide
 thumbnail: thumbnail/bubble-map.jpg
 language: r
 page_type: example_index

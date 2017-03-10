@@ -3,7 +3,7 @@ title: Scatter Plots on Maps in R | Examples | Plotly
 name: Scatter Plots on Maps
 permalink: r/scatter-plots-on-maps/
 description: How to make scatter plots on maps in R. Scatter plots on maps highlight geographic areas and can be colored by value.
-layout: base
+layout: user-guide
 thumbnail: thumbnail/scatter-plot-on-maps.jpg
 language: r
 page_type: example_index
