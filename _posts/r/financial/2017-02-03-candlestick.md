@@ -3,7 +3,7 @@ title: Candlestick Charts in R | Examples | Plotly
 name: Candlestick Charts
 permalink: r/candlestick-charts/
 description: How to create candlestick charts in R.
-layout: user-guide
+layout: base
 thumbnail: thumbnail/candlestick.jpg
 language: r
 page_type: example_index

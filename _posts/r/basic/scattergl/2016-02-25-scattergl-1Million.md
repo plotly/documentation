@@ -3,7 +3,7 @@ title: WebGL in Plotly and R| Examples | Plotly
 name: WebGL in Plotly and R
 permalink: r/webgl-vs-svg-million-points/
 description: How to create plots using WebGL and Plotly
-layout: user-guide
+layout: base
 language: r
 page_type: example_index
 output: 

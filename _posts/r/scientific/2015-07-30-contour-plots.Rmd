@@ -3,7 +3,7 @@ title: Contour Plots in R | Examples | Plotly
 name: Contour Plots
 permalink: r/contour-plots/
 description: How to make a contour plot in R. Two examples of contour plots of matrices and 2D distributions.
-layout: user-guide
+layout: base
 thumbnail: thumbnail/contour.jpg
 language: r
 page_type: example_index

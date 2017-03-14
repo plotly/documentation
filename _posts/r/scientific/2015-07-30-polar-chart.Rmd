@@ -3,7 +3,7 @@ title: Polar Charts in R | Examples | Plotly
 name: Polar Charts
 permalink: r/polar-chart/
 description: How to create a polar chart in R. Three examples of polar line, polar scatter, and polar area chart.
-layout: user-guide
+layout: base
 thumbnail: thumbnail/polar.jpg
 language: r
 page_type: example_index

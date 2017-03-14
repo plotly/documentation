@@ -3,7 +3,7 @@ title: Choropleth Maps in R | Examples | Plotly
 name: Choropleth Maps
 permalink: r/choropleth-maps/
 description: How to make a choropleth map in R. A choropleth map shades geographic regions by value.
-layout: user-guide
+layout: base
 thumbnail: thumbnail/choropleth.jpg
 language: r
 page_type: example_index

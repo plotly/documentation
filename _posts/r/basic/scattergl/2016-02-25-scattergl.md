@@ -3,7 +3,7 @@ title: WebGL vs SVG| Examples | Plotly
 name: WebGL vs SVG in R
 permalink: r/webgl-vs-svg/
 description: How to create plots using WebGL
-layout: user-guide
+layout: base
 thumbnail: thumbnail/webgl.jpg
 language: r
 has_thumbnail: true

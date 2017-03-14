@@ -3,7 +3,7 @@ title: OHLC Charts in R | Examples | Plotly
 name: OHLC Charts
 permalink: r/ohlc-charts/
 description: How to create OHLC charts in R.
-layout: user-guide
+layout: base
 thumbnail: thumbnail/ohlc.jpg
 language: r
 page_type: example_index

@@ -3,7 +3,7 @@ title: Bubble Charts in R | Examples | Plotly
 name: Bubble Charts
 permalink: r/bubble-charts/
 description: How to make a bubble chart in R. A bubble chart is a scatter plot whose markers have variable color and size.
-layout: user-guide
+layout: base
 thumbnail: thumbnail/bubble.jpg
 language: r
 has_thumbnail: true

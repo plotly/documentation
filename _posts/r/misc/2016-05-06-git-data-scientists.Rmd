@@ -3,7 +3,7 @@ title: GitHub | Tutorial | Plotly
 name: GitHub for Data Scientists without the Terminal
 permalink: r/github-getting-started-for-data-scientists/
 description: Introduction to GitHub for Data Scientists without the Terminal
-layout: user-guide
+layout: base
 language: r
 thumbnail: thumbnail/gitgithub.jpg
 has_thumbnail: true

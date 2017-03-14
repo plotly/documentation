@@ -3,7 +3,7 @@ title: Updating Plotly Graphs in R | Examples | Plotly
 name: Updating Plotly Graphs in R
 permalink: r/file-options/
 description: R Filenames, folders, and updating Plotly graphs in the plotly cloud.
-layout: user-guide
+layout: base
 language: r
 page_type: example_index
 has_thumbnail: true

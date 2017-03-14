@@ -27,5 +27,5 @@ order: 20
 	</div>
 </header>
 
-		{% assign languagelistimg = site.posts | where:"language","r" | where:"display_as","statistical" | where:"has_thumbnail",true | where: "layout","user-guide" | sort: "order" %}
+		{% assign languagelistimg = site.posts | where:"language","r" | where:"display_as","statistical" | where:"has_thumbnail",true | where: "layout","base" | sort: "order" %}
         {% include documentation_eg.html %}

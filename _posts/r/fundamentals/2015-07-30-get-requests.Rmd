@@ -3,7 +3,7 @@ title: Download Plotly Graphs into R
 name: Get Requests
 permalink: r/get-requests/
 description: How to download plotly users's public graphs and data with R.
-layout: user-guide
+layout: base
 thumbnail: thumbnail/get-requests.jpg
 language: r
 has_thumbnail: true

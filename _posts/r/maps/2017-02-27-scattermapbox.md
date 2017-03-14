@@ -3,7 +3,7 @@ title: Scattermapbox in R | Examples | Plotly
 name: Scattermapbox
 permalink: r/scattermapbox/
 description: How to create scattermapbox plots in R with Plotly.
-layout: user-guide
+layout: base
 thumbnail: thumbnail/scatter-mapbox.jpg
 language: r
 page_type: example_index
