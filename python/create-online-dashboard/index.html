@@ -22344,7 +22344,7 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Add-Plots">Add Plots<a class="anchor-link" href="#Add-Plots">&#182;</a></h4><p>In order to use the dashboard, we need to put some plots into it. You can either make these on-the-fly in Jupyter or use a plot you've already created by using its url.</p>
+<h4 id="Choose-Plots">Choose Plots<a class="anchor-link" href="#Choose-Plots">&#182;</a></h4><p>In order to use the dashboard, we need to put some plots into it. You can either make these on-the-fly in Jupyter or use a plot you've already created by using its url.</p>
 
 </div>
 </div>
@@ -22433,12 +22433,22 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A url with a secret key:</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">url_3</span> <span class="o">=</span> <span class="s1">&#39;https://plot.ly/~PlotBot/1300&#39;</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">url_3</span> <span class="o">=</span> <span class="s1">&#39;https://plot.ly/~PlotBot/1300/?share_key=JatPnGlGz0MhemsdYF3GB9&#39;</span>
 </pre></div>
 
 </div>
@@ -22495,6 +22505,16 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To extract the fileId from a url, use the <code>fileId_from_url</code> below. If your url is <code>secret</code>, use <code>sharekey_from_url</code> to return the sharekey from the url, then place in your box that contains a secret plot.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
@@ -22503,8 +22523,19 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">fileId_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return fileId from a url.&quot;&quot;&quot;</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
-    <span class="n">fileId</span> <span class="o">=</span> <span class="n">url</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="p">]</span>
-    <span class="k">return</span> <span class="n">fileId</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span>
+    <span class="n">fileId</span> <span class="o">=</span> <span class="n">url</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+    <span class="n">local_id_index</span> <span class="o">=</span> <span class="n">fileId</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+    <span class="n">share_key_index</span> <span class="o">=</span> <span class="n">fileId</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;/?share_key&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">share_key_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fileId</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fileId</span><span class="p">[:</span><span class="n">share_key_index</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">sharekey_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the sharekey from a url.&quot;&quot;&quot;</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;share_key=&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">url</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="s1">&#39;share_key=&#39;</span><span class="p">):]</span>
 
 <span class="n">fileId_1</span> <span class="o">=</span> <span class="n">fileId_from_url</span><span class="p">(</span><span class="n">url_1</span><span class="p">)</span>
 <span class="n">fileId_2</span> <span class="o">=</span> <span class="n">fileId_from_url</span><span class="p">(</span><span class="n">url_2</span><span class="p">)</span>
@@ -22539,7 +22570,8 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
     <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;box&#39;</span><span class="p">,</span>
     <span class="s1">&#39;boxType&#39;</span><span class="p">:</span> <span class="s1">&#39;plot&#39;</span><span class="p">,</span>
     <span class="s1">&#39;fileId&#39;</span><span class="p">:</span> <span class="n">fileId_3</span><span class="p">,</span>
-    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;box-for-dashboard&#39;</span>
+    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;box-for-dashboard&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;shareKey&#39;</span><span class="p">:</span> <span class="n">sharekey_from_url</span><span class="p">(</span><span class="n">url_3</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 
@@ -22622,7 +22654,8 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Swap-Boxes">Swap Boxes<a class="anchor-link" href="#Swap-Boxes">&#182;</a></h4>
+<h4 id="Get-Box">Get Box<a class="anchor-link" href="#Get-Box">&#182;</a></h4><p>Tf you want to check a box in your dashboard, run <code>my_dboard.get_preview()</code> to see the box ids for your dashboard then use <code>my_dboard.get_box()</code> to retrieve the box by its box id. This is useful for checking what boxes are stored in your dashboard, and you can even change the values in your box by reassigning them.</p>
+
 </div>
 </div>
 </div>
@@ -22631,7 +22664,8 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">3</span><span class="p">)[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;a new title&#39;</span>
+<span class="n">my_dboard</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -22646,6 +22680,48 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 
 
 <div class="output_text output_subarea output_execute_result">
+<pre>{&#39;boxType&#39;: &#39;plot&#39;,
+ &#39;fileId&#39;: u&#39;PlotBot:1296&#39;,
+ &#39;title&#39;: &#39;a new title&#39;,
+ &#39;type&#39;: &#39;box&#39;}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Swap-Boxes">Swap Boxes<a class="anchor-link" href="#Swap-Boxes">&#182;</a></h4><p>If you want to swap the locations of two boxes you've already placed in the dashboard, run <code>my_dboard.get_preview()</code> to look at the layout of the dashboard, then simply pick two <em>unique</em> box ids and you will swap the contents stored at those locations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">3</span><span class="p">)[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[12]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
 <pre>&#39;box-for-dashboard&#39;</pre>
 </div>
 
@@ -22657,7 +22733,7 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">swap</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -22672,7 +22748,7 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[12]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -22690,14 +22766,14 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Remove-Box">Remove Box<a class="anchor-link" href="#Remove-Box">&#182;</a></h4><p>You can remove a box from the dashboard by identifying its box id from the <code>.get_preview()</code>.</p>
+<h4 id="Remove-Box">Remove Box<a class="anchor-link" href="#Remove-Box">&#182;</a></h4><p>You can remove a box from the dashboard by identifying its box id from the <code>my_dboard.get_preview()</code>.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">box_1</span><span class="p">,</span> <span class="s1">&#39;below&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -22720,7 +22796,7 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -22746,40 +22822,91 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Get-Box">Get Box<a class="anchor-link" href="#Get-Box">&#182;</a></h4><p>You can use <code>.get_box()</code> to retrieve the box from the dashboard based on its box id. This is useful for checking what boxes are stored in your dashboard, and you can even change the values in your box by reassigning it.</p>
+<h4 id="Add-Title">Add Title<a class="anchor-link" href="#Add-Title">&#182;</a></h4><p>Set the title of your dashboard.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;a new title&#39;</span>
-<span class="n">my_dboard</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;My First Dashboard with Python&#39;</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-a-Logo">Add a Logo<a class="anchor-link" href="#Add-a-Logo">&#182;</a></h4><p>Add a logo to the top-left corner of the dashboard.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;logoUrl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;https://images.plot.ly/language-icons/api-home/python-logo.png&#39;</span>
+</pre></div>
 
-<div class="output_area"><div class="prompt output_prompt">Out[15]:</div>
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>{&#39;boxType&#39;: &#39;plot&#39;,
- &#39;fileId&#39;: u&#39;PlotBot:1296&#39;,
- &#39;title&#39;: &#39;a new title&#39;,
- &#39;type&#39;: &#39;box&#39;}</pre>
+</div>
+</div>
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-Links">Add Links<a class="anchor-link" href="#Add-Links">&#182;</a></h4><p>Add some links to the header of the dashboard.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;links&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;links&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Link to Plotly&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://plot.ly/&#39;</span><span class="p">})</span>
+<span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;links&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Link to Python Website&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.python.org/&#39;</span><span class="p">})</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Change-Header-Color">Change Header Color<a class="anchor-link" href="#Change-Header-Color">&#182;</a></h4><p>Change the color of the header at the top of the dashboard.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;headerBackgroundColor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#D232C8&#39;</span>
+</pre></div>
+
+</div>
 </div>
 </div>
 
@@ -22796,12 +22923,11 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
-<span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;my_dboard_from_API&#39;</span>
-<span class="n">py</span><span class="o">.</span><span class="n">dashboard_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">my_dboard</span><span class="p">,</span> <span class="s1">&#39;my_dboard_from_API&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">dashboard_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">my_dboard</span><span class="p">,</span> <span class="s1">&#39;My First Dashboard with Python&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -22812,11 +22938,11 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[16]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[20]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>u&#39;https://plot.ly/~PlotBot/1307/my-dboard-from-api/&#39;</pre>
+<pre>u&#39;https://plot.ly/~PlotBot/1327/my-first-dashboard-with-python/&#39;</pre>
 </div>
 
 </div>
@@ -22830,7 +22956,7 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="https://plot.ly/~PlotBot/1307/my-dboard-from-api/">https://plot.ly/~PlotBot/1307/my-dboard-from-api/</a></p>
+<p><a href="https://plot.ly/~PlotBot/1327/my-first-dashboard-with-python/">https://plot.ly/~PlotBot/1327/my-first-dashboard-with-python/</a></p>
 
 </div>
 </div>
@@ -22840,7 +22966,7 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="https://images.plot.ly/plotly-documentation/images/my_dboard_from_API.png" alt="IPython terminal"></p>
+<p><img src="https://images.plot.ly/plotly-documentation/images/my_dboard_from_API_with_logo_and_links.png" alt="IPython terminal"></p>
 
 </div>
 </div>
@@ -22857,7 +22983,7 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">dashboard_ops</span><span class="o">.</span><span class="n">get_dashboard_names</span><span class="p">()</span>
@@ -22871,11 +22997,11 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[17]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[21]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;my_dboard_from_API&#39;]</pre>
+<pre>[&#39;My First Dashboard with Python&#39;]</pre>
 </div>
 
 </div>
@@ -22886,10 +23012,10 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">recent_dboard</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">dashboard_ops</span><span class="o">.</span><span class="n">get_dashboard</span><span class="p">(</span><span class="s1">&#39;my_dboard_from_API&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">recent_dboard</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">dashboard_ops</span><span class="o">.</span><span class="n">get_dashboard</span><span class="p">(</span><span class="s1">&#39;My First Dashboard with Python&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -22902,9 +23028,7 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Examples">Examples<a class="anchor-link" href="#Examples">&#182;</a></h4><p>For more dashboard examples checkout <a href="https://plot.ly/python/dashboard/">https://plot.ly/python/dashboard/</a>.</p>
-<p>Other examples:</p>
-<ul>
+<h4 id="Examples">Examples<a class="anchor-link" href="#Examples">&#182;</a></h4><ul>
 <li><a href="https://plot.ly/dashboard/jackp:16823/present">Twitter Marketing Campaign</a></li>
 <li><a href="https://plot.ly/dashboard/jackp:16820/present">Shell: Integrated Gas</a></li>
 <li><a href="https://plot.ly/dashboard/jackluo:430/view">US Wind Turbine Example</a></li>
@@ -22925,7 +23049,7 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">py</span><span class="o">.</span><span class="n">dashboard_ops</span><span class="p">)</span>
