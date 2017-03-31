@@ -39,6 +39,21 @@ packageVersion('plotly')
 ## [1] '4.5.6.9000'
 ```
 
+### Supported Formats
+
+The common image formats: 'PNG', 'JPG/JPEG' are supported. In addition, formats like 'EPS', 'SVG' and 'PDF' are also supported.
+
+**Note**: The SVG, EPS and PDF Formats are only available for Plotly Professional users. You can get more details on our [pricing page](https://plot.ly/products/cloud/).
+
+To access the image in a particular format, you can either:
+
+
+* use the `export()` function with the [webshot package](https://github.com/wch/webshot/).
+
+* export the image on plotly's servers using `plotly_IMAGE()`.
+
+* append the format extension to the plot url. i.e. the JPG version of the plot: https://plot.ly/~chris/1638 is available at : https://plot.ly/~chris/1638.jpg.
+
 ### Export Locally
 
 Recent versions of the R package include an `export()` function, which does image export locally, but requires the webshot package:
