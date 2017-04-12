@@ -1,5 +1,4 @@
 'use strict';
-
 var BinBuild = require('bin-build');
 var log = require('logalot');
 var bin = require('./');
