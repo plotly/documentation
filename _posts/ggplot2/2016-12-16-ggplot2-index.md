@@ -20,7 +20,11 @@ language: ggplot2
   </div>
 </header>
 
-
+<div>
+<p>
+Plotly's ggplot2 graphs are hosted online in <a href="https://plot.ly/plans">your plotly account</a> or <a href="https://plot.ly/r/offline">drawn locally in RStudio</a>. They can be embedded in <a href="https://plot.ly/r/dashboards">HTML pages</a>, <a href="https://plot.ly/r/knitr">Knitr documents</a>, or <a href="https://plot.ly/r/shiny-tutorial">Shiny apps</a>. You don't need to use ggplot2 to use Plotly with R, you can also use Plotly's native <a href="https://plot.ly/r/">R graphing library</a>.
+</p>
+</div>
 
 ```r
 library(plotly)
@@ -39,7 +43,6 @@ chart_link
 <iframe src="https://plot.ly/~RPlotBot/4257.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 <h6>Plotly graphs are interactive. Click on the legend entries to toggle traces, click and drag on the canvas to zoom, shift and click to pan.</h6>
-
 
 ```r
 library(plotly)
@@ -62,16 +65,6 @@ chart_link
 
 <iframe src="https://plot.ly/~RPlotBot/4259.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-<div>
-<p>
-<code>ggplotly</code> works by <a href="https://plot.ly/ggplot2/user-guide">serializing ggplot2 figures into plotly's universal graph JSON</a>. See the <a href="http://ropensci.github.io/plotly/ggplot2/">ggplot2 ??? plotly test tables</a> for current ggplot2 conversion coverage. Submit issues or contribute on <a href="https://github.com/ropensci/plotly/issues">rOpenSci</a>.
-</p></div>
-
-<div>
-<p>
-Plotly's ggplot2 graphs are hosted online in <a href="https://plot.ly/plans">your plotly account</a> or <a href="https://plot.ly/r/offline">drawn locally in RStudio</a>. They can be embedded in <a href="https://plot.ly/r/dashboards">HTML pages</a>, <a href="https://plot.ly/r/knitr">Knitr documents</a>, or <a href="https://plot.ly/r/shiny-tutorial">Shiny apps</a>. You don't need to use ggplot2 to use Plotly with R, you can also use Plotly's native <a href="https://plot.ly/r/">R graphing library</a>.
-</p>
-</div>
 
 {% assign languagelistimg = site.posts | where:"page_type":"example_index" | where:"language","ggplot2"  | where:"has_thumbnail",true | sort: "order"  %}
 {% assign languagelist = site.posts | where:"page_type":"example_index" | where:"language","ggplot2" %}
