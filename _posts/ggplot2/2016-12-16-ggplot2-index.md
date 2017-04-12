@@ -1,24 +1,25 @@
 ---
 title: ggplot2 Graphing Library | Plotly
 permalink: ggplot2/
-description: ggplot2 is a graphing library for R. Use ggplot2 with Plotly to create interactive, online ggplot2 charts with D3.js.
+description: Plotly for ggplot2 is an interactive, browser-based charting library built on Plotly's open source javascript graphing library,
+<a href="https://plot.ly/javascript" target="_blank">plotly.js</a>. It works entirely locally, through the <a href="http://www.htmlwidgets.org/" target="_blank">HTML widgets</a> framework.
 layout: langindex
 language: ggplot2
 ---
 
-<h1 class="centered">Plotly ggplot2 Library</h1>
-<div class="row centered btnrow">
-  <a href="/ggplot2/getting-started/" class="button no_underline">Getting Started</a>
-  <a href="/ggplot2/user-guide/" class="button no_underline">User Guide</a>
-</div>
-
-<div>Plotly for ggplot2 is an interactive, browser-based charting library built on the open source javascript graphing library,
-<a href="https://plot.ly/javascript" target="_blank">plotly.js</a>. It works entirely locally, through the <a href="http://www.htmlwidgets.org/" target="_blank">HTML widgets</a> framework.
-</div>
-
-
-
-
+<header class="--welcome">
+  <div class="--welcome-body">
+    <!--div.--wrap-inner-->
+    <div class="--title">
+      <div class="--category-img"><img src="https://images.plot.ly/language-icons/api-home/ggplot2-logo.png" alt=""></div>
+      <div class="--body">
+        <h1>Plotly ggplot2 Library</h1>
+        <p>{{page.description}}</consectetur>
+        </p>
+      </div>
+    </div>
+  </div>
+</header>
 
 
 
