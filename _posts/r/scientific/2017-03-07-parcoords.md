@@ -66,7 +66,7 @@ chart_link = plotly_POST(p, filename="parcoords/dimensions")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4367.embed" width="1000" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4367.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 
 ### Basic Parallel Cordinates Plot
@@ -100,7 +100,7 @@ chart_link = plotly_POST(p, filename="parcoords/basic")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4368.embed" width="1000" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4368.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Advanced Parallel Coordinates Plot
 
@@ -154,7 +154,7 @@ chart_link = plotly_POST(p, filename="parcoords/advanced")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4370.embed" width="1000" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4370.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
