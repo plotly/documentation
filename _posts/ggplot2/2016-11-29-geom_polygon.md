@@ -276,3 +276,27 @@ chart_link
 
 <iframe src="https://plot.ly/~RPlotBot/4159.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
+### County-Level Boundaries
+
+
+```r
+library(plotly)
+library(maps)
+
+county_df <- map_data("county")
+state_df <- map_data("state")
+
+# create state boundaries
+p <- ggplot(county_df, aes(long, lat, group = group)) +
+  geom_polygon(colour = alpha("black", 1/2), fill = NA) +
+  geom_polygon(data = state_df, colour = "black", fill = NA) + 
+  theme_void()
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_polygon/county-level-boundaries")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4383.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
