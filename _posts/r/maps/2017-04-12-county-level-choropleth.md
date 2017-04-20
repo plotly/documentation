@@ -36,6 +36,9 @@ packageVersion('plotly')
 ```
 ## [1] '4.5.6.9000'
 ```
+### Mapbox Access Token
+
+To create mapbox maps with Plotly, you'll need a Mapbox account and a [Mapbox Access Token](https://www.mapbox.com/studio/) that you can add to your [Plotly Settings](https://plot.ly/settings/mapbox). If you're using a Plotly On-Premise server, please see additional instructions here: https://help.plot.ly/mapbox-atlas/.
 
 ### Creating Polygon Boundaries
 
@@ -78,7 +81,7 @@ chart_link
 library(tidyverse)
 library(plotly)
 
-df <- read.csv("https://raw.githubusercontent.com/bcdunbar/datasets/master/californiaPopulation.csv") 
+df <- read.csv("https://raw.githubusercontent.com/bcdunbar/datasets/master/californiaPopulation.csv")
 
 cali <- map_data("county") %>%
   filter(region == 'california')
@@ -141,7 +144,7 @@ p <- cali_pop %>%
   add_polygons(line = list(width = 0.4)) %>%
   add_polygons(
     fillcolor = 'transparent',
-    line = list(color = 'black', width = 0.5), 
+    line = list(color = 'black', width = 0.5),
     showlegend = FALSE, hoverinfo = 'none'
   ) %>%
   layout(
