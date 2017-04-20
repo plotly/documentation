@@ -22377,43 +22377,6 @@ Check out <a href="http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/"
 
 <p>Inspired by <a href="http://is-r.tumblr.com/post/33356702763/from-holey-polygons-to-convex-hulls">is.R()</a></p>
 
-<h3>Maps</h3>
-<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span><span class="w">
-</span><span class="n">library</span><span class="p">(</span><span class="n">plyr</span><span class="p">)</span><span class="w">
-</span><span class="n">library</span><span class="p">(</span><span class="n">maps</span><span class="p">)</span><span class="w">
-</span><span class="n">library</span><span class="p">(</span><span class="n">mapproj</span><span class="p">)</span><span class="w">
-
-</span><span class="n">us_ag</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> 
-  </span><span class="n">read.csv</span><span class="p">(</span><span class="s2">"https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv"</span><span class="p">)</span><span class="w">
-
-</span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">subset</span><span class="p">(</span><span class="n">us_ag</span><span class="p">,</span><span class="w"> </span><span class="n">select</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">total.veggies</span><span class="p">))</span><span class="w">
-
-</span><span class="c1"># state names to lowercase
-</span><span class="n">df</span><span class="o">$</span><span class="n">region</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">state</span><span class="p">)</span><span class="w">
-
-</span><span class="c1"># map data
-</span><span class="n">us_state_map</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map_data</span><span class="p">(</span><span class="s1">'state'</span><span class="p">)</span><span class="w">
-</span><span class="n">map_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">merge</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">us_state_map</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'region'</span><span class="p">)</span><span class="w">
-</span><span class="n">map_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">arrange</span><span class="p">(</span><span class="n">map_data</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="p">)</span><span class="w">
-
-</span><span class="n">states</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">state.center</span><span class="p">,</span><span class="w"> </span><span class="n">state.abb</span><span class="p">)</span><span class="w">
-
-</span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_data</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">long</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lat</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">group</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
-  </span><span class="n">geom_polygon</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cut_number</span><span class="p">(</span><span class="n">total.veggies</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
-  </span><span class="n">geom_path</span><span class="p">(</span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'gray'</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
-  </span><span class="n">scale_fill_brewer</span><span class="p">(</span><span class="s1">'Total Veggie Export (2011)'</span><span class="p">,</span><span class="w"> </span><span class="n">palette</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s1">'PuRd'</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
-  </span><span class="n">coord_map</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
-  </span><span class="n">theme_bw</span><span class="p">()</span><span class="w">
-
-</span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplotly</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w">
-
-</span><span class="c1"># Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-</span><span class="n">chart_link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plotly_POST</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="o">=</span><span class="s2">"geom_polygon/maps"</span><span class="p">)</span><span class="w">
-</span><span class="n">chart_link</span><span class="w">
-</span></code></pre></div>
-<iframe src="https://plot.ly/~RPlotBot/4159.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
 <h3>County-Level Boundaries</h3>
 <div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">maps</span><span class="p">)</span><span class="w">
@@ -22427,12 +22390,72 @@ Check out <a href="http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/"
   </span><span class="n">geom_polygon</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state_df</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"black"</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
   </span><span class="n">theme_void</span><span class="p">()</span><span class="w">
 
+</span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplotly</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w">
+
 </span><span class="c1"># Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 </span><span class="n">chart_link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plotly_POST</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="o">=</span><span class="s2">"geom_polygon/county-level-boundaries"</span><span class="p">)</span><span class="w">
 </span><span class="n">chart_link</span><span class="w">
 </span></code></pre></div>
 <iframe src="https://plot.ly/~RPlotBot/4383.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+<h3>County-Level Choropleths</h3>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">maps</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># map data
+</span><span class="n">county_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map_data</span><span class="p">(</span><span class="s2">"county"</span><span class="p">)</span><span class="w">
+</span><span class="n">state_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map_data</span><span class="p">(</span><span class="s2">"state"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">county_df</span><span class="o">$</span><span class="n">subregion</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gsub</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">county_df</span><span class="o">$</span><span class="n">subregion</span><span class="p">)</span><span class="w">
+
+</span><span class="c1">#election data
+</span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.csv</span><span class="p">(</span><span class="s2">"https://raw.githubusercontent.com/bcdunbar/datasets/master/votes.csv"</span><span class="p">)</span><span class="w">
+</span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">subset</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">select</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">Obama</span><span class="p">,</span><span class="w"> </span><span class="n">Romney</span><span class="p">,</span><span class="w"> </span><span class="n">area_name</span><span class="p">))</span><span class="w">
+
+</span><span class="n">df</span><span class="o">$</span><span class="n">area_name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">area_name</span><span class="p">)</span><span class="w"> 
+</span><span class="n">df</span><span class="o">$</span><span class="n">area_name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gsub</span><span class="p">(</span><span class="s2">" county"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">area_name</span><span class="p">)</span><span class="w">
+</span><span class="n">df</span><span class="o">$</span><span class="n">area_name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gsub</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">area_name</span><span class="p">)</span><span class="w">
+</span><span class="n">df</span><span class="o">$</span><span class="n">area_name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gsub</span><span class="p">(</span><span class="s2">"[.]"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">area_name</span><span class="p">)</span><span class="w">
+
+</span><span class="n">df</span><span class="o">$</span><span class="n">Obama</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Obama</span><span class="o">*</span><span class="m">100</span><span class="w">
+</span><span class="n">df</span><span class="o">$</span><span class="n">Romney</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Romney</span><span class="o">*</span><span class="m">100</span><span class="w">
+
+</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="nf">length</span><span class="p">(</span><span class="n">df</span><span class="p">[,</span><span class="m">1</span><span class="p">]))</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Obama</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Romney</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">df</span><span class="o">$</span><span class="n">Percent</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Obama</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">df</span><span class="o">$</span><span class="n">Percent</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">df</span><span class="o">$</span><span class="n">Romney</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="nf">names</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"Obama"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Romney"</span><span class="p">,</span><span class="w"> </span><span class="s2">"subregion"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Percent"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># join data
+</span><span class="n">US</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">inner_join</span><span class="p">(</span><span class="n">county_df</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"subregion"</span><span class="p">)</span><span class="w">
+</span><span class="n">US</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">US</span><span class="p">[</span><span class="o">!</span><span class="n">duplicated</span><span class="p">(</span><span class="n">US</span><span class="o">$</span><span class="n">order</span><span class="p">),</span><span class="w"> </span><span class="p">]</span><span class="w">
+
+</span><span class="c1"># colorramp
+</span><span class="n">blue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">colorRampPalette</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"navy"</span><span class="p">,</span><span class="s2">"royalblue"</span><span class="p">,</span><span class="s2">"lightskyblue"</span><span class="p">))(</span><span class="m">200</span><span class="p">)</span><span class="w">                      
+</span><span class="n">red</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">colorRampPalette</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"mistyrose"</span><span class="p">,</span><span class="w"> </span><span class="s2">"red2"</span><span class="p">,</span><span class="s2">"darkred"</span><span class="p">))(</span><span class="m">200</span><span class="p">)</span><span class="w">
+
+</span><span class="c1">#plot
+</span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="n">US</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">long</span><span class="p">,</span><span class="w"> </span><span class="n">lat</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">group</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_polygon</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Percent</span><span class="p">),</span><span class="w">
+               </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alpha</span><span class="p">(</span><span class="s2">"white"</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="o">/</span><span class="m">2</span><span class="p">),</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.05</span><span class="p">)</span><span class="w">  </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_polygon</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state_df</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"white"</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"2012 US Election"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_fill_gradientn</span><span class="p">(</span><span class="n">colours</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="n">blue</span><span class="p">,</span><span class="s2">"white"</span><span class="p">,</span><span class="w"> </span><span class="n">red</span><span class="p">),</span><span class="w"> </span><span class="n">limits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">-100</span><span class="p">))</span><span class="w">  </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_void</span><span class="p">()</span><span class="w">
+
+</span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplotly</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+</span><span class="n">chart_link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plotly_POST</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="o">=</span><span class="s2">"geom_polygon/county-level-choropleth"</span><span class="p">)</span><span class="w">
+</span><span class="n">chart_link</span><span class="w">
+</span></code></pre></div>
+<iframe src="https://plot.ly/~RPlotBot/4385.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 			</section>
 			<!--End Plotly Basics Section-->
