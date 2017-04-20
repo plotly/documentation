@@ -235,47 +235,6 @@ chart_link
 <iframe src="https://plot.ly/~RPlotBot/4157.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 Inspired by <a href="http://is-r.tumblr.com/post/33356702763/from-holey-polygons-to-convex-hulls">is.R()</a>
 
-### Maps
-
-
-```r
-library(plotly)
-library(plyr)
-library(maps)
-library(mapproj)
-
-us_ag <- 
-  read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")
-
-df <- subset(us_ag, select=c(state,total.veggies))
-
-# state names to lowercase
-df$region <- tolower(df$state)
-
-# map data
-us_state_map <- map_data('state')
-map_data <- merge(df, us_state_map, by = 'region')
-map_data <- arrange(map_data, order)
-
-states <- data.frame(state.center, state.abb)
-
-p <- ggplot(data = map_data, aes(x = long, y = lat, group = group)) + 
-  geom_polygon(aes(fill = cut_number(total.veggies, 5))) + 
-  geom_path(colour = 'gray') + 
-  scale_fill_brewer('Total Veggie Export (2011)', palette  = 'PuRd') + 
-  coord_map() + 
-  theme_bw()
-
-p <- ggplotly(p)
-
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="geom_polygon/maps")
-chart_link
-```
-
-<iframe src="https://plot.ly/~RPlotBot/4159.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
 ### County-Level Boundaries
 
 
@@ -292,6 +251,8 @@ p <- ggplot(county_df, aes(long, lat, group = group)) +
   geom_polygon(data = state_df, colour = "black", fill = NA) + 
   theme_void()
 
+p <- ggplotly(p)
+
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = plotly_POST(p, filename="geom_polygon/county-level-boundaries")
@@ -300,3 +261,64 @@ chart_link
 
 <iframe src="https://plot.ly/~RPlotBot/4383.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
+### County-Level Choropleths
+
+
+```r
+library(plotly)
+library(maps)
+
+# map data
+county_df <- map_data("county")
+state_df <- map_data("state")
+
+county_df$subregion <- gsub(" ", "", county_df$subregion)
+
+#election data
+df <- read.csv("https://raw.githubusercontent.com/bcdunbar/datasets/master/votes.csv")
+df <- subset(df, select = c(Obama, Romney, area_name))
+
+df$area_name <- tolower(df$area_name) 
+df$area_name <- gsub(" county", "", df$area_name)
+df$area_name <- gsub(" ", "", df$area_name)
+df$area_name <- gsub("[.]", "", df$area_name)
+
+df$Obama <- df$Obama*100
+df$Romney <- df$Romney*100
+
+for (i in 1:length(df[,1])) {
+  if (df$Obama[i] > df$Romney[i]) {
+    df$Percent[i] = df$Obama[i]
+  } else {
+    df$Percent[i] = -df$Romney[i]
+  }
+}
+
+names(df) <- c("Obama", "Romney", "subregion", "Percent")
+
+# join data
+US <- inner_join(county_df, df, by = "subregion")
+US <- US[!duplicated(US$order), ]
+
+# colorramp
+blue <- colorRampPalette(c("navy","royalblue","lightskyblue"))(200)                      
+red <- colorRampPalette(c("mistyrose", "red2","darkred"))(200)
+
+#plot
+p <- ggplot(US, aes(long, lat, group = group)) +
+  geom_polygon(aes(fill = Percent),
+               colour = alpha("white", 1/2), size = 0.05)  +
+  geom_polygon(data = state_df, colour = "white", fill = NA) +
+  ggtitle("2012 US Election") +
+  scale_fill_gradientn(colours=c(blue,"white", red), limits = c(100, -100))  +
+  theme_void()
+
+p <- ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="geom_polygon/county-level-choropleth")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4385.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
