@@ -7,6 +7,7 @@ layout: base
 thumbnail: thumbnail/get-requests.jpg
 language: r
 has_thumbnail: true
+thumbnail: thumbnail/spectral.jpg
 display_as: file_settings
 output:
   html_document:
