@@ -47,6 +47,7 @@ The full bleed R pages are created with R Markdown. Here's how:
 3. Install a couple dependencies:
 
   ```
+  $ bundle install
   $ sudo gem install jekyll-redirect-from
   $ sudo gem install jekyll-sitemap
   $ sudo gem install terminal-notifier
