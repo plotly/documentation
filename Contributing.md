@@ -9,17 +9,14 @@ Edit or add files in the `_posts` folder in the [source-design-merge](http://git
   $ git fetch origin
   $ git checkout source-design-merge
   ```
-2. [Install jekyll](http://jekyllrb.com/docs/installation/). **Important** - Install the same Jekyll version as gh-pages: https://pages.github.com/versions/
-
-  ```
-  $ gem install jekyll -v 3.x.x
-  ```
-3. Install bundler and a couple dependencies from the `gemfile`:
+  
+2. Install bundler and dependencies from the `gemfile`:
 
   ```
   $ gem install bundler
   $ bundle install
   ```
+Note these dependencies should be the same version that gh-pages is using: https://pages.github.com/versions/ .
 
 4. When we deploy, a function is run to update the plot schema. To do this successfully you have to make sure you have the `requests` python package: `pip install requests`
 
