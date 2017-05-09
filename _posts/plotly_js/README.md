@@ -8,7 +8,9 @@
   $ git checkout source-design-merge
   ```
   
-2. Install bundler and a couple dependencies from the gemfile:
+2. Check Ruby version `$ ruby --version`. We recommend using the same ruby version as gh-pages: https://pages.github.com/versions/. Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
+
+3. Install bundler and a couple dependencies from the gemfile:
 
   ```
   $ gem install bundler
