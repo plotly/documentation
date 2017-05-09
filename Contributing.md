@@ -2,10 +2,10 @@
 Edit or add files in the `_posts` folder in the [source-design-merge](http://github.com/plotly/documentation/tree/source-design-merge) branch.
 
 ## Clone the Repo and Install Dependencies 
-0. Clone the repo. `$ git clone git@github.com:plotly/documentation.git`
-1. Check out the source-design-merge branch:
+1. Clone the repo and then check out the source-design-merge branch:
 
   ```
+  $ git clone git@github.com:plotly/documentation.git
   $ git fetch origin
   $ git checkout source-design-merge
   ```
