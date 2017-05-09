@@ -1,26 +1,23 @@
 # Contribute to Plotly's [Python Documentation](https://plot.ly/python/)
 ## Initial Steps:
-0. Clone the repo and then check out the source-design-merge branch:
+1. Clone the repo and then check out the source-design-merge branch:
 
   ```
   $ git clone git@github.com:plotly/documentation.git
   $ git fetch origin
   $ git checkout source-design-merge
   ```
-1. [Install jekyll](http://jekyllrb.com/docs/installation/). <b>IMPORTANT</b> - [Install the same version that Github Pages is using: 3.1.2](https://pages.github.com/versions/):
+  
+2. Check Ruby version `$ ruby --version`. We recommend using the same ruby version as gh-pages: https://pages.github.com/versions/. Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
+
+3. Install bundler and a couple dependencies from the gemfile:
 
   ```
-  $ gem install jekyll -v 3.1.2
-  ```
-2. Install some dependencies:
+  $ gem install bundler
+  $ bundle install
 
   ```
-  $ sudo gem install jekyll-redirect-from
-  $ sudo gem install jekyll-sitemap
-  $ sudo gem install terminal-notifier
-  $ sudo gem install jemoji
-  $ sudo gem install redcarpet
-  ```
+<b>IMPORTANT</b> -If not using bundler and the gemfile, [install the same jekyll version that Github Pages is using](https://pages.github.com/versions/).
 
 ## Create Python Documentation:
 Our python tutorials are written in [ipython notebooks](http://ipython.org/notebook.html) (.ipynb file)
