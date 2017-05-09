@@ -9,8 +9,10 @@ Edit or add files in the `_posts` folder in the [source-design-merge](http://git
   $ git fetch origin
   $ git checkout source-design-merge
   ```
-  
-2. Install bundler and dependencies from the `gemfile`:
+ 
+2. Check Ruby version `ruby --version`. We recommend using the same ruby version as gh-pages: https://pages.github.com/versions/. Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
+
+3. Install bundler and dependencies from the `gemfile`:
 
   ```
   $ gem install bundler
@@ -27,7 +29,7 @@ Note these dependencies should be the same version that gh-pages is using: https
 
 ## Render Changes Locally
 Please **ALWAYS** locally serve the docs and check your changes before commiting updates.
-1. To serve the docs locally, in the documentation repo run: `$ jekyll serve --config _config_dev.yml`
+1. To serve the docs locally, in the documentation repo run: `$ bundle exec jekyll serve --config _config_dev.yml`
 2. Visit the pages at: [http://localhost:4000/python/](http://localhost:4000/python/)
 3. When you make changes, jekyll should automatically regenerate for you. Read the messages in your terminal to check it out
 
@@ -56,19 +58,9 @@ and it'll load everything.
 ## Deploying Changes
 Our repo has become too big for github to process. Edit files on the `source-design-merge` branch instead of the `gh-pages` branch.
 
-To deploy, first install `_config.yml` package dependencies:
+Deploy changes with:
 ```
-documentation (source-design-merge) $ sudo gem install jekyll-redirect-from
-documentation (source-design-merge) $ sudo gem install jekyll-sitemap
-documentation (source-design-merge) $ sudo gem install terminal-notifier
-documentation (source-design-merge) $ sudo gem install jemoji
-documentation (source-design-merge) $ sudo gem install redcarpet
-
-```
-
-Then, deploy changes with:
-```
-documentation (source-design-merge) $ rake deploy
+documentation (source-design-merge) $ bundle exec rake deploy
 ```
 
 (from the `source-design-merge` branch in the root of the `documentation` repo)
