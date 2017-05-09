@@ -12,14 +12,12 @@
   ```
   $ gem install jekyll -v 3.x.x
   ```
-2. Install some dependencies:
+2. Install bundler and a couple dependencies from the gemfile:
 
   ```
-  $ sudo gem install jekyll-redirect-from
-  $ sudo gem install jekyll-sitemap
-  $ sudo gem install terminal-notifier
-  $ sudo gem install jemoji
-  $ sudo gem install redcarpet
+  $ gem install bundler
+  $ bundle install
+
   ```
 
 ## Create Plotly.js Documentation:
