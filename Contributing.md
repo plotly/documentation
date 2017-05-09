@@ -24,9 +24,9 @@ Edit or add files in the `_posts` folder in the [source-design-merge](http://git
 4. When we deploy, a function is run to update the plot schema. To do this successfully you have to make sure you have the `requests` python package: `pip install requests`
 
 ## Making Changes
-For information about editing **plotly.js** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/plotly_js/README.md 
-For information about editing **python** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/python/README.md
-For information about editing **R** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/r/README.md
+- For information about editing **plotly.js** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/plotly_js/README.md 
+- For information about editing **python** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/python/README.md
+- For information about editing **R** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/r/README.md
 
 ## Render Changes Locally
 Please **ALWAYS** locally serve the docs and check your changes before commiting updates.
