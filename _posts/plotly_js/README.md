@@ -1,17 +1,13 @@
 # Contribute to Plotly's [Javascript Documentation](https://plot.ly/javascript/)
 ## Initial Steps:
-0. Clone the repo and then check out the source-design-merge branch:
+1. Clone the repo and then check out the source-design-merge branch:
 
   ```
   $ git clone git@github.com:plotly/documentation.git
   $ git fetch origin
   $ git checkout source-design-merge
   ```
-1. [Install jekyll](http://jekyllrb.com/docs/installation/). <b>IMPORTANT</b> - [Install the same version that Github Pages is using](https://pages.github.com/versions/):
-
-  ```
-  $ gem install jekyll -v 3.x.x
-  ```
+  
 2. Install bundler and a couple dependencies from the gemfile:
 
   ```
@@ -19,6 +15,7 @@
   $ bundle install
 
   ```
+<b>IMPORTANT</b> -If not using bundler and the gemfile, [install the same jekyll version that Github Pages is using](https://pages.github.com/versions/). 
 
 ## Create Plotly.js Documentation:
 Our javascript tutorials are written in HTML files with embeded [codepen](http://codepen.io/plotly/) examples.
