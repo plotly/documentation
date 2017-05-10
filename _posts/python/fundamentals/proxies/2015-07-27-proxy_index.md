@@ -8,6 +8,7 @@ language: python
 has_thumbnail: true
 thumbnail: thumbnail/net.jpg
 display_as: file_settings
+order: 10
 ---
 
 ### Using Plotly's Python API Behind a Corporate Proxy
