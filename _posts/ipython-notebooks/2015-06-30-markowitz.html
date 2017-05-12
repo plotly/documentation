@@ -1,12 +1,13 @@
 ---
-permalink: /ipython-notebooks/markowitz-portfolio-optimization
+permalink: ipython-noteboks/markowitz-portfolio-optimization
 description: Tutorial on the basic idea behind Markowitz portfolio optimization and how to do it with Python and plotly.
-name: Markowitz portfolio optimization
+title: Markowitz portfolio optimization
 has_thumbnail: false
 thumbnail: /images/static-image
 layout: user-guide
-page_type: u-guide
+name: Markowitz Portfolio Optimization
 language: python
+page_type: u-guide
 ---
 {% raw %}
 <div class="cell border-box-sizing text_cell rendered">
@@ -14,8 +15,9 @@ language: python
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Markowitz-Portfolio-Optimization-in-Python">Markowitz Portfolio Optimization in Python<a class="anchor-link" href="#Markowitz-Portfolio-Optimization-in-Python">&#182;</a></h2><p>Authors: Dr. Thomas Starke, David Edwards, Dr. Thomas Wiecki</p>
-<h3 id="About-the-author:">About the author:<a class="anchor-link" href="#About-the-author:">&#182;</a></h3><p>Today's blog post is written in collaboration with <a href="http://drtomstarke.com/">Dr. Thomas Starke</a>. It is based on a longer whitepaper by Thomas Starke on the relationship between Markowitz portfolio optimization and Kelly optimization. The full whitepaper can be found <a href="http://eepurl.com/4Pgrv">here</a>.</p>
+<p>About the authors:
+Dr. Thomas Starke, David Edwards, Dr. Thomas Wiecki
+Today's blog post is written in collaboration with <a href="http://drtomstarke.com/">Dr. Thomas Starke</a>. It is based on a longer whitepaper by Thomas Starke on the relationship between Markowitz portfolio optimization and Kelly optimization. The full whitepaper can be found <a href="http://eepurl.com/4Pgrv">here</a>.</p>
 <h3 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h3><p>In this blog post you will learn about the basic idea behind Markowitz portfolio optimization as well as how to do it in Python. We will then show how you can create a simple backtest that rebalances its portfolio in a Markowitz-optimal way. We hope you enjoy it and get a little more enlightened in the process.</p>
 <p>We will start by using random data and only later use actual stock data. This will hopefully help you to get a sense of how to use modelling and simulation to improve your understanding of the theoretical concepts. Don‘t forget that the skill of an algo-trader is to put mathematical models into code and this example is great practice.</p>
 <p>Let's start with importing a few modules, which we need later and produce a series of normally distributed returns. <code>cvxopt</code> is a convex solver which you can easily download with
@@ -29,7 +31,7 @@ language: python
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%</span><span class="k">matplotlib</span> inline
+<div class=" highlight hl-ipython2"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">cvxopt</span> <span class="kn">as</span> <span class="nn">opt</span>
@@ -38,8 +40,8 @@ language: python
 
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
 
-<span class="c"># Turn off progress printing </span>
-<span class="n">solvers</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;show_progress&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="c1"># Turn off progress printing </span>
+<span class="n">solvers</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;show_progress&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
 </pre></div>
 
 </div>
@@ -52,7 +54,7 @@ language: python
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">plotly</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
 <span class="kn">import</span> <span class="nn">cufflinks</span>
 <span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
@@ -65,11 +67,13 @@ language: python
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[2]:</div>
+
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&apos;1.4.7&apos;</pre>
+<pre>&#39;1.4.7&#39;</pre>
 </div>
 
 </div>
@@ -83,13 +87,13 @@ language: python
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># (*) To communicate with Plotly&#39;s server, sign in with credentials file</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># (*) To communicate with Plotly&#39;s server, sign in with credentials file</span>
 <span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>  
 
-<span class="c"># (*) Useful Python/Plotly tools</span>
+<span class="c1"># (*) Useful Python/Plotly tools</span>
 <span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>   
 
-<span class="c"># (*) Graph objects to piece together plots</span>
+<span class="c1"># (*) Graph objects to piece together plots</span>
 <span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
@@ -113,10 +117,10 @@ language: python
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">## NUMBER OF ASSETS</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">## NUMBER OF ASSETS</span>
 <span class="n">n_assets</span> <span class="o">=</span> <span class="mi">4</span>
 
-<span class="c">## NUMBER OF OBSERVATIONS</span>
+<span class="c1">## NUMBER OF OBSERVATIONS</span>
 <span class="n">n_obs</span> <span class="o">=</span> <span class="mi">1000</span>
 
 <span class="n">return_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_assets</span><span class="p">,</span> <span class="n">n_obs</span><span class="p">)</span>
@@ -132,11 +136,11 @@ language: python
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">return_vec</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=.</span><span class="mi">4</span><span class="p">);</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;time&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;returns&#39;</span><span class="p">)</span>
-<span class="n">py</span><span class="o">.</span><span class="n">iplot_mpl</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;s6_damped_oscillation&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;returns&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot_mpl</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;s6_damped_oscillation&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -147,7 +151,9 @@ language: python
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[5]:</div>
+
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~twiecki/3.embed" height="525" width="100%"></iframe>
@@ -176,7 +182,7 @@ of random weight vectors and plot those portfolios. As we want all our capital t
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">rand_weights</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">rand_weights</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Produces n random weights that sum to 1 &#39;&#39;&#39;</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">k</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
@@ -193,7 +199,9 @@ of random weight vectors and plot those portfolios. As we want all our capital t
 <div class="output">
 
 
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
+
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>[ 0.54066805  0.2360283   0.11660484  0.1066988 ]
 [ 0.27638339  0.03006307  0.47850085  0.21505269]
@@ -221,7 +229,7 @@ a filter that only allows to plot portfolios with a standard deviation of &lt; 2
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">random_portfolio</span><span class="p">(</span><span class="n">returns</span><span class="p">):</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">random_portfolio</span><span class="p">(</span><span class="n">returns</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; </span>
 <span class="sd">    Returns the mean and standard deviation of returns for a random portfolio</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -233,7 +241,7 @@ a filter that only allows to plot portfolios with a standard deviation of &lt; 2
     <span class="n">mu</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">T</span>
     <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">C</span> <span class="o">*</span> <span class="n">w</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
     
-    <span class="c"># This recursion reduces outliers to keep plots pretty</span>
+    <span class="c1"># This recursion reduces outliers to keep plots pretty</span>
     <span class="k">if</span> <span class="n">sigma</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">random_portfolio</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span>
@@ -274,7 +282,7 @@ diagonal and miss the rest. A small but significant difference.</p>
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">n_portfolios</span> <span class="o">=</span> <span class="mi">500</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n_portfolios</span> <span class="o">=</span> <span class="mi">500</span>
 <span class="n">means</span><span class="p">,</span> <span class="n">stds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span>
     <span class="n">random_portfolio</span><span class="p">(</span><span class="n">return_vec</span><span class="p">)</span> 
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_portfolios</span><span class="p">)</span>
@@ -303,12 +311,12 @@ frontier‘, where we have the lowest variance for a given expected.</p>
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">stds</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;std&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;mean&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Mean and standard deviation of returns of randomly generated portfolios&#39;</span><span class="p">)</span>
-<span class="n">py</span><span class="o">.</span><span class="n">iplot_mpl</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;mean_std&#39;</span><span class="p">,</span> <span class="n">strip_style</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">stds</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;std&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Mean and standard deviation of returns of randomly generated portfolios&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot_mpl</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;mean_std&#39;</span><span class="p">,</span> <span class="n">strip_style</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -319,7 +327,9 @@ frontier‘, where we have the lowest variance for a given expected.</p>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
+
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>/home/wiecki/envs/zipline_p14/local/lib/python2.7/site-packages/plotly/matplotlylib/renderer.py:514: UserWarning:
 
@@ -328,15 +338,17 @@ to draw lies/lay outside the given figure size.
 
 Therefore, the resulting Plotly figure may not be 
 large enough to view the full text. To adjust 
-the size of the figure, use the &apos;width&apos; and 
-&apos;height&apos; keys in the Layout object. Alternatively,
-use the Margin object to adjust the figure&apos;s margins.
+the size of the figure, use the &#39;width&#39; and 
+&#39;height&#39; keys in the Layout object. Alternatively,
+use the Margin object to adjust the figure&#39;s margins.
 
 </pre>
 </div>
 </div>
 
-<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[9]:</div>
+
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~twiecki/16.embed" height="525" width="100%"></iframe>
@@ -369,44 +381,44 @@ to define quite a complex problem with bounds, constraints and a Lagrange multip
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">optimal_portfolio</span><span class="p">(</span><span class="n">returns</span><span class="p">):</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">optimal_portfolio</span><span class="p">(</span><span class="n">returns</span><span class="p">):</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
     <span class="n">returns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asmatrix</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
     
     <span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">mus</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="mf">5.0</span> <span class="o">*</span> <span class="n">t</span><span class="o">/</span><span class="n">N</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
     
-    <span class="c"># Convert to cvxopt matrices</span>
+    <span class="c1"># Convert to cvxopt matrices</span>
     <span class="n">S</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">returns</span><span class="p">))</span>
     <span class="n">pbar</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
     
-    <span class="c"># Create constraint matrices</span>
-    <span class="n">G</span> <span class="o">=</span> <span class="o">-</span><span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>   <span class="c"># negative n x n identity matrix</span>
+    <span class="c1"># Create constraint matrices</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="o">-</span><span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>   <span class="c1"># negative n x n identity matrix</span>
     <span class="n">h</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span> <span class="p">,</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
     
-    <span class="c"># Calculate efficient frontier weights using quadratic programming</span>
-    <span class="n">portfolios</span> <span class="o">=</span> <span class="p">[</span><span class="n">solvers</span><span class="o">.</span><span class="n">qp</span><span class="p">(</span><span class="n">mu</span><span class="o">*</span><span class="n">S</span><span class="p">,</span> <span class="o">-</span><span class="n">pbar</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)[</span><span class="s">&#39;x&#39;</span><span class="p">]</span> 
+    <span class="c1"># Calculate efficient frontier weights using quadratic programming</span>
+    <span class="n">portfolios</span> <span class="o">=</span> <span class="p">[</span><span class="n">solvers</span><span class="o">.</span><span class="n">qp</span><span class="p">(</span><span class="n">mu</span><span class="o">*</span><span class="n">S</span><span class="p">,</span> <span class="o">-</span><span class="n">pbar</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> 
                   <span class="k">for</span> <span class="n">mu</span> <span class="ow">in</span> <span class="n">mus</span><span class="p">]</span>
-    <span class="c">## CALCULATE RISKS AND RETURNS FOR FRONTIER</span>
+    <span class="c1">## CALCULATE RISKS AND RETURNS FOR FRONTIER</span>
     <span class="n">returns</span> <span class="o">=</span> <span class="p">[</span><span class="n">blas</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">pbar</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">portfolios</span><span class="p">]</span>
     <span class="n">risks</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">blas</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">S</span><span class="o">*</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">portfolios</span><span class="p">]</span>
-    <span class="c">## CALCULATE THE 2ND DEGREE POLYNOMIAL OF THE FRONTIER CURVE</span>
+    <span class="c1">## CALCULATE THE 2ND DEGREE POLYNOMIAL OF THE FRONTIER CURVE</span>
     <span class="n">m1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">risks</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">m1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">m1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="c"># CALCULATE THE OPTIMAL PORTFOLIO</span>
-    <span class="n">wt</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">qp</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">x1</span> <span class="o">*</span> <span class="n">S</span><span class="p">),</span> <span class="o">-</span><span class="n">pbar</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)[</span><span class="s">&#39;x&#39;</span><span class="p">]</span>
+    <span class="c1"># CALCULATE THE OPTIMAL PORTFOLIO</span>
+    <span class="n">wt</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">qp</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">x1</span> <span class="o">*</span> <span class="n">S</span><span class="p">),</span> <span class="o">-</span><span class="n">pbar</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">wt</span><span class="p">),</span> <span class="n">returns</span><span class="p">,</span> <span class="n">risks</span>
 
 <span class="n">weights</span><span class="p">,</span> <span class="n">returns</span><span class="p">,</span> <span class="n">risks</span> <span class="o">=</span> <span class="n">optimal_portfolio</span><span class="p">(</span><span class="n">return_vec</span><span class="p">)</span>
 
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">stds</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="s">&#39;o&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;mean&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;std&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">risks</span><span class="p">,</span> <span class="n">returns</span><span class="p">,</span> <span class="s">&#39;y-o&#39;</span><span class="p">)</span>
-<span class="n">py</span><span class="o">.</span><span class="n">iplot_mpl</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;efficient_frontier&#39;</span><span class="p">,</span> <span class="n">strip_style</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">stds</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;std&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">risks</span><span class="p">,</span> <span class="n">returns</span><span class="p">,</span> <span class="s1">&#39;y-o&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot_mpl</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;efficient_frontier&#39;</span><span class="p">,</span> <span class="n">strip_style</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -417,7 +429,9 @@ to define quite a complex problem with bounds, constraints and a Lagrange multip
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[10]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[10]:</div>
+
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~twiecki/17.embed" height="525" width="100%"></iframe>
@@ -444,7 +458,7 @@ to define quite a complex problem with bounds, constraints and a Lagrange multip
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">print</span> <span class="n">weights</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">weights</span>
 </pre></div>
 
 </div>
@@ -455,7 +469,9 @@ to define quite a complex problem with bounds, constraints and a Lagrange multip
 <div class="output">
 
 
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
+
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>[[  2.77880107e-09]
  [  3.20322848e-06]
@@ -485,12 +501,12 @@ to define quite a complex problem with bounds, constraints and a Lagrange multip
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">zipline.utils.factory</span> <span class="kn">import</span> <span class="n">load_bars_from_yahoo</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">zipline.utils.factory</span> <span class="kn">import</span> <span class="n">load_bars_from_yahoo</span>
 <span class="n">end</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
 <span class="n">start</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="mi">2500</span> <span class="o">*</span> <span class="n">pd</span><span class="o">.</span><span class="n">tseries</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">BDay</span><span class="p">()</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">load_bars_from_yahoo</span><span class="p">(</span><span class="n">stocks</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;IBM&#39;</span><span class="p">,</span> <span class="s">&#39;GLD&#39;</span><span class="p">,</span> <span class="s">&#39;XOM&#39;</span><span class="p">,</span> <span class="s">&#39;AAPL&#39;</span><span class="p">,</span> 
-                                    <span class="s">&#39;MSFT&#39;</span><span class="p">,</span> <span class="s">&#39;TLT&#39;</span><span class="p">,</span> <span class="s">&#39;SHY&#39;</span><span class="p">],</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">load_bars_from_yahoo</span><span class="p">(</span><span class="n">stocks</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;IBM&#39;</span><span class="p">,</span> <span class="s1">&#39;GLD&#39;</span><span class="p">,</span> <span class="s1">&#39;XOM&#39;</span><span class="p">,</span> <span class="s1">&#39;AAPL&#39;</span><span class="p">,</span> 
+                                    <span class="s1">&#39;MSFT&#39;</span><span class="p">,</span> <span class="s1">&#39;TLT&#39;</span><span class="p">,</span> <span class="s1">&#39;SHY&#39;</span><span class="p">],</span>
                             <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
 </pre></div>
 
@@ -502,7 +518,9 @@ to define quite a complex problem with bounds, constraints and a Lagrange multip
 <div class="output">
 
 
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
+
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>IBM
 GLD
@@ -524,7 +542,7 @@ SHY
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;price&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;prices&#39;</span><span class="p">,</span> <span class="n">yTitle</span><span class="o">=</span><span class="s">&#39;price in $&#39;</span><span class="p">,</span> <span class="n">world_readable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">asDates</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s1">&#39;price&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;prices&#39;</span><span class="p">,</span> <span class="n">yTitle</span><span class="o">=</span><span class="s1">&#39;price in $&#39;</span><span class="p">,</span> <span class="n">world_readable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">asDates</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -535,7 +553,9 @@ SHY
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[9]:</div>
+
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~twiecki/19.embed" height="525" width="100%"></iframe>
@@ -563,7 +583,7 @@ SHY
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">zipline</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">zipline</span>
 <span class="kn">from</span> <span class="nn">zipline.api</span> <span class="kn">import</span> <span class="p">(</span><span class="n">add_history</span><span class="p">,</span> 
                          <span class="n">history</span><span class="p">,</span> 
                          <span class="n">set_slippage</span><span class="p">,</span> 
@@ -590,11 +610,11 @@ SHY
 <span class="sd">    </span>
 <span class="sd">    Returns None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="c"># Register history container to keep a window of the last 100 prices.</span>
-    <span class="n">add_history</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s">&#39;1d&#39;</span><span class="p">,</span> <span class="s">&#39;price&#39;</span><span class="p">)</span>
-    <span class="c"># Turn off the slippage model</span>
+    <span class="c1"># Register history container to keep a window of the last 100 prices.</span>
+    <span class="n">add_history</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;1d&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span>
+    <span class="c1"># Turn off the slippage model</span>
     <span class="n">set_slippage</span><span class="p">(</span><span class="n">slippage</span><span class="o">.</span><span class="n">FixedSlippage</span><span class="p">(</span><span class="n">spread</span><span class="o">=</span><span class="mf">0.0</span><span class="p">))</span>
-    <span class="c"># Set the commission model (Interactive Brokers Commission)</span>
+    <span class="c1"># Set the commission model (Interactive Brokers Commission)</span>
     <span class="n">set_commission</span><span class="p">(</span><span class="n">commission</span><span class="o">.</span><span class="n">PerShare</span><span class="p">(</span><span class="n">cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">min_trade_cost</span><span class="o">=</span><span class="mf">1.0</span><span class="p">))</span>
     <span class="n">context</span><span class="o">.</span><span class="n">tick</span> <span class="o">=</span> <span class="mi">0</span>
     
@@ -614,31 +634,31 @@ SHY
 
 <span class="sd">    Returns None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="c"># Allow history to accumulate 100 days of prices before trading</span>
-    <span class="c"># and rebalance every day thereafter.</span>
+    <span class="c1"># Allow history to accumulate 100 days of prices before trading</span>
+    <span class="c1"># and rebalance every day thereafter.</span>
     <span class="n">context</span><span class="o">.</span><span class="n">tick</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">tick</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
         <span class="k">return</span>
-    <span class="c"># Get rolling window of past prices and compute returns</span>
-    <span class="n">prices</span> <span class="o">=</span> <span class="n">history</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s">&#39;1d&#39;</span><span class="p">,</span> <span class="s">&#39;price&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="c1"># Get rolling window of past prices and compute returns</span>
+    <span class="n">prices</span> <span class="o">=</span> <span class="n">history</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;1d&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
     <span class="n">returns</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="c"># Perform Markowitz-style portfolio optimization</span>
+        <span class="c1"># Perform Markowitz-style portfolio optimization</span>
         <span class="n">weights</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">optimal_portfolio</span><span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="c"># Rebalance portfolio accordingly</span>
+        <span class="c1"># Rebalance portfolio accordingly</span>
         <span class="k">for</span> <span class="n">stock</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">prices</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
             <span class="n">order_target_percent</span><span class="p">(</span><span class="n">stock</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="c"># Sometimes this error is thrown</span>
-        <span class="c"># ValueError: Rank(A) &lt; p or Rank([P; A; G]) &lt; n</span>
+        <span class="c1"># Sometimes this error is thrown</span>
+        <span class="c1"># ValueError: Rank(A) &lt; p or Rank([P; A; G]) &lt; n</span>
         <span class="k">pass</span>
         
-<span class="c"># Instantinate algorithm        </span>
+<span class="c1"># Instantinate algorithm        </span>
 <span class="n">algo</span> <span class="o">=</span> <span class="n">TradingAlgorithm</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">initialize</span><span class="p">,</span> 
                         <span class="n">handle_data</span><span class="o">=</span><span class="n">handle_data</span><span class="p">)</span>
-<span class="c"># Run algorithm</span>
+<span class="c1"># Run algorithm</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">results</span><span class="o">.</span><span class="n">portfolio_value</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;algo_perf&#39;</span><span class="p">,</span> <span class="n">yTitle</span><span class="o">=</span><span class="s">&#39;Cumulative capital in $&#39;</span><span class="p">,</span> <span class="n">world_readable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">asDates</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">results</span><span class="o">.</span><span class="n">portfolio_value</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;algo_perf&#39;</span><span class="p">,</span> <span class="n">yTitle</span><span class="o">=</span><span class="s1">&#39;Cumulative capital in $&#39;</span><span class="p">,</span> <span class="n">world_readable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">asDates</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -649,7 +669,9 @@ SHY
 <div class="output">
 
 
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
+
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>[2015-03-02 09:52] INFO: Performance: Simulated 2411 trading days out of 2411.
 [2015-03-02 09:52] INFO: Performance: first open: 2005-08-01 13:31:00+00:00
@@ -658,7 +680,9 @@ SHY
 </div>
 </div>
 
-<div class="output_area"><div class="prompt output_prompt">Out[14]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[14]:</div>
+
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~twiecki/20.embed" height="525" width="100%"></iframe>
@@ -696,4 +720,7 @@ SHY
 
 </div>
 </div>
-</div>{% endraw %}
+</div>
+ 
+
+{% endraw %}
