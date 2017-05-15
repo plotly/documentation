@@ -39,8 +39,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
   - markdown cell:
       ```
       #### Version Check
-      Note: Tables are available in version <b>1.9.2+</b><br>
-      Run  `pip install plotly --upgrade` to update your Plotly version
+      Plotly's python package is updated frequently. Run `pip install plotly --upgrade` to use the latest version.
       ```
 
   - code cell:
@@ -91,6 +90,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
       display_as='chart_type', order=2,
       ipynb= '~notebook_demo/1')
   ```
+  - always include a trailing slash in the permalink (i.e. python/your-tutorial-chart/)
   - `display_as` sets in which section your tutorial is displayed 
     - 'basic' = https://plot.ly/python/#basic-charts
     - 'statistical' = https://plot.ly/python/#statistical-charts
