@@ -39,7 +39,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
   - markdown cell:
       ```
       #### Version Check
-      Plotly's python package is updated frequently. Run pip install plotly --upgrade to use the latest version.
+      Plotly's python package is updated frequently. Run `pip install plotly --upgrade` to use the latest version.
       ```
 
   - code cell:
