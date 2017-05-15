@@ -91,6 +91,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
       display_as='chart_type', order=2,
       ipynb= '~notebook_demo/1')
   ```
+  - always include a trailing slash in the permalink (i.e. python/your-tutorial-chart/)
   - `display_as` sets in which section your tutorial is displayed 
     - 'basic' = https://plot.ly/python/#basic-charts
     - 'statistical' = https://plot.ly/python/#statistical-charts
