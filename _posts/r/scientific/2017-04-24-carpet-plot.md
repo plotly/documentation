@@ -53,11 +53,11 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="carpet/basic")
+chart_link = plotly_POST(p, filename="carpet/basic", sharing = 'public')
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4508.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4514.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Add aaxis and baxis
 
@@ -88,11 +88,11 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="carpet/axes")
+chart_link = plotly_POST(p, filename="carpet/axes", sharing = 'public')
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4510.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4516.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Styling aaxis and baxis
 
@@ -134,11 +134,11 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="carpet/styled")
+chart_link = plotly_POST(p, filename="carpet/styled", sharing = 'public')
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4512.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4518.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Reference
 

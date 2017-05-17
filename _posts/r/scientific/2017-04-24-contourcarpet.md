@@ -107,11 +107,11 @@ p <- plot_ly(width = 600, height = 600) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="contourcarpet/basic")
+chart_link = plotly_POST(p, filename="contourcarpet/basic", sharing = 'public')
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4504.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4520.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Adding Multiple Traces
 
@@ -283,11 +283,11 @@ p <- plot_ly(height = 700, width = 900) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="contourcarpet/airfoil")
+chart_link = plotly_POST(p, filename="contourcarpet/airfoil", sharing = 'public')
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4506.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4522.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Reference
 
