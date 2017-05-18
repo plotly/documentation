@@ -37,9 +37,29 @@ packageVersion('plotly')
 ## [1] '4.6.0.9000'
 ```
 
-### Basic Carpet Plot
+### Set the Coordinates 
 
-To set the `x` and `y` coordinates use `x` and `y` attributes. If `x` coorindate values are ommitted a cheater plot will be created. To save parameter values use `a` and `b`.
+To set the `x` and `y` coordinates use `x` and `y` attributes. If `x` coorindate values are ommitted a cheater plot will be created.
+
+
+```r
+library(plotly)
+
+p <- plot_ly(
+    type = 'carpet',
+    y = c(2, 3.5, 4, 3, 4.5, 5, 5.5, 6.5, 7.5, 8, 8.5, 10))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="carpet/basic", sharing = 'public')
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4555.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Add Parameter Values
+
+To save parameter values use `a` and `b` attributes.
 
 
 ```r
@@ -53,13 +73,13 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="carpet/basic", sharing = 'public')
+chart_link = plotly_POST(p, filename="carpet/add-values", sharing = 'public')
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4514.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4557.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Add aaxis and baxis
+### Add Carpet Axes
 
 Use `aaxis` or `baxis` lists to make changes to the axes. For a more detailed list of attributes refer to [R reference](https://plot.ly/r/reference/#carpet-aaxis).
 
@@ -92,9 +112,9 @@ chart_link = plotly_POST(p, filename="carpet/axes", sharing = 'public')
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4516.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4559.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Styling aaxis and baxis
+### Style Carpet Axes
 
 
 ```r
@@ -138,7 +158,11 @@ chart_link = plotly_POST(p, filename="carpet/styled", sharing = 'public')
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4518.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4561.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Add Points and Contours
+
+To add points and lines to see [Carpet Scatter Plots](https://plot.ly/r/carpet-scatter) or to add contours see [Carpet Contour Plots](https://plot.ly/carpet-contour)
 
 ### Reference
 

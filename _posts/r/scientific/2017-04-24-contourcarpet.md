@@ -38,9 +38,58 @@ packageVersion('plotly')
 ```
 
 
-### Basic Contour Carpet Plot
+### Basic Carpet Plot
 
 Set the `x` and `y` coorindates, using `x` and `y` attributes. If `x` coorindate values are ommitted a cheater plot will be created. To save parameter values use `a` and `b` attributes. To make changes to the axes, use `aaxis` or `baxis` attributes. For a more detailed list of axes attributes refer to [R reference](https://plot.ly/r/reference/#contourcarpet-aaxis).
+
+
+```r
+library(plotly)
+
+p <- plot_ly() %>%
+  add_trace(
+    type = 'carpet',
+    a = c(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3),
+    b = c(4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6),
+    x = c(2, 3, 4, 5, 2.2, 3.1, 4.1, 5.1, 1.5, 2.5, 3.5, 4.5),
+    y = c(1, 1.4, 1.6, 1.75, 2, 2.5, 2.7, 2.75, 3, 3.5, 3.7, 3.75),
+    xaxis = "x",
+    yaxis = "y",
+    carpet = "c",
+    aaxis = list(
+      tickprefix = "a = ",
+      smoothing = 0,
+      minorgridcount = 9,
+      type = 'linear'
+    ),
+    baxis = list(
+      tickprefix = "b = ",
+      smoothing = 0,
+      minorgridcount = 9,
+      type = 'linear'
+    )
+  ) %>%
+  layout(
+    margin = list(
+      t = 40, r = 30, b = 30, l = 30
+    ),
+    yaxis = list(
+      range = c(0.388,4.361)
+    ),
+    xaxis = list(
+      range = c(0.667,5.932)
+    )
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="contourcarpet/basic", sharing = 'public')
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4563.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Add Contours
 
 
 ```r
@@ -74,8 +123,8 @@ p <- plot_ly(width = 600, height = 600) %>%
     type = 'carpet',
     a = c(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3),
     b = c(4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6),
-    y = c(1, 1.4, 1.6, 1.75, 2, 2.5, 2.7, 2.75, 3, 3.5, 3.7, 3.75),
     x = c(2, 3, 4, 5, 2.2, 3.1, 4.1, 5.1, 1.5, 2.5, 3.5, 4.5),
+    y = c(1, 1.4, 1.6, 1.75, 2, 2.5, 2.7, 2.75, 3, 3.5, 3.7, 3.75),
     xaxis = "x",
     yaxis = "y",
     carpet = "c",
@@ -93,7 +142,6 @@ p <- plot_ly(width = 600, height = 600) %>%
     )
   ) %>%
   layout(
-    title = "Cheater plot with 1d input",
     margin = list(
       t = 40, r = 30, b = 30, l = 30
     ),
@@ -107,13 +155,13 @@ p <- plot_ly(width = 600, height = 600) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="contourcarpet/basic", sharing = 'public')
+chart_link = plotly_POST(p, filename="contourcarpet/add-contours", sharing = 'public')
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4520.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4565.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Adding Multiple Traces
+### Add Multiple Traces
 
 
 ```r
@@ -122,7 +170,7 @@ library(rjson)
 
 data <- fromJSON(file="https://raw.githubusercontent.com/bcdunbar/datasets/master/airfoil_data.json")
 
-p <- plot_ly(height = 700, width = 900) %>%
+p <- plot_ly() %>%
   add_trace(
     type = "carpet",
     a = list(
@@ -194,7 +242,6 @@ p <- plot_ly(height = 700, width = 900) %>%
         color = "white",
         width = 1
       )
-      
     ) %>%
   add_trace(
       type = 'contourcarpet',
@@ -287,7 +334,7 @@ chart_link = plotly_POST(p, filename="contourcarpet/airfoil", sharing = 'public'
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4522.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4567.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Reference
 
