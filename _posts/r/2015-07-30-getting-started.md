@@ -84,6 +84,7 @@ In your .RProfile write:
 
 ```r
 Sys.setenv("plotly_domain"="https://plotly.your-company.com")
+Sys.setenv("plotly_api_domain"="https://api-plotly.your-company.com")
 ```
 
 Remember to replace "your-company" with the URL of your Plotly On-Premise server.
@@ -94,14 +95,14 @@ Remember to replace "your-company" with the URL of your Plotly On-Premise server
 
 #### Online Plot Privacy
 
-Plots can be set to three different type of privacies: public, private or secret. 
+Plots can be set to three different type of privacies: public, private or secret.
 
 * **public:**
- 
+
      Anyone can view this graph. It will appear in your profile
      and can appear in search engines. You do not need to be
      logged in to Plotly to view this chart.
- 
+
 * **private:**
 
      Only you can view this plot. It will not appear in the
@@ -110,9 +111,9 @@ Plots can be set to three different type of privacies: public, private or secret
      share this graph with other Plotly users in your online
      Plotly account and they will need to be logged in to
      view this plot.
- 
+
 * **secret:**
- 
+
      Anyone with this secret link can view this chart. It will
      not appear in the Plotly feed, your profile, or search
      engines. If it is embedded inside a webpage or an IPython
