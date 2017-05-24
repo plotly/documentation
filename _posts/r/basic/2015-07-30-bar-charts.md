@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.6.9000'
+## [1] '4.7.0'
 ```
 
 ### Basic Bar Chart
@@ -237,6 +237,32 @@ chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3524.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Customizing Individual Bar Widths
+
+
+```r
+library(plotly)
+
+x= c(1, 2, 3, 5.5, 10)
+y= c(10, 8, 6, 4, 2)
+width = c(0.8, 0.8, 0.8, 3.5, 4)
+data <- data.frame(x, y, width)
+
+p <- plot_ly(data) %>%
+  add_bars(
+    x= ~x,
+    y= ~y,
+    width = ~width
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="bar/bar-width")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4571.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Mapping a Color Variable
 
