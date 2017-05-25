@@ -33,7 +33,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.6.9000'
+## [1] '4.7.0'
 ```
 
 ### Text Mode
@@ -224,6 +224,107 @@ chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3875.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Set Annotation Text Anchors
+
+
+```r
+library(plotly)
+
+p <- plot_ly() %>%
+  add_markers(
+    x = 1,
+    y = 1,
+    showlegend = F
+  ) %>%
+  add_markers(
+    x = 1,
+    y = 2,
+    showlegend = F
+  ) %>% 
+  add_markers(
+    x = 1,
+    y = 3,
+    showlegend = F
+  ) %>%
+  add_annotations(
+    x=1,
+    y=1,
+    xref = "x",
+    yref = "y",
+    text = "Right Anchor",
+    xanchor = 'right',
+    showarrow = F
+  ) %>%
+  add_annotations(
+    x=1,
+    y=2,
+    xref = "x",
+    yref = "y",
+    text = "Center Anchor",
+    xanchor = 'center', 
+    showarrow = F
+  ) %>%
+  add_annotations(
+    x=1,
+    y=3,
+    xref = "x",
+    yref = "y",
+    text = "Left Anchor",
+    xanchor = 'left',
+    showarrow = F
+  ) 
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="annotation/anchors")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4575.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Set Annotation Coordinate References
+
+
+```r
+library(plotly)
+
+p <- plot_ly() %>%
+  add_markers(
+    x = 0.5,
+    y = 1,
+    showlegend = F
+  ) %>%
+  add_annotations(
+    x= 0.5,
+    y= 1,
+    xref = "paper",
+    yref = "paper",
+    text = "<b>paper reference = [0.5, 1]</b>",
+    showarrow = F
+  ) %>%
+  add_annotations(
+    x= 0.5,
+    y= 1,
+    xref = "x",
+    yref = "y",
+    text = "x + y reference = [0.5, 1]",
+    showarrow = T,
+    ax = 20,
+    ay = -40
+  ) %>%
+  layout(
+    xaxis = list(zeroline = F),
+    yaxis = list(zeroline = F)
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="annotation/xref")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4577.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Subplot Annotations
 
