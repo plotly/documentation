@@ -1,7 +1,7 @@
 ---
 title: geom_quantile in ggplot2 | Examples | Plotly
 name: geom_quantile
-permalink: ggplot2/geom_quantile
+permalink: ggplot2/geom_quantile/
 description: How to use geom_quantile with Plotly.
 layout: base
 thumbnail: thumbnail/geom_quantile.jpg
@@ -36,7 +36,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.6.0'
+## [1] '4.7.0'
 ```
 
 ### Basic Example
