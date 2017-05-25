@@ -1,7 +1,7 @@
 ---
 title: geom_spoke in ggplot2 | Examples | Plotly
 name: geom_spoke
-permalink: ggplot2/geom_spoke
+permalink: ggplot2/geom_spoke/
 description: How to use geom_spoke with Plotly.
 layout: base
 thumbnail: thumbnail/geom_spoke.jpg
@@ -36,7 +36,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.6.0'
+## [1] '4.7.0'
 ```
 
 ### Basic Example
