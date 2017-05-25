@@ -52,7 +52,7 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/basic")
+chart_link = api_create(p, filename="bar/basic")
 chart_link
 ```
 
@@ -75,7 +75,7 @@ p <- plot_ly(data, x = ~Animals, y = ~SF_Zoo, type = 'bar', name = 'SF Zoo') %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/grouped")
+chart_link = api_create(p, filename="bar/grouped")
 chart_link
 ```
 
@@ -98,7 +98,7 @@ p <- plot_ly(data, x = ~Animals, y = ~SF_Zoo, type = 'bar', name = 'SF Zoo') %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/stacked")
+chart_link = api_create(p, filename="bar/stacked")
 chart_link
 ```
 
@@ -125,7 +125,7 @@ p <- plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/text")
+chart_link = api_create(p, filename="bar/text")
 chart_link
 ```
 
@@ -154,7 +154,7 @@ p <- plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/labels")
+chart_link = api_create(p, filename="bar/labels")
 chart_link
 ```
 
@@ -183,7 +183,7 @@ p <- plot_ly(data, x = ~x, y = ~y1, type = 'bar', name = 'Primary Product', mark
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/rotated")
+chart_link = api_create(p, filename="bar/rotated")
 chart_link
 ```
 
@@ -206,7 +206,7 @@ p <- plot_ly(data, x = ~x, y = ~y, type = 'bar', color = I("black")) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/color")
+chart_link = api_create(p, filename="bar/color")
 chart_link
 ```
 
@@ -232,7 +232,7 @@ p <- plot_ly(data, x = ~x, y = ~y, type = 'bar',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/colors")
+chart_link = api_create(p, filename="bar/colors")
 chart_link
 ```
 
@@ -258,7 +258,7 @@ p <- plot_ly(data) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/bar-width")
+chart_link = api_create(p, filename="bar/bar-width")
 chart_link
 ```
 
@@ -276,7 +276,7 @@ p <- ggplot2::diamonds %>% count(cut, clarity) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/colorvar")
+chart_link = api_create(p, filename="bar/colorvar")
 chart_link
 ```
 
@@ -315,7 +315,7 @@ p <- plot_ly(data, x = ~x, y = ~roW, type = 'bar', name = 'Rest of the World',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/style")
+chart_link = api_create(p, filename="bar/style")
 chart_link
 ```
 
@@ -368,7 +368,7 @@ p <- plot_ly(data, x = ~x, y = ~base, type = 'bar', marker = list(color = 'rgba(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/waterfall")
+chart_link = api_create(p, filename="bar/waterfall")
 chart_link
 ```
 
@@ -399,7 +399,7 @@ p <- plot_ly(data, x = ~x, y = ~y1, type = 'bar', name = 'Trace 1') %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bar/relative")
+chart_link = api_create(p, filename="bar/relative")
 chart_link
 ```
 

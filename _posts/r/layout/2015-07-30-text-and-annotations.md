@@ -59,7 +59,7 @@ p <- plot_ly(data, x = ~Bodywt, y = ~Brainwt, type = 'scatter',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="text/mode")
+chart_link = api_create(p, filename="text/mode")
 chart_link
 ```
 
@@ -88,7 +88,7 @@ p <- plot_ly(data, x = ~wt, y = ~mpg, text = rownames(data)) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="text/style")
+chart_link = api_create(p, filename="text/style")
 chart_link
 ```
 
@@ -105,7 +105,7 @@ p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, type = 'scatter', mode =
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="text/hover1")
+chart_link = api_create(p, filename="text/hover1")
 chart_link
 ```
 
@@ -125,7 +125,7 @@ p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, type = 'scatter', mode =
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="text/hover2")
+chart_link = api_create(p, filename="text/hover2")
 chart_link
 ```
 
@@ -157,7 +157,7 @@ p <- plot_ly(mtcars, x = ~wt, y = ~mpg) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="annotation/single")
+chart_link = api_create(p, filename="annotation/single")
 chart_link
 ```
 
@@ -186,7 +186,7 @@ p <- plot_ly(data, x = ~wt, y = ~mpg, type = 'scatter', mode = 'markers',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="annotation/multiple")
+chart_link = api_create(p, filename="annotation/multiple")
 chart_link
 ```
 
@@ -219,7 +219,7 @@ p <- plot_ly(data, x = ~wt, y = ~mpg, type = 'scatter', mode = 'markers',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="annotation/style")
+chart_link = api_create(p, filename="annotation/style")
 chart_link
 ```
 
@@ -277,7 +277,7 @@ p <- plot_ly() %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="annotation/anchors")
+chart_link = api_create(p, filename="annotation/anchors")
 chart_link
 ```
 
@@ -320,7 +320,7 @@ p <- plot_ly() %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="annotation/xref")
+chart_link = api_create(p, filename="annotation/xref")
 chart_link
 ```
 
@@ -383,7 +383,7 @@ p <- subplot(p1, p2, titleX = TRUE, titleY = TRUE) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="annotation/subplot")
+chart_link = api_create(p, filename="annotation/subplot")
 chart_link
 ```
 
