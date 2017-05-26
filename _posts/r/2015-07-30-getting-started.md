@@ -109,7 +109,8 @@ Plots can be set to three different type of privacies: public, private or secret
      logged in to Plotly to view this graph. You can privately
      share this graph with other Plotly users in your online
      Plotly account and they will need to be logged in to
-     view this plot.
+     view this plot. This option is only available for Personal
+     and Professional subscribers.
 
 * **secret:**
 
@@ -118,9 +119,10 @@ Plots can be set to three different type of privacies: public, private or secret
      engines. If it is embedded inside a webpage or an IPython
      notebook, anybody who is viewing that page will be able to
      view the graph. You do not need to be logged in to view
-     this plot.
+     this plot. This option is only available for Personal
+     and Professional subscribers.
 
-By default all plots are set to public. Users with free account have the permission to keep one private plot. If you have additional private storage need, please visit [Plotly products page](https://plot.ly/products). If you're a [PRO USER](https://plot.ly/settings/subscription/?modal=true&utm_source=api-docs&utm_medium=support-oss) and would like the setting for your plots to be private, you can specify sharing as private:
+By default all plots are set to public. Users with a free account are limited to creating public plots. If you have private storage needs, please visit [Plotly products page](https://plot.ly/products). If you're a [Personal or Professional USER](https://plot.ly/settings/subscription/?modal=true&utm_source=api-docs&utm_medium=support-oss) and would like the setting for your plots to be private, you can specify sharing as private:
 
 ```r
 plotly_POST(filename = "private-graph", sharing = "private")
