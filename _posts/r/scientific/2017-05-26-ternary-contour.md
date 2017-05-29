@@ -37,7 +37,7 @@ packageVersion('plotly')
 ## [1] '4.7.0'
 ```
 
-### Basic Terary Contour Plot
+### Basic Ternary Contour Plot
 
 
 ```r
