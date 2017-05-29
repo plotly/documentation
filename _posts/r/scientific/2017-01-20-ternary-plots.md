@@ -34,116 +34,74 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.6.9000'
+## [1] '4.7.0'
 ```
 
-### Set Layout
+### Basic Ternary Plot with Markers
 
 
 ```r
 library(plotly)
 
-# acquire data
-ds <- jsonlite::fromJSON(
-  "https://gist.githubusercontent.com/davenquinn/988167471993bc2ece29/raw/f38d9cb3dd86e315e237fde5d65e185c39c931c2/data.json"
-)
-df <- dplyr::bind_rows(ds, .id = "id")
+journalist <- c(75,70,75,5,10,10,20,10,15,10,20)
+developer <- c(25,10,20,60,80,90,70,20,5,10,10)
+designer <- c(0,20,5,35,10,0,10,70,80,80,70)
+label <- c('point 1','point 2','point 3','point 4','point 5','point 6',
+           'point 7','point 8','point 9','point 10','point 11')
 
-# reusable function for creating annotation object
-label <- function(txt) {
+
+df <- data.frame(journalist,developer,designer,label)
+
+# axis layout
+axis <- function(title) {
   list(
-    text = txt,
-    x = 0.1, y = 1,
-    ax = 0, ay = 0,
-    xref = "paper", yref = "paper",
-    align = "center",
-    font = list(family = "serif", size = 15, color = "white"),
-    bgcolor = "#b3b3b3", bordercolor = "black", borderwidth = 2
+    title = title,
+    titlefont = list(
+      size = 20
+    ),
+    tickfont = list(
+      size = 15
+    ),
+    tickcolor = 'rgba(0,0,0,0)',
+    ticklen = 5
   )
 }
 
-# reusable function for axis formatting
-axis <- function(txt) {
-  list(
-    title = txt, tickformat = ".0%", tickfont = list(size = 10)
-  )
-}
 
-ternaryAxes <- list(
-  aaxis = axis("Clay"),
-  baxis = axis("Sand"),
-  caxis = axis("Silt")
-)
-```
-
-### Add Markers
-
-
-```r
-library(plotly)
-library(jsonlite)
-
-p <- plot_ly(
-  df, a = ~clay, b = ~sand, c = ~silt, color = I("black"), type = "scatterternary"
-) %>%
+p <- df %>% 
+  plot_ly() %>%
+  add_trace(
+    type = 'scatterternary',
+    mode = 'markers',
+    a = ~journalist,
+    b = ~developer,
+    c = ~designer,
+    text = ~label,
+    marker = list( 
+      symbol = 100,
+      color = '#DB7365',
+      size = 14,
+      line = list('width' = 2)
+    )
+  ) %>% 
   layout(
-    annotations = label("Ternary Markers"), ternary = ternaryAxes
+    title = "Simple Ternary Plot with Markers",
+    ternary = list(
+      sum = 100,
+      aaxis = axis('Journalist'),
+      baxis = axis('Developer'),
+      caxis = axis('Designer')
+    )
   )
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="ternary/markers")
+chart_link = api_create(p, filename="ternary/basic")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4264.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Add Lines
-
-
-```r
-library(plotly)
-library(jsonlite)
-
-p <- plot_ly(
-  df, a = ~clay, b = ~sand, c = ~silt, color = I("black"), type = "scatterternary",
-  split = ~id, mode = "lines"
-) %>%
-  layout(
-    annotations = label("Ternary Lines"), ternary = ternaryAxes
-  )
-
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="ternary/lines")
-chart_link
-```
-
-<iframe src="https://plot.ly/~RPlotBot/4266.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-### Add Contour
-
-
-```r
-library(plotly)
-library(jsonlite)
-
-p <- plot_ly(
-  df, a = ~clay, b = ~sand, c = ~silt, color = ~id, type = "scatterternary",
-  fill = "toself", mode = "lines"
-) %>%
-  layout(
-    annotations = label("Ternary Contour"), ternary = ternaryAxes
-  )
-
-
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="ternary/contour")
-chart_link
-```
-
-<iframe src="https://plot.ly/~RPlotBot/4268.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4590.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
