@@ -22424,99 +22424,68 @@ We also have a quick-reference <a href="https://images.plot.ly/plotly-documentat
 Check out <a href="http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/">this post</a> for more information on breaking changes and new features available in this version.</p>
 <div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span><span class="w">
 </span><span class="n">packageVersion</span><span class="p">(</span><span class="s1">'plotly'</span><span class="p">)</span><span class="w">
-</span></code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">## [1] '4.5.6.9000'
+</span></code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">## [1] '4.7.0'
 </code></pre></div>
-<h3>Set Layout</h3>
+<h3>Basic Ternary Plot with Markers</h3>
 <div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span><span class="w">
 
-</span><span class="c1"># acquire data
-</span><span class="n">ds</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">jsonlite</span><span class="o">::</span><span class="n">fromJSON</span><span class="p">(</span><span class="w">
-  </span><span class="s2">"https://gist.githubusercontent.com/davenquinn/988167471993bc2ece29/raw/f38d9cb3dd86e315e237fde5d65e185c39c931c2/data.json"</span><span class="w">
-</span><span class="p">)</span><span class="w">
-</span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="n">bind_rows</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span><span class="w"> </span><span class="n">.id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"id"</span><span class="p">)</span><span class="w">
+</span><span class="n">journalist</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">75</span><span class="p">,</span><span class="m">70</span><span class="p">,</span><span class="m">75</span><span class="p">,</span><span class="m">5</span><span class="p">,</span><span class="m">10</span><span class="p">,</span><span class="m">10</span><span class="p">,</span><span class="m">20</span><span class="p">,</span><span class="m">10</span><span class="p">,</span><span class="m">15</span><span class="p">,</span><span class="m">10</span><span class="p">,</span><span class="m">20</span><span class="p">)</span><span class="w">
+</span><span class="n">developer</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">25</span><span class="p">,</span><span class="m">10</span><span class="p">,</span><span class="m">20</span><span class="p">,</span><span class="m">60</span><span class="p">,</span><span class="m">80</span><span class="p">,</span><span class="m">90</span><span class="p">,</span><span class="m">70</span><span class="p">,</span><span class="m">20</span><span class="p">,</span><span class="m">5</span><span class="p">,</span><span class="m">10</span><span class="p">,</span><span class="m">10</span><span class="p">)</span><span class="w">
+</span><span class="n">designer</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">20</span><span class="p">,</span><span class="m">5</span><span class="p">,</span><span class="m">35</span><span class="p">,</span><span class="m">10</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="m">10</span><span class="p">,</span><span class="m">70</span><span class="p">,</span><span class="m">80</span><span class="p">,</span><span class="m">80</span><span class="p">,</span><span class="m">70</span><span class="p">)</span><span class="w">
+</span><span class="n">label</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s1">'point 1'</span><span class="p">,</span><span class="s1">'point 2'</span><span class="p">,</span><span class="s1">'point 3'</span><span class="p">,</span><span class="s1">'point 4'</span><span class="p">,</span><span class="s1">'point 5'</span><span class="p">,</span><span class="s1">'point 6'</span><span class="p">,</span><span class="w">
+           </span><span class="s1">'point 7'</span><span class="p">,</span><span class="s1">'point 8'</span><span class="p">,</span><span class="s1">'point 9'</span><span class="p">,</span><span class="s1">'point 10'</span><span class="p">,</span><span class="s1">'point 11'</span><span class="p">)</span><span class="w">
 
-</span><span class="c1"># reusable function for creating annotation object
-</span><span class="n">label</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+
+</span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">journalist</span><span class="p">,</span><span class="n">developer</span><span class="p">,</span><span class="n">designer</span><span class="p">,</span><span class="n">label</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># axis layout
+</span><span class="n">axis</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">title</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
   </span><span class="nf">list</span><span class="p">(</span><span class="w">
-    </span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">txt</span><span class="p">,</span><span class="w">
-    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w">
-    </span><span class="n">ax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">ay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w">
-    </span><span class="n">xref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"paper"</span><span class="p">,</span><span class="w"> </span><span class="n">yref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"paper"</span><span class="p">,</span><span class="w">
-    </span><span class="n">align</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"center"</span><span class="p">,</span><span class="w">
-    </span><span class="n">font</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"serif"</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"white"</span><span class="p">),</span><span class="w">
-    </span><span class="n">bgcolor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#b3b3b3"</span><span class="p">,</span><span class="w"> </span><span class="n">bordercolor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"black"</span><span class="p">,</span><span class="w"> </span><span class="n">borderwidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="w">
+    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w">
+    </span><span class="n">titlefont</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
+      </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="w">
+    </span><span class="p">),</span><span class="w">
+    </span><span class="n">tickfont</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
+      </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">15</span><span class="w">
+    </span><span class="p">),</span><span class="w">
+    </span><span class="n">tickcolor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'rgba(0,0,0,0)'</span><span class="p">,</span><span class="w">
+    </span><span class="n">ticklen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="w">
   </span><span class="p">)</span><span class="w">
 </span><span class="p">}</span><span class="w">
 
-</span><span class="c1"># reusable function for axis formatting
-</span><span class="n">axis</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
-  </span><span class="nf">list</span><span class="p">(</span><span class="w">
-    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">txt</span><span class="p">,</span><span class="w"> </span><span class="n">tickformat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">".0%"</span><span class="p">,</span><span class="w"> </span><span class="n">tickfont</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w">
-  </span><span class="p">)</span><span class="w">
-</span><span class="p">}</span><span class="w">
 
-</span><span class="n">ternaryAxes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
-  </span><span class="n">aaxis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">axis</span><span class="p">(</span><span class="s2">"Clay"</span><span class="p">),</span><span class="w">
-  </span><span class="n">baxis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">axis</span><span class="p">(</span><span class="s2">"Sand"</span><span class="p">),</span><span class="w">
-  </span><span class="n">caxis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">axis</span><span class="p">(</span><span class="s2">"Silt"</span><span class="p">)</span><span class="w">
-</span><span class="p">)</span><span class="w">
-</span></code></pre></div>
-<h3>Add Markers</h3>
-<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span><span class="w">
-</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
-
-</span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plot_ly</span><span class="p">(</span><span class="w">
-  </span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">clay</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">sand</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">silt</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">I</span><span class="p">(</span><span class="s2">"black"</span><span class="p">),</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"scatterternary"</span><span class="w">
-</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+</span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">plot_ly</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">add_trace</span><span class="p">(</span><span class="w">
+    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'scatterternary'</span><span class="p">,</span><span class="w">
+    </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'markers'</span><span class="p">,</span><span class="w">
+    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">journalist</span><span class="p">,</span><span class="w">
+    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">developer</span><span class="p">,</span><span class="w">
+    </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">designer</span><span class="p">,</span><span class="w">
+    </span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">label</span><span class="p">,</span><span class="w">
+    </span><span class="n">marker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w"> 
+      </span><span class="n">symbol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w">
+      </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'#DB7365'</span><span class="p">,</span><span class="w">
+      </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">14</span><span class="p">,</span><span class="w">
+      </span><span class="n">line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="s1">'width'</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
   </span><span class="n">layout</span><span class="p">(</span><span class="w">
-    </span><span class="n">annotations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">label</span><span class="p">(</span><span class="s2">"Ternary Markers"</span><span class="p">),</span><span class="w"> </span><span class="n">ternary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ternaryAxes</span><span class="w">
+    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Simple Ternary Plot with Markers"</span><span class="p">,</span><span class="w">
+    </span><span class="n">ternary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
+      </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w">
+      </span><span class="n">aaxis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">axis</span><span class="p">(</span><span class="s1">'Journalist'</span><span class="p">),</span><span class="w">
+      </span><span class="n">baxis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">axis</span><span class="p">(</span><span class="s1">'Developer'</span><span class="p">),</span><span class="w">
+      </span><span class="n">caxis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">axis</span><span class="p">(</span><span class="s1">'Designer'</span><span class="p">)</span><span class="w">
+    </span><span class="p">)</span><span class="w">
   </span><span class="p">)</span><span class="w">
 
 </span><span class="c1"># Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-</span><span class="n">chart_link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plotly_POST</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="o">=</span><span class="s2">"ternary/markers"</span><span class="p">)</span><span class="w">
+</span><span class="n">chart_link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">api_create</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="o">=</span><span class="s2">"ternary/basic"</span><span class="p">)</span><span class="w">
 </span><span class="n">chart_link</span><span class="w">
 </span></code></pre></div>
-<iframe src="https://plot.ly/~RPlotBot/4264.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-<h3>Add Lines</h3>
-<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span><span class="w">
-</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
-
-</span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plot_ly</span><span class="p">(</span><span class="w">
-  </span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">clay</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">sand</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">silt</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">I</span><span class="p">(</span><span class="s2">"black"</span><span class="p">),</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"scatterternary"</span><span class="p">,</span><span class="w">
-  </span><span class="n">split</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lines"</span><span class="w">
-</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
-  </span><span class="n">layout</span><span class="p">(</span><span class="w">
-    </span><span class="n">annotations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">label</span><span class="p">(</span><span class="s2">"Ternary Lines"</span><span class="p">),</span><span class="w"> </span><span class="n">ternary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ternaryAxes</span><span class="w">
-  </span><span class="p">)</span><span class="w">
-
-</span><span class="c1"># Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-</span><span class="n">chart_link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plotly_POST</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="o">=</span><span class="s2">"ternary/lines"</span><span class="p">)</span><span class="w">
-</span><span class="n">chart_link</span><span class="w">
-</span></code></pre></div>
-<iframe src="https://plot.ly/~RPlotBot/4266.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-<h3>Add Contour</h3>
-<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">plotly</span><span class="p">)</span><span class="w">
-</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
-
-</span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plot_ly</span><span class="p">(</span><span class="w">
-  </span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">clay</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">sand</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">silt</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"scatterternary"</span><span class="p">,</span><span class="w">
-  </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"toself"</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lines"</span><span class="w">
-</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
-  </span><span class="n">layout</span><span class="p">(</span><span class="w">
-    </span><span class="n">annotations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">label</span><span class="p">(</span><span class="s2">"Ternary Contour"</span><span class="p">),</span><span class="w"> </span><span class="n">ternary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ternaryAxes</span><span class="w">
-  </span><span class="p">)</span><span class="w">
-
-
-</span><span class="c1"># Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-</span><span class="n">chart_link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plotly_POST</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="o">=</span><span class="s2">"ternary/contour"</span><span class="p">)</span><span class="w">
-</span><span class="n">chart_link</span><span class="w">
-</span></code></pre></div>
-<iframe src="https://plot.ly/~RPlotBot/4268.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4590.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 <h1>Reference</h1>
 
