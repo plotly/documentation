@@ -7,7 +7,6 @@ layout: base
 thumbnail: thumbnail/get-requests.jpg
 language: r
 has_thumbnail: true
-thumbnail: thumbnail/spectral.jpg
 display_as: file_settings
 output:
   html_document:
@@ -33,23 +32,24 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.6.9000'
+## [1] '4.7.0'
 ```
-#### Download Plotly Graphs into R
 
-Download Plotly figures directly into R with `get_figure()`. This takes the `username` and the `plot_id` as arguments.
+### Download Plotly Graphs into R
+
+Download Plotly figures directly into R with `api_download_plot()`. This takes the `plot_id` and the `username` as arguments.
 
 For example, to download [https://plot.ly/~cpsievert/559](https://plot.ly/~cpsievert/559) into R, call:
 
 
 ```r
 library(plotly)
-fig <- get_figure("cpsievert", "559")
+fig <- api_download_plot("559", "cpsievert")
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/4294.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-#### Edit Downloaded Graph
+### Edit Downloaded Graph
 Once the figure is downloaded, you can edit it like any plotly object. This will create a new figure unless you specify the same filename as the figure that you downloaded.
 
 
@@ -63,9 +63,13 @@ p <- layout(fig, title = paste("Modified on ", Sys.time()))
 
 
 ```r
-fig <- get_figure("chelsea_lyn", "6343")
+fig <- api_download_plot("6343", "chelsea_lyn")
 
 p <- add_lines(fig, x = c(1, 2), y = c(1, 2), xaxis = "x2", yaxis = "y2")
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3133.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Reference
+
+See `help("api")`
