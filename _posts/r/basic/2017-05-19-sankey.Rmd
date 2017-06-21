@@ -1,0 +1,218 @@
+---
+title: Sankey Diagrams in R | Examples | Plotly
+name: Sankey Diagram
+permalink: r/sankey-diagram/
+description: How to create sankey diagrams in R with Plotly.
+layout: base
+thumbnail: thumbnail/sankey.jpg
+language: r
+has_thumbnail: true
+display_as: basic
+order: 11
+output:
+  html_document:
+    keep_md: true
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```
+
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+```{r}
+library(plotly)
+packageVersion('plotly')
+```
+
+### Create Canvas
+
+```{r, results = 'hide'}
+library(plotly)
+
+p <- plot_ly(
+    type = "sankey",
+    domain = c(
+      x =  c(0,1),
+      y =  c(0,1)
+    ),
+    orientation = "h",
+    valueformat = ".0f",
+    valuesuffix = "TWh"
+) %>%
+  layout(
+    title = "Energy forecast for 2050, UK - Department of Energy & Climate Change",
+    font = list(
+      size = 10
+    ),
+    xaxis = list(showgrid = F, zeroline = F),
+    yaxis = list(showgrid = F, zeroline = F)
+  )
+
+```
+
+
+### Add Nodes
+
+```{r, results = 'hide'}
+library(plotly)
+library(rjson)
+
+json_file <- "https://raw.githubusercontent.com/plotly/plotly.js/master/test/image/mocks/sankey_energy.json"
+json_data <- fromJSON(paste(readLines(json_file), collapse=""))
+
+p <- plot_ly(
+    type = "sankey",
+    domain = c(
+      x =  c(0,1),
+      y =  c(0,1)
+    ),
+    orientation = "h",
+    valueformat = ".0f",
+    valuesuffix = "TWh",
+    
+    node = list(
+      label = json_data$data[[1]]$node$label,
+      color = json_data$data[[1]]$node$color,
+      pad = 15,
+      thickness = 15,
+      line = list(
+        color = "black",
+        width = 0.5
+      )
+    )
+  ) %>% 
+  layout(
+    title = "Energy forecast for 2050, UK - Department of Energy & Climate Change",
+    font = list(
+      size = 10
+    ),
+    xaxis = list(showgrid = F, zeroline = F),
+    yaxis = list(showgrid = F, zeroline = F)
+)
+
+```
+
+### Add Links
+
+```{r, results = 'hide'}
+library(plotly)
+library(rjson)
+
+json_file <- "https://raw.githubusercontent.com/plotly/plotly.js/master/test/image/mocks/sankey_energy.json"
+json_data <- fromJSON(paste(readLines(json_file), collapse=""))
+
+p <- plot_ly(
+    type = "sankey",
+    domain = c(
+      x =  c(0,1),
+      y =  c(0,1)
+    ),
+    orientation = "h",
+    valueformat = ".0f",
+    valuesuffix = "TWh",
+    
+    node = list(
+      label = json_data$data[[1]]$node$label,
+      color = json_data$data[[1]]$node$color,
+      pad = 15,
+      thickness = 15,
+      line = list(
+        color = "black",
+        width = 0.5
+      )
+    ),
+    
+    link = list(
+      source = json_data$data[[1]]$link$source,
+      target = json_data$data[[1]]$link$target,
+      value =  json_data$data[[1]]$link$value,
+      color =  json_data$data[[1]]$link$color,
+      label =  json_data$data[[1]]$link$label
+    )
+  ) %>% 
+  layout(
+    title = "Energy forecast for 2050, UK - Department of Energy & Climate Changes",
+    font = list(
+      size = 10
+    ),
+    xaxis = list(showgrid = F, zeroline = F),
+    yaxis = list(showgrid = F, zeroline = F)
+)
+
+```
+
+```{r, echo=FALSE}
+htmltools::tagList(p)
+```
+
+### Style Sankey Diagram 
+
+```{r, results = 'hide'}
+library(plotly)
+library(rjson)
+
+json_file <- "https://raw.githubusercontent.com/plotly/plotly.js/master/test/image/mocks/sankey_energy_dark.json"
+json_data <- fromJSON(paste(readLines(json_file), collapse=""))
+
+p <- plot_ly(
+    type = "sankey",
+    domain = c(
+      x =  c(0,1),
+      y =  c(0,1)
+    ),
+    orientation = "h",
+    valueformat = ".0f",
+    valuesuffix = "TWh",
+    
+    node = list(
+      label = json_data$data[[1]]$node$label,
+      color = json_data$data[[1]]$node$color,
+      pad = 15,
+      thickness = 15,
+      line = list(
+        color = "black",
+        width = 0.5
+      )
+    ),
+    
+    link = list(
+      source = json_data$data[[1]]$link$source,
+      target = json_data$data[[1]]$link$target,
+      value =  json_data$data[[1]]$link$value,
+      label =  json_data$data[[1]]$link$label
+    )
+  ) %>% 
+  layout(
+    title = "Energy forecast for 2050, UK - Department of Energy & Climate Change",
+    font = list(
+      size = 10,
+      color = 'white'
+    ),
+    xaxis = list(showgrid = F, zeroline = F, showticklabels = F),
+    yaxis = list(showgrid = F, zeroline = F, showticklabels = F),
+    plot_bgcolor = 'black',
+    paper_bgcolor = 'black'
+)
+
+```
+
+```{r, echo=FALSE}
+htmltools::tagList(p)
+```
+
+### Reference
+
+See [https://plot.ly/r/reference/#sankey](https://plot.ly/r/reference/#sankey) for more information and options!
+
