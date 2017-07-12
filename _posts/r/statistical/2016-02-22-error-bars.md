@@ -54,11 +54,26 @@ p <- plot_ly(data = data[which(data$supp == 'OJ'),], x = ~dose, y = ~length, typ
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="error/bar")
+chart_link = api_create(p, filename="error/bar")
+```
+
+```
+## Error: Client error: (400) Bad Request
+## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 0, u'error_y', u'value'), ('data', 1, u'error_y', u'value')]
+```
+
+```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3915.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+```
+## Error in eval(expr, envir, enclos): object 'chart_link' not found
+```
+
+
+```
+## Error in eval(expr, envir, enclos): object 'chart_link' not found
+```
 
 ### Scatterplot with Error Bars
 
@@ -81,11 +96,26 @@ p <- plot_ly(data = data[which(data$supp == 'OJ'),], x = ~dose, y = ~length, typ
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="error/scatter")
+chart_link = api_create(p, filename="error/scatter")
+```
+
+```
+## Error: Client error: (400) Bad Request
+## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 0, u'error_y', u'value'), ('data', 1, u'error_y', u'value')]
+```
+
+```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3917.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+```
+## Error in eval(expr, envir, enclos): object 'chart_link' not found
+```
+
+
+```
+## Error in eval(expr, envir, enclos): object 'chart_link' not found
+```
 
 ### Line Graph with Error Bars
 
@@ -108,12 +138,27 @@ p <- plot_ly(data = data[which(data$supp == 'OJ'),], x = ~dose, y = ~length, typ
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="error/line")
+chart_link = api_create(p, filename="error/line")
+```
+
+```
+## Error: Client error: (400) Bad Request
+## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 0, u'error_y', u'value'), ('data', 1, u'error_y', u'value')]
+```
+
+```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3919.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+```
+## Error in eval(expr, envir, enclos): object 'chart_link' not found
+```
 
-#Reference
+
+```
+## Error in eval(expr, envir, enclos): object 'chart_link' not found
+```
+
+### Reference
 
 See [https://plot.ly/r/reference](https://plot.ly/r/reference) for more information and chart attribute options!
