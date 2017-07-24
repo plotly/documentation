@@ -1,24 +1,22 @@
 ---
-title: LaTeX Typesetting in R Graphs | Plotly
-name: LaTeX Typesetting in R Graphs
-permalink: r/LaTeX/
-description: How to add LaTeX to R graphs.
+title: Font Styles in R | Examples | Plotly
+name: Font Styles
+permalink: r/font/
+description: How to create font styles in R with Plotly.
 layout: base
-thumbnail: thumbnail/latex.jpg
+thumbnail: thumbnail/your-tutorial-chart.jpg
 language: r
 page_type: example_index
-has_thumbnail: false
-display_as: layout_opt
+has_thumbnail: true
+display_as: style_opt
+order: 3
 output:
   html_document:
     keep_md: true
 ---
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE, warning=FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
+
+
 ### New to Plotly?
 
 Plotly's R library is free and open source!<br>
@@ -30,30 +28,41 @@ We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-docume
 
 Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
 Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
-```{r}
+
+
+```r
 library(plotly)
 packageVersion('plotly')
 ```
 
-#### LaTeX Typesetting
+```
+## [1] '4.7.0.9000'
+```
 
-Currently broken <https://github.com/ropensci/plotly/issues/375>
+### Global Font Properties
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
-p <- plot_ly(x = c(1, 2, 3, 4), y = c(1, 4, 9, 16),
-        name = "$\\alpha_{1c} = 352 \\pm 11 \\text{ km s}^{-1}$") %>%
-  add_trace(x = c(1, 2, 3, 4), y = c(0.5, 2, 4.5, 8),
-            name = "$\\beta_{1c} = 25 \\pm 11 \\text{ km s}^{-1}$") %>%
-  layout(xaxis = list(title = "$\\sqrt{(n_\\text{c}(t|{T_\\text{early}}))}$"),
-         yaxis = list(title = "$d, r \\text{ (solar radius)}$"))
+
+t <- list(
+  family = "sans serif",
+  size = 14,
+  color = 'blue')
+
+p <- plot_ly(x=c(1,2,3,4,5), y=c(1,2,3,2,1)) %>%
+  layout(title="Font Styling",
+         font=t)
+
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="latex/1")
+chart_link = plotly_POST(p, filename="font/global")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/4261.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#Reference
+
+See [https://plot.ly/r/reference/#layout-font](https://plot.ly/r/reference/#layout-font) for more information and options!

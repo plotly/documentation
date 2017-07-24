@@ -8,17 +8,14 @@ thumbnail: thumbnail/text-and-annotations.jpg
 language: r
 page_type: example_index
 has_thumbnail: false
-display_as: layout_opt
+display_as: style_opt
+order: 1
 output:
   html_document:
     keep_md: true
 ---
 
-```{r, echo = FALSE, message=FALSE}
-knitr::opts_chunk$set(message = FALSE, warning=FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
-```
+
 ### New to Plotly?
 
 Plotly's R library is free and open source!<br>
@@ -30,14 +27,20 @@ We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-docume
 
 Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
 Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
-```{r}
+
+```r
 library(plotly)
 packageVersion('plotly')
 ```
 
+```
+## [1] '4.7.0.9000'
+```
+
 ### Text Mode
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 
 Primates <- c('Potar monkey', 'Gorilla', 'Human', 'Rhesus monkey', 'Chimp')
@@ -61,15 +64,14 @@ chart_link = api_create(p, filename="text/mode")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/3877.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 See more options on the textposition argument [here](https://plot.ly/r/reference/#scatter-textposition).
 
 ### Styling Text
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 
 data <- mtcars[which(mtcars$am == 1 & mtcars$gear == 4),]
@@ -91,13 +93,12 @@ chart_link = api_create(p, filename="text/style")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/3147.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Adding Informations to Default Hover Text
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 
 p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, type = 'scatter', mode = 'markers',
@@ -109,18 +110,17 @@ chart_link = api_create(p, filename="text/hover1")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/3871.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Custom Hover Text
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 
 p <- plot_ly(iris, x = ~Petal.Length, y = ~Petal.Width, type = 'scatter', mode = 'markers',
         hoverinfo = 'text',
-        text = ~paste('Species: ', Species, 
+        text = ~paste('Species: ', Species,
                       '</br> Petal Lenght: ', Petal.Length,
                       '</br> Petal Width: ', Petal.Width))
 
@@ -130,13 +130,12 @@ chart_link = api_create(p, filename="text/hover2")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/3873.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Single Annotation
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 
 m <- mtcars[which.max(mtcars$mpg), ]
@@ -163,13 +162,12 @@ chart_link = api_create(p, filename="annotation/single")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/3150.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Multiple Annotations
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 
 data <- mtcars[which(mtcars$am == 1 & mtcars$gear == 4),]
@@ -193,13 +191,12 @@ chart_link = api_create(p, filename="annotation/multiple")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/3152.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Styling Annotations
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 
 data <- mtcars[which(mtcars$am == 1 & mtcars$gear == 4),]
@@ -227,13 +224,12 @@ chart_link = api_create(p, filename="annotation/style")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/3875.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Set Annotation Text Anchors
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 
 p <- plot_ly() %>%
@@ -246,7 +242,7 @@ p <- plot_ly() %>%
     x = 1,
     y = 2,
     showlegend = F
-  ) %>% 
+  ) %>%
   add_markers(
     x = 1,
     y = 3,
@@ -267,7 +263,7 @@ p <- plot_ly() %>%
     xref = "x",
     yref = "y",
     text = "Center Anchor",
-    xanchor = 'center', 
+    xanchor = 'center',
     showarrow = F
   ) %>%
   add_annotations(
@@ -278,7 +274,7 @@ p <- plot_ly() %>%
     text = "Left Anchor",
     xanchor = 'left',
     showarrow = F
-  ) 
+  )
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
@@ -286,13 +282,12 @@ chart_link = api_create(p, filename="annotation/anchors")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/4575.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Set Annotation Coordinate References
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 
 p <- plot_ly() %>%
@@ -330,13 +325,12 @@ chart_link = api_create(p, filename="annotation/xref")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/4577.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Subplot Annotations
 
-```{r, results = 'hide'}
+
+```r
 library(plotly)
 
 m <- economics[which.max(economics$unemploy), ]
@@ -394,11 +388,8 @@ chart_link = api_create(p, filename="annotation/subplot")
 chart_link
 ```
 
-```{r, echo=FALSE}
-chart_link
-```
+<iframe src="https://plot.ly/~RPlotBot/3973.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
 See [https://plot.ly/r/reference/#layout-annotations](https://plot.ly/r/reference/#layout-annotations) for more information and chart attribute options!
-
