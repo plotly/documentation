@@ -32,7 +32,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.7.0'
+## [1] '4.7.0.9000'
 ```
 
 ### Download Plotly Graphs into R
