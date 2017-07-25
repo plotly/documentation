@@ -35,7 +35,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.6.9000'
+## [1] '4.7.0.9000'
 ```
 
 ### Dates
@@ -47,11 +47,11 @@ today <- Sys.Date()
 tm <- seq(0, 600, by = 10)
 x <- today - tm
 y <- rnorm(length(x))
-p <- plot_ly(x = ~x, y = ~y, text = paste(tm, "days from today"))
+p <- plot_ly(x = ~x, y = ~y, mode = 'lines', text = paste(tm, "days from today"))
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="timeseries/1")
+chart_link = api_create(p, filename="timeseries/1")
 chart_link
 ```
 
@@ -66,11 +66,11 @@ now_lt <- as.POSIXlt(Sys.time(), tz = "GMT")
 tm <- seq(0, 600, by = 10)
 x <- now_lt - tm
 y <- rnorm(length(x))
-p <- plot_ly(x = ~x, y = ~y, text = paste(tm, "seconds from now in GMT"))
+p <- plot_ly(x = ~x, y = ~y, mode = 'lines', text = paste(tm, "seconds from now in GMT"))
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="timeseries/2")
+chart_link = api_create(p, filename="timeseries/2")
 chart_link
 ```
 
@@ -85,11 +85,11 @@ now_ct <- as.POSIXct(Sys.time())
 tm <- seq(0, 600, by = 10)
 x <- now_ct - tm
 y <- rnorm(length(x))
-p <- plot_ly(x = ~x, y = ~y, text = paste(tm, "seconds from now in", Sys.timezone()))
+p <- plot_ly(x = ~x, y = ~y, mode = 'lines', text = paste(tm, "seconds from now in", Sys.timezone()))
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="timeseries/3")
+chart_link = api_create(p, filename="timeseries/3")
 chart_link
 ```
 
