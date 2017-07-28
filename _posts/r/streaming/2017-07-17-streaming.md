@@ -7,7 +7,7 @@ layout: base
 thumbnail: thumbnail/streaming-thumb-square.gif
 language: r
 page_type: example_index
-has_thumbnail: false
+has_thumbnail: true
 display_as: streaming
 order: 1
 output:
@@ -37,7 +37,7 @@ packageVersion('plotly')
 
 The `plotlyProxy` and `plotlyProxyInvoke` functions allow a plotly object to be modified by invoking any of the [PlotlyJS methods](https://plot.ly/javascript/plotlyjs-function-reference). In particular, the `extendTraces` function allows you to add data to traces in an exisiting plotly object. See below application for code.
 
-<iframe src="https://plotly.shinyapps.io/streaming/" width="100%" height=700 scrolling="no" seamless="seamless" style="border: none"></iframe>
+<iframe src="https://plotly.shinyapps.io/streaming/" width="100%" height=700 scrolling="yes" seamless="seamless" style="border: none"></iframe>
 
 ### Basic Example
 
@@ -52,7 +52,7 @@ rand <- function() {
 
 ui <- fluidPage(
   includeCSS("styles.css"),
-  
+
   headerPanel(h1("Streaming in Plotly", align = "center")),
   br(),
   div(actionButton("button", "Extend Trace"), align = "center"),
@@ -61,7 +61,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  
+
     p <- plot_ly(
         y = c(rand(),rand(),rand()),
         type = 'scatter',
@@ -74,12 +74,12 @@ server <- function(input, output, session) {
       layout(
         yaxis = list(range = c(0,10))
       )
-    
+
     output$plot <- renderPlotly(p)
-    
+
     observeEvent(input$button, {
       while(TRUE){
-        Sys.sleep(1) 
+        Sys.sleep(1)
         plotlyProxy("plot", session) %>%
           plotlyProxyInvoke("extendTraces", list(y=list(list(rand()))), list(0))
       }
@@ -102,7 +102,7 @@ rand <- function() {
 
 ui <- fluidPage(
   includeCSS("styles.css"),
-  
+
   headerPanel(h1("Streaming in Plotly: Multiple Traces", align = "center")),
   br(),
   div(actionButton("button", "Extend Traces"), align = "center"),
@@ -111,7 +111,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  
+
   p <- plot_ly(
       type = 'scatter',
       mode = 'lines'
@@ -133,17 +133,17 @@ server <- function(input, output, session) {
     layout(
       yaxis = list(range = c(0,10))
     )
-  
+
   output$plot <- renderPlotly(p)
-  
+
   observeEvent(input$button, {
     while(TRUE){
-      Sys.sleep(1) 
+      Sys.sleep(1)
       plotlyProxy("plot", session) %>%
         plotlyProxyInvoke("extendTraces", list(y=list(list(rand()), list(rand()))), list(1,2))
     }
   })
-  
+
 }
 
 shinyApp(ui, server)
@@ -164,7 +164,7 @@ t <- format(Sys.time(), "%H:%M:%S")
 
 ui <- fluidPage(
   includeCSS("styles.css"),
-  
+
   headerPanel(h1("Streaming in Plotly: Timestamp", align = "center")),
   br(),
   div(actionButton("button", "Extend Trace"), align = "center"),
@@ -173,7 +173,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  
+
   p <- plot_ly(
     x = t,
     y = rand(),
@@ -187,18 +187,18 @@ server <- function(input, output, session) {
     layout(
       yaxis = list(range = c(0,10))
     )
-  
+
   output$plot <- renderPlotly(p)
-  
+
   observeEvent(input$button, {
     while(TRUE){
-      Sys.sleep(1) 
+      Sys.sleep(1)
       t <- format(Sys.time(), "%H:%M:%S")
       plotlyProxy("plot", session) %>%
         plotlyProxyInvoke("extendTraces", list(x=list(list(t)), y=list(list(rand()))), list(0))
     }
   })
-  
+
 }
 
 shinyApp(ui, server)
@@ -217,7 +217,7 @@ rand <- function() {
 
 ui <- fluidPage(
   includeCSS("styles.css"),
-  
+
   headerPanel(h1("Streaming in Plotly: Subplots", align = "center")),
   br(),
   div(actionButton("button", "Extend Traces"), align = "center"),
@@ -226,7 +226,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  
+
   p <- plot_ly(
     y = c(rand(),rand(),rand()),
     type = 'scatter',
@@ -239,7 +239,7 @@ server <- function(input, output, session) {
     layout(
       yaxis = list(range = c(0,10))
     )
-  
+
   pp <- plot_ly(
     y = c(rand(),rand(),rand()),
     type = 'scatter',
@@ -252,19 +252,19 @@ server <- function(input, output, session) {
     layout(
       yaxis = list(range = c(0,10))
     )
-  
-  s <- subplot(p,pp, nrows = 2) 
-  
+
+  s <- subplot(p,pp, nrows = 2)
+
   output$plot <- renderPlotly(s)
-  
+
   observeEvent(input$button, {
     while(TRUE){
-      Sys.sleep(1) 
+      Sys.sleep(1)
       plotlyProxy("plot", session) %>%
         plotlyProxyInvoke("extendTraces", list(y=list(list(rand()), list(rand()))), list(0,1))
     }
   })
-  
+
 }
 
 shinyApp(ui, server)
