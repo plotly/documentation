@@ -37,7 +37,7 @@ packageVersion('plotly')
 
 The `plotlyProxy` and `plotlyProxyInvoke` functions allow a plotly object to be modified by invoking any of the [PlotlyJS methods](https://plot.ly/javascript/plotlyjs-function-reference). In particular, the `extendTraces` function allows you to add data to traces in an exisiting plotly object. See below application for code.
 
-<iframe src="https://plotly.shinyapps.io/streaming/" width="100%" height=100% scrolling="no" seamless="seamless" style="border: none"></iframe>
+<iframe src="https://plotly.shinyapps.io/streaming/" width="100%" height="100%" scrolling="no" seamless="seamless" style="border: none"></iframe>
 
 ### Basic Example
 
