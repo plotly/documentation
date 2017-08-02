@@ -1,7 +1,7 @@
 ---
 title: Plotly.js Open-Source Announcement
 name: Plotly.js Open-Source Announcement
-permalink: javascript/open-source-announcement
+permalink: javascript/open-source-announcement/
 language: plotly_js
 has_thumbnail: false
 layout: user-guide
@@ -131,5 +131,3 @@ These domain specific libraries are allowing data scientists and engineers to ea
 - National Research Council of Canada
 - Rho Canada Ventures
 - MHS Capital
-
-
