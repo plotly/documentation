@@ -1,6 +1,6 @@
 ---
 title: ggplot2 useR guide | plotly
-permalink: ggplot2/user-guide
+permalink: ggplot2/user-guide/
 description: A useR guide for interfacing ggplot2 with Plotly.
 layout: base
 thumbnail: thumbnail/facet_wrap.jpg
@@ -191,7 +191,7 @@ str(p)
 ##   .. .. .. ..$ line     :List of 3
 ##   .. .. .. .. ..$ color   : logi NA
 ##   .. .. .. .. ..$ width   : num 0
-##   .. .. .. .. ..$ linetype: chr(0) 
+##   .. .. .. .. ..$ linetype: chr(0)
 ##   .. .. .. ..$ yref     : chr "paper"
 ##   .. .. .. ..$ xref     : chr "paper"
 ##   .. .. .. ..$ x0       : num 0
@@ -244,11 +244,11 @@ str(p)
 ##   ..$ attrs   :List of 1
 ##   .. ..$ 108e24318cf6:List of 4
 ##   .. .. ..$ x     :Class 'formula'  language ~x
-##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x7fe07eb260a8> 
+##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x7fe07eb260a8>
 ##   .. .. ..$ y     :Class 'formula'  language ~y
-##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x7fe07eb260a8> 
+##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x7fe07eb260a8>
 ##   .. .. ..$ colour:Class 'formula'  language ~group
-##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x7fe07eb260a8> 
+##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x7fe07eb260a8>
 ##   .. .. ..$ type  : chr "ggplotly"
 ##   .. .. ..- attr(*, "class")= chr "plotly_eval"
 ##   ..$ cur_data: chr "108e24318cf6"
