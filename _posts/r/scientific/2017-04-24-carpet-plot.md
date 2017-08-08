@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.6.0.9000'
+## [1] '4.7.1'
 ```
 
 ### Set the Coordinates 
@@ -48,14 +48,7 @@ library(plotly)
 p <- plot_ly(
     type = 'carpet',
     y = c(2, 3.5, 4, 3, 4.5, 5, 5.5, 6.5, 7.5, 8, 8.5, 10))
-
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="carpet/basic", sharing = 'public')
-chart_link
 ```
-
-<iframe src="https://plot.ly/~RPlotBot/4555.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Add Parameter Values
 
@@ -73,7 +66,7 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="carpet/add-values", sharing = 'public')
+chart_link = api_create(p, filename="carpet/add-values", sharing = 'public')
 chart_link
 ```
 
@@ -108,7 +101,7 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="carpet/axes", sharing = 'public')
+chart_link = api_create(p, filename="carpet/axes", sharing = 'public')
 chart_link
 ```
 
@@ -154,7 +147,7 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="carpet/styled", sharing = 'public')
+chart_link = api_create(p, filename="carpet/styled", sharing = 'public')
 chart_link
 ```
 
@@ -162,7 +155,7 @@ chart_link
 
 ### Add Points and Contours
 
-To add points and lines to see [Carpet Scatter Plots](https://plot.ly/r/carpet-scatter) or to add contours see [Carpet Contour Plots](https://plot.ly/carpet-contour)
+To add points and lines to see [Carpet Scatter Plots](https://plot.ly/r/carpet-scatter) or to add contours see [Carpet Contour Plots](https://plot.ly/r/carpet-contour)
 
 ### Reference
 
