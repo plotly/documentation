@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.2'
+## [1] '4.7.1'
 ```
 
 ### Basic Contour
@@ -47,11 +47,28 @@ p <- plot_ly(z = ~volcano, type = "contour")
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="contour/basic")
+chart_link = api_create(p, filename="contour/basic")
 chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3115.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Add Contour Labels
+
+
+```r
+library(plotly)
+
+p <- plot_ly(z = volcano, type = "contour", contours = list(showlabels = TRUE)) %>%
+  colorbar(title = "Elevation \n in meters")
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="contour/labels")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5135.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Create Matrix and Plot Contour
 This example is based on (this)[https://www.r-statistics.com/2016/07/using-2d-contour-plots-within-ggplot2-to-visualize-relationships-between-three-variables/] r-statistics post.
@@ -86,7 +103,7 @@ p <- plot_ly(mtrx.melt, x = ~wt, y = ~hp, z = ~qsec, type = "contour") %>% layou
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="contour/advanced")
+chart_link = api_create(p, filename="contour/advanced")
 chart_link
 ```
 
@@ -110,7 +127,7 @@ p <- layout(s, showlegend = FALSE)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="contour/joint")
+chart_link = api_create(p, filename="contour/joint")
 chart_link
 ```
 
