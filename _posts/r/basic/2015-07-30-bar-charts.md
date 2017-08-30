@@ -131,7 +131,7 @@ chart_link
 
 <iframe src="https://plot.ly/~RPlotBot/3516.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Styled Bar Chart with Direct Labels
+### Bar Chart with Direct Labels
 
 
 ```r
@@ -153,19 +153,44 @@ p <- plot_ly(data, x = ~x, y = ~y, type = 'bar',
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="bar/labels")
-```
-
-```
-## Error: lexical error: invalid char in json text.
-##                                        <html><head> <meta http-equiv="
-##                      (right here) ------^
-```
-
-```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3516.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3518.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Grouped Bar Chart with Direct Labels
+
+
+```r
+library(plotly)
+
+x <- c('Product A', 'Product B', 'Product C')
+y <- c(20, 14, 23)
+text <- c('27% market share', '24% market share', '19% market share')
+data <- data.frame(x, y, text)
+
+p <- data %>% 
+  plot_ly() %>%
+  add_trace(x = ~x, y = ~y, type = 'bar', 
+             text = y, textposition = 'auto',
+             marker = list(color = 'rgb(158,202,225)',
+                           line = list(color = 'rgb(8,48,107)', width = 1.5))) %>%
+  add_trace(x = ~x, y = ~y2, type = 'bar', 
+            text = y2, textposition = 'auto',
+            marker = list(color = 'rgb(58,200,225)',
+                          line = list(color = 'rgb(8,48,107)', width = 1.5))) %>%
+  layout(title = "January 2013 Sales Report",
+         barmode = 'group',
+         xaxis = list(title = ""),
+         yaxis = list(title = ""))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="bar/grouped-labels")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5137.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Rotated Bar Chart Labels
 
