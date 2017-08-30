@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.7.0'
+## [1] '4.7.1'
 ```
 
 ### Basic Bar Chart
@@ -142,23 +142,30 @@ y <- c(20, 14, 23)
 text <- c('27% market share', '24% market share', '19% market share')
 data <- data.frame(x, y, text)
 
-p <- plot_ly(data, x = ~x, y = ~y, type = 'bar', text = text,
-        marker = list(color = 'rgb(158,202,225)',
-                      line = list(color = 'rgb(8,48,107)', width = 1.5))) %>%
+p <- plot_ly(data, x = ~x, y = ~y, type = 'bar', 
+             text = y, textposition = 'auto',
+             marker = list(color = 'rgb(158,202,225)',
+                           line = list(color = 'rgb(8,48,107)', width = 1.5))) %>%
   layout(title = "January 2013 Sales Report",
          xaxis = list(title = ""),
-         yaxis = list(title = ""),
-         annotations = list(x = x, y = y, text = y,
-                            xanchor = 'center', yanchor = 'bottom',
-                            showarrow = FALSE))
+         yaxis = list(title = ""))
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="bar/labels")
+```
+
+```
+## Error: lexical error: invalid char in json text.
+##                                        <html><head> <meta http-equiv="
+##                      (right here) ------^
+```
+
+```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3518.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3516.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Rotated Bar Chart Labels
 
