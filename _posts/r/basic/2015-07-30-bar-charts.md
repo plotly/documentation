@@ -166,8 +166,9 @@ library(plotly)
 
 x <- c('Product A', 'Product B', 'Product C')
 y <- c(20, 14, 23)
+y2 <- c(16,12,27)
 text <- c('27% market share', '24% market share', '19% market share')
-data <- data.frame(x, y, text)
+data <- data.frame(x, y, y2, text)
 
 p <- data %>% 
   plot_ly() %>%
