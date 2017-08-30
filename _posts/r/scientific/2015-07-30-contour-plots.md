@@ -99,19 +99,10 @@ p <- plot_ly(
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="contour/range-of-contours")
-```
-
-```
-## Error: lexical error: invalid char in json text.
-##                                        <html><head> <meta http-equiv="
-##                      (right here) ------^
-```
-
-```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5139.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5141.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Smoothing Contour Lines
 
@@ -232,7 +223,8 @@ names(mtrx.melt) <- c('wt', 'hp', 'qsec')
 mtrx.melt$wt <- as.numeric(str_sub(mtrx.melt$wt, str_locate(mtrx.melt$wt, '=')[1,1] + 1))
 mtrx.melt$hp <- as.numeric(str_sub(mtrx.melt$hp, str_locate(mtrx.melt$hp, '=')[1,1] + 1))
 
-p <- plot_ly(mtrx.melt, x = ~wt, y = ~hp, z = ~qsec, type = "contour") %>% layout(autosize = F, width = 600, height = 500)
+p <- plot_ly(mtrx.melt, x = ~wt, y = ~hp, z = ~qsec, type = "contour", 
+             width = 600, height = 500)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
@@ -268,7 +260,7 @@ chart_link
 
 ### Contour Colorscales
 
-See [here](https://plot.ly/r/reference/#contour) for more examples concerning colorscales!
+See [here](https://plot.ly/r/colorscales/) for more examples concerning colorscales!
 
 ### Reference
 
