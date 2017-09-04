@@ -10,3 +10,6 @@ group :jekyll_plugins do
   gem 'octopress-debugger'
 end
 
+group :jekyll_plugins do
+  gem 'algoliasearch-jekyll', '~> 0.8.2'
+end
