@@ -4,9 +4,8 @@ name:  Modularizing monolithic javascript projects
 permalink: javascript/modularizing-monolithic-javascript-projects/
 language: plotly_js
 has_thumbnail: false
-layout: blog-post
+layout: user-guide
 no_sidebar: true
-language: plotly_js
 ---
 
 # Modularizing monolithic JS projects
