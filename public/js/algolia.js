@@ -59,13 +59,12 @@ $(function(config) {
     $searchContentResults.html(content);
   }
 
+// return url from search item
   function renderResults(data) {
     return $.map(data.hits, function(hit) {
-      if (hit.posted_at) {
-        hit.posted_at_readable = moment.unix(hit.posted_at).fromNow();
-      }
-      hit.css_selector = encodeURI(hit.css_selector);
-      hit.full_url = config.baseurl + hit.url;
+      hit.full_url = "../" + hit.permalink;
+
+
 
       return templateResult.render(hit);
     }).join('');
