@@ -407,37 +407,6 @@ chart_link
 
 <iframe src="https://plot.ly/~RPlotBot/3530.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Bar Chart with Relative Barmode
-
-
-```r
-library(plotly)
-
-x <- c(1, 2, 3, 4)
-y1 <- c(1, 4, 9, 16)
-y2 <- c(6, -8, -4.5, 8)
-y3 <- c(-15, -3, 4.5, -8)
-y4 <- c(-1, 3, -3, -4)
-
-data <- data.frame(x, y1, y2, y3, y4)
-
-p <- plot_ly(data, x = ~x, y = ~y1, type = 'bar', name = 'Trace 1') %>%
-  add_trace(y = ~y2, name = 'Trace 2') %>%
-  add_trace(y = ~y3, name = 'Trace 3') %>%
-  add_trace(y = ~y4, name = 'Trace 4') %>%
-  layout(title = 'Relative Barmode',
-         xaxis = list(title = 'X axis'),
-         yaxis = list(title = 'Y axis'),
-         barmode = 'relative')
-
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="bar/relative")
-chart_link
-```
-
-<iframe src="https://plot.ly/~RPlotBot/3532.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
 ### Horizontal Bar Chart
 
 See examples of horizontal bar charts [here](https://plot.ly/r/horizontal-bar-charts/).
