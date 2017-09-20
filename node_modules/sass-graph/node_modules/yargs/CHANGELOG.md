@@ -2,6 +2,274 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="7.1.0"></a>
+# [7.1.0](https://github.com/yargs/yargs/compare/v7.0.2...v7.1.0) (2017-04-13)
+
+
+### Bug Fixes
+
+* fix demandOption no longer treats 'false' as truthy ([#829](https://github.com/yargs/yargs/issues/829)) ([c748dd2](https://github.com/yargs/yargs/commit/c748dd2))
+* get terminalWidth in non interactive mode no longer causes a validation exception ([#837](https://github.com/yargs/yargs/issues/837)) ([360e301](https://github.com/yargs/yargs/commit/360e301))
+* we shouldn't output help if we've printed a prior help-like message ([#847](https://github.com/yargs/yargs/issues/847)) ([17e89bd](https://github.com/yargs/yargs/commit/17e89bd))
+
+
+### Features
+
+* add support for numeric commands ([#825](https://github.com/yargs/yargs/issues/825)) ([fde0564](https://github.com/yargs/yargs/commit/fde0564))
+
+
+
+<a name="7.0.2"></a>
+## [7.0.2](https://github.com/yargs/yargs/compare/v7.0.1...v7.0.2) (2017-03-10)
+
+
+### Bug Fixes
+
+* populating placeholder arguments broke validation ([b3eb2fe](https://github.com/yargs/yargs/commit/b3eb2fe))
+
+
+
+<a name="7.0.1"></a>
+## [7.0.1](https://github.com/yargs/yargs/compare/v7.0.0...v7.0.1) (2017-03-03)
+
+
+### Bug Fixes
+
+* --help with default command should print top-level help ([#810](https://github.com/yargs/yargs/issues/810)) ([9c03fa4](https://github.com/yargs/yargs/commit/9c03fa4))
+
+
+
+<a name="7.0.0"></a>
+# [7.0.0](https://github.com/yargs/yargs/compare/v6.6.0...v7.0.0) (2017-02-26)
+
+
+### Bug Fixes
+
+* address min/max validation message regression ([#750](https://github.com/yargs/yargs/issues/750)) ([2e5ce0f](https://github.com/yargs/yargs/commit/2e5ce0f))
+* address positional argument strict() bug introduced in [#766](https://github.com/yargs/yargs/issues/766) ([#784](https://github.com/yargs/yargs/issues/784)) ([a8528e6](https://github.com/yargs/yargs/commit/a8528e6))
+* console.warn() rather than throwing errors when api signatures are incorrect ([#804](https://github.com/yargs/yargs/issues/804)) ([a607061](https://github.com/yargs/yargs/commit/a607061))
+* context should override parsed argv ([#786](https://github.com/yargs/yargs/issues/786)) ([0997288](https://github.com/yargs/yargs/commit/0997288))
+* context variables are now recognized in strict() mode ([#796](https://github.com/yargs/yargs/issues/796)) ([48575cd](https://github.com/yargs/yargs/commit/48575cd))
+* errors were not bubbling appropriately from sub-commands to top-level ([#802](https://github.com/yargs/yargs/issues/802)) ([8a992f5](https://github.com/yargs/yargs/commit/8a992f5))
+* positional arguments of sub-commands threw strict() exception ([#805](https://github.com/yargs/yargs/issues/805)) ([f3f074b](https://github.com/yargs/yargs/commit/f3f074b))
+* pull in yargs-parser with modified env precedence ([#787](https://github.com/yargs/yargs/issues/787)) ([e0fbbe5](https://github.com/yargs/yargs/commit/e0fbbe5))
+* running parse() multiple times on the same yargs instance caused exception if help() enabled ([#790](https://github.com/yargs/yargs/issues/790)) ([07e39b7](https://github.com/yargs/yargs/commit/07e39b7))
+* use path.resolve() to support node 0.10 ([#797](https://github.com/yargs/yargs/issues/797)) ([49a93fc](https://github.com/yargs/yargs/commit/49a93fc))
+
+
+### Features
+
+* add conflicts and implies shorthands. ([#753](https://github.com/yargs/yargs/issues/753)) ([bd1472b](https://github.com/yargs/yargs/commit/bd1472b))
+* add traditional Chinese translation ([#780](https://github.com/yargs/yargs/issues/780)) ([6ab6a95](https://github.com/yargs/yargs/commit/6ab6a95))
+* allow provided config object to extend other configs ([#779](https://github.com/yargs/yargs/issues/779)) ([3280dd0](https://github.com/yargs/yargs/commit/3280dd0))
+* function argument validation ([#773](https://github.com/yargs/yargs/issues/773)) ([22ed9bb](https://github.com/yargs/yargs/commit/22ed9bb))
+* if only one column is provided for examples, allow it to take up the entire line ([#749](https://github.com/yargs/yargs/issues/749)) ([7931652](https://github.com/yargs/yargs/commit/7931652))
+* introduce custom yargs error object ([#765](https://github.com/yargs/yargs/issues/765)) ([8308efa](https://github.com/yargs/yargs/commit/8308efa))
+* introduces support for default commands, using the '*' identifier ([#785](https://github.com/yargs/yargs/issues/785)) ([d78a0f5](https://github.com/yargs/yargs/commit/d78a0f5))
+* rethink how options are inherited by commands ([#766](https://github.com/yargs/yargs/issues/766)) ([ab1fa4b](https://github.com/yargs/yargs/commit/ab1fa4b))
+
+
+### BREAKING CHANGES
+
+* `extends` key in config file is now used for extending other config files
+* environment variables now take precedence over config files.
+* context now takes precedence over argv and defaults
+* the arguments passed to functions are now validated, there's a good chance this will throw exceptions for a few folks who are using the API in an unexpected way.
+* by default options, and many of yargs' parsing helpers will now default to being applied globally; such that they are no-longer reset before being passed into commands.
+* yargs will no longer aggressively suppress errors, allowing errors that are not generated internally to bubble.
+
+
+
+<a name="6.6.0"></a>
+# [6.6.0](https://github.com/yargs/yargs/compare/v6.5.0...v6.6.0) (2016-12-29)
+
+
+### Bug Fixes
+
+* [object Object] was accidentally being populated on options object ([#736](https://github.com/yargs/yargs/issues/736)) ([f755e27](https://github.com/yargs/yargs/commit/f755e27))
+* do not use cwd when resolving package.json for yargs parsing config ([#726](https://github.com/yargs/yargs/issues/726)) ([9bdaab7](https://github.com/yargs/yargs/commit/9bdaab7))
+
+
+### Features
+
+* implement conflicts() for defining mutually exclusive arguments; thanks [@madcampos](https://github.com/madcampos)! ([#741](https://github.com/yargs/yargs/issues/741)) ([5883779](https://github.com/yargs/yargs/commit/5883779))
+* split demand() into demandCommand()/demandOption() ([#740](https://github.com/yargs/yargs/issues/740)) ([66573c8](https://github.com/yargs/yargs/commit/66573c8))
+* support for positional argument aliases ([#727](https://github.com/yargs/yargs/issues/727)) ([27e1a57](https://github.com/yargs/yargs/commit/27e1a57))
+
+
+
+<a name="6.5.0"></a>
+# [6.5.0](https://github.com/yargs/yargs/compare/v6.4.0...v6.5.0) (2016-12-01)
+
+
+### Bug Fixes
+
+* still freeze/unfreeze if parse() is called in isolation ([#717](https://github.com/yargs/yargs/issues/717)) ([30a9492](https://github.com/yargs/yargs/commit/30a9492))
+
+
+### Features
+
+* pull in yargs-parser introducing additional settings ([#688](https://github.com/yargs/yargs/issues/688)), and fixing [#716](https://github.com/yargs/yargs/issues/716) ([#722](https://github.com/yargs/yargs/issues/722)) ([702995a](https://github.com/yargs/yargs/commit/702995a))
+
+
+
+<a name="6.4.0"></a>
+# [6.4.0](https://github.com/yargs/yargs/compare/v6.3.0...v6.4.0) (2016-11-13)
+
+
+### Bug Fixes
+
+* **locales:** correct some Russian translations ([#691](https://github.com/yargs/yargs/issues/691)) ([a980671](https://github.com/yargs/yargs/commit/a980671))
+
+
+### Features
+
+* **locales:** Added Belarusian translation ([#690](https://github.com/yargs/yargs/issues/690)) ([68dac1f](https://github.com/yargs/yargs/commit/68dac1f))
+* **locales:** Create nl.json ([#687](https://github.com/yargs/yargs/issues/687)) ([46ce1bb](https://github.com/yargs/yargs/commit/46ce1bb))
+* update to yargs-parser that addresses [#598](https://github.com/yargs/yargs/issues/598), [#617](https://github.com/yargs/yargs/issues/617) ([#700](https://github.com/yargs/yargs/issues/700)) ([54cb31d](https://github.com/yargs/yargs/commit/54cb31d))
+* yargs is now passed as the third-argument to fail handler ([#613](https://github.com/yargs/yargs/issues/613)) ([21b74f9](https://github.com/yargs/yargs/commit/21b74f9))
+
+
+### Performance Improvements
+
+* normalizing package data is an expensive operation ([#705](https://github.com/yargs/yargs/issues/705)) ([49cf533](https://github.com/yargs/yargs/commit/49cf533))
+
+
+
+<a name="6.3.0"></a>
+# [6.3.0](https://github.com/yargs/yargs/compare/v6.2.0...v6.3.0) (2016-10-19)
+
+
+### Bug Fixes
+
+* **command:** subcommands via commandDir() now supported for parse(msg, cb) ([#678](https://github.com/yargs/yargs/issues/678)) ([6b85cc6](https://github.com/yargs/yargs/commit/6b85cc6))
+
+
+### Features
+
+* **locales:** Add Thai locale file ([#679](https://github.com/yargs/yargs/issues/679)) ([c05e36b](https://github.com/yargs/yargs/commit/c05e36b))
+
+
+
+<a name="6.2.0"></a>
+# [6.2.0](https://github.com/yargs/yargs/compare/v6.1.1...v6.2.0) (2016-10-16)
+
+
+### Bug Fixes
+
+* stop applying parser to context object ([#675](https://github.com/yargs/yargs/issues/675)) ([3fe9b8f](https://github.com/yargs/yargs/commit/3fe9b8f))
+
+
+### Features
+
+* add new pt_BR translations ([#674](https://github.com/yargs/yargs/issues/674)) ([5615a82](https://github.com/yargs/yargs/commit/5615a82))
+* Italian translations for 'did you mean' and 'aliases' ([#673](https://github.com/yargs/yargs/issues/673)) ([81984e6](https://github.com/yargs/yargs/commit/81984e6))
+
+
+
+<a name="6.1.1"></a>
+## [6.1.1](https://github.com/yargs/yargs/compare/v6.1.0...v6.1.1) (2016-10-15)
+
+
+### Bug Fixes
+
+* freeze was not resetting configObjects to initial state; addressed performance issue raised by [@nexdrew](https://github.com/nexdrew). ([#670](https://github.com/yargs/yargs/issues/670)) ([ae4bcd4](https://github.com/yargs/yargs/commit/ae4bcd4))
+
+
+
+<a name="6.1.0"></a>
+# [6.1.0](https://github.com/yargs/yargs/compare/v6.0.0...v6.1.0) (2016-10-15)
+
+
+### Bug Fixes
+
+* **locales:** change some translations ([#667](https://github.com/yargs/yargs/issues/667)) ([aa966c5](https://github.com/yargs/yargs/commit/aa966c5))
+* **locales:** conform hi locale to y18n.__n expectations ([#666](https://github.com/yargs/yargs/issues/666)) ([22adb18](https://github.com/yargs/yargs/commit/22adb18))
+
+
+### Features
+
+* initial support for command aliases ([#647](https://github.com/yargs/yargs/issues/647)) ([127a040](https://github.com/yargs/yargs/commit/127a040))
+* **command:** add camelcase commands to argv ([#658](https://github.com/yargs/yargs/issues/658)) ([b1cabae](https://github.com/yargs/yargs/commit/b1cabae))
+* **locales:** add Hindi translations ([9290912](https://github.com/yargs/yargs/commit/9290912))
+* **locales:** add Hungarian translations  ([be92327](https://github.com/yargs/yargs/commit/be92327))
+* **locales:** Japanese translations for 'did you mean' and 'aliases'  ([#651](https://github.com/yargs/yargs/issues/651)) ([5eb78fc](https://github.com/yargs/yargs/commit/5eb78fc))
+* **locales:** Polish translations for 'did you mean' and 'aliases' ([#650](https://github.com/yargs/yargs/issues/650)) ([c951c0e](https://github.com/yargs/yargs/commit/c951c0e))
+* reworking yargs API to make it easier to run in headless environments, e.g., Slack ([#646](https://github.com/yargs/yargs/issues/646)) ([f284c29](https://github.com/yargs/yargs/commit/f284c29))
+* Turkish translations for 'did you mean' and 'aliases' ([#660](https://github.com/yargs/yargs/issues/660)) ([072fd45](https://github.com/yargs/yargs/commit/072fd45))
+
+
+
+<a name="6.0.0"></a>
+# [6.0.0](https://github.com/yargs/yargs/compare/v5.0.0...v6.0.0) (2016-09-30)
+
+
+### Bug Fixes
+
+* changed parsing of the command string to ignore extra spaces ([#600](https://github.com/yargs/yargs/issues/600)) ([e8e5a72](https://github.com/yargs/yargs/commit/e8e5a72))
+* drop lodash.assign ([#641](https://github.com/yargs/yargs/issues/641)) ([ad3146f](https://github.com/yargs/yargs/commit/ad3146f))
+* for args that have skipValidation set to `true`, check if the parsed arg is `true` ([#619](https://github.com/yargs/yargs/issues/619)) ([658a34c](https://github.com/yargs/yargs/commit/658a34c))
+* upgrade standard, and fix appveyor config so that it works with newest standard ([#607](https://github.com/yargs/yargs/issues/607)) ([c301f42](https://github.com/yargs/yargs/commit/c301f42))
+
+
+### Chores
+
+* upgrade yargs-parser ([#633](https://github.com/yargs/yargs/issues/633)) ([cc1224e](https://github.com/yargs/yargs/commit/cc1224e))
+
+
+### Features
+
+* make opts object optional for .option() ([#624](https://github.com/yargs/yargs/issues/624)) ([4f29de6](https://github.com/yargs/yargs/commit/4f29de6))
+
+
+### Performance Improvements
+
+* defer windowWidth() to improve perf for non-help usage ([#610](https://github.com/yargs/yargs/issues/610)) ([cbc3636](https://github.com/yargs/yargs/commit/cbc3636))
+
+
+### BREAKING CHANGES
+
+* coerce is now applied as a final step after other parsing is complete
+
+
+
+<a name="5.0.0"></a>
+# [5.0.0](https://github.com/yargs/yargs/compare/v4.8.1...v5.0.0) (2016-08-14)
+
+
+### Bug Fixes
+
+* **default:** Remove undocumented alias of default() ([#469](https://github.com/yargs/yargs/issues/469)) ([b8591b2](https://github.com/yargs/yargs/commit/b8591b2))
+* remove deprecated zh.json ([#578](https://github.com/yargs/yargs/issues/578)) ([317c62c](https://github.com/yargs/yargs/commit/317c62c))
+
+
+### Features
+
+* .help() API can now enable implicit help command ([#574](https://github.com/yargs/yargs/issues/574)) ([7645019](https://github.com/yargs/yargs/commit/7645019))
+* **command:** builder function no longer needs to return the yargs instance ([#549](https://github.com/yargs/yargs/issues/549)) ([eaa2873](https://github.com/yargs/yargs/commit/eaa2873))
+* add coerce api ([#586](https://github.com/yargs/yargs/issues/586)) ([1d53ccb](https://github.com/yargs/yargs/commit/1d53ccb))
+* adds recommendCommands() for command suggestions ([#580](https://github.com/yargs/yargs/issues/580)) ([59474dc](https://github.com/yargs/yargs/commit/59474dc))
+* apply .env() globally ([#553](https://github.com/yargs/yargs/issues/553)) ([be65728](https://github.com/yargs/yargs/commit/be65728))
+* apply default builder to command() and apply fail() handlers globally ([#583](https://github.com/yargs/yargs/issues/583)) ([0aaa68b](https://github.com/yargs/yargs/commit/0aaa68b))
+* update yargs-parser to version 3.1.0 ([#581](https://github.com/yargs/yargs/issues/581)) ([882a127](https://github.com/yargs/yargs/commit/882a127))
+
+
+### Performance Improvements
+
+* defer requiring most external libs until needed ([#584](https://github.com/yargs/yargs/issues/584)) ([f9b0ed4](https://github.com/yargs/yargs/commit/f9b0ed4))
+
+
+### BREAKING CHANGES
+
+* fail is now applied globally.
+* we now default to an empty builder function when command is executed with no builder.
+* yargs-parser now better handles negative integer values, at the cost of handling numeric option names, e.g., -1 hello
+* default: removed undocumented `defaults` alias for `default`.
+* introduces a default `help` command which outputs help, as an alternative to a help flag.
+* interpret demand() numbers as relative to executing command ([#582](https://github.com/yargs/yargs/issues/582)) ([927810c](https://github.com/yargs/yargs/commit/927810c))
+
+
+
 <a name="4.8.1"></a>
 ## [4.8.1](https://github.com/yargs/yargs/compare/v4.8.0...v4.8.1) (2016-07-16)
 

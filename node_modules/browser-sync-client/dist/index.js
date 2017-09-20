@@ -461,7 +461,13 @@ var options = {
         "link":   "href",
         "img":    "src",
         "script": "src"
-    }
+    },
+    blacklist: [
+        // never allow .map files through
+        function(incoming) {
+            return incoming.ext === "map";
+        }
+    ]
 };
 
 var hiddenElem;
@@ -667,6 +673,10 @@ sync.reload = function (bs) {
 
         if (data.basename && data.ext) {
 
+            if (sync.isBlacklisted(data)) {
+                return;
+            }
+
             var domData = sync.getElems(data.ext);
             var elems   = sync.getMatches(domData.elems, data.basename, domData.attr);
 
@@ -697,6 +707,16 @@ sync.getTagName = function (fileExtension) {
  */
 sync.getAttr = function (tagName) {
     return options.attrs[tagName];
+};
+
+/**
+ * @param incoming
+ * @returns {boolean}
+ */
+sync.isBlacklisted = function (incoming) {
+    return options.blacklist.some(function(fn) {
+        return fn(incoming);
+    });
 };
 
 /**
@@ -1743,7 +1763,8 @@ var styles = {
     backgroundColor: "#1B2032",
     margin: 0,
     color: "white",
-    textAlign: "center"
+    textAlign: "center",
+    pointerEvents: "none"
 };
 
 var elem;
@@ -1848,6 +1869,7 @@ exports.flash = function (message, timeout) {
 
     return elem;
 };
+
 },{"./browser.utils":2,"./ghostmode.scroll":14}],17:[function(require,module,exports){
 "use strict";
 

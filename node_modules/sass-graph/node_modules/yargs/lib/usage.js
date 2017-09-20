@@ -1,11 +1,9 @@
 // this file handles outputting usage instructions,
 // failures, etc. keeps logging in one place.
-const cliui = require('cliui')
-const decamelize = require('decamelize')
 const stringWidth = require('string-width')
-const wsize = require('window-size')
 const objFilter = require('./obj-filter')
 const setBlocking = require('set-blocking')
+const YError = require('./yerror')
 
 module.exports = function (yargs, y18n) {
   const __ = y18n.__
@@ -33,10 +31,12 @@ module.exports = function (yargs, y18n) {
 
   var failureOutput = false
   self.fail = function (msg, err) {
+    const logger = yargs._getLoggerInstance()
+
     if (fails.length) {
-      fails.forEach(function (f) {
-        f(msg, err)
-      })
+      for (var i = fails.length - 1; i >= 0; --i) {
+        fails[i](msg, err, self)
+      }
     } else {
       if (yargs.getExitProcess()) setBlocking(true)
 
@@ -44,16 +44,20 @@ module.exports = function (yargs, y18n) {
       if (!failureOutput) {
         failureOutput = true
         if (showHelpOnFail) yargs.showHelp('error')
-        if (msg) console.error(msg)
+        if (msg) logger.error(msg)
         if (failMessage) {
-          if (msg) console.error('')
-          console.error(failMessage)
+          if (msg) logger.error('')
+          logger.error(failMessage)
         }
       }
+
+      err = err || new YError(msg)
       if (yargs.getExitProcess()) {
-        process.exit(1)
+        return yargs.exit(1)
+      } else if (yargs._hasParseCallback()) {
+        return yargs.exit(1, err)
       } else {
-        throw err || new Error(msg)
+        throw err
       }
     }
   }
@@ -73,8 +77,15 @@ module.exports = function (yargs, y18n) {
   }
 
   var commands = []
-  self.command = function (cmd, description) {
-    commands.push([cmd, description || ''])
+  self.command = function (cmd, description, isDefault, aliases) {
+    // the last default wins, so cancel out any previously set default
+    if (isDefault) {
+      commands = commands.map(function (cmdArray) {
+        cmdArray[2] = false
+        return cmdArray
+      })
+    }
+    commands.push([cmd, description || '', isDefault, aliases])
   }
   self.getCommands = function () {
     return commands
@@ -99,9 +110,20 @@ module.exports = function (yargs, y18n) {
     epilog = msg
   }
 
-  var wrap = windowWidth()
+  var wrapSet = false
+  var wrap
   self.wrap = function (cols) {
+    wrapSet = true
     wrap = cols
+  }
+
+  function getWrap () {
+    if (!wrapSet) {
+      wrap = windowWidth()
+      wrapSet = true
+    }
+
+    return wrap
   }
 
   var deferY18nLookupPrefix = '__yargsString__:'
@@ -113,21 +135,26 @@ module.exports = function (yargs, y18n) {
   self.help = function () {
     normalizeAliases()
 
-    var demanded = yargs.getDemanded()
+    // handle old demanded API
+    var demandedOptions = yargs.getDemandedOptions()
+    var demandedCommands = yargs.getDemandedCommands()
     var groups = yargs.getGroups()
     var options = yargs.getOptions()
     var keys = Object.keys(
       Object.keys(descriptions)
-      .concat(Object.keys(demanded))
+      .concat(Object.keys(demandedOptions))
+      .concat(Object.keys(demandedCommands))
       .concat(Object.keys(options.default))
       .reduce(function (acc, key) {
         if (key !== '_') acc[key] = true
         return acc
       }, {})
     )
-    var ui = cliui({
-      width: wrap,
-      wrap: !!wrap
+
+    var theWrap = getWrap()
+    var ui = require('cliui')({
+      width: theWrap,
+      wrap: !!theWrap
     })
 
     // the usage string.
@@ -142,10 +169,20 @@ module.exports = function (yargs, y18n) {
       ui.div(__('Commands:'))
 
       commands.forEach(function (command) {
-        ui.div(
-          {text: command[0], padding: [0, 2, 0, 2], width: maxWidth(commands) + 4},
+        ui.span(
+          {text: command[0], padding: [0, 2, 0, 2], width: maxWidth(commands, theWrap) + 4},
           {text: command[1]}
         )
+        var hints = []
+        if (command[2]) hints.push('[' + __('default:').slice(0, -1) + ']') // TODO hacking around i18n here
+        if (command[3] && command[3].length) {
+          hints.push('[' + __('aliases:') + ' ' + command[3].join(', ') + ']')
+        }
+        if (hints.length) {
+          ui.div({text: hints.join(' '), padding: [0, 0, 0, 2], align: 'right'})
+        } else {
+          ui.div()
+        }
       })
 
       ui.div()
@@ -210,14 +247,14 @@ module.exports = function (yargs, y18n) {
 
         var extra = [
           type,
-          demanded[key] ? '[' + __('required') + ']' : null,
+          (key in demandedOptions) ? '[' + __('required') + ']' : null,
           options.choices && options.choices[key] ? '[' + __('choices:') + ' ' +
             self.stringifiedValues(options.choices[key]) + ']' : null,
           defaultString(options.default[key], options.defaultDescription[key])
         ].filter(Boolean).join(' ')
 
         ui.span(
-          {text: kswitch, padding: [0, 2, 0, 2], width: maxWidth(switches) + 4},
+          {text: kswitch, padding: [0, 2, 0, 2], width: maxWidth(switches, theWrap) + 4},
           desc
         )
 
@@ -237,10 +274,24 @@ module.exports = function (yargs, y18n) {
       })
 
       examples.forEach(function (example) {
-        ui.div(
-          {text: example[0], padding: [0, 2, 0, 2], width: maxWidth(examples) + 4},
-          example[1]
-        )
+        if (example[1] === '') {
+          ui.div(
+            {
+              text: example[0],
+              padding: [0, 2, 0, 2]
+            }
+          )
+        } else {
+          ui.div(
+            {
+              text: example[0],
+              padding: [0, 2, 0, 2],
+              width: maxWidth(examples, theWrap) + 4
+            }, {
+              text: example[1]
+            }
+          )
+        }
       })
 
       ui.div()
@@ -257,11 +308,11 @@ module.exports = function (yargs, y18n) {
 
   // return the maximum width of a string
   // in the left-hand column of a table.
-  function maxWidth (table) {
+  function maxWidth (table, theWrap) {
     var width = 0
 
     // table might be of the form [leftColumn],
-    // or {key: leftColumn}}
+    // or {key: leftColumn}
     if (!Array.isArray(table)) {
       table = Object.keys(table).map(function (key) {
         return [table[key]]
@@ -274,7 +325,7 @@ module.exports = function (yargs, y18n) {
 
     // if we've enabled 'wrap' we should limit
     // the max-width of the left-column.
-    if (wrap) width = Math.min(width, parseInt(wrap * 0.5, 10))
+    if (theWrap) width = Math.min(width, parseInt(theWrap * 0.5, 10))
 
     return width
   }
@@ -282,7 +333,8 @@ module.exports = function (yargs, y18n) {
   // make sure any options set for aliases,
   // are copied to the keys being aliased.
   function normalizeAliases () {
-    var demanded = yargs.getDemanded()
+    // handle old demanded API
+    var demandedOptions = yargs.getDemandedOptions()
     var options = yargs.getOptions()
 
     ;(Object.keys(options.alias) || []).forEach(function (key) {
@@ -290,7 +342,7 @@ module.exports = function (yargs, y18n) {
         // copy descriptions.
         if (descriptions[alias]) self.describe(key, descriptions[alias])
         // copy demanded.
-        if (demanded[alias]) yargs.demand(key, demanded[alias].msg)
+        if (alias in demandedOptions) yargs.demandOption(key, demandedOptions[alias])
         // type messages.
         if (~options.boolean.indexOf(alias)) yargs.boolean(key)
         if (~options.count.indexOf(alias)) yargs.count(key)
@@ -323,13 +375,14 @@ module.exports = function (yargs, y18n) {
   }
 
   self.showHelp = function (level) {
+    const logger = yargs._getLoggerInstance()
     if (!level) level = 'error'
-    var emit = typeof level === 'function' ? level : console[ level ]
+    var emit = typeof level === 'function' ? level : logger[level]
     emit(self.help())
   }
 
   self.functionDescription = function (fn) {
-    var description = fn.name ? decamelize(fn.name, '-') : __('generated-value')
+    var description = fn.name ? require('decamelize')(fn.name, '-') : __('generated-value')
     return ['(', description, ')'].join('')
   }
 
@@ -375,7 +428,12 @@ module.exports = function (yargs, y18n) {
 
   // guess the width of the console window, max-width 80.
   function windowWidth () {
-    return wsize.width ? Math.min(80, wsize.width) : null
+    var maxWidth = 80
+    if (typeof process === 'object' && process.stdout && process.stdout.columns) {
+      return Math.min(maxWidth, process.stdout.columns)
+    } else {
+      return maxWidth
+    }
   }
 
   // logic for displaying application version.
@@ -385,13 +443,14 @@ module.exports = function (yargs, y18n) {
   }
 
   self.showVersion = function () {
-    if (typeof version === 'function') console.log(version())
-    else console.log(version)
+    const logger = yargs._getLoggerInstance()
+    if (typeof version === 'function') logger.log(version())
+    else logger.log(version)
   }
 
-  self.reset = function (globalLookup) {
+  self.reset = function (localLookup) {
     // do not reset wrap here
-    fails = []
+    // do not reset fails here
     failMessage = null
     failureOutput = false
     usage = undefined
@@ -399,9 +458,31 @@ module.exports = function (yargs, y18n) {
     examples = []
     commands = []
     descriptions = objFilter(descriptions, function (k, v) {
-      return globalLookup[k]
+      return !localLookup[k]
     })
     return self
+  }
+
+  var frozen
+  self.freeze = function () {
+    frozen = {}
+    frozen.failMessage = failMessage
+    frozen.failureOutput = failureOutput
+    frozen.usage = usage
+    frozen.epilog = epilog
+    frozen.examples = examples
+    frozen.commands = commands
+    frozen.descriptions = descriptions
+  }
+  self.unfreeze = function () {
+    failMessage = frozen.failMessage
+    failureOutput = frozen.failureOutput
+    usage = frozen.usage
+    epilog = frozen.epilog
+    examples = frozen.examples
+    commands = frozen.commands
+    descriptions = frozen.descriptions
+    frozen = undefined
   }
 
   return self

@@ -1,15 +1,9 @@
-var rimraf = require('./rimraf')
+'use strict'
 
-function removeSync (dir) {
-  return rimraf.sync(dir, {disableGlob: true})
-}
-
-function remove (dir, callback) {
-  var options = {disableGlob: true}
-  return callback ? rimraf(dir, options, callback) : rimraf(dir, options, function () {})
-}
+const u = require('universalify').fromCallback
+const rimraf = require('./rimraf')
 
 module.exports = {
-  remove: remove,
-  removeSync: removeSync
+  remove: u(rimraf),
+  removeSync: rimraf.sync
 }

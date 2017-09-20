@@ -19,7 +19,7 @@ $ npm install --save is-png
 ```js
 var readChunk = require('read-chunk'); // npm install read-chunk
 var isPng = require('is-png');
-var buffer = readChunk.sync('unicorn.png', 0, 4);
+var buffer = readChunk.sync('unicorn.png', 0, 8);
 
 isPng(buffer);
 //=> true
@@ -47,7 +47,7 @@ xhr.send();
 
 Accepts a Buffer (Node.js) or Uint8Array.
 
-It only needs the first 4 bytes.
+It only needs the first 8 bytes.
 
 
 ## License

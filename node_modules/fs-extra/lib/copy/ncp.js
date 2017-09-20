@@ -16,7 +16,11 @@ function ncp (source, dest, options, callback) {
 
   var filter = options.filter
   var transform = options.transform
-  var clobber = options.clobber !== false // default true
+  var overwrite = options.overwrite
+  // If overwrite is undefined, use clobber, otherwise default to true:
+  if (overwrite === undefined) overwrite = options.clobber
+  if (overwrite === undefined) overwrite = true
+  var errorOnExist = options.errorOnExist
   var dereference = options.dereference
   var preserveTimestamps = options.preserveTimestamps === true
 
@@ -37,7 +41,7 @@ function ncp (source, dest, options, callback) {
           return doneOne(true)
         }
       } else if (typeof filter === 'function') {
-        if (!filter(source)) {
+        if (!filter(source, dest)) {
           return doneOne(true)
         }
       }
@@ -77,16 +81,14 @@ function ncp (source, dest, options, callback) {
       if (writable) {
         copyFile(file, target)
       } else {
-        if (clobber) {
+        if (overwrite) {
           rmFile(target, function () {
             copyFile(file, target)
           })
+        } else if (errorOnExist) {
+          onError(new Error(target + ' already exists'))
         } else {
-          var err = new Error('EEXIST: ' + target + ' already exists.')
-          err.code = 'EEXIST'
-          err.errno = -17
-          err.path = target
-          onError(err)
+          doneOne()
         }
       }
     })
@@ -107,7 +109,7 @@ function ncp (source, dest, options, callback) {
       })
     }
 
-    writeStream.once('finish', function () {
+    writeStream.once('close', function () {
       fs.chmod(target, file.mode, function (err) {
         if (err) return onError(err)
         if (preserveTimestamps) {
