@@ -12,7 +12,7 @@ ignore_header: true
 ## Plotly and ggplot2 UseR Guide
 
 ```{r, echo=FALSE, message=FALSE}
-knitr::opts_chunk$set(message=FALSE)
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
 Sys.setenv("plotly_username"="RPlotBot")
 Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
@@ -25,13 +25,22 @@ Plotly graphs are interactive: click-and-drag to zoom, shift-drag to pan, click 
 
 The [plotly R package](https://github.com/ropensci/plotly) serializes ggplot2 figures into Plotly's <a target="_blank" href="http://help.plot.ly/json-chart-schema/">universal graph JSON</a>. `plotly::ggplotly` will crawl the ggplot2 figure, extract and translate all of the attributes of the ggplot2 figure into JSON (the colors, the axes, the chart type, etc), and draw the graph with plotly.js.
 
-```{r, message=FALSE}
+```{r, results = 'hide'}
 library(plotly)
 
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 gg <- qplot(carat, price, data=dsamp, colour=clarity)
 
-ggplotly(gg)
+gg <- ggplotly(gg)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(gg, filename="ggplot-user-guide/1")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
 ```
 
 `plotly::ggplotly` returns a `plotly` object. When you print it in your console, the plotly graph will be rendered in your web browser or in R Studio's viewer.
@@ -44,16 +53,29 @@ Sometimes it's helpful to modify your figure *after* you have converted it from 
 
 In this case, use `plotly_build`. Consider this simple ggplot2 figure:
 
-```{r}
+```{r, results = 'hide'}
 df <- data.frame(x=c(1, 2, 3, 4), y=c(1, 5, 3, 5), group=c('A', 'A', 'B', 'B'))
 g <- ggplot(data=df, aes(x=x, y=y, colour=group)) + geom_point()
-ggplotly(g)
+g <- ggplotly(g)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(g, filename="ggplot-user-guide/2")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
 ```
 
 Here is the ggplot2 figure described as a plotly object
 
-```{r}
+```{r, results = 'hide'}
 p <- plotly_build(g)
+str(p)
+```
+
+```{r, echo=FALSE}
 str(p)
 ```
 
@@ -64,32 +86,32 @@ Attributes of plotly figures are grouped into two categories: `data` and `layout
 Take a look:
 
 ```{r}
-names(p$data[[1]])
+names(p$x$data[[1]])
 
 # this trace is a "scatter" type
-p$data[[1]]$type
+p$x$data[[1]]$type
 ```
 
 its name, as it appears in the legend, is "A"
 
 ```{r}
-p$data[[1]]$name
+p$x$data[[1]]$name
 ```
 
 ```{r}
-str(p$data[[1]])
+str(p$x$data[[1]])
 ```
 
 `layout` describes attributes that pertain to the rest of the plot, like axis properties, annotations, legends, and titles.
 
 ```{r}
-names(p$layout)
+names(p$x$layout)
 
-str(p$layout)
+str(p$x$layout)
 
-str(p$layout$plot_bgcolor) # the background color of the plot is "rgb(229,229,229)"
+str(p$x$layout$plot_bgcolor) # the background color of the plot is "rgb(229,229,229)"
 
-str(p$layout$legend)
+str(p$x$layout$legend)
 ```
 
 Each of these properties was extracted and translated from the original ggplot2 figure. [View all of the possible attributes](https://plot.ly/r/reference).
@@ -97,23 +119,32 @@ Each of these properties was extracted and translated from the original ggplot2 
 You can edit or add these attributes and then send the figure to Plotly. Let's add custom hover text (`text`), change the legend names (`name`) add a title (`layout$title`)
 
 ```{r}
-p$data[[1]]$name <- 'Group A'
-p$data[[1]]$text <- c('St Urbain', 'Gaspe')
-p$data[[1]]$type <- 'bar'
+p$x$data[[1]]$name <- 'Group A'
+p$x$data[[1]]$text <- c('St Urbain', 'Gaspe')
+p$x$data[[1]]$type <- 'scatter'
+p$x$data[[1]]$mode <- 'lines'
 
-p$data[[2]]$name <- 'Group B'
-p$data[[2]]$text <- c('Laurier', 'Fairmount')
-p$data[[2]]$type <- 'bar'
+p$x$data[[2]]$name <- 'Group B'
+p$x$data[[2]]$text <- c('Laurier', 'Fairmount')
+p$x$data[[2]]$type <- 'scatter'
+p$x$data[[2]]$mode <- 'lines'
 
-p$layout$title <- 'Updated title'
+p$x$layout$title <- 'Updated title'
 ```
 
 Now, send this to your plotly account:
 
-```{r}
-p$filename <- 'ggplot2-user-guide/custom-ggplot2'
-r <- plotly_POST(p)
-knit_print.plotly(r, options=list())
+```{r, results = 'hide'}
+p$x$filename <- 'ggplot2-user-guide/custom-ggplot2'
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p)
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
 ```
 
 #### More resources
