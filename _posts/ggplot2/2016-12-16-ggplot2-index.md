@@ -1,6 +1,6 @@
 ---
 title: ggplot2 Graphing Library | Plotly
-permalink: ggplot2/
+permalink: /ggplot2/
 description: Plotly for ggplot2 is an interactive, browser-based charting library built on Plotly's open source javascript graphing library, plotly.js. It works entirely locally, through the HTML widgets framework.
 layout: langindex
 language: ggplot2
