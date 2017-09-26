@@ -28,10 +28,15 @@ library(plotly)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 gg <- qplot(carat, price, data=dsamp, colour=clarity)
 
-ggplotly(gg)
+gg <- ggplotly(gg)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(gg, filename="ggplot-user-guide/1")
+chart_link
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+<iframe src="https://plot.ly/~RPlotBot/5151.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 `plotly::ggplotly` returns a `plotly` object. When you print it in your console, the plotly graph will be rendered in your web browser or in R Studio's viewer.
 
@@ -47,10 +52,15 @@ In this case, use `plotly_build`. Consider this simple ggplot2 figure:
 ```r
 df <- data.frame(x=c(1, 2, 3, 4), y=c(1, 5, 3, 5), group=c('A', 'A', 'B', 'B'))
 g <- ggplot(data=df, aes(x=x, y=y, colour=group)) + geom_point()
-ggplotly(g)
+g <- ggplotly(g)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(g, filename="ggplot-user-guide/2")
+chart_link
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+<iframe src="https://plot.ly/~RPlotBot/5153.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 Here is the ggplot2 figure described as a plotly object
 
@@ -60,14 +70,18 @@ p <- plotly_build(g)
 str(p)
 ```
 
+
 ```
 ## List of 8
-##  $ x            :List of 7
-##   ..$ data    :List of 2
-##   .. ..$ :List of 13
-##   .. .. ..$ x          : num [1:2] 1 2
-##   .. .. ..$ y          : num [1:2] 1 5
-##   .. .. ..$ text       : chr [1:2] "x: 1<br>y: 1" "x: 2<br>y: 5"
+##  $ x            :List of 9
+##   ..$ data     :List of 2
+##   .. ..$ :List of 14
+##   .. .. ..$ x          : atomic [1:2] 1 2
+##   .. .. .. ..- attr(*, "apiSrc")= logi TRUE
+##   .. .. ..$ y          : atomic [1:2] 1 5
+##   .. .. .. ..- attr(*, "apiSrc")= logi TRUE
+##   .. .. ..$ text       : atomic [1:2] x: 1<br />y: 1 x: 2<br />y: 5
+##   .. .. .. ..- attr(*, "apiSrc")= logi TRUE
 ##   .. .. ..$ type       : chr "scatter"
 ##   .. .. ..$ mode       : chr "markers"
 ##   .. .. ..$ marker     :List of 6
@@ -86,10 +100,14 @@ str(p)
 ##   .. .. ..$ xaxis      : chr "x"
 ##   .. .. ..$ yaxis      : chr "y"
 ##   .. .. ..$ hoverinfo  : chr "text"
-##   .. ..$ :List of 13
-##   .. .. ..$ x          : num [1:2] 3 4
-##   .. .. ..$ y          : num [1:2] 3 5
-##   .. .. ..$ text       : chr [1:2] "x: 3<br>y: 3" "x: 4<br>y: 5"
+##   .. .. ..$ frame      : chr NA
+##   .. ..$ :List of 14
+##   .. .. ..$ x          : atomic [1:2] 3 4
+##   .. .. .. ..- attr(*, "apiSrc")= logi TRUE
+##   .. .. ..$ y          : atomic [1:2] 3 5
+##   .. .. .. ..- attr(*, "apiSrc")= logi TRUE
+##   .. .. ..$ text       : atomic [1:2] x: 3<br />y: 3 x: 4<br />y: 5
+##   .. .. .. ..- attr(*, "apiSrc")= logi TRUE
 ##   .. .. ..$ type       : chr "scatter"
 ##   .. .. ..$ mode       : chr "markers"
 ##   .. .. ..$ marker     :List of 6
@@ -108,7 +126,8 @@ str(p)
 ##   .. .. ..$ xaxis      : chr "x"
 ##   .. .. ..$ yaxis      : chr "y"
 ##   .. .. ..$ hoverinfo  : chr "text"
-##   ..$ layout  :List of 11
+##   .. .. ..$ frame      : chr NA
+##   ..$ layout   :List of 12
 ##   .. ..$ margin       :List of 4
 ##   .. .. ..$ t: num 23.3
 ##   .. .. ..$ r: num 7.31
@@ -120,13 +139,20 @@ str(p)
 ##   .. .. ..$ color : chr "rgba(0,0,0,1)"
 ##   .. .. ..$ family: chr ""
 ##   .. .. ..$ size  : num 14.6
-##   .. ..$ xaxis        :List of 25
+##   .. ..$ xaxis        :List of 28
+##   .. .. ..$ domain        : num [1:2] 0 1
 ##   .. .. ..$ type          : chr "linear"
 ##   .. .. ..$ autorange     : logi FALSE
-##   .. .. ..$ tickmode      : chr "array"
 ##   .. .. ..$ range         : num [1:2] 0.85 4.15
-##   .. .. ..$ ticktext      : chr [1:4] "1" "2" "3" "4"
-##   .. .. ..$ tickvals      : num [1:4] 1 2 3 4
+##   .. .. ..$ tickmode      : chr "array"
+##   .. .. ..$ ticktext      : atomic [1:4] 1 2 3 4
+##   .. .. .. ..- attr(*, "apiSrc")= logi TRUE
+##   .. .. ..$ tickvals      : atomic [1:4] 1 2 3 4
+##   .. .. .. ..- attr(*, "apiSrc")= logi TRUE
+##   .. .. ..$ categoryorder : chr "array"
+##   .. .. ..$ categoryarray : atomic [1:4] 1 2 3 4
+##   .. .. .. ..- attr(*, "apiSrc")= logi TRUE
+##   .. .. ..$ nticks        : logi NA
 ##   .. .. ..$ ticks         : chr "outside"
 ##   .. .. ..$ tickcolor     : chr "rgba(51,51,51,1)"
 ##   .. .. ..$ ticklen       : num 3.65
@@ -141,7 +167,6 @@ str(p)
 ##   .. .. ..$ linecolor     : logi NA
 ##   .. .. ..$ linewidth     : num 0
 ##   .. .. ..$ showgrid      : logi TRUE
-##   .. .. ..$ domain        : num [1:2] 0 1
 ##   .. .. ..$ gridcolor     : chr "rgba(255,255,255,1)"
 ##   .. .. ..$ gridwidth     : num 0.664
 ##   .. .. ..$ zeroline      : logi FALSE
@@ -152,13 +177,20 @@ str(p)
 ##   .. .. .. ..$ family: chr ""
 ##   .. .. .. ..$ size  : num 14.6
 ##   .. .. ..$ hoverformat   : chr ".2f"
-##   .. ..$ yaxis        :List of 25
+##   .. ..$ yaxis        :List of 28
+##   .. .. ..$ domain        : num [1:2] 0 1
 ##   .. .. ..$ type          : chr "linear"
 ##   .. .. ..$ autorange     : logi FALSE
-##   .. .. ..$ tickmode      : chr "array"
 ##   .. .. ..$ range         : num [1:2] 0.8 5.2
-##   .. .. ..$ ticktext      : chr [1:5] "1" "2" "3" "4" ...
-##   .. .. ..$ tickvals      : num [1:5] 1 2 3 4 5
+##   .. .. ..$ tickmode      : chr "array"
+##   .. .. ..$ ticktext      : atomic [1:5] 1 2 3 4 ...
+##   .. .. .. ..- attr(*, "apiSrc")= logi TRUE
+##   .. .. ..$ tickvals      : atomic [1:5] 1 2 3 4 5
+##   .. .. .. ..- attr(*, "apiSrc")= logi TRUE
+##   .. .. ..$ categoryorder : chr "array"
+##   .. .. ..$ categoryarray : atomic [1:5] 1 2 3 4 ...
+##   .. .. .. ..- attr(*, "apiSrc")= logi TRUE
+##   .. .. ..$ nticks        : logi NA
 ##   .. .. ..$ ticks         : chr "outside"
 ##   .. .. ..$ tickcolor     : chr "rgba(51,51,51,1)"
 ##   .. .. ..$ ticklen       : num 3.65
@@ -173,7 +205,6 @@ str(p)
 ##   .. .. ..$ linecolor     : logi NA
 ##   .. .. ..$ linewidth     : num 0
 ##   .. .. ..$ showgrid      : logi TRUE
-##   .. .. ..$ domain        : num [1:2] 0 1
 ##   .. .. ..$ gridcolor     : chr "rgba(255,255,255,1)"
 ##   .. .. ..$ gridwidth     : num 0.664
 ##   .. .. ..$ zeroline      : logi FALSE
@@ -191,7 +222,7 @@ str(p)
 ##   .. .. .. ..$ line     :List of 3
 ##   .. .. .. .. ..$ color   : logi NA
 ##   .. .. .. .. ..$ width   : num 0
-##   .. .. .. .. ..$ linetype: chr(0)
+##   .. .. .. .. ..$ linetype: chr(0) 
 ##   .. .. .. ..$ yref     : chr "paper"
 ##   .. .. .. ..$ xref     : chr "paper"
 ##   .. .. .. ..$ x0       : num 0
@@ -227,33 +258,42 @@ str(p)
 ##   .. .. .. ..$ yanchor    : chr "bottom"
 ##   .. .. .. ..$ legendTitle: logi TRUE
 ##   .. ..$ hovermode    : chr "closest"
-##   ..$ config  :List of 3
-##   .. ..$ doubleClick           : chr "reset"
-##   .. ..$ modeBarButtonsToAdd   :List of 1
+##   .. ..$ barmode      : chr "relative"
+##   ..$ config   :List of 3
+##   .. ..$ doubleClick        : chr "reset"
+##   .. ..$ modeBarButtonsToAdd:List of 1
 ##   .. .. ..$ :List of 3
 ##   .. .. .. ..$ name : chr "Collaborate"
 ##   .. .. .. ..$ icon :List of 4
 ##   .. .. .. .. ..$ width  : num 1000
 ##   .. .. .. .. ..$ ascent : num 500
 ##   .. .. .. .. ..$ descent: num -50
-##   .. .. .. .. ..$ path   : chr "M487 375c7-10 9-23 5-36l-79-259c-3-12-11-23-22-31-11-8-22-12-35-12l-263 0c-15 0-29 5-43 15-13 10-23 23-28 37-5 13-5 25-1 37 0 0"| __truncated__
-##   .. .. .. ..$ click:Class 'JS_EVAL'  chr "function(gd) { \n        // is this being viewed in RStudio?\n        if (location.search == '?viewer_pane=1') {\n          ale"| __truncated__
-##   .. ..$ modeBarButtonsToRemove:List of 1
-##   .. .. ..$ : chr "sendDataToCloud"
-##   ..$ source  : chr "A"
-##   ..$ attrs   :List of 1
-##   .. ..$ 108e24318cf6:List of 4
+##   .. .. .. .. ..$ path   : chr "M487 375c7-10 9-23 5-36l-79-259c-3-12-11-23-22-31-11-8-22-12-35-12l-263 0c-15 0-29 5-43 15-13 10-23 23-28 37-5 "| __truncated__
+##   .. .. .. ..$ click:Class 'JS_EVAL'  chr "function(gd) { \n        // is this being viewed in RStudio?\n        if (location.search == '?viewer_pane=1') "| __truncated__
+##   .. ..$ cloud              : logi FALSE
+##   ..$ source   : chr "A"
+##   ..$ attrs    :List of 1
+##   .. ..$ 2fa85c8b523f:List of 4
 ##   .. .. ..$ x     :Class 'formula'  language ~x
-##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x7fe07eb260a8>
+##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000003463fc0> 
 ##   .. .. ..$ y     :Class 'formula'  language ~y
-##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x7fe07eb260a8>
+##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000003463fc0> 
 ##   .. .. ..$ colour:Class 'formula'  language ~group
-##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x7fe07eb260a8>
-##   .. .. ..$ type  : chr "ggplotly"
+##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000003463fc0> 
+##   .. .. ..$ type  : chr "scatter"
 ##   .. .. ..- attr(*, "class")= chr "plotly_eval"
-##   ..$ cur_data: chr "108e24318cf6"
-##   ..$ visdat  :List of 1
-##   .. ..$ 108e24318cf6:function (y)  
+##   ..$ cur_data : chr "2fa85c8b523f"
+##   ..$ visdat   :List of 1
+##   .. ..$ 2fa85c8b523f:function (y)  
+##   ..$ highlight:List of 6
+##   .. ..$ on        : chr "plotly_click"
+##   .. ..$ persistent: logi FALSE
+##   .. ..$ dynamic   : logi FALSE
+##   .. ..$ selectize : logi FALSE
+##   .. ..$ opacityDim: num 0.2
+##   .. ..$ selected  :List of 1
+##   .. .. ..$ opacity: num 1
+##   ..$ base_url : chr "https://plot.ly"
 ##   ..- attr(*, "TOJSON_FUNC")=function (x, ...)  
 ##  $ width        : NULL
 ##  $ height       : NULL
@@ -277,46 +317,66 @@ str(p)
 ##   .. ..$ defaultWidth : NULL
 ##   .. ..$ defaultHeight: NULL
 ##   .. ..$ figure       : logi TRUE
-##  $ dependencies :List of 3
-##   ..$ :List of 9
-##   .. ..$ name      : chr "jquery"
-##   .. ..$ version   : chr "1.11.3"
-##   .. ..$ src       :List of 1
-##   .. .. ..$ file: chr "/Library/Frameworks/R.framework/Versions/3.3/Resources/library/crosstalk/lib/jquery"
-##   .. ..$ meta      : NULL
-##   .. ..$ script    : chr "jquery.min.js"
-##   .. ..$ stylesheet: NULL
-##   .. ..$ head      : NULL
-##   .. ..$ attachment: NULL
-##   .. ..$ all_files : logi TRUE
-##   .. ..- attr(*, "class")= chr "html_dependency"
-##   ..$ :List of 9
-##   .. ..$ name      : chr "crosstalk"
-##   .. ..$ version   : chr "1.0.1"
-##   .. ..$ src       :List of 1
-##   .. .. ..$ file: chr "/Library/Frameworks/R.framework/Versions/3.3/Resources/library/crosstalk/www"
-##   .. ..$ meta      : NULL
-##   .. ..$ script    : chr "js/crosstalk.min.js"
-##   .. ..$ stylesheet: chr "css/crosstalk.css"
-##   .. ..$ head      : NULL
-##   .. ..$ attachment: NULL
-##   .. ..$ all_files : logi TRUE
-##   .. ..- attr(*, "class")= chr "html_dependency"
-##   ..$ :List of 9
+##  $ dependencies :List of 4
+##   ..$ :List of 10
 ##   .. ..$ name      : chr "typedarray"
 ##   .. ..$ version   : chr "0.1"
 ##   .. ..$ src       :List of 1
-##   .. .. ..$ file: chr "/Library/Frameworks/R.framework/Versions/3.3/Resources/library/plotly/htmlwidgets/lib/typedarray"
+##   .. .. ..$ file: chr "C:/Users/Branden/Documents/R/win-library/3.4/plotly/htmlwidgets/lib/typedarray"
 ##   .. ..$ meta      : NULL
 ##   .. ..$ script    : chr "typedarray.min.js"
 ##   .. ..$ stylesheet: NULL
 ##   .. ..$ head      : NULL
 ##   .. ..$ attachment: NULL
+##   .. ..$ package   : NULL
 ##   .. ..$ all_files : logi TRUE
 ##   .. ..- attr(*, "class")= chr "html_dependency"
-##  $ elementId    : NULL
+##   ..$ :List of 10
+##   .. ..$ name      : chr "jquery"
+##   .. ..$ version   : chr "1.11.3"
+##   .. ..$ src       :List of 1
+##   .. .. ..$ file: chr "C:/Users/Branden/Documents/R/win-library/3.4/crosstalk/lib/jquery"
+##   .. ..$ meta      : NULL
+##   .. ..$ script    : chr "jquery.min.js"
+##   .. ..$ stylesheet: NULL
+##   .. ..$ head      : NULL
+##   .. ..$ attachment: NULL
+##   .. ..$ package   : NULL
+##   .. ..$ all_files : logi TRUE
+##   .. ..- attr(*, "class")= chr "html_dependency"
+##   ..$ :List of 10
+##   .. ..$ name      : chr "crosstalk"
+##   .. ..$ version   : chr "1.0.0"
+##   .. ..$ src       :List of 1
+##   .. .. ..$ file: chr "C:/Users/Branden/Documents/R/win-library/3.4/crosstalk/www"
+##   .. ..$ meta      : NULL
+##   .. ..$ script    : chr "js/crosstalk.min.js"
+##   .. ..$ stylesheet: chr "css/crosstalk.css"
+##   .. ..$ head      : NULL
+##   .. ..$ attachment: NULL
+##   .. ..$ package   : NULL
+##   .. ..$ all_files : logi TRUE
+##   .. ..- attr(*, "class")= chr "html_dependency"
+##   ..$ :List of 10
+##   .. ..$ name      : chr "plotlyjs"
+##   .. ..$ version   : chr "1.29.2"
+##   .. ..$ src       :List of 1
+##   .. .. ..$ file: chr "C:/Users/Branden/Documents/R/win-library/3.4/plotly/htmlwidgets/lib/plotlyjs"
+##   .. ..$ meta      : NULL
+##   .. ..$ script    : chr "plotly-latest.min.js"
+##   .. ..$ stylesheet: chr "plotly-htmlwidgets.css"
+##   .. ..$ head      : NULL
+##   .. ..$ attachment: NULL
+##   .. ..$ package   : NULL
+##   .. ..$ all_files : logi TRUE
+##   .. ..- attr(*, "class")= chr "html_dependency"
+##  $ elementId    : chr "2fa837a2637a"
 ##  $ preRenderHook:function (p, registerFrames = TRUE)  
-##  $ jsHooks      : list()
+##  $ jsHooks      :List of 1
+##   ..$ render:List of 1
+##   .. ..$ :List of 2
+##   .. .. ..$ code: chr "function(el, x) { var ctConfig = crosstalk.var('plotlyCrosstalkOpts').set({\"on\":\"plotly_click\",\"persistent"| __truncated__
+##   .. .. ..$ data: NULL
 ##  - attr(*, "class")= chr [1:2] "plotly" "htmlwidget"
 ##  - attr(*, "package")= chr "plotly"
 ```
@@ -329,75 +389,243 @@ Take a look:
 
 
 ```r
-names(p$data[[1]])
+names(p$x$data[[1]])
 ```
 
 ```
-## NULL
+##  [1] "x"           "y"           "text"        "type"        "mode"       
+##  [6] "marker"      "hoveron"     "name"        "legendgroup" "showlegend" 
+## [11] "xaxis"       "yaxis"       "hoverinfo"   "frame"
 ```
 
 ```r
 # this trace is a "scatter" type
-p$data[[1]]$type
+p$x$data[[1]]$type
 ```
 
 ```
-## NULL
+## [1] "scatter"
 ```
 
 its name, as it appears in the legend, is "A"
 
 
 ```r
-p$data[[1]]$name
+p$x$data[[1]]$name
 ```
 
 ```
-## NULL
+## [1] "A"
 ```
 
 
 ```r
-str(p$data[[1]])
+str(p$x$data[[1]])
 ```
 
 ```
-##  NULL
+## List of 14
+##  $ x          : atomic [1:2] 1 2
+##   ..- attr(*, "apiSrc")= logi TRUE
+##  $ y          : atomic [1:2] 1 5
+##   ..- attr(*, "apiSrc")= logi TRUE
+##  $ text       : atomic [1:2] x: 1<br />y: 1 x: 2<br />y: 5
+##   ..- attr(*, "apiSrc")= logi TRUE
+##  $ type       : chr "scatter"
+##  $ mode       : chr "markers"
+##  $ marker     :List of 6
+##   ..$ autocolorscale: logi FALSE
+##   ..$ color         : chr "rgba(248,118,109,1)"
+##   ..$ opacity       : num 1
+##   ..$ size          : num 5.67
+##   ..$ symbol        : chr "circle"
+##   ..$ line          :List of 2
+##   .. ..$ width: num 1.89
+##   .. ..$ color: chr "rgba(248,118,109,1)"
+##  $ hoveron    : chr "points"
+##  $ name       : chr "A"
+##  $ legendgroup: chr "A"
+##  $ showlegend : logi TRUE
+##  $ xaxis      : chr "x"
+##  $ yaxis      : chr "y"
+##  $ hoverinfo  : chr "text"
+##  $ frame      : chr NA
 ```
 
 `layout` describes attributes that pertain to the rest of the plot, like axis properties, annotations, legends, and titles.
 
 
 ```r
-names(p$layout)
+names(p$x$layout)
 ```
 
 ```
-## NULL
-```
-
-```r
-str(p$layout)
-```
-
-```
-##  NULL
+##  [1] "margin"        "plot_bgcolor"  "paper_bgcolor" "font"         
+##  [5] "xaxis"         "yaxis"         "shapes"        "showlegend"   
+##  [9] "legend"        "annotations"   "hovermode"     "barmode"
 ```
 
 ```r
-str(p$layout$plot_bgcolor) # the background color of the plot is "rgb(229,229,229)"
+str(p$x$layout)
 ```
 
 ```
-##  NULL
+## List of 12
+##  $ margin       :List of 4
+##   ..$ t: num 23.3
+##   ..$ r: num 7.31
+##   ..$ b: num 37.3
+##   ..$ l: num 31.4
+##  $ plot_bgcolor : chr "rgba(235,235,235,1)"
+##  $ paper_bgcolor: chr "rgba(255,255,255,1)"
+##  $ font         :List of 3
+##   ..$ color : chr "rgba(0,0,0,1)"
+##   ..$ family: chr ""
+##   ..$ size  : num 14.6
+##  $ xaxis        :List of 28
+##   ..$ domain        : num [1:2] 0 1
+##   ..$ type          : chr "linear"
+##   ..$ autorange     : logi FALSE
+##   ..$ range         : num [1:2] 0.85 4.15
+##   ..$ tickmode      : chr "array"
+##   ..$ ticktext      : atomic [1:4] 1 2 3 4
+##   .. ..- attr(*, "apiSrc")= logi TRUE
+##   ..$ tickvals      : atomic [1:4] 1 2 3 4
+##   .. ..- attr(*, "apiSrc")= logi TRUE
+##   ..$ categoryorder : chr "array"
+##   ..$ categoryarray : atomic [1:4] 1 2 3 4
+##   .. ..- attr(*, "apiSrc")= logi TRUE
+##   ..$ nticks        : logi NA
+##   ..$ ticks         : chr "outside"
+##   ..$ tickcolor     : chr "rgba(51,51,51,1)"
+##   ..$ ticklen       : num 3.65
+##   ..$ tickwidth     : num 0.664
+##   ..$ showticklabels: logi TRUE
+##   ..$ tickfont      :List of 3
+##   .. ..$ color : chr "rgba(77,77,77,1)"
+##   .. ..$ family: chr ""
+##   .. ..$ size  : num 11.7
+##   ..$ tickangle     : num 0
+##   ..$ showline      : logi FALSE
+##   ..$ linecolor     : logi NA
+##   ..$ linewidth     : num 0
+##   ..$ showgrid      : logi TRUE
+##   ..$ gridcolor     : chr "rgba(255,255,255,1)"
+##   ..$ gridwidth     : num 0.664
+##   ..$ zeroline      : logi FALSE
+##   ..$ anchor        : chr "y"
+##   ..$ title         : chr "x"
+##   ..$ titlefont     :List of 3
+##   .. ..$ color : chr "rgba(0,0,0,1)"
+##   .. ..$ family: chr ""
+##   .. ..$ size  : num 14.6
+##   ..$ hoverformat   : chr ".2f"
+##  $ yaxis        :List of 28
+##   ..$ domain        : num [1:2] 0 1
+##   ..$ type          : chr "linear"
+##   ..$ autorange     : logi FALSE
+##   ..$ range         : num [1:2] 0.8 5.2
+##   ..$ tickmode      : chr "array"
+##   ..$ ticktext      : atomic [1:5] 1 2 3 4 ...
+##   .. ..- attr(*, "apiSrc")= logi TRUE
+##   ..$ tickvals      : atomic [1:5] 1 2 3 4 5
+##   .. ..- attr(*, "apiSrc")= logi TRUE
+##   ..$ categoryorder : chr "array"
+##   ..$ categoryarray : atomic [1:5] 1 2 3 4 ...
+##   .. ..- attr(*, "apiSrc")= logi TRUE
+##   ..$ nticks        : logi NA
+##   ..$ ticks         : chr "outside"
+##   ..$ tickcolor     : chr "rgba(51,51,51,1)"
+##   ..$ ticklen       : num 3.65
+##   ..$ tickwidth     : num 0.664
+##   ..$ showticklabels: logi TRUE
+##   ..$ tickfont      :List of 3
+##   .. ..$ color : chr "rgba(77,77,77,1)"
+##   .. ..$ family: chr ""
+##   .. ..$ size  : num 11.7
+##   ..$ tickangle     : num 0
+##   ..$ showline      : logi FALSE
+##   ..$ linecolor     : logi NA
+##   ..$ linewidth     : num 0
+##   ..$ showgrid      : logi TRUE
+##   ..$ gridcolor     : chr "rgba(255,255,255,1)"
+##   ..$ gridwidth     : num 0.664
+##   ..$ zeroline      : logi FALSE
+##   ..$ anchor        : chr "x"
+##   ..$ title         : chr "y"
+##   ..$ titlefont     :List of 3
+##   .. ..$ color : chr "rgba(0,0,0,1)"
+##   .. ..$ family: chr ""
+##   .. ..$ size  : num 14.6
+##   ..$ hoverformat   : chr ".2f"
+##  $ shapes       :List of 1
+##   ..$ :List of 9
+##   .. ..$ type     : chr "rect"
+##   .. ..$ fillcolor: logi NA
+##   .. ..$ line     :List of 3
+##   .. .. ..$ color   : logi NA
+##   .. .. ..$ width   : num 0
+##   .. .. ..$ linetype: chr(0) 
+##   .. ..$ yref     : chr "paper"
+##   .. ..$ xref     : chr "paper"
+##   .. ..$ x0       : num 0
+##   .. ..$ x1       : num 1
+##   .. ..$ y0       : num 0
+##   .. ..$ y1       : num 1
+##  $ showlegend   : logi TRUE
+##  $ legend       :List of 5
+##   ..$ bgcolor    : chr "rgba(255,255,255,1)"
+##   ..$ bordercolor: chr "transparent"
+##   ..$ borderwidth: num 1.89
+##   ..$ font       :List of 3
+##   .. ..$ color : chr "rgba(0,0,0,1)"
+##   .. ..$ family: chr ""
+##   .. ..$ size  : num 11.7
+##   ..$ y          : num 0.938
+##  $ annotations  :List of 1
+##   ..$ :List of 13
+##   .. ..$ text       : chr "group"
+##   .. ..$ x          : num 1.02
+##   .. ..$ y          : num 1
+##   .. ..$ showarrow  : logi FALSE
+##   .. ..$ ax         : num 0
+##   .. ..$ ay         : num 0
+##   .. ..$ font       :List of 3
+##   .. .. ..$ color : chr "rgba(0,0,0,1)"
+##   .. .. ..$ family: chr ""
+##   .. .. ..$ size  : num 14.6
+##   .. ..$ xref       : chr "paper"
+##   .. ..$ yref       : chr "paper"
+##   .. ..$ textangle  : num 0
+##   .. ..$ xanchor    : chr "left"
+##   .. ..$ yanchor    : chr "bottom"
+##   .. ..$ legendTitle: logi TRUE
+##  $ hovermode    : chr "closest"
+##  $ barmode      : chr "relative"
 ```
 
 ```r
-str(p$layout$legend)
+str(p$x$layout$plot_bgcolor) # the background color of the plot is "rgb(229,229,229)"
 ```
 
 ```
-##  NULL
+##  chr "rgba(235,235,235,1)"
+```
+
+```r
+str(p$x$layout$legend)
+```
+
+```
+## List of 5
+##  $ bgcolor    : chr "rgba(255,255,255,1)"
+##  $ bordercolor: chr "transparent"
+##  $ borderwidth: num 1.89
+##  $ font       :List of 3
+##   ..$ color : chr "rgba(0,0,0,1)"
+##   ..$ family: chr ""
+##   ..$ size  : num 11.7
+##  $ y          : num 0.938
 ```
 
 Each of these properties was extracted and translated from the original ggplot2 figure. [View all of the possible attributes](https://plot.ly/r/reference).
@@ -406,49 +634,32 @@ You can edit or add these attributes and then send the figure to Plotly. Let's a
 
 
 ```r
-p$data[[1]]$name <- 'Group A'
-p$data[[1]]$text <- c('St Urbain', 'Gaspe')
-p$data[[1]]$type <- 'bar'
+p$x$data[[1]]$name <- 'Group A'
+p$x$data[[1]]$text <- c('St Urbain', 'Gaspe')
+p$x$data[[1]]$type <- 'scatter'
+p$x$data[[1]]$mode <- 'lines'
 
-p$data[[2]]$name <- 'Group B'
-```
+p$x$data[[2]]$name <- 'Group B'
+p$x$data[[2]]$text <- c('Laurier', 'Fairmount')
+p$x$data[[2]]$type <- 'scatter'
+p$x$data[[2]]$mode <- 'lines'
 
-```
-## Error in `*tmp*`[[2]]: subscript out of bounds
-```
-
-```r
-p$data[[2]]$text <- c('Laurier', 'Fairmount')
-```
-
-```
-## Error in `*tmp*`[[2]]: subscript out of bounds
-```
-
-```r
-p$data[[2]]$type <- 'bar'
-```
-
-```
-## Error in `*tmp*`[[2]]: subscript out of bounds
-```
-
-```r
-p$layout$title <- 'Updated title'
+p$x$layout$title <- 'Updated title'
 ```
 
 Now, send this to your plotly account:
 
 
 ```r
-p$filename <- 'ggplot2-user-guide/custom-ggplot2'
-r <- plotly_POST(p)
-knit_print.plotly(r, options=list())
+p$x$filename <- 'ggplot2-user-guide/custom-ggplot2'
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p)
+chart_link
 ```
 
-```
-## Error in eval(expr, envir, enclos): could not find function "knit_print.plotly"
-```
+<iframe src="https://plot.ly/~RPlotBot/5167.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #### More resources
 - [ggplot2 examples](https://plot.ly/ggplot2)
