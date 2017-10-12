@@ -125,7 +125,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
   - `git push origin source-design-merge`
 
 10. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally 
-11. Deploy with `rake deploy`
+11. Deploy with `bundle exec rake deploy`
 
 ##### At https://plot.ly/python
 12. Check your Tutorial!!!! This is a <b>very important</b> step.
