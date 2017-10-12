@@ -1,5 +1,5 @@
 ---
-permalink: python/filled-chord-diagram/
+permalink: python/filled-chord-diagram
 description: How to make an interactive filled-chord diagram in Python with Plotly and iGraph. 
 title: Python Filled Chord Diagram | plotly
 has_thumbnail: true
@@ -9,25 +9,18 @@ name: Filled Chord Diagram
 language: python
 display_as: scientific
 has_thumbnail: true
-order: 25
 ipynb: ~notebook_demo/47
+order: 25
+page_type: u-guide
 ---
 {% raw %}
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Filled-Chord-Diagrams-with-Plotly">Filled-Chord Diagrams with Plotly<a class="anchor-link" href="#Filled-Chord-Diagrams-with-Plotly">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Circular layout or <a href="https://en.wikipedia.org/wiki/Chord_diagram">Chord diagram</a> is a method of visualizing  data that describe relationships. It was intensively promoted  through <a href="http://circos.ca/">Circos</a>, a software package in Perl that  was initially designed for displaying genomic data.</p>
+<h1 id="Filled-Chord-Diagrams-with-Plotly">Filled-Chord Diagrams with Plotly<a class="anchor-link" href="#Filled-Chord-Diagrams-with-Plotly">&#194;&#182;</a></h1><p>Circular layout or <a href="https://en.wikipedia.org/wiki/Chord_diagram">Chord diagram</a> is a method of visualizing  data that describe relationships. It was intensively promoted  through <a href="http://circos.ca/">Circos</a>, a software package in Perl that  was initially designed for displaying genomic data.</p>
+<p>M Bostock developed reusable charts  for <a href="http://bl.ocks.org/mbostock/4062006">chord diagrams</a> in d3.js. Two years ago on <a href="http://stackoverflow.com/questions/19105801/chord-diagram-in-python">stackoverflow</a>, the exsistence of a Python package for plotting chord diagrams was adressed, but the question was closed due to being <em>off topic</em>.<br> Here we show that a chord diagram can be generated in Python with Plotly. We illustrate the method of generating a chord diagram from data recorded in a square matrix. The rows and columns represent the same entities.</p>
+<p>This example considers a community of 5 friends on Facebook. We record the number of comments posted by each member on the other friends' walls. The data table is given in the next cell:</p>
 
 </div>
 </div>
@@ -37,58 +30,9 @@ ipynb: ~notebook_demo/47
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;http://mkweb.bcgsc.ca/tableviewer/tmp/uzofjjnsamp/results/circos-table-uzofjjnsamp.png&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<img src="http://mkweb.bcgsc.ca/tableviewer/tmp/uzofjjnsamp/results/circos-table-uzofjjnsamp.png"/>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>M Bostock developed reusable charts  for <a href="http://bl.ocks.org/mbostock/4062006">chord diagrams</a> in d3.js. Two years ago on <a href="http://stackoverflow.com/questions/19105801/chord-diagram-in-python">stackoverflow</a>, the exsistence of a Python package for plotting chord diagrams was adressed, but the question was closed due to being <em>off topic</em>.<br> Here we show that a chord diagram can be generated in Python with Plotly. We illustrate the method of generating a chord diagram from data recorded in a square matrix.  The rows and columns represent  the same entities.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This example considers a community of 5 friends on Facebook. We record the number of comments posted by each member on the other friends' walls. The data table is given in the next cell:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="kn">as</span> <span class="nn">ff</span>
 <span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">plotly.tools</span> <span class="kn">import</span> <span class="n">FigureFactory</span> <span class="k">as</span> <span class="n">FF</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;Emma&#39;</span><span class="p">,</span> <span class="s1">&#39;Isabella&#39;</span><span class="p">,</span> <span class="s1">&#39;Ava&#39;</span><span class="p">,</span> <span class="s1">&#39;Olivia&#39;</span><span class="p">,</span> <span class="s1">&#39;Sophia&#39;</span><span class="p">,</span> <span class="s1">&#39;row-sum&#39;</span><span class="p">],</span>
         <span class="p">[</span><span class="s1">&#39;Emma&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">65</span><span class="p">],</span>
@@ -97,7 +41,7 @@ ipynb: ~notebook_demo/47
         <span class="p">[</span><span class="s1">&#39;Olivia&#39;</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">73</span><span class="p">],</span>
         <span class="p">[</span><span class="s1">&#39;Sophia&#39;</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">84</span><span class="p">]]</span>
 
-<span class="n">table</span> <span class="o">=</span> <span class="n">FF</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;Data-Table&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -109,10 +53,14 @@ ipynb: ~notebook_demo/47
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
 
 <div class="output_html rendered_html output_subarea output_execute_result">
-<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~chelsea_lyn/9650.embed" height="230px" width="100%"></iframe>
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/3672.embed" height="230px" width="100%"></iframe>
 </div>
 
 </div>
@@ -121,8 +69,7 @@ ipynb: ~notebook_demo/47
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -132,19 +79,9 @@ flows of posts between pairs of friends.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Define the array of data:</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -169,8 +106,7 @@ flows of posts between pairs of friends.</p>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -183,17 +119,15 @@ flows of posts between pairs of friends.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Ideograms">Ideograms<a class="anchor-link" href="#Ideograms">&#182;</a></h3>
+<h3 id="Ideograms">Ideograms<a class="anchor-link" href="#Ideograms">&#194;&#182;</a></h3>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -205,8 +139,7 @@ Let us denote by <code>total_comments</code> the total number of posts recorded 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -217,26 +150,25 @@ Let us denote by <code>total_comments</code> the total number of posts recorded 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now we define the functions that process  data in order to get ideogram ends.</p>
 <p>As we stressed the unit circle is oriented counter-clockwise.
 In order to get  an arc of circle of  end angular
-coordinates $\theta_0<\theta_1$, we define a function <code>moduloAB</code> that resolves the case when an arc contains
+coordinates $\theta_0&lt;\theta_1$, we define a function <code>moduloAB</code> that resolves the case when an arc contains
 the  point of angular coordinate $0$ (for example $\theta_0=2\pi-\pi/12$, $\theta_1=\pi/9$). The function corresponding to $a=-\pi, b=\pi$  allows to map the interval $[0,2\pi)$ onto $[-\pi, \pi)$. Via this transformation we have:</p>
 <p>$\theta_0\mapsto \theta'_0=-\pi/12$, and</p>
 <p>$ \theta_1=\mapsto \theta'_1=\pi/9$,</p>
-<p>and now $\theta'_0<\theta'_1$.</p>
+<p>and now $\theta'_0&lt;\theta'_1$.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">PI</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
@@ -257,8 +189,7 @@ the  point of angular coordinate $0$ (for example $\theta_0=2\pi-\pi/12$, $\thet
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -269,7 +200,7 @@ the  point of angular coordinate $0$ (for example $\theta_0=2\pi-\pi/12$, $\thet
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">row_sum</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">k</span><span class="p">,:])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
@@ -284,8 +215,7 @@ the  point of angular coordinate $0$ (for example $\theta_0=2\pi-\pi/12$, $\thet
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -296,7 +226,7 @@ the  point of angular coordinate $0$ (for example $\theta_0=2\pi-\pi/12$, $\thet
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">get_ideogram_ends</span><span class="p">(</span><span class="n">ideogram_len</span><span class="p">,</span> <span class="n">gap</span><span class="p">):</span>
@@ -320,7 +250,11 @@ the  point of angular coordinate $0$ (for example $\theta_0=2\pi-\pi/12$, $\thet
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -337,8 +271,7 @@ the  point of angular coordinate $0$ (for example $\theta_0=2\pi-\pi/12$, $\thet
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -350,7 +283,7 @@ numbers in polar form:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">make_ideogram_arc</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
@@ -375,8 +308,7 @@ numbers in polar form:</p>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -388,7 +320,7 @@ shape</a> bounded by a SVG path.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">z</span><span class="o">=</span><span class="n">make_ideogram_arc</span><span class="p">(</span><span class="mf">1.3</span><span class="p">,</span> <span class="p">[</span><span class="mi">11</span><span class="o">*</span><span class="n">PI</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="n">PI</span><span class="o">/</span><span class="mi">17</span><span class="p">])</span>
@@ -403,7 +335,11 @@ shape</a> bounded by a SVG path.</p>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>[ 1.12583302-0.65j        1.14814501-0.60972373j  1.16901672-0.5686826j
   1.18842197-0.5269281j   1.20633642-0.48451259j  1.22273759-0.44148929j
@@ -420,8 +356,7 @@ shape</a> bounded by a SVG path.</p>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -432,7 +367,7 @@ shape</a> bounded by a SVG path.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Emma&#39;</span><span class="p">,</span> <span class="s1">&#39;Isabella&#39;</span><span class="p">,</span> <span class="s1">&#39;Ava&#39;</span><span class="p">,</span> <span class="s1">&#39;Olivia&#39;</span><span class="p">,</span> <span class="s1">&#39;Sophia&#39;</span><span class="p">]</span>
@@ -448,17 +383,15 @@ shape</a> bounded by a SVG path.</p>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Ribbons-in-a-chord-diagram">Ribbons in a chord diagram<a class="anchor-link" href="#Ribbons-in-a-chord-diagram">&#182;</a></h3>
+<h3 id="Ribbons-in-a-chord-diagram">Ribbons in a chord diagram<a class="anchor-link" href="#Ribbons-in-a-chord-diagram">&#194;&#182;</a></h3>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -475,7 +408,7 @@ the interval <code>[0, ideogram_length[k]]</code>. Hence each entry <code>matrix
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">map_data</span><span class="p">(</span><span class="n">data_matrix</span><span class="p">,</span> <span class="n">row_value</span><span class="p">,</span> <span class="n">ideogram_length</span><span class="p">):</span>
@@ -496,7 +429,11 @@ the interval <code>[0, ideogram_length[k]]</code>. Hence each entry <code>matrix
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[10]:</div>
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[9]:</div>
+
+
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -513,20 +450,18 @@ the interval <code>[0, ideogram_length[k]]</code>. Hence each entry <code>matrix
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>To each pair of values <code>(mapped_data[k][j], mapped_data[j][k])</code>, $k<=j$,  one associates a ribbon, that is a curvilinear filled rectangle (that can be degenerate), having as opposite sides two subarcs of the $k^{th}$ ideogram, respectively $j^{th}$ ideogram, and two arcs of quadratic B&eacute;zier curves.</li>
+<li>To each pair of values <code>(mapped_data[k][j], mapped_data[j][k])</code>, $k&lt;=j$,  one associates a ribbon, that is a curvilinear filled rectangle (that can be degenerate), having as opposite sides two subarcs of the $k^{th}$ ideogram, respectively $j^{th}$ ideogram, and two arcs of quadratic B&eacute;zier curves.</li>
 </ul>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -536,8 +471,7 @@ that illustrate the flow of comments between Emma and all other friends, and  he
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -548,8 +482,7 @@ that illustrate the flow of comments between Emma and all other friends, and  he
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -561,8 +494,7 @@ that illustrate the flow of comments between Emma and all other friends, and  he
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -573,7 +505,7 @@ that illustrate the flow of comments between Emma and all other friends, and  he
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">idx_sort</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">mapped_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -588,7 +520,11 @@ that illustrate the flow of comments between Emma and all other friends, and  he
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[11]:</div>
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[10]:</div>
+
+
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -605,8 +541,7 @@ that illustrate the flow of comments between Emma and all other friends, and  he
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -618,8 +553,7 @@ the ideograms, connected by the ribbon
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -633,7 +567,7 @@ in a list of lists ($L\times L$):</li>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">make_ribbon_ends</span><span class="p">(</span><span class="n">mapped_data</span><span class="p">,</span> <span class="n">ideo_ends</span><span class="p">,</span>  <span class="n">idx_sort</span><span class="p">):</span>
@@ -660,7 +594,11 @@ in a list of lists ($L\times L$):</li>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>ribbon ends starting from the ideogram[2]
 [(2.3158025846461898, 2.3158025846461898), (2.3158025846461898, 2.472952342161697), (2.472952342161697, 2.6650242680139837), (2.6650242680139837, 2.9618626988766086), (2.9618626988766086, 3.4333119714231302)]
@@ -672,8 +610,7 @@ in a list of lists ($L\times L$):</li>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -683,8 +620,7 @@ in <code>ribbon_ends[k][j]</code> is equal to <code>mapped_data[i][idx_sort[k][j
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -693,8 +629,7 @@ in <code>ribbon_ends[k][j]</code> is equal to <code>mapped_data[i][idx_sort[k][j
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -707,7 +642,7 @@ of the point $b_1$ is the mean of angular coordinates of the points $b_0, b_2$.<
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">control_pts</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
@@ -728,7 +663,7 @@ of the point $b_1$ is the mean of angular coordinates of the points $b_0, b_2$.<
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">ctrl_rib_chords</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
@@ -747,8 +682,7 @@ of the point $b_1$ is the mean of angular coordinates of the points $b_0, b_2$.<
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -759,8 +693,7 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -771,7 +704,7 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">ribbon_color</span><span class="o">=</span><span class="p">[</span><span class="n">L</span><span class="o">*</span><span class="p">[</span><span class="n">ideo_colors</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
@@ -782,8 +715,7 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -795,7 +727,7 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">ribbon_color</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span><span class="o">=</span><span class="n">ideo_colors</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
@@ -809,19 +741,17 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The symmetric locations are not modified, because  we do not access 
-<code>ribbon_color[k][j]</code>, $k>j$, when drawing the ribbons.</p>
+<code>ribbon_color[k][j]</code>, $k&gt;j$, when drawing the ribbons.</p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -832,7 +762,7 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">make_q_bezier</span><span class="p">(</span><span class="n">b</span><span class="p">):</span><span class="c1"># defines the Plotly SVG path for a quadratic Bezier curve defined by the </span>
@@ -857,7 +787,11 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[17]:</div>
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[16]:</div>
+
+
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -870,8 +804,7 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -882,7 +815,7 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">make_ribbon_arc</span><span class="p">(</span><span class="n">theta0</span><span class="p">,</span> <span class="n">theta1</span><span class="p">):</span>
@@ -917,7 +850,11 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[18]:</div>
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[17]:</div>
+
+
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -930,8 +867,7 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -942,7 +878,7 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">make_layout</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">plot_size</span><span class="p">):</span>
@@ -971,8 +907,7 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -983,7 +918,7 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">make_ideo_shape</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">line_color</span><span class="p">,</span> <span class="n">fill_color</span><span class="p">):</span>
@@ -997,7 +932,8 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 
             <span class="n">path</span><span class="o">=</span>  <span class="n">path</span><span class="p">,</span>
             <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;path&#39;</span><span class="p">,</span>
-            <span class="n">fillcolor</span><span class="o">=</span><span class="n">fill_color</span><span class="p">,</span>    
+            <span class="n">fillcolor</span><span class="o">=</span><span class="n">fill_color</span><span class="p">,</span>
+            <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;below&#39;</span>
         <span class="p">)</span>   
 </pre></div>
 
@@ -1006,8 +942,7 @@ We define an L-list of L-lists of colors for ribbons. Denote it by <code>ribbon_
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1020,7 +955,7 @@ from a community member to herself).</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">make_ribbon</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">line_color</span><span class="p">,</span> <span class="n">fill_color</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
@@ -1037,7 +972,8 @@ from a community member to herself).</p>
             <span class="n">path</span><span class="o">=</span>  <span class="n">make_q_bezier</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">+</span><span class="n">make_ribbon_arc</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span>
                    <span class="n">make_q_bezier</span><span class="p">(</span><span class="n">c</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="n">make_ribbon_arc</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
             <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;path&#39;</span><span class="p">,</span>
-            <span class="n">fillcolor</span><span class="o">=</span><span class="n">fill_color</span><span class="p">,</span>    
+            <span class="n">fillcolor</span><span class="o">=</span><span class="n">fill_color</span><span class="p">,</span>
+            <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;below&#39;</span>
         <span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">make_self_rel</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">line_color</span><span class="p">,</span> <span class="n">fill_color</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
@@ -1049,7 +985,8 @@ from a community member to herself).</p>
             <span class="p">),</span>
             <span class="n">path</span><span class="o">=</span>  <span class="n">make_q_bezier</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">+</span><span class="n">make_ribbon_arc</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
             <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;path&#39;</span><span class="p">,</span>
-            <span class="n">fillcolor</span><span class="o">=</span><span class="n">fill_color</span><span class="p">,</span>    
+            <span class="n">fillcolor</span><span class="o">=</span><span class="n">fill_color</span><span class="p">,</span>
+            <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;below&#39;</span>
         <span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">invPerm</span><span class="p">(</span><span class="n">perm</span><span class="p">):</span>
@@ -1067,8 +1004,7 @@ from a community member to herself).</p>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1081,8 +1017,7 @@ If <code>sigma_inv</code> is the inverse permutation of <code>sigma</code>, we g
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1091,8 +1026,7 @@ If <code>sigma_inv</code> is the inverse permutation of <code>sigma</code>, we g
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1103,7 +1037,7 @@ If <code>sigma_inv</code> is the inverse permutation of <code>sigma</code>, we g
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">radii_sribb</span><span class="o">=</span><span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.39</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">]</span><span class="c1"># these value are set after a few trials </span>
@@ -1116,7 +1050,7 @@ If <code>sigma_inv</code> is the inverse permutation of <code>sigma</code>, we g
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">ribbon_info</span><span class="o">=</span><span class="p">[]</span>
@@ -1136,8 +1070,8 @@ If <code>sigma_inv</code> is the inverse permutation of <code>sigma</code>, we g
             <span class="n">z</span><span class="o">=</span><span class="mf">0.9</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1j</span><span class="o">*</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
             <span class="c1">#the text below will be displayed when hovering the mouse over the ribbon</span>
             <span class="n">text</span><span class="o">=</span><span class="n">labels</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; commented on &#39;</span><span class="o">+</span> <span class="s1">&#39;{:d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">k</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39; of &#39;</span><span class="o">+</span> <span class="s1">&#39;herself Fb posts&#39;</span><span class="p">,</span>
-            <span class="n">ribbon_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">,</span>
-                                       <span class="n">y</span><span class="o">=</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span>
+            <span class="n">ribbon_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">],</span>
+                                       <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">],</span>
                                        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
                                        <span class="n">marker</span><span class="o">=</span><span class="n">Marker</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">ideo_colors</span><span class="p">[</span><span class="n">k</span><span class="p">]),</span>
                                        <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
@@ -1155,16 +1089,16 @@ If <code>sigma_inv</code> is the inverse permutation of <code>sigma</code>, we g
             
             <span class="n">textf</span><span class="o">=</span><span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; commented on &#39;</span><span class="o">+</span> <span class="s1">&#39;{:d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39; of &#39;</span><span class="o">+</span>\
             <span class="n">labels</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">+</span> <span class="s1">&#39; Fb posts&#39;</span><span class="p">,</span>
-            <span class="n">ribbon_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">zi</span><span class="o">.</span><span class="n">real</span><span class="p">,</span>
-                                       <span class="n">y</span><span class="o">=</span><span class="n">zi</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span>
+            <span class="n">ribbon_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">zi</span><span class="o">.</span><span class="n">real</span><span class="p">],</span>
+                                       <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">zi</span><span class="o">.</span><span class="n">imag</span><span class="p">],</span>
                                        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
                                        <span class="n">marker</span><span class="o">=</span><span class="n">Marker</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">ribbon_color</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">]),</span>
                                        <span class="n">text</span><span class="o">=</span><span class="n">texti</span><span class="p">,</span>
                                        <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;text&#39;</span>
                                        <span class="p">)</span>
                               <span class="p">),</span>
-            <span class="n">ribbon_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">zf</span><span class="o">.</span><span class="n">real</span><span class="p">,</span>
-                                       <span class="n">y</span><span class="o">=</span><span class="n">zf</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span>
+            <span class="n">ribbon_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">zf</span><span class="o">.</span><span class="n">real</span><span class="p">],</span>
+                                       <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">zf</span><span class="o">.</span><span class="n">imag</span><span class="p">],</span>
                                        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
                                        <span class="n">marker</span><span class="o">=</span><span class="n">Marker</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">ribbon_color</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">]),</span>
                                        <span class="n">text</span><span class="o">=</span><span class="n">textf</span><span class="p">,</span>
@@ -1185,8 +1119,7 @@ If <code>sigma_inv</code> is the inverse permutation of <code>sigma</code>, we g
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1197,7 +1130,7 @@ If <code>sigma_inv</code> is the inverse permutation of <code>sigma</code>, we g
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">ideograms</span><span class="o">=</span><span class="p">[]</span>
@@ -1227,43 +1160,576 @@ If <code>sigma_inv</code> is the inverse permutation of <code>sigma</code>, we g
     <span class="n">path</span><span class="o">+=</span><span class="nb">str</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39; ,&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> 
    
     <span class="n">layout</span><span class="p">[</span><span class="s1">&#39;shapes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">make_ideo_shape</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s1">&#39;rgb(150,150,150)&#39;</span> <span class="p">,</span> <span class="n">ideo_colors</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+    
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">ideograms</span><span class="o">+</span><span class="n">ribbon_info</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">plotly.offline</span> <span class="kn">as</span> <span class="nn">off</span>
+<span class="n">off</span><span class="o">.</span><span class="n">init_notebook_mode</span><span class="p">()</span>
+
+<span class="n">off</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;chord-diagram-Fb&#39;</span><span class="p">)</span> 
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>IOPub data rate exceeded.
+The notebook server will temporarily stop sending output
+to the client in order to avoid crashing it.
+To change this limit, set the config variable
+`--NotebookApp.iopub_data_rate_limit`.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div id="028e2097-38c4-499f-b443-d282949f5859" style="height: 400px; width: 400px;" class="plotly-graph-div"></div><script type="text/javascript">require(["plotly"], function(Plotly) { window.PLOTLYENV=window.PLOTLYENV || {};window.PLOTLYENV.BASE_URL="https://plot.ly";Plotly.newPlot("028e2097-38c4-499f-b443-d282949f5859", [{"text": "Emma<br>65", "mode": "lines", "hoverinfo": "text", "y": [0.0, 0.022707613796388415, 0.045405549820403415, 0.06808413442424753, 0.09073370220751736, 0.11334460013650678, 0.13590719165823945, 0.1584118608074774, 0.18084901630495556, 0.20320909564509498, 0.22548256917145337, 0.24765994413817516, 0.2697317687557112, 0.2916886362190827, 0.31352118871697376, 0.33522012141994245, 0.3567761864460525, 0.37818019680223364, 0.3994230302996921, 0.4204956334417022, 0.44138902528212165, 0.4620943012529869, 0.4826026369595566, 0.5029052919411857, 0.5229936133964288, 0.5428590398707815, 0.5624931049054942, 0.5818874406458959, 0.601033781407696, 0.619923967199742, 0.6385499472017309, 0.6569037831953931, 0.6749776529476875, 0.6927638535445634, 0.7102548046738706, 0.7274430518560171, 0.7443212696209991, 0.7608822646304473, 0.7771189787433601, 0.7930244920242179, 0.8085920256921943, 0.8238149450102097, 0.8386867621125927, 0.853201138770149, 0.8673518890914553, 0.8811329821592275, 0.8945385446006415, 0.9075628630905104, 0.9202003867862488, 0.9324457296935915, 0.9442936729620528, 0.9557391671091516, 0.9667773341724545, 0.9774034697885167, 0.9876130451978383, 0.997401709174979], "x": [1.1, 1.0997655951500185, 1.0990624805012257, 1.0978909557145013, 1.0962515200827398, 1.0941448723180562, 1.0915719102540018, 1.0885337304629161, 1.0850316277885774, 1.081067094794353, 1.0766418211270827, 1.0717576927969663, 1.0664167913737648, 1.0606213930996546, 1.0543739679191135, 1.047677178426255, 1.0405338787300547, 1.0329471132379546, 1.0249201153583685, 1.0164563061226302, 1.0075592927269832, 0.9982328669952286, 0.9884810037626837, 0.9783078591821446, 0.9677177689525739, 0.956715246471265, 0.9453049809102757, 0.9334918352179461, 0.9212808440463559, 0.9086772116056028, 0.8956863094458166, 0.8823136741678553, 0.8685650050636574, 0.8544461616872575, 0.8399631613574979, 0.8251221765935056, 0.8099295324840206, 0.7943917039917036, 0.7785153131935666, 0.7623071264587072, 0.745774051564543, 0.728923134752784, 0.7117615577263888, 0.694296634588791, 0.6765358087266955, 0.6584866496377787, 0.6401568497046377, 0.62155422091637, 0.6026866915391762, 0.5835623027374076, 0.564189205146497, 0.5445756553992341, 0.5247300126068668, 0.504660734796525, 0.4843763753064892, 0.4638855791408384], "line": {"color": "rgba(244, 109, 67, 0.75)", "width": 0.25, "shape": "spline"}, "type": "scatter"}, {"text": "Isabella<br>64", "mode": "lines", "hoverinfo": "text", "y": [1.0114805498065957, 1.0202101802606773, 1.0285029037245195, 1.0363551688231998, 1.0437636128089463, 1.0507250630012397, 1.057236538145521, 1.063295249689919, 1.068898602979453, 1.0740441983671987, 1.078729832241942, 1.0829534979718802, 1.086713386763965, 1.0900078884385216, 1.0928355921188126, 1.0951952868352473, 1.0970859620439826, 1.09850680805969, 1.0994572164023049, 1.0999367800576094, 1.0999452936515375, 1.0994827535381257, 1.0985493578010757, 1.097145506168924, 1.095271799843857, 1.0929290412442465, 1.09011823366101, 1.0868405808279522, 1.0830974864062617, 1.078890553383391, 1.0742215833865743, 1.0690925759112762, 1.0635057274649056, 1.057463430626155, 1.0509682730203755, 1.0440230362114213, 1.0366306945104384, 1.0287944137021112, 1.0205175496889083, 1.0118036470539116, 1.0026564375428406, 0.9930798384659262, 0.9830779510203143, 0.9726550585337199, 0.9618156246300846, 0.9505642913180204, 0.9389058770028605, 0.9268453744231677, 0.9143879485125852, 0.9015389341879428, 0.8883038340645693, 0.8746883160997853, 0.8606982111655916, 0.8463395105515851, 0.8316183633991785], "x": [0.4323275348193161, 0.4113042524609687, 0.3901048282580361, 0.3687383409050884, 0.34721394064181277, 0.32554084533440814, 0.30372833652801345, 0.2817857554718704, 0.2597224991189131, 0.2375480161015068, 0.21527180268505078, 0.19290339870118606, 0.17045238346234223, 0.14792837165938022, 0.12534100924408015, 0.10269996929824597, 0.08001494789118721, 0.05729565992736058, 0.03455183498594124, 0.011793213154113634, -0.010970459144141733, -0.03372943332197133, -0.05647396280450179, -0.07919430720282758, -0.1018807364853534, -0.12452353514469715, -0.14711300635837654, -0.16963947614149144, -0.19209329748962614, -0.21446485451019828, -0.23674456654048387, -0.2589228922505545, -0.28099033372936943, -0.3029374405522756, -0.3247548138281701, -0.3464331102245936, -0.3679630459690298, -0.38933540082469953, -0.41054102203914594, -0.4315708282639174, -0.4524158134436726, -0.47306705067304167, -0.4935156960195904, -0.5137529923112528, -0.5337702728866047, -0.5535589653063796, -0.5731105950246336, -0.5924167890179836, -0.6114692793713729, -0.6302599068188205, -0.6487806242376435, -0.6670235000946537, -0.6849807218428493, -0.7026445992671569, -0.7200075677777784], "line": {"color": "rgba(253, 174, 97, 0.75)", "width": 0.25, "shape": "spline"}, "type": "scatter"}, {"text": "Ava<br>64", "mode": "lines", "hoverinfo": "text", "y": [0.8085920256921951, 0.7929864774117575, 0.7770413311329372, 0.7607634153955817, 0.7441597012487063, 0.7272372992651274, 0.7100034564963463, 0.6924655533689845, 0.6746311005241028, 0.6565077356007546, 0.6381032199651513, 0.6194254353868422, 0.6004823806633327, 0.5812821681945823, 0.5618330205088551, 0.5421432667414028, 0.5222213390675012, 0.502075769091351, 0.48171518419240383, 0.46114830383066785, 0.44038393581258517, 0.4194309725190695, 0.39829838709732795, 0.3769952296180914, 0.35553062319990675, 0.333913760102142, 0.31215389778838426, 0.2902603549619111, 0.26824250757494045, 0.24610978481335982, 0.2238716650586573, 0.20153767182878937, 0.1791173696997139, 0.15662036020934242, 0.13405627774566328, 0.11143478542079445, 0.08876557093273985, 0.06605834241661238, 0.04332282428710488, 0.020568753073993442, -0.00219412674755223, -0.024956066930058786, -0.04770731962845462, -0.07043814157460541, -0.09313879824988472, -0.11579956805400184, -0.13841074646829762, -0.16096265021172035, -0.18344562138771167, -0.20585003162021911, -0.22816628617706627, -0.2503848280789174, -0.2724961421920689, -0.294490759303328, -0.3163592601752179], "x": [-0.7457740515645425, -0.7623466709064141, -0.7785928138065192, -0.7945055228226232, -0.8100779833061977, -0.8253035263208099, -0.8401756314981059, -0.8546879298301727, -0.8688342063970766, -0.8826084030284155, -0.8960046208977417, -0.9090171230487472, -0.9216403368521239, -0.9338688563920554, -0.9456974447813089, -0.9571210364039442, -0.9681347390846721, -0.9787338361839385, -0.9889137886178343, -0.9986702368019678, -1.0079990025184633, -1.016896090705293, -1.025357691167169, -1.0333801802072666, -1.0409601221790803, -1.048094270957746, -1.0547795713301993, -1.0610131603035777, -1.0667923683313019, -1.0721147204563146, -1.0769779373709865, -1.0813799363932324, -1.0853188323584255, -1.088792938426722, -1.0918007668054541, -1.0943410293862794, -1.0964126382968162, -1.0980147063665266, -1.0991465475066502, -1.099807677004021, -1.0999978117286489, -1.0997168702549682, -1.098964972896711, -1.0977424416553803, -1.0960498000823535, -1.0938877730546708, -1.091257286464603, -1.0881594668231396, -1.0845956407775557, -1.0805673345432736, -1.0760762732502587, -1.0711243802042278, -1.0657137760629916, -1.0598467779282765, -1.053525898353424], "line": {"color": "rgba(254, 224, 139, 0.75)", "width": 0.25, "shape": "spline"}, "type": "scatter"}, {"text": "Olivia<br>73", "mode": "lines", "hoverinfo": "text", "y": [-0.34929520415332754, -0.3707381477857719, -0.39202330781160927, -0.4131416254130836, -0.43408411277942666, -0.4548418569320109, -0.47540602351764893, -0.4957678605684353, -0.5159187022265235, -0.5358499724322547, -0.5555531885740722, -0.5750199650986594, -0.5942420170797752, -0.6132111637442621, -0.6319193319537261, -0.6503585596404092, -0.6685209991957907, -0.6863989208104763, -0.7039847157639498, -0.7212708996627942, -0.7382501156259971, -0.7549151374159881, -0.7712588725140785, -0.787274365138985, -0.8029547992071642, -0.8182935012336912, -0.8332839431724477, -0.8479197451944152, -0.8621946784028843, -0.8761026674844322, -0.889637793294533, -0.902794295376705, -0.9155665744141238, -0.9279491946126488, -0.9399368860142632, -0.9515245467399301, -0.9627072451609185, -0.9734802219976694, -0.9838388923453129, -0.9937788476249723, -1.0032958574600248, -1.0123858714765215, -1.0210450210269963, -1.0292696208369396, -1.0370561705732213, -1.0444013563338124, -1.0513020520581562, -1.0577553208576, -1.0637584162653133, -1.0693087834051664, -1.0744040600790672, -1.079042077772297, -1.0832208625764153, -1.0869386360293414, -1.0901938158722564, -1.0929850167230006, -1.0953110506656838, -1.0971709277562527, -1.0985638564438058, -1.099489243907471, -1.0999466963087066, -1.0999360189589156, -1.0994572164023049], "x": [-1.0430689624159495, -1.035641456188567, -1.0277731880782084, -1.019467506765682, -1.0107279470918462, -1.001558228553208, -0.9919622537189289, -0.9819441065699192, -0.9715080507607232, -0.9606585278049385, -0.9494001551849365, -0.9377377243866949, -0.9256761988605737, -0.9132207119089054, -0.9003765645012962, -0.8871492230185699, -0.8735443169263146, -0.8595676363790191, -0.8452251297558248, -0.8305229011289356, -0.8154672076657664, -0.8000644569659372, -0.7843212043342399, -0.768244149990749, -0.7518401362192517, -0.7351161444552198, -0.7180792923145585, -0.7007368305643983, -0.6830961400372184, -0.6651647284896145, -0.6469502274070502, -0.6284603887559492, -0.6097030816845089, -0.5906862891736496, -0.5714181046395103, -0.5519067284889455, -0.5321604646294905, -0.5121877169352742, -0.4919969856703882, -0.4715968638712331, -0.4509960336893812, -0.4302032626965123, -0.40922740015299675, -0.3880773732417062, -0.36676218326867616, -0.3452909018321991, -0.323672666962025, -0.3019166792302736, -0.2800321978357355, -0.25802853666322084, -0.23591506031963358, -0.21370118014845954, -0.19139635022436324, -0.16901006332959864, -0.14655184691394643, -0.12403125903989763, -0.10145788431480342, -0.07884132981174252, -0.056191220980803466, -0.03351719755256993, -0.01082890943551281, 0.011863987390943551, 0.03455183498593976], "line": {"color": "rgba(217, 239, 139, 0.75)", "width": 0.25, "shape": "spline"}, "type": "scatter"}, {"text": "Sophia<br>84", "mode": "lines", "hoverinfo": "text", "y": [-1.097829401271099, -1.0961822033098054, -1.0940740084594718, -1.091505703316564, -1.0884783679758667, -1.0849932755762524, -1.0810518917652647, -1.0766558740827459, -1.0718070712637593, -1.0665075224611105, -1.0607594563877851, -1.0545652903796698, -1.0479276293789455, -1.0408492648385868, -1.0333331735484217, -1.0253825163832502, -1.0170006369735451, -1.0081910602992967, -0.99895749120759, -0.9893038128545403, -0.9792340850722399, -0.9687525426614065, -0.9578635936104475, -0.946571817241688, -0.9348819622855514, -0.9227989448834892, -0.9103278465205099, -0.8974739118881716, -0.8842425466789402, -0.8706393153128372, -0.8566699385973356, -0.8423402913214882, -0.8276563997852978, -0.8126244392653721, -0.7972507314179231, -0.7815417416202124, -0.7655040762515474, -0.7491444799149888, -0.7324698326009194, -0.7154871467936823, -0.698203564522496, -0.6806263543578902, -0.6627629083549262, -0.6446207389444847, -0.6262074757739301, -0.6075308624984808, -0.5885987535246319, -0.5694191107070036, -0.5500000000000014, -0.5303495880656972, -0.510476138839359, -0.490388010054072, -0.47009364972591366, -0.44960159260115734, -0.4289204565670091, -0.408058939027372, -0.3870258132451739, -0.3658299246527919, -0.34448018713212636, -0.3229855792658882, -0.30135514056167745, -0.27959796765043815, -0.25772321046089214, -0.23574006837155836, -0.21365778634197166, -0.19148565102474221, -0.16923298686007143, -0.1469091521543812, -0.12452353514469966, -0.10208555005046006, -0.07960463311437235, -0.05709023863403321, -0.03455183498594315], "x": [0.06906957148224316, 0.0915673366810486, 0.11402659344829932, 0.13643789659553252, 0.15879182110106924, 0.18107896607368562, 0.20328995870613584, 0.22541545821686346, 0.24744615977824952, 0.2693727984297304, 0.29118615297415934, 0.3128770498557587, 0.3344363670180376, 0.3558550377400517, 0.3771240544493915, 0.3982344725102963, 0.4191774139853001, 0.4399440713688274, 0.46052571129116965, 0.4809136781912832, 0.501099397956866, 0.5210743815301803, 0.5408302284781054, 0.5603586305249242, 0.5796513750463436, 0.5987003485232986, 0.6174975399540724, 0.6360350442233059, 0.6543050654264739, 0.6722999201484366, 0.6900120406946805, 0.7074339782738956, 0.7245584061305474, 0.7413781226261266, 0.7578860542677817, 0.7740752586830595, 0.7899389275395061, 0.8054703894078921, 0.8206631125678681, 0.8355107077548652, 0.8500069308470849, 0.8641456854914499, 0.8779210256674115, 0.8913271581875348, 0.9043584451338103, 0.917009406228667, 0.9292747211396907, 0.9411492317170777, 0.9526279441628818, 0.9637060311311462, 0.9743788337580305, 0.9846418636210871, 0.9944908046268554, 1.0039215148259863, 1.0129300281551281, 1.0215125561048457, 1.02966548931287, 1.037385399082006, 1.0446690388220643, 1.0515133454152061, 1.057915440504132, 1.0638726317025664, 1.069382413727536, 1.0744424694529593, 1.0790506708841103, 1.0832050800525406, 1.0869039498310875, 1.0901457246686248, 1.092929041244246, 1.095252729040606, 1.097115810836179, 1.0985175031162269, 1.0994572164023046], "line": {"color": "rgba(166, 217, 106, 0.75)", "width": 0.25, "shape": "spline"}, "type": "scatter"}, {"text": ["Emma commented on 16 of herself Fb posts"], "marker": {"color": "rgba(244, 109, 67, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.17187720372290285], "x": [0.8834354684075095], "type": "scatter"}, {"text": ["Emma commented on 3 of Isabella Fb posts"], "marker": {"color": "rgba(244, 109, 67, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.023579960170459113], "x": [0.8996910500157038], "type": "scatter"}, {"text": ["Isabella commented on 18 of Emma Fb posts"], "marker": {"color": "rgba(244, 109, 67, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.8988721225222817], "x": [-0.045043394102669145], "type": "scatter"}, {"text": ["Emma commented on 28 of Ava Fb posts"], "marker": {"color": "rgba(244, 109, 67, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.6998743620408024], "x": [0.5658408586855317], "type": "scatter"}, {"text": ["Ava commented on 9 of Emma Fb posts"], "marker": {"color": "rgba(244, 109, 67, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.6116386546845035], "x": [-0.660225837191889], "type": "scatter"}, {"text": ["Emma commented on 0 of Olivia Fb posts"], "marker": {"color": "rgba(244, 109, 67, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.0], "x": [0.9], "type": "scatter"}, {"text": ["Olivia commented on 19 of Emma Fb posts"], "marker": {"color": "rgba(244, 109, 67, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [-0.7008278814056446], "x": [-0.5646594377538341], "type": "scatter"}, {"text": ["Emma commented on 18 of Sophia Fb posts"], "marker": {"color": "rgba(166, 217, 106, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.422865765863054], "x": [0.7944712355152027], "type": "scatter"}, {"text": ["Sophia commented on 23 of Emma Fb posts"], "marker": {"color": "rgba(166, 217, 106, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [-0.6648745412171225], "x": [0.6065821003304672], "type": "scatter"}, {"text": ["Isabella commented on 12 of Ava Fb posts"], "marker": {"color": "rgba(254, 224, 139, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.8798797746219271], "x": [0.18923948375343566], "type": "scatter"}, {"text": ["Ava commented on 11 of Isabella Fb posts"], "marker": {"color": "rgba(254, 224, 139, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.4876405377635647], "x": [-0.7564434585146874], "type": "scatter"}, {"text": ["Isabella commented on 5 of Olivia Fb posts"], "marker": {"color": "rgba(253, 174, 97, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.842222667589182], "x": [0.31727114302905396], "type": "scatter"}, {"text": ["Olivia commented on 0 of Isabella Fb posts"], "marker": {"color": "rgba(253, 174, 97, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [-0.28578698521635887], "x": [-0.8534200601585041], "type": "scatter"}, {"text": ["Isabella commented on 29 of Sophia Fb posts"], "marker": {"color": "rgba(253, 174, 97, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.8062855181573504], "x": [-0.3998795608801893], "type": "scatter"}, {"text": ["Sophia commented on 17 of Isabella Fb posts"], "marker": {"color": "rgba(253, 174, 97, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [-0.8330926238465487], "x": [0.3405241255659766], "type": "scatter"}, {"text": ["Ava commented on 17 of herself Fb posts"], "marker": {"color": "rgba(254, 224, 139, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.29006235986805357], "x": [-0.851976424197158], "type": "scatter"}, {"text": ["Ava commented on 27 of Olivia Fb posts"], "marker": {"color": "rgba(217, 239, 139, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [-0.05036888263695705], "x": [-0.8985894366516359], "type": "scatter"}, {"text": ["Olivia commented on 31 of Ava Fb posts"], "marker": {"color": "rgba(217, 239, 139, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [-0.8741680279038372], "x": [-0.21408002940656587], "type": "scatter"}, {"text": ["Ava commented on 0 of Sophia Fb posts"], "marker": {"color": "rgba(166, 217, 106, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [0.6615752937481596], "x": [-0.6101787694618983], "type": "scatter"}, {"text": ["Sophia commented on 10 of Ava Fb posts"], "marker": {"color": "rgba(166, 217, 106, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [-0.8897966809379398], "x": [0.1351364739506919], "type": "scatter"}, {"text": ["Olivia commented on 11 of herself Fb posts"], "marker": {"color": "rgba(217, 239, 139, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [-0.3665768091358816], "x": [-0.8219619474183434], "type": "scatter"}, {"text": ["Olivia commented on 12 of Sophia Fb posts"], "marker": {"color": "rgba(217, 239, 139, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [-0.5236656983226413], "x": [-0.7319660076808625], "type": "scatter"}, {"text": ["Sophia commented on 0 of Olivia Fb posts"], "marker": {"color": "rgba(217, 239, 139, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [-0.8982240555854445], "x": [0.056511467576380765], "type": "scatter"}, {"text": ["Sophia commented on 34 of herself Fb posts"], "marker": {"color": "rgba(166, 217, 106, 0.75)", "size": 0.5}, "mode": "markers", "hoverinfo": "text", "y": [-0.2918441075693874], "x": [0.8513677330490204], "type": "scatter"}], {"showlegend": false, "yaxis": {"zeroline": false, "showline": false, "showticklabels": false, "title": "", "showgrid": false}, "title": "Chord diagram", "height": 400, "shapes": [{"path": "M 0.998627124638,0.0523819237657 Q 0.392637985959, 0.0763898683213 0.945423623344, 0.325843785307L 0.945423623344, 0.325843785307 L 0.981594964897, 0.190974670803 L 0.998627124638, 0.0523819237657 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(244, 109, 67, 0.75)"}, {"path": "M 1.0,0.0 Q 0.126036575164, 0.155289348382 -0.205739086044, 0.978606881477L -0.205739086044, 0.978606881477 L -0.102273247702, 0.994756343435 L 0.00231411752317, 0.999997322426 L 0.106876106171, 0.994272345954 M 0.106876106171,0.994272345954 Q 0.145234119984, 0.137502910488 0.998627124638, 0.0523819237657L 0.998627124638, 0.0523819237657 L 0.99965672224, 0.026199955745 L 1.0, 0.0 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(244, 109, 67, 0.75)"}, {"path": "M 0.798293724062,0.602268320704 Q 0.00223003145865, 0.199987567013 -0.784665288624, 0.619919659979L -0.784665288624, 0.619919659979 L -0.733584263547, 0.679598505205 L -0.677976410513, 0.73508365972 M -0.677976410513,0.73508365972 Q -0.0308435411166, 0.197607378332 0.421714162855, 0.906728826523L 0.421714162855, 0.906728826523 L 0.508256718044, 0.861205613407 L 0.589939334291, 0.807447572203 L 0.665980964315, 0.745968736054 L 0.735654499815, 0.677356964164 L 0.798293724062, 0.602268320704 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(244, 109, 67, 0.75)"}, {"path": "M 1.0,0.0 Q -0.101024048455, 0.17260979588 -0.489707081688, -0.87188701914L -0.489707081688, -0.87188701914 L -0.583249936891, -0.812292749639 L -0.66961780143, -0.742705863723 L -0.747748200058, -0.663982401356 M -0.747748200058,-0.663982401356 Q -0.0710284168403, 0.186962466825 1.0, 0.0L 1.0, 0.0 L 1.0, 0.0 L 1.0, 0.0 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(244, 109, 67, 0.75)"}, {"path": "M 0.945423623344,0.325843785307 Q -0.197796420454, 0.0296070271346 0.808577105752, -0.588390231099L 0.808577105752, -0.588390231099 L 0.745081171614, -0.666973798366 L 0.673980111478, -0.738749490241 L 0.595999661738, -0.802984684292 L 0.511935777475, -0.859023724784 M 0.511935777475,-0.859023724784 Q -0.196267057575, 0.0384609166684 0.798293724062, 0.602268320704L 0.798293724062, 0.602268320704 L 0.856922225799, 0.515445728405 L 0.906145608712, 0.422965880199 L 0.945423623344, 0.325843785307 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(166, 217, 106, 0.75)"}, {"path": "M 0.311350305162,0.950295210698 Q -0.0758169740366, 0.185072381645 -0.888574345138, 0.458732637996L -0.888574345138, 0.458732637996 L -0.840492731683, 0.541822819737 L -0.784665288624, 0.619919659979 M -0.784665288624,0.619919659979 Q -0.0774298462706, 0.184403413489 0.106876106171, 0.994272345954L 0.106876106171, 0.994272345954 L 0.210266093059, 0.977644194024 L 0.311350305162, 0.950295210698 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(254, 224, 139, 0.75)"}, {"path": "M 0.393025031654,0.919527772551 Q -0.135595282103, 0.147016731944 -0.948244511287, -0.317541094685L -0.948244511287, -0.317541094685 L -0.948244511287, -0.317541094685 L -0.948244511287, -0.317541094685 M -0.948244511287,-0.317541094685 Q -0.141881751013, 0.140959457751 0.311350305162, 0.950295210698L 0.311350305162, 0.950295210698 L 0.352523492255, 0.935802963988 L 0.393025031654, 0.919527772551 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(253, 174, 97, 0.75)"}, {"path": "M -0.205739086044,0.978606881477 Q -0.186296609172, -0.0727569475097 0.511935777475, -0.859023724784L 0.511935777475, -0.859023724784 L 0.378360139518, -0.925658470941 L 0.23635363861, -0.971667102209 M 0.23635363861,-0.971667102209 Q -0.177757741007, -0.0916634360695 -0.654552334343, 0.756016693999L -0.654552334343, 0.756016693999 L -0.574764262125, 0.818319034963 L -0.489086167742, 0.872235473094 L -0.398396056157, 0.917213487929 L -0.303623294072, 0.952792157449 L -0.205739086044, 0.978606881477 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(253, 174, 97, 0.75)"}, {"path": "M -0.888574345138,0.458732637996 Q -0.331324164966, 0.112802028838 -0.983892003007, 0.178763884549L -0.983892003007, 0.178763884549 L -0.94664047133, 0.322291510965 L -0.888574345138, 0.458732637996 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(254, 224, 139, 0.75)"}, {"path": "M -0.983892003007,0.178763884549 Q -0.151510453811, -0.130554901808 0.0314107590781, -0.999506560366L 0.0314107590781, -0.999506560366 L -0.0771412971268, -0.997020170447 L -0.184783878186, -0.982779180876 L -0.290247907021, -0.956951489089 L -0.392289991098, -0.919841596627 L -0.489707081688, -0.87188701914 M -0.489707081688,-0.87188701914 Q -0.15609376907, -0.125038934967 -0.957750816685, -0.287599327432L -0.957750816685, -0.287599327432 L -0.980574026109, -0.196149380117 L -0.994685823973, -0.102956843327 L -0.99996084118, -0.00884963878981 L -0.996352214522, 0.0853361858653 L -0.983892003007, 0.178763884549 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(217, 239, 139, 0.75)"}, {"path": "M -0.677976410513,0.73508365972 Q -0.176296024799, -0.0944442250215 0.23635363861, -0.971667102209L 0.23635363861, -0.971667102209 L 0.150151637723, -0.98866297882 L 0.0627905195293, -0.998026728428 M 0.0627905195293,-0.998026728428 Q -0.18390555451, -0.0786050063308 -0.677976410513, 0.73508365972L -0.677976410513, 0.73508365972 L -0.677976410513, 0.73508365972 L -0.677976410513, 0.73508365972 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(166, 217, 106, 0.75)"}, {"path": "M -0.948244511287,-0.317541094685 Q -0.356183510548, -0.158849950626 -0.869862469031, -0.493294318811L -0.869862469031, -0.493294318811 L -0.913291052687, -0.407307565707 L -0.948244511287, -0.317541094685 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(217, 239, 139, 0.75)"}, {"path": "M -0.869862469031,-0.493294318811 Q -0.0951903323343, -0.175894288225 0.0627905195293, -0.998026728428L 0.0627905195293, -0.998026728428 L 0.0627905195293, -0.998026728428 L 0.0627905195293, -0.998026728428 M 0.0627905195293,-0.998026728428 Q -0.0762071280501, -0.184912070007 -0.747748200058, -0.663982401356L -0.747748200058, -0.663982401356 L -0.81329556409, -0.581850775914 L -0.869862469031, -0.493294318811 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(217, 239, 139, 0.75)"}, {"path": "M 0.808577105752,-0.588390231099 Q 0.11351569774, -0.0389125476759 0.999506560366, -0.0314107590781L 0.999506560366, -0.0314107590781 L 0.991428581442, -0.130649791042 L 0.973521937261, -0.228593608116 L 0.945964147832, -0.324271230633 L 0.909028411137, -0.416734145163 L 0.863080894744, -0.505065707733 L 0.808577105752, -0.588390231099 ", "layer": "below", "type": "path", "line": {"color": "rgb(175,175,175)", "width": 0.5}, "fillcolor": "rgba(166, 217, 106, 0.75)"}, {"path": "M 1.1, 0.0 L 1.09976559515, 0.0227076137964 L 1.0990624805, 0.0454055498204 L 1.09789095571, 0.0680841344242 L 1.09625152008, 0.0907337022075 L 1.09414487232, 0.113344600137 L 1.09157191025, 0.135907191658 L 1.08853373046, 0.158411860807 L 1.08503162779, 0.180849016305 L 1.08106709479, 0.203209095645 L 1.07664182113, 0.225482569171 L 1.0717576928, 0.247659944138 L 1.06641679137, 0.269731768756 L 1.0606213931, 0.291688636219 L 1.05437396792, 0.313521188717 L 1.04767717843, 0.33522012142 L 1.04053387873, 0.356776186446 L 1.03294711324, 0.378180196802 L 1.02492011536, 0.3994230303 L 1.01645630612, 0.420495633442 L 1.00755929273, 0.441389025282 L 0.998232866995, 0.462094301253 L 0.988481003763, 0.48260263696 L 0.978307859182, 0.502905291941 L 0.967717768953, 0.522993613396 L 0.956715246471, 0.542859039871 L 0.94530498091, 0.562493104905 L 0.933491835218, 0.581887440646 L 0.921280844046, 0.601033781408 L 0.908677211606, 0.6199239672 L 0.895686309446, 0.638549947202 L 0.882313674168, 0.656903783195 L 0.868565005064, 0.674977652948 L 0.854446161687, 0.692763853545 L 0.839963161357, 0.710254804674 L 0.825122176594, 0.727443051856 L 0.809929532484, 0.744321269621 L 0.794391703992, 0.76088226463 L 0.778515313194, 0.777118978743 L 0.762307126459, 0.793024492024 L 0.745774051565, 0.808592025692 L 0.728923134753, 0.82381494501 L 0.711761557726, 0.838686762113 L 0.694296634589, 0.85320113877 L 0.676535808727, 0.867351889091 L 0.658486649638, 0.881132982159 L 0.640156849705, 0.894538544601 L 0.621554220916, 0.907562863091 L 0.602686691539, 0.920200386786 L 0.583562302737, 0.932445729694 L 0.564189205146, 0.944293672962 L 0.544575655399, 0.955739167109 L 0.524730012607, 0.966777334172 L 0.504660734797, 0.977403469789 L 0.484376375306, 0.987613045198 L 0.463885579141, 0.997401709175 L 0.421714162855, 0.906728826523 L 0.44034215937, 0.897830041089 L 0.458782486179, 0.888548608899 L 0.477027284188, 0.878888485611 L 0.495068777636, 0.868853788281 L 0.512899277406, 0.858448793602 L 0.530511184307, 0.847677936085 L 0.547896992308, 0.836545806169 L 0.565049291742, 0.825057148264 L 0.581960772459, 0.813216858728 L 0.598624226943, 0.801029983781 L 0.615032553388, 0.788501717356 L 0.631178758717, 0.775637398882 L 0.647055961569, 0.762442511011 L 0.66265739523, 0.748922677282 L 0.677976410513, 0.73508365972 L 0.693006478599, 0.720931356386 L 0.707741193812, 0.706471798858 L 0.722174276356, 0.691711149664 L 0.736299574985, 0.676655699655 L 0.75011106963, 0.661311865324 L 0.763602873961, 0.645686186067 L 0.776769237898, 0.629785321404 L 0.789604550058, 0.613616048134 L 0.802103340153, 0.59718525745 L 0.814260281314, 0.580499952002 L 0.826070192369, 0.563567242909 L 0.837528040042, 0.546394346734 L 0.848628941107, 0.528988582405 L 0.859368164464, 0.511357368096 L 0.869741133156, 0.493508218064 L 0.879743426321, 0.475448739451 L 0.889370781075, 0.457186629037 L 0.89861909433, 0.438729669963 L 0.907484424541, 0.420085728412 L 0.915962993388, 0.401262750256 L 0.924051187384, 0.382268757674 L 0.931745559417, 0.363111845727 L 0.939042830216, 0.343800178911 L 0.945939889755, 0.324341987678 L 0.952433798569, 0.304745564927 L 0.958521789017, 0.28501926247 L 0.964201266454, 0.265171487472 L 0.96946981034, 0.245210698869 L 0.97432517527, 0.225145403762 L 0.978765291934, 0.204984153792 L 0.982788267995, 0.184735541496 L 0.986392388899, 0.164408196641 L 0.989576118603, 0.144010782552 L 0.992338100231, 0.123551992417 L 0.994677156653, 0.103040545579 L 0.996592290984, 0.082485183825 L 0.998082687013, 0.0618946676584 L 0.999147709547, 0.041277772564 L 0.999786904682, 0.0206432852694 L 1.0, 0.0 L 1.1 ,0.0", "layer": "below", "type": "path", "line": {"color": "rgb(150,150,150)", "width": 0.45}, "fillcolor": "rgba(244, 109, 67, 0.75)"}, {"path": "M 0.432327534819, 1.01148054981 L 0.411304252461, 1.02021018026 L 0.390104828258, 1.02850290372 L 0.368738340905, 1.03635516882 L 0.347213940642, 1.04376361281 L 0.325540845334, 1.050725063 L 0.303728336528, 1.05723653815 L 0.281785755472, 1.06329524969 L 0.259722499119, 1.06889860298 L 0.237548016102, 1.07404419837 L 0.215271802685, 1.07872983224 L 0.192903398701, 1.08295349797 L 0.170452383462, 1.08671338676 L 0.147928371659, 1.09000788844 L 0.125341009244, 1.09283559212 L 0.102699969298, 1.09519528684 L 0.0800149478912, 1.09708596204 L 0.0572956599274, 1.09850680806 L 0.0345518349859, 1.0994572164 L 0.0117932131541, 1.09993678006 L -0.0109704591441, 1.09994529365 L -0.033729433322, 1.09948275354 L -0.0564739628045, 1.0985493578 L -0.0791943072028, 1.09714550617 L -0.101880736485, 1.09527179984 L -0.124523535145, 1.09292904124 L -0.147113006358, 1.09011823366 L -0.169639476141, 1.08684058083 L -0.19209329749, 1.08309748641 L -0.21446485451, 1.07889055338 L -0.23674456654, 1.07422158339 L -0.258922892251, 1.06909257591 L -0.280990333729, 1.06350572746 L -0.302937440552, 1.05746343063 L -0.324754813828, 1.05096827302 L -0.346433110225, 1.04402303621 L -0.367963045969, 1.03663069451 L -0.389335400825, 1.0287944137 L -0.410541022039, 1.02051754969 L -0.431570828264, 1.01180364705 L -0.452415813444, 1.00265643754 L -0.473067050673, 0.993079838466 L -0.49351569602, 0.98307795102 L -0.513752992311, 0.972655058534 L -0.533770272887, 0.96181562463 L -0.553558965306, 0.950564291318 L -0.573110595025, 0.938905877003 L -0.592416789018, 0.926845374423 L -0.611469279371, 0.914387948513 L -0.630259906819, 0.901538934188 L -0.648780624238, 0.888303834065 L -0.667023500095, 0.8746883161 L -0.684980721843, 0.860698211166 L -0.702644599267, 0.846339510552 L -0.720007567778, 0.831618363399 L -0.654552334343, 0.756016693999 L -0.638767817516, 0.769399555047 L -0.62270974713, 0.782452919241 L -0.606385000086, 0.795171196454 L -0.589800567489, 0.807548940059 L -0.572963551653, 0.819580849262 L -0.555881163065, 0.831261771375 L -0.538560717289, 0.842586704021 L -0.521009631841, 0.853550797275 L -0.503235423006, 0.864149355744 L -0.485245702624, 0.874377840573 L -0.467048174828, 0.884231871394 L -0.448650632745, 0.8937072282 L -0.430060955157, 0.902799853151 L -0.411287103131, 0.911505852312 L -0.392337116604, 0.919821497322 L -0.373219110945, 0.92774322699 L -0.353941273477, 0.93526764882 L -0.334511859972, 0.942391540464 L -0.314939191113, 0.949111851101 L -0.295231648935, 0.955425702746 L -0.275397673229, 0.961330391478 L -0.255445757936, 0.966823388604 L -0.235384447501, 0.971902341738 L -0.215222333219, 0.976565075806 L -0.194968049555, 0.980809593985 L -0.174630270445, 0.984634078551 L -0.154217705583, 0.988036891662 L -0.133739096689, 0.991016576055 L -0.113203213768, 0.993571855677 L -0.0926188513503, 0.995701636222 L -0.0719948247298, 0.997405005608 L -0.0513399661859, 0.998681234365 L -0.0306631212018, 0.999529775944 L -0.00997314467649, 0.999950266956 L 0.0107211028674, 0.999942527325 L 0.0314107590781, 0.999506560366 L 0.0520869635703, 0.998642552782 L 0.0727408617193, 0.997350874585 L 0.093363608453, 0.995632078941 L 0.11394637204, 0.993486901926 L 0.134480337872, 0.990916262217 L 0.154956712238, 0.987921260695 L 0.175366726092, 0.984503179974 L 0.195701638805, 0.980663483856 L 0.21595274191, 0.976403816697 L 0.236111362835, 0.971726002709 L 0.256168868611, 0.966632045173 L 0.276116669571, 0.961124125587 L 0.295946223031, 0.955204602728 L 0.315649036947, 0.948876011644 L 0.33521667355, 0.942141062567 L 0.354640752962, 0.93500263975 L 0.373912956783, 0.927463800237 L 0.393025031654, 0.919527772551 L 0.432327534819 ,1.01148054981", "layer": "below", "type": "path", "line": {"color": "rgb(150,150,150)", "width": 0.45}, "fillcolor": "rgba(253, 174, 97, 0.75)"}, {"path": "M -0.745774051565, 0.808592025692 L -0.762346670906, 0.792986477412 L -0.778592813807, 0.777041331133 L -0.794505522823, 0.760763415396 L -0.810077983306, 0.744159701249 L -0.825303526321, 0.727237299265 L -0.840175631498, 0.710003456496 L -0.85468792983, 0.692465553369 L -0.868834206397, 0.674631100524 L -0.882608403028, 0.656507735601 L -0.896004620898, 0.638103219965 L -0.909017123049, 0.619425435387 L -0.921640336852, 0.600482380663 L -0.933868856392, 0.581282168195 L -0.945697444781, 0.561833020509 L -0.957121036404, 0.542143266741 L -0.968134739085, 0.522221339068 L -0.978733836184, 0.502075769091 L -0.988913788618, 0.481715184192 L -0.998670236802, 0.461148303831 L -1.00799900252, 0.440383935813 L -1.01689609071, 0.419430972519 L -1.02535769117, 0.398298387097 L -1.03338018021, 0.376995229618 L -1.04096012218, 0.3555306232 L -1.04809427096, 0.333913760102 L -1.05477957133, 0.312153897788 L -1.0610131603, 0.290260354962 L -1.06679236833, 0.268242507575 L -1.07211472046, 0.246109784813 L -1.07697793737, 0.223871665059 L -1.08137993639, 0.201537671829 L -1.08531883236, 0.1791173697 L -1.08879293843, 0.156620360209 L -1.09180076681, 0.134056277746 L -1.09434102939, 0.111434785421 L -1.0964126383, 0.0887655709327 L -1.09801470637, 0.0660583424166 L -1.09914654751, 0.0433228242871 L -1.099807677, 0.020568753074 L -1.09999781173, -0.00219412674755 L -1.09971687025, -0.0249560669301 L -1.0989649729, -0.0477073196285 L -1.09774244166, -0.0704381415746 L -1.09604980008, -0.0931387982499 L -1.09388777305, -0.115799568054 L -1.09125728646, -0.138410746468 L -1.08815946682, -0.160962650212 L -1.08459564078, -0.183445621388 L -1.08056733454, -0.20585003162 L -1.07607627325, -0.228166286177 L -1.0711243802, -0.250384828079 L -1.06571377606, -0.272496142192 L -1.05984677793, -0.294490759303 L -1.05352589835, -0.316359260175 L -0.957750816685, -0.287599327432 L -0.963497070844, -0.267718872094 L -0.968830705512, -0.247723765629 L -0.973749436549, -0.227622570981 L -0.9782511575, -0.207423896525 L -0.982333940494, -0.187136392382 L -0.985996037071, -0.166768746716 L -0.98923587893, -0.146329682011 L -0.992052078604, -0.125827951335 L -0.99444343005, -0.105272334595 L -0.996408909166, -0.0846716347726 L -0.997947674232, -0.0640346741587 L -0.99905906627, -0.0433702905713 L -0.999742609323, -0.0226873335728 L -0.999998010662, -0.00199466067959 L -0.999825160913, 0.0186988664309 L -0.999224134097, 0.0393843857155 L -0.998195187606, 0.0600530385606 L -0.996738762088, 0.0806959735752 L -0.99485548126, 0.101304350383 L -0.992546151641, 0.121869343405 L -0.989811762206, 0.142382145645 L -0.986653483962, 0.162833972454 L -0.983072669448, 0.183216065299 L -0.979070852155, 0.203519695508 L -0.974649745869, 0.223736168012 L -0.969811243938, 0.243856825068 L -0.964557418458, 0.263873049965 L -0.958890519391, 0.283776270717 L -0.952812973598, 0.303557963729 L -0.946327383799, 0.323209657454 L -0.939436527461, 0.342722936016 L -0.932143355607, 0.362089442816 L -0.92445099155, 0.381300884108 L -0.916362729562, 0.400349032557 L -0.907882033456, 0.419225730755 L -0.899012535107, 0.43792289472 L -0.889758032894, 0.456432517356 L -0.880122490077, 0.47474667188 L -0.870110033094, 0.492857515219 L -0.859724949801, 0.510757291372 L -0.848971687629, 0.528438334722 L -0.837854851684, 0.54589307333 L -0.826379202772, 0.56311403217 L -0.814549655362, 0.580093836332 L -0.80237127548, 0.596825214183 L -0.789849278543, 0.613301000476 L -0.776989027118, 0.629514139426 L -0.763796028635, 0.645457687724 L -0.750275933019, 0.661124817514 L -0.736434530278, 0.676508819317 L -0.722277748021, 0.691603104905 L -0.707811648915, 0.706401210121 L -0.693042428097, 0.720896797647 L -0.677976410513, 0.73508365972 L -0.745774051565 ,0.808592025692", "layer": "below", "type": "path", "line": {"color": "rgb(150,150,150)", "width": 0.45}, "fillcolor": "rgba(254, 224, 139, 0.75)"}, {"path": "M -1.04306896242, -0.349295204153 L -1.03564145619, -0.370738147786 L -1.02777318808, -0.392023307812 L -1.01946750677, -0.413141625413 L -1.01072794709, -0.434084112779 L -1.00155822855, -0.454841856932 L -0.991962253719, -0.475406023518 L -0.98194410657, -0.495767860568 L -0.971508050761, -0.515918702227 L -0.960658527805, -0.535849972432 L -0.949400155185, -0.555553188574 L -0.937737724387, -0.575019965099 L -0.925676198861, -0.59424201708 L -0.913220711909, -0.613211163744 L -0.900376564501, -0.631919331954 L -0.887149223019, -0.65035855964 L -0.873544316926, -0.668520999196 L -0.859567636379, -0.68639892081 L -0.845225129756, -0.703984715764 L -0.830522901129, -0.721270899663 L -0.815467207666, -0.738250115626 L -0.800064456966, -0.754915137416 L -0.784321204334, -0.771258872514 L -0.768244149991, -0.787274365139 L -0.751840136219, -0.802954799207 L -0.735116144455, -0.818293501234 L -0.718079292315, -0.833283943172 L -0.700736830564, -0.847919745194 L -0.683096140037, -0.862194678403 L -0.66516472849, -0.876102667484 L -0.646950227407, -0.889637793295 L -0.628460388756, -0.902794295377 L -0.609703081685, -0.915566574414 L -0.590686289174, -0.927949194613 L -0.57141810464, -0.939936886014 L -0.551906728489, -0.95152454674 L -0.532160464629, -0.962707245161 L -0.512187716935, -0.973480221998 L -0.49199698567, -0.983838892345 L -0.471596863871, -0.993778847625 L -0.450996033689, -1.00329585746 L -0.430203262697, -1.01238587148 L -0.409227400153, -1.02104502103 L -0.388077373242, -1.02926962084 L -0.366762183269, -1.03705617057 L -0.345290901832, -1.04440135633 L -0.323672666962, -1.05130205206 L -0.30191667923, -1.05775532086 L -0.280032197836, -1.06375841627 L -0.258028536663, -1.06930878341 L -0.23591506032, -1.07440406008 L -0.213701180148, -1.07904207777 L -0.191396350224, -1.08322086258 L -0.16901006333, -1.08693863603 L -0.146551846914, -1.09019381587 L -0.12403125904, -1.09298501672 L -0.101457884315, -1.09531105067 L -0.0788413298117, -1.09717092776 L -0.0561912209808, -1.09856385644 L -0.0335171975526, -1.09948924391 L -0.0108289094355, -1.09994669631 L 0.0118639873909, -1.09993601896 L 0.0345518349859, -1.0994572164 L 0.0314107590781, -0.999506560366 L 0.0107854430827, -0.999941835417 L -0.00984446312319, -0.999951542099 L -0.0304701795932, -0.99953567628 L -0.0510829281644, -0.998694414949 L -0.0716739361925, -0.997428116142 L -0.0922344402862, -0.995737318787 L -0.112755690036, -0.993622742475 L -0.13322895174, -0.991085287157 L -0.153645512118, -0.988126032754 L -0.173996682022, -0.984746238706 L -0.194273800135, -0.980947343429 L -0.214468236654, -0.976730963708 L -0.234571396967, -0.972098894005 L -0.254574725305, -0.967053105696 L -0.274469708391, -0.961595746234 L -0.294247879056, -0.955729138235 L -0.313900819847, -0.949455778485 L -0.333420166608, -0.942778336885 L -0.352797612038, -0.935699655306 L -0.37202490923, -0.928222746388 L -0.391093875179, -0.920350792251 L -0.409996394263, -0.912087143145 L -0.428724421701, -0.903435316023 L -0.447269986973, -0.894398993041 L -0.465625197214, -0.884982019998 L -0.483782240572, -0.875188404692 L -0.501733389535, -0.865022315218 L -0.519471004218, -0.854488078195 L -0.536987535612, -0.843590176921 L -0.554275528804, -0.832333249467 L -0.571327626142, -0.820722086706 L -0.58813657037, -0.808761630268 L -0.604695207718, -0.79645697044 L -0.620996490943, -0.783813344003 L -0.637033482331, -0.770836131995 L -0.65279935665, -0.757530857429 L -0.66828740405, -0.74390318294 L -0.683491032927, -0.72995890837 L -0.698403772719, -0.715703968308 L -0.713019276667, -0.701144429558 L -0.727331324514, -0.68628648856 L -0.741333825151, -0.671136468751 L -0.755020819208, -0.655700817875 L -0.768386481596, -0.63998610524 L -0.781425123981, -0.623999018919 L -0.794131197206, -0.607746362905 L -0.806499293653, -0.591235054219 L -0.818524149547, -0.574472119958 L -0.83020064719, -0.557464694313 L -0.841523817146, -0.540220015527 L -0.852488840352, -0.522745422817 L -0.863091050168, -0.505048353249 L -0.873325934368, -0.487136338575 L -0.883189137055, -0.469017002024 L -0.892676460518, -0.450698055062 L -0.901783867017, -0.432187294107 L -0.910507480503, -0.413492597211 L -0.918843588265, -0.394621920709 L -0.926788642514, -0.37558329583 L -0.934339261889, -0.356384825283 L -0.941492232899, -0.337034679805 L -0.948244511287, -0.317541094685 L -1.04306896242 ,-0.349295204153", "layer": "below", "type": "path", "line": {"color": "rgb(150,150,150)", "width": 0.45}, "fillcolor": "rgba(217, 239, 139, 0.75)"}, {"path": "M 0.0690695714822, -1.09782940127 L 0.091567336681, -1.09618220331 L 0.114026593448, -1.09407400846 L 0.136437896596, -1.09150570332 L 0.158791821101, -1.08847836798 L 0.181078966074, -1.08499327558 L 0.203289958706, -1.08105189177 L 0.225415458217, -1.07665587408 L 0.247446159778, -1.07180707126 L 0.26937279843, -1.06650752246 L 0.291186152974, -1.06075945639 L 0.312877049856, -1.05456529038 L 0.334436367018, -1.04792762938 L 0.35585503774, -1.04084926484 L 0.377124054449, -1.03333317355 L 0.39823447251, -1.02538251638 L 0.419177413985, -1.01700063697 L 0.439944071369, -1.0081910603 L 0.460525711291, -0.998957491208 L 0.480913678191, -0.989303812855 L 0.501099397957, -0.979234085072 L 0.52107438153, -0.968752542661 L 0.540830228478, -0.95786359361 L 0.560358630525, -0.946571817242 L 0.579651375046, -0.934881962286 L 0.598700348523, -0.922798944883 L 0.617497539954, -0.910327846521 L 0.636035044223, -0.897473911888 L 0.654305065426, -0.884242546679 L 0.672299920148, -0.870639315313 L 0.690012040695, -0.856669938597 L 0.707433978274, -0.842340291321 L 0.724558406131, -0.827656399785 L 0.741378122626, -0.812624439265 L 0.757886054268, -0.797250731418 L 0.774075258683, -0.78154174162 L 0.78993892754, -0.765504076252 L 0.805470389408, -0.749144479915 L 0.820663112568, -0.732469832601 L 0.835510707755, -0.715487146794 L 0.850006930847, -0.698203564522 L 0.864145685491, -0.680626354358 L 0.877921025667, -0.662762908355 L 0.891327158188, -0.644620738944 L 0.904358445134, -0.626207475774 L 0.917009406229, -0.607530862498 L 0.92927472114, -0.588598753525 L 0.941149231717, -0.569419110707 L 0.952627944163, -0.55 L 0.963706031131, -0.530349588066 L 0.974378833758, -0.510476138839 L 0.984641863621, -0.490388010054 L 0.994490804627, -0.470093649726 L 1.00392151483, -0.449601592601 L 1.01293002816, -0.428920456567 L 1.0215125561, -0.408058939027 L 1.02966548931, -0.387025813245 L 1.03738539908, -0.365829924653 L 1.04466903882, -0.344480187132 L 1.05151334542, -0.322985579266 L 1.0579154405, -0.301355140562 L 1.0638726317, -0.27959796765 L 1.06938241373, -0.257723210461 L 1.07444246945, -0.235740068372 L 1.07905067088, -0.213657786342 L 1.08320508005, -0.191485651025 L 1.08690394983, -0.16923298686 L 1.09014572467, -0.146909152154 L 1.09292904124, -0.124523535145 L 1.09525272904, -0.10208555005 L 1.09711581084, -0.0796046331144 L 1.09851750312, -0.057090238634 L 1.0994572164, -0.0345518349859 L 0.999506560366, -0.0314107590781 L 0.99865227556, -0.05190021694 L 0.997378009851, -0.0723678482858 L 0.995684299128, -0.0928050455004 L 0.993571855677, -0.113203213768 L 0.991041567881, -0.133553774686 L 0.988094499846, -0.153848169873 L 0.984731890957, -0.174077864568 L 0.980955155349, -0.19423435122 L 0.976765881321, -0.214309153065 L 0.972165830661, -0.234293827692 L 0.967156937911, -0.254179970591 L 0.961741309549, -0.273959218692 L 0.955921223105, -0.293623253878 L 0.949699126202, -0.313163806484 L 0.943077635529, -0.332572658775 L 0.936059535739, -0.351841648405 L 0.928647778277, -0.370962671843 L 0.920845480141, -0.389927687788 L 0.912655922569, -0.408728720547 L 0.904082549661, -0.427357863387 L 0.895128966928, -0.445807281867 L 0.88579893978, -0.464069217127 L 0.876096391937, -0.482135989151 L 0.866025403784, -0.5 L 0.855590210652, -0.517653737006 L 0.844795201036, -0.535089775931 L 0.833644914753, -0.55230078409 L 0.822144041031, -0.569279523431 L 0.810297416534, -0.586018853586 L 0.798110023334, -0.602511734868 L 0.78558698681, -0.618751231234 L 0.772733573497, -0.634730513202 L 0.759555188868, -0.650442860722 L 0.746057375062, -0.665881666001 L 0.732245808553, -0.681040436286 L 0.718126297763, -0.695912796592 L 0.703704780621, -0.710492492382 L 0.688987322062, -0.724773392198 L 0.673980111478, -0.738749490241 L 0.658689460119, -0.752414908896 L 0.643121798431, -0.765763901201 L 0.627283673359, -0.77879085327 L 0.611181745589, -0.791490286648 L 0.594822786751, -0.803856860617 L 0.578213676567, -0.815885374444 L 0.561361399958, -0.827570769564 L 0.544273044112, -0.838908131712 L 0.526955795497, -0.849892692987 L 0.509416936841, -0.860519833856 L 0.491663844071, -0.8707850851 L 0.473703983209, -0.880684129692 L 0.455544907234, -0.890212804611 L 0.437194252901, -0.899367102595 L 0.418659737537, -0.908143173825 L 0.39994915579, -0.916537327545 L 0.38107037635, -0.924546033612 L 0.362031338646, -0.932165923985 L 0.342840049499, -0.939393794135 L 0.323504579764, -0.946226604399 L 0.304033060925, -0.952661481254 L 0.284433681687, -0.958695718527 L 0.264714684522, -0.964326778534 L 0.244884362209, -0.969552293146 L 0.224951054344, -0.974370064785 L 0.204923143834, -0.978778067348 L 0.184809053369, -0.982774447059 L 0.164617241885, -0.986357523251 L 0.144356201001, -0.989525789069 L 0.12403445145, -0.992277912106 L 0.103660539498, -0.994612734963 L 0.0832430333464, -0.996529275736 L 0.0627905195293, -0.998026728428 L 0.0690695714822 ,-1.09782940127", "layer": "below", "type": "path", "line": {"color": "rgb(150,150,150)", "width": 0.45}, "fillcolor": "rgba(166, 217, 106, 0.75)"}], "width": 400, "xaxis": {"zeroline": false, "showline": false, "showticklabels": false, "title": "", "showgrid": false}, "hovermode": "closest", "margin": {"r": 25, "b": 25, "l": 25, "t": 25}}, {"linkText": "Export to plot.ly", "showLink": true})});</script>
+</div>
+
+</div>
+
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">ideograms</span><span class="o">+</span><span class="n">ribbon_info</span><span class="p">)</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
-
-<span class="n">url</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;chord-diagram-Fb&#39;</span><span class="p">)</span> 
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[30]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;data&#39;: [{&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;line&#39;: {&#39;color&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;,
+    &#39;shape&#39;: &#39;spline&#39;,
+    &#39;width&#39;: 0.25},
+   &#39;mode&#39;: &#39;lines&#39;,
+   &#39;text&#39;: &#39;Emma&lt;br&gt;65&#39;,
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: array([ 1.1       ,  1.0997656 ,  1.09906248,  1.09789096,  1.09625152,
+           1.09414487,  1.09157191,  1.08853373,  1.08503163,  1.08106709,
+           1.07664182,  1.07175769,  1.06641679,  1.06062139,  1.05437397,
+           1.04767718,  1.04053388,  1.03294711,  1.02492012,  1.01645631,
+           1.00755929,  0.99823287,  0.988481  ,  0.97830786,  0.96771777,
+           0.95671525,  0.94530498,  0.93349184,  0.92128084,  0.90867721,
+           0.89568631,  0.88231367,  0.86856501,  0.85444616,  0.83996316,
+           0.82512218,  0.80992953,  0.7943917 ,  0.77851531,  0.76230713,
+           0.74577405,  0.72892313,  0.71176156,  0.69429663,  0.67653581,
+           0.65848665,  0.64015685,  0.62155422,  0.60268669,  0.5835623 ,
+           0.56418921,  0.54457566,  0.52473001,  0.50466073,  0.48437638,
+           0.46388558]),
+   &#39;y&#39;: array([ 0.        ,  0.02270761,  0.04540555,  0.06808413,  0.0907337 ,
+           0.1133446 ,  0.13590719,  0.15841186,  0.18084902,  0.2032091 ,
+           0.22548257,  0.24765994,  0.26973177,  0.29168864,  0.31352119,
+           0.33522012,  0.35677619,  0.3781802 ,  0.39942303,  0.42049563,
+           0.44138903,  0.4620943 ,  0.48260264,  0.50290529,  0.52299361,
+           0.54285904,  0.5624931 ,  0.58188744,  0.60103378,  0.61992397,
+           0.63854995,  0.65690378,  0.67497765,  0.69276385,  0.7102548 ,
+           0.72744305,  0.74432127,  0.76088226,  0.77711898,  0.79302449,
+           0.80859203,  0.82381495,  0.83868676,  0.85320114,  0.86735189,
+           0.88113298,  0.89453854,  0.90756286,  0.92020039,  0.93244573,
+           0.94429367,  0.95573917,  0.96677733,  0.97740347,  0.98761305,
+           0.99740171])},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;line&#39;: {&#39;color&#39;: &#39;rgba(253, 174, 97, 0.75)&#39;,
+    &#39;shape&#39;: &#39;spline&#39;,
+    &#39;width&#39;: 0.25},
+   &#39;mode&#39;: &#39;lines&#39;,
+   &#39;text&#39;: &#39;Isabella&lt;br&gt;64&#39;,
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: array([ 0.43232753,  0.41130425,  0.39010483,  0.36873834,  0.34721394,
+           0.32554085,  0.30372834,  0.28178576,  0.2597225 ,  0.23754802,
+           0.2152718 ,  0.1929034 ,  0.17045238,  0.14792837,  0.12534101,
+           0.10269997,  0.08001495,  0.05729566,  0.03455183,  0.01179321,
+          -0.01097046, -0.03372943, -0.05647396, -0.07919431, -0.10188074,
+          -0.12452354, -0.14711301, -0.16963948, -0.1920933 , -0.21446485,
+          -0.23674457, -0.25892289, -0.28099033, -0.30293744, -0.32475481,
+          -0.34643311, -0.36796305, -0.3893354 , -0.41054102, -0.43157083,
+          -0.45241581, -0.47306705, -0.4935157 , -0.51375299, -0.53377027,
+          -0.55355897, -0.5731106 , -0.59241679, -0.61146928, -0.63025991,
+          -0.64878062, -0.6670235 , -0.68498072, -0.7026446 , -0.72000757]),
+   &#39;y&#39;: array([ 1.01148055,  1.02021018,  1.0285029 ,  1.03635517,  1.04376361,
+           1.05072506,  1.05723654,  1.06329525,  1.0688986 ,  1.0740442 ,
+           1.07872983,  1.0829535 ,  1.08671339,  1.09000789,  1.09283559,
+           1.09519529,  1.09708596,  1.09850681,  1.09945722,  1.09993678,
+           1.09994529,  1.09948275,  1.09854936,  1.09714551,  1.0952718 ,
+           1.09292904,  1.09011823,  1.08684058,  1.08309749,  1.07889055,
+           1.07422158,  1.06909258,  1.06350573,  1.05746343,  1.05096827,
+           1.04402304,  1.03663069,  1.02879441,  1.02051755,  1.01180365,
+           1.00265644,  0.99307984,  0.98307795,  0.97265506,  0.96181562,
+           0.95056429,  0.93890588,  0.92684537,  0.91438795,  0.90153893,
+           0.88830383,  0.87468832,  0.86069821,  0.84633951,  0.83161836])},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;line&#39;: {&#39;color&#39;: &#39;rgba(254, 224, 139, 0.75)&#39;,
+    &#39;shape&#39;: &#39;spline&#39;,
+    &#39;width&#39;: 0.25},
+   &#39;mode&#39;: &#39;lines&#39;,
+   &#39;text&#39;: &#39;Ava&lt;br&gt;64&#39;,
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: array([-0.74577405, -0.76234667, -0.77859281, -0.79450552, -0.81007798,
+          -0.82530353, -0.84017563, -0.85468793, -0.86883421, -0.8826084 ,
+          -0.89600462, -0.90901712, -0.92164034, -0.93386886, -0.94569744,
+          -0.95712104, -0.96813474, -0.97873384, -0.98891379, -0.99867024,
+          -1.007999  , -1.01689609, -1.02535769, -1.03338018, -1.04096012,
+          -1.04809427, -1.05477957, -1.06101316, -1.06679237, -1.07211472,
+          -1.07697794, -1.08137994, -1.08531883, -1.08879294, -1.09180077,
+          -1.09434103, -1.09641264, -1.09801471, -1.09914655, -1.09980768,
+          -1.09999781, -1.09971687, -1.09896497, -1.09774244, -1.0960498 ,
+          -1.09388777, -1.09125729, -1.08815947, -1.08459564, -1.08056733,
+          -1.07607627, -1.07112438, -1.06571378, -1.05984678, -1.0535259 ]),
+   &#39;y&#39;: array([ 0.80859203,  0.79298648,  0.77704133,  0.76076342,  0.7441597 ,
+           0.7272373 ,  0.71000346,  0.69246555,  0.6746311 ,  0.65650774,
+           0.63810322,  0.61942544,  0.60048238,  0.58128217,  0.56183302,
+           0.54214327,  0.52222134,  0.50207577,  0.48171518,  0.4611483 ,
+           0.44038394,  0.41943097,  0.39829839,  0.37699523,  0.35553062,
+           0.33391376,  0.3121539 ,  0.29026035,  0.26824251,  0.24610978,
+           0.22387167,  0.20153767,  0.17911737,  0.15662036,  0.13405628,
+           0.11143479,  0.08876557,  0.06605834,  0.04332282,  0.02056875,
+          -0.00219413, -0.02495607, -0.04770732, -0.07043814, -0.0931388 ,
+          -0.11579957, -0.13841075, -0.16096265, -0.18344562, -0.20585003,
+          -0.22816629, -0.25038483, -0.27249614, -0.29449076, -0.31635926])},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;line&#39;: {&#39;color&#39;: &#39;rgba(217, 239, 139, 0.75)&#39;,
+    &#39;shape&#39;: &#39;spline&#39;,
+    &#39;width&#39;: 0.25},
+   &#39;mode&#39;: &#39;lines&#39;,
+   &#39;text&#39;: &#39;Olivia&lt;br&gt;73&#39;,
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: array([-1.04306896, -1.03564146, -1.02777319, -1.01946751, -1.01072795,
+          -1.00155823, -0.99196225, -0.98194411, -0.97150805, -0.96065853,
+          -0.94940016, -0.93773772, -0.9256762 , -0.91322071, -0.90037656,
+          -0.88714922, -0.87354432, -0.85956764, -0.84522513, -0.8305229 ,
+          -0.81546721, -0.80006446, -0.7843212 , -0.76824415, -0.75184014,
+          -0.73511614, -0.71807929, -0.70073683, -0.68309614, -0.66516473,
+          -0.64695023, -0.62846039, -0.60970308, -0.59068629, -0.5714181 ,
+          -0.55190673, -0.53216046, -0.51218772, -0.49199699, -0.47159686,
+          -0.45099603, -0.43020326, -0.4092274 , -0.38807737, -0.36676218,
+          -0.3452909 , -0.32367267, -0.30191668, -0.2800322 , -0.25802854,
+          -0.23591506, -0.21370118, -0.19139635, -0.16901006, -0.14655185,
+          -0.12403126, -0.10145788, -0.07884133, -0.05619122, -0.0335172 ,
+          -0.01082891,  0.01186399,  0.03455183]),
+   &#39;y&#39;: array([-0.3492952 , -0.37073815, -0.39202331, -0.41314163, -0.43408411,
+          -0.45484186, -0.47540602, -0.49576786, -0.5159187 , -0.53584997,
+          -0.55555319, -0.57501997, -0.59424202, -0.61321116, -0.63191933,
+          -0.65035856, -0.668521  , -0.68639892, -0.70398472, -0.7212709 ,
+          -0.73825012, -0.75491514, -0.77125887, -0.78727437, -0.8029548 ,
+          -0.8182935 , -0.83328394, -0.84791975, -0.86219468, -0.87610267,
+          -0.88963779, -0.9027943 , -0.91556657, -0.92794919, -0.93993689,
+          -0.95152455, -0.96270725, -0.97348022, -0.98383889, -0.99377885,
+          -1.00329586, -1.01238587, -1.02104502, -1.02926962, -1.03705617,
+          -1.04440136, -1.05130205, -1.05775532, -1.06375842, -1.06930878,
+          -1.07440406, -1.07904208, -1.08322086, -1.08693864, -1.09019382,
+          -1.09298502, -1.09531105, -1.09717093, -1.09856386, -1.09948924,
+          -1.0999467 , -1.09993602, -1.09945722])},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;line&#39;: {&#39;color&#39;: &#39;rgba(166, 217, 106, 0.75)&#39;,
+    &#39;shape&#39;: &#39;spline&#39;,
+    &#39;width&#39;: 0.25},
+   &#39;mode&#39;: &#39;lines&#39;,
+   &#39;text&#39;: &#39;Sophia&lt;br&gt;84&#39;,
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: array([ 0.06906957,  0.09156734,  0.11402659,  0.1364379 ,  0.15879182,
+           0.18107897,  0.20328996,  0.22541546,  0.24744616,  0.2693728 ,
+           0.29118615,  0.31287705,  0.33443637,  0.35585504,  0.37712405,
+           0.39823447,  0.41917741,  0.43994407,  0.46052571,  0.48091368,
+           0.5010994 ,  0.52107438,  0.54083023,  0.56035863,  0.57965138,
+           0.59870035,  0.61749754,  0.63603504,  0.65430507,  0.67229992,
+           0.69001204,  0.70743398,  0.72455841,  0.74137812,  0.75788605,
+           0.77407526,  0.78993893,  0.80547039,  0.82066311,  0.83551071,
+           0.85000693,  0.86414569,  0.87792103,  0.89132716,  0.90435845,
+           0.91700941,  0.92927472,  0.94114923,  0.95262794,  0.96370603,
+           0.97437883,  0.98464186,  0.9944908 ,  1.00392151,  1.01293003,
+           1.02151256,  1.02966549,  1.0373854 ,  1.04466904,  1.05151335,
+           1.05791544,  1.06387263,  1.06938241,  1.07444247,  1.07905067,
+           1.08320508,  1.08690395,  1.09014572,  1.09292904,  1.09525273,
+           1.09711581,  1.0985175 ,  1.09945722]),
+   &#39;y&#39;: array([-1.0978294 , -1.0961822 , -1.09407401, -1.0915057 , -1.08847837,
+          -1.08499328, -1.08105189, -1.07665587, -1.07180707, -1.06650752,
+          -1.06075946, -1.05456529, -1.04792763, -1.04084926, -1.03333317,
+          -1.02538252, -1.01700064, -1.00819106, -0.99895749, -0.98930381,
+          -0.97923409, -0.96875254, -0.95786359, -0.94657182, -0.93488196,
+          -0.92279894, -0.91032785, -0.89747391, -0.88424255, -0.87063932,
+          -0.85666994, -0.84234029, -0.8276564 , -0.81262444, -0.79725073,
+          -0.78154174, -0.76550408, -0.74914448, -0.73246983, -0.71548715,
+          -0.69820356, -0.68062635, -0.66276291, -0.64462074, -0.62620748,
+          -0.60753086, -0.58859875, -0.56941911, -0.55      , -0.53034959,
+          -0.51047614, -0.49038801, -0.47009365, -0.44960159, -0.42892046,
+          -0.40805894, -0.38702581, -0.36582992, -0.34448019, -0.32298558,
+          -0.30135514, -0.27959797, -0.25772321, -0.23574007, -0.21365779,
+          -0.19148565, -0.16923299, -0.14690915, -0.12452354, -0.10208555,
+          -0.07960463, -0.05709024, -0.03455183])},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Emma commented on 16 of herself Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [0.88343546840750953],
+   &#39;y&#39;: [0.17187720372290285]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Emma commented on 3 of Isabella Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [0.89969105001570382],
+   &#39;y&#39;: [0.023579960170459113]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Isabella commented on 18 of Emma Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [-0.045043394102669145],
+   &#39;y&#39;: [0.89887212252228166]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Emma commented on 28 of Ava Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [0.56584085868553169],
+   &#39;y&#39;: [0.69987436204080244]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Ava commented on 9 of Emma Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [-0.66022583719188899],
+   &#39;y&#39;: [0.61163865468450351]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Emma commented on 0 of Olivia Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [0.90000000000000002],
+   &#39;y&#39;: [0.0]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Olivia commented on 19 of Emma Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [-0.56465943775383409],
+   &#39;y&#39;: [-0.70082788140564456]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(166, 217, 106, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Emma commented on 18 of Sophia Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [0.79447123551520271],
+   &#39;y&#39;: [0.42286576586305402]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(166, 217, 106, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Sophia commented on 23 of Emma Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [0.60658210033046722],
+   &#39;y&#39;: [-0.66487454121712253]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(254, 224, 139, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Isabella commented on 12 of Ava Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [0.18923948375343566],
+   &#39;y&#39;: [0.87987977462192712]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(254, 224, 139, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Ava commented on 11 of Isabella Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [-0.75644345851468742],
+   &#39;y&#39;: [0.4876405377635647]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(253, 174, 97, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Isabella commented on 5 of Olivia Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [0.31727114302905396],
+   &#39;y&#39;: [0.84222266758918196]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(253, 174, 97, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Olivia commented on 0 of Isabella Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [-0.85342006015850413],
+   &#39;y&#39;: [-0.28578698521635887]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(253, 174, 97, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Isabella commented on 29 of Sophia Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [-0.39987956088018928],
+   &#39;y&#39;: [0.80628551815735039]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(253, 174, 97, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Sophia commented on 17 of Isabella Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [0.34052412556597661],
+   &#39;y&#39;: [-0.8330926238465487]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(254, 224, 139, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Ava commented on 17 of herself Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [-0.85197642419715802],
+   &#39;y&#39;: [0.29006235986805357]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(217, 239, 139, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Ava commented on 27 of Olivia Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [-0.89858943665163593],
+   &#39;y&#39;: [-0.050368882636957053]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(217, 239, 139, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Olivia commented on 31 of Ava Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [-0.21408002940656587],
+   &#39;y&#39;: [-0.87416802790383719]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(166, 217, 106, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Ava commented on 0 of Sophia Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [-0.61017876946189831],
+   &#39;y&#39;: [0.6615752937481596]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(166, 217, 106, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Sophia commented on 10 of Ava Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [0.13513647395069189],
+   &#39;y&#39;: [-0.88979668093793984]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(217, 239, 139, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Olivia commented on 11 of herself Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [-0.82196194741834339],
+   &#39;y&#39;: [-0.36657680913588159]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(217, 239, 139, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Olivia commented on 12 of Sophia Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [-0.73196600768086251],
+   &#39;y&#39;: [-0.52366569832264132]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(217, 239, 139, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Sophia commented on 0 of Olivia Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [0.056511467576380765],
+   &#39;y&#39;: [-0.89822405558544449]},
+  {&#39;hoverinfo&#39;: &#39;text&#39;,
+   &#39;marker&#39;: {&#39;color&#39;: &#39;rgba(166, 217, 106, 0.75)&#39;, &#39;size&#39;: 0.5},
+   &#39;mode&#39;: &#39;markers&#39;,
+   &#39;text&#39;: (&#39;Sophia commented on 34 of herself Fb posts&#39;,),
+   &#39;type&#39;: &#39;scatter&#39;,
+   &#39;x&#39;: [0.85136773304902036],
+   &#39;y&#39;: [-0.29184410756938739]}],
+ &#39;layout&#39;: {&#39;height&#39;: 400,
+  &#39;hovermode&#39;: &#39;closest&#39;,
+  &#39;margin&#39;: {&#39;b&#39;: 25, &#39;l&#39;: 25, &#39;r&#39;: 25, &#39;t&#39;: 25},
+  &#39;shapes&#39;: [{&#39;fillcolor&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M 0.998627124638,0.0523819237657 Q 0.392637985959, 0.0763898683213 0.945423623344, 0.325843785307L 0.945423623344, 0.325843785307 L 0.981594964897, 0.190974670803 L 0.998627124638, 0.0523819237657 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M 1.0,0.0 Q 0.126036575164, 0.155289348382 -0.205739086044, 0.978606881477L -0.205739086044, 0.978606881477 L -0.102273247702, 0.994756343435 L 0.00231411752317, 0.999997322426 L 0.106876106171, 0.994272345954 M 0.106876106171,0.994272345954 Q 0.145234119984, 0.137502910488 0.998627124638, 0.0523819237657L 0.998627124638, 0.0523819237657 L 0.99965672224, 0.026199955745 L 1.0, 0.0 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M 0.798293724062,0.602268320704 Q 0.00223003145865, 0.199987567013 -0.784665288624, 0.619919659979L -0.784665288624, 0.619919659979 L -0.733584263547, 0.679598505205 L -0.677976410513, 0.73508365972 M -0.677976410513,0.73508365972 Q -0.0308435411166, 0.197607378332 0.421714162855, 0.906728826523L 0.421714162855, 0.906728826523 L 0.508256718044, 0.861205613407 L 0.589939334291, 0.807447572203 L 0.665980964315, 0.745968736054 L 0.735654499815, 0.677356964164 L 0.798293724062, 0.602268320704 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M 1.0,0.0 Q -0.101024048455, 0.17260979588 -0.489707081688, -0.87188701914L -0.489707081688, -0.87188701914 L -0.583249936891, -0.812292749639 L -0.66961780143, -0.742705863723 L -0.747748200058, -0.663982401356 M -0.747748200058,-0.663982401356 Q -0.0710284168403, 0.186962466825 1.0, 0.0L 1.0, 0.0 L 1.0, 0.0 L 1.0, 0.0 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(166, 217, 106, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M 0.945423623344,0.325843785307 Q -0.197796420454, 0.0296070271346 0.808577105752, -0.588390231099L 0.808577105752, -0.588390231099 L 0.745081171614, -0.666973798366 L 0.673980111478, -0.738749490241 L 0.595999661738, -0.802984684292 L 0.511935777475, -0.859023724784 M 0.511935777475,-0.859023724784 Q -0.196267057575, 0.0384609166684 0.798293724062, 0.602268320704L 0.798293724062, 0.602268320704 L 0.856922225799, 0.515445728405 L 0.906145608712, 0.422965880199 L 0.945423623344, 0.325843785307 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(254, 224, 139, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M 0.311350305162,0.950295210698 Q -0.0758169740366, 0.185072381645 -0.888574345138, 0.458732637996L -0.888574345138, 0.458732637996 L -0.840492731683, 0.541822819737 L -0.784665288624, 0.619919659979 M -0.784665288624,0.619919659979 Q -0.0774298462706, 0.184403413489 0.106876106171, 0.994272345954L 0.106876106171, 0.994272345954 L 0.210266093059, 0.977644194024 L 0.311350305162, 0.950295210698 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(253, 174, 97, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M 0.393025031654,0.919527772551 Q -0.135595282103, 0.147016731944 -0.948244511287, -0.317541094685L -0.948244511287, -0.317541094685 L -0.948244511287, -0.317541094685 L -0.948244511287, -0.317541094685 M -0.948244511287,-0.317541094685 Q -0.141881751013, 0.140959457751 0.311350305162, 0.950295210698L 0.311350305162, 0.950295210698 L 0.352523492255, 0.935802963988 L 0.393025031654, 0.919527772551 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(253, 174, 97, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M -0.205739086044,0.978606881477 Q -0.186296609172, -0.0727569475097 0.511935777475, -0.859023724784L 0.511935777475, -0.859023724784 L 0.378360139518, -0.925658470941 L 0.23635363861, -0.971667102209 M 0.23635363861,-0.971667102209 Q -0.177757741007, -0.0916634360695 -0.654552334343, 0.756016693999L -0.654552334343, 0.756016693999 L -0.574764262125, 0.818319034963 L -0.489086167742, 0.872235473094 L -0.398396056157, 0.917213487929 L -0.303623294072, 0.952792157449 L -0.205739086044, 0.978606881477 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(254, 224, 139, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M -0.888574345138,0.458732637996 Q -0.331324164966, 0.112802028838 -0.983892003007, 0.178763884549L -0.983892003007, 0.178763884549 L -0.94664047133, 0.322291510965 L -0.888574345138, 0.458732637996 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(217, 239, 139, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M -0.983892003007,0.178763884549 Q -0.151510453811, -0.130554901808 0.0314107590781, -0.999506560366L 0.0314107590781, -0.999506560366 L -0.0771412971268, -0.997020170447 L -0.184783878186, -0.982779180876 L -0.290247907021, -0.956951489089 L -0.392289991098, -0.919841596627 L -0.489707081688, -0.87188701914 M -0.489707081688,-0.87188701914 Q -0.15609376907, -0.125038934967 -0.957750816685, -0.287599327432L -0.957750816685, -0.287599327432 L -0.980574026109, -0.196149380117 L -0.994685823973, -0.102956843327 L -0.99996084118, -0.00884963878981 L -0.996352214522, 0.0853361858653 L -0.983892003007, 0.178763884549 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(166, 217, 106, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M -0.677976410513,0.73508365972 Q -0.176296024799, -0.0944442250215 0.23635363861, -0.971667102209L 0.23635363861, -0.971667102209 L 0.150151637723, -0.98866297882 L 0.0627905195293, -0.998026728428 M 0.0627905195293,-0.998026728428 Q -0.18390555451, -0.0786050063308 -0.677976410513, 0.73508365972L -0.677976410513, 0.73508365972 L -0.677976410513, 0.73508365972 L -0.677976410513, 0.73508365972 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(217, 239, 139, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M -0.948244511287,-0.317541094685 Q -0.356183510548, -0.158849950626 -0.869862469031, -0.493294318811L -0.869862469031, -0.493294318811 L -0.913291052687, -0.407307565707 L -0.948244511287, -0.317541094685 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(217, 239, 139, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M -0.869862469031,-0.493294318811 Q -0.0951903323343, -0.175894288225 0.0627905195293, -0.998026728428L 0.0627905195293, -0.998026728428 L 0.0627905195293, -0.998026728428 L 0.0627905195293, -0.998026728428 M 0.0627905195293,-0.998026728428 Q -0.0762071280501, -0.184912070007 -0.747748200058, -0.663982401356L -0.747748200058, -0.663982401356 L -0.81329556409, -0.581850775914 L -0.869862469031, -0.493294318811 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(166, 217, 106, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(175,175,175)&#39;, &#39;width&#39;: 0.5},
+    &#39;path&#39;: &#39;M 0.808577105752,-0.588390231099 Q 0.11351569774, -0.0389125476759 0.999506560366, -0.0314107590781L 0.999506560366, -0.0314107590781 L 0.991428581442, -0.130649791042 L 0.973521937261, -0.228593608116 L 0.945964147832, -0.324271230633 L 0.909028411137, -0.416734145163 L 0.863080894744, -0.505065707733 L 0.808577105752, -0.588390231099 &#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(244, 109, 67, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(150,150,150)&#39;, &#39;width&#39;: 0.45},
+    &#39;path&#39;: &#39;M 1.1, 0.0 L 1.09976559515, 0.0227076137964 L 1.0990624805, 0.0454055498204 L 1.09789095571, 0.0680841344242 L 1.09625152008, 0.0907337022075 L 1.09414487232, 0.113344600137 L 1.09157191025, 0.135907191658 L 1.08853373046, 0.158411860807 L 1.08503162779, 0.180849016305 L 1.08106709479, 0.203209095645 L 1.07664182113, 0.225482569171 L 1.0717576928, 0.247659944138 L 1.06641679137, 0.269731768756 L 1.0606213931, 0.291688636219 L 1.05437396792, 0.313521188717 L 1.04767717843, 0.33522012142 L 1.04053387873, 0.356776186446 L 1.03294711324, 0.378180196802 L 1.02492011536, 0.3994230303 L 1.01645630612, 0.420495633442 L 1.00755929273, 0.441389025282 L 0.998232866995, 0.462094301253 L 0.988481003763, 0.48260263696 L 0.978307859182, 0.502905291941 L 0.967717768953, 0.522993613396 L 0.956715246471, 0.542859039871 L 0.94530498091, 0.562493104905 L 0.933491835218, 0.581887440646 L 0.921280844046, 0.601033781408 L 0.908677211606, 0.6199239672 L 0.895686309446, 0.638549947202 L 0.882313674168, 0.656903783195 L 0.868565005064, 0.674977652948 L 0.854446161687, 0.692763853545 L 0.839963161357, 0.710254804674 L 0.825122176594, 0.727443051856 L 0.809929532484, 0.744321269621 L 0.794391703992, 0.76088226463 L 0.778515313194, 0.777118978743 L 0.762307126459, 0.793024492024 L 0.745774051565, 0.808592025692 L 0.728923134753, 0.82381494501 L 0.711761557726, 0.838686762113 L 0.694296634589, 0.85320113877 L 0.676535808727, 0.867351889091 L 0.658486649638, 0.881132982159 L 0.640156849705, 0.894538544601 L 0.621554220916, 0.907562863091 L 0.602686691539, 0.920200386786 L 0.583562302737, 0.932445729694 L 0.564189205146, 0.944293672962 L 0.544575655399, 0.955739167109 L 0.524730012607, 0.966777334172 L 0.504660734797, 0.977403469789 L 0.484376375306, 0.987613045198 L 0.463885579141, 0.997401709175 L 0.421714162855, 0.906728826523 L 0.44034215937, 0.897830041089 L 0.458782486179, 0.888548608899 L 0.477027284188, 0.878888485611 L 0.495068777636, 0.868853788281 L 0.512899277406, 0.858448793602 L 0.530511184307, 0.847677936085 L 0.547896992308, 0.836545806169 L 0.565049291742, 0.825057148264 L 0.581960772459, 0.813216858728 L 0.598624226943, 0.801029983781 L 0.615032553388, 0.788501717356 L 0.631178758717, 0.775637398882 L 0.647055961569, 0.762442511011 L 0.66265739523, 0.748922677282 L 0.677976410513, 0.73508365972 L 0.693006478599, 0.720931356386 L 0.707741193812, 0.706471798858 L 0.722174276356, 0.691711149664 L 0.736299574985, 0.676655699655 L 0.75011106963, 0.661311865324 L 0.763602873961, 0.645686186067 L 0.776769237898, 0.629785321404 L 0.789604550058, 0.613616048134 L 0.802103340153, 0.59718525745 L 0.814260281314, 0.580499952002 L 0.826070192369, 0.563567242909 L 0.837528040042, 0.546394346734 L 0.848628941107, 0.528988582405 L 0.859368164464, 0.511357368096 L 0.869741133156, 0.493508218064 L 0.879743426321, 0.475448739451 L 0.889370781075, 0.457186629037 L 0.89861909433, 0.438729669963 L 0.907484424541, 0.420085728412 L 0.915962993388, 0.401262750256 L 0.924051187384, 0.382268757674 L 0.931745559417, 0.363111845727 L 0.939042830216, 0.343800178911 L 0.945939889755, 0.324341987678 L 0.952433798569, 0.304745564927 L 0.958521789017, 0.28501926247 L 0.964201266454, 0.265171487472 L 0.96946981034, 0.245210698869 L 0.97432517527, 0.225145403762 L 0.978765291934, 0.204984153792 L 0.982788267995, 0.184735541496 L 0.986392388899, 0.164408196641 L 0.989576118603, 0.144010782552 L 0.992338100231, 0.123551992417 L 0.994677156653, 0.103040545579 L 0.996592290984, 0.082485183825 L 0.998082687013, 0.0618946676584 L 0.999147709547, 0.041277772564 L 0.999786904682, 0.0206432852694 L 1.0, 0.0 L 1.1 ,0.0&#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(253, 174, 97, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(150,150,150)&#39;, &#39;width&#39;: 0.45},
+    &#39;path&#39;: &#39;M 0.432327534819, 1.01148054981 L 0.411304252461, 1.02021018026 L 0.390104828258, 1.02850290372 L 0.368738340905, 1.03635516882 L 0.347213940642, 1.04376361281 L 0.325540845334, 1.050725063 L 0.303728336528, 1.05723653815 L 0.281785755472, 1.06329524969 L 0.259722499119, 1.06889860298 L 0.237548016102, 1.07404419837 L 0.215271802685, 1.07872983224 L 0.192903398701, 1.08295349797 L 0.170452383462, 1.08671338676 L 0.147928371659, 1.09000788844 L 0.125341009244, 1.09283559212 L 0.102699969298, 1.09519528684 L 0.0800149478912, 1.09708596204 L 0.0572956599274, 1.09850680806 L 0.0345518349859, 1.0994572164 L 0.0117932131541, 1.09993678006 L -0.0109704591441, 1.09994529365 L -0.033729433322, 1.09948275354 L -0.0564739628045, 1.0985493578 L -0.0791943072028, 1.09714550617 L -0.101880736485, 1.09527179984 L -0.124523535145, 1.09292904124 L -0.147113006358, 1.09011823366 L -0.169639476141, 1.08684058083 L -0.19209329749, 1.08309748641 L -0.21446485451, 1.07889055338 L -0.23674456654, 1.07422158339 L -0.258922892251, 1.06909257591 L -0.280990333729, 1.06350572746 L -0.302937440552, 1.05746343063 L -0.324754813828, 1.05096827302 L -0.346433110225, 1.04402303621 L -0.367963045969, 1.03663069451 L -0.389335400825, 1.0287944137 L -0.410541022039, 1.02051754969 L -0.431570828264, 1.01180364705 L -0.452415813444, 1.00265643754 L -0.473067050673, 0.993079838466 L -0.49351569602, 0.98307795102 L -0.513752992311, 0.972655058534 L -0.533770272887, 0.96181562463 L -0.553558965306, 0.950564291318 L -0.573110595025, 0.938905877003 L -0.592416789018, 0.926845374423 L -0.611469279371, 0.914387948513 L -0.630259906819, 0.901538934188 L -0.648780624238, 0.888303834065 L -0.667023500095, 0.8746883161 L -0.684980721843, 0.860698211166 L -0.702644599267, 0.846339510552 L -0.720007567778, 0.831618363399 L -0.654552334343, 0.756016693999 L -0.638767817516, 0.769399555047 L -0.62270974713, 0.782452919241 L -0.606385000086, 0.795171196454 L -0.589800567489, 0.807548940059 L -0.572963551653, 0.819580849262 L -0.555881163065, 0.831261771375 L -0.538560717289, 0.842586704021 L -0.521009631841, 0.853550797275 L -0.503235423006, 0.864149355744 L -0.485245702624, 0.874377840573 L -0.467048174828, 0.884231871394 L -0.448650632745, 0.8937072282 L -0.430060955157, 0.902799853151 L -0.411287103131, 0.911505852312 L -0.392337116604, 0.919821497322 L -0.373219110945, 0.92774322699 L -0.353941273477, 0.93526764882 L -0.334511859972, 0.942391540464 L -0.314939191113, 0.949111851101 L -0.295231648935, 0.955425702746 L -0.275397673229, 0.961330391478 L -0.255445757936, 0.966823388604 L -0.235384447501, 0.971902341738 L -0.215222333219, 0.976565075806 L -0.194968049555, 0.980809593985 L -0.174630270445, 0.984634078551 L -0.154217705583, 0.988036891662 L -0.133739096689, 0.991016576055 L -0.113203213768, 0.993571855677 L -0.0926188513503, 0.995701636222 L -0.0719948247298, 0.997405005608 L -0.0513399661859, 0.998681234365 L -0.0306631212018, 0.999529775944 L -0.00997314467649, 0.999950266956 L 0.0107211028674, 0.999942527325 L 0.0314107590781, 0.999506560366 L 0.0520869635703, 0.998642552782 L 0.0727408617193, 0.997350874585 L 0.093363608453, 0.995632078941 L 0.11394637204, 0.993486901926 L 0.134480337872, 0.990916262217 L 0.154956712238, 0.987921260695 L 0.175366726092, 0.984503179974 L 0.195701638805, 0.980663483856 L 0.21595274191, 0.976403816697 L 0.236111362835, 0.971726002709 L 0.256168868611, 0.966632045173 L 0.276116669571, 0.961124125587 L 0.295946223031, 0.955204602728 L 0.315649036947, 0.948876011644 L 0.33521667355, 0.942141062567 L 0.354640752962, 0.93500263975 L 0.373912956783, 0.927463800237 L 0.393025031654, 0.919527772551 L 0.432327534819 ,1.01148054981&#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(254, 224, 139, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(150,150,150)&#39;, &#39;width&#39;: 0.45},
+    &#39;path&#39;: &#39;M -0.745774051565, 0.808592025692 L -0.762346670906, 0.792986477412 L -0.778592813807, 0.777041331133 L -0.794505522823, 0.760763415396 L -0.810077983306, 0.744159701249 L -0.825303526321, 0.727237299265 L -0.840175631498, 0.710003456496 L -0.85468792983, 0.692465553369 L -0.868834206397, 0.674631100524 L -0.882608403028, 0.656507735601 L -0.896004620898, 0.638103219965 L -0.909017123049, 0.619425435387 L -0.921640336852, 0.600482380663 L -0.933868856392, 0.581282168195 L -0.945697444781, 0.561833020509 L -0.957121036404, 0.542143266741 L -0.968134739085, 0.522221339068 L -0.978733836184, 0.502075769091 L -0.988913788618, 0.481715184192 L -0.998670236802, 0.461148303831 L -1.00799900252, 0.440383935813 L -1.01689609071, 0.419430972519 L -1.02535769117, 0.398298387097 L -1.03338018021, 0.376995229618 L -1.04096012218, 0.3555306232 L -1.04809427096, 0.333913760102 L -1.05477957133, 0.312153897788 L -1.0610131603, 0.290260354962 L -1.06679236833, 0.268242507575 L -1.07211472046, 0.246109784813 L -1.07697793737, 0.223871665059 L -1.08137993639, 0.201537671829 L -1.08531883236, 0.1791173697 L -1.08879293843, 0.156620360209 L -1.09180076681, 0.134056277746 L -1.09434102939, 0.111434785421 L -1.0964126383, 0.0887655709327 L -1.09801470637, 0.0660583424166 L -1.09914654751, 0.0433228242871 L -1.099807677, 0.020568753074 L -1.09999781173, -0.00219412674755 L -1.09971687025, -0.0249560669301 L -1.0989649729, -0.0477073196285 L -1.09774244166, -0.0704381415746 L -1.09604980008, -0.0931387982499 L -1.09388777305, -0.115799568054 L -1.09125728646, -0.138410746468 L -1.08815946682, -0.160962650212 L -1.08459564078, -0.183445621388 L -1.08056733454, -0.20585003162 L -1.07607627325, -0.228166286177 L -1.0711243802, -0.250384828079 L -1.06571377606, -0.272496142192 L -1.05984677793, -0.294490759303 L -1.05352589835, -0.316359260175 L -0.957750816685, -0.287599327432 L -0.963497070844, -0.267718872094 L -0.968830705512, -0.247723765629 L -0.973749436549, -0.227622570981 L -0.9782511575, -0.207423896525 L -0.982333940494, -0.187136392382 L -0.985996037071, -0.166768746716 L -0.98923587893, -0.146329682011 L -0.992052078604, -0.125827951335 L -0.99444343005, -0.105272334595 L -0.996408909166, -0.0846716347726 L -0.997947674232, -0.0640346741587 L -0.99905906627, -0.0433702905713 L -0.999742609323, -0.0226873335728 L -0.999998010662, -0.00199466067959 L -0.999825160913, 0.0186988664309 L -0.999224134097, 0.0393843857155 L -0.998195187606, 0.0600530385606 L -0.996738762088, 0.0806959735752 L -0.99485548126, 0.101304350383 L -0.992546151641, 0.121869343405 L -0.989811762206, 0.142382145645 L -0.986653483962, 0.162833972454 L -0.983072669448, 0.183216065299 L -0.979070852155, 0.203519695508 L -0.974649745869, 0.223736168012 L -0.969811243938, 0.243856825068 L -0.964557418458, 0.263873049965 L -0.958890519391, 0.283776270717 L -0.952812973598, 0.303557963729 L -0.946327383799, 0.323209657454 L -0.939436527461, 0.342722936016 L -0.932143355607, 0.362089442816 L -0.92445099155, 0.381300884108 L -0.916362729562, 0.400349032557 L -0.907882033456, 0.419225730755 L -0.899012535107, 0.43792289472 L -0.889758032894, 0.456432517356 L -0.880122490077, 0.47474667188 L -0.870110033094, 0.492857515219 L -0.859724949801, 0.510757291372 L -0.848971687629, 0.528438334722 L -0.837854851684, 0.54589307333 L -0.826379202772, 0.56311403217 L -0.814549655362, 0.580093836332 L -0.80237127548, 0.596825214183 L -0.789849278543, 0.613301000476 L -0.776989027118, 0.629514139426 L -0.763796028635, 0.645457687724 L -0.750275933019, 0.661124817514 L -0.736434530278, 0.676508819317 L -0.722277748021, 0.691603104905 L -0.707811648915, 0.706401210121 L -0.693042428097, 0.720896797647 L -0.677976410513, 0.73508365972 L -0.745774051565 ,0.808592025692&#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(217, 239, 139, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(150,150,150)&#39;, &#39;width&#39;: 0.45},
+    &#39;path&#39;: &#39;M -1.04306896242, -0.349295204153 L -1.03564145619, -0.370738147786 L -1.02777318808, -0.392023307812 L -1.01946750677, -0.413141625413 L -1.01072794709, -0.434084112779 L -1.00155822855, -0.454841856932 L -0.991962253719, -0.475406023518 L -0.98194410657, -0.495767860568 L -0.971508050761, -0.515918702227 L -0.960658527805, -0.535849972432 L -0.949400155185, -0.555553188574 L -0.937737724387, -0.575019965099 L -0.925676198861, -0.59424201708 L -0.913220711909, -0.613211163744 L -0.900376564501, -0.631919331954 L -0.887149223019, -0.65035855964 L -0.873544316926, -0.668520999196 L -0.859567636379, -0.68639892081 L -0.845225129756, -0.703984715764 L -0.830522901129, -0.721270899663 L -0.815467207666, -0.738250115626 L -0.800064456966, -0.754915137416 L -0.784321204334, -0.771258872514 L -0.768244149991, -0.787274365139 L -0.751840136219, -0.802954799207 L -0.735116144455, -0.818293501234 L -0.718079292315, -0.833283943172 L -0.700736830564, -0.847919745194 L -0.683096140037, -0.862194678403 L -0.66516472849, -0.876102667484 L -0.646950227407, -0.889637793295 L -0.628460388756, -0.902794295377 L -0.609703081685, -0.915566574414 L -0.590686289174, -0.927949194613 L -0.57141810464, -0.939936886014 L -0.551906728489, -0.95152454674 L -0.532160464629, -0.962707245161 L -0.512187716935, -0.973480221998 L -0.49199698567, -0.983838892345 L -0.471596863871, -0.993778847625 L -0.450996033689, -1.00329585746 L -0.430203262697, -1.01238587148 L -0.409227400153, -1.02104502103 L -0.388077373242, -1.02926962084 L -0.366762183269, -1.03705617057 L -0.345290901832, -1.04440135633 L -0.323672666962, -1.05130205206 L -0.30191667923, -1.05775532086 L -0.280032197836, -1.06375841627 L -0.258028536663, -1.06930878341 L -0.23591506032, -1.07440406008 L -0.213701180148, -1.07904207777 L -0.191396350224, -1.08322086258 L -0.16901006333, -1.08693863603 L -0.146551846914, -1.09019381587 L -0.12403125904, -1.09298501672 L -0.101457884315, -1.09531105067 L -0.0788413298117, -1.09717092776 L -0.0561912209808, -1.09856385644 L -0.0335171975526, -1.09948924391 L -0.0108289094355, -1.09994669631 L 0.0118639873909, -1.09993601896 L 0.0345518349859, -1.0994572164 L 0.0314107590781, -0.999506560366 L 0.0107854430827, -0.999941835417 L -0.00984446312319, -0.999951542099 L -0.0304701795932, -0.99953567628 L -0.0510829281644, -0.998694414949 L -0.0716739361925, -0.997428116142 L -0.0922344402862, -0.995737318787 L -0.112755690036, -0.993622742475 L -0.13322895174, -0.991085287157 L -0.153645512118, -0.988126032754 L -0.173996682022, -0.984746238706 L -0.194273800135, -0.980947343429 L -0.214468236654, -0.976730963708 L -0.234571396967, -0.972098894005 L -0.254574725305, -0.967053105696 L -0.274469708391, -0.961595746234 L -0.294247879056, -0.955729138235 L -0.313900819847, -0.949455778485 L -0.333420166608, -0.942778336885 L -0.352797612038, -0.935699655306 L -0.37202490923, -0.928222746388 L -0.391093875179, -0.920350792251 L -0.409996394263, -0.912087143145 L -0.428724421701, -0.903435316023 L -0.447269986973, -0.894398993041 L -0.465625197214, -0.884982019998 L -0.483782240572, -0.875188404692 L -0.501733389535, -0.865022315218 L -0.519471004218, -0.854488078195 L -0.536987535612, -0.843590176921 L -0.554275528804, -0.832333249467 L -0.571327626142, -0.820722086706 L -0.58813657037, -0.808761630268 L -0.604695207718, -0.79645697044 L -0.620996490943, -0.783813344003 L -0.637033482331, -0.770836131995 L -0.65279935665, -0.757530857429 L -0.66828740405, -0.74390318294 L -0.683491032927, -0.72995890837 L -0.698403772719, -0.715703968308 L -0.713019276667, -0.701144429558 L -0.727331324514, -0.68628648856 L -0.741333825151, -0.671136468751 L -0.755020819208, -0.655700817875 L -0.768386481596, -0.63998610524 L -0.781425123981, -0.623999018919 L -0.794131197206, -0.607746362905 L -0.806499293653, -0.591235054219 L -0.818524149547, -0.574472119958 L -0.83020064719, -0.557464694313 L -0.841523817146, -0.540220015527 L -0.852488840352, -0.522745422817 L -0.863091050168, -0.505048353249 L -0.873325934368, -0.487136338575 L -0.883189137055, -0.469017002024 L -0.892676460518, -0.450698055062 L -0.901783867017, -0.432187294107 L -0.910507480503, -0.413492597211 L -0.918843588265, -0.394621920709 L -0.926788642514, -0.37558329583 L -0.934339261889, -0.356384825283 L -0.941492232899, -0.337034679805 L -0.948244511287, -0.317541094685 L -1.04306896242 ,-0.349295204153&#39;,
+    &#39;type&#39;: &#39;path&#39;},
+   {&#39;fillcolor&#39;: &#39;rgba(166, 217, 106, 0.75)&#39;,
+    &#39;layer&#39;: &#39;below&#39;,
+    &#39;line&#39;: {&#39;color&#39;: &#39;rgb(150,150,150)&#39;, &#39;width&#39;: 0.45},
+    &#39;path&#39;: &#39;M 0.0690695714822, -1.09782940127 L 0.091567336681, -1.09618220331 L 0.114026593448, -1.09407400846 L 0.136437896596, -1.09150570332 L 0.158791821101, -1.08847836798 L 0.181078966074, -1.08499327558 L 0.203289958706, -1.08105189177 L 0.225415458217, -1.07665587408 L 0.247446159778, -1.07180707126 L 0.26937279843, -1.06650752246 L 0.291186152974, -1.06075945639 L 0.312877049856, -1.05456529038 L 0.334436367018, -1.04792762938 L 0.35585503774, -1.04084926484 L 0.377124054449, -1.03333317355 L 0.39823447251, -1.02538251638 L 0.419177413985, -1.01700063697 L 0.439944071369, -1.0081910603 L 0.460525711291, -0.998957491208 L 0.480913678191, -0.989303812855 L 0.501099397957, -0.979234085072 L 0.52107438153, -0.968752542661 L 0.540830228478, -0.95786359361 L 0.560358630525, -0.946571817242 L 0.579651375046, -0.934881962286 L 0.598700348523, -0.922798944883 L 0.617497539954, -0.910327846521 L 0.636035044223, -0.897473911888 L 0.654305065426, -0.884242546679 L 0.672299920148, -0.870639315313 L 0.690012040695, -0.856669938597 L 0.707433978274, -0.842340291321 L 0.724558406131, -0.827656399785 L 0.741378122626, -0.812624439265 L 0.757886054268, -0.797250731418 L 0.774075258683, -0.78154174162 L 0.78993892754, -0.765504076252 L 0.805470389408, -0.749144479915 L 0.820663112568, -0.732469832601 L 0.835510707755, -0.715487146794 L 0.850006930847, -0.698203564522 L 0.864145685491, -0.680626354358 L 0.877921025667, -0.662762908355 L 0.891327158188, -0.644620738944 L 0.904358445134, -0.626207475774 L 0.917009406229, -0.607530862498 L 0.92927472114, -0.588598753525 L 0.941149231717, -0.569419110707 L 0.952627944163, -0.55 L 0.963706031131, -0.530349588066 L 0.974378833758, -0.510476138839 L 0.984641863621, -0.490388010054 L 0.994490804627, -0.470093649726 L 1.00392151483, -0.449601592601 L 1.01293002816, -0.428920456567 L 1.0215125561, -0.408058939027 L 1.02966548931, -0.387025813245 L 1.03738539908, -0.365829924653 L 1.04466903882, -0.344480187132 L 1.05151334542, -0.322985579266 L 1.0579154405, -0.301355140562 L 1.0638726317, -0.27959796765 L 1.06938241373, -0.257723210461 L 1.07444246945, -0.235740068372 L 1.07905067088, -0.213657786342 L 1.08320508005, -0.191485651025 L 1.08690394983, -0.16923298686 L 1.09014572467, -0.146909152154 L 1.09292904124, -0.124523535145 L 1.09525272904, -0.10208555005 L 1.09711581084, -0.0796046331144 L 1.09851750312, -0.057090238634 L 1.0994572164, -0.0345518349859 L 0.999506560366, -0.0314107590781 L 0.99865227556, -0.05190021694 L 0.997378009851, -0.0723678482858 L 0.995684299128, -0.0928050455004 L 0.993571855677, -0.113203213768 L 0.991041567881, -0.133553774686 L 0.988094499846, -0.153848169873 L 0.984731890957, -0.174077864568 L 0.980955155349, -0.19423435122 L 0.976765881321, -0.214309153065 L 0.972165830661, -0.234293827692 L 0.967156937911, -0.254179970591 L 0.961741309549, -0.273959218692 L 0.955921223105, -0.293623253878 L 0.949699126202, -0.313163806484 L 0.943077635529, -0.332572658775 L 0.936059535739, -0.351841648405 L 0.928647778277, -0.370962671843 L 0.920845480141, -0.389927687788 L 0.912655922569, -0.408728720547 L 0.904082549661, -0.427357863387 L 0.895128966928, -0.445807281867 L 0.88579893978, -0.464069217127 L 0.876096391937, -0.482135989151 L 0.866025403784, -0.5 L 0.855590210652, -0.517653737006 L 0.844795201036, -0.535089775931 L 0.833644914753, -0.55230078409 L 0.822144041031, -0.569279523431 L 0.810297416534, -0.586018853586 L 0.798110023334, -0.602511734868 L 0.78558698681, -0.618751231234 L 0.772733573497, -0.634730513202 L 0.759555188868, -0.650442860722 L 0.746057375062, -0.665881666001 L 0.732245808553, -0.681040436286 L 0.718126297763, -0.695912796592 L 0.703704780621, -0.710492492382 L 0.688987322062, -0.724773392198 L 0.673980111478, -0.738749490241 L 0.658689460119, -0.752414908896 L 0.643121798431, -0.765763901201 L 0.627283673359, -0.77879085327 L 0.611181745589, -0.791490286648 L 0.594822786751, -0.803856860617 L 0.578213676567, -0.815885374444 L 0.561361399958, -0.827570769564 L 0.544273044112, -0.838908131712 L 0.526955795497, -0.849892692987 L 0.509416936841, -0.860519833856 L 0.491663844071, -0.8707850851 L 0.473703983209, -0.880684129692 L 0.455544907234, -0.890212804611 L 0.437194252901, -0.899367102595 L 0.418659737537, -0.908143173825 L 0.39994915579, -0.916537327545 L 0.38107037635, -0.924546033612 L 0.362031338646, -0.932165923985 L 0.342840049499, -0.939393794135 L 0.323504579764, -0.946226604399 L 0.304033060925, -0.952661481254 L 0.284433681687, -0.958695718527 L 0.264714684522, -0.964326778534 L 0.244884362209, -0.969552293146 L 0.224951054344, -0.974370064785 L 0.204923143834, -0.978778067348 L 0.184809053369, -0.982774447059 L 0.164617241885, -0.986357523251 L 0.144356201001, -0.989525789069 L 0.12403445145, -0.992277912106 L 0.103660539498, -0.994612734963 L 0.0832430333464, -0.996529275736 L 0.0627905195293, -0.998026728428 L 0.0690695714822 ,-1.09782940127&#39;,
+    &#39;type&#39;: &#39;path&#39;}],
+  &#39;showlegend&#39;: False,
+  &#39;title&#39;: &#39;Chord diagram&#39;,
+  &#39;width&#39;: 400,
+  &#39;xaxis&#39;: {&#39;showgrid&#39;: False,
+   &#39;showline&#39;: False,
+   &#39;showticklabels&#39;: False,
+   &#39;title&#39;: &#39;&#39;,
+   &#39;zeroline&#39;: False},
+  &#39;yaxis&#39;: {&#39;showgrid&#39;: False,
+   &#39;showline&#39;: False,
+   &#39;showticklabels&#39;: False,
+   &#39;title&#39;: &#39;&#39;,
+   &#39;zeroline&#39;: False}}}</pre>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+
 </div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<div>
-    <a href="https://plot.ly/~chelsea_lyn/9654/" target="_blank" title="Diagram of Facebook Comments" style="display: block; text-align: center;"><img src="https://plot.ly/~chelsea_lyn/9654.png" alt="Ideograms" style="max-width: 100%;width: 400px;"  width="400" onerror="this.onerror=null;this.src='https://plot.ly/404.png';" /></a>
-    <script data-plotly="chelsea_lyn:9654"  src="https://plot.ly/embed.js" async></script>
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">plotly.offline</span> <span class="kn">import</span> <span class="n">init_notebook_mode</span>
+<span class="n">init_notebook_mode</span><span class="p">(</span><span class="n">connected</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">ribbon_info</span><span class="o">+</span><span class="n">ideograms</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;chord-diagram-Fb&#39;</span><span class="p">)</span> 
+</pre></div>
+
 </div>
 </div>
 </div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<script>requirejs.config({paths: { 'plotly': ['https://cdn.plot.ly/plotly-latest.min']},});if(!window.Plotly) {{require(['plotly'],function(plotly) {window.Plotly=plotly;});}}</script>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[32]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/3674.embed" height="400px" width="400px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1272,8 +1738,7 @@ If <code>sigma_inv</code> is the inverse permutation of <code>sigma</code>, we g
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1283,4 +1748,7 @@ If <code>sigma_inv</code> is the inverse permutation of <code>sigma</code>, we g
 </div>
 </div>
 </div>
-</div>{% endraw %}
+</div>
+ 
+
+{% endraw %}
