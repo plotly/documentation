@@ -22,7 +22,10 @@ redirect_from: ggplot2/reference/
 </header>
 
 <div class="content container">
-	<div class="search-header">Search</div>
+  <div class="search-header">
+    <img src="https://www.algolia.com/static_assets/images/flat2/algolia/algolia-logo_badge-598a1fe6.svg" alt="Algolia" height="22"/>
+    Search
+  </div>
 	<input type="text" class="algolia__input js-algolia__input" autocomplete="off" name="query" placeholder="Search Plotly's R & ggplot2 Docs" />
 	<!-- <nav class="--sidebar-body watch" id="search"> -->
 
