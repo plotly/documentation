@@ -31,7 +31,6 @@ redirect_from: ggplot2/reference/
 	</div>
 </div>
 
-
 {% assign languagelistimg = site.posts | where:"page_type":"example_index" | where:"language","ggplot2"  | where:"has_thumbnail",true | sort: "order"  %}
 {% assign languagelist = site.posts | where:"page_type":"example_index" | where:"language","ggplot2" %}
 
