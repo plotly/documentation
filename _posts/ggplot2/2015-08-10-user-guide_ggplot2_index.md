@@ -9,7 +9,7 @@ page_type: user_guide
 ignore_header: true
 ---
 
-## Plotly and ggplot2 UseR Guide
+#### Introduction
 
 
 
@@ -40,27 +40,80 @@ chart_link
 
 `plotly::ggplotly` returns a `plotly` object. When you print it in your console, the plotly graph will be rendered in your web browser or in R Studio's viewer.
 
-Plotly graphs can also be published on the web by calling `plotly_POST(ggplotly(gg))`. [Learn how to get started with publishing plotly graphs to the web](https://plot.ly/r/).
+Plotly graphs can also be published on the web by calling `api_create(ggplotly(gg))`. [Learn how to get started with publishing plotly graphs to the web](https://plot.ly/r/).
 
-<h4><a name="modify-ggplot2-figure" href="#modify-ggplot2-figure">Modifying the <code>plotly</code> figure after ggplot2 conversion</a></h4>
+#### Cutomizing the Layout
 
-Sometimes it's helpful to modify your figure *after* you have converted it from ggplot2 to `plotly` *before* it is rendered. You may want to change the way `ggplotly` chose to translate the figure, or modify graph properties that just aren't available in `ggplot2`, like hover text.
+Since the `ggplotly()` function returns a plotly object, we can manipulate that object in the same way that we would manipulate any other plotly object. A simple and useful application of this is to specify interaction modes, like plotly.js' `layout.dragmode` for specifying the mode of click+drag events.
 
-In this case, use `plotly_build`. Consider this simple ggplot2 figure:
 
 
 ```r
-df <- data.frame(x=c(1, 2, 3, 4), y=c(1, 5, 3, 5), group=c('A', 'A', 'B', 'B'))
-g <- ggplot(data=df, aes(x=x, y=y, colour=group)) + geom_point()
-g <- ggplotly(g)
+p <- ggplot(fortify(forecast::gold), aes(x, y)) + geom_line()
+
+gg <- ggplotly(p)
+
+gg <- layout(gg, dragmode = "pan")
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(g, filename="ggplot-user-guide/2")
+chart_link = api_create(gg, filename="ggplot-user-guide/2")
 chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/5153.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Modifying Layers
+
+As mentioned previously, `ggplotly()` translates each ggplot2 layer into one or more plotly.js traces. In this translation, it is forced to make a number of assumptions about trace attribute values that may or may not be appropriate for the use case. The `style()` function is useful in this scenario, as it provides a way to modify trace attribute values in a plotly object. Furthermore, you can use the `plotly_build()` function.
+
+#### Interactively View the JSON Object
+
+Before using the `style()` or `plotly_build` functions, you may want to inspect the actual traces in a given plotly object using the plotly_json() function
+
+
+```r
+plotly_json(p)
+```
+
+
+#### Modify with Style
+
+Generally speaking, the `style()` function is designed modify attribute values of trace(s) within a plotly object, which is primarily useful for customizing defaults produced via `ggplotly()`
+
+
+```r
+p <- ggplot(fortify(forecast::gold), aes(x, y)) + geom_line()
+
+gg <- ggplotly(p)
+
+gg <- style(gg, line = list(color = 'gold'), hoverinfo = "y", traces = 1)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(gg, filename="ggplot-user-guide/3")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5178.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Modify with Build
+
+
+```r
+df <- data.frame(x=c(1, 2, 3, 4), y=c(1, 5, 3, 5), group=c('A', 'A', 'B', 'B'))
+
+g <- ggplot(data=df, aes(x=x, y=y, colour=group)) + geom_point()
+
+g <- ggplotly(g)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(g, filename="ggplot-user-guide/4")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5180.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 Here is the ggplot2 figure described as a plotly object
 
@@ -273,18 +326,18 @@ str(p)
 ##   .. ..$ cloud              : logi FALSE
 ##   ..$ source   : chr "A"
 ##   ..$ attrs    :List of 1
-##   .. ..$ 2fa85c8b523f:List of 4
+##   .. ..$ 14102491252b:List of 4
 ##   .. .. ..$ x     :Class 'formula'  language ~x
-##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000003463fc0> 
+##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000005ec5030> 
 ##   .. .. ..$ y     :Class 'formula'  language ~y
-##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000003463fc0> 
+##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000005ec5030> 
 ##   .. .. ..$ colour:Class 'formula'  language ~group
-##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000003463fc0> 
+##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000005ec5030> 
 ##   .. .. ..$ type  : chr "scatter"
 ##   .. .. ..- attr(*, "class")= chr "plotly_eval"
-##   ..$ cur_data : chr "2fa85c8b523f"
+##   ..$ cur_data : chr "14102491252b"
 ##   ..$ visdat   :List of 1
-##   .. ..$ 2fa85c8b523f:function (y)  
+##   .. ..$ 14102491252b:function (y)  
 ##   ..$ highlight:List of 6
 ##   .. ..$ on        : chr "plotly_click"
 ##   .. ..$ persistent: logi FALSE
@@ -359,7 +412,7 @@ str(p)
 ##   .. ..- attr(*, "class")= chr "html_dependency"
 ##   ..$ :List of 10
 ##   .. ..$ name      : chr "plotlyjs"
-##   .. ..$ version   : chr "1.29.2"
+##   .. ..$ version   : chr "1.31.1"
 ##   .. ..$ src       :List of 1
 ##   .. .. ..$ file: chr "C:/Users/Branden/Documents/R/win-library/3.4/plotly/htmlwidgets/lib/plotlyjs"
 ##   .. ..$ meta      : NULL
@@ -370,7 +423,7 @@ str(p)
 ##   .. ..$ package   : NULL
 ##   .. ..$ all_files : logi TRUE
 ##   .. ..- attr(*, "class")= chr "html_dependency"
-##  $ elementId    : chr "2fa837a2637a"
+##  $ elementId    : NULL
 ##  $ preRenderHook:function (p, registerFrames = TRUE)  
 ##  $ jsHooks      :List of 1
 ##   ..$ render:List of 1
@@ -659,9 +712,10 @@ chart_link = api_create(p)
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5167.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5184.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-#### More resources
+#### Resources
+
 - [ggplot2 examples](https://plot.ly/ggplot2)
 - [Plotly's native R DSL](https://plot.ly/r)
 - [Plotly's declaritive graph description reference](https://plot.ly/r/reference)
