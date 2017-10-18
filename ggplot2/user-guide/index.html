@@ -13001,36 +13001,24 @@
 		
 
 		
-		
-		
-		
-		
-		
-		
-	
-		
-		
-		
-
-		
-		
-		
-		
-		
-		
-		
-	
-		
-		
-		
-
-		
 			<li class="lang-nav--item">
                 <a class="lang_nav_button " href="/matlab/user-guide/">
                     <div><img src="https://plot.ly/gh-pages/documentation/static/images/MATLAB-small.png" alt="matlab" class="lang_nav_thum"></div>
                     MATLAB
                 </a>
             </li>
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+
 		
 		
 		
@@ -23033,7 +23021,7 @@
 
 			<!-- Start Plotly Basics Section -->
 			<section class="tutorial-content">
-				<h2>Plotly and ggplot2 UseR Guide</h2>
+				<h4>Introduction</h4>
 
 <p>Plotly for R is an interactive, browser-based charting library built on the open source JavaScript graphing library <a href="https://plot.ly/javascript" target="_blank">plotly.js</a>. It works entirely locally in your web-browser via the <a target="_blank" href="http://www.htmlwidgets.org/">HTML widgets framework</a>.</p>
 
@@ -23058,23 +23046,62 @@
 
 <p><code>plotly::ggplotly</code> returns a <code>plotly</code> object. When you print it in your console, the plotly graph will be rendered in your web browser or in R Studio&#39;s viewer.</p>
 
-<p>Plotly graphs can also be published on the web by calling <code>plotly_POST(ggplotly(gg))</code>. <a href="https://plot.ly/r/">Learn how to get started with publishing plotly graphs to the web</a>.</p>
+<p>Plotly graphs can also be published on the web by calling <code>api_create(ggplotly(gg))</code>. <a href="https://plot.ly/r/">Learn how to get started with publishing plotly graphs to the web</a>.</p>
 
-<h4><a name="modify-ggplot2-figure" href="#modify-ggplot2-figure">Modifying the <code>plotly</code> figure after ggplot2 conversion</a></h4>
+<h4>Cutomizing the Layout</h4>
 
-<p>Sometimes it&#39;s helpful to modify your figure <em>after</em> you have converted it from ggplot2 to <code>plotly</code> <em>before</em> it is rendered. You may want to change the way <code>ggplotly</code> chose to translate the figure, or modify graph properties that just aren&#39;t available in <code>ggplot2</code>, like hover text.</p>
+<p>Since the <code>ggplotly()</code> function returns a plotly object, we can manipulate that object in the same way that we would manipulate any other plotly object. A simple and useful application of this is to specify interaction modes, like plotly.js&#39; <code>layout.dragmode</code> for specifying the mode of click+drag events.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="n">fortify</span><span class="p">(</span><span class="n">forecast</span><span class="o">::</span><span class="n">gold</span><span class="p">),</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_line</span><span class="p">()</span><span class="w">
 
-<p>In this case, use <code>plotly_build</code>. Consider this simple ggplot2 figure:</p>
+</span><span class="n">gg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplotly</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w">
+
+</span><span class="n">gg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">layout</span><span class="p">(</span><span class="n">gg</span><span class="p">,</span><span class="w"> </span><span class="n">dragmode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"pan"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+</span><span class="n">chart_link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">api_create</span><span class="p">(</span><span class="n">gg</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="o">=</span><span class="s2">"ggplot-user-guide/2"</span><span class="p">)</span><span class="w">
+</span><span class="n">chart_link</span><span class="w">
+</span></code></pre></div>
+<iframe src="https://plot.ly/~RPlotBot/5153.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+<h4>Modifying Layers</h4>
+
+<p>As mentioned previously, <code>ggplotly()</code> translates each ggplot2 layer into one or more plotly.js traces. In this translation, it is forced to make a number of assumptions about trace attribute values that may or may not be appropriate for the use case. The <code>style()</code> function is useful in this scenario, as it provides a way to modify trace attribute values in a plotly object. Furthermore, you can use the <code>plotly_build()</code> function.</p>
+
+<h4>Interactively View the JSON Object</h4>
+
+<p>Before using the <code>style()</code> or <code>plotly_build</code> functions, you may want to inspect the actual traces in a given plotly object using the plotly_json() function</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">plotly_json</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w">
+</span></code></pre></div>
+<h4>Modify with Style</h4>
+
+<p>Generally speaking, the <code>style()</code> function is designed modify attribute values of trace(s) within a plotly object, which is primarily useful for customizing defaults produced via <code>ggplotly()</code></p>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="n">fortify</span><span class="p">(</span><span class="n">forecast</span><span class="o">::</span><span class="n">gold</span><span class="p">),</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_line</span><span class="p">()</span><span class="w">
+
+</span><span class="n">gg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplotly</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w">
+
+</span><span class="n">gg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">style</span><span class="p">(</span><span class="n">gg</span><span class="p">,</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'gold'</span><span class="p">),</span><span class="w"> </span><span class="n">hoverinfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"y"</span><span class="p">,</span><span class="w"> </span><span class="n">traces</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+</span><span class="n">chart_link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">api_create</span><span class="p">(</span><span class="n">gg</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="o">=</span><span class="s2">"ggplot-user-guide/3"</span><span class="p">)</span><span class="w">
+</span><span class="n">chart_link</span><span class="w">
+</span></code></pre></div>
+<iframe src="https://plot.ly/~RPlotBot/5178.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+<h4>Modify with Build</h4>
 <div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">),</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="p">),</span><span class="w"> </span><span class="n">group</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span><span class="w"> </span><span class="s1">'A'</span><span class="p">,</span><span class="w"> </span><span class="s1">'B'</span><span class="p">,</span><span class="w"> </span><span class="s1">'B'</span><span class="p">))</span><span class="w">
+
 </span><span class="n">g</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="o">=</span><span class="n">group</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_point</span><span class="p">()</span><span class="w">
+
 </span><span class="n">g</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplotly</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="w">
 
 </span><span class="c1"># Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-</span><span class="n">chart_link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">api_create</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="o">=</span><span class="s2">"ggplot-user-guide/2"</span><span class="p">)</span><span class="w">
+</span><span class="n">chart_link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">api_create</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="o">=</span><span class="s2">"ggplot-user-guide/4"</span><span class="p">)</span><span class="w">
 </span><span class="n">chart_link</span><span class="w">
 </span></code></pre></div>
-<iframe src="https://plot.ly/~RPlotBot/5153.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5180.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 <p>Here is the ggplot2 figure described as a plotly object</p>
 <div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotly_build</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="w">
@@ -23280,18 +23307,18 @@
 ##   .. ..$ cloud              : logi FALSE
 ##   ..$ source   : chr "A"
 ##   ..$ attrs    :List of 1
-##   .. ..$ 2fa85c8b523f:List of 4
+##   .. ..$ 14102491252b:List of 4
 ##   .. .. ..$ x     :Class 'formula'  language ~x
-##   .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x0000000003463fc0&gt; 
+##   .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x0000000005ec5030&gt; 
 ##   .. .. ..$ y     :Class 'formula'  language ~y
-##   .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x0000000003463fc0&gt; 
+##   .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x0000000005ec5030&gt; 
 ##   .. .. ..$ colour:Class 'formula'  language ~group
-##   .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x0000000003463fc0&gt; 
+##   .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x0000000005ec5030&gt; 
 ##   .. .. ..$ type  : chr "scatter"
 ##   .. .. ..- attr(*, "class")= chr "plotly_eval"
-##   ..$ cur_data : chr "2fa85c8b523f"
+##   ..$ cur_data : chr "14102491252b"
 ##   ..$ visdat   :List of 1
-##   .. ..$ 2fa85c8b523f:function (y)  
+##   .. ..$ 14102491252b:function (y)  
 ##   ..$ highlight:List of 6
 ##   .. ..$ on        : chr "plotly_click"
 ##   .. ..$ persistent: logi FALSE
@@ -23366,7 +23393,7 @@
 ##   .. ..- attr(*, "class")= chr "html_dependency"
 ##   ..$ :List of 10
 ##   .. ..$ name      : chr "plotlyjs"
-##   .. ..$ version   : chr "1.29.2"
+##   .. ..$ version   : chr "1.31.1"
 ##   .. ..$ src       :List of 1
 ##   .. .. ..$ file: chr "C:/Users/Branden/Documents/R/win-library/3.4/plotly/htmlwidgets/lib/plotlyjs"
 ##   .. ..$ meta      : NULL
@@ -23377,7 +23404,7 @@
 ##   .. ..$ package   : NULL
 ##   .. ..$ all_files : logi TRUE
 ##   .. ..- attr(*, "class")= chr "html_dependency"
-##  $ elementId    : chr "2fa837a2637a"
+##  $ elementId    : NULL
 ##  $ preRenderHook:function (p, registerFrames = TRUE)  
 ##  $ jsHooks      :List of 1
 ##   ..$ render:List of 1
@@ -23605,9 +23632,9 @@
 </span><span class="n">chart_link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">api_create</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w">
 </span><span class="n">chart_link</span><span class="w">
 </span></code></pre></div>
-<iframe src="https://plot.ly/~RPlotBot/5167.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5184.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-<h4>More resources</h4>
+<h4>Resources</h4>
 
 <ul>
 <li><a href="https://plot.ly/ggplot2">ggplot2 examples</a></li>
