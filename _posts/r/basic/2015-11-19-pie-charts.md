@@ -35,7 +35,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.6.9000'
+## [1] '4.7.1.9000'
 ```
 
 ### Basic Pie Chart
@@ -54,7 +54,7 @@ p <- plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie') %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="pie/basic")
+chart_link = api_create(p, filename="pie/basic")
 chart_link
 ```
 
@@ -87,14 +87,14 @@ p <- plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="pie/styled")
+chart_link = api_create(p, filename="pie/styled")
 chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3829.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Subplots
-
+In order to create pie chart subplots, you need to use the [domain](https://plot.ly/javascript/reference/#pie-domain) attribute. It is important to note that the `X` array set the horizontal position whilst the `Y` array sets the vertical. For example, `x=[0,0.5], y=[0, 0.5]` would mean the bottom left position of the plot.
 
 ```r
 library(plotly)
@@ -113,11 +113,18 @@ p <- plot_ly() %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="pie/subplots")
+chart_link = api_create(p, filename="pie/subplots")
+```
+
+```
+## Error in as.vector(x, "list"): cannot coerce type 'closure' to vector of type 'list'
+```
+
+```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3823.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/3829.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 See more examples of subplots [here](https://plot.ly/r/subplots/).
 
@@ -141,7 +148,7 @@ p <- mtcars %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="pie/donut")
+chart_link = api_create(p, filename="pie/donut")
 chart_link
 ```
 
