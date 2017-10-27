@@ -1,0 +1,66 @@
+---
+name: Categorical Dot Plot
+plot_url: https://plot.ly/~pbugnion/467
+language: scala
+suite: line_and_scatter
+order: 5
+sitemap: false
+arrangement: horizontal
+---
+val country = List("Switzerland (2011)",
+  "Chile (2013)",
+  "Japan (2014)",
+  "United States (2012)",
+  "Slovenia (2014)",
+  "Canada (2011)",
+  "Poland (2010)",
+  "Estonia (2015)",
+  "Luxembourg (2013)",
+  "Portugal (2011)")
+
+val votingPopulation = List(40.0, 45.7, 52, 53.6, 54.1, 54.2, 54.5, 54.7, 55.1, 56.6)
+val registeredVoters = List(49.1, 42, 52.7, 84.3, 51.7, 61.1, 55.3, 64.2, 91.1, 58.9)
+
+// Options common to both traces
+val commonOptions = ScatterOptions()
+  .mode(ScatterMode.Marker)
+  .marker(MarkerOptions()
+    .symbol("circle")
+    .lineWidth(1)
+    .size(16))
+
+val p = Plot()
+  .withScatter(votingPopulation, country, commonOptions
+    .name("Percent of estimated voting age population")
+    .updatedMarker(_.color(156, 165, 196, 0.95).lineColor(156, 165, 196, 1.0)))
+  .withScatter(registeredVoters, country, commonOptions
+    .name("Percent of estimated registered voters")
+    .updatedMarker(_.color(204, 204, 204, 0.95).lineColor(217, 217, 217, 1.0)))
+  .xAxisOptions( // Plot axis options
+    AxisOptions()
+      .noGrid
+      .withLine
+      .lineColor(102, 102, 102)
+      .titleColor(204, 204, 204)
+      .tickFontColor(102, 102, 102)
+      .noAutoTick
+      .tickSpacing(10.0)
+      .tickColor(102, 102, 102))
+
+// Add the plot to the figure
+val figure = Figure()
+  .plot(p)
+  .title("Votes cast for ten lowest voting age population in OECD countries")
+  .legend(LegendOptions()
+    .yAnchor(YAnchor.Middle)
+    .xAnchor(XAnchor.Right))
+  .leftMargin(140)
+  .rightMargin(40)
+  .bottomMargin(50)
+  .topMargin(80)
+  .width(800)
+  .height(600)
+  .paperBackgroundColor(254, 247, 234)
+  .plotBackgroundColor(254, 247, 234)
+
+draw(figure, "lowest-oecd-votes-cast", writer.FileOptions(overwrite=true))

@@ -1,0 +1,122 @@
+---
+name: Data labels on the plot
+language: scala
+suite: line_and_scatter
+plot_url: https://plot.ly/~pbugnion/469
+order: 4
+sitemap: false
+arrangement: horizontal
+---
+import co.theasi.plotly
+
+val gdpAmerica = Vector(12779.379640000001, 3822.1370840000004, 9065.800825, 36319.235010000004,
+  13171.63885, 7006.580419, 9645.06142, 8948.102923, 6025.374752000001,
+  6873.262326000001, 5728.353514, 5186.050003, 1201.637154,
+  3548.3308460000003, 7320.880262000001, 11977.57496, 2749.320965,
+  9809.185636, 4172.838464, 7408.905561, 19328.70901, 18008.50924,
+  42951.65309, 10611.46299, 11415.805690000001)
+
+val lifeExpectancyAmerica = Vector(75.32, 65.554, 72.39, 80.653, 78.553, 72.889,
+  78.782, 78.273, 72.235, 74.994, 71.878, 70.259, 60.916, 70.198, 72.567,
+  76.195, 72.899, 75.537, 71.752, 71.421, 78.746, 69.819, 78.242, 76.384, 73.747)
+
+val labelAmerica = Vector(
+  "Argentina",
+  "Bolivia",
+  "Brazil",
+  "Canada",
+  "Chile",
+  "Colombia",
+  "Costa Rica",
+  "Cuba",
+  "Dominican Republic",
+  "Ecuador",
+  "El Salvador",
+  "Guatemala",
+  "Haiti",
+  "Honduras",
+  "Jamaica",
+  "Mexico",
+  "Nicaragua",
+  "Panama",
+  "Paraguay",
+  "Peru",
+  "Puerto Rico",
+  "Trinidad and Tobago",
+  "United States",
+  "Uruguay",
+  "Venezuela"
+)
+
+val gdpEurope = Vector(5937.029525999999, 36126.4927, 33692.60508, 7446.298803, 10680.79282,
+  14619.222719999998, 22833.30851, 35278.41874, 33207.0844, 30470.0167,
+  32170.37442, 27538.41188, 18008.94444, 36180.789189999996, 40675.99635,
+  28569.7197, 9253.896111, 36797.93332, 49357.19017, 15389.924680000002,
+  20509.64777, 10808.47561, 9786.534714, 18678.31435, 25768.25759,
+  28821.0637, 33859.74835, 37506.419069999996, 8458.276384, 33203.2612)
+
+val lifeExpectancyEurope = Vector(76.423, 79.829, 79.441, 74.852, 73.005, 75.748, 76.486,
+  78.332, 79.313, 80.657, 79.406, 79.483, 73.33800000000001, 81.757, 78.885, 80.546,
+  74.543, 79.762, 80.196, 75.563, 78.098, 72.476, 74.002, 74.663, 77.926,
+  80.941, 80.884, 81.70100000000001, 71.777, 79.425)
+
+val labelEurope = Vector(
+  "Albania",
+  "Austria",
+  "Belgium",
+  "Bosnia and Herzegovina",
+  "Bulgaria",
+  "Croatia",
+  "Czech Republic",
+  "Denmark",
+  "Finland",
+  "France",
+  "Germany",
+  "Greece",
+  "Hungary",
+  "Iceland",
+  "Ireland",
+  "Italy",
+  "Montenegro",
+  "Netherlands",
+  "Norway",
+  "Poland",
+  "Portugal",
+  "Romania",
+  "Serbia",
+  "Slovak Republic",
+  "Slovenia",
+  "Spain",
+  "Sweden",
+  "Switzerland",
+  "Turkey",
+  "United Kingdom"
+)
+
+// Options common to both traces
+val commonOptions = ScatterOptions()
+  .mode(ScatterMode.Marker)
+  .marker(MarkerOptions().size(12).lineWidth(1))
+
+// Options common to both axes
+val commonAxisOptions = AxisOptions()
+  .tickLength(5)
+  .gridWidth(2)
+
+val xAxisOptions = commonAxisOptions.title("GDP per capita (dollars)").noZeroLine
+val yAxisOptions = commonAxisOptions.title("Life expectancy (years)")
+
+// The plot itself
+val p = Plot()
+  .withScatter(gdpAmerica, lifeExpectancyAmerica,
+    commonOptions.name("Americas").text(labelAmerica))
+  .withScatter(gdpEurope, lifeExpectancyEurope,
+    commonOptions.name("Europe").text(labelEurope))
+  .xAxisOptions(xAxisOptions)
+  .yAxisOptions(yAxisOptions)
+
+val figure = Figure()
+  .plot(p) // add the plot to the figure
+  .title("Life Expectancy v. Per Capita GDP, 2007")
+
+draw(p, "life-expectancy-per-GDP-2007", writer.FileOptions(overwrite=true))

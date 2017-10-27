@@ -1,0 +1,494 @@
+---
+title: Modifying Axes in R | Examples | Plotly
+name: Axes
+permalink: r/axes/
+description: How to adjust axes properties in R. Seven examples of linear and logarithmic axes, axes titles, and styling and coloring axes and grid lines.
+layout: base
+thumbnail: thumbnail/axes.jpg
+language: r
+page_type: example_index
+has_thumbnail: false
+display_as: layout_opt
+output:
+  html_document:
+    keep_md: true
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+```{r, results = "hide"}
+library(plotly)
+packageVersion('plotly')
+```
+
+### Style Axes Ticks and Placement
+
+```{r, results = "hide"}
+library(plotly)
+a <- list(
+  autotick = FALSE,
+  ticks = "outside",
+  tick0 = 0,
+  dtick = 0.25,
+  ticklen = 5,
+  tickwidth = 2,
+  tickcolor = toRGB("blue")
+)
+s <- seq(1, 4, by = 0.25)
+p <- plot_ly(x = ~s, y = ~s) %>%
+  layout(xaxis = a, yaxis = a)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="axes/1")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Style Axes Titles and Ticks Labels
+
+```{r, results = "hide"}
+library(plotly)
+f1 <- list(
+  family = "Arial, sans-serif",
+  size = 18,
+  color = "lightgrey"
+)
+f2 <- list(
+  family = "Old Standard TT, serif",
+  size = 14,
+  color = "black"
+)
+a <- list(
+  title = "AXIS TITLE",
+  titlefont = f1,
+  showticklabels = TRUE,
+  tickangle = 45,
+  tickfont = f2,
+  exponentformat = "E"
+)
+
+s <- seq(1e6, 1e7, length.out = 10)
+p <- plot_ly(x = ~s, y = ~s) %>%
+  add_markers() %>%
+  add_markers(y = ~rev(s)) %>%
+  layout(xaxis = a, yaxis = a, showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="axes/2")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Style Axes and Zero-Lines
+```{r, results = "hide"}
+library(plotly)
+ax <- list(
+  zeroline = TRUE,
+  showline = TRUE,
+  mirror = "ticks",
+  gridcolor = toRGB("gray50"),
+  gridwidth = 2,
+  zerolinecolor = toRGB("red"),
+  zerolinewidth = 4,
+  linecolor = toRGB("black"),
+  linewidth = 6
+)
+s <- seq(-1, 4)
+p <- plot_ly(x = ~s, y = ~s) %>%
+  layout(xaxis = ax, yaxis = ax)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="axes/3")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Hide Axes Title, Lines, Ticks, and Labels
+```{r, results = "hide"}
+library(plotly)
+ax <- list(
+  title = "",
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = FALSE,
+  showgrid = FALSE
+)
+
+p <- plot_ly(x = c(1, 2), y = c(1, 2)) %>%
+  layout(xaxis = ax, yaxis = ax)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="axes/4")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Reversed Axes
+```{r, results = "hide"}
+library(plotly)
+p <- plot_ly(x = c(1, 2), y = c(1, 2)) %>%
+  layout(xaxis = list(autorange = "reversed"))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="axes/5")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Logarithmic Axes
+
+```{r, results = "hide"}
+library(plotly)
+s <- seq(1, 8)
+p <- plot_ly(x = ~s) %>%
+  add_trace(y = ~exp(s), name = "exponential") %>%
+  add_trace(y =  ~s, name = "linear") %>%
+  layout(yaxis = list(type = "log"))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="axes/6")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Categorical Axes
+
+```{r, results = "hide"}
+library(plotly)
+
+p <- plot_ly(
+    x = c('A12', 'BC2', 109, '12F', 215, 304),
+    y = c(1,6,3,5,1,4),
+    type = 'bar',
+    name = 'Team A',
+    text = c('Apples', 'Pears', 'Peaches', 'Bananas', 'Pineapples', 'Cherries')
+  ) %>%
+  layout(
+    title = 'Iventory',
+    xaxis = list(
+      type = 'category',
+      title = 'Product Code'
+    ),
+    yaxis = list(
+      title = '# of Items in Stock',
+      range = c(0,7)
+    )
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="axes/category")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Subcategory Axes
+
+```{r, results = "hide"}
+library(plotly)
+
+p <- plot_ly(orientation='h', line=list(color='gray'), height=400, width=600) %>%
+  add_boxplot(x=c(2,3,1,5), y=c('A','A','A','A'), name='A') %>%
+  add_boxplot(x=c(8,3,6,5), y=c('B','B','B','B'), name='B') %>%
+  add_boxplot(x=c(2,3,2,5), y=c('C','C','C','C'), name='C') %>%
+  add_boxplot(x=c(7.5,3,6,4), y=c('D','D','D','D'), name='D') %>%
+  layout(
+    title = '',
+    yaxis = list(
+      autorange = TRUE, 
+      categoryorder = "category descending", 
+      domain = c(0, 1), 
+      range = c(-0.5, 3.5), 
+      showline = TRUE, 
+      title = "", 
+      type = "category"
+    ),
+    margin = list(
+      r = 10, 
+      t = 25, 
+      b = 40, 
+      l = 110
+    ),
+    legend = list(
+      x = 0.986145833333, 
+      y = 0.936263886049
+    ), 
+    shapes = list(
+      list(
+        line = list(
+          color = "rgba(68, 68, 68, 0.5)", 
+          width = 1
+        ), 
+        type = "line", 
+        x0 = -0.3, 
+        x1 = 1.2, 
+        xref = "paper", 
+        y0 = 0.5, 
+        y1 = 0.5, 
+        yref = "paper"
+      ), 
+      list(
+        line = list(
+          color = "rgba(68, 68, 68, 0.63)", 
+          width = 1
+        ), 
+        type = "line", 
+        x0 = -0.3, 
+        x1 = 1.2, 
+        xref = "paper", 
+        y0 = 1, 
+        y1 = 1, 
+        yref = "paper"
+      )
+    ),
+    annotations = list(
+        list(
+          x = -0.0951769406393, 
+          y = 1.06972670892, 
+          showarrow = FALSE, 
+          text = "Subgroup", 
+          xref = "paper", 
+          yref = "paper"
+        ), 
+        list(
+          x = -0.235516552511, 
+          y = 1.07060587474, 
+          showarrow = FALSE, 
+          text = "Group", 
+          xref = "paper", 
+          yref = "paper"
+        ), 
+        list(
+          x = -0.235516552511, 
+          y = 0.922906017856, 
+          showarrow = FALSE, 
+          text = "One", 
+          xref = "paper", 
+          yref = "paper"
+        ), 
+        list(
+          x = -0.235516552511, 
+          y = 0.375, 
+          showarrow = FALSE, 
+          text = "Two", 
+          xref = "paper", 
+          yref = "paper"
+        )
+      )
+    )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="axes/subcategory")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Fixed-Ratio Axes
+
+```{r, results = 'hide'}
+library(plotly)
+
+p <- plot_ly(
+    width = 800,
+    height = 500
+  ) %>% 
+  add_trace(
+    x = c(0,1,1,0,0,1,1,2,2,3,3,2,2,3),
+    y = c(0,0,1,1,3,3,2,2,3,3,1,1,0,0),
+    mode = 'lines'
+  ) %>%
+  add_trace(
+    x = c(0,1,2,3),
+    y = c(1,2,4,8),
+    yaxis = "y2",
+    mode = 'lines'
+  ) %>% 
+  add_trace(
+    x = c(1,10,100,10,1),
+    y = c(0,1,2,3,4),
+    xaxis = "x2",
+    yaxis ="y3",
+    mode = 'lines'
+  ) %>% 
+  add_trace(
+    x = c(1,100,30,80,1),
+    y = c(1,1.5,2,2.5,3),
+    xaxis = "x2",
+    yaxis = "y4",
+    mode = 'lines'
+  ) %>% 
+  layout(
+    title = "fixed-ratio axes",
+    xaxis = list(
+      nticks = 10,
+      domain = c(0, 0.45),
+      title = "shared X axis"
+    ),
+    yaxis = list(
+      scaleanchor = "x",
+      domain = c(0, 0.45),
+      title = "1:1"
+    ),
+    yaxis2 = list(
+      scaleanchor = "x",
+      scaleratio = 0.2,
+      domain = c(0.55,1),
+      title = "1:5"
+    ),
+    xaxis2 = list(
+      type = "log",
+      domain = c(0.55, 1),
+      anchor = "y3",
+      title = "unconstrained log X"
+    ),
+    yaxis3 = list(
+      domain = c(0, 0.45),
+      anchor = "x2",
+      title = "Scale matches ->"
+    ),
+    yaxis4 = list(
+      scaleanchor = "y3",
+      domain = c(0.55, 1),
+      anchor = "x2",
+      title = "Scale matches <-"
+    ),
+    showlegend= FALSE
+)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="axes/aspectratio", sharing = 'public')
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Rangemode
+```{r, results = "hide"}
+library(plotly)
+p <- plot_ly(x = seq(2, 6, by = 2), y = seq(-3, 3, by = 3)) %>%
+  layout(
+    xaxis = list(rangemode = "tozero"),
+    yaxis = list(rangemode = "nonnegative"))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="axes/7")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Manual Ranges
+```{r, results = "hide"}
+library(plotly)
+s <- seq(1, 8)
+p <- plot_ly(x = s, y = s) %>%
+  add_trace(y = rev(s)) %>%
+  layout(
+    xaxis = list(range = c(2, 5)),
+    yaxis = list(range = c(2, 5)))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="axes/8")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Modifying Axes for 3D Plots
+```{r, results = "hide"}
+library(plotly)
+set.seed(123)
+
+# Create Random Data
+ds <- diamonds[sample(1:nrow(diamonds), size = 1000),]
+
+# Create lists for axis properties
+f1 <- list(
+  family = "Arial, sans-serif",
+  size = 18,
+  color = "lightgrey")
+
+f2 <- list(
+  family = "Old Standard TT, serif",
+  size = 14,
+  color = "#ff9999")
+
+axis <- list(
+  titlefont = f1,
+  tickfont = f2,
+  showgrid = F
+)
+
+scene = list(
+  xaxis = axis,
+  yaxis = axis,
+  zaxis = axis,
+  camera = list(eye = list(x = -1.25, y = 1.25, z = 1.25)))
+
+
+p <- plot_ly(ds, x = ~carat, y = ~cut, z = ~price, size = I(3)) %>%
+  layout(title = "3D Scatter plot", scene = scene)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="axes/9")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```

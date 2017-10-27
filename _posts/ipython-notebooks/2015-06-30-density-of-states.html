@@ -1,0 +1,814 @@
+---
+permalink: ipython-notebooks/density-of-states/
+description: Plotting Density of States with Plotly and Pymatgen
+name: plotting the density of states and the band diagram using pymatgen and plotly
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+page_type: u-guide
+language: python
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Plotting-Density-of-States-with---Plotly-and-Pymatgen">Plotting Density of States with <br />  Plotly and Pymatgen<a class="anchor-link" href="#Plotting-Density-of-States-with---Plotly-and-Pymatgen">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="About-the-Author:">About the Author:<a class="anchor-link" href="#About-the-Author:">&#182;</a></h3><p>This notebook was contributed by plotly user <a href="https://plot.ly/~gvallverdu">Germain Salvato-Vallverdu</a>.  You can follow him on <a href="https://github.com/gVallverdu?tab=activity">Github</a> or visit <a href="http://gvallver.perso.univ-pau.fr/">his webpage</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This notebook will go over an example for plotting the density of states and the band diagram of Silicon using python with <a href="http://pymatgen.org/">pymatgen</a> and <a href="https://plot.ly/">plotly</a> packages.</p>
+<ul>
+<li><a href="http://pymatgen.org/">pymatgen</a> : (Python Materials Genomics) A robust, open-source Python library for materials analysis.</li>
+<li><a href="https://plot.ly/">plotly</a> : A platform for publishing beautiful, interactive graphs from Python to the web.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Firstly, we import numpy and pymatgen tools</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pymatgen.io.vaspio.vasp_output</span> <span class="kn">import</span> <span class="n">Vasprun</span>    <span class="c"># read vasprun.xml output file of VASP</span>
+<span class="kn">from</span> <span class="nn">pymatgen.electronic_structure.core</span> <span class="kn">import</span> <span class="n">Spin</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, we import plotly tools</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">pltly</span>      <span class="c"># plotting functions</span>
+<span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>         <span class="c"># plotly tools</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>     <span class="c"># plot and configuration tools : Scatter, Line, Layout</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Band-Diagram-and-Denisty-of-States-of-Silicon">Band Diagram and Denisty of States of Silicon<a class="anchor-link" href="#Band-Diagram-and-Denisty-of-States-of-Silicon">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="1)-Plot-the-density-of-states">1) Plot the density of states<a class="anchor-link" href="#1)-Plot-the-density-of-states">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First, read projected density of states (DOS) from a VASP calculation on <code>"./DOS/vasprun.xml"</code> file using pymatgen.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">dosrun</span> <span class="o">=</span> <span class="n">Vasprun</span><span class="p">(</span><span class="s">&quot;./DOS/vasprun.xml&quot;</span><span class="p">)</span>
+<span class="n">spd_dos</span> <span class="o">=</span> <span class="n">dosrun</span><span class="o">.</span><span class="n">complete_dos</span><span class="o">.</span><span class="n">get_spd_dos</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Set up the scatter plots for the total DOS and the contribution of 3s and 3p atomic orbital to the total DOS.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># total DOS</span>
+<span class="n">trace_tdos</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">dosrun</span><span class="o">.</span><span class="n">tdos</span><span class="o">.</span><span class="n">densities</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">dosrun</span><span class="o">.</span><span class="n">tdos</span><span class="o">.</span><span class="n">energies</span> <span class="o">-</span> <span class="n">dosrun</span><span class="o">.</span><span class="n">efermi</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s">&quot;lines&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">&quot;total DOS&quot;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#444444&quot;</span><span class="p">),</span>
+    <span class="n">fill</span><span class="o">=</span><span class="s">&quot;tozeroy&quot;</span>
+<span class="p">)</span>
+<span class="c"># 3s contribution to the total DOS</span>
+<span class="n">trace_3s</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">spd_dos</span><span class="p">[</span><span class="s">&quot;S&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">densities</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">dosrun</span><span class="o">.</span><span class="n">tdos</span><span class="o">.</span><span class="n">energies</span> <span class="o">-</span> <span class="n">dosrun</span><span class="o">.</span><span class="n">efermi</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s">&quot;lines&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">&quot;3s&quot;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;red&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="c"># 3p contribution to the total DOS</span>
+<span class="n">trace_3p</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">spd_dos</span><span class="p">[</span><span class="s">&quot;P&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">densities</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">dosrun</span><span class="o">.</span><span class="n">tdos</span><span class="o">.</span><span class="n">energies</span> <span class="o">-</span> <span class="n">dosrun</span><span class="o">.</span><span class="n">efermi</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s">&quot;lines&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">&quot;3p&quot;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;green&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">dosdata</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span><span class="n">trace_tdos</span><span class="p">,</span> <span class="n">trace_3s</span><span class="p">,</span> <span class="n">trace_3p</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Customize axes and general aspect of the plot.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">dosxaxis</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">XAxis</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s">&quot;Density of states&quot;</span><span class="p">,</span>
+    <span class="n">showgrid</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">showline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="o">.</span><span class="mo">01</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="n">mirror</span><span class="o">=</span><span class="s">&quot;ticks&quot;</span><span class="p">,</span>
+    <span class="n">ticks</span><span class="o">=</span><span class="s">&quot;inside&quot;</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">tickwidth</span><span class="o">=</span><span class="mi">2</span>
+<span class="p">)</span>
+<span class="n">dosyaxis</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s">&quot;$E - E_f \quad / \quad </span><span class="se">\\</span><span class="s">text{eV}$&quot;</span><span class="p">,</span>
+    <span class="n">showgrid</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">showline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">ticks</span><span class="o">=</span><span class="s">&quot;inside&quot;</span><span class="p">,</span>
+    <span class="n">mirror</span><span class="o">=</span><span class="s">&#39;ticks&#39;</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">tickwidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">zerolinewidth</span><span class="o">=</span><span class="mi">2</span>
+<span class="p">)</span>
+<span class="n">doslayout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s">&quot;Density of states of Silicon&quot;</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="n">dosxaxis</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="n">dosyaxis</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">dosfig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">dosdata</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">doslayout</span><span class="p">)</span>
+<span class="n">plot_url</span> <span class="o">=</span> <span class="n">pltly</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dosfig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&quot;DOS_Si&quot;</span><span class="p">,</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">tls</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">plot_url</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~gvallverdu/209.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="2)-Plot-the-band-diagram">2) Plot the band diagram<a class="anchor-link" href="#2)-Plot-the-band-diagram">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First, read bands from a VASP calculation on <code>"./Bandes/vasprun.xml"</code> file using pymatgen.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">run</span> <span class="o">=</span> <span class="n">Vasprun</span><span class="p">(</span><span class="s">&quot;./Bandes/vasprun.xml&quot;</span><span class="p">,</span> <span class="n">parse_projected_eigen</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">bands</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">get_band_structure</span><span class="p">(</span><span class="s">&quot;./Bandes/KPOINTS&quot;</span><span class="p">,</span> <span class="n">line_mode</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">efermi</span><span class="o">=</span><span class="n">dosrun</span><span class="o">.</span><span class="n">efermi</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Look for the boundaries of the band diagram in order to set up y axes range.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">emin</span> <span class="o">=</span> <span class="mf">1e100</span>
+<span class="n">emax</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e100</span>
+<span class="k">for</span> <span class="n">spin</span> <span class="ow">in</span> <span class="n">bands</span><span class="o">.</span><span class="n">bands</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">nb_bands</span><span class="p">):</span>
+        <span class="n">emin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">emin</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">bands</span><span class="p">[</span><span class="n">spin</span><span class="p">][</span><span class="n">band</span><span class="p">]))</span>
+        <span class="n">emax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">emax</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">bands</span><span class="p">[</span><span class="n">spin</span><span class="p">][</span><span class="n">band</span><span class="p">]))</span>
+<span class="n">emin</span> <span class="o">=</span> <span class="n">emin</span> <span class="o">-</span> <span class="n">bands</span><span class="o">.</span><span class="n">efermi</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">emax</span> <span class="o">=</span> <span class="n">emax</span> <span class="o">-</span> <span class="n">bands</span><span class="o">.</span><span class="n">efermi</span> <span class="o">+</span> <span class="mi">1</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Each band is plotted using a scatter plot.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">kptslist</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">kpoints</span><span class="p">))]</span>
+<span class="n">bandTraces</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">nb_bands</span><span class="p">):</span>
+    <span class="n">bandTraces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">kptslist</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">e</span> <span class="o">-</span> <span class="n">bands</span><span class="o">.</span><span class="n">efermi</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">bands</span><span class="o">.</span><span class="n">bands</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">][</span><span class="n">band</span><span class="p">]],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s">&quot;lines&quot;</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#666666&quot;</span><span class="p">),</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Add vertical lines at each high symmetry k-points and a label at the bottom.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">r&quot;$L$&quot;</span><span class="p">,</span> <span class="s">r&quot;$\Gamma$&quot;</span><span class="p">,</span> <span class="s">r&quot;$X$&quot;</span><span class="p">,</span> <span class="s">r&quot;$U,K$&quot;</span><span class="p">,</span> <span class="s">r&quot;$\Gamma$&quot;</span><span class="p">]</span>
+<span class="n">step</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">kpoints</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c"># vertical lines</span>
+<span class="n">vlines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+    <span class="n">vlines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">step</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">step</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">emin</span><span class="p">,</span> <span class="n">emax</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s">&quot;lines&quot;</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#111111&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+<span class="c"># Labels of highsymetry k-points are added as Annotation object</span>
+<span class="n">annotations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+    <span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Annotation</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">i</span> <span class="o">*</span> <span class="n">step</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">emin</span><span class="p">,</span>
+            <span class="n">xref</span><span class="o">=</span><span class="s">&quot;x1&quot;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s">&quot;y1&quot;</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+            <span class="n">xanchor</span><span class="o">=</span><span class="s">&quot;center&quot;</span><span class="p">,</span> <span class="n">yanchor</span><span class="o">=</span><span class="s">&quot;top&quot;</span><span class="p">,</span>
+            <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Customize axes and general aspect of the plot.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">bandxaxis</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">XAxis</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s">&quot;k-points&quot;</span><span class="p">,</span>
+    <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">kpoints</span><span class="p">)],</span>
+    <span class="n">showgrid</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">showline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">ticks</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">mirror</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span>
+<span class="p">)</span>
+<span class="n">bandyaxis</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s">&quot;$E - E_f \quad / \quad </span><span class="se">\\</span><span class="s">text{eV}$&quot;</span><span class="p">,</span>
+    <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">emin</span><span class="p">,</span> <span class="n">emax</span><span class="p">],</span>
+    <span class="n">showgrid</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">showline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">zeroline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">mirror</span><span class="o">=</span><span class="s">&quot;ticks&quot;</span><span class="p">,</span>
+    <span class="n">ticks</span><span class="o">=</span><span class="s">&quot;inside&quot;</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">tickwidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">zerolinewidth</span><span class="o">=</span><span class="mi">2</span>
+<span class="p">)</span>
+<span class="n">bandlayout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s">&quot;Bands diagram of Silicon&quot;</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="n">bandxaxis</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="n">bandyaxis</span><span class="p">,</span>
+    <span class="n">annotations</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Annotations</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">bandfig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">bandTraces</span> <span class="o">+</span> <span class="n">vlines</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">bandlayout</span><span class="p">)</span>
+<span class="n">plot_url</span> <span class="o">=</span> <span class="n">pltly</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bandfig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&quot;Bands_Si&quot;</span><span class="p">,</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">tls</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">plot_url</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[24]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~gvallverdu/249.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="3)-Use-subplots-to-plot-DOS-and-bands-together">3) Use subplots to plot DOS and bands together<a class="anchor-link" href="#3)-Use-subplots-to-plot-DOS-and-bands-together">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will now make a figure with both the band diagram and the density of states using the <code>make_subplots</code> facility. First, we set up a figure with two columns, one row. At the end, the two plots will share y axis.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">dosbandfig</span> <span class="o">=</span> <span class="n">tls</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">shared_yaxes</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]  [ (1,2) x2,y1 ]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We use the previously defined traces for the band and the densities of state and add them to the figure object.</p>
+<ul>
+<li>The bands are plotted on the left subplot (1, 1)</li>
+<li>The densities of states are plotted on the right subplot (1, 2)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># add the bands</span>
+<span class="k">for</span> <span class="n">btrace</span> <span class="ow">in</span> <span class="n">bandTraces</span><span class="p">:</span>
+    <span class="n">dosbandfig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">btrace</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c"># add vlines for specific k-points</span>
+<span class="k">for</span> <span class="n">vline</span> <span class="ow">in</span> <span class="n">vlines</span><span class="p">:</span>
+    <span class="n">dosbandfig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">vline</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c"># add the densities</span>
+<span class="n">dosbandfig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace_tdos</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">dosbandfig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace_3s</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">dosbandfig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace_3p</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Customize axes and general aspect of the plot using previously defined axis and layout options. The <code>"domain"</code> of each subplot is also define.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">dosbandfig</span><span class="p">[</span><span class="s">&quot;layout&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s">&quot;Bands diagram and density of states of Silicon&quot;</span><span class="p">,</span>
+        <span class="n">xaxis1</span><span class="o">=</span><span class="n">bandxaxis</span><span class="p">,</span>
+        <span class="n">yaxis1</span><span class="o">=</span><span class="n">bandyaxis</span><span class="p">,</span>
+        <span class="n">xaxis2</span><span class="o">=</span><span class="n">dosxaxis</span><span class="p">,</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Annotations</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="c"># adjust size of subplots</span>
+<span class="n">dosbandfig</span><span class="p">[</span><span class="s">&quot;layout&quot;</span><span class="p">][</span><span class="s">&quot;xaxis1&quot;</span><span class="p">][</span><span class="s">&quot;domain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">]</span>
+<span class="n">dosbandfig</span><span class="p">[</span><span class="s">&quot;layout&quot;</span><span class="p">][</span><span class="s">&quot;xaxis2&quot;</span><span class="p">][</span><span class="s">&quot;domain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.702</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="c"># add some specific options</span>
+<span class="n">dosbandfig</span><span class="p">[</span><span class="s">&quot;layout&quot;</span><span class="p">][</span><span class="s">&quot;yaxis1&quot;</span><span class="p">][</span><span class="s">&quot;mirror&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;allticks&quot;</span>
+<span class="n">dosbandfig</span><span class="p">[</span><span class="s">&quot;layout&quot;</span><span class="p">][</span><span class="s">&quot;xaxis2&quot;</span><span class="p">][</span><span class="s">&quot;mirror&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;allticks&quot;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">plot_url</span> <span class="o">=</span> <span class="n">pltly</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dosbandfig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&quot;DOS_bands_Si&quot;</span><span class="p">,</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">tls</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">plot_url</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[28]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~gvallverdu/269.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4)-Atomic-orbital-contributions-in-bands-using-a-color-scale">4) Atomic orbital contributions in bands using a color scale<a class="anchor-link" href="#4)-Atomic-orbital-contributions-in-bands-using-a-color-scale">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As previously done for the density of states, the contribution of 3s and 3p atomic orbital may be highlighted using a color scale. The main idea, from <a href="https://github.com/vossjo/ase-espresso/wiki/Band-structure-calculation-example">this example</a>, is to normalize atomic orbital contributions and build the RGB code of the color from these contributions.</p>
+<p>Thus, we first compute atomic orbital normalized contributions from projected bands :</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># extract projected bands</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Si&quot;</span>
+<span class="n">pbands</span> <span class="o">=</span> <span class="n">bands</span><span class="o">.</span><span class="n">get_projections_on_elts_and_orbitals</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;s&quot;</span><span class="p">,</span> <span class="s">&quot;p&quot;</span><span class="p">,</span> <span class="s">&quot;d&quot;</span><span class="p">]})</span>
+
+<span class="c"># compute contributions</span>
+<span class="n">contrib</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">bands</span><span class="o">.</span><span class="n">nb_bands</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">kpoints</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">nb_bands</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">kpoints</span><span class="p">)):</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="n">pbands</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">][</span><span class="n">band</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="n">name</span><span class="p">][</span><span class="s">&quot;s&quot;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">pc</span> <span class="o">=</span> <span class="n">pbands</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">][</span><span class="n">band</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="n">name</span><span class="p">][</span><span class="s">&quot;p&quot;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">dc</span> <span class="o">=</span> <span class="n">pbands</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">][</span><span class="n">band</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="n">name</span><span class="p">][</span><span class="s">&quot;d&quot;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">tot</span> <span class="o">=</span> <span class="n">sc</span> <span class="o">+</span> <span class="n">pc</span> <span class="o">+</span> <span class="n">dc</span>
+        <span class="k">if</span> <span class="n">tot</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">contrib</span><span class="p">[</span><span class="n">band</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sc</span> <span class="o">/</span> <span class="n">tot</span>
+            <span class="n">contrib</span><span class="p">[</span><span class="n">band</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pc</span> <span class="o">/</span> <span class="n">tot</span>
+            <span class="n">contrib</span><span class="p">[</span><span class="n">band</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span> <span class="o">/</span> <span class="n">tot</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now for each band, for each couple of consecutive points, we plot a line plot with a specific color, defined from the atomic orbital contributions to the current band.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">colorBands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span> <span class="c"># will contain the list of all lines</span>
+<span class="n">nkpts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">kpoints</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bands</span><span class="o">.</span><span class="n">nb_bands</span><span class="p">):</span>
+    <span class="n">eband</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="o">-</span> <span class="n">bands</span><span class="o">.</span><span class="n">efermi</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">bands</span><span class="o">.</span><span class="n">bands</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">][</span><span class="n">band</span><span class="p">]]</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nkpts</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="p">(</span><span class="n">contrib</span><span class="p">[</span><span class="n">band</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">contrib</span><span class="p">[</span><span class="n">band</span><span class="p">,</span> <span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+        <span class="n">colorBands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">eband</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">eband</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]],</span>
+                <span class="n">mode</span><span class="o">=</span><span class="s">&quot;lines&quot;</span><span class="p">,</span>
+                <span class="n">line</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;rgb({}, {}, {})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">)),</span>
+                <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As previously, two subplots are used to plot the band diagram on the left and the density of states on the right.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># set up a new figure with two subplots</span>
+<span class="n">colorbandfig</span> <span class="o">=</span> <span class="n">tls</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">shared_yaxes</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="c"># add the bands in the first subplot</span>
+<span class="k">for</span> <span class="n">btrace</span> <span class="ow">in</span> <span class="n">colorBands</span><span class="p">:</span>
+    <span class="n">colorbandfig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">btrace</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c"># add vlines for specific k-points in the first subplot</span>
+<span class="k">for</span> <span class="n">vline</span> <span class="ow">in</span> <span class="n">vlines</span><span class="p">:</span>
+    <span class="n">colorbandfig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">vline</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c"># add the densities in the second subplot</span>
+<span class="n">colorbandfig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace_tdos</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">colorbandfig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace_3s</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">colorbandfig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">trace_3p</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c"># Layout configuration</span>
+<span class="n">colorbandfig</span><span class="p">[</span><span class="s">&quot;layout&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s">&quot;Bands diagram and density of states of Silicon&quot;</span><span class="p">,</span>
+        <span class="n">xaxis1</span><span class="o">=</span><span class="n">bandxaxis</span><span class="p">,</span>
+        <span class="n">yaxis1</span><span class="o">=</span><span class="n">bandyaxis</span><span class="p">,</span>
+        <span class="n">xaxis2</span><span class="o">=</span><span class="n">dosxaxis</span><span class="p">,</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Annotations</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="c"># adjust size of subplots</span>
+<span class="n">colorbandfig</span><span class="p">[</span><span class="s">&quot;layout&quot;</span><span class="p">][</span><span class="s">&quot;xaxis1&quot;</span><span class="p">][</span><span class="s">&quot;domain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">]</span>
+<span class="n">colorbandfig</span><span class="p">[</span><span class="s">&quot;layout&quot;</span><span class="p">][</span><span class="s">&quot;xaxis2&quot;</span><span class="p">][</span><span class="s">&quot;domain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.702</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="c"># add some specific options</span>
+<span class="n">colorbandfig</span><span class="p">[</span><span class="s">&quot;layout&quot;</span><span class="p">][</span><span class="s">&quot;yaxis1&quot;</span><span class="p">][</span><span class="s">&quot;mirror&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;allticks&quot;</span>
+<span class="n">colorbandfig</span><span class="p">[</span><span class="s">&quot;layout&quot;</span><span class="p">][</span><span class="s">&quot;xaxis2&quot;</span><span class="p">][</span><span class="s">&quot;mirror&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;allticks&quot;</span>
+<span class="c"># add a custom legend</span>
+<span class="n">legend</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Legend</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=.</span><span class="mi">98</span><span class="p">,</span> <span class="n">y</span><span class="o">=.</span><span class="mi">98</span><span class="p">,</span>
+    <span class="n">xanchor</span><span class="o">=</span><span class="s">&quot;right&quot;</span><span class="p">,</span> <span class="n">yanchor</span><span class="o">=</span><span class="s">&quot;top&quot;</span><span class="p">,</span>
+    <span class="n">bordercolor</span><span class="o">=</span><span class="s">&#39;#333&#39;</span><span class="p">,</span> <span class="n">borderwidth</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+<span class="n">colorbandfig</span><span class="p">[</span><span class="s">&quot;layout&quot;</span><span class="p">][</span><span class="s">&quot;legend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">legend</span>
+<span class="c"># do the plot</span>
+<span class="n">plot_url</span> <span class="o">=</span> <span class="n">pltly</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">colorbandfig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&quot;DOS_bands_Si_color&quot;</span><span class="p">,</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">tls</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">plot_url</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]  [ (1,2) x2,y1 ]
+
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt output_prompt">Out[31]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~gvallverdu/306.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}

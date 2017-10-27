@@ -1,0 +1,2037 @@
+---
+permalink: ipython-notebooks/bicycle-control-design/
+description: Design of a sequential dual-loop controller for a bicycle using NumPy, SciPy, Python Control, and Plotly.
+title: Bicycle Control Design with Python and Plotly
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+name: Bicycle Control Design
+language: python
+page_type: u-guide
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h1><p>In this notebook I am going to develop a simple dual-loop feedback control system to balance and direct a bicycle. During the process of developing the controller, I will highlight some of the interesting dynamics and control properties of the vehicle. In particular, a bicycle requires control to both balance and direct the vehicle so I will use two feedback loops to address this. Control through steering is, in general, the primary input that has the most control authority. The steering lets the rider position the wheel contact points under the center of mass, very much like when balancing a stick on your hand, i.e. you hand is synomymous to the wheel contact points. In the same way as the hand moving in the direction of the fall of the stick, one must "steer" the bicycle into the fall. This means that if the bicycle is falling (rolling) to the left, the steering must ultimately be directed towards the left to keep the bicycle upright. Furthermore, to direct the bicycle we use this fact and effectively execute "controlled falls" to change the direction of travel. But there is one peculiarity that makes it more difficult to balance and control a bicycle than most vehicles. This is the fact that the bicycle is a <a href="https://en.wikipedia.org/wiki/Minimum_phase#Non-minimum_phase">non-minimum phase system</a> and requires the rider to "countersteer". I will show how the controller design must take this into account.</p>
+<p>The main goals of the notebook are to:</p>
+<ul>
+<li>Describe a mathematical plant model of a bicycle</li>
+<li>Demonstrate the capabilities of the Python Control library</li>
+<li>Develop a dual-loop controller for tracking a desired heading</li>
+<li>Demonstrate the concept of countersteering</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Open-Loop-Bicycle-Model">Open Loop Bicycle Model<a class="anchor-link" href="#Open-Loop-Bicycle-Model">&#182;</a></h1><p>To come up with a suitable controller I first need a model that describes the open loop dynamics of the system, i.e. a plant model. The model I will use is pretty much the simplest model of a bicycle that will allow one to study mechanism of steering into the fall. The assumptions that the model is founded on are as follows:</p>
+<ul>
+<li>The bicycle and rider mass and inertia are all lumped into a single rigid body.</li>
+<li>The front assembly (handlebars, fork, and wheel) are massless and thus no effort is required to change the direction of the steering angle.</li>
+<li>There are no gyroscopic effects from the spinning wheels (they are treated more like skates or skis).</li>
+</ul>
+<p>The following diagram shows the essential components and variables in the model:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">SVG</span>
+<span class="n">SVG</span><span class="p">(</span><span class="s1">&#39;model-diagram.svg&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+<div class="output_svg output_subarea output_execute_result">
+<svg height="431.2861" id="svg2" inkscape:version="0.48.4 r9939" sodipodi:docname="model-diagram.svg" version="1.1" width="523.89343" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:ns0="http://www.iki.fi/pav/software/textext/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <sodipodi:namedview bordercolor="#666666" borderopacity="1.0" fit-margin-bottom="0" fit-margin-left="0" fit-margin-right="0" fit-margin-top="0" id="base" inkscape:current-layer="layer1" inkscape:cx="261.94672" inkscape:cy="337.84927" inkscape:document-units="px" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="1026" inkscape:window-maximized="1" inkscape:window-width="1680" inkscape:window-x="1680" inkscape:window-y="24" inkscape:zoom="1.9638936" pagecolor="#ffffff" showgrid="false"/>
+  <defs id="defs4">
+    <marker id="Arrow1Sstart" inkscape:stockid="Arrow1Sstart" orient="auto" refX="0" refY="0" style="overflow:visible">
+      <path d="M 0,0 5,-5 -12.5,0 5,5 0,0 z" id="path3814" inkscape:connector-curvature="0" style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt" transform="matrix(0.2,0,0,0.2,1.2,0)"/>
+    </marker>
+    <marker id="Arrow1Send" inkscape:stockid="Arrow1Send" orient="auto" refX="0" refY="0" style="overflow:visible">
+      <path d="M 0,0 5,-5 -12.5,0 5,5 0,0 z" id="path3817" inkscape:connector-curvature="0" style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt" transform="matrix(-0.2,0,0,-0.2,-1.2,0)"/>
+    </marker>
+    <marker id="Arrow1Mstart" inkscape:stockid="Arrow1Mstart" orient="auto" refX="0" refY="0" style="overflow:visible">
+      <path d="M 0,0 5,-5 -12.5,0 5,5 0,0 z" id="path3808" inkscape:connector-curvature="0" style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt" transform="matrix(0.4,0,0,0.4,4,0)"/>
+    </marker>
+    <marker id="Arrow1Mend" inkscape:stockid="Arrow1Mend" orient="auto" refX="0" refY="0" style="overflow:visible">
+      <path d="M 0,0 5,-5 -12.5,0 5,5 0,0 z" id="path3811" inkscape:connector-curvature="0" style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt" transform="matrix(-0.4,0,0,-0.4,-4,0)"/>
+    </marker>
+    <marker id="Arrow1Mend-3" inkscape:stockid="Arrow1Mend" orient="auto" refX="0" refY="0" style="overflow:visible">
+      <path d="M 0,0 5,-5 -12.5,0 5,5 0,0 z" id="path3811-0" inkscape:connector-curvature="0" style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt" transform="matrix(-0.4,0,0,-0.4,-4,0)"/>
+    </marker>
+    <marker id="Arrow1Mend-7" inkscape:stockid="Arrow1Mend" orient="auto" refX="0" refY="0" style="overflow:visible">
+      <path d="M 0,0 5,-5 -12.5,0 5,5 0,0 z" id="path3811-8" inkscape:connector-curvature="0" style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt" transform="matrix(-0.4,0,0,-0.4,-4,0)"/>
+    </marker>
+    <marker id="Arrow1Mend-76" inkscape:stockid="Arrow1Mend" orient="auto" refX="0" refY="0" style="overflow:visible">
+      <path d="M 0,0 5,-5 -12.5,0 5,5 0,0 z" id="path3811-1" inkscape:connector-curvature="0" style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt" transform="matrix(-0.4,0,0,-0.4,-4,0)"/>
+    </marker>
+    <marker id="Arrow1Mend-2" inkscape:stockid="Arrow1Mend" orient="auto" refX="0" refY="0" style="overflow:visible">
+      <path d="M 0,0 5,-5 -12.5,0 5,5 0,0 z" id="path3811-4" inkscape:connector-curvature="0" style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt" transform="matrix(-0.4,0,0,-0.4,-4,0)"/>
+    </marker>
+    <marker id="Arrow1Mend-2-4" inkscape:stockid="Arrow1Mend" orient="auto" refX="0" refY="0" style="overflow:visible">
+      <path d="M 0,0 5,-5 -12.5,0 5,5 0,0 z" id="path3811-4-0" inkscape:connector-curvature="0" style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt" transform="matrix(-0.4,0,0,-0.4,-4,0)"/>
+    </marker>
+  </defs>
+  <metadata id="metadata7">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g id="layer1" inkscape:groupmode="layer" inkscape:label="Layer 1" transform="translate(-114.14833,-276.53376)">
+    <path d="m 188.37576,632.03477 337.7649,-90.50383" id="path2985" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"/>
+    <path d="m 363.0075,277.03376 0,307.75764 110.09392,110.09392 0,-254.35492 L 363.2184,330.64739" id="path2987" inkscape:connector-curvature="0" sodipodi:nodetypes="ccccc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:3, 3;stroke-dashoffset:0"/>
+    <path d="m 188.37576,632.03477 88.07459,-23.59952" id="path2991" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:6;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"/>
+    <path d="m 485.76763,527.09651 87.48465,25.70028" id="path2991-9" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:6;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"/>
+    <path d="M 363.0075,584.7914 472.6796,441.37403" id="path3781" inkscape:connector-curvature="0" style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"/>
+    <path d="m 525.39491,541.73076 83.36701,-22.33812" id="path3783" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:4, 4;stroke-dashoffset:0"/>
+    <path d="M 242.53257,617.52349 321.64006,596.3267" id="path3796" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"/>
+    <path d="m 190.09613,273.96207 c 0,16.81167 -13.62856,30.44022 -30.44023,30.44022 -16.81167,0 -30.44023,-13.62855 -30.44023,-30.44022 0,-16.81168 13.62856,-30.44023 30.44023,-30.44023 16.81167,0 30.44023,13.62855 30.44023,30.44023 z" id="path4244" sodipodi:cx="159.6559" sodipodi:cy="273.96207" sodipodi:rx="30.440228" sodipodi:ry="30.440228" sodipodi:type="arc" style="fill:#000000;stroke:none" transform="matrix(0.32851266,0,0,0.32851266,420.98797,352.25483)"/>
+    <path d="m 474.4486,442.35009 64.73071,-17.34454" id="path4242-7" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"/>
+    <path d="M 117.38665,651.0943 158.9881,639.94723" id="path4242-7-7" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"/>
+    <path d="m 117.52333,694.51422 0,-43.92753 31.84747,31.84746" id="path4296" inkscape:connector-curvature="0" sodipodi:nodetypes="ccc" style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Sstart);marker-end:url(#Arrow1Send)"/>
+    <path d="m 473.02505,442.39426 -41.10862,51.66168" id="path4242-7-75" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"/>
+    <path d="m 473.18179,440.80098 37.78748,59.11643" id="path4242-7-75-7" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"/>
+    <path d="m 556.74137,547.9464 75.81125,22.27099" id="path4724" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"/>
+    <path d="m 226.74864,612.53194 -42.55419,-42.5542" id="path4918" inkscape:connector-curvature="0" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"/>
+    <path d="M 356.74085,577.89841 334.37661,555.53416" id="path4918-1" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"/>
+    <path d="m 520.74534,531.30623 -42.55419,-42.5542" id="path4918-18" inkscape:connector-curvature="0" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"/>
+    <path d="M 213.17348,598.76709 342.70657,564.0588" id="path2985-7" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend-2)"/>
+    <path d="M 191.43046,575.78161 486.09581,496.82627" id="path2985-2" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend-2)"/>
+    <path d="m 395.45207,292.76042 c 15.54783,17.28062 27.68087,45.97299 34.18565,80.8427" id="path7318" sodipodi:cx="361.86597" sodipodi:cy="431.75427" sodipodi:end="5.9026099" sodipodi:open="true" sodipodi:rx="72.994423" sodipodi:ry="156.54974" sodipodi:start="5.1905179" sodipodi:type="arc" style="fill:none;stroke:#000000;stroke-width:0.70724744;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend-2)" transform="matrix(1.2727736,-0.27606163,0.22332995,1.5223067,-206.73945,49.721496)"/>
+    <path d="m 542.95429,522.14313 c 0,11.74237 -8.26774,23.04575 -23.12833,31.62024" id="path8534" sodipodi:cx="457.22467" sodipodi:cy="522.14313" sodipodi:end="0.75215567" sodipodi:open="true" sodipodi:rx="85.729622" sodipodi:ry="46.28157" sodipodi:start="0" sodipodi:type="arc" style="fill:none;stroke:#000000;stroke-width:1.29667938;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#Arrow1Mend-2)" transform="matrix(0.74636433,-0.19414121,0.19414121,0.74636433,87.875908,238.90529)"/>
+    <path d="m 414.28047,555.84207 c -40.9785,-10.77186 -54.97136,-34.59172 -31.25394,-53.20313 23.71743,-18.61141 76.16385,-24.96662 117.14235,-14.19476 40.11642,10.54526 54.51341,33.66252 32.50226,52.18894" id="path8534-2" sodipodi:cx="457.22467" sodipodi:cy="522.14313" sodipodi:end="6.7780112" sodipodi:open="true" sodipodi:rx="85.729622" sodipodi:ry="38.936256" sodipodi:start="2.0954648" sodipodi:type="arc" style="fill:none;stroke:#000000;stroke-width:3.20530581;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#Arrow1Mend-2)" transform="matrix(0.31085826,-0.02646412,0.02646412,0.31085826,206.20901,152.82358)"/>
+    <g id="g8801" ns0:page_width="" ns0:preamble="" ns0:text="$a$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,-10.675857,408.02485)">
+      <defs id="defs8803">
+        <g id="g8805">
+          <symbol id="textext-6abbec20-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path8808" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-6abbec20-1" overflow="visible" style="overflow:visible">
+            <path d="M 3.71875,-3.765625 C 3.53125,-4.140625 3.25,-4.40625 2.796875,-4.40625 c -1.15625,0 -2.390625,1.46875 -2.390625,2.921875 0,0.9375 0.546875,1.59375 1.3125,1.59375 0.203125,0 0.703125,-0.046875 1.296875,-0.75 0.078125,0.421875 0.4375,0.75 0.90625,0.75 0.359375,0 0.578125,-0.234375 0.75,-0.546875 0.15625,-0.359375 0.296875,-0.96875 0.296875,-0.984375 0,-0.109375 -0.09375,-0.109375 -0.125,-0.109375 -0.09375,0 -0.109375,0.046875 -0.140625,0.1875 -0.171875,0.640625 -0.34375,1.234375 -0.75,1.234375 -0.28125,0 -0.296875,-0.265625 -0.296875,-0.453125 0,-0.21875 0.015625,-0.3125 0.125,-0.75 C 3.890625,-1.71875 3.90625,-1.828125 4,-2.203125 L 4.359375,-3.59375 c 0.0625,-0.28125 0.0625,-0.296875 0.0625,-0.34375 0,-0.171875 -0.109375,-0.265625 -0.28125,-0.265625 -0.25,0 -0.390625,0.21875 -0.421875,0.4375 z M 3.078125,-1.1875 C 3.015625,-1 3.015625,-0.984375 2.875,-0.8125 2.4375,-0.265625 2.03125,-0.109375 1.75,-0.109375 c -0.5,0 -0.640625,-0.546875 -0.640625,-0.9375 0,-0.5 0.3125,-1.71875 0.546875,-2.1875 0.3125,-0.578125 0.75,-0.953125 1.15625,-0.953125 0.640625,0 0.78125,0.8125 0.78125,0.875 0,0.0625 -0.015625,0.125 -0.03125,0.171875 z m 0,0" id="path8811" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-6abbec20-2">
+        <g id="g8814" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use8816" width="744.09448" x="223.43201" xlink:href="#textext-6abbec20-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g8926" ns0:page_width="" ns0:preamble="" ns0:text="$b$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,33.546374,362.79782)">
+      <defs id="defs8928">
+        <g id="g8930">
+          <symbol id="textext-dfa2d3a2-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path8933" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-dfa2d3a2-1" overflow="visible" style="overflow:visible">
+            <path d="m 2.375,-6.8125 c 0,0 0,-0.109375 -0.125,-0.109375 -0.21875,0 -0.953125,0.078125 -1.21875,0.109375 -0.078125,0 -0.1875,0.015625 -0.1875,0.1875 0,0.125 0.09375,0.125 0.25,0.125 0.46875,0 0.484375,0.0625 0.484375,0.171875 0,0.0625 -0.078125,0.40625 -0.125,0.609375 l -0.828125,3.25 c -0.109375,0.5 -0.15625,0.671875 -0.15625,1.015625 0,0.9375 0.53125,1.5625 1.265625,1.5625 1.171875,0 2.40625,-1.484375 2.40625,-2.921875 0,-0.90625 -0.53125,-1.59375 -1.328125,-1.59375 -0.453125,0 -0.875,0.296875 -1.171875,0.59375 z M 1.453125,-3.046875 C 1.5,-3.265625 1.5,-3.28125 1.59375,-3.390625 2.078125,-4.03125 2.53125,-4.1875 2.796875,-4.1875 c 0.359375,0 0.625,0.296875 0.625,0.9375 0,0.59375 -0.328125,1.734375 -0.515625,2.109375 -0.328125,0.671875 -0.78125,1.03125 -1.171875,1.03125 -0.34375,0 -0.671875,-0.265625 -0.671875,-1 0,-0.203125 0,-0.390625 0.15625,-1.015625 z m 0,0" id="path8936" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-dfa2d3a2-2">
+        <g id="g8939" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use8941" width="744.09448" x="223.43201" xlink:href="#textext-dfa2d3a2-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g9071" ns0:page_width="" ns0:preamble="" ns0:text="$v_r$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,21.121791,452.25482)">
+      <defs id="defs9073">
+        <g id="g9075">
+          <symbol id="textext-3d373746-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path9078" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-3d373746-1" overflow="visible" style="overflow:visible">
+            <path d="m 4.671875,-3.703125 c 0,-0.546875 -0.265625,-0.703125 -0.4375,-0.703125 -0.25,0 -0.5,0.265625 -0.5,0.484375 0,0.125 0.046875,0.1875 0.15625,0.296875 0.21875,0.203125 0.34375,0.453125 0.34375,0.8125 0,0.421875 -0.609375,2.703125 -1.765625,2.703125 -0.515625,0 -0.75,-0.34375 -0.75,-0.875 0,-0.546875 0.28125,-1.28125 0.578125,-2.109375 0.078125,-0.171875 0.125,-0.3125 0.125,-0.5 0,-0.4375 -0.3125,-0.8125 -0.8125,-0.8125 -0.9375,0 -1.3125,1.453125 -1.3125,1.53125 0,0.109375 0.09375,0.109375 0.109375,0.109375 0.109375,0 0.109375,-0.03125 0.15625,-0.1875 0.296875,-1 0.71875,-1.234375 1.015625,-1.234375 0.078125,0 0.25,0 0.25,0.3125 0,0.25 -0.109375,0.53125 -0.171875,0.703125 -0.4375,1.15625 -0.5625,1.609375 -0.5625,2.046875 0,1.078125 0.875,1.234375 1.328125,1.234375 1.671875,0 2.25,-3.296875 2.25,-3.8125 z m 0,0" id="path9081" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-3d373746-2" overflow="visible" style="overflow:visible">
+            <path d="" id="path9084" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-3d373746-3" overflow="visible" style="overflow:visible">
+            <path d="m 1.640625,-1.40625 c 0,-0.046875 0.171875,-0.671875 0.171875,-0.703125 0.015625,-0.0625 0.21875,-0.40625 0.453125,-0.578125 0.0625,-0.046875 0.25,-0.1875 0.5625,-0.1875 0.0625,0 0.234375,0 0.375,0.09375 -0.21875,0.0625 -0.296875,0.265625 -0.296875,0.390625 0,0.140625 0.109375,0.25 0.265625,0.25 0.171875,0 0.390625,-0.125 0.390625,-0.421875 0,-0.359375 -0.375,-0.515625 -0.734375,-0.515625 -0.359375,0 -0.671875,0.15625 -0.984375,0.5 -0.125,-0.421875 -0.546875,-0.5 -0.71875,-0.5 -0.25,0 -0.421875,0.171875 -0.546875,0.359375 -0.15625,0.265625 -0.25,0.671875 -0.25,0.71875 0,0.078125 0.09375,0.078125 0.125,0.078125 0.09375,0 0.09375,-0.015625 0.140625,-0.203125 0.109375,-0.421875 0.25,-0.75 0.515625,-0.75 0.1875,0 0.234375,0.15625 0.234375,0.34375 0,0.125 -0.0625,0.390625 -0.125,0.578125 -0.046875,0.1875 -0.109375,0.46875 -0.140625,0.625 L 0.84375,-0.4375 C 0.828125,-0.34375 0.78125,-0.171875 0.78125,-0.15625 0.78125,0 0.90625,0.0625 1.015625,0.0625 1.125,0.0625 1.265625,0 1.3125,-0.125 1.328125,-0.171875 1.40625,-0.484375 1.453125,-0.65625 z m 0,0" id="path9087" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-3d373746-4">
+        <g id="g9090" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use9092" width="744.09448" x="223.43201" xlink:href="#textext-3d373746-1" y="134.765"/>
+        </g>
+        <g id="g9094" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use9096" width="744.09448" x="228.261" xlink:href="#textext-3d373746-3" y="136.259"/>
+        </g>
+      </g>
+    </g>
+    <g id="g9258" ns0:page_width="" ns0:preamble="" ns0:text="$v_f$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,321.7967,411.2537)">
+      <defs id="defs9260">
+        <g id="g9262">
+          <symbol id="textext-f8b43ab0-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path9265" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-f8b43ab0-1" overflow="visible" style="overflow:visible">
+            <path d="m 4.671875,-3.703125 c 0,-0.546875 -0.265625,-0.703125 -0.4375,-0.703125 -0.25,0 -0.5,0.265625 -0.5,0.484375 0,0.125 0.046875,0.1875 0.15625,0.296875 0.21875,0.203125 0.34375,0.453125 0.34375,0.8125 0,0.421875 -0.609375,2.703125 -1.765625,2.703125 -0.515625,0 -0.75,-0.34375 -0.75,-0.875 0,-0.546875 0.28125,-1.28125 0.578125,-2.109375 0.078125,-0.171875 0.125,-0.3125 0.125,-0.5 0,-0.4375 -0.3125,-0.8125 -0.8125,-0.8125 -0.9375,0 -1.3125,1.453125 -1.3125,1.53125 0,0.109375 0.09375,0.109375 0.109375,0.109375 0.109375,0 0.109375,-0.03125 0.15625,-0.1875 0.296875,-1 0.71875,-1.234375 1.015625,-1.234375 0.078125,0 0.25,0 0.25,0.3125 0,0.25 -0.109375,0.53125 -0.171875,0.703125 -0.4375,1.15625 -0.5625,1.609375 -0.5625,2.046875 0,1.078125 0.875,1.234375 1.328125,1.234375 1.671875,0 2.25,-3.296875 2.25,-3.8125 z m 0,0" id="path9268" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-f8b43ab0-2" overflow="visible" style="overflow:visible">
+            <path d="" id="path9271" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-f8b43ab0-3" overflow="visible" style="overflow:visible">
+            <path d="m 2.84375,-2.75 0.671875,0 C 3.65625,-2.75 3.75,-2.75 3.75,-2.90625 3.75,-3 3.65625,-3 3.53125,-3 l -0.640625,0 c 0.15625,-0.890625 0.203125,-1.203125 0.265625,-1.40625 0.03125,-0.15625 0.1875,-0.296875 0.359375,-0.296875 0,0 0.1875,0 0.328125,0.078125 -0.296875,0.09375 -0.3125,0.34375 -0.3125,0.375 0,0.15625 0.125,0.265625 0.28125,0.265625 0.1875,0 0.390625,-0.15625 0.390625,-0.421875 0,-0.328125 -0.328125,-0.5 -0.6875,-0.5 -0.3125,0 -0.65625,0.171875 -0.84375,0.515625 C 2.53125,-4.125 2.484375,-3.8125 2.328125,-3 L 1.78125,-3 c -0.140625,0 -0.234375,0 -0.234375,0.15625 0,0.09375 0.09375,0.09375 0.21875,0.09375 l 0.515625,0 c 0,0.046875 -0.4375,2.546875 -0.609375,3.296875 -0.03125,0.15625 -0.15625,0.671875 -0.484375,0.671875 -0.015625,0 -0.171875,0 -0.3125,-0.078125 0.28125,-0.09375 0.3125,-0.34375 0.3125,-0.375 C 1.1875,0.609375 1.0625,0.5 0.90625,0.5 c -0.1875,0 -0.390625,0.15625 -0.390625,0.421875 0,0.3125 0.328125,0.5 0.671875,0.5 0.4375,0 0.75,-0.453125 0.828125,-0.609375 0.25,-0.46875 0.421875,-1.328125 0.4375,-1.40625 z m 0,0" id="path9274" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-f8b43ab0-4">
+        <g id="g9277" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use9279" width="744.09448" x="223.43201" xlink:href="#textext-f8b43ab0-1" y="134.765"/>
+        </g>
+        <g id="g9281" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use9283" width="744.09448" x="228.261" xlink:href="#textext-f8b43ab0-3" y="136.259"/>
+        </g>
+      </g>
+    </g>
+    <g id="g9731" ns0:page_width="" ns0:preamble="" ns0:text="$\\delta$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,324.28162,375.22241)">
+      <defs id="defs9733">
+        <g id="g9735">
+          <symbol id="textext-bc2b0a79-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path9738" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-bc2b0a79-1" overflow="visible" style="overflow:visible">
+            <path d="M 2.625,-4.359375 C 1.390625,-4.0625 0.421875,-2.765625 0.421875,-1.5625 0.421875,-0.59375 1.0625,0.125 2,0.125 c 1.15625,0 1.984375,-1.578125 1.984375,-2.953125 0,-0.90625 -0.390625,-1.40625 -0.734375,-1.84375 C 2.890625,-5.125 2.296875,-5.875 2.296875,-6.3125 c 0,-0.21875 0.203125,-0.453125 0.546875,-0.453125 0.3125,0 0.5,0.125 0.71875,0.265625 0.203125,0.125 0.390625,0.25 0.546875,0.25 C 4.359375,-6.25 4.5,-6.484375 4.5,-6.65625 4.5,-6.875 4.34375,-6.890625 3.984375,-6.984375 3.46875,-7.09375 3.328125,-7.09375 3.171875,-7.09375 c -0.78125,0 -1.140625,0.4375 -1.140625,1.03125 0,0.546875 0.296875,1.09375 0.59375,1.703125 z m 0.125,0.21875 c 0.25,0.46875 0.546875,1 0.546875,1.71875 0,0.65625 -0.375,2.328125 -1.296875,2.328125 -0.546875,0 -0.96875,-0.421875 -0.96875,-1.1875 0,-0.625 0.375,-2.5 1.71875,-2.859375 z m 0,0" id="path9741" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-bc2b0a79-2">
+        <g id="g9744" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use9746" width="744.09448" x="223.43201" xlink:href="#textext-bc2b0a79-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g10209" ns0:page_width="" ns0:preamble="" ns0:text="$m$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,198.79333,255.94641)">
+      <defs id="defs10211">
+        <g id="g10213">
+          <symbol id="textext-b2251154-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path10216" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-b2251154-1" overflow="visible" style="overflow:visible">
+            <path d="m 0.875,-0.59375 c -0.03125,0.15625 -0.09375,0.390625 -0.09375,0.4375 0,0.171875 0.140625,0.265625 0.296875,0.265625 0.125,0 0.296875,-0.078125 0.375,-0.28125 0,-0.015625 0.125,-0.484375 0.1875,-0.734375 l 0.21875,-0.890625 C 1.90625,-2.03125 1.96875,-2.25 2.03125,-2.46875 c 0.03125,-0.171875 0.109375,-0.46875 0.125,-0.5 0.140625,-0.3125 0.671875,-1.21875 1.625,-1.21875 0.453125,0 0.53125,0.375 0.53125,0.703125 0,0.25 -0.0625,0.53125 -0.140625,0.828125 L 3.890625,-1.5 3.6875,-0.75 c -0.03125,0.203125 -0.125,0.546875 -0.125,0.59375 0,0.171875 0.140625,0.265625 0.28125,0.265625 0.3125,0 0.375,-0.25 0.453125,-0.5625 0.140625,-0.5625 0.515625,-2.015625 0.59375,-2.40625 0.03125,-0.125 0.5625,-1.328125 1.65625,-1.328125 0.421875,0 0.53125,0.34375 0.53125,0.703125 0,0.5625 -0.421875,1.703125 -0.625,2.234375 -0.078125,0.234375 -0.125,0.34375 -0.125,0.546875 0,0.46875 0.34375,0.8125 0.8125,0.8125 0.9375,0 1.3125,-1.453125 1.3125,-1.53125 0,-0.109375 -0.09375,-0.109375 -0.125,-0.109375 -0.09375,0 -0.09375,0.03125 -0.140625,0.1875 -0.15625,0.53125 -0.46875,1.234375 -1.015625,1.234375 -0.171875,0 -0.25,-0.09375 -0.25,-0.328125 0,-0.25 0.09375,-0.484375 0.1875,-0.703125 0.1875,-0.53125 0.609375,-1.625 0.609375,-2.203125 0,-0.640625 -0.40625,-1.0625 -1.15625,-1.0625 -0.734375,0 -1.25,0.4375 -1.625,0.96875 0,-0.125 -0.03125,-0.46875 -0.3125,-0.703125 -0.25,-0.21875 -0.5625,-0.265625 -0.8125,-0.265625 -0.90625,0 -1.390625,0.640625 -1.5625,0.875 -0.046875,-0.578125 -0.46875,-0.875 -0.921875,-0.875 -0.453125,0 -0.640625,0.390625 -0.734375,0.5625 -0.171875,0.359375 -0.296875,0.9375 -0.296875,0.96875 0,0.109375 0.09375,0.109375 0.109375,0.109375 0.109375,0 0.109375,-0.015625 0.171875,-0.234375 0.171875,-0.703125 0.375,-1.1875 0.734375,-1.1875 0.15625,0 0.296875,0.078125 0.296875,0.453125 0,0.21875 -0.03125,0.328125 -0.15625,0.84375 z m 0,0" id="path10219" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-b2251154-2">
+        <g id="g10222" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use10224" width="744.09448" x="223.43201" xlink:href="#textext-b2251154-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g10478" ns0:page_width="" ns0:preamble="" ns0:text="$\\theta$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,124.24583,259.67379)">
+      <defs id="defs10480">
+        <g id="g10482">
+          <symbol id="textext-bc687335-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path10485" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-bc687335-1" overflow="visible" style="overflow:visible">
+            <path d="m 4.53125,-4.984375 c 0,-0.65625 -0.171875,-2.046875 -1.1875,-2.046875 -1.390625,0 -2.921875,2.8125 -2.921875,5.09375 0,0.9375 0.28125,2.046875 1.1875,2.046875 1.40625,0 2.921875,-2.859375 2.921875,-5.09375 z M 1.46875,-3.625 C 1.640625,-4.25 1.84375,-5.046875 2.25,-5.765625 2.515625,-6.25 2.875,-6.8125 3.328125,-6.8125 c 0.484375,0 0.546875,0.640625 0.546875,1.203125 0,0.5 -0.078125,1 -0.3125,1.984375 z m 2,0.328125 C 3.359375,-2.84375 3.15625,-2 2.765625,-1.28125 c -0.34375,0.6875 -0.71875,1.171875 -1.15625,1.171875 -0.328125,0 -0.53125,-0.296875 -0.53125,-1.21875 0,-0.421875 0.0625,-1 0.3125,-1.96875 z m 0,0" id="path10488" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-bc687335-2">
+        <g id="g10491" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use10493" width="744.09448" x="223.43201" xlink:href="#textext-bc687335-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g10767" ns0:page_width="" ns0:preamble="" ns0:text="$x$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,-126.73075,459.70957)">
+      <defs id="defs10769">
+        <g id="g10771">
+          <symbol id="textext-99d13bf1-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path10774" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-99d13bf1-1" overflow="visible" style="overflow:visible">
+            <path d="M 3.328125,-3.015625 C 3.390625,-3.265625 3.625,-4.1875 4.3125,-4.1875 c 0.046875,0 0.296875,0 0.5,0.125 C 4.53125,-4 4.34375,-3.765625 4.34375,-3.515625 c 0,0.15625 0.109375,0.34375 0.375,0.34375 0.21875,0 0.53125,-0.171875 0.53125,-0.578125 0,-0.515625 -0.578125,-0.65625 -0.921875,-0.65625 -0.578125,0 -0.921875,0.53125 -1.046875,0.75 -0.25,-0.65625 -0.78125,-0.75 -1.078125,-0.75 -1.03125,0 -1.609375,1.28125 -1.609375,1.53125 0,0.109375 0.109375,0.109375 0.125,0.109375 0.078125,0 0.109375,-0.03125 0.125,-0.109375 0.34375,-1.0625 1,-1.3125 1.34375,-1.3125 0.1875,0 0.53125,0.09375 0.53125,0.671875 0,0.3125 -0.171875,0.96875 -0.53125,2.375 -0.15625,0.609375 -0.515625,1.03125 -0.953125,1.03125 -0.0625,0 -0.28125,0 -0.5,-0.125 0.25,-0.0625 0.46875,-0.265625 0.46875,-0.546875 0,-0.265625 -0.21875,-0.34375 -0.359375,-0.34375 -0.3125,0 -0.546875,0.25 -0.546875,0.578125 0,0.453125 0.484375,0.65625 0.921875,0.65625 0.671875,0 1.03125,-0.703125 1.046875,-0.75 0.125,0.359375 0.484375,0.75 1.078125,0.75 1.03125,0 1.59375,-1.28125 1.59375,-1.53125 0,-0.109375 -0.078125,-0.109375 -0.109375,-0.109375 -0.09375,0 -0.109375,0.046875 -0.140625,0.109375 -0.328125,1.078125 -1,1.3125 -1.3125,1.3125 -0.390625,0 -0.546875,-0.3125 -0.546875,-0.65625 0,-0.21875 0.046875,-0.4375 0.15625,-0.875 z m 0,0" id="path10777" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-99d13bf1-2">
+        <g id="g10780" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use10782" width="744.09448" x="223.43201" xlink:href="#textext-99d13bf1-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g11076" ns0:page_width="" ns0:preamble="" ns0:text="$y$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,-119.276,519.34757)">
+      <defs id="defs11078">
+        <g id="g11080">
+          <symbol id="textext-0facab18-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path11083" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-0facab18-1" overflow="visible" style="overflow:visible">
+            <path d="m 4.84375,-3.796875 c 0.046875,-0.140625 0.046875,-0.15625 0.046875,-0.234375 0,-0.171875 -0.140625,-0.265625 -0.296875,-0.265625 -0.09375,0 -0.25,0.0625 -0.34375,0.203125 -0.015625,0.0625 -0.109375,0.359375 -0.140625,0.546875 -0.078125,0.25 -0.140625,0.53125 -0.203125,0.796875 l -0.453125,1.796875 c -0.03125,0.140625 -0.46875,0.84375 -1.125,0.84375 -0.5,0 -0.609375,-0.4375 -0.609375,-0.8125 C 1.71875,-1.375 1.890625,-2 2.21875,-2.875 2.375,-3.28125 2.421875,-3.390625 2.421875,-3.59375 c 0,-0.4375 -0.3125,-0.8125 -0.8125,-0.8125 -0.953125,0 -1.3125,1.453125 -1.3125,1.53125 0,0.109375 0.09375,0.109375 0.109375,0.109375 0.109375,0 0.109375,-0.03125 0.15625,-0.1875 0.28125,-0.9375 0.671875,-1.234375 1.015625,-1.234375 0.078125,0 0.25,0 0.25,0.3125 0,0.25 -0.109375,0.515625 -0.171875,0.703125 -0.40625,1.0625 -0.578125,1.625 -0.578125,2.09375 0,0.890625 0.625,1.1875 1.21875,1.1875 0.390625,0 0.71875,-0.171875 1,-0.453125 -0.125,0.515625 -0.25,1.015625 -0.640625,1.546875 -0.265625,0.328125 -0.640625,0.625 -1.09375,0.625 -0.140625,0 -0.59375,-0.03125 -0.765625,-0.421875 0.15625,0 0.296875,0 0.421875,-0.125 C 1.328125,1.203125 1.421875,1.0625 1.421875,0.875 1.421875,0.5625 1.15625,0.53125 1.0625,0.53125 0.828125,0.53125 0.5,0.6875 0.5,1.171875 c 0,0.5 0.4375,0.875 1.0625,0.875 1.015625,0 2.046875,-0.90625 2.328125,-2.03125 z m 0,0" id="path11086" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-0facab18-2">
+        <g id="g11089" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use11091" width="744.09448" x="223.43201" xlink:href="#textext-0facab18-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g11405" ns0:page_width="" ns0:preamble="" ns0:text="$z$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,-156.54975,539.2269)">
+      <defs id="defs11407">
+        <g id="g11409">
+          <symbol id="textext-06fa337e-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path11412" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-06fa337e-1" overflow="visible" style="overflow:visible">
+            <path d="m 1.328125,-0.828125 c 0.53125,-0.578125 0.828125,-0.828125 1.1875,-1.140625 0,0 0.609375,-0.53125 0.96875,-0.890625 C 4.4375,-3.78125 4.65625,-4.265625 4.65625,-4.3125 c 0,-0.09375 -0.09375,-0.09375 -0.109375,-0.09375 -0.078125,0 -0.09375,0.015625 -0.15625,0.109375 -0.296875,0.484375 -0.5,0.640625 -0.734375,0.640625 -0.25,0 -0.359375,-0.15625 -0.515625,-0.328125 -0.1875,-0.21875 -0.359375,-0.421875 -0.6875,-0.421875 -0.75,0 -1.203125,0.921875 -1.203125,1.140625 0,0.046875 0.03125,0.109375 0.109375,0.109375 0.09375,0 0.109375,-0.046875 0.140625,-0.109375 0.1875,-0.46875 0.765625,-0.46875 0.84375,-0.46875 0.203125,0 0.390625,0.0625 0.625,0.140625 0.40625,0.15625 0.515625,0.15625 0.765625,0.15625 -0.359375,0.421875 -1.1875,1.140625 -1.375,1.296875 l -0.90625,0.84375 C 0.78125,-0.625 0.421875,-0.0625 0.421875,0.015625 c 0,0.09375 0.109375,0.09375 0.125,0.09375 0.078125,0 0.09375,-0.015625 0.15625,-0.125 0.234375,-0.359375 0.53125,-0.625 0.859375,-0.625 0.21875,0 0.328125,0.09375 0.578125,0.375 0.15625,0.21875 0.34375,0.375 0.625,0.375 1,0 1.578125,-1.265625 1.578125,-1.53125 0,-0.046875 -0.046875,-0.109375 -0.125,-0.109375 -0.09375,0 -0.109375,0.0625 -0.140625,0.140625 C 3.84375,-0.75 3.203125,-0.5625 2.875,-0.5625 c -0.1875,0 -0.375,-0.0625 -0.578125,-0.125 -0.34375,-0.125 -0.5,-0.171875 -0.703125,-0.171875 -0.015625,0 -0.171875,0 -0.265625,0.03125 z m 0,0" id="path11415" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-06fa337e-2">
+        <g id="g11418" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use11420" width="744.09448" x="223.43201" xlink:href="#textext-06fa337e-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g11754" ns0:page_width="" ns0:preamble="" ns0:text="$1$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,270.85591,263.40116)">
+      <defs id="defs11756">
+        <g id="g11758">
+          <symbol id="textext-d8226010-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path11761" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-d8226010-1" overflow="visible" style="overflow:visible">
+            <path d="m 2.9375,-6.375 c 0,-0.25 0,-0.265625 -0.234375,-0.265625 C 2.078125,-6 1.203125,-6 0.890625,-6 l 0,0.3125 c 0.203125,0 0.78125,0 1.296875,-0.265625 l 0,5.171875 c 0,0.359375 -0.03125,0.46875 -0.921875,0.46875 l -0.3125,0 0,0.3125 c 0.34375,-0.03125 1.203125,-0.03125 1.609375,-0.03125 0.390625,0 1.265625,0 1.609375,0.03125 l 0,-0.3125 -0.3125,0 c -0.90625,0 -0.921875,-0.109375 -0.921875,-0.46875 z m 0,0" id="path11764" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-d8226010-2">
+        <g id="g11767" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use11769" width="744.09448" x="223.43201" xlink:href="#textext-d8226010-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g12123" ns0:page_width="" ns0:preamble="" ns0:text="$2$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,238.55199,328.00899)">
+      <defs id="defs12125">
+        <g id="g12127">
+          <symbol id="textext-7436cafc-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path12130" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-7436cafc-1" overflow="visible" style="overflow:visible">
+            <path d="m 1.265625,-0.765625 1.0625,-1.03125 c 1.546875,-1.375 2.140625,-1.90625 2.140625,-2.90625 0,-1.140625 -0.890625,-1.9375 -2.109375,-1.9375 -1.125,0 -1.859375,0.921875 -1.859375,1.8125 0,0.546875 0.5,0.546875 0.53125,0.546875 0.171875,0 0.515625,-0.109375 0.515625,-0.53125 0,-0.25 -0.1875,-0.515625 -0.53125,-0.515625 -0.078125,0 -0.09375,0 -0.125,0.015625 0.21875,-0.65625 0.765625,-1.015625 1.34375,-1.015625 0.90625,0 1.328125,0.8125 1.328125,1.625 C 3.5625,-3.90625 3.078125,-3.125 2.515625,-2.5 l -1.90625,2.125 C 0.5,-0.265625 0.5,-0.234375 0.5,0 l 3.703125,0 0.265625,-1.734375 -0.234375,0 C 4.171875,-1.4375 4.109375,-1 4,-0.84375 3.9375,-0.765625 3.28125,-0.765625 3.0625,-0.765625 z m 0,0" id="path12133" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-7436cafc-2">
+        <g id="g12136" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use12138" width="744.09448" x="223.43201" xlink:href="#textext-7436cafc-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g12512" ns0:page_width="" ns0:preamble="" ns0:text="$3$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,152.82237,306.8872)">
+      <defs id="defs12514">
+        <g id="g12516">
+          <symbol id="textext-d890b87b-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path12519" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-d890b87b-1" overflow="visible" style="overflow:visible">
+            <path d="m 2.890625,-3.515625 c 0.8125,-0.265625 1.390625,-0.953125 1.390625,-1.75 0,-0.8125 -0.875,-1.375 -1.828125,-1.375 -1,0 -1.765625,0.59375 -1.765625,1.359375 0,0.328125 0.21875,0.515625 0.515625,0.515625 0.296875,0 0.5,-0.21875 0.5,-0.515625 0,-0.484375 -0.46875,-0.484375 -0.609375,-0.484375 0.296875,-0.5 0.953125,-0.625 1.3125,-0.625 0.421875,0 0.96875,0.21875 0.96875,1.109375 0,0.125 -0.03125,0.703125 -0.28125,1.140625 C 2.796875,-3.65625 2.453125,-3.625 2.203125,-3.625 2.125,-3.609375 1.890625,-3.59375 1.8125,-3.59375 c -0.078125,0.015625 -0.140625,0.03125 -0.140625,0.125 0,0.109375 0.0625,0.109375 0.234375,0.109375 l 0.4375,0 c 0.8125,0 1.1875,0.671875 1.1875,1.65625 0,1.359375 -0.6875,1.640625 -1.125,1.640625 -0.4375,0 -1.1875,-0.171875 -1.53125,-0.75 0.34375,0.046875 0.65625,-0.171875 0.65625,-0.546875 0,-0.359375 -0.265625,-0.5625 -0.546875,-0.5625 -0.25,0 -0.5625,0.140625 -0.5625,0.578125 0,0.90625 0.921875,1.5625 2.015625,1.5625 1.21875,0 2.125,-0.90625 2.125,-1.921875 0,-0.8125 -0.640625,-1.59375 -1.671875,-1.8125 z m 0,0" id="path12522" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-d890b87b-2">
+        <g id="g12525" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use12527" width="744.09448" x="223.43201" xlink:href="#textext-d890b87b-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g12921" ns0:page_width="" ns0:preamble="" ns0:text="$h$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,137.91287,365.28274)">
+      <defs id="defs12923">
+        <g id="g12925">
+          <symbol id="textext-16eca5b4-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path12928" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-16eca5b4-1" overflow="visible" style="overflow:visible">
+            <path d="m 2.859375,-6.8125 c 0,0 0,-0.109375 -0.125,-0.109375 -0.234375,0 -0.953125,0.078125 -1.21875,0.109375 -0.078125,0 -0.1875,0.015625 -0.1875,0.1875 0,0.125 0.09375,0.125 0.234375,0.125 0.484375,0 0.5,0.0625 0.5,0.171875 L 2.03125,-6.125 0.59375,-0.390625 c -0.046875,0.140625 -0.046875,0.15625 -0.046875,0.21875 0,0.234375 0.203125,0.28125 0.296875,0.28125 0.15625,0 0.3125,-0.125 0.359375,-0.265625 l 0.1875,-0.75 0.21875,-0.890625 C 1.671875,-2.03125 1.734375,-2.25 1.78125,-2.46875 1.796875,-2.53125 1.890625,-2.859375 1.890625,-2.921875 1.921875,-3.015625 2.234375,-3.5625 2.578125,-3.84375 2.796875,-4 3.09375,-4.1875 3.53125,-4.1875 c 0.421875,0 0.53125,0.34375 0.53125,0.703125 0,0.53125 -0.375,1.625 -0.609375,2.234375 C 3.375,-1.03125 3.3125,-0.90625 3.3125,-0.703125 c 0,0.46875 0.359375,0.8125 0.828125,0.8125 0.9375,0 1.296875,-1.453125 1.296875,-1.53125 0,-0.109375 -0.078125,-0.109375 -0.109375,-0.109375 -0.109375,0 -0.109375,0.03125 -0.15625,0.1875 -0.140625,0.53125 -0.46875,1.234375 -1.015625,1.234375 -0.171875,0 -0.234375,-0.09375 -0.234375,-0.328125 0,-0.25 0.078125,-0.484375 0.171875,-0.703125 0.15625,-0.4375 0.609375,-1.625 0.609375,-2.203125 0,-0.640625 -0.390625,-1.0625 -1.140625,-1.0625 -0.625,0 -1.109375,0.3125 -1.484375,0.765625 z m 0,0" id="path12931" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-16eca5b4-2">
+        <g id="g12934" style="fill:#000000;fill-opacity:1">
+          <use height="1052.3622" id="use12936" width="744.09448" x="223.43201" xlink:href="#textext-16eca5b4-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g13340" ns0:page_width="" ns0:preamble="" ns0:text="$\\dot{\\psi}$" style="stroke-width:0.0000001" transform="matrix(1.25,0,0,1.25,113.06371,128.95066)">
+      <defs id="defs13342">
+        <g id="g13344">
+          <symbol id="textext-a16aac7c-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path13347" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-a16aac7c-1" overflow="visible" style="overflow:visible">
+            <path d="m 1.90625,-6.140625 c 0,-0.265625 -0.21875,-0.53125 -0.515625,-0.53125 -0.34375,0 -0.546875,0.28125 -0.546875,0.53125 0,0.265625 0.234375,0.53125 0.53125,0.53125 0.34375,0 0.53125,-0.28125 0.53125,-0.53125 z m 0,0" id="path13350" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-a16aac7c-2" overflow="visible" style="overflow:visible">
+            <path d="" id="path13353" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-a16aac7c-3" overflow="visible" style="overflow:visible">
+            <path d="m 4.8125,-6.65625 c 0,-0.046875 0.015625,-0.109375 0.015625,-0.15625 0,-0.09375 -0.0625,-0.109375 -0.109375,-0.109375 -0.109375,0 -0.109375,0.03125 -0.15625,0.203125 L 2.90625,-0.125 c -0.75,-0.09375 -1.125,-0.46875 -1.125,-1.125 0,-0.203125 0,-0.453125 0.53125,-1.84375 0.046875,-0.125 0.109375,-0.296875 0.109375,-0.5 0,-0.4375 -0.3125,-0.8125 -0.8125,-0.8125 -0.953125,0 -1.3125,1.453125 -1.3125,1.53125 0,0.109375 0.09375,0.109375 0.109375,0.109375 0.109375,0 0.109375,-0.03125 0.15625,-0.1875 0.28125,-0.9375 0.671875,-1.234375 1.015625,-1.234375 0.078125,0 0.25,0 0.25,0.3125 0,0.265625 -0.109375,0.515625 -0.234375,0.859375 C 1.109375,-1.75 1.109375,-1.5 1.109375,-1.328125 1.109375,-0.375 1.890625,0.03125 2.84375,0.09375 2.765625,0.453125 2.765625,0.46875 2.625,1 2.609375,1.109375 2.40625,1.90625 2.40625,1.9375 c 0,0.015625 0,0.109375 0.109375,0.109375 0.03125,0 0.078125,0 0.09375,-0.046875 0.03125,-0.015625 0.09375,-0.265625 0.125,-0.40625 l 0.375,-1.484375 c 0.375,0 1.25,0 2.1875,-1.0625 0.40625,-0.46875 0.609375,-0.90625 0.71875,-1.203125 0.09375,-0.25 0.3125,-1.109375 0.3125,-1.546875 0,-0.5625 -0.265625,-0.703125 -0.4375,-0.703125 -0.25,0 -0.5,0.265625 -0.5,0.484375 0,0.125 0.0625,0.1875 0.15625,0.265625 0.109375,0.109375 0.359375,0.359375 0.359375,0.84375 0,0.640625 -0.515625,1.453125 -0.875,1.8125 -0.875,0.890625 -1.515625,0.890625 -1.875,0.890625 z m 0,0" id="path13356" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-a16aac7c-4">
+        <g id="g13359" style="fill:#000000;fill-opacity:1">
+          <use height="431.2861" id="use13361" width="523.89343" x="226.57899" xlink:href="#textext-a16aac7c-1" y="132.136"/>
+        </g>
+        <g id="g13363" style="fill:#000000;fill-opacity:1">
+          <use height="431.2861" id="use13365" width="523.89343" x="223.43201" xlink:href="#textext-a16aac7c-3" y="134.765"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>with these variable definitions:</p>
+<ul>
+<li>$m$: Combined mass of the bicycle and the rider</li>
+<li>$h$: Height of the center of mass</li>
+<li>$a$: Distance from rear wheel to the projection of the center of mass</li>
+<li>$b$: Wheelbase</li>
+<li>$v_r,v_f$: Speed at rear and front wheels, respectively</li>
+<li>$g$: Acceleration due to gravity</li>
+<li>$I_1,I_2,I_3$: Principal moments of inertia of the combined bicycle and rider</li>
+<li>$\delta(t)$: Steering angle</li>
+<li>$\theta(t)$: Roll angle</li>
+<li>$\dot{\psi}(t)$: Heading angular rate</li>
+</ul>
+<p>The non-linear equation of motion of this model can be written as so:</p>
+$$
+(I_x + mh^2) \ddot{\theta} +
+(I_3 - I_2 - mh^2)\left(\frac{v_r \tan\delta}{b}\right)^2 \sin\theta\cos\theta
+-mgh\sin\theta
+=-mh\cos\theta \left(\frac{av_r}{b\cos^2\delta}\dot{\delta}+\frac{v_r^2}{b}\tan{\delta}\right)
+$$<p>The left hand side describes the natural roll dynamics and the right hand side gives the roll torque produced by steering. Additionally, the heading is dictated by this differential equation:</p>
+$$ \dot{\psi} = \frac{v_r}{b}\tan{\delta} $$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Linearize-the-Model">Linearize the Model<a class="anchor-link" href="#Linearize-the-Model">&#182;</a></h2><p>The non-linear model presented above can be linearized about the upright equilibrium configuration ($\theta
+=\delta=0$). The simplest method to put these equations into a linear form is to assume that all of the angles are small ($\approx0$). This means that $\sin\theta\approx\theta$, $\cos\theta\approx1$, $\cos\delta\approx1$, $\tan\delta\approx\delta$, and $\tan^2(\delta)\approx0$. With that assumption and defining $I=I_1$ and $v=v_r$the linear equation of motion can now be written as:</p>
+$$ (I + mh^2) \ddot{\theta} - mgh\theta = -\frac{mh}{b}\left(av\dot{\delta}+v^2\delta\right) $$<p>With $\theta$ as the output variable and $\delta$ as the input variable a transfer function can be created by transforming the above equation into the frequency domain:</p>
+$$ \frac{\theta(s)}{\delta(s)} = 
+-\frac{mhv}{b} \frac{as + v}{(I + mh^2)s^2 - mgh}$$<p>The same can be done for the heading differential equation:</p>
+$$\dot{\psi}=\frac{v}{b}\delta$$$$\frac{\psi(s)}{\delta(s)}= \frac{v}{bs}$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Dependency-Installation">Dependency Installation<a class="anchor-link" href="#Dependency-Installation">&#182;</a></h1><p>Before we begin designing the controller we will need to install some dependencies. The simplest way to get everything is to use <a href="http://conda.pydata.org/">conda</a> and setup an environment with just the necessary packages:</p>
+
+<pre><code>$ conda create -n bicycle-control pip numpy scipy ipython-notebook
+$ source activate bicycle-control
+(bicycle-control)$ conda install -c https://conda.binstar.org/cwrowley slycot control
+(bicycle-control)$ pip install plotly</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">control</span> <span class="kn">as</span> <span class="nn">cn</span>
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">gr</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Controller-Design">Controller Design<a class="anchor-link" href="#Controller-Design">&#182;</a></h1><p>At this point I will use the linear model as a foundation for a controller design. I will create a sequential dual-loop feedback controller which has an inner roll stabilization loop and an outer heading tracking loop. The final design will allow one to specify a desired heading of the bicycle. The structure of the controller is shown in the following block diagram:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">SVG</span><span class="p">(</span><span class="s1">&#39;block-diagram.svg&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+<div class="output_svg output_subarea output_execute_result">
+<svg height="81.482498" id="svg2" inkscape:export-filename="inner-loops.png" inkscape:export-xdpi="200" inkscape:export-ydpi="200" inkscape:version="0.48.4 r9939" sodipodi:docname="inner-loops-src.svg" version="1.1" width="284.87146" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:ns0="http://www.iki.fi/pav/software/textext/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <sodipodi:namedview bordercolor="#666666" borderopacity="1.0" fit-margin-bottom="0" fit-margin-left="0" fit-margin-right="0" fit-margin-top="0" id="base" inkscape:current-layer="layer2" inkscape:cx="142.43573" inkscape:cy="40.741249" inkscape:document-units="px" inkscape:guide-bbox="true" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="1026" inkscape:window-maximized="1" inkscape:window-width="1680" inkscape:window-x="1680" inkscape:window-y="24" inkscape:zoom="5.4305194" pagecolor="#ffffff" showgrid="false" showguides="true"/>
+  <defs id="defs4">
+    <marker id="Arrow1Mend" inkscape:stockid="Arrow1Mend" orient="auto" refX="0" refY="0" style="overflow:visible">
+      <path d="M 0,0 5,-5 -12.5,0 5,5 0,0 z" id="path4986" inkscape:connector-curvature="0" style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none" transform="matrix(-0.4,0,0,-0.4,-4,0)"/>
+    </marker>
+  </defs>
+  <metadata id="metadata7">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g id="layer1" inkscape:groupmode="layer" inkscape:label="Layer 1" transform="translate(-200.36054,-303.15958)">
+    <rect height="57.829372" id="rect4099" style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" width="57.829372" x="405.74741" y="314.84097"/>
+    <rect height="28.435102" id="rect4871" style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" width="28.435099" x="357.80551" y="329.53632"/>
+    <path d="m 261.12443,402.07648 c 0,10.18152 -7.91456,18.43528 -17.67767,18.43528 -9.76311,0 -17.67767,-8.25376 -17.67767,-18.43528 0,-10.18153 7.91456,-18.43529 17.67767,-18.43529 9.76311,0 17.67767,8.25376 17.67767,18.43529 z" id="path4875" sodipodi:cx="243.44676" sodipodi:cy="402.07648" sodipodi:rx="17.67767" sodipodi:ry="18.435284" sodipodi:type="arc" style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2.62429619;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" transform="matrix(0.38913432,0,0,0.37314251,232.48431,193.8012)"/>
+    <rect height="28.435102" id="rect4871-3" style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" width="28.435099" x="271.67865" y="329.53632"/>
+    <path d="m 261.12443,402.07648 c 0,10.18152 -7.91456,18.43528 -17.67767,18.43528 -9.76311,0 -17.67767,-8.25376 -17.67767,-18.43528 0,-10.18153 7.91456,-18.43529 17.67767,-18.43529 9.76311,0 17.67767,8.25376 17.67767,18.43529 z" id="path4875-6" sodipodi:cx="243.44676" sodipodi:cy="402.07648" sodipodi:rx="17.67767" sodipodi:ry="18.435284" sodipodi:type="arc" style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2.62429619;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" transform="matrix(0.38913432,0,0,0.37314251,146.35746,193.8012)"/>
+    <path d="m 471.1005,322.57363 c 0,-1.62371 0,-18.91405 0,-18.91405 l -143.63885,0 0,31.0877" id="path4907" inkscape:connector-curvature="0" sodipodi:nodetypes="cccc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"/>
+    <path d="m 472.93163,363.47602 0,20.66606 -231.99123,0 0,-32.36726" id="path4909" inkscape:connector-curvature="0" sodipodi:nodetypes="cccc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"/>
+    <path d="m 463.52452,322.28324 17.87635,0" id="path4934" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"/>
+    <path d="m 213.81678,343.5411 18.15998,0" id="path4944" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"/>
+    <path d="m 247.95372,343.5411 21.58525,0" id="path4946" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"/>
+    <path d="m 300.30591,343.5411 17.71477,0" id="path4948" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"/>
+    <path d="m 334.1247,343.5411 21.60091,0" id="path4950" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#Arrow1Mend)"/>
+    <path d="m 386.31396,343.5411 17.19419,0" id="path4954" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"/>
+    <path d="m 463.86425,362.66856 17.38134,0" id="path4934-9" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"/>
+    <g id="g11545-5" ns0:preamble="" ns0:text="$+$" transform="translate(-161.29335,217.14553)">
+      <defs id="defs11547-3">
+        <g id="g11549-1">
+          <symbol id="textext-00aaa975-0-56" overflow="visible" style="overflow:visible">
+            <path d="m 4.078125,-2.296875 2.78125,0 C 7,-2.296875 7.1875,-2.296875 7.1875,-2.5 7.1875,-2.6875 7,-2.6875 6.859375,-2.6875 l -2.78125,0 0,-2.796875 c 0,-0.140625 0,-0.328125 -0.203125,-0.328125 -0.203125,0 -0.203125,0.1875 -0.203125,0.328125 l 0,2.796875 -2.78125,0 c -0.140625,0 -0.328125,0 -0.328125,0.1875 0,0.203125 0.1875,0.203125 0.328125,0.203125 l 2.78125,0 0,2.796875 c 0,0.140625 0,0.328125 0.203125,0.328125 0.203125,0 0.203125,-0.1875 0.203125,-0.328125 z m 0,0" id="path11552-64" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-00aaa975-1-4">
+        <g id="g11555-26" style="fill:#000000;fill-opacity:1"/>
+      </g>
+    </g>
+    <path d="m 322.32798,338.93412 9.80291,9.80292" id="path11837" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"/>
+    <path d="m 332.19496,338.93412 -9.86698,9.86699" id="path11839" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"/>
+    <g id="use11557-2" style="fill:#000000;fill-opacity:1" transform="matrix(0.59172136,0,0,0.59172136,320.89513,345.06188)">
+      <path d="m 4.078125,-2.296875 2.78125,0 C 7,-2.296875 7.1875,-2.296875 7.1875,-2.5 7.1875,-2.6875 7,-2.6875 6.859375,-2.6875 l -2.78125,0 0,-2.796875 c 0,-0.140625 0,-0.328125 -0.203125,-0.328125 -0.203125,0 -0.203125,0.1875 -0.203125,0.328125 l 0,2.796875 -2.78125,0 c -0.140625,0 -0.328125,0 -0.328125,0.1875 0,0.203125 0.1875,0.203125 0.328125,0.203125 l 2.78125,0 0,2.796875 c 0,0.140625 0,0.328125 0.203125,0.328125 0.203125,0 0.203125,-0.1875 0.203125,-0.328125 z m 0,0" id="path7004" inkscape:connector-curvature="0" style="stroke:none"/>
+    </g>
+    <g id="use11077-1" style="fill:#000000;fill-opacity:1" transform="matrix(0.64330733,0,0,0.72652119,324.6717,341.42771)">
+      <path d="m 6.5625,-2.296875 c 0.171875,0 0.359375,0 0.359375,-0.203125 0,-0.1875 -0.1875,-0.1875 -0.359375,-0.1875 l -5.390625,0 c -0.171875,0 -0.34375,0 -0.34375,0.1875 0,0.203125 0.171875,0.203125 0.34375,0.203125 z m 0,0" id="path7012" inkscape:connector-curvature="0" style="stroke:none"/>
+    </g>
+    <path d="m 261.12443,402.07648 c 0,10.18152 -7.91456,18.43528 -17.67767,18.43528 -9.76311,0 -17.67767,-8.25376 -17.67767,-18.43528 0,-10.18153 7.91456,-18.43529 17.67767,-18.43529 9.76311,0 17.67767,8.25376 17.67767,18.43529 z" id="path7748" sodipodi:cx="243.44676" sodipodi:cy="402.07648" sodipodi:rx="17.67767" sodipodi:ry="18.435284" sodipodi:type="arc" style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2.62429619;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" transform="matrix(0.38913432,0,0,0.37314251,146.48431,193.8012)"/>
+    <path d="m 236.32798,338.93412 9.80291,9.80292" id="path7750" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"/>
+    <path d="m 246.19496,338.93412 -9.86698,9.86699" id="path7752" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"/>
+    <g id="g7754" style="fill:#000000;fill-opacity:1" transform="matrix(0.59172136,0,0,0.59172136,234.89513,345.06188)">
+      <path d="m 4.078125,-2.296875 2.78125,0 C 7,-2.296875 7.1875,-2.296875 7.1875,-2.5 7.1875,-2.6875 7,-2.6875 6.859375,-2.6875 l -2.78125,0 0,-2.796875 c 0,-0.140625 0,-0.328125 -0.203125,-0.328125 -0.203125,0 -0.203125,0.1875 -0.203125,0.328125 l 0,2.796875 -2.78125,0 c -0.140625,0 -0.328125,0 -0.328125,0.1875 0,0.203125 0.1875,0.203125 0.328125,0.203125 l 2.78125,0 0,2.796875 c 0,0.140625 0,0.328125 0.203125,0.328125 0.203125,0 0.203125,-0.1875 0.203125,-0.328125 z m 0,0" id="path7756" inkscape:connector-curvature="0" style="stroke:none"/>
+    </g>
+    <g id="g7758" style="fill:#000000;fill-opacity:1" transform="matrix(0.64330733,0,0,0.72652119,238.6717,349.42771)">
+      <path d="m 6.5625,-2.296875 c 0.171875,0 0.359375,0 0.359375,-0.203125 0,-0.1875 -0.1875,-0.1875 -0.359375,-0.1875 l -5.390625,0 c -0.171875,0 -0.34375,0 -0.34375,0.1875 0,0.203125 0.171875,0.203125 0.34375,0.203125 z m 0,0" id="path7760" inkscape:connector-curvature="0" style="stroke:none"/>
+    </g>
+    <g id="g7811" ns0:page_width="" ns0:preamble="" ns0:text="Bicycle" style="stroke-width:0.0000001;display:inline" transform="translate(195.00265,210.88884)">
+      <defs id="defs7813">
+        <g id="g7815">
+          <symbol id="textext-7fec2a90-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path7818" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-7fec2a90-1" overflow="visible" style="overflow:visible">
+            <path d="m 2.21875,-3.65625 0,-2.4375 C 2.21875,-6.4375 2.234375,-6.5 2.703125,-6.5 l 1.234375,0 c 0.96875,0 1.3125,0.84375 1.3125,1.375 0,0.640625 -0.484375,1.46875 -1.59375,1.46875 z M 4.5625,-3.5625 C 5.53125,-3.75 6.21875,-4.390625 6.21875,-5.125 6.21875,-5.984375 5.296875,-6.8125 4,-6.8125 l -3.640625,0 0,0.3125 0.234375,0 c 0.765625,0 0.796875,0.109375 0.796875,0.46875 l 0,5.25 c 0,0.359375 -0.03125,0.46875 -0.796875,0.46875 l -0.234375,0 0,0.3125 3.90625,0 c 1.328125,0 2.21875,-0.890625 2.21875,-1.828125 0,-0.859375 -0.8125,-1.609375 -1.921875,-1.734375 z m -0.609375,3.25 -1.25,0 c -0.46875,0 -0.484375,-0.0625 -0.484375,-0.390625 l 0,-2.71875 1.875,0 C 5.078125,-3.421875 5.5,-2.5 5.5,-1.828125 5.5,-1.125 4.96875,-0.3125 3.953125,-0.3125 z m 0,0" id="path7821" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-7fec2a90-2" overflow="visible" style="overflow:visible">
+            <path d="M 1.765625,-4.40625 0.375,-4.296875 l 0,0.3125 c 0.640625,0 0.734375,0.0625 0.734375,0.546875 l 0,2.6875 c 0,0.4375 -0.109375,0.4375 -0.78125,0.4375 l 0,0.3125 C 0.640625,-0.015625 1.1875,-0.03125 1.421875,-0.03125 1.78125,-0.03125 2.125,-0.015625 2.46875,0 l 0,-0.3125 c -0.671875,0 -0.703125,-0.046875 -0.703125,-0.4375 z m 0.03125,-1.734375 c 0,-0.3125 -0.234375,-0.53125 -0.515625,-0.53125 -0.3125,0 -0.53125,0.265625 -0.53125,0.53125 0,0.265625 0.21875,0.53125 0.53125,0.53125 0.28125,0 0.515625,-0.21875 0.515625,-0.53125 z m 0,0" id="path7824" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-7fec2a90-3" overflow="visible" style="overflow:visible">
+            <path d="m 1.171875,-2.171875 c 0,-1.625 0.8125,-2.046875 1.34375,-2.046875 0.09375,0 0.71875,0.015625 1.0625,0.375 -0.40625,0.03125 -0.46875,0.328125 -0.46875,0.453125 0,0.265625 0.1875,0.453125 0.453125,0.453125 0.265625,0 0.46875,-0.15625 0.46875,-0.46875 0,-0.671875 -0.765625,-1.0625 -1.53125,-1.0625 -1.25,0 -2.15625,1.078125 -2.15625,2.3125 0,1.28125 0.984375,2.265625 2.140625,2.265625 1.328125,0 1.65625,-1.203125 1.65625,-1.296875 0,-0.09375 -0.109375,-0.09375 -0.140625,-0.09375 -0.078125,0 -0.109375,0.03125 -0.125,0.09375 -0.28125,0.921875 -0.9375,1.046875 -1.296875,1.046875 -0.53125,0 -1.40625,-0.421875 -1.40625,-2.03125 z m 0,0" id="path7827" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-7fec2a90-4" overflow="visible" style="overflow:visible">
+            <path d="m 4.140625,-3.34375 c 0.25,-0.640625 0.765625,-0.640625 0.921875,-0.640625 l 0,-0.3125 c -0.234375,0.015625 -0.515625,0.03125 -0.75,0.03125 -0.171875,0 -0.640625,-0.015625 -0.859375,-0.03125 l 0,0.3125 c 0.3125,0 0.46875,0.171875 0.46875,0.421875 0,0.109375 -0.015625,0.125 -0.0625,0.25 L 2.84375,-0.875 1.75,-3.546875 C 1.703125,-3.65625 1.6875,-3.6875 1.6875,-3.734375 c 0,-0.25 0.359375,-0.25 0.5625,-0.25 l 0,-0.3125 c -0.265625,0.015625 -0.921875,0.03125 -1.09375,0.03125 -0.265625,0 -0.671875,-0.015625 -0.96875,-0.03125 l 0,0.3125 c 0.484375,0 0.671875,0 0.8125,0.34375 L 2.5,0 C 2.4375,0.125 2.296875,0.453125 2.25,0.59375 2.03125,1.140625 1.75,1.828125 1.109375,1.828125 c -0.046875,0 -0.28125,0 -0.46875,-0.1875 0.3125,-0.03125 0.390625,-0.25 0.390625,-0.421875 0,-0.25 -0.1875,-0.40625 -0.421875,-0.40625 -0.203125,0 -0.421875,0.125 -0.421875,0.421875 0,0.453125 0.421875,0.8125 0.921875,0.8125 0.625,0 1.03125,-0.578125 1.265625,-1.140625 z m 0,0" id="path7830" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-7fec2a90-5" overflow="visible" style="overflow:visible">
+            <path d="m 1.765625,-6.921875 -1.4375,0.109375 0,0.3125 c 0.703125,0 0.78125,0.0625 0.78125,0.5625 l 0,5.1875 c 0,0.4375 -0.109375,0.4375 -0.78125,0.4375 l 0,0.3125 C 0.65625,-0.015625 1.1875,-0.03125 1.4375,-0.03125 c 0.25,0 0.734375,0.015625 1.109375,0.03125 l 0,-0.3125 c -0.671875,0 -0.78125,0 -0.78125,-0.4375 z m 0,0" id="path7833" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-7fec2a90-6" overflow="visible" style="overflow:visible">
+            <path d="M 1.109375,-2.515625 C 1.171875,-4 2.015625,-4.25 2.359375,-4.25 c 1.015625,0 1.125,1.34375 1.125,1.734375 z m 0,0.21875 2.78125,0 c 0.21875,0 0.25,0 0.25,-0.21875 0,-0.984375 -0.546875,-1.953125 -1.78125,-1.953125 -1.15625,0 -2.078125,1.03125 -2.078125,2.28125 0,1.328125 1.046875,2.296875 2.1875,2.296875 C 3.6875,0.109375 4.140625,-1 4.140625,-1.1875 4.140625,-1.28125 4.0625,-1.3125 4,-1.3125 c -0.078125,0 -0.109375,0.0625 -0.125,0.140625 -0.34375,1.03125 -1.25,1.03125 -1.34375,1.03125 -0.5,0 -0.890625,-0.296875 -1.125,-0.671875 -0.296875,-0.46875 -0.296875,-1.125 -0.296875,-1.484375 z m 0,0" id="path7836" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-7fec2a90-7">
+        <g id="g7839" style="fill:#000000;fill-opacity:1">
+          <use height="123.95297" id="use7841" width="451.31473" x="223.43201" xlink:href="#textext-7fec2a90-1" y="134.765"/>
+          <use height="123.95297" id="use7843" width="451.31473" x="230.48851" xlink:href="#textext-7fec2a90-2" y="134.765"/>
+          <use height="123.95297" id="use7845" width="451.31473" x="233.25612" xlink:href="#textext-7fec2a90-3" y="134.765"/>
+          <use height="123.95297" id="use7847" width="451.31473" x="237.6835" xlink:href="#textext-7fec2a90-4" y="134.765"/>
+          <use height="123.95297" id="use7849" width="451.31473" x="242.94176" xlink:href="#textext-7fec2a90-3" y="134.765"/>
+          <use height="123.95297" id="use7851" width="451.31473" x="247.36914" xlink:href="#textext-7fec2a90-5" y="134.765"/>
+          <use height="123.95297" id="use7853" width="451.31473" x="250.13675" xlink:href="#textext-7fec2a90-6" y="134.765"/>
+        </g>
+      </g>
+    </g>
+  </g>
+  <g id="layer2" inkscape:groupmode="layer" inkscape:label="Text" style="display:inline" transform="translate(-149.40901,-31.675544)">
+    <g id="g4528" ns0:page_width="" ns0:preamble="" ns0:text="$\\delta$" style="stroke-width:0.0000001" transform="translate(117.05945,-69.598352)">
+      <defs id="defs4530">
+        <g id="g4532">
+          <symbol id="textext-bc2b0a79-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path4535" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-bc2b0a79-1" overflow="visible" style="overflow:visible">
+            <path d="M 2.625,-4.359375 C 1.390625,-4.0625 0.421875,-2.765625 0.421875,-1.5625 0.421875,-0.59375 1.0625,0.125 2,0.125 c 1.15625,0 1.984375,-1.578125 1.984375,-2.953125 0,-0.90625 -0.390625,-1.40625 -0.734375,-1.84375 C 2.890625,-5.125 2.296875,-5.875 2.296875,-6.3125 c 0,-0.21875 0.203125,-0.453125 0.546875,-0.453125 0.3125,0 0.5,0.125 0.71875,0.265625 0.203125,0.125 0.390625,0.25 0.546875,0.25 C 4.359375,-6.25 4.5,-6.484375 4.5,-6.65625 4.5,-6.875 4.34375,-6.890625 3.984375,-6.984375 3.46875,-7.09375 3.328125,-7.09375 3.171875,-7.09375 c -0.78125,0 -1.140625,0.4375 -1.140625,1.03125 0,0.546875 0.296875,1.09375 0.59375,1.703125 z m 0.125,0.21875 c 0.25,0.46875 0.546875,1 0.546875,1.71875 0,0.65625 -0.375,2.328125 -1.296875,2.328125 -0.546875,0 -0.96875,-0.421875 -0.96875,-1.1875 0,-0.625 0.375,-2.5 1.71875,-2.859375 z m 0,0" id="path4538" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-bc2b0a79-2">
+        <g id="g4541" style="fill:#000000;fill-opacity:1">
+          <use height="123.95297" id="use4543" width="451.31473" x="223.43201" xlink:href="#textext-bc2b0a79-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g5449" ns0:page_width="" ns0:preamble="" ns0:text="$\\theta$" style="stroke-width:0.0000001" transform="translate(203.49988,-87.572535)">
+      <defs id="defs5451">
+        <g id="g5453">
+          <symbol id="textext-bc687335-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path5456" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-bc687335-1" overflow="visible" style="overflow:visible">
+            <path d="m 4.53125,-4.984375 c 0,-0.65625 -0.171875,-2.046875 -1.1875,-2.046875 -1.390625,0 -2.921875,2.8125 -2.921875,5.09375 0,0.9375 0.28125,2.046875 1.1875,2.046875 1.40625,0 2.921875,-2.859375 2.921875,-5.09375 z M 1.46875,-3.625 C 1.640625,-4.25 1.84375,-5.046875 2.25,-5.765625 2.515625,-6.25 2.875,-6.8125 3.328125,-6.8125 c 0.484375,0 0.546875,0.640625 0.546875,1.203125 0,0.5 -0.078125,1 -0.3125,1.984375 z m 2,0.328125 C 3.359375,-2.84375 3.15625,-2 2.765625,-1.28125 c -0.34375,0.6875 -0.71875,1.171875 -1.15625,1.171875 -0.328125,0 -0.53125,-0.296875 -0.53125,-1.21875 0,-0.421875 0.0625,-1 0.3125,-1.96875 z m 0,0" id="path5459" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-bc687335-2">
+        <g id="g5462" style="fill:#000000;fill-opacity:1">
+          <use height="123.95297" id="use5464" width="451.31473" x="223.43201" xlink:href="#textext-bc687335-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+    <g id="g5997" ns0:page_width="" ns0:preamble="" ns0:text="$k_\\theta$" style="stroke-width:0.0000001" transform="translate(92.280469,-59.826638)">
+      <defs id="defs5999">
+        <g id="g6001">
+          <symbol id="textext-15c397d8-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path6004" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-15c397d8-1" overflow="visible" style="overflow:visible">
+            <path d="m 2.859375,-6.8125 c 0,0 0,-0.109375 -0.125,-0.109375 -0.234375,0 -0.953125,0.078125 -1.21875,0.109375 -0.078125,0 -0.1875,0.015625 -0.1875,0.1875 0,0.125 0.09375,0.125 0.234375,0.125 0.484375,0 0.5,0.0625 0.5,0.171875 L 2.03125,-6.125 0.59375,-0.390625 c -0.046875,0.140625 -0.046875,0.15625 -0.046875,0.21875 0,0.234375 0.203125,0.28125 0.296875,0.28125 0.125,0 0.265625,-0.09375 0.328125,-0.203125 0.046875,-0.09375 0.5,-1.9375 0.5625,-2.1875 0.34375,0.03125 1.15625,0.1875 1.15625,0.84375 0,0.078125 0,0.109375 -0.03125,0.21875 -0.015625,0.109375 -0.03125,0.234375 -0.03125,0.34375 0,0.578125 0.390625,0.984375 0.90625,0.984375 0.296875,0 0.578125,-0.15625 0.796875,-0.53125 0.25,-0.4375 0.359375,-0.984375 0.359375,-1 0,-0.109375 -0.09375,-0.109375 -0.125,-0.109375 -0.09375,0 -0.109375,0.046875 -0.140625,0.1875 -0.203125,0.71875 -0.421875,1.234375 -0.859375,1.234375 -0.203125,0 -0.328125,-0.109375 -0.328125,-0.46875 0,-0.171875 0.046875,-0.40625 0.078125,-0.5625 C 3.5625,-1.3125 3.5625,-1.34375 3.5625,-1.453125 3.5625,-2.09375 2.9375,-2.375 2.078125,-2.5 2.390625,-2.671875 2.71875,-2.984375 2.9375,-3.234375 3.421875,-3.765625 3.875,-4.1875 4.359375,-4.1875 c 0.0625,0 0.078125,0 0.09375,0.015625 0.125,0.015625 0.125,0.015625 0.21875,0.078125 0.015625,0 0.015625,0.015625 0.03125,0.03125 -0.46875,0.03125 -0.5625,0.421875 -0.5625,0.546875 0,0.15625 0.109375,0.34375 0.375,0.34375 0.265625,0 0.546875,-0.21875 0.546875,-0.609375 0,-0.296875 -0.234375,-0.625 -0.671875,-0.625 -0.28125,0 -0.734375,0.078125 -1.453125,0.875 -0.34375,0.375 -0.734375,0.78125 -1.109375,0.921875 z m 0,0" id="path6007" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-15c397d8-2" overflow="visible" style="overflow:visible">
+            <path d="" id="path6010" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-15c397d8-3" overflow="visible" style="overflow:visible">
+            <path d="m 3.5625,-3.390625 c 0,-0.734375 -0.28125,-1.515625 -0.96875,-1.515625 -1.046875,0 -2.15625,1.875 -2.15625,3.46875 0,0.828125 0.328125,1.5 0.96875,1.5 1.046875,0 2.15625,-1.890625 2.15625,-3.453125 z m -2.34375,0.84375 c 0.359375,-1.5 0.96875,-2.15625 1.375,-2.15625 0.4375,0 0.4375,0.765625 0.4375,0.890625 0,0.28125 -0.046875,0.6875 -0.1875,1.265625 z m 1.5625,0.25 C 2.578125,-1.53125 2.421875,-1.15625 2.203125,-0.8125 2,-0.453125 1.71875,-0.125 1.40625,-0.125 c -0.375,0 -0.4375,-0.53125 -0.4375,-0.90625 0,-0.453125 0.125,-1 0.1875,-1.265625 z m 0,0" id="path6013" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-15c397d8-4">
+        <g id="g6016" style="fill:#000000;fill-opacity:1">
+          <use height="123.95297" id="use6018" width="451.31473" x="223.43201" xlink:href="#textext-15c397d8-1" y="134.765"/>
+        </g>
+        <g id="g6020" style="fill:#000000;fill-opacity:1">
+          <use height="123.95297" id="use6022" width="451.31473" x="228.619" xlink:href="#textext-15c397d8-3" y="136.259"/>
+        </g>
+      </g>
+    </g>
+    <g id="g6402" ns0:page_width="" ns0:preamble="" ns0:text="$\\psi_c$" style="stroke-width:0.0000001" transform="translate(-74.31987,-62.083951)">
+      <defs id="defs6404">
+        <g id="g6406">
+          <symbol id="textext-2d8a5654-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path6409" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-2d8a5654-1" overflow="visible" style="overflow:visible">
+            <path d="m 4.8125,-6.65625 c 0,-0.046875 0.015625,-0.109375 0.015625,-0.15625 0,-0.09375 -0.0625,-0.109375 -0.109375,-0.109375 -0.109375,0 -0.109375,0.03125 -0.15625,0.203125 L 2.90625,-0.125 c -0.75,-0.09375 -1.125,-0.46875 -1.125,-1.125 0,-0.203125 0,-0.453125 0.53125,-1.84375 0.046875,-0.125 0.109375,-0.296875 0.109375,-0.5 0,-0.4375 -0.3125,-0.8125 -0.8125,-0.8125 -0.953125,0 -1.3125,1.453125 -1.3125,1.53125 0,0.109375 0.09375,0.109375 0.109375,0.109375 0.109375,0 0.109375,-0.03125 0.15625,-0.1875 0.28125,-0.9375 0.671875,-1.234375 1.015625,-1.234375 0.078125,0 0.25,0 0.25,0.3125 0,0.265625 -0.109375,0.515625 -0.234375,0.859375 C 1.109375,-1.75 1.109375,-1.5 1.109375,-1.328125 1.109375,-0.375 1.890625,0.03125 2.84375,0.09375 2.765625,0.453125 2.765625,0.46875 2.625,1 2.609375,1.109375 2.40625,1.90625 2.40625,1.9375 c 0,0.015625 0,0.109375 0.109375,0.109375 0.03125,0 0.078125,0 0.09375,-0.046875 0.03125,-0.015625 0.09375,-0.265625 0.125,-0.40625 l 0.375,-1.484375 c 0.375,0 1.25,0 2.1875,-1.0625 0.40625,-0.46875 0.609375,-0.90625 0.71875,-1.203125 0.09375,-0.25 0.3125,-1.109375 0.3125,-1.546875 0,-0.5625 -0.265625,-0.703125 -0.4375,-0.703125 -0.25,0 -0.5,0.265625 -0.5,0.484375 0,0.125 0.0625,0.1875 0.15625,0.265625 0.109375,0.109375 0.359375,0.359375 0.359375,0.84375 0,0.640625 -0.515625,1.453125 -0.875,1.8125 -0.875,0.890625 -1.515625,0.890625 -1.875,0.890625 z m 0,0" id="path6412" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-2d8a5654-2" overflow="visible" style="overflow:visible">
+            <path d="" id="path6415" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-2d8a5654-3" overflow="visible" style="overflow:visible">
+            <path d="m 3.046875,-2.671875 c -0.25,0.046875 -0.34375,0.234375 -0.34375,0.390625 0,0.1875 0.140625,0.265625 0.265625,0.265625 0.15625,0 0.390625,-0.109375 0.390625,-0.453125 0,-0.46875 -0.53125,-0.609375 -0.90625,-0.609375 -1.046875,0 -2.015625,0.96875 -2.015625,1.9375 0,0.59375 0.40625,1.203125 1.28125,1.203125 1.1875,0 1.734375,-0.6875 1.734375,-0.78125 0,-0.046875 -0.0625,-0.125 -0.125,-0.125 -0.03125,0 -0.046875,0.015625 -0.109375,0.078125 C 2.671875,-0.125 1.859375,-0.125 1.734375,-0.125 c -0.5,0 -0.71875,-0.34375 -0.71875,-0.78125 0,-0.1875 0.09375,-0.953125 0.453125,-1.4375 0.265625,-0.34375 0.625,-0.53125 0.984375,-0.53125 0.09375,0 0.421875,0.015625 0.59375,0.203125 z m 0,0" id="path6418" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-2d8a5654-4">
+        <g id="g6421" style="fill:#000000;fill-opacity:1">
+          <use height="123.95297" id="use6423" width="451.31473" x="223.43201" xlink:href="#textext-2d8a5654-1" y="134.765"/>
+        </g>
+        <g id="g6425" style="fill:#000000;fill-opacity:1">
+          <use height="123.95297" id="use6427" width="451.31473" x="229.922" xlink:href="#textext-2d8a5654-3" y="136.259"/>
+        </g>
+      </g>
+    </g>
+    <g id="g6789" ns0:page_width="" ns0:preamble="" ns0:text="$k_{\\psi}$" style="stroke-width:0.0000001" transform="translate(6.2631342,-60.896621)">
+      <defs id="defs6791">
+        <g id="g6793">
+          <symbol id="textext-37d8e38b-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path6796" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-37d8e38b-1" overflow="visible" style="overflow:visible">
+            <path d="m 2.859375,-6.8125 c 0,0 0,-0.109375 -0.125,-0.109375 -0.234375,0 -0.953125,0.078125 -1.21875,0.109375 -0.078125,0 -0.1875,0.015625 -0.1875,0.1875 0,0.125 0.09375,0.125 0.234375,0.125 0.484375,0 0.5,0.0625 0.5,0.171875 L 2.03125,-6.125 0.59375,-0.390625 c -0.046875,0.140625 -0.046875,0.15625 -0.046875,0.21875 0,0.234375 0.203125,0.28125 0.296875,0.28125 0.125,0 0.265625,-0.09375 0.328125,-0.203125 0.046875,-0.09375 0.5,-1.9375 0.5625,-2.1875 0.34375,0.03125 1.15625,0.1875 1.15625,0.84375 0,0.078125 0,0.109375 -0.03125,0.21875 -0.015625,0.109375 -0.03125,0.234375 -0.03125,0.34375 0,0.578125 0.390625,0.984375 0.90625,0.984375 0.296875,0 0.578125,-0.15625 0.796875,-0.53125 0.25,-0.4375 0.359375,-0.984375 0.359375,-1 0,-0.109375 -0.09375,-0.109375 -0.125,-0.109375 -0.09375,0 -0.109375,0.046875 -0.140625,0.1875 -0.203125,0.71875 -0.421875,1.234375 -0.859375,1.234375 -0.203125,0 -0.328125,-0.109375 -0.328125,-0.46875 0,-0.171875 0.046875,-0.40625 0.078125,-0.5625 C 3.5625,-1.3125 3.5625,-1.34375 3.5625,-1.453125 3.5625,-2.09375 2.9375,-2.375 2.078125,-2.5 2.390625,-2.671875 2.71875,-2.984375 2.9375,-3.234375 3.421875,-3.765625 3.875,-4.1875 4.359375,-4.1875 c 0.0625,0 0.078125,0 0.09375,0.015625 0.125,0.015625 0.125,0.015625 0.21875,0.078125 0.015625,0 0.015625,0.015625 0.03125,0.03125 -0.46875,0.03125 -0.5625,0.421875 -0.5625,0.546875 0,0.15625 0.109375,0.34375 0.375,0.34375 0.265625,0 0.546875,-0.21875 0.546875,-0.609375 0,-0.296875 -0.234375,-0.625 -0.671875,-0.625 -0.28125,0 -0.734375,0.078125 -1.453125,0.875 -0.34375,0.375 -0.734375,0.78125 -1.109375,0.921875 z m 0,0" id="path6799" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-37d8e38b-2" overflow="visible" style="overflow:visible">
+            <path d="" id="path6802" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-37d8e38b-3" overflow="visible" style="overflow:visible">
+            <path d="M 3.796875,-4.640625 C 3.8125,-4.71875 3.8125,-4.75 3.8125,-4.75 c 0,-0.09375 -0.09375,-0.09375 -0.109375,-0.09375 -0.109375,0 -0.109375,0.03125 -0.140625,0.15625 l -1.140625,4.546875 c -0.5625,-0.0625 -0.875,-0.3125 -0.875,-0.78125 0,-0.109375 0,-0.296875 0.34375,-1.15625 C 1.953125,-2.234375 2,-2.359375 2,-2.46875 2,-2.84375 1.6875,-3.078125 1.34375,-3.078125 0.640625,-3.078125 0.328125,-2.125 0.328125,-2 c 0,0.078125 0.09375,0.078125 0.125,0.078125 0.09375,0 0.09375,-0.03125 0.125,-0.109375 0.15625,-0.5625 0.46875,-0.84375 0.734375,-0.84375 0.125,0 0.171875,0.078125 0.171875,0.234375 0,0.171875 -0.046875,0.296875 -0.125,0.515625 -0.34375,0.875 -0.34375,1.03125 -0.34375,1.15625 0,0.796875 0.84375,1 1.359375,1.03125 -0.046875,0.171875 -0.3125,1.234375 -0.3125,1.265625 0,0.09375 0.078125,0.09375 0.109375,0.09375 0.09375,0 0.109375,-0.03125 0.140625,-0.140625 L 2.609375,0.0625 c 0.28125,0 0.921875,0 1.65625,-0.71875 0.1875,-0.203125 0.375,-0.4375 0.5,-0.75 C 4.859375,-1.640625 5,-2.203125 5,-2.53125 5,-3.078125 4.671875,-3.078125 4.65625,-3.078125 c -0.1875,0 -0.375,0.1875 -0.375,0.375 0,0.109375 0.0625,0.171875 0.09375,0.1875 0.109375,0.09375 0.28125,0.265625 0.28125,0.578125 0,0.578125 -0.796875,1.8125 -2,1.8125 z m 0,0" id="path6805" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-37d8e38b-4">
+        <g id="g6808" style="fill:#000000;fill-opacity:1">
+          <use height="123.95297" id="use6810" width="451.31473" x="223.43201" xlink:href="#textext-37d8e38b-1" y="134.765"/>
+        </g>
+        <g id="g6812" style="fill:#000000;fill-opacity:1">
+          <use height="123.95297" id="use6814" width="451.31473" x="228.619" xlink:href="#textext-37d8e38b-3" y="136.259"/>
+        </g>
+      </g>
+    </g>
+    <g id="g7180" ns0:page_width="" ns0:preamble="" ns0:text="$\\theta_c$" style="stroke-width:0.0000001" transform="translate(31.107654,-70.338943)">
+      <defs id="defs7182">
+        <g id="g7184">
+          <symbol id="textext-ce347b3e-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path7187" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-ce347b3e-1" overflow="visible" style="overflow:visible">
+            <path d="m 4.53125,-4.984375 c 0,-0.65625 -0.171875,-2.046875 -1.1875,-2.046875 -1.390625,0 -2.921875,2.8125 -2.921875,5.09375 0,0.9375 0.28125,2.046875 1.1875,2.046875 1.40625,0 2.921875,-2.859375 2.921875,-5.09375 z M 1.46875,-3.625 C 1.640625,-4.25 1.84375,-5.046875 2.25,-5.765625 2.515625,-6.25 2.875,-6.8125 3.328125,-6.8125 c 0.484375,0 0.546875,0.640625 0.546875,1.203125 0,0.5 -0.078125,1 -0.3125,1.984375 z m 2,0.328125 C 3.359375,-2.84375 3.15625,-2 2.765625,-1.28125 c -0.34375,0.6875 -0.71875,1.171875 -1.15625,1.171875 -0.328125,0 -0.53125,-0.296875 -0.53125,-1.21875 0,-0.421875 0.0625,-1 0.3125,-1.96875 z m 0,0" id="path7190" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-ce347b3e-2" overflow="visible" style="overflow:visible">
+            <path d="" id="path7193" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-ce347b3e-3" overflow="visible" style="overflow:visible">
+            <path d="m 3.046875,-2.671875 c -0.25,0.046875 -0.34375,0.234375 -0.34375,0.390625 0,0.1875 0.140625,0.265625 0.265625,0.265625 0.15625,0 0.390625,-0.109375 0.390625,-0.453125 0,-0.46875 -0.53125,-0.609375 -0.90625,-0.609375 -1.046875,0 -2.015625,0.96875 -2.015625,1.9375 0,0.59375 0.40625,1.203125 1.28125,1.203125 1.1875,0 1.734375,-0.6875 1.734375,-0.78125 0,-0.046875 -0.0625,-0.125 -0.125,-0.125 -0.03125,0 -0.046875,0.015625 -0.109375,0.078125 C 2.671875,-0.125 1.859375,-0.125 1.734375,-0.125 c -0.5,0 -0.71875,-0.34375 -0.71875,-0.78125 0,-0.1875 0.09375,-0.953125 0.453125,-1.4375 0.265625,-0.34375 0.625,-0.53125 0.984375,-0.53125 0.09375,0 0.421875,0.015625 0.59375,0.203125 z m 0,0" id="path7196" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-ce347b3e-4">
+        <g id="g7199" style="fill:#000000;fill-opacity:1">
+          <use height="123.95297" id="use7201" width="451.31473" x="223.43201" xlink:href="#textext-ce347b3e-1" y="134.765"/>
+        </g>
+        <g id="g7203" style="fill:#000000;fill-opacity:1">
+          <use height="123.95297" id="use7205" width="451.31473" x="228.10899" xlink:href="#textext-ce347b3e-3" y="136.259"/>
+        </g>
+      </g>
+    </g>
+    <g id="g7553" ns0:page_width="" ns0:preamble="" ns0:text="$\\psi$" style="stroke-width:0.0000001" transform="matrix(1.006478,0,0,1,203.03194,-47.93858)">
+      <defs id="defs7555">
+        <g id="g7557">
+          <symbol id="textext-7079b759-0" overflow="visible" style="overflow:visible">
+            <path d="" id="path7560" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+          <symbol id="textext-7079b759-1" overflow="visible" style="overflow:visible">
+            <path d="m 4.8125,-6.65625 c 0,-0.046875 0.015625,-0.109375 0.015625,-0.15625 0,-0.09375 -0.0625,-0.109375 -0.109375,-0.109375 -0.109375,0 -0.109375,0.03125 -0.15625,0.203125 L 2.90625,-0.125 c -0.75,-0.09375 -1.125,-0.46875 -1.125,-1.125 0,-0.203125 0,-0.453125 0.53125,-1.84375 0.046875,-0.125 0.109375,-0.296875 0.109375,-0.5 0,-0.4375 -0.3125,-0.8125 -0.8125,-0.8125 -0.953125,0 -1.3125,1.453125 -1.3125,1.53125 0,0.109375 0.09375,0.109375 0.109375,0.109375 0.109375,0 0.109375,-0.03125 0.15625,-0.1875 0.28125,-0.9375 0.671875,-1.234375 1.015625,-1.234375 0.078125,0 0.25,0 0.25,0.3125 0,0.265625 -0.109375,0.515625 -0.234375,0.859375 C 1.109375,-1.75 1.109375,-1.5 1.109375,-1.328125 1.109375,-0.375 1.890625,0.03125 2.84375,0.09375 2.765625,0.453125 2.765625,0.46875 2.625,1 2.609375,1.109375 2.40625,1.90625 2.40625,1.9375 c 0,0.015625 0,0.109375 0.109375,0.109375 0.03125,0 0.078125,0 0.09375,-0.046875 0.03125,-0.015625 0.09375,-0.265625 0.125,-0.40625 l 0.375,-1.484375 c 0.375,0 1.25,0 2.1875,-1.0625 0.40625,-0.46875 0.609375,-0.90625 0.71875,-1.203125 0.09375,-0.25 0.3125,-1.109375 0.3125,-1.546875 0,-0.5625 -0.265625,-0.703125 -0.4375,-0.703125 -0.25,0 -0.5,0.265625 -0.5,0.484375 0,0.125 0.0625,0.1875 0.15625,0.265625 0.109375,0.109375 0.359375,0.359375 0.359375,0.84375 0,0.640625 -0.515625,1.453125 -0.875,1.8125 -0.875,0.890625 -1.515625,0.890625 -1.875,0.890625 z m 0,0" id="path7563" inkscape:connector-curvature="0" style="stroke:none"/>
+          </symbol>
+        </g>
+      </defs>
+      <g id="textext-7079b759-2">
+        <g id="g7566" style="fill:#000000;fill-opacity:1">
+          <use height="123.95297" id="use7568" width="451.31473" x="223.43201" xlink:href="#textext-7079b759-1" y="134.765"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First, some reasonable numerical values for each of the model constants are specified.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="mf">9.81</span>  <span class="c1"># m/s^2</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mf">87.0</span>  <span class="c1"># kg</span>
+<span class="n">I</span> <span class="o">=</span> <span class="mf">3.28</span>  <span class="c1"># kg m^2</span>
+<span class="n">h</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># m</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># m</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># m</span>
+<span class="n">v</span> <span class="o">=</span> <span class="mf">5.0</span>  <span class="c1"># m/s</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The Python Control package has a transfer function object that I will use to define all of the transfer functions needed in the control design. The first transfer function to specify is the plant's steer to roll relationship, $\frac{\theta(s)}{\delta(s)}$. This transfer function provides a second order linear relationship relating the roll angle of the bicycle, $\theta$, to the steering angle, $\delta$, and the inner loop controller designed around this transfer function will ensure that the bicycle can follow a commanded roll angle.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">num</span> <span class="o">=</span> <span class="o">-</span><span class="n">m</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">v</span> <span class="o">/</span> <span class="n">b</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">v</span><span class="p">])</span>
+<span class="n">den</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">I</span> <span class="o">+</span> <span class="n">m</span> <span class="o">*</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">m</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span><span class="p">])</span>
+<span class="n">theta_delta</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">TransferFunction</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">den</span><span class="p">)</span>
+<span class="n">theta_delta</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>
+ -217.5 s - 2175
+-----------------
+90.28 s^2 - 853.5</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first thing one may ask is whether or not the open loop system is stable? It is fairly obvious from the denominator of the transfer function (i.e. the characteristic equation), but we can use the <code>.pole()</code> method of a transfer function to compute the roots of the characteristic equation. If any of the poles have positive real parts, then I know the system is unstable.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">theta_delta</span><span class="o">.</span><span class="n">pole</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([-3.0746689,  3.0746689])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now I see clearly that we have a pair of real poles, where one is positive, indicating that our system is unstable. This is identical to the behavior of a simple inverted pendulum.</p>
+<p>The next thing that may be of interest is the step response of the system. I know that the system is unstable but the step response can possibly reveal other information. I will use the control toolbox's <code>forced_response</code> function so that we can control the magnitude of the step input. We will simulate the system for 5 seconds and set a step input of 2 degrees.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">1001</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">time</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">forced_response</span><span class="p">(</span><span class="n">theta_delta</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="n">delta</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, I'll create a reusable function for plotting a SISO input/output time history.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">plot_siso_response</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Time Response&#39;</span><span class="p">,</span>
+                       <span class="n">x_lab</span><span class="o">=</span><span class="s1">&#39;Time [s]&#39;</span><span class="p">,</span> <span class="n">x_lim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">input_y_lab</span><span class="o">=</span><span class="s1">&#39;Input&#39;</span><span class="p">,</span> <span class="n">input_y_lim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">output_y_lab</span><span class="o">=</span><span class="s1">&#39;Output&#39;</span><span class="p">,</span> <span class="n">output_y_lim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">subplots</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plots a time history of the input and output of a SISO system.&quot;&quot;&quot;</span>
+    
+    <span class="n">xaxis</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">XAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">x_lab</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">x_lim</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">subplots</span><span class="p">:</span>
+        <span class="n">yaxis</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">input_y_lab</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">input_y_lim</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.49</span><span class="p">])</span>
+        <span class="n">yaxis2</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">output_y_lab</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">output_y_lim</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.51</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">xaxis</span><span class="o">=</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="n">yaxis</span><span class="p">,</span> <span class="n">yaxis2</span><span class="o">=</span><span class="n">yaxis2</span><span class="p">,</span> <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        
+        <span class="n">output_trace</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">output_y_lab</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">output</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">yaxis</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="n">output_y_lim</span><span class="p">)</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">xaxis</span><span class="o">=</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="n">yaxis</span><span class="p">)</span>
+        
+        <span class="n">output_trace</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">output_y_lab</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
+
+    <span class="n">input_trace</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">input_y_lab</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="nb">input</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span><span class="n">input_trace</span><span class="p">,</span> <span class="n">output_trace</span><span class="p">])</span>
+    
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">fig</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The simulation of the system's response to a positive step input of 2 degrees in steering is shown below. This plot shows that if you apply a positive steer angle, the roll angle exponentially grows in the negative direction. So forcing the steering to the right will make you fall to the left. This is opposite of what one finds in most vehicles. Typically steering to the right causes you to go to the right. This peculiarity will influence the controller design.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pl</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">plot_siso_response</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">delta</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Step Response&#39;</span><span class="p">,</span>
+                            <span class="n">output_y_lab</span><span class="o">=</span><span class="s1">&#39;Roll Angle [deg]&#39;</span><span class="p">,</span> <span class="n">input_y_lab</span><span class="o">=</span><span class="s1">&#39;Steer Angle [deg]&#39;</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[9]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~JasonMoore/748.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now it may be interesting to see if a simple proportional controller can stabilize this model and what kind of gain value is needed to do so. One way to do this is to compute the root locus of the closed loop system with a varying gain. A root locus is most informative as a plot on the imaginary/real plane, so here we define a function that will plot the roots as a function of the varying gain.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">plot_root_locus</span><span class="p">(</span><span class="n">gains</span><span class="p">,</span> <span class="n">roots</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plots the root locus of the closed loop system given the provided gains.&quot;&quot;&quot;</span>
+    
+    <span class="n">real_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">roots</span><span class="p">)</span>
+    <span class="n">imag_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">roots</span><span class="p">)</span>
+    
+    <span class="n">xaxis</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">XAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Re&#39;</span><span class="p">)</span>
+    <span class="n">yaxis</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Im&#39;</span><span class="p">)</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Root Locus&#39;</span><span class="p">,</span> <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                       <span class="n">xaxis</span><span class="o">=</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="n">yaxis</span><span class="p">)</span>
+    
+    <span class="c1"># plots a blue &quot;x&quot; for the first roots</span>
+    <span class="n">open_loop_poles</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">real_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span>
+                                 <span class="n">y</span><span class="o">=</span><span class="n">imag_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span>
+                                 <span class="n">marker</span><span class="o">=</span><span class="n">gr</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">),</span>
+                                 <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># plots a red &quot;o&quot; for the last roots</span>
+    <span class="n">last_poles</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">real_vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span>
+                            <span class="n">y</span><span class="o">=</span><span class="n">imag_vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span>
+                            <span class="n">marker</span><span class="o">=</span><span class="n">gr</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">),</span>
+                            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="n">gain_text</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;k = {:1.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">gains</span><span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">real_vals</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">imag_vals</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gr</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">gain_text</span><span class="p">,</span>
+                               <span class="n">marker</span><span class="o">=</span><span class="n">gr</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">))</span>
+                
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">open_loop_poles</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">last_poles</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">gr</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">gr</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The root locus can be computed with Python Control's <code>root_locus</code> function. Let's see if various negative feedback gains will stabilize the system.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">neg_feedback_roots</span><span class="p">,</span> <span class="n">neg_feedback_gains</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">root_locus</span><span class="p">(</span><span class="n">theta_delta</span><span class="p">,</span> <span class="n">kvect</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">500</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The root locus shows that for increasing negative feedback gains the bicycle will simply fall over even faster. (Use the "Show closest data on hover" option in the Plotly graph and hover over the traces to see the value of the gain.) I already know that the right steer makes the bicycle fall to the left. So if the bicycle is falling to the left a positive error causes steering to the right! Which, of course, causes the bicycle to fall over even faster. So what if I use positive feedback instead?</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pl</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">plot_root_locus</span><span class="p">(</span><span class="n">neg_feedback_gains</span><span class="p">,</span> <span class="n">neg_feedback_roots</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[12]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~JasonMoore/750.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now this is much better. It seems that if positive feedback is applied the system can indeed be stabilized by the controller. So if one commands a roll angle the bicycle must steer in the same direction to obtain that roll angle. This proves that we must steer into the fall in order to keep a bicycle upright.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pos_feedback_roots</span><span class="p">,</span> <span class="n">pos_feedback_gains</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">root_locus</span><span class="p">(</span><span class="n">theta_delta</span><span class="p">,</span> <span class="n">kvect</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">500</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">plot_root_locus</span><span class="p">(</span><span class="n">pos_feedback_gains</span><span class="p">,</span> <span class="n">pos_feedback_roots</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[13]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~JasonMoore/752.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that I know I can stabilize the system with positive feedback based on the roll angle error, I can choose a suitable controller that will allow me to command a roll angle and the bicycle will follow. The ability to command a roll angle is the first step to commanding a heading. For example, to head in the right direction the bicycle must eventually be steered and rolled to the right. So if I can command a rightward roll I am one step away from commanding a rightward turn.</p>
+<p>Note that our system is a Type 0 system, thus a simple proportional feedback system will stabilize the system but there will be some steady state error. If better performance is required for the inner loop control, a different compensator (e.g. PID) would be needed. But since I am developing a sequential dual-loop controller that will not be necessary.</p>
+<p>Below I define a function that generates the closed loop transfer function of a basic feedback system:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">feedback</span><span class="p">(</span><span class="n">plant</span><span class="p">,</span> <span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the closed loop system given the plant and controller of this form:</span>
+<span class="sd">    </span>
+<span class="sd">      +    -----   -----</span>
+<span class="sd">    --&gt;o--&gt;| c |--&gt;| p |---&gt;</span>
+<span class="sd">      -|   -----   ----- |</span>
+<span class="sd">       -------------------</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">feedforward</span> <span class="o">=</span> <span class="n">controller</span> <span class="o">*</span> <span class="n">plant</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">feedforward</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">feedforward</span><span class="p">))</span><span class="o">.</span><span class="n">minreal</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Based on the root locus plot I choose a positive feedback gain that stabilizes the roll loop and generate the closed loop transfer function $\frac{\theta}{\theta_c}$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">k_theta</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.5</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">theta_thetac</span> <span class="o">=</span> <span class="n">feedback</span><span class="p">(</span><span class="n">theta_delta</span><span class="p">,</span> <span class="n">k_theta</span><span class="p">)</span>
+<span class="n">theta_thetac</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[16]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>
+   6.023 s + 60.23
+---------------------
+s^2 + 6.023 s + 50.78</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now the closed loop system is stable and has the expected oscillatory roots:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">theta_thetac</span><span class="o">.</span><span class="n">pole</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([-3.01146433+6.45807869j, -3.01146433-6.45807869j])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The closed inner loop attempts to track a commanded roll angle, $\theta_c$, and one can see how well it does that by looking at the step response. Below I command a 3 degree roll angle. Note that I get the expected steady state error with this simple controller. I could add a more complex compensator, such as a PID controller, to improve the performance of the roll control, but since I am ultimately concerned with heading control I'll leave this inner loop control as it is and will tune the performance of the heading control with the outer loop.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">thetac</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="n">time</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">forced_response</span><span class="p">(</span><span class="n">theta_thetac</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="n">thetac</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pl</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">plot_siso_response</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">thetac</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span>
+                            <span class="n">input_y_lab</span><span class="o">=</span><span class="s1">&#39;Commanded Roll Angle [deg]&#39;</span><span class="p">,</span>
+                            <span class="n">output_y_lab</span><span class="o">=</span><span class="s1">&#39;Roll Angle [deg]&#39;</span><span class="p">,</span> <span class="n">subplots</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[19]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~JasonMoore/754.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I can now examine the steer angle needed to produce this roll behavior. It is interesting to note here that a positive commanded roll angle requires an initial negative steer angle that settles into a positive steer angle at steady state. So, to roll the bicycle in a desired direction, the controller must steer initially in the opposite direction. The following response shows the input and output traces of the roll controller block.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">thetae</span> <span class="o">=</span> <span class="n">thetac</span> <span class="o">-</span> <span class="n">theta</span>
+<span class="n">delta</span> <span class="o">=</span> <span class="n">k_theta</span> <span class="o">*</span> <span class="n">thetae</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pl</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">plot_siso_response</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">thetae</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">delta</span><span class="p">),</span>
+                           <span class="n">input_y_lab</span><span class="o">=</span><span class="s1">&#39;Roll Error [deg]&#39;</span><span class="p">,</span>
+                           <span class="n">output_y_lab</span><span class="o">=</span><span class="s1">&#39;Steer Angle [deg]&#39;</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[21]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~JasonMoore/756.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The next step is to close the outer heading tracking loop. To do this I need a new "plant" transfer function that represents the linear relationship between the commanded roll angle, $\theta_c$, and the heading angle, $\psi$, which will be fed back to close the outer loop. This transfer function can be found using this relationship:</p>
+$$ \frac{\psi(s)}{\theta_c(s)} = \frac{\theta(s)}{\theta_c(s)} \frac{\delta(s)}{\theta(s)} \frac{\psi(s)}{\delta(s)} $$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">theta_thetac</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[22]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>
+   6.023 s + 60.23
+---------------------
+s^2 + 6.023 s + 50.78</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">delta_theta</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">TransferFunction</span><span class="p">(</span><span class="n">theta_delta</span><span class="o">.</span><span class="n">den</span><span class="p">,</span> <span class="n">theta_delta</span><span class="o">.</span><span class="n">num</span><span class="p">)</span>
+<span class="n">delta_theta</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[23]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>
+90.28 s^2 - 853.5
+-----------------
+ -217.5 s - 2175</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">psi_delta</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">TransferFunction</span><span class="p">([</span><span class="n">v</span><span class="p">],</span> <span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">psi_delta</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[24]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>
+5
+-
+s</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">psi_thetac</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta_thetac</span> <span class="o">*</span> <span class="n">delta_theta</span> <span class="o">*</span> <span class="n">psi_delta</span><span class="p">)</span><span class="o">.</span><span class="n">minreal</span><span class="p">()</span>
+<span class="n">psi_thetac</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[25]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>
+-12.5 s^2 - 1.665e-14 s + 118.2
+-------------------------------
+   s^3 + 6.023 s^2 + 50.78 s</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since the heading transfer function is an integrator, a pole is introduced at the origin that makes the system marginally stable and now a Type 1 system. This pole will be an issue for stability but it also means that our system will not have any steady state error for a step response with a simple control gain.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">psi_thetac</span><span class="o">.</span><span class="n">pole</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[26]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([-3.01146433+6.45807869j, -3.01146433-6.45807869j,  0.00000000+0.j        ])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It is also interesting to check out the zeros of the system. The zeros dictate how the system responds to various inputs. In particular, there are a pair of zeros where one is in the right half plane. Right half plane zeros indicate that the system is a "<a href="https://en.wikipedia.org/wiki/Minimum_phase#Non-minimum_phase">non-minimum phase system</a>" and the consequences of systems like these are very interesting. A single right half plane zero will cause the response to initially go in the "wrong" direction. This is an inherent property of a bicycle and it forces the rider to "<a href="https://en.wikipedia.org/wiki/Countersteering">countersteer</a>" when they want to initiate a turn. This property makes bicycles fundamentally different than typical automobiles, boats, etc.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">psi_thetac</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[27]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([-3.0746689,  3.0746689])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It is possible to see this phenomena by simulating the step response of $\frac{\psi(s)}{\theta_c}$. Notice that to command a rightward roll angle, the heading is initially directed to the left before it gets into a steady turn.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">time</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">forced_response</span><span class="p">(</span><span class="n">psi_thetac</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="n">thetac</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pl</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">plot_siso_response</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">thetac</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">psi</span><span class="p">),</span>
+                            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Step Response&quot;</span><span class="p">,</span> <span class="n">output_y_lab</span><span class="o">=</span><span class="s1">&#39;Heading Angle [deg]&#39;</span><span class="p">,</span>
+                            <span class="n">input_y_lab</span><span class="o">=</span><span class="s1">&#39;Commanded Roll Angle [deg]&#39;</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[29]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~JasonMoore/758.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To close the heading loop, so that I can command a heading angle, I will use the root locus technique once more.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">roots</span><span class="p">,</span> <span class="n">gains</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">root_locus</span><span class="p">(</span><span class="n">psi_thetac</span><span class="p">,</span> <span class="n">kvect</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">1001</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pl</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">plot_root_locus</span><span class="p">(</span><span class="n">gains</span><span class="p">,</span> <span class="n">roots</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[31]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~JasonMoore/760.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I will need negative feedback here to move the pole from the origin further into the left half plane, but too much gain will destabilize the oscillatory root.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">k_psi</span> <span class="o">=</span> <span class="mf">0.25</span>
+<span class="n">psi_psic</span> <span class="o">=</span> <span class="n">feedback</span><span class="p">(</span><span class="n">psi_thetac</span><span class="p">,</span> <span class="n">k_psi</span><span class="p">)</span>
+<span class="n">psi_psic</span><span class="o">.</span><span class="n">minreal</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[32]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>
+ -3.125 s^2 + 1.388e-15 s + 29.54
+---------------------------------
+s^3 + 2.898 s^2 + 50.78 s + 29.54</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">psi_psic</span><span class="o">.</span><span class="n">pole</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[33]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([-1.14995336+6.93382365j, -1.14995336-6.93382365j, -0.59802194+0.j        ])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now the following plot shows the closed loop system's ability to track a command heading angle of 10 degrees.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">psic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="n">time</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">forced_response</span><span class="p">(</span><span class="n">psi_psic</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="n">psic</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pl</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">plot_siso_response</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">psic</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">psi</span><span class="p">),</span>
+                            <span class="n">input_y_lab</span><span class="o">=</span><span class="s2">&quot;Commanded Heading [deg]&quot;</span><span class="p">,</span>
+                            <span class="n">output_y_lab</span><span class="o">=</span><span class="s2">&quot;Heading [deg]&quot;</span><span class="p">,</span>
+                            <span class="n">subplots</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[35]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~JasonMoore/762.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally, to really see the counter steering effect during this simulation I will plot the steering input alongside both the roll and heading outputs.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">psie</span> <span class="o">=</span> <span class="n">psic</span> <span class="o">-</span> <span class="n">psi</span>
+<span class="n">thetac</span> <span class="o">=</span> <span class="n">k_psi</span> <span class="o">*</span> <span class="n">psie</span>
+<span class="n">time</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">forced_response</span><span class="p">(</span><span class="n">theta_thetac</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="n">thetac</span><span class="p">)</span>
+<span class="n">thetae</span> <span class="o">=</span> <span class="n">thetac</span> <span class="o">-</span> <span class="n">theta</span>
+<span class="n">delta</span> <span class="o">=</span> <span class="n">k_theta</span> <span class="o">*</span> <span class="n">thetae</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">xaxis</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">XAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Time [s]&#39;</span><span class="p">)</span>
+    
+<span class="n">yaxis</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Steer [deg]&#39;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.32</span><span class="p">])</span>
+<span class="n">yaxis2</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Roll [deg]&#39;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.33</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">])</span>
+<span class="n">yaxis3</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Heading [deg]&#39;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.66</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Commanded Heading Response&#39;</span><span class="p">,</span> <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                   <span class="n">xaxis</span><span class="o">=</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="n">yaxis</span><span class="p">,</span> <span class="n">yaxis2</span><span class="o">=</span><span class="n">yaxis2</span><span class="p">,</span> <span class="n">yaxis3</span><span class="o">=</span><span class="n">yaxis3</span><span class="p">)</span>
+
+<span class="n">steer_trace</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">delta</span><span class="p">))</span>
+<span class="n">roll_trace</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">)</span>
+<span class="n">heading_trace</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">psi</span><span class="p">),</span> <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">)</span>
+<span class="n">commanded_heading_trace</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">psic</span><span class="p">),</span> <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span><span class="n">steer_trace</span><span class="p">,</span> <span class="n">roll_trace</span><span class="p">,</span> <span class="n">heading_trace</span><span class="p">,</span> <span class="n">commanded_heading_trace</span><span class="p">])</span>
+    
+<span class="n">fig</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[37]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~JasonMoore/764.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This final plot shows the closed loop step response to a commanded rightward heading angle of 10 degrees. It is clear that one must initially steer about 5 degrees to the left causing a roll to the right to make the rightward change in heading.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">&#182;</a></h1><p>This notebook demonstrates one way to design a controller for a linear model of a bicycle. The controller shown is probably the simplest controller for tracking heading and the gains can certainly be tuned for different performance metrics. I made use of the Python Control library and the root locus design tool to find two suitable gains for the sequential dual-loop controller. Finally, simulation of the closed loop system gave very clear demonstration of the inherent need for countersteering to effectively control the vehicle.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="About-the-author">About the author<a class="anchor-link" href="#About-the-author">&#182;</a></h3><p>Jason K. Moore is a postdoctoral researcher at the Cleveland State University <a href="http://hmc.csuohio.edu/">Human Motion &amp; Control Lab</a> where he works on identification of human walking control strategies for use in powered prosthetic control design. He loves bicycles, so much so that he wrote a <a href="http://moorepants.github.io/dissertation/">dissertation</a> on the topic. You can find out more about him on his website: <a href="http://moorepants.info">moorepants.info</a>.</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

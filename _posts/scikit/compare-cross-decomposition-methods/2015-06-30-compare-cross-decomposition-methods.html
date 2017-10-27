@@ -1,0 +1,581 @@
+---
+permalink: scikit-learn/plot-compare-cross-decomposition/
+description:  
+name: Compare Cross Decomposition Methods | plotly
+has_thumbnail: true
+thumbnail: thumbnail/cross-decomposition.jpg
+layout: user-guide
+name: Compare Cross Decomposition Methods
+language: scikit-learn
+title: Compare Cross Decomposition Methods | plotly
+display_as: cross_decomposition
+has_thumbnail: true
+page_type: example_index
+order: 1
+ipynb: ~Diksha_Gabha/2891
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Simple usage of various cross decomposition algorithms: - PLSCanonical - PLSRegression, with multivariate response, a.k.a. PLS2 - PLSRegression, with univariate response, a.k.a. PLS1 - CCA</p>
+<p>Given 2 multivariate covarying two-dimensional datasets, X, and Y, PLS extracts the ‘directions of covariance’, i.e. the components of each datasets that explain the most shared variance between both datasets. This is apparent on the scatterplot matrix display: components 1 in dataset X and dataset Y are maximally correlated (points lie around the first diagonal). This is also true for components 2 in both dataset, however, the correlation across datasets for different components is weak: the point cloud is very spherical.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&apos;0.18&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorails imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.cross_decomposition.PLSCanonical.html#sklearn.cross_decomposition.PLSCanonical">PLSCanonical</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.cross_decomposition.PLSRegression.html#sklearn.cross_decomposition.PLSRegression">PLSRegression</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.cross_decomposition.CCA.html#sklearn.cross_decomposition.CCA">CCA</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">__doc__</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">from</span> <span class="nn">plotly</span> <span class="kn">import</span> <span class="n">tools</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn.cross_decomposition</span> <span class="kn">import</span> <span class="n">PLSCanonical</span><span class="p">,</span> <span class="n">PLSRegression</span><span class="p">,</span> <span class="n">CCA</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Automatically created module for IPython interactive environment
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Dataset based latent variables model</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="c1"># 2 latents vars:</span>
+<span class="n">l1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">l2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+<span class="n">latents</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">l1</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">l2</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">latents</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">latents</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:</span><span class="n">n</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">Y_train</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[:</span><span class="n">n</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">n</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:]</span>
+<span class="n">Y_test</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">n</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:]</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Corr(X)&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Corr(Y)&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Corr(X)
+[[ 1.    0.5  -0.06 -0.1 ]
+ [ 0.5   1.    0.02 -0.01]
+ [-0.06  0.02  1.    0.43]
+ [-0.1  -0.01  0.43  1.  ]]
+Corr(Y)
+[[ 1.    0.48 -0.11 -0.06]
+ [ 0.48  1.   -0.03  0.01]
+ [-0.11 -0.03  1.    0.51]
+ [-0.06  0.01  0.51  1.  ]]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Canonical-(symmetric)-PLS">Canonical (symmetric) PLS<a class="anchor-link" href="#Canonical-(symmetric)-PLS">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Transform Data</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">plsca</span> <span class="o">=</span> <span class="n">PLSCanonical</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plsca</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">X_train_r</span><span class="p">,</span> <span class="n">Y_train_r</span> <span class="o">=</span> <span class="n">plsca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">X_test_r</span><span class="p">,</span> <span class="n">Y_test_r</span> <span class="o">=</span> <span class="n">plsca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Scatter plot of scores</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">tools</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                          <span class="n">print_grid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                          <span class="n">subplot_titles</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Comp. 1: X vs Y (test corr = </span><span class="si">%.2f</span><span class="s1">)&#39;</span> <span class="o">%</span>
+                                          <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">X_test_r</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">Y_test_r</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                                          <span class="s1">&#39;X comp. 1 vs X comp. 2 (test corr = </span><span class="si">%.2f</span><span class="s1">)&#39;</span>
+                                          <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">X_test_r</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X_test_r</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                                          <span class="s1">&#39;Y comp. 1 vs Y comp. 2 , (test corr = </span><span class="si">%.2f</span><span class="s1">)&#39;</span>
+                                          <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">Y_test_r</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">Y_test_r</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                                          <span class="s1">&#39;Comp. 2: X vs Y (test corr = </span><span class="si">%.2f</span><span class="s1">)&#39;</span> <span class="o">%</span>
+                                          <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">X_test_r</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">Y_test_r</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+
+<span class="c1"># 1) On diagonal plot X vs Y scores on each components</span>
+
+<span class="n">comp1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X_train_r</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
+                   <span class="n">y</span><span class="o">=</span><span class="n">Y_train_r</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
+                   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span>
+                   <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+                   <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>
+                               <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                  <span class="p">)</span>
+<span class="n">comp1_</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X_test_r</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+                    <span class="n">y</span><span class="o">=</span><span class="n">Y_test_r</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>
+                               <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                   <span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">comp1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">comp1_</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;xaxis1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;x scores&#39;</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                               <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;yaxis1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;y scores&#39;</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                               <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">comp2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X_train_r</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> 
+                   <span class="n">y</span><span class="o">=</span><span class="n">Y_train_r</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+                   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span>
+                   <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                   <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+                   <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>
+                               <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                  <span class="p">)</span>
+
+<span class="n">comp2_</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X_test_r</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> 
+                    <span class="n">y</span><span class="o">=</span><span class="n">Y_test_r</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> 
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+                    <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>
+                                <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                   <span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">comp2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">comp2_</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;xaxis4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;x scores&#39;</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                               <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;yaxis4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;y scores&#39;</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                               <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c1"># 2) Off diagonal plot components 1 vs 2 for X and Y</span>
+
+<span class="n">xcomp</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X_train_r</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
+                   <span class="n">y</span><span class="o">=</span><span class="n">X_train_r</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+                   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span>
+                   <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                   <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+                   <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>
+                              <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                  <span class="p">)</span>
+<span class="n">xcomp_</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X_test_r</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
+                    <span class="n">y</span><span class="o">=</span><span class="n">X_test_r</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> 
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+                    <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>
+                                <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                   <span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">xcomp</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">xcomp_</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;xaxis2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;X comp. 1&#39;</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                               <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;yaxis2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;X comp. 2&#39;</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                               <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">ycomp1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Y_train_r</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
+                    <span class="n">y</span><span class="o">=</span><span class="n">Y_train_r</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> 
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span>
+                    <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>
+                              <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                   <span class="p">)</span>
+
+<span class="n">ycomp1_</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Y_test_r</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
+                     <span class="n">y</span><span class="o">=</span><span class="n">Y_test_r</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+                     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+                     <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+                     <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>
+                                 <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">ycomp1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">ycomp1_</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;xaxis3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Y comp. 1&#39;</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                               <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;yaxis3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Y comp. 2&#39;</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                               <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2889.embed" height="800px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="PLS-Regression">PLS Regression<a class="anchor-link" href="#PLS-Regression">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>PLS regression, with multivariate response, a.k.a. PLS2</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">q</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)]</span> <span class="o">*</span> <span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="c1"># each Yj = 1*X1 + 2*X2 + noize</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span> <span class="o">*</span> <span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">q</span><span class="p">))</span> <span class="o">+</span> <span class="mi">5</span>
+
+<span class="n">pls2</span> <span class="o">=</span> <span class="n">PLSRegression</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">pls2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;True B (such that: Y = XB + Err)&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+<span class="c1"># compare pls2.coef_ with B</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Estimated B&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">pls2</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">pls2</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>True B (such that: Y = XB + Err)
+[[1 1 1]
+ [2 2 2]
+ [0 0 0]
+ [0 0 0]
+ [0 0 0]
+ [0 0 0]
+ [0 0 0]
+ [0 0 0]
+ [0 0 0]
+ [0 0 0]]
+Estimated B
+[[ 1.   1.   1. ]
+ [ 2.   2.   2. ]
+ [ 0.   0.   0. ]
+ [ 0.   0.  -0. ]
+ [-0.  -0.1 -0. ]
+ [ 0.   0.   0. ]
+ [-0.   0.  -0. ]
+ [-0.  -0.  -0. ]
+ [-0.  -0.  -0. ]
+ [ 0.1  0.1 -0. ]]
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt output_prompt">Out[7]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[ 2.2696561 ,  2.32455797,  2.40508248],
+       [ 9.78256978,  9.95096021,  9.88771175],
+       [ 6.86635142,  6.99968069,  6.7605165 ],
+       ..., 
+       [ 6.75327401,  6.87061734,  6.72441019],
+       [ 7.57312605,  7.71579299,  7.56704522],
+       [ 3.11627201,  3.19632039,  3.08518641]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>PLS regression, with univariate response, a.k.a. PLS1</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span> <span class="o">*</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span>
+<span class="n">pls1</span> <span class="o">=</span> <span class="n">PLSRegression</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">pls1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="c1"># note that the number of components exceeds 1 (the dimension of y)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Estimated betas&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">pls1</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Estimated betas
+[[ 1. ]
+ [ 2. ]
+ [-0. ]
+ [ 0. ]
+ [-0. ]
+ [-0.1]
+ [-0. ]
+ [-0. ]
+ [-0. ]
+ [ 0. ]]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>CCA (PLS mode B with symmetric deflation)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">cca</span> <span class="o">=</span> <span class="n">CCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cca</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">X_train_r</span><span class="p">,</span> <span class="n">Y_train_r</span> <span class="o">=</span> <span class="n">plsca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">X_test_r</span><span class="p">,</span> <span class="n">Y_test_r</span> <span class="o">=</span> <span class="n">plsca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>{% endraw %}

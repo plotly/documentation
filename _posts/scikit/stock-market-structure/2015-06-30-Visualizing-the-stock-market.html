@@ -1,0 +1,576 @@
+---
+permalink: scikit-learn/plot-stock-market/
+description: 
+name: Visualizing the stock market structure | plotly
+has_thumbnail: true
+thumbnail: thumbnail/stock-mrkt.jpg
+layout: user-guide
+name: Visualizing the stock market structure
+language: scikit-learn
+title: Visualizing the stock market structure | plotly
+display_as: real_dataset
+has_thumbnail: true
+page_type: example_index
+order: 5
+ipynb: ~Diksha_Gabha/2676
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This example employs several unsupervised learning techniques to extract the stock market structure from variations in historical quotes.</p>
+<p>The quantity that we use is the daily variation in quote price: quotes that are linked tend to cofluctuate during a day.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Learning-a-graph-structure">Learning a graph structure<a class="anchor-link" href="#Learning-a-graph-structure">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We use sparse inverse covariance estimation to find which quotes are correlated conditionally on the others. Specifically, sparse inverse covariance gives us a graph, that is a list of connection. For each symbol, the symbols that it is connected too are those useful to explain its fluctuations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Clustering">Clustering<a class="anchor-link" href="#Clustering">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We use clustering to group together quotes that behave similarly. Here, amongst the <a href="http://scikit-learn.org/stable/modules/clustering.html#clustering">various clustering techniques</a> available in the scikit-learn, we use <a href="http://scikit-learn.org/stable/modules/clustering.html#affinity-propagation">Affinity Propagation</a> as it does not enforce equal-size clusters, and it can choose automatically the number of clusters from the data.</p>
+<p>Note that this gives us a different indication than the graph, as the graph reflects conditional relations between variables, while the clustering reflects marginal properties: variables clustered together can be considered as having a similar impact at the level of the full stock market.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Embedding-in-2D-space">Embedding in 2D space<a class="anchor-link" href="#Embedding-in-2D-space">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For visualization purposes, we need to lay out the different symbols on a 2D canvas. For this we use <a href="http://scikit-learn.org/stable/modules/manifold.html#manifold">Manifold learning</a> techniques to retrieve 2D embedding.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Visualization">Visualization<a class="anchor-link" href="#Visualization">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The output of the 3 models are combined in a 2D graph where nodes represents the stocks and edges the:</p>
+<ul>
+<li><p>cluster labels are used to define the color of the nodes</p>
+</li>
+<li><p>the sparse covariance model is used to display the strength of the edges</p>
+</li>
+<li><p>the 2D embedding is used to position the nodes in the plan</p>
+</li>
+</ul>
+<p>This example has a fair amount of visualization-related code, as visualization is crucial here to display the graph. One of the challenge is to position the labels minimizing overlap. For this we use an heuristic based on the direction of the nearest neighbor along each axis.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">__doc__</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="k">try</span><span class="p">:</span>
+     <span class="kn">from</span> <span class="nn">matplotlib.finance</span> <span class="kn">import</span> <span class="n">quotes_historical_yahoo_ochl</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+     <span class="c1"># quotes_historical_yahoo_ochl was named quotes_historical_yahoo before matplotlib 1.4</span>
+     <span class="kn">from</span> <span class="nn">matplotlib.finance</span> <span class="kn">import</span> <span class="n">quotes_historical_yahoo</span> <span class="k">as</span> <span class="n">quotes_historical_yahoo_ochl</span>
+<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">LineCollection</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">cluster</span><span class="p">,</span> <span class="n">covariance</span><span class="p">,</span> <span class="n">manifold</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Automatically created module for IPython interactive environment
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Retrieve-the-Data">Retrieve the Data<a class="anchor-link" href="#Retrieve-the-Data">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Choose a time period reasonably calm (not too long ago so that we get</span>
+<span class="c1"># high-tech firms, and before the 2008 crash)</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2003</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2008</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># kraft symbol has now changed from KFT to MDLZ in yahoo</span>
+<span class="n">symbol_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;TOT&#39;</span><span class="p">:</span> <span class="s1">&#39;Total&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;XOM&#39;</span><span class="p">:</span> <span class="s1">&#39;Exxon&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CVX&#39;</span><span class="p">:</span> <span class="s1">&#39;Chevron&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;COP&#39;</span><span class="p">:</span> <span class="s1">&#39;ConocoPhillips&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;VLO&#39;</span><span class="p">:</span> <span class="s1">&#39;Valero Energy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MSFT&#39;</span><span class="p">:</span> <span class="s1">&#39;Microsoft&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;IBM&#39;</span><span class="p">:</span> <span class="s1">&#39;IBM&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;TWX&#39;</span><span class="p">:</span> <span class="s1">&#39;Time Warner&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CMCSA&#39;</span><span class="p">:</span> <span class="s1">&#39;Comcast&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CVC&#39;</span><span class="p">:</span> <span class="s1">&#39;Cablevision&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;YHOO&#39;</span><span class="p">:</span> <span class="s1">&#39;Yahoo&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DELL&#39;</span><span class="p">:</span> <span class="s1">&#39;Dell&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;HPQ&#39;</span><span class="p">:</span> <span class="s1">&#39;HP&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;AMZN&#39;</span><span class="p">:</span> <span class="s1">&#39;Amazon&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;TM&#39;</span><span class="p">:</span> <span class="s1">&#39;Toyota&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CAJ&#39;</span><span class="p">:</span> <span class="s1">&#39;Canon&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MTU&#39;</span><span class="p">:</span> <span class="s1">&#39;Mitsubishi&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SNE&#39;</span><span class="p">:</span> <span class="s1">&#39;Sony&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;F&#39;</span><span class="p">:</span> <span class="s1">&#39;Ford&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;HMC&#39;</span><span class="p">:</span> <span class="s1">&#39;Honda&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NAV&#39;</span><span class="p">:</span> <span class="s1">&#39;Navistar&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NOC&#39;</span><span class="p">:</span> <span class="s1">&#39;Northrop Grumman&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;BA&#39;</span><span class="p">:</span> <span class="s1">&#39;Boeing&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;KO&#39;</span><span class="p">:</span> <span class="s1">&#39;Coca Cola&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MMM&#39;</span><span class="p">:</span> <span class="s1">&#39;3M&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MCD&#39;</span><span class="p">:</span> <span class="s1">&#39;Mc Donalds&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;PEP&#39;</span><span class="p">:</span> <span class="s1">&#39;Pepsi&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MDLZ&#39;</span><span class="p">:</span> <span class="s1">&#39;Kraft Foods&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;K&#39;</span><span class="p">:</span> <span class="s1">&#39;Kellogg&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;UN&#39;</span><span class="p">:</span> <span class="s1">&#39;Unilever&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MAR&#39;</span><span class="p">:</span> <span class="s1">&#39;Marriott&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;PG&#39;</span><span class="p">:</span> <span class="s1">&#39;Procter Gamble&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CL&#39;</span><span class="p">:</span> <span class="s1">&#39;Colgate-Palmolive&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;GE&#39;</span><span class="p">:</span> <span class="s1">&#39;General Electrics&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;WFC&#39;</span><span class="p">:</span> <span class="s1">&#39;Wells Fargo&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;JPM&#39;</span><span class="p">:</span> <span class="s1">&#39;JPMorgan Chase&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;AIG&#39;</span><span class="p">:</span> <span class="s1">&#39;AIG&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;AXP&#39;</span><span class="p">:</span> <span class="s1">&#39;American express&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;BAC&#39;</span><span class="p">:</span> <span class="s1">&#39;Bank of America&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;GS&#39;</span><span class="p">:</span> <span class="s1">&#39;Goldman Sachs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;AAPL&#39;</span><span class="p">:</span> <span class="s1">&#39;Apple&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SAP&#39;</span><span class="p">:</span> <span class="s1">&#39;SAP&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CSCO&#39;</span><span class="p">:</span> <span class="s1">&#39;Cisco&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;TXN&#39;</span><span class="p">:</span> <span class="s1">&#39;Texas instruments&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;XRX&#39;</span><span class="p">:</span> <span class="s1">&#39;Xerox&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;LMT&#39;</span><span class="p">:</span> <span class="s1">&#39;Lookheed Martin&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;WMT&#39;</span><span class="p">:</span> <span class="s1">&#39;Wal-Mart&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;WBA&#39;</span><span class="p">:</span> <span class="s1">&#39;Walgreen&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;HD&#39;</span><span class="p">:</span> <span class="s1">&#39;Home Depot&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;GSK&#39;</span><span class="p">:</span> <span class="s1">&#39;GlaxoSmithKline&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;PFE&#39;</span><span class="p">:</span> <span class="s1">&#39;Pfizer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SNY&#39;</span><span class="p">:</span> <span class="s1">&#39;Sanofi-Aventis&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NVS&#39;</span><span class="p">:</span> <span class="s1">&#39;Novartis&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;KMB&#39;</span><span class="p">:</span> <span class="s1">&#39;Kimberly-Clark&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;R&#39;</span><span class="p">:</span> <span class="s1">&#39;Ryder&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;GD&#39;</span><span class="p">:</span> <span class="s1">&#39;General Dynamics&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;RTN&#39;</span><span class="p">:</span> <span class="s1">&#39;Raytheon&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CVS&#39;</span><span class="p">:</span> <span class="s1">&#39;CVS&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CAT&#39;</span><span class="p">:</span> <span class="s1">&#39;Caterpillar&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DD&#39;</span><span class="p">:</span> <span class="s1">&#39;DuPont de Nemours&#39;</span><span class="p">}</span>
+
+<span class="n">symbols</span><span class="p">,</span> <span class="n">names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">symbol_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span><span class="o">.</span><span class="n">T</span>
+
+<span class="n">quotes</span> <span class="o">=</span> <span class="p">[</span><span class="n">quotes_historical_yahoo_ochl</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">asobject</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+          <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">symbols</span><span class="p">]</span>
+
+<span class="nb">open</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">open</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">quotes</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+<span class="n">close</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">close</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">quotes</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+
+<span class="c1"># The daily variations of the quotes are what carry most information</span>
+<span class="n">variation</span> <span class="o">=</span> <span class="n">close</span> <span class="o">-</span> <span class="nb">open</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Learn a graphical structure from the correlations</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">edge_model</span> <span class="o">=</span> <span class="n">covariance</span><span class="o">.</span><span class="n">GraphLassoCV</span><span class="p">()</span>
+
+<span class="c1"># standardize the time series: using correlations rather than covariance</span>
+<span class="c1"># is more efficient for structure recovery</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">variation</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">T</span>
+<span class="n">X</span> <span class="o">/=</span> <span class="n">X</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">edge_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>GraphLassoCV(alphas=4, assume_centered=False, cv=None, enet_tol=0.0001,
+       max_iter=100, mode=&#39;cd&#39;, n_jobs=1, n_refinements=4, tol=0.0001,
+       verbose=False)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Cluster using affinity propagation</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">_</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">affinity_propagation</span><span class="p">(</span><span class="n">edge_model</span><span class="o">.</span><span class="n">covariance_</span><span class="p">)</span>
+<span class="n">n_labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_labels</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Cluster </span><span class="si">%i</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="n">labels</span> <span class="o">==</span> <span class="n">i</span><span class="p">])))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Cluster 1: Pepsi, Coca Cola, Kellogg
+Cluster 2: Apple, Amazon, Yahoo
+Cluster 3: GlaxoSmithKline, Novartis, Sanofi-Aventis
+Cluster 4: Comcast, Time Warner, Cablevision
+Cluster 5: ConocoPhillips, Chevron, Total, Valero Energy, Exxon
+Cluster 6: CVS, Walgreen
+Cluster 7: Navistar, Sony, Marriott, Caterpillar, Canon, Toyota, Honda, Mitsubishi, Xerox, Unilever
+Cluster 8: Kimberly-Clark, Colgate-Palmolive, Procter Gamble
+Cluster 9: American express, Ryder, Goldman Sachs, Wal-Mart, General Electrics, Pfizer, Wells Fargo, DuPont de Nemours, Bank of America, AIG, Home Depot, Ford, JPMorgan Chase, Mc Donalds
+Cluster 10: Microsoft, SAP, 3M, IBM, Texas instruments, HP, Dell, Cisco
+Cluster 11: Raytheon, Boeing, Lookheed Martin, General Dynamics, Northrop Grumman
+Cluster 12: Kraft Foods
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Find a low-dimension embedding for visualization: find the best position of the nodes (the stocks) on a 2D plane</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We use a dense eigen_solver to achieve reproducibility (arpack is initiated with random vectors that we don't control). In addition, we use a large number of neighbors to capture the large-scale structure.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">node_position_model</span> <span class="o">=</span> <span class="n">manifold</span><span class="o">.</span><span class="n">LocallyLinearEmbedding</span><span class="p">(</span>
+    <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">eigen_solver</span><span class="o">=</span><span class="s1">&#39;dense&#39;</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+
+<span class="n">embedding</span> <span class="o">=</span> <span class="n">node_position_model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-Results">Plot Results<a class="anchor-link" href="#Plot-Results">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">matplotlib_to_plotly</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">pl_entries</span><span class="p">):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">pl_entries</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pl_colorscale</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pl_entries</span><span class="p">):</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cmap</span><span class="p">(</span><span class="n">k</span><span class="o">*</span><span class="n">h</span><span class="p">)[:</span><span class="mi">3</span><span class="p">])</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span>
+        <span class="n">pl_colorscale</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">k</span><span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="s1">&#39;rgb&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]))])</span>
+        
+    <span class="k">return</span> <span class="n">pl_colorscale</span>
+
+<span class="c1"># Display a graph of the partial correlations</span>
+<span class="n">partial_correlations</span> <span class="o">=</span> <span class="n">edge_model</span><span class="o">.</span><span class="n">precision_</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">d</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">partial_correlations</span><span class="p">))</span>
+<span class="n">partial_correlations</span> <span class="o">*=</span> <span class="n">d</span>
+<span class="n">partial_correlations</span> <span class="o">*=</span> <span class="n">d</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+<span class="n">non_zero</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">partial_correlations</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">0.02</span><span class="p">)</span>
+
+<span class="c1"># Plot the nodes using the coordinates of our embedding</span>
+<span class="n">trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span> <span class="n">embedding</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">embedding</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+                   <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span> <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                   <span class="n">marker</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                   <span class="n">color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span>
+                   <span class="n">colorscale</span><span class="o">=</span> <span class="n">matplotlib_to_plotly</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">spectral</span><span class="p">,</span><span class="mi">500</span><span class="p">),))</span>
+
+<span class="c1"># Plot the edges</span>
+<span class="n">start_idx</span><span class="p">,</span> <span class="n">end_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">non_zero</span><span class="p">)</span>
+<span class="c1">#a sequence of (*line0*, *line1*, *line2*), where::</span>
+<span class="c1">#            linen = (x0, y0), (x1, y1), ... (xm, ym)</span>
+<span class="n">segments</span> <span class="o">=</span> <span class="p">[[</span><span class="n">embedding</span><span class="p">[:,</span> <span class="n">start</span><span class="p">],</span> <span class="n">embedding</span><span class="p">[:,</span> <span class="n">stop</span><span class="p">]]</span>
+            <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">start_idx</span><span class="p">,</span> <span class="n">end_idx</span><span class="p">)]</span>
+<span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">partial_correlations</span><span class="p">[</span><span class="n">non_zero</span><span class="p">])</span>
+<span class="n">trace1</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">color</span><span class="o">=</span><span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">segments</span><span class="p">)):</span>
+    <span class="n">trace1_data</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">segments</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">segments</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]],</span>
+            <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">segments</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">segments</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+             <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+             <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span> 
+             <span class="n">width</span><span class="o">=</span> <span class="mi">15</span><span class="o">*</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="p">))</span>
+    <span class="n">trace1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace1_data</span><span class="p">)</span>
+
+<span class="c1"># Add a label to each node. The challenge here is that we want to</span>
+<span class="c1"># position the labels to avoid overlap with other labels</span>
+<span class="n">annotations</span><span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+        <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">embedding</span><span class="o">.</span><span class="n">T</span><span class="p">)):</span>
+
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">embedding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dx</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">embedding</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">dy</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">this_dx</span> <span class="o">=</span> <span class="n">dx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dy</span><span class="p">))]</span>
+    <span class="n">this_dy</span> <span class="o">=</span> <span class="n">dy</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dx</span><span class="p">))]</span>
+    <span class="k">if</span> <span class="n">this_dx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">horizontalalignment</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="o">.</span><span class="mo">002</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">horizontalalignment</span> <span class="o">=</span> <span class="s1">&#39;right&#39;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="o">.</span><span class="mo">002</span>
+    <span class="k">if</span> <span class="n">this_dy</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">verticalalignment</span> <span class="o">=</span> <span class="s1">&#39;bottom&#39;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="o">.</span><span class="mo">002</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">verticalalignment</span> <span class="o">=</span> <span class="s1">&#39;top&#39;</span><span class="p">,</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="o">.</span><span class="mo">002</span>
+    <span class="n">annot</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span>
+                <span class="p">)</span>
+    <span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">annot</span><span class="p">)</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                    <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">embedding</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="o">.</span><span class="mo">03</span> <span class="o">*</span> <span class="n">embedding</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ptp</span><span class="p">(),</span>
+                           <span class="n">embedding</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="o">.</span><span class="mo">03</span> <span class="o">*</span> <span class="n">embedding</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ptp</span><span class="p">()],</span>
+                    <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+            <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                    <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">embedding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="o">.</span><span class="mi">15</span> <span class="o">*</span> <span class="n">embedding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ptp</span><span class="p">(),</span>
+                           <span class="n">embedding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="o">.</span><span class="mi">10</span> <span class="o">*</span> <span class="n">embedding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ptp</span><span class="p">(),],</span>
+                    <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+            <span class="n">annotations</span><span class="o">=</span><span class="n">annotations</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">900</span><span class="p">)</span>
+
+<span class="n">trace1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span> <span class="n">trace1</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span> <span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2641.embed" height="900px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3><p>Author:</p>
+
+<pre><code>    Gael Varoquaux gael.varoquaux@normalesup.org
+</code></pre>
+<p>License:</p>
+
+<pre><code>    BSD 3 clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}

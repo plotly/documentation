@@ -1,0 +1,499 @@
+---
+permalink: scikit-learn/plot-ward-structured-vs-unstructured/
+description:  
+name: Hierarchical Clustering Structured vs Unstructured Ward | plotly
+has_thumbnail: true
+thumbnail: thumbnail/Hierarchical.jpg
+layout: user-guide
+name: Hierarchical Clustering Structured vs Unstructured Ward
+language: scikit-learn
+title: Hierarchical Clustering Structured vs Unstructured Ward | plotly
+display_as: clustering
+has_thumbnail: true
+page_type: example_index
+order: 5
+ipynb: ~Diksha_Gabha/2764
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Example builds a swiss roll dataset and runs hierarchical clustering on their position.</p>
+<p>For more information, see <a href="http://scikit-learn.org/stable/modules/clustering.html#hierarchical-clustering">Hierarchical clustering</a>.</p>
+<p>In a first step, the hierarchical clustering is performed without connectivity constraints on the structure and is solely based on distance, whereas in a second step the clustering is restricted to the k-Nearest Neighbors graph: it’s a hierarchical clustering with structure prior.</p>
+<p>Some of the clusters learned without connectivity constraints do not respect the structure of the swiss roll and extend across different folds of the manifolds. On the opposite, when opposing connectivity constraints, the clusters form a nice parcellation of the swiss roll.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&apos;0.18&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering">AgglomerativeClustering</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_swiss_roll.html#sklearn.datasets.make_swiss_roll">make_swiss_roll</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">__doc__</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+
+<span class="kn">import</span> <span class="nn">time</span> <span class="kn">as</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">mpl_toolkits.mplot3d.axes3d</span> <span class="kn">as</span> <span class="nn">p3</span>
+<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">AgglomerativeClustering</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets.samples_generator</span> <span class="kn">import</span> <span class="n">make_swiss_roll</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Automatically created module for IPython interactive environment
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Generate data <a href="http://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_swiss_roll.html#sklearn.datasets.make_swiss_roll">swiss roll dataset</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">1500</span>
+<span class="n">noise</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">make_swiss_roll</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">noise</span><span class="p">)</span>
+<span class="c1"># Make it thinner</span>
+<span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="o">.</span><span class="mi">5</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-result">Plot result<a class="anchor-link" href="#Plot-result">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Function to convert matplotlib colormap to plotly colormap.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">matplotlib_to_plotly</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">pl_entries</span><span class="p">):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">pl_entries</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pl_colorscale</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pl_entries</span><span class="p">):</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cmap</span><span class="p">(</span><span class="n">k</span><span class="o">*</span><span class="n">h</span><span class="p">)[:</span><span class="mi">3</span><span class="p">])</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span>
+        <span class="n">pl_colorscale</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">k</span><span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="s1">&#39;rgb&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]))])</span>
+        
+    <span class="k">return</span> <span class="n">pl_colorscale</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Without-connectivity-constraints">Without connectivity constraints<a class="anchor-link" href="#Without-connectivity-constraints">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Compute clustering</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Compute unstructured hierarchical clustering...&quot;</span><span class="p">)</span>
+<span class="n">st</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">ward</span> <span class="o">=</span> <span class="n">AgglomerativeClustering</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="s1">&#39;ward&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">st</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">ward</span><span class="o">.</span><span class="n">labels_</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Elapsed time: </span><span class="si">%.2f</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="n">elapsed_time</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Number of points: </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">label</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Compute unstructured hierarchical clustering...
+Elapsed time: 0.07s
+Number of points: 1500
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">color</span> <span class="o">=</span>   <span class="n">matplotlib_to_plotly</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">jet</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span> <span class="p">]</span>
+<span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">label</span><span class="p">):</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter3d</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="n">l</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                         <span class="n">y</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="n">l</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> 
+                         <span class="n">z</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="n">l</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+                         <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span> 
+                         <span class="n">showlegend</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+                         <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span> <span class="n">color</span><span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                                       <span class="n">line</span><span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                                    <span class="p">))</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+    
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span> <span class="o">=</span> <span class="mi">600</span><span class="p">,</span> 
+                   <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Without connectivity constraints (time </span><span class="si">%.2f</span><span class="s1">s)&#39;</span> <span class="o">%</span> <span class="n">elapsed_time</span><span class="p">,</span>
+                   <span class="n">scene</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">xaxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                         <span class="n">backgroundcolor</span><span class="o">=</span><span class="s2">&quot;rgb(233, 233, 233)&quot;</span><span class="p">,</span>
+                         <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+                    <span class="n">yaxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                        <span class="n">backgroundcolor</span><span class="o">=</span><span class="s2">&quot;rgb(233, 233, 233)&quot;</span><span class="p">,</span>
+                        <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,),</span>
+                    <span class="n">zaxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                        <span class="n">backgroundcolor</span><span class="o">=</span><span class="s2">&quot;rgb(233, 233, 233)&quot;</span><span class="p">,</span>
+                        <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">)),</span>
+                    <span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                                <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                <span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+                  <span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="n">layout</span><span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2760.embed" height="600px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="With-connectivity-constraints">With connectivity constraints<a class="anchor-link" href="#With-connectivity-constraints">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Define the structure A of the data. Here a 10 nearest neighbors.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">kneighbors_graph</span>
+<span class="n">connectivity</span> <span class="o">=</span> <span class="n">kneighbors_graph</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">include_self</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Compute clustering</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Compute structured hierarchical clustering...&quot;</span><span class="p">)</span>
+<span class="n">st</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">ward</span> <span class="o">=</span> <span class="n">AgglomerativeClustering</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">connectivity</span><span class="o">=</span><span class="n">connectivity</span><span class="p">,</span>
+                               <span class="n">linkage</span><span class="o">=</span><span class="s1">&#39;ward&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">st</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">ward</span><span class="o">.</span><span class="n">labels_</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Elapsed time: </span><span class="si">%.2f</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="n">elapsed_time</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Number of points: </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">label</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Compute structured hierarchical clustering...
+Elapsed time: 0.12s
+Number of points: 1500
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">color</span> <span class="o">=</span>   <span class="n">matplotlib_to_plotly</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">jet</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span> <span class="p">]</span>
+<span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">label</span><span class="p">):</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter3d</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="n">l</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                         <span class="n">y</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="n">l</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> 
+                         <span class="n">z</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="n">l</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+                         <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span> 
+                         <span class="n">showlegend</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+                         <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span> <span class="n">color</span><span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                                       <span class="n">line</span><span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                                    <span class="p">))</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+    
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span> <span class="o">=</span> <span class="mi">600</span><span class="p">,</span> 
+                   <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;With connectivity constraints (time </span><span class="si">%.2f</span><span class="s1">s)&#39;</span> <span class="o">%</span> <span class="n">elapsed_time</span><span class="p">,</span>
+                   <span class="n">scene</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">xaxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                         <span class="n">backgroundcolor</span><span class="o">=</span><span class="s2">&quot;rgb(233, 233, 233)&quot;</span><span class="p">,</span>
+                         <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+                    <span class="n">yaxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                        <span class="n">backgroundcolor</span><span class="o">=</span><span class="s2">&quot;rgb(233, 233, 233)&quot;</span><span class="p">,</span>
+                        <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,),</span>
+                    <span class="n">zaxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                        <span class="n">backgroundcolor</span><span class="o">=</span><span class="s2">&quot;rgb(233, 233, 233)&quot;</span><span class="p">,</span>
+                        <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">)),</span>
+                    <span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                                <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                <span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+                  <span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="n">layout</span><span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2762.embed" height="600px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Authors :</p>
+
+<pre><code>        Vincent Michel, 2010
+
+        Alexandre Gramfort, 2010
+
+        Gael Varoquaux, 2010
+
+</code></pre>
+<p>License:</p>
+
+<pre><code>        BSD 3 clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}

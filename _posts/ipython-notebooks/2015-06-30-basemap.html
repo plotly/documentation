@@ -1,0 +1,503 @@
+---
+permalink: ipython-notebooks/basemap-maps/
+description: An IPython Notebook showing how to make an interactive world map using plotly and Maplotlib Basemap
+name: Plotly maps with Matplotlib Basemap
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+page_type: u-guide
+language: python
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This notebook comes in response to <a href="https://twitter.com/rjallain/status/496767038782570496" target="_blank">this</a> Rhett Allain tweet.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;1.2.6&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, if you have a plotly account as well as a credentials file set up on your machine, singing in to Plotly's servers is done automatically while importing <code>plotly.plotly</code>. Import the plotly graph objects (in particular <code>Contour</code>) to help build our figure:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Data with this notebook will be taken from a NetCDF file, so import netcdf class from the <a href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf.netcdf_file.html" target="_blank">scipy.io</a> module, along with numpy:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>           
+<span class="kn">from</span> <span class="nn">scipy.io</span> <span class="kn">import</span> <span class="n">netcdf</span>  
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally, import the Matplotlib <a href="http://matplotlib.org/basemap/" target="_blank">Basemap</a> Toolkit, its installation instructions can found <a href="http://matplotlib.org/basemap/users/installing.html" target="_blank">here</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="kn">import</span> <span class="n">Basemap</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Get-the-Data">Get the Data<a class="anchor-link" href="#Get-the-Data">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The data is taken from <a href="http://www.esrl.noaa.gov/psd/data/composites/day/" target="_blank">NOAA Earth System Research Laboratory</a>.</p>
+<p>Unfortunately, this website does not allow to <em>code</em> your output demand and/or use <code>wget</code> to download the data. <br></p>
+<p>That said, the data used for this notebook can be downloaded in a only a few clicks:</p>
+<ul>
+<li>Select <em>Air Temperature</em> in <strong>Varaibles</strong></li>
+<li>Select <em>Surface</em> in <strong>Analysis level?</strong></li>
+<li>Select <em>Jul | 1</em> and <em>Jul | 31</em></li>
+<li>Enter <em>2014</em> in the <strong>Enter Year of last day of range</strong> field</li>
+<li>Select <em>Anomaly</em> in <strong>Plot type?</strong></li>
+<li>Select <em>All</em> in <strong>Region of globe</strong></li>
+<li>Click on <strong>Create Plot</strong> </li>
+</ul>
+<p>Then on the following page, click on <strong>Get a copy of the netcdf data file used for the plot</strong> to download the NetCDF on your machine.</p>
+<p>Note that the data represents the average daily surface air temperature anomaly (in deg. C) for July 2014 with respect to 1981-2010 climatology.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, import the NetCDF file into this IPython session. The following was inspired by this  earthpy blog <a href="http://earthpy.org/interpolation_between_grids_with_basemap.html" target="_blank">post</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Path the downloaded NetCDF file (different for each download)</span>
+<span class="n">f_path</span> <span class="o">=</span> <span class="s1">&#39;/home/etienne/Downloads/compday.Bo3cypJYyE.nc&#39;</span>
+
+<span class="c1"># Retrieve data from NetCDF file</span>
+<span class="k">with</span> <span class="n">netcdf</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">(</span><span class="n">f_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">][::]</span>    <span class="c1"># copy as list</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># invert the latitude vector -&gt; South to North</span>
+    <span class="n">air</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;air&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,::</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span>  <span class="c1"># squeeze out the time dimension, </span>
+                                        <span class="c1"># invert latitude index</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The values <code>lon</code> start a 0 degrees and increase eastward to 360 degrees. So, the <code>air</code> array is centered about the Pacific Ocean. For a better-looking plot, shift the data so that it is centered about the 0 meridian:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Shift &#39;lon&#39; from [0,360] to [-180,180], make numpy array</span>
+<span class="n">tmp_lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lon</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">-</span><span class="mi">360</span> <span class="k">if</span> <span class="n">l</span><span class="o">&gt;=</span><span class="mi">180</span> <span class="k">else</span> <span class="n">lon</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> 
+                   <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lon</span><span class="p">)])</span>  <span class="c1"># =&gt; [0,180]U[-180,2.5]</span>
+
+<span class="n">i_east</span><span class="p">,</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tmp_lon</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># indices of east lon</span>
+<span class="n">i_west</span><span class="p">,</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tmp_lon</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span>   <span class="c1"># indices of west lon</span>
+<span class="n">lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">tmp_lon</span><span class="p">[</span><span class="n">i_west</span><span class="p">],</span> <span class="n">tmp_lon</span><span class="p">[</span><span class="n">i_east</span><span class="p">]))</span>  <span class="c1"># stack the 2 halves</span>
+
+<span class="c1"># Correspondingly, shift the &#39;air&#39; array</span>
+<span class="n">tmp_air</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">air</span><span class="p">)</span>
+<span class="n">air</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">tmp_air</span><span class="p">[:,</span><span class="n">i_west</span><span class="p">],</span> <span class="n">tmp_air</span><span class="p">[:,</span><span class="n">i_east</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Make-Contour-Graph-Object">Make Contour Graph Object<a class="anchor-link" href="#Make-Contour-Graph-Object">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Very simply,</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">trace1</span> <span class="o">=</span> <span class="n">Contour</span><span class="p">(</span>
+    <span class="n">z</span><span class="o">=</span><span class="n">air</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">lon</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span>
+    <span class="n">colorscale</span><span class="o">=</span><span class="s2">&quot;RdBu&quot;</span><span class="p">,</span>
+    <span class="n">zauto</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>  <span class="c1"># custom contour levels</span>
+    <span class="n">zmin</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span>      <span class="c1"># first contour level</span>
+    <span class="n">zmax</span><span class="o">=</span><span class="mi">5</span>        <span class="c1"># last contour level  =&gt; colorscale is centered about 0</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Get-Coastlines-and-Country-boundaries-with-Basemap">Get Coastlines and Country boundaries with Basemap<a class="anchor-link" href="#Get-Coastlines-and-Country-boundaries-with-Basemap">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The Basemap module includes data for drawing coastlines and country boundaries onto world maps. Adding coastlines and/or country boundaries on a matplotlib figure is done with the <code>.drawcoaslines()</code> or <code>.drawcountries()</code> Basemap methods.</p>
+<p>Next, we will retrieve the Basemap plotting data (or polygons) and convert them to longitude/latitude arrays (inspired by this stackoverflow <a href="http://stackoverflow.com/questions/14280312/world-map-without-rivers-with-matplotlib-basemap" target="_blank">post</a>) and then package them into Plotly <code>Scatter</code> graph objects .</p>
+<p>In other words, the goal is to plot each <em>continuous</em> coastline and country boundary lines as 1 Plolty scatter line trace.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Make shortcut to Basemap object, </span>
+<span class="c1"># not specifying projection type for this example</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">Basemap</span><span class="p">()</span> 
+
+<span class="c1"># Make trace-generating function (return a Scatter object)</span>
+<span class="k">def</span> <span class="nf">make_scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+        <span class="n">line</span><span class="o">=</span><span class="n">Line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39; &#39;</span>  <span class="c1"># no name on hover</span>
+    <span class="p">)</span>
+
+<span class="c1"># Functions converting coastline/country polygons to lon/lat traces</span>
+<span class="k">def</span> <span class="nf">polygons_to_traces</span><span class="p">(</span><span class="n">poly_paths</span><span class="p">,</span> <span class="n">N_poly</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">    pos arg 1. (poly_paths): paths to polygons</span>
+<span class="sd">    pos arg 2. (N_poly): number of polygon to convert</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># init. plotting list </span>
+
+    <span class="k">for</span> <span class="n">i_poly</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_poly</span><span class="p">):</span>
+        <span class="n">poly_path</span> <span class="o">=</span> <span class="n">poly_paths</span><span class="p">[</span><span class="n">i_poly</span><span class="p">]</span>
+        
+        <span class="c1"># get the Basemap coordinates of each segment</span>
+        <span class="n">coords_cc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[(</span><span class="n">vertex</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">vertex</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> 
+             <span class="k">for</span> <span class="p">(</span><span class="n">vertex</span><span class="p">,</span><span class="n">code</span><span class="p">)</span> <span class="ow">in</span> <span class="n">poly_path</span><span class="o">.</span><span class="n">iter_segments</span><span class="p">(</span><span class="n">simplify</span><span class="o">=</span><span class="bp">False</span><span class="p">)]</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># convert coordinates to lon/lat by &#39;inverting&#39; the Basemap projection</span>
+        <span class="n">lon_cc</span><span class="p">,</span> <span class="n">lat_cc</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="n">coords_cc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">coords_cc</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">inverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        
+        <span class="c1"># add plot.ly plotting options</span>
+        <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">make_scatter</span><span class="p">(</span><span class="n">lon_cc</span><span class="p">,</span><span class="n">lat_cc</span><span class="p">))</span>
+     
+    <span class="k">return</span> <span class="n">traces</span>
+
+<span class="c1"># Function generating coastline lon/lat traces</span>
+<span class="k">def</span> <span class="nf">get_coastline_traces</span><span class="p">():</span>
+    <span class="n">poly_paths</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">drawcoastlines</span><span class="p">()</span><span class="o">.</span><span class="n">get_paths</span><span class="p">()</span> <span class="c1"># coastline polygon paths</span>
+    <span class="n">N_poly</span> <span class="o">=</span> <span class="mi">91</span>  <span class="c1"># use only the 91st biggest coastlines (i.e. no rivers)</span>
+    <span class="k">return</span> <span class="n">polygons_to_traces</span><span class="p">(</span><span class="n">poly_paths</span><span class="p">,</span> <span class="n">N_poly</span><span class="p">)</span>
+
+<span class="c1"># Function generating country lon/lat traces</span>
+<span class="k">def</span> <span class="nf">get_country_traces</span><span class="p">():</span>
+    <span class="n">poly_paths</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">drawcountries</span><span class="p">()</span><span class="o">.</span><span class="n">get_paths</span><span class="p">()</span> <span class="c1"># country polygon paths</span>
+    <span class="n">N_poly</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">poly_paths</span><span class="p">)</span>  <span class="c1"># use all countries</span>
+    <span class="k">return</span> <span class="n">polygons_to_traces</span><span class="p">(</span><span class="n">poly_paths</span><span class="p">,</span> <span class="n">N_poly</span><span class="p">)</span>
+
+<span class="c1"># Get list of of coastline and country lon/lat traces</span>
+<span class="n">traces_cc</span> <span class="o">=</span> <span class="n">get_coastline_traces</span><span class="p">()</span><span class="o">+</span><span class="n">get_country_traces</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Make-a-Figure-Object-and-Plot!">Make a Figure Object and Plot!<a class="anchor-link" href="#Make-a-Figure-Object-and-Plot!">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Package the <code>Contour</code> trace with the coastline and country traces. Note that the <code>Contour</code> trace must be placed before the coastline and country traces in order to make all traces visible. Layout options are set in a <code>Layout</code> object:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">([</span><span class="n">trace1</span><span class="p">]</span><span class="o">+</span><span class="n">traces_cc</span><span class="p">)</span>
+
+<span class="n">title</span> <span class="o">=</span> <span class="sa">u</span><span class="s2">&quot;Average daily surface air temperature anomalies [</span><span class="se">\u2103</span><span class="s2">]&lt;br&gt; </span><span class="se">\</span>
+<span class="s2">in July 2014 with respect to 1981-2010 climatology&quot;</span>
+
+<span class="n">anno_text</span> <span class="o">=</span> <span class="s2">&quot;Data courtesy of </span><span class="se">\</span>
+<span class="s2">&lt;a href=&#39;http://www.esrl.noaa.gov/psd/data/composites/day/&#39;&gt;</span><span class="se">\</span>
+<span class="s2">NOAA Earth System Research Laboratory&lt;/a&gt;&quot;</span>
+
+<span class="n">axis_style</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">showline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">ticks</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+    <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">hovermode</span><span class="o">=</span><span class="s2">&quot;closest&quot;</span><span class="p">,</span>        <span class="c1"># highlight closest point on hover</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span>
+        <span class="n">axis_style</span><span class="p">,</span>
+        <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">lon</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">lon</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>  <span class="c1"># restrict y-axis to range of lon</span>
+    <span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="n">YAxis</span><span class="p">(</span>
+        <span class="n">axis_style</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">annotations</span><span class="o">=</span><span class="n">Annotations</span><span class="p">([</span>
+        <span class="n">Annotation</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">anno_text</span><span class="p">,</span>
+            <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span>
+            <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">yanchor</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span>
+            <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span>
+        <span class="p">)</span>
+    <span class="p">]),</span>
+    <span class="n">autosize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Package data and layout in a <code>Figure</code> object and send it to plotly:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;maps&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+<div class="output_html rendered_html output_subarea ">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~etpinard/453/975/500" height="525" width="1000"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>See this graph in full screen <a href="https://plot.ly/~etpinard/453" target="_blank">here</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>See our online documentation <a href="https://plot.ly/python/" target="_blank">page</a> or our <a href="https://plot.ly/python/user-guide/" target="_blank">User Guide</a>.</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

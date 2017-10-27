@@ -1,0 +1,1150 @@
+---
+permalink: ipython-notebooks/principal-component-analysis/
+description: A step by step tutorial to Principal Component Analysis, a simple yet powerful transformation technique.
+title: Principal Component Analysis in 3 Simple Steps
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+name: Principal Component Analysis
+language: python
+page_type: u-guide
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>About the Author: Some of Sebastian Raschka's greatest passions are "Data Science" and machine learning. Sebastian enjoys everything that involves working with data: The discovery of interesting patterns and coming up with insightful conclusions using techniques from the fields of data mining and machine learning for predictive modeling.</p>
+<p>Currently, Sebastian is sharpening his analytical skills as a PhD candidate at Michigan State University where he is working on a highly efficient virtual screening software for computer-aided drug-discovery and a novel approach to protein ligand docking (among other projects). Basically, it is about the screening of a database of millions of 3-dimensional structures of chemical compounds in order to identifiy the ones that could potentially bind to specific protein receptors in order to trigger a biological response.</p>
+<p>You can follow Sebastian on Twitter (<a href="https://twitter.com/rasbt">@rasbt</a>) or read more about his favorite projects on <a href="http://sebastianraschka.com/articles.html">his blog</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Principal-Component-Analysis-in-3-Simple-Steps">Principal Component Analysis in 3 Simple Steps<a class="anchor-link" href="#Principal-Component-Analysis-in-3-Simple-Steps">&#182;</a></h4><p>Principal Component Analysis (PCA) is a simple yet popular and useful linear transformation technique that is used in numerous applications, such as stock market predictions, the  analysis of gene expression data, and many more. In this tutorial, we will see that PCA is not just a "black box", and we are going to unravel its internals in 3 basic steps.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h4><p>The sheer size of data in the modern age is not only a challenge for computer hardware but also a main bottleneck for the performance of many machine learning algorithms. The main goal of a PCA analysis is to identify patterns in data; PCA aims to detect the correlation between variables. If a strong correlation between variables exists, the attempt to reduce the dimensionality only makes sense. In a nutshell, this is what PCA is all about: Finding the directions of maximum variance in high-dimensional data and project it onto a smaller dimensional subspace while retaining most of the information.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="PCA-Vs.-LDA">PCA Vs. LDA<a class="anchor-link" href="#PCA-Vs.-LDA">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Both Linear Discriminant Analysis (LDA) and PCA are linear transformation methods. PCA yields the directions (principal components) that maximize the variance of the data, whereas LDA also aims to find the directions that maximize the separation (or discrimination) between different classes, which can be useful in pattern classification problem (PCA "ignores" class labels).<br>
+<strong><em>In other words, PCA projects the entire dataset onto a different feature (sub)space, and LDA tries to determine a suitable feature (sub)space in order to distinguish between patterns that belong to different classes.</em></strong></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="PCA-and-Dimensionality-Reduction">PCA and Dimensionality Reduction<a class="anchor-link" href="#PCA-and-Dimensionality-Reduction">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Often, the desired goal is to reduce the dimensions of a $d$-dimensional dataset by projecting it onto a $(k)$-dimensional subspace (where $k\;<\;d$) in order to increase the computational efficiency while retaining most of the information. An important question is "what is the size of $k$ that represents the data 'well'?"</p>
+<p>Later, we will compute eigenvectors (the principal components) of a dataset and collect them in a projection matrix. Each of those eigenvectors is associated with an eigenvalue which can be interpreted as the "length" or "magnitude" of the corresponding eigenvector. If some eigenvalues have a significantly larger magnitude than others that the reduction of the dataset via PCA onto a smaller dimensional subspace by dropping the "less informative" eigenpairs is reasonable.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="A-Summary-of-the-PCA-Approach">A Summary of the PCA Approach<a class="anchor-link" href="#A-Summary-of-the-PCA-Approach">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Standardize the data.</li>
+<li>Obtain the Eigenvectors and Eigenvalues from the covariance matrix or correlation matrix, or perform Singular Vector Decomposition.</li>
+<li>Sort eigenvalues in descending order and choose the $k$ eigenvectors that correspond to the $k$ largest eigenvalues where $k$ is the number of dimensions of the new feature subspace ($k \le d$)/.</li>
+<li>Construct the projection matrix $\mathbf{W}$ from the selected $k$ eigenvectors.</li>
+<li>Transform the original dataset $\mathbf{X}$ via $\mathbf{W}$ to obtain a $k$-dimensional feature subspace $\mathbf{Y}$.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Preparing-the-Iris-Dataset">Preparing the Iris Dataset<a class="anchor-link" href="#Preparing-the-Iris-Dataset">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For the following tutorial, we will be working with the famous "Iris" dataset that has been deposited on the UCI machine learning repository<br>
+(<a href="https://archive.ics.uci.edu/ml/datasets/Iris">https://archive.ics.uci.edu/ml/datasets/Iris</a>).</p>
+<p>The iris dataset contains measurements for 150 iris flowers from three different species.</p>
+<p>The three classes in the Iris dataset are:</p>
+<ol>
+<li>Iris-setosa (n=50)</li>
+<li>Iris-versicolor (n=50)</li>
+<li>Iris-virginica (n=50)</li>
+</ol>
+<p>And the four features of in Iris dataset are:</p>
+<ol>
+<li>sepal length in cm</li>
+<li>sepal width in cm</li>
+<li>petal length in cm</li>
+<li>petal width in cm</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Loading-the-Dataset">Loading the Dataset<a class="anchor-link" href="#Loading-the-Dataset">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In order to load the Iris data directly from the UCI repository, we are going to use the superb <a href="http://pandas.pydata.org">pandas</a> library. If you haven't used pandas yet, I want encourage you to check out the <a href="http://pandas.pydata.org/pandas-docs/stable/tutorials.html">pandas tutorials</a>. If I had to name one Python library that makes working with data a wonderfully simple task, this would definitely be pandas!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="n">filepath_or_buffer</span><span class="o">=</span><span class="s1">&#39;https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data&#39;</span><span class="p">,</span> 
+    <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> 
+    <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sepal_len&#39;</span><span class="p">,</span> <span class="s1">&#39;sepal_wid&#39;</span><span class="p">,</span> <span class="s1">&#39;petal_len&#39;</span><span class="p">,</span> <span class="s1">&#39;petal_wid&#39;</span><span class="p">,</span> <span class="s1">&#39;class&#39;</span><span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># drops the empty line at file-end</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>sepal_len</th>
+      <th>sepal_wid</th>
+      <th>petal_len</th>
+      <th>petal_wid</th>
+      <th>class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>145</th>
+      <td> 6.7</td>
+      <td> 3.0</td>
+      <td> 5.2</td>
+      <td> 2.3</td>
+      <td> Iris-virginica</td>
+    </tr>
+    <tr>
+      <th>146</th>
+      <td> 6.3</td>
+      <td> 2.5</td>
+      <td> 5.0</td>
+      <td> 1.9</td>
+      <td> Iris-virginica</td>
+    </tr>
+    <tr>
+      <th>147</th>
+      <td> 6.5</td>
+      <td> 3.0</td>
+      <td> 5.2</td>
+      <td> 2.0</td>
+      <td> Iris-virginica</td>
+    </tr>
+    <tr>
+      <th>148</th>
+      <td> 6.2</td>
+      <td> 3.4</td>
+      <td> 5.4</td>
+      <td> 2.3</td>
+      <td> Iris-virginica</td>
+    </tr>
+    <tr>
+      <th>149</th>
+      <td> 5.9</td>
+      <td> 3.0</td>
+      <td> 5.1</td>
+      <td> 1.8</td>
+      <td> Iris-virginica</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># split data table into data X and class labels y</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Our iris dataset is now stored in form of a  $150 \times 4$ matrix where the columns are the different features, and every row represents a separate flower sample.
+Each sample row $\mathbf{x}$ can be pictured as a 4-dimensional vector</p>
+<p>$\mathbf{x^T} = \begin{pmatrix} x_1 \\ x_2 \\ x_3 \\ x_4 \end{pmatrix} 
+= \begin{pmatrix} \text{sepal length} \\ \text{sepal width} \\\text{petal length} \\ \text{petal width} \end{pmatrix}$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Exploratory-Visualization">Exploratory Visualization<a class="anchor-link" href="#Exploratory-Visualization">&#182;</a></h3><p>To get a feeling for how the 3 different flower classes are distributes along the 4 different features, let us visualize them via histograms.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># plotting histograms</span>
+
+<span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">legend</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="bp">False</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="bp">False</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="bp">False</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="bp">True</span><span class="p">}</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Iris-setosa&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(31, 119, 180)&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Iris-versicolor&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(255, 127, 14)&#39;</span><span class="p">,</span> 
+          <span class="s1">&#39;Iris-virginica&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(44, 160, 44)&#39;</span><span class="p">}</span>
+
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">:</span>
+        <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Histogram</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="n">y</span><span class="o">==</span><span class="n">key</span><span class="p">,</span> <span class="n">col</span><span class="p">],</span> 
+                        <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+                        <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">col</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span>
+                        <span class="n">marker</span><span class="o">=</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">key</span><span class="p">]),</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+                        <span class="n">showlegend</span><span class="o">=</span><span class="n">legend</span><span class="p">[</span><span class="n">col</span><span class="p">]))</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span><span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;overlay&#39;</span><span class="p">,</span>
+                <span class="n">xaxis</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;sepal length (cm)&#39;</span><span class="p">),</span>
+                <span class="n">xaxis2</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;sepal width (cm)&#39;</span><span class="p">),</span>
+                <span class="n">xaxis3</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;petal length (cm)&#39;</span><span class="p">),</span>
+                <span class="n">xaxis4</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;petal width (cm)&#39;</span><span class="p">),</span>
+                <span class="n">yaxis</span><span class="o">=</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">),</span>
+                <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of the different Iris flower features&#39;</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~rasbt/319.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Standardizing">Standardizing<a class="anchor-link" href="#Standardizing">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Whether to standardize the data prior to a PCA on the covariance matrix depends on the measurement scales of the original features. Since PCA yields a feature subspace that maximizes the variance along the axes, it makes sense to standardize the data, especially, if it was measured on different scales. Although, all features in the Iris dataset were measured in centimeters, let us continue with the transformation of the data onto unit scale (mean=0 and variance=1), which is a requirement for the optimal performance of many machine learning algorithms.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="n">X_std</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1---Eigendecomposition---Computing-Eigenvectors-and-Eigenvalues">1 - Eigendecomposition - Computing Eigenvectors and Eigenvalues<a class="anchor-link" href="#1---Eigendecomposition---Computing-Eigenvectors-and-Eigenvalues">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The eigenvectors and eigenvalues of a covariance (or correlation) matrix represent the "core" of a PCA: The eigenvectors (principal components) determine the directions of the new feature space, and the eigenvalues determine their magnitude. In other words, the eigenvalues explain the variance of the data along the new feature axes.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Covariance-Matrix">Covariance Matrix<a class="anchor-link" href="#Covariance-Matrix">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The classic approach to PCA is to perform the eigendecomposition on the covariance matrix $\Sigma$, which is a $d \times d$ matrix where each element represents the covariance between two features. The covariance between two features is calculated as follows:</p>
+<p>$\sigma_{jk} = \frac{1}{n-1}\sum_{i=1}^{N}\left(  x_{ij}-\bar{x}_j \right)  \left( x_{ik}-\bar{x}_k \right).$</p>
+<p>We can summarize the calculation of the covariance matrix via the following matrix equation:<br>
+$\Sigma = \frac{1}{n-1} \left( (\mathbf{X} - \mathbf{\bar{x}})^T\;(\mathbf{X} - \mathbf{\bar{x}}) \right)$<br>
+where $\mathbf{\bar{x}}$ is the mean vector 
+$\mathbf{\bar{x}} = \sum\limits_{k=1}^n x_{i}.$<br>
+The mean vector is a $d$-dimensional vector where each value in this vector represents the sample mean of a feature column in the dataset.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="n">mean_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X_std</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">cov_mat</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_std</span> <span class="o">-</span> <span class="n">mean_vec</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">((</span><span class="n">X_std</span> <span class="o">-</span> <span class="n">mean_vec</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">X_std</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Covariance matrix </span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">cov_mat</span>)
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Covariance matrix 
+[[ 1.00671141 -0.11010327  0.87760486  0.82344326]
+ [-0.11010327  1.00671141 -0.42333835 -0.358937  ]
+ [ 0.87760486 -0.42333835  1.00671141  0.96921855]
+ [ 0.82344326 -0.358937    0.96921855  1.00671141]]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The more verbose way above was simply used for demonstration purposes, equivalently, we could have used the numpy <code>cov</code> function:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;NumPy covariance matrix: </span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">np</span>.cov(X_std.T))
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>NumPy covariance matrix: 
+[[ 1.00671141 -0.11010327  0.87760486  0.82344326]
+ [-0.11010327  1.00671141 -0.42333835 -0.358937  ]
+ [ 0.87760486 -0.42333835  1.00671141  0.96921855]
+ [ 0.82344326 -0.358937    0.96921855  1.00671141]]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, we perform an eigendecomposition on the covariance matrix:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">cov_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">X_std</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="n">eig_vals</span><span class="p">,</span> <span class="n">eig_vecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">cov_mat</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Eigenvectors </span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">eig_vecs</span>)
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Eigenvalues </span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">eig_vals</span>)
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Eigenvectors 
+[[ 0.52237162 -0.37231836 -0.72101681  0.26199559]
+ [-0.26335492 -0.92555649  0.24203288 -0.12413481]
+ [ 0.58125401 -0.02109478  0.14089226 -0.80115427]
+ [ 0.56561105 -0.06541577  0.6338014   0.52354627]]
+
+Eigenvalues 
+[ 2.93035378  0.92740362  0.14834223  0.02074601]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Correlation-Matrix">Correlation Matrix<a class="anchor-link" href="#Correlation-Matrix">&#182;</a></h3><p>Especially, in the field of "Finance," the correlation matrix typically used instead of the covariance matrix. However, the eigendecomposition of the covariance matrix (if the input data was standardized) yields the same results as a eigendecomposition on the correlation matrix, since the correlation matrix can be understood as the normalized covariance matrix.
+Eigendecomposition of the standardized data based on the correlation matrix:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">cor_mat1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">X_std</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="n">eig_vals</span><span class="p">,</span> <span class="n">eig_vecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">cor_mat1</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Eigenvectors </span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">eig_vecs</span>)
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Eigenvalues </span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">eig_vals</span>)
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Eigenvectors 
+[[ 0.52237162 -0.37231836 -0.72101681  0.26199559]
+ [-0.26335492 -0.92555649  0.24203288 -0.12413481]
+ [ 0.58125401 -0.02109478  0.14089226 -0.80115427]
+ [ 0.56561105 -0.06541577  0.6338014   0.52354627]]
+
+Eigenvalues 
+[ 2.91081808  0.92122093  0.14735328  0.02060771]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Eigendecomposition of the raw data based on the correlation matrix:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">cor_mat2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="n">eig_vals</span><span class="p">,</span> <span class="n">eig_vecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">cor_mat2</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Eigenvectors </span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">eig_vecs</span>)
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Eigenvalues </span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">eig_vals</span>)
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Eigenvectors 
+[[ 0.52237162 -0.37231836 -0.72101681  0.26199559]
+ [-0.26335492 -0.92555649  0.24203288 -0.12413481]
+ [ 0.58125401 -0.02109478  0.14089226 -0.80115427]
+ [ 0.56561105 -0.06541577  0.6338014   0.52354627]]
+
+Eigenvalues 
+[ 2.91081808  0.92122093  0.14735328  0.02060771]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can clearly see that all three approaches yield the same eigenvectors and eigenvalue pairs:</p>
+<ul>
+<li>Eigendecomposition of the covariance matrix after standardizing the data.</li>
+<li>Eigendecomposition of the correlation matrix.</li>
+<li>Eigendecomposition of the correlation matrix after standardizing the data.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Singular-Vector-Decomposition">Singular Vector Decomposition<a class="anchor-link" href="#Singular-Vector-Decomposition">&#182;</a></h3><p>While the eigendecomposition of the covariance or correlation matrix may be more intuitiuve, most PCA implementations perform a Singular Vector Decomposition (SVD) to improve the computational efficiency. So, let us perform an SVD to  confirm that the result are indeed the same:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">u</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">X_std</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">u</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[-0.52237162, -0.37231836,  0.72101681,  0.26199559],
+       [ 0.26335492, -0.92555649, -0.24203288, -0.12413481],
+       [-0.58125401, -0.02109478, -0.14089226, -0.80115427],
+       [-0.56561105, -0.06541577, -0.6338014 ,  0.52354627]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="2---Selecting-Principal-Components">2 - Selecting Principal Components<a class="anchor-link" href="#2---Selecting-Principal-Components">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The typical goal of a PCA is to reduce the dimensionality of the original feature space by projecting it onto a smaller subspace, where the eigenvectors will form the axes. However, the eigenvectors only define the directions of the new axis, since they have all the same unit length 1, which can confirmed by the following two lines of code:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">ev</span> <span class="ow">in</span> <span class="n">eig_vecs</span><span class="p">:</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">ev</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Everything ok!&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Everything ok!
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In order to decide which eigenvector(s) can dropped without losing too much information
+for the construction of lower-dimensional subspace, we need to inspect the corresponding eigenvalues: The eigenvectors with the lowest eigenvalues bear the least information about the distribution of the data; those are the ones can be dropped.<br>
+In order to do so, the common approach is to rank the eigenvalues from highest to lowest in order choose the top $k$ eigenvectors.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Make a list of (eigenvalue, eigenvector) tuples</span>
+<span class="n">eig_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">eig_vecs</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">))]</span>
+
+<span class="c1"># Sort the (eigenvalue, eigenvector) tuples from high to low</span>
+<span class="n">eig_pairs</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="n">eig_pairs</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+
+<span class="c1"># Visually confirm that the list is correctly sorted by decreasing eigenvalues</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Eigenvalues in descending order:&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">eig_pairs</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Eigenvalues in descending order:
+2.91081808375
+0.921220930707
+0.147353278305
+0.0206077072356
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After sorting the eigenpairs, the next question is "how many principal components are we going to choose for our new feature subspace?" A useful measure is the so-called "explained variance," which can be calculated from the eigenvalues. The explained variance tells us how much information (variance) can be attributed to each of the principal components.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">tot</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">)</span>
+<span class="n">var_exp</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span> <span class="o">/</span> <span class="n">tot</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)]</span>
+<span class="n">cum_var_exp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">var_exp</span><span class="p">)</span>
+
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">Bar</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;PC </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">i</span> for i in range(1,5)],
+        <span class="n">y</span><span class="o">=</span><span class="n">var_exp</span><span class="p">,</span>
+        <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;PC </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">i</span> for i in range(1,5)], 
+        <span class="n">y</span><span class="o">=</span><span class="n">cum_var_exp</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;cumulative explained variance&#39;</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">([</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">])</span>
+
+<span class="n">layout</span><span class="o">=</span><span class="n">Layout</span><span class="p">(</span>
+        <span class="n">yaxis</span><span class="o">=</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Explained variance in percent&#39;</span><span class="p">),</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Explained variance by different principal components&#39;</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[14]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~rasbt/320.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The plot above clearly shows that most of the variance (72.77% of the variance to be precise) can be explained by the first principal component alone. The second principal component still bears some information (23.03%) while the third and fourth principal components can safely be dropped without losing to much information. Together, the first two principal components contain 95.8% of the information.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It's about time to get to the really interesting part: The construction of the projection matrix that will be used to transform the Iris data onto the new feature subspace. Although, the name "projection matrix" has a nice ring to it, it is basically just a matrix of our concatenated top <em>k</em> eigenvectors.</p>
+<p>Here, we are reducing the 4-dimensional feature space to a 2-dimensional feature subspace, by choosing the "top 2" eigenvectors with the highest eigenvalues to construct our $d \times k$-dimensional eigenvector matrix $\mathbf{W}$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">matrix_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">eig_pairs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> 
+                      <span class="n">eig_pairs</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Matrix W:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">matrix_w</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(&#39;Matrix W:\n&#39;, array([[ 0.52237162, -0.37231836],
+       [-0.26335492, -0.92555649],
+       [ 0.58125401, -0.02109478],
+       [ 0.56561105, -0.06541577]]))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3---Projection-Onto-the-New-Feature-Space">3 - Projection Onto the New Feature Space<a class="anchor-link" href="#3---Projection-Onto-the-New-Feature-Space">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this last step we will use the $4 \times 2$-dimensional projection matrix $\mathbf{W}$ to transform our samples onto the new subspace via the equation<br>
+$\mathbf{Y} = \mathbf{X} \times  \mathbf{W}$, where $\mathbf{Y}$ is a $150\times 2$ matrix of our transformed samples.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">Y</span> <span class="o">=</span> <span class="n">X_std</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">matrix_w</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Iris-setosa&#39;</span><span class="p">,</span> <span class="s1">&#39;Iris-versicolor&#39;</span><span class="p">,</span> <span class="s1">&#39;Iris-virginica&#39;</span><span class="p">):</span>
+
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">Y</span><span class="p">[</span><span class="n">y</span><span class="o">==</span><span class="n">name</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">Y</span><span class="p">[</span><span class="n">y</span><span class="o">==</span><span class="n">name</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">marker</span><span class="o">=</span><span class="n">Marker</span><span class="p">(</span>
+            <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="n">Line</span><span class="p">(</span>
+                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgba(217, 217, 217, 0.14)&#39;</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+            <span class="n">opacity</span><span class="o">=</span><span class="mf">0.8</span><span class="p">))</span>
+    <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span><span class="n">showlegend</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                <span class="n">scene</span><span class="o">=</span><span class="n">Scene</span><span class="p">(</span><span class="n">xaxis</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;PC1&#39;</span><span class="p">),</span>
+                <span class="n">yaxis</span><span class="o">=</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;PC2&#39;</span><span class="p">),))</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~rasbt/321.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><br>
+<br></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Shortcut---PCA-in-scikit-learn">Shortcut - PCA in scikit-learn<a class="anchor-link" href="#Shortcut---PCA-in-scikit-learn">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For educational purposes, we went a long way to apply the PCA to the Iris dataset. But luckily, there is already implementation in scikit-learn.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span> <span class="k">as</span> <span class="n">sklearnPCA</span>
+<span class="n">sklearn_pca</span> <span class="o">=</span> <span class="n">sklearnPCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Y_sklearn</span> <span class="o">=</span> <span class="n">sklearn_pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_std</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Iris-setosa&#39;</span><span class="p">,</span> <span class="s1">&#39;Iris-versicolor&#39;</span><span class="p">,</span> <span class="s1">&#39;Iris-virginica&#39;</span><span class="p">):</span>
+
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">Y_sklearn</span><span class="p">[</span><span class="n">y</span><span class="o">==</span><span class="n">name</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">Y_sklearn</span><span class="p">[</span><span class="n">y</span><span class="o">==</span><span class="n">name</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">marker</span><span class="o">=</span><span class="n">Marker</span><span class="p">(</span>
+            <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="n">Line</span><span class="p">(</span>
+                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgba(217, 217, 217, 0.14)&#39;</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+            <span class="n">opacity</span><span class="o">=</span><span class="mf">0.8</span><span class="p">))</span>
+    <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span><span class="n">xaxis</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;PC1&#39;</span><span class="p">,</span> <span class="n">showline</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+                <span class="n">yaxis</span><span class="o">=</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;PC2&#39;</span><span class="p">,</span> <span class="n">showline</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[19]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~rasbt/322.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+ 
+
+{% endraw %}

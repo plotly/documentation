@@ -1,0 +1,262 @@
+---
+title: Sliders in R | Examples | Plotly
+name: Sliders
+permalink: r/sliders/
+description: How to add slider controls to your plots in R with Plotly.
+layout: base
+thumbnail: thumbnail/slider2017.gif
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: controls
+order: 3
+output:
+  html_document:
+    keep_md: true
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+```{r}
+library(plotly)
+packageVersion('plotly')
+```
+
+### Basic Slider Control
+
+```{r, results = 'hide'}
+library(plotly)
+
+df <- data.frame(x = c("1", "2", "3", "4", "5"), 
+                 y = c("1", "1", "1", "1", "1")) 
+
+# create steps for slider
+steps <- list(
+  list(args = list("marker.color", "red"), 
+                    label = "Red", 
+                    method = "restyle", 
+                    value = "1"
+                    ),
+  list(args = list("marker.color", "green"), 
+                    label = "Green", 
+                    method = "restyle", 
+                    value = "2"
+                    ),
+  list(args = list("marker.color", "blue"), 
+                    label = "Blue", 
+                    method = "restyle", 
+                    value = "3"
+                    )
+  )
+
+p <- df %>%
+  plot_ly(x = ~x, y = ~y,
+          mode = "markers", 
+          marker = list(size = 20,
+                        color = 'green'), 
+          type = "scatter") %>%
+  layout(title = "Basic Slider",
+         sliders = list(
+           list(
+             active = 1, 
+             currentvalue = list(prefix = "Color: "), 
+             pad = list(t = 60), 
+             steps = steps))) 
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="sliders/basic")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Sine Wave Slider
+
+```{r, results = 'hide'}
+library(plotly)
+
+x <- seq(0,10, length.out = 1000)
+
+# create data
+aval <- list()
+for(step in 1:11){
+  aval[[step]] <-list(visible = FALSE,
+                      name = paste0('v = ', step),
+                      x=x,
+                      y=sin(step*x))
+}
+aval[3][[1]]$visible = TRUE
+
+# create steps and plot all traces
+steps <- list()
+p <- plot_ly()
+for (i in 1:11) {
+  p <- add_lines(p,x=aval[i][[1]]$x,  y=aval[i][[1]]$y, visible = aval[i][[1]]$visible, 
+                 name = aval[i][[1]]$name, type = 'scatter', mode = 'lines', hoverinfo = 'name', 
+                 line=list(color='00CED1'), showlegend = FALSE)
+
+  step <- list(args = list('visible', rep(FALSE, length(aval))),
+               method = 'restyle')
+  step$args[[2]][i] = TRUE  
+  steps[[i]] = step 
+}  
+
+# add slider control to plot
+p <- p %>%
+  layout(sliders = list(list(active = 3,
+                             currentvalue = list(prefix = "Frequency: "),
+                             steps = steps)))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="sliders/sine-slider")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Mulitple Slider Controls
+
+```{r, results = 'hide'}
+library(plotly)
+
+df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/globe_contours.csv')
+df$id <- seq_len(nrow(df))
+
+library(tidyr)
+d <- df %>%
+  gather(key, value, -id) %>%
+  separate(key, c("l", "line"), "\\.") %>%
+  spread(l, value)
+
+geo <- list(
+  showland = TRUE,
+  showlakes = TRUE,
+  showcountries = TRUE,
+  showocean = TRUE,
+  countrywidth = 0.5,
+  landcolor = 'rgb(230, 145, 56)',
+  lakecolor = 'rgb(0, 255, 255)',
+  oceancolor = 'rgb(0, 255, 255)',
+  projection = list(
+    type = 'orthographic',
+    rotation = list(
+      lon = -100,
+      lat = 40,
+      roll = 0
+    )
+  ),
+  lonaxis = list(
+    showgrid = TRUE,
+    gridcolor = toRGB("gray40"),
+    gridwidth = 0.5
+  ),
+  lataxis = list(
+    showgrid = TRUE,
+    gridcolor = toRGB("gray40"),
+    gridwidth = 0.5
+  )
+)
+
+## add custom events
+
+# dropdown
+projections = data.frame(type = c("equirectangular", "mercator", "orthographic", "natural earth","kavrayskiy7", 
+                                  "miller", "robinson", "eckert4", "azimuthal equal area","azimuthal equidistant", 
+                                  "conic equal area", "conic conformal", "conic equidistant", "gnomonic", "stereographic", 
+                                  "mollweide", "hammer", "transverse mercator", "albers usa", "winkel tripel"))
+
+all_buttons <- list()
+for (i in 1:length(projections[,])) { 
+  all_buttons[[i]] <- list(method = "relayout",
+                           args = list(list(geo.projection.type = projections$type[i])),
+                           label = projections$type[i])
+}
+
+# sliders
+lon_range = data.frame(seq(-180, 180, 10))
+lat_range = data.frame(seq(-90, 90, 10))
+colnames(lon_range) <- "x"
+colnames(lat_range) <- "x"
+
+all_lat <- list()
+for (i in 1:length(lat_range[,])) { 
+  all_lat[[i]] <- list(method = "relayout",
+                       args = list(list(geo.projection.rotation.lat = lat_range$x[i])),
+                       label = lat_range$x[i])
+}
+
+all_lon <- list()
+for (i in 1:length(lon_range[,])) {  
+  all_lon[[i]] <- list(method = "relayout", 
+                       args = list(list(geo.projection.rotation.lon = lon_range$x[i])),
+                       label = lon_range$x[i]) 
+} 
+
+# annotations
+annot <- list(x = 0, y=0.8, text = "Projection", yanchor = 'bottom', 
+              xref = 'paper', xanchor = 'right',
+              showarrow = FALSE)
+
+
+# original d3-globe with contours
+p <- plot_geo(d) %>%
+  group_by(line) %>%
+  add_lines(x = ~lon, y = ~lat, color = ~line, colors = 'Reds') %>%
+  layout(
+    showlegend = FALSE, geo = geo
+  )
+
+# plot with custom events
+p <- p %>%
+  layout(annotations = annot,
+         updatemenus = list(list(active = 2, x = 0, y = 0.8, 
+                                 buttons=all_buttons)),
+         sliders = list(
+           
+           list(
+             active = (length(lon_range[,])-1)/2, 
+             currentvalue = list(prefix = "Longitude: "), 
+             pad = list(t = 20), 
+             
+             steps = all_lon),
+           
+           list(
+             active = (length(lat_range[,])-1)/2, 
+             currentvalue = list(prefix = "Latitude: "), 
+             pad = list(t = 100), 
+             
+             steps = all_lat)))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="sliders/d3-globe")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+#Reference
+
+See [https://plot.ly/r/reference/#layout-updatemenus](https://plot.ly/r/reference/#layout-updatemenus) for more information and options!

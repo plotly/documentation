@@ -1,0 +1,2774 @@
+---
+permalink: ipython-notebooks/big-data-analytics-with-pandas-and-sqlite/
+description: A primer on out-of-memory analytics of large datasets with Pandas, SQLite, and IPython notebooks.
+title: Big data analytics with Pandas and SQLite
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+name: Big Data Workflow with Pandas and Plotly
+language: python
+page_type: u-guide
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Data-Analysis-of-8.2-Million-Rows-with-Python-and-SQLite">Data Analysis of 8.2 Million Rows with Python and SQLite<a class="anchor-link" href="#Data-Analysis-of-8.2-Million-Rows-with-Python-and-SQLite">&#182;</a></h5><p>This notebook explores a 3.9Gb CSV file containing NYC's 311 complaints since 2003. It's the most popular data set in <a href="https://nycopendata.socrata.com/data">NYC's open data portal</a>.</p>
+<p>This notebook is a primer on out-of-memory data analysis with</p>
+<ul>
+<li><a href="http://pandas.pydata.org/">pandas</a>: A library with easy-to-use data structures and data analysis tools. Also, interfaces to out-of-memory databases like SQLite.</li>
+<li><a href="ipython.org/notebook.html">IPython notebook</a>: An interface for writing and sharing python code, text, and plots.</li>
+<li><a href="https://www.sqlite.org/">SQLite</a>: An self-contained, server-less database that's easy to set-up and query from Pandas.</li>
+<li><a href="https://plot.ly/python/">Plotly</a>: A platform for publishing beautiful, interactive graphs from Python to the web.</li>
+</ul>
+<p>The dataset is too large to load into a Pandas dataframe. So, instead we'll perform out-of-memory aggregations with SQLite and load the result directly into a dataframe with Panda's <code>iotools</code>. It's pretty easy to stream a CSV into SQLite and SQLite requires no setup. The SQL query language is pretty intuitive coming from a Pandas mindset.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>
+<span class="n">tls</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="s1">&#39;https://plot.ly/~chris/7365&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~chris/7365.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span> <span class="c1"># database connection</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="kn">as</span> <span class="nn">dt</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
+
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span> <span class="c1"># interactive graphing</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="n">Bar</span><span class="p">,</span> <span class="n">Scatter</span><span class="p">,</span> <span class="n">Marker</span><span class="p">,</span> <span class="n">Layout</span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Import-the-CSV-data-into-SQLite">Import the CSV data into SQLite<a class="anchor-link" href="#Import-the-CSV-data-into-SQLite">&#182;</a></h4><ol>
+<li>Load the CSV, chunk-by-chunk, into a DataFrame</li>
+<li>Process the data a bit, strip out uninteresting columns</li>
+<li>Append it to the SQLite database</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;311_100M.csv&#39;</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;311_100M.csv&#39;</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+<div class="output_html rendered_html output_subarea ">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unique Key</th>
+      <th>Created Date</th>
+      <th>Closed Date</th>
+      <th>Agency</th>
+      <th>Agency Name</th>
+      <th>Complaint Type</th>
+      <th>Descriptor</th>
+      <th>Location Type</th>
+      <th>Incident Zip</th>
+      <th>Incident Address</th>
+      <th>...</th>
+      <th>Bridge Highway Name</th>
+      <th>Bridge Highway Direction</th>
+      <th>Road Ramp</th>
+      <th>Bridge Highway Segment</th>
+      <th>Garage Lot Name</th>
+      <th>Ferry Direction</th>
+      <th>Ferry Terminal Name</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+      <th>Location</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>29300358</td>
+      <td>11/16/2014 11:46:00 PM</td>
+      <td>11/16/2014 11:46:00 PM</td>
+      <td>DSNY</td>
+      <td>BCC - Queens East</td>
+      <td>Derelict Vehicles</td>
+      <td>14 Derelict Vehicles</td>
+      <td>Street</td>
+      <td>11432</td>
+      <td>80-25 PARSONS BOULEVARD</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>40.719411</td>
+      <td>-73.808882</td>
+      <td>(40.719410639341916, -73.80888158860446)</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>29299837</td>
+      <td>11/16/2014 02:24:35 AM</td>
+      <td>11/16/2014 02:24:35 AM</td>
+      <td>DOB</td>
+      <td>Department of Buildings</td>
+      <td>Building/Use</td>
+      <td>Illegal Conversion Of Residential Building/Space</td>
+      <td>NaN</td>
+      <td>10465</td>
+      <td>938 HUNTINGTON AVENUE</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>40.827862</td>
+      <td>-73.830641</td>
+      <td>(40.827862046105416, -73.83064067165407)</td>
+    </tr>
+  </tbody>
+</table>
+<p>2 rows × 52 columns</p>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+<div class="output_html rendered_html output_subarea ">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unique Key</th>
+      <th>Created Date</th>
+      <th>Closed Date</th>
+      <th>Agency</th>
+      <th>Agency Name</th>
+      <th>Complaint Type</th>
+      <th>Descriptor</th>
+      <th>Location Type</th>
+      <th>Incident Zip</th>
+      <th>Incident Address</th>
+      <th>...</th>
+      <th>Bridge Highway Name</th>
+      <th>Bridge Highway Direction</th>
+      <th>Road Ramp</th>
+      <th>Bridge Highway Segment</th>
+      <th>Garage Lot Name</th>
+      <th>Ferry Direction</th>
+      <th>Ferry Terminal Name</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+      <th>Location</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>29300358</td>
+      <td>11/16/2014 11:46:00 PM</td>
+      <td>11/16/2014 11:46:00 PM</td>
+      <td>DSNY</td>
+      <td>BCC - Queens East</td>
+      <td>Derelict Vehicles</td>
+      <td>14 Derelict Vehicles</td>
+      <td>Street</td>
+      <td>11432</td>
+      <td>80-25 PARSONS BOULEVARD</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>40.719411</td>
+      <td>-73.808882</td>
+      <td>(40.719410639341916, -73.80888158860446)</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>29299837</td>
+      <td>11/16/2014 02:24:35 AM</td>
+      <td>11/16/2014 02:24:35 AM</td>
+      <td>DOB</td>
+      <td>Department of Buildings</td>
+      <td>Building/Use</td>
+      <td>Illegal Conversion Of Residential Building/Space</td>
+      <td>NaN</td>
+      <td>10465</td>
+      <td>938 HUNTINGTON AVENUE</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>40.827862</td>
+      <td>-73.830641</td>
+      <td>(40.827862046105416, -73.83064067165407)</td>
+    </tr>
+  </tbody>
+</table>
+<p>2 rows × 52 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="o">!</span>wc -l &lt; 311_100M.csv # Number of lines in dataset
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 8281035
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">disk_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s1">&#39;sqlite:///311_8M.db&#39;</span><span class="p">)</span> <span class="c1"># Initializes database with filename 311_8M.db in current directory</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+<span class="n">chunksize</span> <span class="o">=</span> <span class="mi">20000</span>
+<span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">index_start</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;311_100M.csv&#39;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">iterator</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">):</span>
+    
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">})</span> <span class="c1"># Remove spaces from columns</span>
+
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;CreatedDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;CreatedDate&#39;</span><span class="p">])</span> <span class="c1"># Convert to datetimes</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ClosedDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ClosedDate&#39;</span><span class="p">])</span>
+
+    <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">+=</span> <span class="n">index_start</span>
+
+    <span class="c1"># Remove the un-interesting columns</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Agency&#39;</span><span class="p">,</span> <span class="s1">&#39;CreatedDate&#39;</span><span class="p">,</span> <span class="s1">&#39;ClosedDate&#39;</span><span class="p">,</span> <span class="s1">&#39;ComplaintType&#39;</span><span class="p">,</span> <span class="s1">&#39;Descriptor&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;CreatedDate&#39;</span><span class="p">,</span> <span class="s1">&#39;ClosedDate&#39;</span><span class="p">,</span> <span class="s1">&#39;TimeToCompletion&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;City&#39;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>    
+
+    
+    <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">print</span> <span class="s1">&#39;{} seconds: completed {} rows&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span><span class="o">.</span><span class="n">seconds</span><span class="p">,</span> <span class="n">j</span><span class="o">*</span><span class="n">chunksize</span><span class="p">)</span>
+
+    <span class="n">df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">)</span>
+    <span class="n">index_start</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>//anaconda/lib/python2.7/site-packages/pandas/io/parsers.py:1164: DtypeWarning:
+
+Columns (17) have mixed types. Specify dtype option on import or set low_memory=False.
+
+//anaconda/lib/python2.7/site-packages/pandas/io/parsers.py:1164: DtypeWarning:
+
+Columns (8,46) have mixed types. Specify dtype option on import or set low_memory=False.
+
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>6 seconds: completed 20000 rows
+12 seconds: completed 40000 rows
+18 seconds: completed 60000 rows
+24 seconds: completed 80000 rows
+30 seconds: completed 100000 rows
+37 seconds: completed 120000 rows
+43 seconds: completed 140000 rows
+49 seconds: completed 160000 rows
+55 seconds: completed 180000 rows
+62 seconds: completed 200000 rows
+68 seconds: completed 220000 rows
+74 seconds: completed 240000 rows
+81 seconds: completed 260000 rows
+87 seconds: completed 280000 rows
+99 seconds: completed 300000 rows
+108 seconds: completed 320000 rows
+116 seconds: completed 340000 rows
+123 seconds: completed 360000 rows
+131 seconds: completed 380000 rows
+138 seconds: completed 400000 rows
+149 seconds: completed 420000 rows
+158 seconds: completed 440000 rows
+164 seconds: completed 460000 rows
+171 seconds: completed 480000 rows
+177 seconds: completed 500000 rows
+184 seconds: completed 520000 rows
+190 seconds: completed 540000 rows
+198 seconds: completed 560000 rows
+204 seconds: completed 580000 rows
+210 seconds: completed 600000 rows
+217 seconds: completed 620000 rows
+223 seconds: completed 640000 rows
+229 seconds: completed 660000 rows
+235 seconds: completed 680000 rows
+242 seconds: completed 700000 rows
+248 seconds: completed 720000 rows
+255 seconds: completed 740000 rows
+261 seconds: completed 760000 rows
+267 seconds: completed 780000 rows
+274 seconds: completed 800000 rows
+280 seconds: completed 820000 rows
+287 seconds: completed 840000 rows
+293 seconds: completed 860000 rows
+300 seconds: completed 880000 rows
+306 seconds: completed 900000 rows
+312 seconds: completed 920000 rows
+318 seconds: completed 940000 rows
+325 seconds: completed 960000 rows
+331 seconds: completed 980000 rows
+337 seconds: completed 1000000 rows
+344 seconds: completed 1020000 rows
+350 seconds: completed 1040000 rows
+356 seconds: completed 1060000 rows
+362 seconds: completed 1080000 rows
+369 seconds: completed 1100000 rows
+376 seconds: completed 1120000 rows
+383 seconds: completed 1140000 rows
+390 seconds: completed 1160000 rows
+398 seconds: completed 1180000 rows
+405 seconds: completed 1200000 rows
+412 seconds: completed 1220000 rows
+419 seconds: completed 1240000 rows
+426 seconds: completed 1260000 rows
+434 seconds: completed 1280000 rows
+441 seconds: completed 1300000 rows
+448 seconds: completed 1320000 rows
+456 seconds: completed 1340000 rows
+463 seconds: completed 1360000 rows
+470 seconds: completed 1380000 rows
+477 seconds: completed 1400000 rows
+485 seconds: completed 1420000 rows
+492 seconds: completed 1440000 rows
+499 seconds: completed 1460000 rows
+506 seconds: completed 1480000 rows
+514 seconds: completed 1500000 rows
+521 seconds: completed 1520000 rows
+528 seconds: completed 1540000 rows
+536 seconds: completed 1560000 rows
+543 seconds: completed 1580000 rows
+551 seconds: completed 1600000 rows
+558 seconds: completed 1620000 rows
+565 seconds: completed 1640000 rows
+573 seconds: completed 1660000 rows
+580 seconds: completed 1680000 rows
+588 seconds: completed 1700000 rows
+596 seconds: completed 1720000 rows
+603 seconds: completed 1740000 rows
+610 seconds: completed 1760000 rows
+618 seconds: completed 1780000 rows
+625 seconds: completed 1800000 rows
+633 seconds: completed 1820000 rows
+640 seconds: completed 1840000 rows
+648 seconds: completed 1860000 rows
+655 seconds: completed 1880000 rows
+663 seconds: completed 1900000 rows
+670 seconds: completed 1920000 rows
+678 seconds: completed 1940000 rows
+685 seconds: completed 1960000 rows
+693 seconds: completed 1980000 rows
+700 seconds: completed 2000000 rows
+708 seconds: completed 2020000 rows
+716 seconds: completed 2040000 rows
+723 seconds: completed 2060000 rows
+731 seconds: completed 2080000 rows
+738 seconds: completed 2100000 rows
+746 seconds: completed 2120000 rows
+753 seconds: completed 2140000 rows
+760 seconds: completed 2160000 rows
+768 seconds: completed 2180000 rows
+775 seconds: completed 2200000 rows
+782 seconds: completed 2220000 rows
+790 seconds: completed 2240000 rows
+797 seconds: completed 2260000 rows
+805 seconds: completed 2280000 rows
+812 seconds: completed 2300000 rows
+820 seconds: completed 2320000 rows
+827 seconds: completed 2340000 rows
+835 seconds: completed 2360000 rows
+843 seconds: completed 2380000 rows
+852 seconds: completed 2400000 rows
+860 seconds: completed 2420000 rows
+870 seconds: completed 2440000 rows
+878 seconds: completed 2460000 rows
+885 seconds: completed 2480000 rows
+893 seconds: completed 2500000 rows
+900 seconds: completed 2520000 rows
+908 seconds: completed 2540000 rows
+915 seconds: completed 2560000 rows
+922 seconds: completed 2580000 rows
+930 seconds: completed 2600000 rows
+937 seconds: completed 2620000 rows
+944 seconds: completed 2640000 rows
+952 seconds: completed 2660000 rows
+959 seconds: completed 2680000 rows
+967 seconds: completed 2700000 rows
+974 seconds: completed 2720000 rows
+982 seconds: completed 2740000 rows
+989 seconds: completed 2760000 rows
+997 seconds: completed 2780000 rows
+1004 seconds: completed 2800000 rows
+1011 seconds: completed 2820000 rows
+1019 seconds: completed 2840000 rows
+1026 seconds: completed 2860000 rows
+1034 seconds: completed 2880000 rows
+1041 seconds: completed 2900000 rows
+1049 seconds: completed 2920000 rows
+1056 seconds: completed 2940000 rows
+1064 seconds: completed 2960000 rows
+1071 seconds: completed 2980000 rows
+1079 seconds: completed 3000000 rows
+1086 seconds: completed 3020000 rows
+1093 seconds: completed 3040000 rows
+1101 seconds: completed 3060000 rows
+1108 seconds: completed 3080000 rows
+1116 seconds: completed 3100000 rows
+1123 seconds: completed 3120000 rows
+1131 seconds: completed 3140000 rows
+1138 seconds: completed 3160000 rows
+1146 seconds: completed 3180000 rows
+1153 seconds: completed 3200000 rows
+1161 seconds: completed 3220000 rows
+1168 seconds: completed 3240000 rows
+1176 seconds: completed 3260000 rows
+1183 seconds: completed 3280000 rows
+1191 seconds: completed 3300000 rows
+1199 seconds: completed 3320000 rows
+1206 seconds: completed 3340000 rows
+1214 seconds: completed 3360000 rows
+1221 seconds: completed 3380000 rows
+1229 seconds: completed 3400000 rows
+1236 seconds: completed 3420000 rows
+1244 seconds: completed 3440000 rows
+1251 seconds: completed 3460000 rows
+1259 seconds: completed 3480000 rows
+1266 seconds: completed 3500000 rows
+1274 seconds: completed 3520000 rows
+1282 seconds: completed 3540000 rows
+1289 seconds: completed 3560000 rows
+1297 seconds: completed 3580000 rows
+1304 seconds: completed 3600000 rows
+1312 seconds: completed 3620000 rows
+1319 seconds: completed 3640000 rows
+1327 seconds: completed 3660000 rows
+1334 seconds: completed 3680000 rows
+1342 seconds: completed 3700000 rows
+1350 seconds: completed 3720000 rows
+1357 seconds: completed 3740000 rows
+1364 seconds: completed 3760000 rows
+1372 seconds: completed 3780000 rows
+1379 seconds: completed 3800000 rows
+1387 seconds: completed 3820000 rows
+1394 seconds: completed 3840000 rows
+1402 seconds: completed 3860000 rows
+1409 seconds: completed 3880000 rows
+1416 seconds: completed 3900000 rows
+1424 seconds: completed 3920000 rows
+1431 seconds: completed 3940000 rows
+1439 seconds: completed 3960000 rows
+1446 seconds: completed 3980000 rows
+1454 seconds: completed 4000000 rows
+1461 seconds: completed 4020000 rows
+1468 seconds: completed 4040000 rows
+1476 seconds: completed 4060000 rows
+1484 seconds: completed 4080000 rows
+1491 seconds: completed 4100000 rows
+1498 seconds: completed 4120000 rows
+1506 seconds: completed 4140000 rows
+1513 seconds: completed 4160000 rows
+1521 seconds: completed 4180000 rows
+1528 seconds: completed 4200000 rows
+1536 seconds: completed 4220000 rows
+1543 seconds: completed 4240000 rows
+1551 seconds: completed 4260000 rows
+1558 seconds: completed 4280000 rows
+1566 seconds: completed 4300000 rows
+1573 seconds: completed 4320000 rows
+1581 seconds: completed 4340000 rows
+1588 seconds: completed 4360000 rows
+1596 seconds: completed 4380000 rows
+1603 seconds: completed 4400000 rows
+1611 seconds: completed 4420000 rows
+1618 seconds: completed 4440000 rows
+1626 seconds: completed 4460000 rows
+1634 seconds: completed 4480000 rows
+1641 seconds: completed 4500000 rows
+1649 seconds: completed 4520000 rows
+1656 seconds: completed 4540000 rows
+1664 seconds: completed 4560000 rows
+1671 seconds: completed 4580000 rows
+1679 seconds: completed 4600000 rows
+1686 seconds: completed 4620000 rows
+1694 seconds: completed 4640000 rows
+1701 seconds: completed 4660000 rows
+1709 seconds: completed 4680000 rows
+1717 seconds: completed 4700000 rows
+1724 seconds: completed 4720000 rows
+1732 seconds: completed 4740000 rows
+1739 seconds: completed 4760000 rows
+1747 seconds: completed 4780000 rows
+1754 seconds: completed 4800000 rows
+1762 seconds: completed 4820000 rows
+1769 seconds: completed 4840000 rows
+1777 seconds: completed 4860000 rows
+1785 seconds: completed 4880000 rows
+1792 seconds: completed 4900000 rows
+1800 seconds: completed 4920000 rows
+1807 seconds: completed 4940000 rows
+1815 seconds: completed 4960000 rows
+1822 seconds: completed 4980000 rows
+1830 seconds: completed 5000000 rows
+1837 seconds: completed 5020000 rows
+1845 seconds: completed 5040000 rows
+1853 seconds: completed 5060000 rows
+1860 seconds: completed 5080000 rows
+1867 seconds: completed 5100000 rows
+1875 seconds: completed 5120000 rows
+1883 seconds: completed 5140000 rows
+1890 seconds: completed 5160000 rows
+1898 seconds: completed 5180000 rows
+1905 seconds: completed 5200000 rows
+1913 seconds: completed 5220000 rows
+1920 seconds: completed 5240000 rows
+1928 seconds: completed 5260000 rows
+1935 seconds: completed 5280000 rows
+1943 seconds: completed 5300000 rows
+1950 seconds: completed 5320000 rows
+1958 seconds: completed 5340000 rows
+1965 seconds: completed 5360000 rows
+1973 seconds: completed 5380000 rows
+1980 seconds: completed 5400000 rows
+1987 seconds: completed 5420000 rows
+1995 seconds: completed 5440000 rows
+2002 seconds: completed 5460000 rows
+2010 seconds: completed 5480000 rows
+2017 seconds: completed 5500000 rows
+2025 seconds: completed 5520000 rows
+2032 seconds: completed 5540000 rows
+2040 seconds: completed 5560000 rows
+2047 seconds: completed 5580000 rows
+2055 seconds: completed 5600000 rows
+2062 seconds: completed 5620000 rows
+2070 seconds: completed 5640000 rows
+2078 seconds: completed 5660000 rows
+2085 seconds: completed 5680000 rows
+2092 seconds: completed 5700000 rows
+2099 seconds: completed 5720000 rows
+2106 seconds: completed 5740000 rows
+2113 seconds: completed 5760000 rows
+2120 seconds: completed 5780000 rows
+2127 seconds: completed 5800000 rows
+2134 seconds: completed 5820000 rows
+2141 seconds: completed 5840000 rows
+2148 seconds: completed 5860000 rows
+2155 seconds: completed 5880000 rows
+2162 seconds: completed 5900000 rows
+2169 seconds: completed 5920000 rows
+2176 seconds: completed 5940000 rows
+2183 seconds: completed 5960000 rows
+2190 seconds: completed 5980000 rows
+2197 seconds: completed 6000000 rows
+2204 seconds: completed 6020000 rows
+2211 seconds: completed 6040000 rows
+2218 seconds: completed 6060000 rows
+2225 seconds: completed 6080000 rows
+2232 seconds: completed 6100000 rows
+2239 seconds: completed 6120000 rows
+2246 seconds: completed 6140000 rows
+2252 seconds: completed 6160000 rows
+2259 seconds: completed 6180000 rows
+2266 seconds: completed 6200000 rows
+2274 seconds: completed 6220000 rows
+2281 seconds: completed 6240000 rows
+2288 seconds: completed 6260000 rows
+2296 seconds: completed 6280000 rows
+2303 seconds: completed 6300000 rows
+2311 seconds: completed 6320000 rows
+2318 seconds: completed 6340000 rows
+2326 seconds: completed 6360000 rows
+2333 seconds: completed 6380000 rows
+2341 seconds: completed 6400000 rows
+2348 seconds: completed 6420000 rows
+2356 seconds: completed 6440000 rows
+2363 seconds: completed 6460000 rows
+2371 seconds: completed 6480000 rows
+2378 seconds: completed 6500000 rows
+2386 seconds: completed 6520000 rows
+2393 seconds: completed 6540000 rows
+2401 seconds: completed 6560000 rows
+2409 seconds: completed 6580000 rows
+2417 seconds: completed 6600000 rows
+2424 seconds: completed 6620000 rows
+2432 seconds: completed 6640000 rows
+2440 seconds: completed 6660000 rows
+2448 seconds: completed 6680000 rows
+2456 seconds: completed 6700000 rows
+2463 seconds: completed 6720000 rows
+2471 seconds: completed 6740000 rows
+2478 seconds: completed 6760000 rows
+2486 seconds: completed 6780000 rows
+2493 seconds: completed 6800000 rows
+2501 seconds: completed 6820000 rows
+2508 seconds: completed 6840000 rows
+2516 seconds: completed 6860000 rows
+2523 seconds: completed 6880000 rows
+2531 seconds: completed 6900000 rows
+2538 seconds: completed 6920000 rows
+2546 seconds: completed 6940000 rows
+2554 seconds: completed 6960000 rows
+2561 seconds: completed 6980000 rows
+2568 seconds: completed 7000000 rows
+2576 seconds: completed 7020000 rows
+2583 seconds: completed 7040000 rows
+2591 seconds: completed 7060000 rows
+2599 seconds: completed 7080000 rows
+2606 seconds: completed 7100000 rows
+2614 seconds: completed 7120000 rows
+2621 seconds: completed 7140000 rows
+2629 seconds: completed 7160000 rows
+2636 seconds: completed 7180000 rows
+2643 seconds: completed 7200000 rows
+2651 seconds: completed 7220000 rows
+2658 seconds: completed 7240000 rows
+2666 seconds: completed 7260000 rows
+2673 seconds: completed 7280000 rows
+2681 seconds: completed 7300000 rows
+2688 seconds: completed 7320000 rows
+2696 seconds: completed 7340000 rows
+2703 seconds: completed 7360000 rows
+2711 seconds: completed 7380000 rows
+2718 seconds: completed 7400000 rows
+2726 seconds: completed 7420000 rows
+2733 seconds: completed 7440000 rows
+2740 seconds: completed 7460000 rows
+2748 seconds: completed 7480000 rows
+2756 seconds: completed 7500000 rows
+2763 seconds: completed 7520000 rows
+2770 seconds: completed 7540000 rows
+2778 seconds: completed 7560000 rows
+2785 seconds: completed 7580000 rows
+2792 seconds: completed 7600000 rows
+2800 seconds: completed 7620000 rows
+2807 seconds: completed 7640000 rows
+2815 seconds: completed 7660000 rows
+2822 seconds: completed 7680000 rows
+2830 seconds: completed 7700000 rows
+2837 seconds: completed 7720000 rows
+2845 seconds: completed 7740000 rows
+2852 seconds: completed 7760000 rows
+2860 seconds: completed 7780000 rows
+2867 seconds: completed 7800000 rows
+2875 seconds: completed 7820000 rows
+2882 seconds: completed 7840000 rows
+2889 seconds: completed 7860000 rows
+2897 seconds: completed 7880000 rows
+2904 seconds: completed 7900000 rows
+2912 seconds: completed 7920000 rows
+2919 seconds: completed 7940000 rows
+2927 seconds: completed 7960000 rows
+2934 seconds: completed 7980000 rows
+2942 seconds: completed 8000000 rows
+2949 seconds: completed 8020000 rows
+2957 seconds: completed 8040000 rows
+2964 seconds: completed 8060000 rows
+2972 seconds: completed 8080000 rows
+2979 seconds: completed 8100000 rows
+2987 seconds: completed 8120000 rows
+2994 seconds: completed 8140000 rows
+3002 seconds: completed 8160000 rows
+3009 seconds: completed 8180000 rows
+3017 seconds: completed 8200000 rows
+3024 seconds: completed 8220000 rows
+3031 seconds: completed 8240000 rows
+3038 seconds: completed 8260000 rows
+3045 seconds: completed 8280000 rows
+3047 seconds: completed 8300000 rows
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Preview-the-table">Preview the table<a class="anchor-link" href="#Preview-the-table">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM data LIMIT 3&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>index</th>
+      <th>CreatedDate</th>
+      <th>ClosedDate</th>
+      <th>Agency</th>
+      <th>ComplaintType</th>
+      <th>Descriptor</th>
+      <th>City</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>2014-11-16 23:46:00.000000</td>
+      <td>2014-11-16 23:46:00.000000</td>
+      <td>DSNY</td>
+      <td>Derelict Vehicles</td>
+      <td>14 Derelict Vehicles</td>
+      <td>Jamaica</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>2014-11-16 02:24:35.000000</td>
+      <td>2014-11-16 02:24:35.000000</td>
+      <td>DOB</td>
+      <td>Building/Use</td>
+      <td>Illegal Conversion Of Residential Building/Space</td>
+      <td>BRONX</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>2014-11-16 02:17:12.000000</td>
+      <td>2014-11-16 02:50:48.000000</td>
+      <td>NYPD</td>
+      <td>Illegal Parking</td>
+      <td>Blocked Sidewalk</td>
+      <td>BROOKLYN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Select-just-a-couple-of-columns">Select just a couple of columns<a class="anchor-link" href="#Select-just-a-couple-of-columns">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT Agency, Descriptor FROM data LIMIT 3&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[8]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Agency</th>
+      <th>Descriptor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>DSNY</td>
+      <td>14 Derelict Vehicles</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>DOB</td>
+      <td>Illegal Conversion Of Residential Building/Space</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>NYPD</td>
+      <td>Blocked Sidewalk</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="LIMIT-the-number-of-rows-that-are-retrieved"><code>LIMIT</code> the number of rows that are retrieved<a class="anchor-link" href="#LIMIT-the-number-of-rows-that-are-retrieved">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT ComplaintType, Descriptor, Agency &#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;LIMIT 10&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[9]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ComplaintType</th>
+      <th>Descriptor</th>
+      <th>Agency</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Derelict Vehicles</td>
+      <td>14 Derelict Vehicles</td>
+      <td>DSNY</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Building/Use</td>
+      <td>Illegal Conversion Of Residential Building/Space</td>
+      <td>DOB</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Illegal Parking</td>
+      <td>Blocked Sidewalk</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Noise - Street/Sidewalk</td>
+      <td>Loud Music/Party</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Illegal Parking</td>
+      <td>Commercial Overnight Parking</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Noise - Street/Sidewalk</td>
+      <td>Loud Talking</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Traffic</td>
+      <td>Congestion/Gridlock</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Noise - Commercial</td>
+      <td>Loud Music/Party</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Noise - Commercial</td>
+      <td>Loud Music/Party</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Noise - Commercial</td>
+      <td>Loud Music/Party</td>
+      <td>NYPD</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Filter-rows-with-WHERE">Filter rows with <code>WHERE</code><a class="anchor-link" href="#Filter-rows-with-WHERE">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT ComplaintType, Descriptor, Agency &#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;WHERE Agency = &quot;NYPD&quot; &#39;</span>
+                       <span class="s1">&#39;LIMIT 10&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ComplaintType</th>
+      <th>Descriptor</th>
+      <th>Agency</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Illegal Parking</td>
+      <td>Blocked Sidewalk</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Noise - Street/Sidewalk</td>
+      <td>Loud Music/Party</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Illegal Parking</td>
+      <td>Commercial Overnight Parking</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Noise - Street/Sidewalk</td>
+      <td>Loud Talking</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Traffic</td>
+      <td>Congestion/Gridlock</td>
+      <td>NYPD</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Filter-multiple-values-in-a-column-with-WHERE-and-IN">Filter multiple values in a column with <code>WHERE</code> and <code>IN</code><a class="anchor-link" href="#Filter-multiple-values-in-a-column-with-WHERE-and-IN">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT ComplaintType, Descriptor, Agency &#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;WHERE Agency IN (&quot;NYPD&quot;, &quot;DOB&quot;)&#39;</span>
+                       <span class="s1">&#39;LIMIT 10&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ComplaintType</th>
+      <th>Descriptor</th>
+      <th>Agency</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Building/Use</td>
+      <td>Illegal Conversion Of Residential Building/Space</td>
+      <td>DOB</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Illegal Parking</td>
+      <td>Blocked Sidewalk</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Noise - Street/Sidewalk</td>
+      <td>Loud Music/Party</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Illegal Parking</td>
+      <td>Commercial Overnight Parking</td>
+      <td>NYPD</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Noise - Street/Sidewalk</td>
+      <td>Loud Talking</td>
+      <td>NYPD</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Find-the-unique-values-in-a-column-with-DISTINCT">Find the unique values in a column with <code>DISTINCT</code><a class="anchor-link" href="#Find-the-unique-values-in-a-column-with-DISTINCT">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT DISTINCT City FROM data&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[12]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>City</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Jamaica</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>BRONX</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>BROOKLYN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>NEW YORK</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>STATEN ISLAND</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Query-value-counts-with-COUNT(*)-and-GROUP-BY">Query value counts with <code>COUNT(*)</code> and <code>GROUP BY</code><a class="anchor-link" href="#Query-value-counts-with-COUNT(*)-and-GROUP-BY">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT Agency, COUNT(*) as `num_complaints`&#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;GROUP BY Agency &#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[13]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Agency</th>
+      <th>num_complaints</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>3-1-1</td>
+      <td>22029</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>ACS</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>AJC</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>ART</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>CAU</td>
+      <td>7</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Order-the-results-with-ORDER-and--">Order the results with <code>ORDER</code> and <code>-</code><a class="anchor-link" href="#Order-the-results-with-ORDER-and--">&#182;</a></h6><p>Housing and Development Dept receives the most complaints</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT Agency, COUNT(*) as `num_complaints`&#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;GROUP BY Agency &#39;</span>
+                       <span class="s1">&#39;ORDER BY -num_complaints&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">([</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">Agency</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">num_complaints</span><span class="p">)],</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;311/most common complaints by agency&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[14]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~chris/7361.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Heat-/-Hot-Water-is-the-most-common-complaint">Heat / Hot Water is the most common complaint<a class="anchor-link" href="#Heat-/-Hot-Water-is-the-most-common-complaint">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT ComplaintType, COUNT(*) as `num_complaints`, Agency &#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;GROUP BY `ComplaintType` &#39;</span>
+                       <span class="s1">&#39;ORDER BY -num_complaints&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+
+
+<span class="n">most_common_complaints</span> <span class="o">=</span> <span class="n">df</span> <span class="c1"># used later</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">({</span>
+    <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ComplaintType&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">num_complaints</span><span class="p">)],</span>
+    <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="p">{</span> 
+        <span class="s1">&#39;margin&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">150</span><span class="p">},</span> <span class="c1"># Make the bottom margin a bit bigger to handle the long text</span>
+        <span class="s1">&#39;xaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;tickangle&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">}}</span> <span class="c1"># Angle the labels a bit</span>
+    <span class="p">},</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;311/most common complaints by complaint type&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[15]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~chris/7362.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><em>This graph is interactive. Click-and-drag horizontally to zoom, shift-click to pan, double click to autoscale</em></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="What's-the-most-common-complaint-in-each-city?">What's the most common complaint in each city?<a class="anchor-link" href="#What's-the-most-common-complaint-in-each-city?">&#182;</a></h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First, let's see how many cities are recorded in the dataset</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT DISTINCT City FROM data&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[16]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>1758</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Yikes - let's just plot the 10 most complained about cities</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT City, COUNT(*) as `num_complaints` &#39;</span>
+                                <span class="s1">&#39;FROM data &#39;</span>
+                                <span class="s1">&#39;GROUP BY `City` &#39;</span>
+                       <span class="s1">&#39;ORDER BY -num_complaints &#39;</span>
+                       <span class="s1">&#39;LIMIT 10 &#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>City</th>
+      <th>num_complaints</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>BROOKLYN</td>
+      <td>2441941</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>NEW YORK</td>
+      <td>1544421</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>BRONX</td>
+      <td>1470746</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>None</td>
+      <td>654158</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>STATEN ISLAND</td>
+      <td>408095</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>JAMAICA</td>
+      <td>141940</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>FLUSHING</td>
+      <td>112519</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>ASTORIA</td>
+      <td>86051</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>RIDGEWOOD</td>
+      <td>63400</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Jamaica</td>
+      <td>54876</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Flushing and FLUSHING, Jamaica and JAMAICA... the complaints are case sensitive.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Perform-case-insensitive-queries-with-GROUP-BY-with-COLLATE-NOCASE">Perform case insensitive queries with <code>GROUP BY</code> with <code>COLLATE NOCASE</code><a class="anchor-link" href="#Perform-case-insensitive-queries-with-GROUP-BY-with-COLLATE-NOCASE">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT City, COUNT(*) as `num_complaints` &#39;</span>
+                        <span class="s1">&#39;FROM data &#39;</span>
+                        <span class="s1">&#39;GROUP BY `City` &#39;</span>
+                       <span class="s1">&#39;COLLATE NOCASE &#39;</span>
+                       <span class="s1">&#39;ORDER BY -num_complaints &#39;</span>
+                       <span class="s1">&#39;LIMIT 11 &#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[18]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>City</th>
+      <th>num_complaints</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>BROOKLYN</td>
+      <td>2441941</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>NEW YORK</td>
+      <td>1544423</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>BRONX</td>
+      <td>1470746</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>None</td>
+      <td>654158</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>STATEN ISLAND</td>
+      <td>408095</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>JAMAICA</td>
+      <td>196816</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>FLUSHING</td>
+      <td>149625</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>ASTORIA</td>
+      <td>116103</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>RIDGEWOOD</td>
+      <td>86237</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>WOODSIDE</td>
+      <td>60148</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>FAR ROCKAWAY</td>
+      <td>59552</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">cities</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">City</span><span class="p">)</span>
+<span class="n">cities</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># the series in the graph - one trace for each city</span>
+
+<span class="k">for</span> <span class="n">city</span> <span class="ow">in</span> <span class="n">cities</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT ComplaintType, COUNT(*) as `num_complaints` &#39;</span>
+                           <span class="s1">&#39;FROM data &#39;</span>
+                           <span class="s1">&#39;WHERE City = &quot;{}&quot; COLLATE NOCASE &#39;</span>
+                           <span class="s1">&#39;GROUP BY `ComplaintType` &#39;</span>
+                           <span class="s1">&#39;ORDER BY -num_complaints&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">city</span><span class="p">),</span> <span class="n">disk_engine</span><span class="p">)</span>
+
+    <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ComplaintType&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">num_complaints</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">city</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">({</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">traces</span><span class="p">,</span> <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="n">Layout</span><span class="p">(</span><span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;stack&#39;</span><span class="p">,</span> <span class="n">xaxis</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tickangle&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">},</span> <span class="n">margin</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">150</span><span class="p">})},</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;311/complaints by city stacked&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[21]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~chris/7376.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><em>You can also <code>click</code> on the legend entries to hide/show the traces. Click-and-drag to zoom in and shift-drag to pan.</em></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now let's normalize these counts. This is super easy now that this data has been reduced into a dataframe.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
+    <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">100.</span><span class="o">*</span><span class="n">trace</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">({</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">traces</span><span class="p">,</span> 
+          <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="n">Layout</span><span class="p">(</span>
+                <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span>
+                <span class="n">xaxis</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tickangle&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;autorange&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">16</span><span class="p">]},</span>
+                <span class="n">yaxis</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Percent of Complaints by City&#39;</span><span class="p">},</span>
+                <span class="n">margin</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">150</span><span class="p">},</span>
+                <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Relative Number of 311 Complaints by City&#39;</span><span class="p">)</span>
+         <span class="p">},</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;311/relative complaints by city&#39;</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[23]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~chris/7378.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>New York is loud</li>
+<li>Staten Island is moldy, wet, and vacant</li>
+<li>Flushing's muni meters are broken </li>
+<li>Trash collection is great in the Bronx</li>
+<li>Woodside doesn't like its graffiti</li>
+</ul>
+<p>Click and drag to pan across the graph and see more of the complaints.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Part-2:-SQLite-time-series-with-Pandas">Part 2: SQLite time series with Pandas<a class="anchor-link" href="#Part-2:-SQLite-time-series-with-Pandas">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Filter-SQLite-rows-with-timestamp-strings:-YYYY-MM-DD-hh:mm:ss">Filter SQLite rows with timestamp strings: <code>YYYY-MM-DD hh:mm:ss</code><a class="anchor-link" href="#Filter-SQLite-rows-with-timestamp-strings:-YYYY-MM-DD-hh:mm:ss">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT ComplaintType, CreatedDate, City &#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;WHERE CreatedDate &lt; &quot;2014-11-16 23:47:00&quot; &#39;</span>
+                       <span class="s1">&#39;AND CreatedDate &gt; &quot;2014-11-16 23:45:00&quot;&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+
+<span class="n">df</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[24]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ComplaintType</th>
+      <th>CreatedDate</th>
+      <th>City</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Derelict Vehicles</td>
+      <td>2014-11-16 23:46:00.000000</td>
+      <td>Jamaica</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Pull-out-the-hour-unit-from-timestamps-with-strftime">Pull out the hour unit from timestamps with <code>strftime</code><a class="anchor-link" href="#Pull-out-the-hour-unit-from-timestamps-with-strftime">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT CreatedDate, &#39;</span>
+                              <span class="s1">&#39;strftime(</span><span class="se">\&#39;</span><span class="s1">%H</span><span class="se">\&#39;</span><span class="s1">, CreatedDate) as hour, &#39;</span>
+                              <span class="s1">&#39;ComplaintType &#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;LIMIT 5 &#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[25]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CreatedDate</th>
+      <th>hour</th>
+      <th>ComplaintType</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2014-11-16 23:46:00.000000</td>
+      <td>23</td>
+      <td>Derelict Vehicles</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2014-11-16 02:24:35.000000</td>
+      <td>02</td>
+      <td>Building/Use</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2014-11-16 02:17:12.000000</td>
+      <td>02</td>
+      <td>Illegal Parking</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2014-11-16 02:15:13.000000</td>
+      <td>02</td>
+      <td>Noise - Street/Sidewalk</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2014-11-16 02:14:01.000000</td>
+      <td>02</td>
+      <td>Illegal Parking</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Count-the-number-of-complaints-(rows)-per-hour-with-strftime,-GROUP-BY,-and-count(*)">Count the number of complaints (rows) per hour with <code>strftime</code>, <code>GROUP BY</code>, and <code>count(*)</code><a class="anchor-link" href="#Count-the-number-of-complaints-(rows)-per-hour-with-strftime,-GROUP-BY,-and-count(*)">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT CreatedDate, &#39;</span>
+                               <span class="s1">&#39;strftime(</span><span class="se">\&#39;</span><span class="s1">%H</span><span class="se">\&#39;</span><span class="s1">, CreatedDate) as hour,  &#39;</span>
+                               <span class="s1">&#39;count(*) as `Complaints per Hour`&#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;GROUP BY hour&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[26]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CreatedDate</th>
+      <th>hour</th>
+      <th>Complaints per Hour</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2003-02-26 00:47:27.000000</td>
+      <td>00</td>
+      <td>3178595</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2003-02-26 01:36:31.000000</td>
+      <td>01</td>
+      <td>71993</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2003-03-04 02:00:46.000000</td>
+      <td>02</td>
+      <td>56362</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2003-02-25 03:07:01.000000</td>
+      <td>03</td>
+      <td>33396</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2003-03-04 04:32:11.000000</td>
+      <td>04</td>
+      <td>30434</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">({</span>
+    <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Complaints per Hour&#39;</span><span class="p">])],</span>
+    <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="n">Layout</span><span class="p">(</span><span class="n">xaxis</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Hour in Day&#39;</span><span class="p">},</span>
+                     <span class="n">yaxis</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of Complaints&#39;</span><span class="p">})},</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;311/complaints per hour&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[27]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~chris/7364.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Filter-noise-complaints-by-hour">Filter noise complaints by hour<a class="anchor-link" href="#Filter-noise-complaints-by-hour">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT CreatedDate, &#39;</span>
+                               <span class="s1">&#39;strftime(</span><span class="se">\&#39;</span><span class="s1">%H</span><span class="se">\&#39;</span><span class="s1">, CreatedDate) as `hour`,  &#39;</span>
+                               <span class="s1">&#39;count(*) as `Complaints per Hour`&#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;WHERE ComplaintType IN (&quot;Noise&quot;, &#39;</span>
+                                               <span class="s1">&#39;&quot;Noise - Street/Sidewalk&quot;, &#39;</span>
+                                               <span class="s1">&#39;&quot;Noise - Commercial&quot;, &#39;</span>
+                                               <span class="s1">&#39;&quot;Noise - Vehicle&quot;, &#39;</span>
+                                               <span class="s1">&#39;&quot;Noise - Park&quot;, &#39;</span>
+                                               <span class="s1">&#39;&quot;Noise - House of Worship&quot;, &#39;</span>
+                                               <span class="s1">&#39;&quot;Noise - Helicopter&quot;, &#39;</span>
+                                               <span class="s1">&#39;&quot;Collection Truck Noise&quot;) &#39;</span>
+                       <span class="s1">&#39;GROUP BY hour&#39;</span><span class="p">,</span> <span class="n">disk_engine</span><span class="p">)</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">({</span>
+    <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Complaints per Hour&#39;</span><span class="p">])],</span>
+    <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="n">Layout</span><span class="p">(</span><span class="n">xaxis</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Hour in Day&#39;</span><span class="p">},</span>
+                     <span class="n">yaxis</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of Complaints&#39;</span><span class="p">},</span>
+                     <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Number of Noise Complaints in NYC by Hour in Day&#39;</span>
+                    <span class="p">)},</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;311/noise complaints per hour&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+<div class="output_html rendered_html output_subarea ">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CreatedDate</th>
+      <th>hour</th>
+      <th>Complaints per Hour</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2004-08-19 00:54:43.000000</td>
+      <td>00</td>
+      <td>41373</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2008-08-29 01:07:39.000000</td>
+      <td>01</td>
+      <td>34588</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[28]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~chris/7369.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h6 id="Segregate-complaints-by-hour">Segregate complaints by hour<a class="anchor-link" href="#Segregate-complaints-by-hour">&#182;</a></h6>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">complaint_traces</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># Each series in the graph will represent a complaint</span>
+<span class="n">complaint_traces</span><span class="p">[</span><span class="s1">&#39;Other&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">hour</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">):</span>
+    <span class="n">hour_str</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">hour</span><span class="p">)</span> <span class="k">if</span> <span class="n">hour</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">hour</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT  CreatedDate, &#39;</span>
+                                   <span class="s1">&#39;ComplaintType ,&#39;</span>
+                                   <span class="s1">&#39;strftime(</span><span class="se">\&#39;</span><span class="s1">%H</span><span class="se">\&#39;</span><span class="s1">, CreatedDate) as `hour`,  &#39;</span>
+                                   <span class="s1">&#39;COUNT(*) as num_complaints &#39;</span>
+                           <span class="s1">&#39;FROM data &#39;</span>
+                           <span class="s1">&#39;WHERE hour = &quot;{}&quot; &#39;</span>
+                           <span class="s1">&#39;GROUP BY ComplaintType &#39;</span>
+                           <span class="s1">&#39;ORDER BY -num_complaints&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hour_str</span><span class="p">),</span> <span class="n">disk_engine</span><span class="p">)</span>
+    
+    <span class="n">complaint_traces</span><span class="p">[</span><span class="s1">&#39;Other&#39;</span><span class="p">][</span><span class="n">hour</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">num_complaints</span><span class="p">)</span>
+    
+    <span class="c1"># Grab the 7 most common complaints for that hour</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+        <span class="n">complaint</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;ComplaintType&#39;</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;num_complaints&#39;</span><span class="p">)</span>
+        <span class="n">complaint_traces</span><span class="p">[</span><span class="s1">&#39;Other&#39;</span><span class="p">][</span><span class="n">hour</span><span class="p">]</span> <span class="o">-=</span> <span class="n">count</span>
+        <span class="k">if</span> <span class="n">complaint</span> <span class="ow">in</span> <span class="n">complaint_traces</span><span class="p">:</span>
+            <span class="n">complaint_traces</span><span class="p">[</span><span class="n">complaint</span><span class="p">][</span><span class="n">hour</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">complaint_traces</span><span class="p">[</span><span class="n">complaint</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">hour</span><span class="p">:</span> <span class="n">count</span><span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">complaint</span> <span class="ow">in</span> <span class="n">complaint_traces</span><span class="p">:</span>
+    <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">25</span><span class="p">),</span>
+        <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">complaint_traces</span><span class="p">[</span><span class="n">complaint</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">25</span><span class="p">)],</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">complaint</span><span class="p">,</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;bar&#39;</span>
+    <span class="p">})</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">({</span>
+    <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">traces</span><span class="p">,</span> 
+    <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;barmode&#39;</span><span class="p">:</span> <span class="s1">&#39;stack&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;xaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Hour in Day&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;yaxis&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of Complaints&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;The 7 Most Common 311 Complaints by Hour in a Day&#39;</span>
+    <span class="p">}},</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;311/most common complaints by hour&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[30]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~chris/7365.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Aggregated-time-series">Aggregated time series<a class="anchor-link" href="#Aggregated-time-series">&#182;</a></h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First, create a new column with timestamps rounded to the previous 15 minute interval</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">minutes</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">seconds</span> <span class="o">=</span> <span class="mi">15</span><span class="o">*</span><span class="mi">60</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT CreatedDate, &#39;</span>
+                               <span class="s1">&#39;datetime((&#39;</span>
+                                   <span class="s1">&#39;strftime(</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, CreatedDate) / {seconds}) * {seconds}, </span><span class="se">\&#39;</span><span class="s1">unixepoch</span><span class="se">\&#39;</span><span class="s1">) interval &#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;LIMIT 10 &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">seconds</span><span class="p">),</span> <span class="n">disk_engine</span><span class="p">)</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+<div class="output_html rendered_html output_subarea ">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CreatedDate</th>
+      <th>interval</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2014-11-16 23:46:00.000000</td>
+      <td>2014-11-16 23:45:00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2014-11-16 02:24:35.000000</td>
+      <td>2014-11-16 02:15:00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2014-11-16 02:17:12.000000</td>
+      <td>2014-11-16 02:15:00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2014-11-16 02:15:13.000000</td>
+      <td>2014-11-16 02:15:00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2014-11-16 02:14:01.000000</td>
+      <td>2014-11-16 02:00:00</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then, <code>GROUP BY</code> that interval and <code>COUNT(*)</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">minutes</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">seconds</span> <span class="o">=</span> <span class="n">minutes</span><span class="o">*</span><span class="mi">60</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT datetime((&#39;</span>
+                                   <span class="s1">&#39;strftime(</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, CreatedDate) / {seconds}) * {seconds}, </span><span class="se">\&#39;</span><span class="s1">unixepoch</span><span class="se">\&#39;</span><span class="s1">) interval ,&#39;</span>
+                               <span class="s1">&#39;COUNT(*) as &quot;Complaints / interval&quot;&#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;GROUP BY interval &#39;</span>
+                       <span class="s1">&#39;ORDER BY interval &#39;</span>
+                       <span class="s1">&#39;LIMIT 500&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">seconds</span><span class="p">),</span> <span class="n">disk_engine</span><span class="p">)</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="n">display</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+<div class="output_html rendered_html output_subarea ">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>interval</th>
+      <th>Complaints / interval</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2003-02-24 09:15:00</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2003-02-24 09:30:00</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2003-02-24 09:45:00</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2003-02-24 10:00:00</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2003-02-24 10:15:00</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+<div class="output_html rendered_html output_subarea ">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>interval</th>
+      <th>Complaints / interval</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>495</th>
+      <td>2003-03-13 07:30:00</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>496</th>
+      <td>2003-03-13 08:45:00</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>497</th>
+      <td>2003-03-13 09:00:00</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>498</th>
+      <td>2003-03-13 09:15:00</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>499</th>
+      <td>2003-03-13 09:30:00</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[{</span>
+            <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">interval</span><span class="p">,</span>
+            <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Complaints / interval&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;bar&#39;</span>
+        <span class="p">}],</span>
+        <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of 311 Complaints per 15 Minutes&#39;</span>
+        <span class="p">}</span>
+<span class="p">},</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;311/complaints per 15 minutes&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[33]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~chris/7393.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">hours</span> <span class="o">=</span> <span class="mi">24</span>
+<span class="n">minutes</span> <span class="o">=</span> <span class="n">hours</span><span class="o">*</span><span class="mi">60</span>
+<span class="n">seconds</span> <span class="o">=</span> <span class="n">minutes</span><span class="o">*</span><span class="mi">60</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s1">&#39;SELECT datetime((&#39;</span>
+                                   <span class="s1">&#39;strftime(</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, CreatedDate) / {seconds}) * {seconds}, </span><span class="se">\&#39;</span><span class="s1">unixepoch</span><span class="se">\&#39;</span><span class="s1">) interval ,&#39;</span>
+                               <span class="s1">&#39;COUNT(*) as &quot;Complaints / interval&quot;&#39;</span>
+                       <span class="s1">&#39;FROM data &#39;</span>
+                       <span class="s1">&#39;GROUP BY interval &#39;</span>
+                       <span class="s1">&#39;ORDER BY interval&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">seconds</span><span class="p">),</span> <span class="n">disk_engine</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[{</span>
+            <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">interval</span><span class="p">,</span>
+            <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Complaints / interval&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;bar&#39;</span>
+        <span class="p">}],</span>
+        <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of 311 Complaints per Day&#39;</span>
+        <span class="p">}</span>
+<span class="p">},</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;311/complaints per day&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[35]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~chris/7394.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Learn-more">Learn more<a class="anchor-link" href="#Learn-more">&#182;</a></h3><ul>
+<li>Find more open data sets on <a href="https://data.gov">Data.gov</a> and <a href="https://nycopendata.socrata.com">NYC Open Data</a></li>
+<li>Learn how to setup <a href="http://moderndata.plot.ly/graph-data-from-mysql-database-in-python/">MySql with Pandas and Plotly</a></li>
+<li>Add <a href="http://moderndata.plot.ly/widgets-in-ipython-notebook-and-plotly/">interactive widgets to IPython notebooks</a> for customized data exploration</li>
+<li>Big data workflows with <a href="http://stackoverflow.com/questions/14262433/large-data-work-flows-using-pandas">HDF5 and Pandas</a></li>
+<li><a href="https://plot.ly/python/">Interactive graphing with Plotly</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

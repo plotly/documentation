@@ -1,0 +1,416 @@
+---
+permalink: python/figure-factory-subplots/
+description: Subplots with Plotly Figure Factory Charts
+name: Python Figure Factory Subplots | plotly
+has_thumbnail: true
+thumbnail: thumbnail/ff-subplots.jpg
+layout: user-guide
+name: Figure Factory Subplots
+language: python
+title: Figure Factory Subplots in Python | plotly
+display_as: multiple_axes
+has_thumbnail: true
+ipynb: ~PythonPlotBot/1828
+order: 10
+page_type: u-guide
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#182;</a></h4><p>Plotly's python package is updated frequently. Run <code>pip install plotly --upgrade</code> to use the latest version.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span> 
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.0.7&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Plotly's-Figure-Factory-Module">Plotly's Figure Factory Module<a class="anchor-link" href="#Plotly's-Figure-Factory-Module">&#182;</a></h4><p>Plotly's Python API contains a figure factory module which includes many wrapper functions that create unique chart types that are not yet included in <a href="https://github.com/plotly/plotly.js">plotly.js</a>, Plotly's open-source graphing library. The figure factory functions create a full figure, so some Plotly features, such as subplotting, should be implemented slightly differently with these charts.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.figure_factory</span>
+<span class="n">help</span><span class="p">(</span><span class="n">plotly</span><span class="o">.</span><span class="n">figure_factory</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Help on package plotly.figure_factory in plotly:
+
+NAME
+    plotly.figure_factory
+
+FILE
+    /Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/plotly/figure_factory/__init__.py
+
+PACKAGE CONTENTS
+    _2d_density
+    _annotated_heatmap
+    _candlestick
+    _dendrogram
+    _distplot
+    _gantt
+    _ohlc
+    _quiver
+    _scatterplot
+    _streamline
+    _table
+    _trisurf
+    _violin
+    utils
+
+DATA
+    absolute_import = _Feature((2, 5, 0, &#39;alpha&#39;, 1), (3, 0, 0, &#39;alpha&#39;, 0...
+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Vertical-Figure-Factory-Charts">Vertical Figure Factory Charts<a class="anchor-link" href="#Vertical-Figure-Factory-Charts">&#182;</a></h4><p>First create the figures that you'd like to appear in the subplot:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="kn">as</span> <span class="nn">ff</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c1">## Create first plot</span>
+<span class="n">x1</span><span class="p">,</span><span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">u1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">*</span><span class="n">y1</span>
+<span class="n">v1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">*</span><span class="n">y1</span>
+
+<span class="n">fig1</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_quiver</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Quiver&#39;</span><span class="p">)</span>
+
+
+<span class="c1">## Create second plot</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">Y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">X</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">Y</span>
+<span class="n">v</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">X</span> <span class="o">-</span> <span class="n">Y</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="n">fig2</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_streamline</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">arrow_scale</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Steamline&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Edit the figures' x and y axes attributes to create subplots:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fig1</span><span class="o">.</span><span class="n">data</span><span class="p">)):</span>
+    <span class="n">fig1</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span>
+    <span class="n">fig1</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span>
+
+<span class="n">fig1</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">xaxis1</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;anchor&#39;</span><span class="p">:</span> <span class="s1">&#39;y1&#39;</span><span class="p">})</span>
+<span class="n">fig1</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">yaxis1</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;anchor&#39;</span><span class="p">:</span> <span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;domain&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="mi">55</span><span class="p">,</span> <span class="mi">1</span><span class="p">]})</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fig2</span><span class="o">.</span><span class="n">data</span><span class="p">)):</span>
+    <span class="n">fig2</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span>
+    <span class="n">fig2</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span>
+
+<span class="n">fig2</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">xaxis2</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;anchor&#39;</span><span class="p">:</span> <span class="s1">&#39;y2&#39;</span><span class="p">})</span>
+<span class="n">fig2</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">yaxis2</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;anchor&#39;</span><span class="p">:</span> <span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;domain&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">45</span><span class="p">]})</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Add the data and layout objects:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig1</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">fig2</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">fig1</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fig2</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig1</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;figure_factory_subplot&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/1826.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Horizontal-Table-and-Chart">Horizontal Table and Chart<a class="anchor-link" href="#Horizontal-Table-and-Chart">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="kn">as</span> <span class="nn">ff</span>
+
+<span class="n">table_data</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;Team&#39;</span><span class="p">,</span> <span class="s1">&#39;Wins&#39;</span><span class="p">,</span> <span class="s1">&#39;Losses&#39;</span><span class="p">,</span> <span class="s1">&#39;Ties&#39;</span><span class="p">],</span>
+              <span class="p">[</span><span class="s1">&#39;Montréal&lt;br&gt;Canadiens&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="s1">&#39;Dallas Stars&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="s1">&#39;NY Rangers&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> 
+              <span class="p">[</span><span class="s1">&#39;Boston&lt;br&gt;Bruins&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="s1">&#39;Chicago&lt;br&gt;Blackhawks&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="s1">&#39;LA Kings&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="s1">&#39;Ottawa&lt;br&gt;Senators&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+
+<span class="n">figure</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span> <span class="n">height_constant</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+
+<span class="n">teams</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Montréal Canadiens&#39;</span><span class="p">,</span> <span class="s1">&#39;Dallas Stars&#39;</span><span class="p">,</span> <span class="s1">&#39;NY Rangers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;Boston Bruins&#39;</span><span class="p">,</span> <span class="s1">&#39;Chicago Blackhawks&#39;</span><span class="p">,</span> <span class="s1">&#39;LA Kings&#39;</span><span class="p">,</span> <span class="s1">&#39;Ottawa Senators&#39;</span><span class="p">]</span>
+<span class="n">GFPG</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.54</span><span class="p">,</span> <span class="mf">3.48</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.27</span><span class="p">,</span> <span class="mf">2.83</span><span class="p">,</span> <span class="mf">2.45</span><span class="p">,</span> <span class="mf">3.18</span><span class="p">]</span>
+<span class="n">GAPG</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.17</span><span class="p">,</span> <span class="mf">2.57</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.91</span><span class="p">,</span> <span class="mf">2.57</span><span class="p">,</span> <span class="mf">2.14</span><span class="p">,</span> <span class="mf">2.77</span><span class="p">]</span>
+
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">teams</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">GFPG</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0099ff&#39;</span><span class="p">),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Goals For&lt;br&gt;Per Game&#39;</span><span class="p">,</span>
+                    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">)</span>
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">teams</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">GAPG</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#404040&#39;</span><span class="p">),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Goals Against&lt;br&gt;Per Game&#39;</span><span class="p">,</span>
+                    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">)</span>
+
+<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">]))</span>
+
+<span class="c1"># Edit layout for subplots</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;domain&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">]})</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">xaxis2</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;domain&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]})</span>
+<span class="c1"># The graph&#39;s yaxis MUST BE anchored to the graph&#39;s xaxis</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">yaxis2</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;anchor&#39;</span><span class="p">:</span> <span class="s1">&#39;x2&#39;</span><span class="p">})</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">yaxis2</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Goals&#39;</span><span class="p">})</span>
+<span class="c1"># Update the margins to add a title and see graph x-labels. </span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">margin</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;t&#39;</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="mi">100</span><span class="p">})</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;2016 Hockey Stats&#39;</span><span class="p">})</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;subplot_table&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/461.embed" height="530px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Vertical-Table-and-Chart">Vertical Table and Chart<a class="anchor-link" href="#Vertical-Table-and-Chart">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="kn">as</span> <span class="nn">ff</span>
+
+<span class="c1"># Add table data</span>
+<span class="n">table_data</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;Team&#39;</span><span class="p">,</span> <span class="s1">&#39;Wins&#39;</span><span class="p">,</span> <span class="s1">&#39;Losses&#39;</span><span class="p">,</span> <span class="s1">&#39;Ties&#39;</span><span class="p">],</span>
+              <span class="p">[</span><span class="s1">&#39;Montréal&lt;br&gt;Canadiens&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="s1">&#39;Dallas Stars&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="s1">&#39;NY Rangers&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> 
+              <span class="p">[</span><span class="s1">&#39;Boston&lt;br&gt;Bruins&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="s1">&#39;Chicago&lt;br&gt;Blackhawks&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="s1">&#39;Ottawa&lt;br&gt;Senators&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="c1"># Initialize a figure with ff.create_table(table_data)</span>
+<span class="n">figure</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span> <span class="n">height_constant</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+
+<span class="c1"># Add graph data</span>
+<span class="n">teams</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Montréal Canadiens&#39;</span><span class="p">,</span> <span class="s1">&#39;Dallas Stars&#39;</span><span class="p">,</span> <span class="s1">&#39;NY Rangers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;Boston Bruins&#39;</span><span class="p">,</span> <span class="s1">&#39;Chicago Blackhawks&#39;</span><span class="p">,</span> <span class="s1">&#39;Ottawa Senators&#39;</span><span class="p">]</span>
+<span class="n">GFPG</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.54</span><span class="p">,</span> <span class="mf">3.48</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.27</span><span class="p">,</span> <span class="mf">2.83</span><span class="p">,</span> <span class="mf">3.18</span><span class="p">]</span>
+<span class="n">GAPG</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.17</span><span class="p">,</span> <span class="mf">2.57</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.91</span><span class="p">,</span> <span class="mf">2.57</span><span class="p">,</span> <span class="mf">2.77</span><span class="p">]</span>
+<span class="c1"># Make traces for graph</span>
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">teams</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">GFPG</span><span class="p">,</span> <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
+                <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0099ff&#39;</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Goals For&lt;br&gt;Per Game&#39;</span><span class="p">)</span>
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">teams</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">GAPG</span><span class="p">,</span> <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
+                <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#404040&#39;</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Goals Against&lt;br&gt;Per Game&#39;</span><span class="p">)</span>
+
+<span class="c1"># Add trace data to figure</span>
+<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">]))</span>
+
+<span class="c1"># Edit layout for subplots</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;domain&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">45</span><span class="p">]})</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">yaxis2</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;domain&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">]})</span>
+<span class="c1"># The graph&#39;s yaxis2 MUST BE anchored to the graph&#39;s xaxis2 and vice versa</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">yaxis2</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;anchor&#39;</span><span class="p">:</span> <span class="s1">&#39;x2&#39;</span><span class="p">})</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">xaxis2</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;anchor&#39;</span><span class="p">:</span> <span class="s1">&#39;y2&#39;</span><span class="p">})</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">yaxis2</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Goals&#39;</span><span class="p">})</span>
+<span class="c1"># Update the margins to add a title and see graph x-labels. </span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">margin</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;t&#39;</span><span class="p">:</span><span class="mi">75</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">:</span><span class="mi">50</span><span class="p">})</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;2016 Hockey Stats&#39;</span><span class="p">})</span>
+<span class="c1"># Update the height because adding a graph vertically will interact with</span>
+<span class="c1"># the plot height calculated for the table</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;height&#39;</span><span class="p">:</span><span class="mi">800</span><span class="p">})</span>
+
+<span class="c1"># Plot!</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;subplot_table_vertical&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/463.embed" height="800px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#182;</a></h4><p>See <a href="https://plot.ly/python/reference/">https://plot.ly/python/reference/</a> for more information regarding chart attributes!</p>
+
+</div>
+</div>
+</div>{% endraw %}

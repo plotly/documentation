@@ -1,0 +1,90 @@
+---
+title: MATLAB Time Series | Examples | Plotly
+name: Time Series
+permalink: matlab/time-series/
+description: How to plot date and time in MATLAB. An example of a time-series plot.
+layout: base
+thumbnail: thumbnail/time-series.jpg
+language: matlab
+page_type: example_index
+has_thumbnail: true
+display_as: basic
+order: 4
+---
+
+Converting time series plots from MATLAB to plotly requires a few extra steps.
+
+Since MATLAB is extremely flexible with how the dates can be formatted within the X and Y tick labels, automatically parsing the various permutations of the date labels is nearly impossible.
+
+Here are two options for plotting time series in MATLAB with Plotly.
+
+<h4>Converting to a Standard Date Format</h4>
+
+The first way to convert MATLAB time series plots is to convert the dates to unix time with the <code>convertDate</code> function included in Plotly MATLAB toolbox.
+
+<ol>
+    <li>
+        Convert your MATLAB time values to the "milliseconds from 1969" time format with <code>convertDate</code> below.
+    </li>
+    <li>Run <code> &gt;&gt; plotlyfig = fig2plotly(gcf)</code> to parse your figure.</li>
+    <li>
+        Modify the converted figure's date axes: <code>plotlyfig.layout.xaxis1.type = 'date';</code><br>Note: the xaxis1 might be xaxisN—> depending on the number of axes you have, where N is the id of the axis you wish to modify.
+    </li>
+    <li>
+        Change the file option to overwrite your newly created plot:<br>
+        <code>&gt;&gt; plotlyfig.PlotOptions.FileOpt = 'overwrite';</code>
+    </li>
+    <li>
+        Send your figure back to Plotly:<br>
+        <code>&gt;&gt; plotly(plotlyfig);</code>
+    </li>
+</ol>
+
+<b>Example</b>
+
+<div class="z-depth-1">
+<pre><code class="matlab hljs">x = linspace(datenum(2009,01,01),datenum(2010,01,01),12);
+y = rand(1,12);
+plotlydate = convertDate(x);
+plot(plotlydate,y);
+plotlyfig = fig2plotly(gcf,'filename','myfig');
+plotlyfig.layout.xaxis1.type = 'date';
+plotlyfig.PlotOptions.FileOpt = 'overwrite';
+plotly(plotlyfig);
+</code></pre>
+</div>
+
+<iframe src="https://plot.ly/~jackp/10845.embed" width="100%" height="500px" style="border: none;"></iframe>
+
+<h4>Explicitly Setting the Date Format</h4>
+
+A second way to convert MATLAB time series plots to Plotly is by explicitly setting the date-time format.
+
+<ol>
+    <li>
+        set the date-string format, for example: <code>userdata.plotly.xdateformat = ‘yyyy:mm:hh’;</code>
+    </li>
+    <li><code>set(your_axis_handle, ‘UserData’, userdata)</code></li>
+    <li>Send your figure to plotly: <code>plotlyfig = fig2plotly(gcf);</code></li>
+</ol>
+
+<b>Example</b>
+
+<div class="z-depth-1">
+<pre><code class="matlab hljs">startDate = datenum('01-01-2009');
+endDate = datenum('12-31-2009');
+xData = linspace(startDate,endDate,12);
+plot(xData,rand(1,12))
+set(gca,'XTick',xData)
+dateformat = 'yy:mmm';
+datetick('x',dateformat,'keepticks')
+userdata.plotly.xdateformat = dateformat;
+set(gca,'UserData',userdata)
+p = fig2plotly(gcf);
+</code></pre>
+</div>
+
+<iframe src="https://plot.ly/~jackp/10871.embed" width="100%" height="500px" style="border: none;"></iframe>
+
+{% assign examples = site.posts | where:"language","matlab" | where:"suite","time-series" | sort: "order" %}
+{% include auto_examples.html examples=examples %}

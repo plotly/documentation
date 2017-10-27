@@ -1,0 +1,294 @@
+---
+permalink: scikit-learn/topics-extraction-with-nmf-lda/
+description:  
+name: Topic Extraction| plotly
+has_thumbnail: true
+thumbnail: thumbnail/scikit-default.jpg
+layout: user-guide
+name: Topic Extraction with Non-negative Matrix Factorization and Latent Dirichlet Allocation 
+language: scikit-learn
+title: Topic Extraction | plotly
+display_as: real_dataset
+has_thumbnail: true
+page_type: example_index
+order: 2
+ipynb: ~Diksha_Gabha/2678
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is an example of applying Non-negative Matrix Factorization and Latent Dirichlet Allocation on a corpus of documents and extract additive models of the topic structure of the corpus. The output is a list of topics, each represented as a list of terms (weights are not shown).</p>
+<p>The default parameters (n_samples / n_features / n_topics) should make the example runnable in a couple of tens of seconds. You can try to increase the dimensions of the problem, but be aware that the time complexity is polynomial in NMF. In LDA, the time complexity is proportional to (n_samples * iterations).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&apos;0.18&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">TfidfVectorizer</span><span class="p">,</span> <span class="n">CountVectorizer</span>
+<span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">NMF</span><span class="p">,</span> <span class="n">LatentDirichletAllocation</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">fetch_20newsgroups</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="n">n_features</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">n_topics</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">n_top_words</span> <span class="o">=</span> <span class="mi">20</span>
+
+
+<span class="k">def</span> <span class="nf">print_top_words</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">n_top_words</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">topic_idx</span><span class="p">,</span> <span class="n">topic</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">components_</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Topic #</span><span class="si">%d</span><span class="s2">:&quot;</span> <span class="o">%</span> <span class="n">topic_idx</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">feature_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">topic</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[:</span><span class="o">-</span><span class="n">n_top_words</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
+    <span class="k">print</span><span class="p">()</span>
+
+
+<span class="c1"># Load the 20 newsgroups dataset and vectorize it. We use a few heuristics</span>
+<span class="c1"># to filter out useless terms early on: the posts are stripped of headers,</span>
+<span class="c1"># footers and quoted replies, and common English words, words occurring in</span>
+<span class="c1"># only one document or in at least 95% of the documents are removed.</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Loading dataset...&quot;</span><span class="p">)</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">fetch_20newsgroups</span><span class="p">(</span><span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                             <span class="n">remove</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;headers&#39;</span><span class="p">,</span> <span class="s1">&#39;footers&#39;</span><span class="p">,</span> <span class="s1">&#39;quotes&#39;</span><span class="p">))</span>
+<span class="n">data_samples</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[:</span><span class="n">n_samples</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%0.3f</span><span class="s2">s.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+
+<span class="c1"># Use tf-idf features for NMF.</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Extracting tf-idf features for NMF...&quot;</span><span class="p">)</span>
+<span class="n">tfidf_vectorizer</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="n">max_df</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">min_df</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                   <span class="n">max_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span>
+                                   <span class="n">stop_words</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">)</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="n">tfidf</span> <span class="o">=</span> <span class="n">tfidf_vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data_samples</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%0.3f</span><span class="s2">s.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+
+<span class="c1"># Use tf (raw term count) features for LDA.</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Extracting tf features for LDA...&quot;</span><span class="p">)</span>
+<span class="n">tf_vectorizer</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">max_df</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">min_df</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                <span class="n">max_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span>
+                                <span class="n">stop_words</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">)</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="n">tf</span> <span class="o">=</span> <span class="n">tf_vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data_samples</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%0.3f</span><span class="s2">s.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+
+<span class="c1"># Fit the NMF model</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Fitting the NMF model with tf-idf features, &quot;</span>
+      <span class="s2">&quot;n_samples=</span><span class="si">%d</span><span class="s2"> and n_features=</span><span class="si">%d</span><span class="s2">...&quot;</span>
+      <span class="o">%</span> <span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="n">nmf</span> <span class="o">=</span> <span class="n">NMF</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">n_topics</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+          <span class="n">alpha</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">l1_ratio</span><span class="o">=.</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">tfidf</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%0.3f</span><span class="s2">s.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Topics in NMF model:&quot;</span><span class="p">)</span>
+<span class="n">tfidf_feature_names</span> <span class="o">=</span> <span class="n">tfidf_vectorizer</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">()</span>
+<span class="n">print_top_words</span><span class="p">(</span><span class="n">nmf</span><span class="p">,</span> <span class="n">tfidf_feature_names</span><span class="p">,</span> <span class="n">n_top_words</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Fitting LDA models with tf features, &quot;</span>
+      <span class="s2">&quot;n_samples=</span><span class="si">%d</span><span class="s2"> and n_features=</span><span class="si">%d</span><span class="s2">...&quot;</span>
+      <span class="o">%</span> <span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+<span class="n">lda</span> <span class="o">=</span> <span class="n">LatentDirichletAllocation</span><span class="p">(</span><span class="n">n_topics</span><span class="o">=</span><span class="n">n_topics</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                                <span class="n">learning_method</span><span class="o">=</span><span class="s1">&#39;online&#39;</span><span class="p">,</span>
+                                <span class="n">learning_offset</span><span class="o">=</span><span class="mf">50.</span><span class="p">,</span>
+                                <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="n">lda</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">tf</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%0.3f</span><span class="s2">s.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Topics in LDA model:&quot;</span><span class="p">)</span>
+<span class="n">tf_feature_names</span> <span class="o">=</span> <span class="n">tf_vectorizer</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">()</span>
+<span class="n">print_top_words</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span> <span class="n">tf_feature_names</span><span class="p">,</span> <span class="n">n_top_words</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Loading dataset...
+done in 2.336s.
+Extracting tf-idf features for NMF...
+done in 0.555s.
+Extracting tf features for LDA...
+done in 0.514s.
+Fitting the NMF model with tf-idf features, n_samples=2000 and n_features=1000...
+done in 0.481s.
+
+Topics in NMF model:
+Topic #0:
+just people don think like know time good make way really say right ve want did ll new use years
+Topic #1:
+windows use dos using window program os drivers application help software pc running ms screen files version card code work
+Topic #2:
+god jesus bible faith christian christ christians does heaven sin believe lord life church mary atheism belief human love religion
+Topic #3:
+thanks know does mail advance hi info interested email anybody looking card help like appreciated information send list video need
+Topic #4:
+car cars tires miles 00 new engine insurance price condition oil power speed good 000 brake year models used bought
+Topic #5:
+edu soon com send university internet mit ftp mail cc pub article information hope program mac email home contact blood
+Topic #6:
+file problem files format win sound ftp pub read save site help image available create copy running memory self version
+Topic #7:
+game team games year win play season players nhl runs goal hockey toronto division flyers player defense leafs bad teams
+Topic #8:
+drive drives hard disk floppy software card mac computer power scsi controller apple mb 00 pc rom sale problem internal
+Topic #9:
+key chip clipper keys encryption government public use secure enforcement phone nsa communications law encrypted security clinton used legal standard
+
+Fitting LDA models with tf features, n_samples=2000 and n_features=1000...
+done in 2.511s.
+
+Topics in LDA model:
+Topic #0:
+edu com mail send graphics ftp pub available contact university list faq ca information cs 1993 program sun uk mit
+Topic #1:
+don like just know think ve way use right good going make sure ll point got need really time doesn
+Topic #2:
+christian think atheism faith pittsburgh new bible radio games alt lot just religion like book read play time subject believe
+Topic #3:
+drive disk windows thanks use card drives hard version pc software file using scsi help does new dos controller 16
+Topic #4:
+hiv health aids disease april medical care research 1993 light information study national service test led 10 page new drug
+Topic #5:
+god people does just good don jesus say israel way life know true fact time law want believe make think
+Topic #6:
+55 10 11 18 15 team game 19 period play 23 12 13 flyers 20 25 22 17 24 16
+Topic #7:
+car year just cars new engine like bike good oil insurance better tires 000 thing speed model brake driving performance
+Topic #8:
+people said did just didn know time like went think children came come don took years say dead told started
+Topic #9:
+key space law government public use encryption earth section security moon probe enforcement keys states lunar military crime surface technology
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Author:</p>
+
+<pre><code>     Olivier Grisel &lt;olivier.grisel@ensta.org&gt;
+     Lars Buitinck
+     Chyi-Kwei Yau &lt;chyikwei.yau@gmail.com&gt;
+</code></pre>
+<p>License:</p>
+
+<pre><code>     BSD 3 clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}

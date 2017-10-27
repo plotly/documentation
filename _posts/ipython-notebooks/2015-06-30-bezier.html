@@ -1,0 +1,2543 @@
+---
+permalink: ipython-notebooks/bezier-triangular-patches/
+description: How to make bézier triangular patches with Python and Plotly graphs.
+name: Bézier Triangular Patches
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+page_type: u-guide
+language: python
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2>Plotting B&eacute;zier Triangular Patches with <br /> Python Plotly</h2>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="ABOUT-THE-AUTHOR:">ABOUT THE AUTHOR:<a class="anchor-link" href="#ABOUT-THE-AUTHOR:">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This notebook was contributed by <a href="https://plot.ly/~empet">Plotly user Emilia Petrisor</a>.  You can follow Emilia on Twitter <a href="https://twitter.com/mathinpython">@mathinpython</a> or <a href="https://github.com/empet">Github</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3>The de  Casteljau algorithm for computing   points on a triangular B&eacute;zier patch</h3>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A B&eacute;zier triangular patch is a parameterized polynomial surface. Its  parameters belong to a triangular 2D region, $T$.
+The triangle vertices, $T_0, T_1, T_2$, are  denoted  counterclockwise like in the figure below:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;Imag/triangle.png&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="data:image/png;base64,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
+1wfNibpj1IW7V/1maYRNYfqC+ELdeZ3AmSkzu5D0xcpDD+7+Sa7rGQNhAyAEd6MAhCBsAIQgbACE
+IGwAhCBsAIQgbACEIGwAhCBsAIQgbACEIGwAhCBsAIQgbACEIGwAhCBsAIQgbACEIGwAhCBsAIQg
+bACEIGwAhCBsAIQgbACEIGwAhOAnYgIzYabfSfqRpD9LunNX6E/X5OdGATNhpr9L+lTSt5I+VveD
+EG/VBc/d5F+fsAHmYSVs1r2T9JGkLyX9QV34LEf/+oQNMA87wmbVY/B8I+kvkv6oLnzuj/76hA0w
+D4lhs+7xyPW1pN9L+qsO7HtM8jeSTob+QQCz9mzotMNkA8zEgZONJH2n7s7139R1OreHdDrc+gaw
+brSj0yrCBsBjKfwfSX9SVwwnl8Jmdipp0X/44O7L1cfc/U4ibIC5egyYu8dfR97uPpP0QtJLScv+
+4xN1r+ORRNgAc/JPSf/TyC/kc/elpKWZLSS9MLN7SQt3/3z1eRTEAEZjZl9JOpX0zN0/OIaxiAlg
+FP1ks1S3BnG1/nnCBsBYvpB0I+m5pDMz+yBwOEYBOEofKmfqeppn/WNv1d2NupP00t2XhA2AEByj
+AIQgbACEIGwAhCBsAIQgbACEIGwAhCBsAIQgbACEIGwAhCBsAIQgbACEIGwAhCBsAIQgbACEIGwA
+hCBsAIQgbACEIGwAhCBsAIQgbACEIGwAhCBsAIQgbACEIGwAhCBsAIQgbACEIGwAhCBsAIQgbACE
+IGwAhCBsAIQgbACEIGwAhCBsAIQgbACEIGwAhCBsAIQgbACEIGwAhCBsAIQgbACEIGwAhCBsAIRo
+OWzuc18AgCf/B7Q5o3KCwFvEAAAAAElFTkSuQmCC
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Each point $P$ in $T$ is expressed as a convex combination of the vertices $T_0, T_1, T_2$:</p>
+<p>$P=\lambda_0T_0+\lambda_1T_1+\lambda_2T_2$, $\lambda_i\geq 0$, $i=\overline{0,2}$, and $\lambda_0+\lambda_1+\lambda_2=1$</p>
+<p>The scalars $\lambda_i$ are the <em>barycentric coordinates</em> of  the point $P$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If  $(x_i, y_i)$ are the cartesian coordinates of the vertices $T_i$, $i=\overline{0,2}$, and $P(x, y)$
+is a point in the corresponding triangular region, then its baycentric coordinates are given by
+the  solution of the linear system:</p>
+$$\left[\begin{array}{ccc}
+x_0&x_1&x_2\\
+y_0&y_1&y_2\\
+1&1&1\end{array}\right]
+\left[\begin{array}{c}\lambda_0\\\lambda_1\\\lambda_2\end{array}\right]=
+\left[\begin{array}{c} x\\y\\1\end{array}\right]$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There is a one-to-one correspondence between the points of  the triangle $T$ and the  triangle $\Delta$, in 3D, of vertices
+$A_0(1,0,0)$, $A_1(0,1,0)$, $A_2(0,0,1)$. Namely, to each $P(x,y)\in T$ one associates its barycentric coordinates  $(\lambda_0, \lambda_1, \lambda_2)\in\Delta$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;Imag/triangle3D.png&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARQAAADoCAYAAAAuVxuvAAAABmJLR0QA/wD/AP+gvaeTAAAACXBI
+WXMAAAsTAAALEwEAmpwYAAAAHXRFWHRTb2Z0d2FyZQBHUEwgR2hvc3RzY3JpcHQgOS4xMJremEEA
+ABO8SURBVHic7d1LbB3XfQbwb3jvpSiRlBU9rFfgpHIcN/BGdYzUdRHPmcBtUARdtCkKJKsC3rSb
+oosWRVEXcwZBF0G966Yo0K66K1AkAdoUSOM5YyEF0kJOgaRB6ipKrIflWIaSVJJF0iSni+G5HF5e
+cu5jZs5jvh9AiJeiqLl8fDzn/z9zTpDneQ4iohr0TV8A1UcpBaXUvrcLISCEaP16qHsWTF8A1Ucp
+hSRJ9ryuHxO1gYHimTiOIaUcPg7DkKMTag2nPB7RwSGEQJZlCMNw7BSIqCkBi7J+UUohiiIAQJqm
+w0Apj1qImsIpj2fKYSKE4AiFWsVA8Ui5VqKUGk59iNrCKY9HDprWsG1MbWGgEFFtOOUhotowUByn
+1BXTl0A0xCmP44Lg95Hnf2P6MogAcITiNCm/BKAPpW6ZvhQiAAwUpyn1BoAcSr1j+lKIAHDK47Qg
++DCA3wLwFPL8D01fDhFHKK4q1pw8tvOoB6VuGLwaogIDxVFKvQ7g2M6jLU57yAqc8jgqCJYBPLvz
+8lEAPU57yDiOUBxUTHeOYnf3iW0AAyj1Y1OXRASAgeKk3elOH0AOYAtAAKV+YvS6iDjlcVAQ9AB8
+DMAlAE8BuICiQLuOPP8jk5dGHccRimOK6c4RAAPsnfLkABah1I8MXRkRA8U5SmUogqQcKJz2kB04
+5XFMECwAOAXgFwA8gWK6cwbFlGcRwAPk+R+bu0DqNI5QHFJMdxZQdHh6O6/npRcAWOK0h4xhoDhk
+d7qziCJQgp2/ybFbR+lBqTtmLpA6j1MehxTTnWUAFwGcBXAewOMATgJYRTFyWQBwH3n+J6YukzqM
+IxSnBChGJwPsjlByjJv2EJnAQHFIHEsUU54eDp7yAGn62waujoiB4hQp/wJp+lWE4fPYLcoCenQS
+hheQpr8JIS6au0jqNNZQHCYlkCQAv4JkC45QiKg2DBQiqg0DhYhqw0AhotowUIioNgwUIqoNA4WI
+asNAIaLaMFA8p5SCUsr0ZVBHMFA8F0URA4Vaw0DxWLEhE5AkidkLoc5goHisHCQ6XIiaxEDxlJ7m
+xHEMgKMUagcDxVNSSoRhuGdkwlEKNa1f/S7kGqUUsixDmqYAgDAMkWXZ2OKsDhkhBIQQ7V0keYkj
+FA/p4IiiCEEQIMsyANgXKkopJEkCIQSklAwUmhsDxUNJkiCOY+R5PnwJwxDA3mmPDhcdJFmWcVpE
+88nJWXGc56NfwTiO83Ff1jRNhztZp2l64N8RzYMjFI8EQTDs5gRBMHy7lBJRFA0fR1G0r1gbhiHi
+OOYiOJoLA8UjeWmKk5c2mpVS7vu7cjE2yzIIIRgmNDd2eTpMSjks2OqRDQuzNA+OUDps3MiFaB4M
+FCKqDQPFAyx9kC0YKB7g0hGyBU8OdFipM4w4ZrCQeRyhOKocHnFcHEnKqQ+ZxhGKo4QAdjq+yPPi
+McBQIbM4QnGQUkWY7NyeA6AYsWTZbrAQmcBAcZCURZiUw0MIIE2LUOEohUxhoDgoy8YXYIUogiaK
+GCpkBgPFMTpIDpraKFWECjs+ZAIDxTFJUnR1DqPrKQwVahsDxSE6IKqCQtdT2EqmtjFQHKJU9ehE
+K9dTiNrCQHGEbhVP0xbWoxO2kqktDBRHjGsVT0K3kllPoTYwUBwxaygIwaX51B4GigOqWsWT/HvW
+U6gNDBQHTNIqrsJ6CrWBgWK5SVvFk+DSfGoaA8Vy07SKq3BpPjWNgWKxWVrFk3xMLs2npjBQLDZr
+q3iSj8utDqgJDBSLNbV+hFsdUFMYKJaat1VchUvzqQkMFEvV0SquouspnPpQXRgoFqqzVTzJ/8Wl
++VQXBoqF6mwVV+HSfKoTA8UyTbSKq3BpPtWFgWKZplrFVbg0n+rAQLGMyXoGtzqgeTFQLNJ0q7gK
+6yk0LwaKRdpoFVfRUy6OUmgWDBRLtNkqrsKl+TQrBool2mwVV+HSfJoVA8UCJlrFVbjVAc2CgWIB
+U63iKtzqgKbFQLGAza1a1lNoGgwUw0y3iquwnkLTYKAYZkOruAq3OqBJMVAMsqlVXIVL82kSDBSD
+bGoVT4JL86kKA8UQG1vFVbg0n6owUAxxdbc0bnVAh2GgGJIk7k4dWE+hgzBQDLC9VTwJtpJpHAaK
+AS60iqvoegqX5lMZA6Vl+ofP1elOGbc6oFEMlJZJ6f7opIxL86mMgdIiF1vFVbg0n8oYKC1ytVVc
+hVsdkMZAaZHLreIq3OqAAAZKa3xoFVfhKYTEQGmJD63iKlyaTwyUFvjUKq7CpfndxkBpgW+t4ipc
+mt9dDJSG+dgqngS3OugmBkrDfG0VV2E9pZv6pi/Ad0lS/LbuIimLMIkiIM9NXw21gSOUBnWhVVyF
+9ZRuYaA0qAut4klwaX53MFAa0qVWcRUuze8OBkpDutYqrsKl+d3AQGlAV1vFVbjVgf8YKA3oaqu4
+Crc68B8DpQFJwjA5CE8h9BsDpWYunQZoClvJ/mKg1Iyt4slwab6fGCg1Yqt4clya7ycGSo30rfs0
+GW514B8GSk10q5ijk+mwnuIXBkpN2CqeHesp/mCg1ISt4tmxnuIPBkoN2CqeH08h9AMDpQZsFdeD
+S/Pdx0CZE1vF9eHSfPcxUObEVnG9uNWB2xgoc2CruBnc6sBdDJQ5sFXcHJ5C6CYGyhzYKm6Orqew
+lewWBsqM2CpuHrc6cA8DZUZsFbeDS/PdwkCZAVvF7eLSfHcwUGbAVnG7uDTfHTw5cEq6VdzV0wBN
+4SmEbuAIZUpsFZvDeor9GChTYqvYLC7NtxsDZQpsFZvHpfl2Y6BMga1iO3Bpvr0YKBNiq9gu3OrA
+TgyUCbFVbBdudWAnBsoEeFexnVhPsQ8DZQK2t4r1Go0uYj3FLgyUCdjYKpayuK4wLP6MouIau/iD
+xa0OLJLToeI4z237LIVhcU1xvPu2NN19O1C8nqYmrs4M/XXq0nO2UZDnXMh8mCAoWsW2/PYTYnfp
+/0GjJj0FyrLicRwX72vbKKtu+nPD72hzGCiHsOneEaV2h/aHhcnov1GqmBIBu3UgW8KxCUFQPM+u
+1pRMYw3lELa0inWwAUW4TTrS0OGR57s3MyZJ8UPnayGXWx0YZnbGZa80tWNOrq8jDOv7mLreoF/K
+tRgfsJ5iDqc8B9C/wU3+Fi93cpq4Dp+nRHoU5+MozGYMlAOYLsZOUnytk4+FXNZTDDA7QLKT6Vax
+bv+aGrKXp0Rh6O6UyJZpa5cwUMYwVVcoryWx4YfAh7UtNn0+u4BTnhGmWsX6/7V1iO7ylIj1lPYw
+UEaY+OazPUzKXCzkuvT5dZ7ZAZJdTMy5db2izrZwW1yaErGe0g6OUErabhW33clp0rgpkW2jFi7N
+bx4DpaTNVrFPYVJm+5SIreSGmR0g2aOtVrFtnZwmxfHeKVEcm3/OeurjaivcdgyUHW18kzWxjN4V
+Ni3359L85nDKg3Zaxew0FMZNiaRsf9rHekozGChovlXc9D05rjK9toX1lAaYHSCZ13Q7sSv1knmZ
+WO5f99c+DMM87nhxpvOBoguHTWCYTK/ttS111VPSNM0B5GEXC2QlnQ+UJgqEXerkNKmtLlEYzv9L
+JQzDHEAOIE87/EXvdKA00SrucienKWna7JSojq+ZHp0A6PS0p9OBUvfohGHSvNEpUV2jlnnqKXEc
+D0cmepTSVZ195vobqC76m5xh0p6617bMOk0tj0qqpj1pmno9JersJtV1bkBdXkbPFmR7yhtwx/Hu
+BtyzLvWf5RRCWXpnKSXCnW8qOfJBlFIQQiCKIiiPv0k6GSh1nlXs6z05Linv7h/Hxdtm3d1/2lMI
+lVLDECmuRQAAMr24ZuR9vWd6iGRCHa1iPWViJ8desxZyJ20l65rJ6BRG11TGFWcPersvOjlCmfes
+4vIy+mnOyaF2ladEQuydEh02WNDTYX0W0vj3kcNpTXnkUX49SRJIKbsxMtnRN30BbdND2VmnO7wn
+xz16Ob+Uu1MgHRYHLfdXqjp8hBDDKc6oWM+9usb0EKlt83QDxh1STm6aZG1LnVsdpGk6nAr5vES/
+UzcHznNXMYuv/iqfGw3svQNa39g579ddKbVv6jPaCfJBpwJl1ruKGSbdMe4OaP24Oz8ps+tMDUV/
+U+hDwyf9N7pewjDpBj1oGN23Bagu5lLHAkXvbzrp+7P42g3jNiYvB4mWZbv7DrtyJlHbOjPlmWYD
+aoaJX0a/5uUpzTijDRodHuNGLTbu7m9SJwJFF9Ymeaa6XsJvFDfUFRbTsmUrS9t0IlAmHZ2w+GqX
+0alIVViMm9K28UvB9FaWNvE+UCZtFTNM2jVp3UIzFRbT0qNhwL4zidrgfaBUtYrL9RIOWesz+kN0
+WFgA+6cirv8QHra2xWdeB0pV7YSjkmq+jiTa1pWA8TpQyvdwlJW/uF0Pk3lHEl2tFczDhXOgZ+Vt
+oOipzGhgdKklbKoDQpOx/RzoWXgbKONqJz6FybRhMToVYVjYZXRK5GqnyNtACYK9oxOXTu9j3aLb
+yp0iYLYpkZT/CyFWIMT5Oi+tkpeBMlqMtan4Om1YAP51QGgys0yJrlz5P0TRd7G1tQHgIcIwgFKf
+a/xaNS8DpbyQre0wYZGTmjDp4rmzZ7+D9fVNrK9vYmPjA2xvryEMB1DqkO3nauRdoJT3r9C7ctUV
+JqxbkA0OWjz35S9fw6uv3kavdwxbWz2srW1ibe0DbG5uALiHNH2h8SmQd4Gif2CzbLp6ybxhMe5j
+EDVptJC7tPR36PWW0e8vYzBYQa+3gs3NHh492sDa2ga2tx8gji9AysuNXZNXgVLeK7QcJixyku8+
+85nX8Prr38LCwjEEwTL6/RX0+6sYDI6j31/BBx8s4OHDDWxsPMKLLy5AKdHIdXgVKLpeUoV1C/KN
+lF9BknwdQXAMQXAMCwvLCIJl9HqrGAwew+Lih9DrrWBtLcDDh2v49KeXEMcXIcSFWq/Dm0DRYcK6
+BXVREAgAiwCOAFgGsIIgWMHCQvFnr/cY+v2TWFo6hSA4jvff38ajRw/w2mu/BCFOVX780T1x9Y7/
+el9c/diLHdtsagsTmfEWikAZ7Py5hDxfxtbWcQAr2NpaxebmCWxsfAiDwWksLZ3H0tJj+Oxnv48X
+XsiRpi9W/g9KKWRZhjAMh8eH6JDRj50eoZRrJgwT6jIhfgNZ9i0UgdLf+VOHy9Gdl2MATiAIzmBh
+4XEMBuewuHgBwBk899xRfPObz1b+P0EQAAB0bOhRig4UZ08OnOX0Pinl8BNC5BMp/xTAfQD3ANwF
+cAfALQA/BvAmgB8A+B6A/0Sev4atrX/G+vpXcP/+P2Ft7d9w9eo1LC+nUOpnh/4/+gCz8omI5cPO
+nByhzHpPjg6TOI69PBOFaJSUfw/gxpi/6SFJ/hK7dZczWFi4hMHgebzyyufxyiufOPBj6p+jMAz3
+jE4AuHdy4Kyn9+lT2/QLER1s9AD4sjAMhycgjnJqylMuvk47wFBK7TlvtksHWBNN66Azm4HdEw/H
+jfKdCZR5Ojm6Oi2lRBiGw7cR0eTKAVLu9JRZHyhKFTf7AbN3csqjE/1JSA5YKquUYn2FaISUEkmS
+QEqJKIoOHMFYHSijxddZ28I6PEaDYvRxeaFOEAQcxRDtKP8iPqypYW2g1LW72rhQGDft0dOicqgw
+UIgKQgjkeY48zw8dwVu5UrbO0/uklGMTNQgCZFkGpRSEEGPDg4FCNB3rRijzdHLK9CK2LMuGcz+t
+vLgtiiIudiOqiVWBUuc9OVLK4RBtdJhWfrt+GX89c14EUcdYESh1dHLmVa6blO+gJKLJGV96b9PR
+FuVbtPXt2EQ0OaOB4tLRFkRUzdiUR4giTOKYYULkCyNtY26IROSn2kcoSr0BIf4KQfAlRNG/4MqV
+e6W/Y5gQ+azWQFHq3xFFf4Ys+xmAM/j2t3N88Ytv4+WX73N3NaIOqLUoGwRPA/g1AE9jcfHDOHXq
+Izh9+qNYXl7Go0d9nDjRY72EyGO11VCkfBXAZQBPoNd7HCdOXMDp0x/Bysoyjhzp49ixbXzhC+so
+9rUkIh/VNkIJgk8B+HUEwdM4depjOH/+41hZWcXSUg9bW2t47723cffuHbz7bvXu2kTkpj6w/8wN
+KeWepepVi7yk/GsAzyEInsDJk0/i/PmPY3W1CJNHj36Od965ibt3b+Hhw3eRJEcQx7/c0NMhIpP2
+FGWTJBnuHZIkycR32ybJvwL4RayuPomzZ5/E8eOrOHIkwL17b+P69f/GrVvfx4MH15DnN5Hn9+t+
+DkRkiT6wdwSSJMnw9X07Wo8hxO8B+BUcPXoJFy9+AidPnkS/v4Xbt3+E27d/iPffv4U8vwvg5wDe
+A/BUQ0+FiEzbV0MRQgxPB6saoSh1BVH0DxgMXsKlS8/j7Nlz2Ni4j7fe+gHu3r2Gzc07KM4IeQ/F
+OSFvI8+/29RzISLD9nR5ykcNljcfOoiUX0O//wIuXXoe586dw09/egfXr38HDx5cA/ATALdRHDZ0
+C3H8BxDiU00+FyIybDhCUUohiiKkaQohxL4jB0cp9R946aUUn/zk5zEYPI6bN/8Ht29fxdbWdQA3
+AbyJMLwEIS5Dyj9v6/kQkUELAIY7WQP7tz0MgmDsHpJSvoFnnvkc1teBq1e/jhs3voqtrW8A+Bri
++Fnk+VUo9Y8ME6IOmWkdilLX8PLL72B7u4cbN76B7W2FOP4dCPEMhAibuE4icsBMgXLq1N9ie3sD
+ly//cCdIfrWJayMix0wdKEq9iSz7L8Tx7zZ1TUTkKONbQBKRP/4f3ZZ0YY5FHTEAAAAASUVORK5C
+YII=
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A B&eacute;zier triangular patch is defined by an integer $n>0$, and a triangular net of 3D points
+${\bf b}_{ijk}$, with $i, j, k\geq 0$  integers such that $i+j+k=n$. Its parameterization is:
+$S: (\lambda_0, \lambda_1, \lambda_2)\in \Delta \to \sum_{i+j+k=n}\frac{n!}{i!j!k!}\lambda_0^i\lambda_1^j\lambda_2^k {\bf b}_{ijk}$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since the sum of powers of $\lambda_0, \lambda_1, \lambda_2$ is $n$, the patch is said to have the total degree $n$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A point on  such a surface corresponding to the parameters $(\lambda_0, \lambda_1, \lambda_2)$ is computed recursively  by the <em>triangular de Casteljau algorithm</em>:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$\begin{array}{lll}
+{\bf b}_{ijk}^0&=&{\bf b}_{ijk}\\
+  {\bf b}_{ijk}^r&=&\lambda_0{\bf b}_{i+1\,j\,k}^{r-1}+\lambda_1{\bf b}_{i\, j+1\, k}^{r-1}
++\lambda_2{\bf b}_{i\,j\,k+1}^{r-1},\end{array}$$<p>
+where $r=\overline{1,n}$, and $i+j+k=n-r$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The last computed point,  ${\bf }b_{000}^n$, is a point on the surface.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Details on the triangular B&eacute;zier patches can be found in:</p>
+<ol>
+<li>G Farin, Curves and Surfaces for Computer Aided Geometric Design: A Practical Guide, Morgan Kaufmann, 2002.</li>
+<li>J. Gallier, Curves and Surfaces in Geometric Modeling: Theory and Algorithms, Morgan Kaufmann, 1999.
+A free electronic version can be downloaded <a href="http://www.cis.upenn.edu/~jean/gbooks/geom1.html">here</a>.    </li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The $(n+1)(n+2)/2$ control points, ${\bf b}_{ ijk}$, are placed in a triangular  structure  in the same way as
+ the points $(i/n, j/n, k/n)$   are located in the triangle $\Delta$ of vertices  $A_0(1,0,0)$, $A_1(0,1,0)$, $A_2(0,0,1)$.</p>
+<p>We illustrate here the case  $n=3$:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;Imag/ijk.png&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="data:image/png;base64,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
+l3EAAAAASUVORK5CYII=
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Hence to generate a B&eacute;zier triangular patch of total degree $3$ we start with a net of points:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$\begin{array}{lllllll}
+   & &  &          {\bf b}_{300} &        &  &  \\
+   & & & & & & \\
+   &  & {\bf b}_{210} &           & {\bf b}_{201} &  &  \\
+    & & & & & & \\
+   & {\bf b}_{120} &  &      {\bf b}_{111}    &  & {\bf b}_{102} &  \\
+    & & & & & & \\
+  {\bf b}_{030} &  & {\bf b}_{021}&          & {\bf b}_{012} &  & {\bf b}_{003}
+\end{array}$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The point indices in a triangular net or the indices that define points in  a triangular grid  of $\Delta$,  as above,
+ are returned by the following function::</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">indexes</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">print</span> <span class="n">indexes</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[(3, 0, 0), (2, 1, 0), (2, 0, 1), (1, 2, 0), (1, 1, 1), (1, 0, 2), (0, 3, 0), (0, 2, 1), (0, 1, 2), (0, 0, 3)]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In each step, $r$,  of the de Casteljau recursive formula, one computes  succesively  the convex combinations with the same coefficients, $\lambda_0, \lambda_1, \lambda_2$, of all  triplets of  nearby points
+in the net ${\bf b}^{r-1}_{ijk}$. The relative position of points in a such triplet is illustrated  in the next cell:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$\begin{array}{lll} & *& \\
+*& &*\end{array}$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the following we give the nets  of points resulted from each  step $r$.
+Starting with the initial control points:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\begin{array}{lllllll}
+   & &  &          {\bf b}^0_{300} &        &  &  \\
+   & & & & & & \\
+   &  & {\bf b}^0_{210} &           & {\bf b}^0_{201} &  &  \\
+    & & & & & & \\
+   & {\bf b}^0_{120} &  &      {\bf b}^0_{111}    &  & {\bf b}^0_{102} &  \\
+    & & & & & & \\
+  {\bf b}^0_{030} &  & {\bf b}^0_{021}&          & {\bf b}^0_{012} &  & {\bf b}^0_{003}
+\end{array}$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>the step $r=1$ computes the points:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\begin{array}{lllll}
+   &  &          {\bf b}^1_{300} &        &   \\
+    & & & &  \\
+     & {\bf b}^1_{210} &           & {\bf b}^1_{201} &    \\
+    & & & &  \\
+    {\bf b}^1_{120} &  &      {\bf b}^1_{111}    &  & {\bf b}^1_{102} &
+  \end{array}$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>while $r=2$, the points:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$\begin{array}{lll}
+     &          {\bf b}^2_{300} &          \\
+     & &  \\
+      {\bf b}^2_{210} &           & {\bf b}^2_{201}
+  \end{array}$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the last step, $r=3$,  we get  the point on the surface, ${\bf b}^3_{300}$, corresponding to the parameters $(\lambda_0, \lambda_1,\lambda_2)$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To implement the  de Castelajau algorithm we store the control points   in a list of points, concatenating the rows of the theoretical triangular net.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We define the function <code>deCasteljau_step</code>  that evaluates the convex combinations for one step of the de Casteljau formula. Its arguments are
+the degree <code>n</code>, the list of points, <code>b</code>, and the triplet of barycentric coordinates, <code>lam</code>:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">deCasteljau_step</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">lam</span><span class="p">):</span>
+
+    <span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">j</span><span class="o">=</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">nr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr</span><span class="p">):</span>
+            <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">lam</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">lam</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">lam</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">b</span><span class="p">[:</span><span class="o">-</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>de  Casteljau algorithm is implemented by the following recursive function:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">deCasteljau</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">lam</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">deCasteljau</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">deCasteljau_step</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">lam</span><span class="p">),</span> <span class="n">lam</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3>A discretization method of a triangular B&eacute;zier patch for plotting with Plotly</h3>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the following we present a method of discretization of a triangular B&eacute;zier patch, such that to get the data  that define a <code>plotly Surface</code>.</p>
+<p>The basic idea is to define a rectangular grid  that covers the triangle $\Delta$ of barycentric coordinates. The <code>deCasteljau</code> function, evaluated at each point $(\lambda_0, \lambda_1, \lambda_2)$ of this grid, defines  a triangular net of points on the surface. These points are then integrated into a meshgrid over the rectangle
+ <code>[min(X), max(X)], [min(Y), max(Y)]</code>, where <code>X</code> and <code>Y</code> are the lists  of x, respectively y-coordinates of the points on the surface.</p>
+<p>We start with   a triangular grid  of the triangle $\Delta$  constructed from indexes returned by the function <code>indexes,</code> called for an even integer $2m$.</p>
+<p>We illustrate our method for a low value of $m=4$ (see the next image).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;Imag/triangulation.png&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>On each side we have $2m+1$ points. Considering the points on the side $A_1A_2$ as reference points, we exclude from this grid the points that
+do not lie on perpendiculars at reference points, on $A_1A_2$. That is, we remove the points in the odd rows (parallel to $A_1A_2$).</p>
+<p>In fact we define a function <code>even_rows</code> that just generate only the points in the even rows of the above triangulation:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">even_row_pts</span><span class="p">(</span><span class="n">p</span><span class="p">):</span><span class="c">#p=2*m</span>
+
+    <span class="k">if</span> <span class="n">p</span><span class="o">%</span><span class="k">2</span>:
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;p must be an even integer&#39;</span><span class="p">)</span>
+    <span class="n">I</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="p">[(</span><span class="n">i</span><span class="o">/</span><span class="n">p</span><span class="p">,</span><span class="n">j</span><span class="o">/</span><span class="n">p</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">)</span><span class="o">/</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">I</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>and get a less dense grid:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;Imag/even_rows.png&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[11]:</div>
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="data:image/png;base64,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
++H+bwZjKRFc2rQAAAABJRU5ErkJggg==
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now to each two consecutive points placed on the same perpendicular to $A_1A_2$ one associates the mid point. Thus we construct
+additional points to the initial grid (the green points in the next image):</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">additional_weights</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+
+    <span class="n">wei</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+    <span class="n">new_weights</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">a</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="p">):</span>
+            <span class="n">new_weights</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">wei</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">+</span><span class="n">wei</span><span class="p">[</span><span class="n">a</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">new_weights</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The  function <code>grid</code> mixes the two  lists  of points:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">grid</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">new_weights</span><span class="p">):</span>
+
+    <span class="n">L</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">barycenters</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span>  <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">L</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">enD</span><span class="o">=</span><span class="n">k</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">L</span>
+        <span class="n">barycenters</span> <span class="o">+=</span><span class="n">weights</span><span class="p">[</span><span class="n">k</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span> <span class="n">enD</span><span class="p">]</span> <span class="o">+</span><span class="n">new_weights</span><span class="p">[</span><span class="n">k</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span> <span class="n">enD</span><span class="p">]</span>
+    <span class="n">barycenters</span><span class="o">+=</span><span class="n">weights</span><span class="p">[</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">barycenters</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>and the final grid of the triangle $A_0A_1A_2$ looks as follows:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;Imag/finalgrid.png&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[14]:</div>
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="data:image/png;base64,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
+D2pIzxm63VRjAAAAAElFTkSuQmCC
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To each point (triplet of weights) in this grid one associates a point on the B&eacute;zier patch.</p>
+<p>The following function discretizes a B&eacute;zier surface of degree <code>n</code>, control points <code>b</code>, and grid points <code>barycenters</code>, defined  above:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">surface_points</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">barycenters</span><span class="p">):</span>
+
+    <span class="n">points</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">barycenters</span><span class="p">:</span>
+        <span class="n">b_aux</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deCasteljau</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b_aux</span><span class="p">,</span> <span class="n">weight</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">points</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In order to plot the discretized patch we need to construct three arays of shape (2m+1,2m+1) (or a list of lists) that contain in an appropriate position
+the x, y, respectively z-coordinates of the computed points.</p>
+<p>The  values in a list of coordinates are   placed  succesively in the red positions, while outside   the triangle, similar to the triangle $A_1A_1A_2$, we store <code>None</code> values:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;Imag/gridData.png&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[16]:</div>
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The function <code>move_data_to_triangle</code> returns a list of lists. The values in a list of coordinates, <code>D</code>, are assigned correspondingly to  locations   placed within the formal triangle included in this list of lists:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">move_data_to_triangle</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">D</span><span class="p">):</span>
+
+    <span class="n">DD</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">pos</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">L1</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">L2</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">idx</span><span class="o">=</span><span class="p">[</span><span class="n">m</span><span class="o">-</span><span class="n">i</span><span class="o">+</span><span class="n">J</span> <span class="k">for</span> <span class="n">J</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">L1</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span><span class="o">=</span><span class="n">D</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+            <span class="n">pos</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">L2</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span><span class="o">=</span><span class="n">D</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+            <span class="n">pos</span><span class="o">+=</span><span class="mi">1</span>
+
+        <span class="n">DD</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L1</span><span class="p">)</span>
+        <span class="n">DD</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L2</span><span class="p">)</span>
+    <span class="n">K</span><span class="o">=-</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">DD</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">K</span><span class="p">:])</span>
+    <span class="k">return</span> <span class="n">DD</span>
+
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>set_data_for_Surface</code> includes all previous functions that prepare data for a plot:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">set_data_for_Surface</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">!=</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;incorect number of control points&#39;</span><span class="p">)</span>
+    <span class="n">weights</span><span class="o">=</span><span class="n">even_row_pts</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">new_weights</span><span class="o">=</span><span class="n">additional_weights</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+    <span class="n">grid_pts</span><span class="o">=</span><span class="n">grid</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">new_weights</span><span class="p">)</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="o">=</span><span class="n">surface_points</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">grid_pts</span><span class="p">)</span>
+    <span class="n">ZZ</span><span class="o">=</span><span class="n">move_data_to_triangle</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+    <span class="n">XX</span><span class="o">=</span> <span class="n">move_data_to_triangle</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+    <span class="n">YY</span><span class="o">=</span><span class="n">move_data_to_triangle</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">XX</span><span class="p">,</span> <span class="n">YY</span><span class="p">,</span> <span class="n">ZZ</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A  colorscale   derived from  the future <code>viridis</code> <a href="http://matplotlib.org/style_changes.html">colormap</a> is used to plot a <code>Surface</code>:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">viridisCS</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.0</span><span class="p">,</span> <span class="s">&#39;#440154&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.06274509803921569</span><span class="p">,</span> <span class="s">&#39;#48186a&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.12549019607843137</span><span class="p">,</span> <span class="s">&#39;#472d7b&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.18823529411764706</span><span class="p">,</span> <span class="s">&#39;#424086&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.25098039215686274</span><span class="p">,</span> <span class="s">&#39;#3b528b&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.3137254901960784</span><span class="p">,</span> <span class="s">&#39;#33638d&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.3764705882352941</span><span class="p">,</span> <span class="s">&#39;#2c728e&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.4392156862745098</span><span class="p">,</span> <span class="s">&#39;#26828e&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.5019607843137255</span><span class="p">,</span> <span class="s">&#39;#21918c&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.5647058823529412</span><span class="p">,</span> <span class="s">&#39;#1fa088&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.6274509803921569</span><span class="p">,</span> <span class="s">&#39;#28ae80&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.6901960784313725</span><span class="p">,</span> <span class="s">&#39;#3fbc73&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.7529411764705882</span><span class="p">,</span> <span class="s">&#39;#5ec962&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.8156862745098039</span><span class="p">,</span> <span class="s">&#39;#84d44b&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.8784313725490196</span><span class="p">,</span> <span class="s">&#39;#addc30&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.9411764705882353</span><span class="p">,</span> <span class="s">&#39;#d8e219&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="s">&#39;#fde725&#39;</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">py</span><span class="o">.</span><span class="n">sign_in</span><span class="p">(</span><span class="s">&#39;empet&#39;</span><span class="p">,</span> <span class="s">&#39;shzbvu3hbh&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>plot_Surface</code>  generates a triangular B&eacute;zier patch of degree <code>n</code> and control points <code>b</code>, over the triangular grid of $2m+1$ points on each side of the barycenter triangle $\Delta$:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">plot_Surface</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span>  <span class="n">plot_title</span><span class="p">):</span>
+
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span> <span class="n">set_data_for_Surface</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">Surface</span><span class="p">(</span>
+        <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">,</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+        <span class="n">colorscale</span><span class="o">=</span><span class="n">viridisCS</span>
+        <span class="p">)</span>
+
+    <span class="n">axis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">backgroundcolor</span><span class="o">=</span><span class="s">&quot;rgb(230, 230,230)&quot;</span><span class="p">,</span>
+    <span class="n">gridcolor</span><span class="o">=</span><span class="s">&quot;rgb(255, 255, 255)&quot;</span><span class="p">,</span>
+    <span class="n">zerolinecolor</span><span class="o">=</span><span class="s">&quot;rgb(255, 255, 255)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span>
+         <span class="n">title</span><span class="o">=</span><span class="n">plot_title</span><span class="p">,</span>
+         <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+         <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+         <span class="n">scene</span><span class="o">=</span><span class="n">Scene</span><span class="p">(</span>
+         <span class="n">xaxis</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span>
+         <span class="n">yaxis</span><span class="o">=</span><span class="n">YAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span>
+         <span class="n">zaxis</span><span class="o">=</span><span class="n">ZAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">trace</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fig</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally we generate our first B&eacute;zier patch of degree $n=4$, over a grid corresponding to  $m=80$:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">n</span><span class="o">=</span><span class="mi">4</span>
+<span class="n">b</span><span class="o">=</span><span class="p">[[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.25</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">2.25</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]]</span>
+<span class="n">m</span><span class="o">=</span><span class="mi">80</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span><span class="o">=</span><span class="n">plot_Surface</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span>  <span class="s">&#39;Bezier triangular patch of degree 4&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;Bezier-triangular-patch&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[24]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~empet/2143.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3>Plotting the control polyhedron of a triangular B&eacute;zier patch</h3>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A B&eacute;zier triangular patch of degree $n$ and control points ${\bf b}_{ijk}$ interpolates the corners of the triangular net formed by these points, that is, it interpolates
+the points ${\bf b}_{n00}, {\bf b}_{0n0}, {\bf b}_{00n}$, and it is included in the convex hull of all its control points.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To illustrate this property we define the  control polyhedron of the patch, i.e. the plotly trace
+we get connecting with lines the points in a triplet of nearby points.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The function <code>triangles</code> returns the lists of all triplets of nearby points in the triangular net ${\bf b}_{ijk}$, $i+j+k=n$:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">triangles</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+
+    <span class="n">triplets</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">j</span><span class="o">=</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">nr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr</span><span class="p">):</span>
+            <span class="n">triplets</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">triplets</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>and the function <code>triangle_lines</code> prepares  data for a <code>Scater3d</code> trace of the control polyhedron edges:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">triangle_lines</span><span class="p">(</span><span class="n">triplets</span><span class="p">):</span>
+
+    <span class="n">line_pts</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">tri</span> <span class="ow">in</span> <span class="n">triplets</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">tri</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">y</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">z</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">line_pts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Scatter3d</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">,</span>
+                              <span class="n">name</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                              <span class="n">mode</span><span class="o">=</span><span class="s">&#39;lines+markers&#39;</span><span class="p">,</span>
+                              <span class="n">line</span><span class="o">=</span><span class="n">Line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">&#39;#000762&#39;</span><span class="p">,</span>
+                                        <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+                              <span class="n">marker</span><span class="o">=</span><span class="n">Marker</span><span class="p">(</span>
+                              <span class="n">symbol</span><span class="o">=</span><span class="s">&#39;dot&#39;</span><span class="p">,</span>
+                              <span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                              <span class="n">color</span><span class="o">=</span><span class="s">&#39;#000762&#39;</span><span class="p">)</span>
+                                 <span class="p">)</span>
+                       <span class="p">)</span>
+    <span class="k">return</span> <span class="n">line_pts</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The function <code>plot_surface_polyedron</code> plots both a B&eacute;zier patch and its control polyedron:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">plot_surface_polyhedron</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">plot_title</span><span class="p">):</span>
+
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span> <span class="n">set_data_for_Surface</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">Surface</span><span class="p">(</span>
+        <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">,</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+        <span class="n">colorscale</span><span class="o">=</span><span class="n">viridisCS</span>
+        <span class="p">)</span>
+
+    <span class="n">triplets</span><span class="o">=</span><span class="n">triangles</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">lines_pts</span><span class="o">=</span><span class="n">triangle_lines</span><span class="p">(</span><span class="n">triplets</span><span class="p">)</span>
+
+    <span class="n">axis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">backgroundcolor</span><span class="o">=</span><span class="s">&quot;rgb(230, 230,230)&quot;</span><span class="p">,</span>
+    <span class="n">gridcolor</span><span class="o">=</span><span class="s">&quot;rgb(255, 255, 255)&quot;</span><span class="p">,</span>
+    <span class="n">zerolinecolor</span><span class="o">=</span><span class="s">&quot;rgb(255, 255, 255)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span>
+         <span class="n">title</span><span class="o">=</span><span class="n">plot_title</span><span class="p">,</span>
+         <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+         <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+         <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+         <span class="n">scene</span><span class="o">=</span><span class="n">Scene</span><span class="p">(</span>
+         <span class="n">xaxis</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span>
+         <span class="n">yaxis</span><span class="o">=</span><span class="n">YAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span>
+         <span class="n">zaxis</span><span class="o">=</span><span class="n">ZAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+         <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">trace</span><span class="p">]</span><span class="o">+</span><span class="n">lines_pts</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fig</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Data for a cubic (degree  $n=3$) triangular B&eacute;zier patch and its control polyhedron:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">n</span><span class="o">=</span><span class="mi">3</span>
+<span class="n">d</span><span class="o">=</span><span class="p">[[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>
+  <span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+  <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">]]</span>
+<span class="n">m</span><span class="o">=</span><span class="mi">80</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span><span class="o">=</span><span class="n">plot_surface_polyhedron</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="s">&#39;A cubic triangular Bezier patch and its control polyhedron&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;Bezier-cubic&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[29]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~empet/2141.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3>Triangular B&eacute;zier graphs and their contour plots</h3>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A degree $n$ triangular B&eacute;zier patch is the graph of a function defined on a planar triangular region of vertices
+$T_0, T_1, T_2$,  if its control points have the coordinates
+${\bf b}_{ijk}=(x_{ijk},y_{ijk}, z_{ijk})$, $i+j+k=n$, where $(x_{ijk},y_{ijk})$ are points in the triangular region $T$, of barycentric coordinates $(i/n, j/n, k/n)$, and $z_{ijk}$ are real values set by the user.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Initial data for defining such a graph are:</p>
+<ul>
+<li>the degree, $n$</li>
+<li>the triangle $T$ given as a list of three numpy arrays of shape (2,)</li>
+<li>a list, <code>b_z</code>, of $(n+1)(n+2)/2$ real values representing  $z$-coordinates of the control points </li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The function:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[60]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">cartesian_coords</span><span class="o">=</span><span class="k">lambda</span> <span class="n">w</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">w</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>calculates the cartesian coordinates of a point having barycentic coordinates $(w_0, w_1, w_2)$, with respect to a triangle $T$.</p>
+<p>The control points of the graph are returned by the following function:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[64]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">control_points</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">b_z</span><span class="p">):</span>
+    <span class="n">ind</span><span class="o">=</span><span class="n">indexes</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">weights</span><span class="o">=</span><span class="p">[(</span><span class="n">i</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="n">j</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="o">/</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ind</span><span class="p">]</span>
+    <span class="n">b_xy</span><span class="o">=</span><span class="p">[</span><span class="n">cartesian_coords</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">T</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">weights</span><span class="p">]</span>
+    <span class="n">b_xy</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">b_xy</span><span class="p">)</span>
+    <span class="n">len_bxy</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">b_xy</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">=</span><span class="p">[</span><span class="n">b_xy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="n">b_z</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_bxy</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">b</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let us define a B&eacute;zier triangular graph of degree $n=4$, over the triangle $T$:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[65]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">n</span><span class="o">=</span><span class="mi">4</span>
+<span class="n">m</span><span class="o">=</span><span class="mi">80</span>
+<span class="n">nr_ctrl_pts</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">T</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$z$-coordinates of the control points are set arbitrary in the interval $[1,5]$:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[66]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">b_z</span><span class="o">=</span><span class="mi">1</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">nr_ctrl_pts</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then the control points of our graph are:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[67]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">b</span><span class="o">=</span><span class="n">control_points</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">b_z</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[69]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span><span class="o">=</span><span class="n">plot_Surface</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span>  <span class="s">&#39;Graph as a triangular Bezier patch&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;triangular-Bezier-graph4&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[69]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~empet/2281.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3>Contour plot of a triangular B&eacute;zier graph</h3>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Having a method to generate a triangular B&eacute;zier graph, we  can generate its contour plot with Plotly.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We set the data  for a plotly <code>Contour</code>, namely a 2D array or a list of lists for z-values on the surface, and two 1D lists for x, respectively y-coordinates of the grid points in the triangle $T$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[70]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">n</span><span class="o">=</span><span class="mi">4</span>
+<span class="n">m</span><span class="o">=</span><span class="mi">80</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[71]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">weights</span><span class="o">=</span><span class="n">even_row_pts</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="p">)</span>
+<span class="n">new_weights</span><span class="o">=</span><span class="n">additional_weights</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+<span class="n">grid_pts</span><span class="o">=</span><span class="n">grid</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">new_weights</span><span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="o">=</span><span class="n">surface_points</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">grid_pts</span><span class="p">)</span>
+<span class="n">ZZ</span><span class="o">=</span><span class="n">move_data_to_triangle</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">Z</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Get the x-list for <code>Contour</code>:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[73]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">K</span><span class="o">=-</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">XX</span><span class="o">=</span> <span class="p">[</span><span class="n">cartesian_coords</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">T</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">grid_pts</span><span class="p">[</span><span class="n">K</span><span class="p">:]]</span>
+<span class="n">x</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">XX</span><span class="p">)))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>and the y-list:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[74]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">I</span><span class="o">=</span><span class="p">[</span><span class="n">k</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">)]</span>
+<span class="n">Lam</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="n">Lam</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="n">I</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">+</span><span class="n">k</span><span class="p">])</span>
+    <span class="n">Lam</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_weights</span><span class="p">[</span><span class="n">I</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">+</span><span class="n">k</span><span class="p">])</span>
+<span class="n">Lam</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="p">)</span>
+<span class="n">YY</span><span class="o">=</span><span class="p">[</span><span class="n">cartesian_coords</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">T</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span>  <span class="n">Lam</span><span class="p">]</span>
+<span class="n">y</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">YY</span><span class="p">)))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Plot the triangular contour:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[76]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">title</span><span class="o">=</span><span class="s">&quot;Contourplot of a triangular Bezier function&quot;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">([</span>
+    <span class="n">Contour</span><span class="p">(</span>
+        <span class="n">z</span><span class="o">=</span><span class="n">ZZ</span><span class="p">,</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+        <span class="n">autocontour</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">zauto</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">contours</span><span class="o">=</span><span class="n">Contours</span><span class="p">(</span>
+            <span class="n">showlines</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">start</span> <span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">Z</span><span class="p">),</span>
+            <span class="n">end</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">Z</span><span class="p">),</span>
+            <span class="n">size</span><span class="o">=</span><span class="mf">0.1</span>
+        <span class="p">),</span>
+        <span class="n">colorscale</span><span class="o">=</span><span class="n">viridisCS</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="p">])</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span> <span class="n">title</span><span class="p">,</span>
+    <span class="n">font</span><span class="o">=</span> <span class="n">Font</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s">&#39;Georgia, serif&#39;</span><span class="p">,</span>  <span class="n">color</span><span class="o">=</span><span class="s">&#39;#635F5D&#39;</span><span class="p">),</span>
+    <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">autosize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span>
+        <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)],</span>
+        <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="n">YAxis</span><span class="p">(</span>
+        <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">)],</span>
+        <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">margin</span><span class="o">=</span><span class="n">Margin</span><span class="p">(</span>
+        <span class="n">l</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+        <span class="n">r</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+        <span class="n">b</span><span class="o">=</span><span class="mi">85</span><span class="p">,</span>
+        <span class="n">t</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">autoexpand</span><span class="o">=</span><span class="bp">True</span>
+    <span class="p">),</span>
+    <span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;Contourplot-triangular-Bezier-graph4&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[76]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~empet/2283.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Another pair graph-contour plot can be seen here:</p>
+<ul>
+<li>graph: <a href="https://plot.ly/~empet/2266/graph-as-a-triangular-bezier-patch/">https://plot.ly/~empet/2266/graph-as-a-triangular-bezier-patch/</a>    </li>
+<li>contour plot: <a href="https://plot.ly/~empet/2268/contourplot-of-a-triangular-bezier-function/">https://plot.ly/~empet/2268/contourplot-of-a-triangular-bezier-function/</a>   </li>
+</ul>
+
+</div>
+</div>
+</div>{% endraw %}

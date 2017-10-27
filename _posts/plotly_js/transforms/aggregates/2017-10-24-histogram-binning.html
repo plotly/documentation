@@ -1,0 +1,78 @@
+---
+name: Histogram Binning
+plot_url: https://codepen.io/plotly/embed/aLgqGV/?height=500&theme-id=15263&default-tab=result
+language: plotly_js
+suite: aggregates
+order: 4
+sitemap: false
+arrangement: horizontal
+---
+
+Plotly.d3.csv("https://plot.ly/~public.health/17.csv", function(err, rows){
+      function unpack(rows, key) {
+          return rows.map(function(row) { return row[key]; });
+      }
+
+trace1 = {
+  x: unpack(rows, 'date'),
+  autobinx: false,
+  autobiny: true,
+  marker: {color: 'rgb(68, 68, 68)'},
+  name: 'date',
+  type: 'histogram',
+  xbins: {
+    end: '2016-12-31 12:00',
+    size: 'M1',
+    start: '1983-12-31 12:00'
+  }
+};
+
+data = [trace1];
+
+layout = {
+  paper_bgcolor: 'rgb(240, 240, 240)',
+  plot_bgcolor: 'rgb(240, 240, 240)',
+  title: '',
+  xaxis: {
+    autorange: true,
+    range: ['1984-07-01 06:00', '2016-07-30 18:00'],
+    title: '',
+    type: 'date'
+  },
+  yaxis: {
+    autorange: true,
+    range: [0, 92.6315789474],
+    title: 'Shootings incidents',
+    type: 'linear'
+  },
+  updatemenus: [{
+        x: 0.1,
+        y: 1.15,
+        xref: 'paper',
+        yref: 'paper',
+        yanchor: 'top',
+        active: 0,
+        showactive: true,
+        buttons: [{
+            args: ['xbins.size', 'M1'],
+            label: 'Month',
+            method: 'restyle',
+        }, {
+            args: ['xbins.size', 'M3'],
+            label: 'Quater',
+            method: 'restyle',
+        }, {
+            args: ['xbins.size', 'M6'],
+            label: 'Half Year',
+            method: 'restyle',
+        }, {
+            args: ['xbins.size', 'M12'],
+            label: 'Year',
+            method: 'restyle',
+        }]
+  }]
+};
+
+Plotly.plot('graph', data, layout);
+
+});

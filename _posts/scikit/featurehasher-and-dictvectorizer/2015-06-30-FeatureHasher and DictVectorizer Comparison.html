@@ -1,0 +1,363 @@
+---
+permalink: scikit-learn/hashing-vs-dict-vectorizer/
+description:  
+name: FeatureHasher and DictVectorizer Comparison | plotly
+has_thumbnail: true
+thumbnail: thumbnail/your-tutorial-chart.jpg
+layout: user-guide
+name: FeatureHasher and DictVectorizer Comparison
+language: scikit-learn
+title: FeatureHasher and DictVectorizer Comparison | plotly
+display_as: text_documents
+has_thumbnail: false
+page_type: example_index
+order: 1
+ipynb: ~Diksha_Gabha/3573
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Compares FeatureHasher and DictVectorizer by using both to vectorize text documents.</p>
+<p>The example demonstrates syntax and speed only; it doesn’t actually do anything useful with the extracted vectors. See the example scripts {document_classification_20newsgroups,clustering}.py for actual learning on text documents.</p>
+<p>A discrepancy between the number of terms reported for DictVectorizer and for FeatureHasher is to be expected due to hash collisions.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;0.18.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This tutorial imports <a href="http://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_20newsgroups.html#sklearn.datasets.fetch_20newsgroups">fetch_20newsgroups</a>, <a href="http://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.DictVectorizer.html#sklearn.feature_extraction.DictVectorizer">DictVectorizer</a> and <a href="http://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.FeatureHasher.html#sklearn.feature_extraction.FeatureHasher">FeatureHasher</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">fetch_20newsgroups</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_extraction</span> <span class="kn">import</span> <span class="n">DictVectorizer</span><span class="p">,</span> <span class="n">FeatureHasher</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">n_nonzero_columns</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the number of non-zero columns in a CSR matrix X.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">1</span><span class="p">]))</span>
+
+
+<span class="k">def</span> <span class="nf">tokens</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extract tokens from doc.</span>
+
+<span class="sd">    This uses a simple regex to break strings into tokens. For a more</span>
+<span class="sd">    principled approach, see CountVectorizer or TfidfVectorizer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">r&quot;\w+&quot;</span><span class="p">,</span> <span class="n">doc</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">token_freqs</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extract a dict mapping tokens from doc to their frequencies.&quot;&quot;&quot;</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+        <span class="n">freq</span><span class="p">[</span><span class="n">tok</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">freq</span>
+
+
+<span class="n">categories</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;alt.atheism&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;comp.graphics&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;comp.sys.ibm.pc.hardware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;misc.forsale&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rec.autos&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sci.space&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;talk.religion.misc&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To use a larger set (11k+ documents) set <code>categories = None</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The default number of features is 2**18.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n_features</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">18</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Loading 20 newsgroups training data&quot;</span><span class="p">)</span>
+<span class="n">raw_data</span> <span class="o">=</span> <span class="n">fetch_20newsgroups</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">categories</span><span class="o">=</span><span class="n">categories</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+<span class="n">data_size_mb</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">raw_data</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e6</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> documents - </span><span class="si">%0.3f</span><span class="s2">MB&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">raw_data</span><span class="p">),</span> <span class="n">data_size_mb</span><span class="p">))</span>
+<span class="k">print</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Loading 20 newsgroups training data
+3803 documents - 6.245MB
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;DictVectorizer&quot;</span><span class="p">)</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="n">vectorizer</span> <span class="o">=</span> <span class="n">DictVectorizer</span><span class="p">()</span>
+<span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">token_freqs</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">raw_data</span><span class="p">)</span>
+<span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%f</span><span class="s2">s at </span><span class="si">%0.3f</span><span class="s2">MB/s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="n">data_size_mb</span> <span class="o">/</span> <span class="n">duration</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%d</span><span class="s2"> unique terms&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">vectorizer</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">()))</span>
+<span class="k">print</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>DictVectorizer
+done in 1.647244s at 3.791MB/s
+Found 47918 unique terms
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;FeatureHasher on frequency dicts&quot;</span><span class="p">)</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="n">hasher</span> <span class="o">=</span> <span class="n">FeatureHasher</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">hasher</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">token_freqs</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">raw_data</span><span class="p">)</span>
+<span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%f</span><span class="s2">s at </span><span class="si">%0.3f</span><span class="s2">MB/s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="n">data_size_mb</span> <span class="o">/</span> <span class="n">duration</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%d</span><span class="s2"> unique terms&quot;</span> <span class="o">%</span> <span class="n">n_nonzero_columns</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+<span class="k">print</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>FeatureHasher on frequency dicts
+done in 1.319619s at 4.732MB/s
+Found 43865 unique terms
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;FeatureHasher on raw tokens&quot;</span><span class="p">)</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="n">hasher</span> <span class="o">=</span> <span class="n">FeatureHasher</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">hasher</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tokens</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">raw_data</span><span class="p">)</span>
+<span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%f</span><span class="s2">s at </span><span class="si">%0.3f</span><span class="s2">MB/s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="n">data_size_mb</span> <span class="o">/</span> <span class="n">duration</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%d</span><span class="s2"> unique terms&quot;</span> <span class="o">%</span> <span class="n">n_nonzero_columns</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>FeatureHasher on raw tokens
+done in 1.444398s at 4.323MB/s
+Found 43865 unique terms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Author:</p>
+
+<pre><code>    Lars Buitinck
+
+</code></pre>
+<p>License:</p>
+
+<pre><code>    BSD 3 clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}

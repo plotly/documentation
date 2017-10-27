@@ -1,0 +1,437 @@
+---
+title: Manufacturing SPC Dashboard
+name: Manufacturing SPC Dashboard
+description: Manufacturing dashboard of statistical process control charts and real-time manufacturing sensor data.
+permalink: dashboards/manufacturing-statistical-process-control/
+redirect_from: dashboards/manufacturing-spc/
+industry: Manufacturing SPC
+language: dashboard
+background_color: '#fdbf6f'
+foreground_color: '#444'
+---
+<!DOCTYPE html>
+<html>
+<head>
+
+{% include seo.html %}
+
+{% include dashboard-head.html %}
+
+{% include dashboard-industries-nav.html %}
+
+<div class="container-fluid">
+
+  <h2>Dashboard chart of Realtime SPC Control Chart</h2>
+
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          <strong>Manufacturing line 1</strong> Realtime SPC Control Chart
+        </div>
+        <div>
+          <iframe width="100%" height="480px" frameborder="0" scrolling="no" id="iplot" src="https://plot.ly/~jackp/12028.embed?autoscale=true"></iframe>
+        </div>
+        <div class="chart-notes">
+          Streaming live data in <a href="https://plot.ly/python/streaming-line-tutorial/">Python</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Dashboard charts of Process Deviations by Manufacturing Line</h2>
+
+  <div class="row">
+    <div class="col-sm-6 col-md-4">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          <strong>Manufacturing line 1</strong> Process deviation vs Operator
+        </div>
+        <div id="grid-1-1"></div>
+        <div class="chart-notes">
+          Click the heatmap to plot process deviation as a histogram
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-4">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          <strong>Manufacturing line 2</strong> Process deviation vs Operator
+        </div>
+        <div id="grid-2-1"></div>
+        <div class="chart-notes">
+           Click the heatmap to plot process deviation as a histogram
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-4">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          <strong>Manufacturing line 3</strong> Process deviation vs Operator
+        </div>
+        <div id="grid-3-1"></div>
+        <div class="chart-notes">
+          Click the heatmap to plot process deviation as a histogram
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- end of three -->
+  <div class="row">
+    <div class="col-sm-6 col-md-4">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          <strong>Manufacturing line 1</strong> Histogram of process deviation per Operator
+        </div>
+        <div id="grid-1-2"></div>
+        <div class="chart-notes">
+           Click the heatmap to plot process deviation as a histogram
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-4">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          <strong>Manufacturing line 2</strong> Histogram of process deviation per Operator
+        </div>
+        <div id="grid-2-2"></div>
+        <div class="chart-notes">
+           Click the heatmap to plot process deviation as a histogram
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-4">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+           <strong>Manufacturing line 3</strong> Histogram of process deviation per Operator
+        </div>
+        <div id="grid-3-2"></div>
+        <div class="chart-notes">
+           Click the heatmap to plot process deviation as a histogram
+        </div>
+      </div>
+    </div>
+    <!-- end of three -->
+  </div>
+
+  </div>
+
+{% include dashboard-industries-footer.html %}
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<script>
+
+var normalDistribution = Plotly.d3.random.normal();
+// Time between measurements in minutes
+var INTERVAL = 30;
+var NUM_MEASUREMENTS = 100;
+var NUM_OPERATIONS = 10;
+var SCL = [[0.0, 'rgb(34.0, 34.0, 34.0)'],
+ [0.2, 'rgb(77.799999999999997, 65.400000000000006, 49.399999999999999)'],
+ [0.4, 'rgb(121.60000000000001, 96.800000000000011, 64.800000000000011)'],
+ [0.6, 'rgb(165.39999999999998, 128.20000000000002, 80.200000000000003)'],
+ [0.8, 'rgb(209.20000000000002, 159.60000000000002, 95.600000000000009)'],
+ [1.0, 'rgb(253.0, 191.0, 111.0)']];
+
+Date.prototype.toMysqlFormat = function() {
+  var twoDigits = function(d) {
+     if(0 <= d && d < 10) return "0" + d.toString();
+     if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+     return d.toString();
+  }
+   return this.getUTCFullYear() + "-" + twoDigits(1 + this.getUTCMonth()) + "-" +         twoDigits(this.getUTCDate()) + " " + twoDigits(this.getUTCHours()) + ":" +
+    twoDigits(this.getUTCMinutes()) + ":" + twoDigits(this.getUTCSeconds());
+};
+
+var makeHeatmap = function(myDivId){
+  var date = new Date(), dateArray=[], x=[], z=[];
+  var operationIds = [];
+
+  // Create Y date values
+  for(var i=0;i<NUM_MEASUREMENTS;i++){
+      date.setMinutes(date.getMinutes() + INTERVAL);
+      dateArray.push( date.toMysqlFormat() );
+  }
+
+  // Create X operation values
+  for( var j=0; j<NUM_OPERATIONS; j++ ){
+    operationIds.push( Math.floor(Math.random()*8999+1000).toString() );
+  }
+
+  // Create Z heatmap values
+  for(var i=0;i<NUM_MEASUREMENTS;i++){
+    var newRow = [];
+    for( var j=0; j<NUM_OPERATIONS; j++ ){
+      newRow.push( normalDistribution() );
+    }
+    z.push( newRow );
+  }
+
+  var data = [ {
+     x: operationIds,
+     y: dateArray,
+     z: z,
+     type: "heatmap",
+     colorscale: SCL
+    } ];
+
+  var layout = {
+      xaxis:{ type: 'category', ticks: '' }
+  }
+
+  Plotly.plot(myDivId, data, layout);
+}
+
+var makeHistogram = function(histogramDiv, heatmapDiv, slice){
+
+  var heatmapSlice = [];
+  var z = heatmapDiv['data'][0]['z'];
+
+  Plotly.plot(histogramDiv,[]);
+
+  for( var i=0; i<z.length; i++ ){
+    heatmapSlice.push( z[i][slice] );
+  }
+
+  var data = [ {
+    x: heatmapSlice,
+    type: "histogram",
+    marker: { color: '#fdbf6f' },
+    nbinsx:40,
+  } ];
+
+  var histogramTitle = heatmapDiv['data'][0]['x'][slice];
+  var layout = { title: 'Operator ID: ' + histogramTitle };
+
+  if(histogramDiv['data'] === undefined || histogramDiv['data'].length == 0){
+    Plotly.plot(histogramDiv, data, layout);
+  } else{
+    Plotly.deleteTraces(histogramDiv, 0);
+    Plotly.addTraces(histogramDiv, data );
+    Plotly.relayout(histogramDiv, {title: 'Operator ID: ' + histogramTitle });
+  }
+}
+
+for( var i=1; i<=3; i++ ){
+  makeHeatmap('grid-'+i+'-1');
+  makeHistogram(
+    document.getElementById('grid-'+i+'-2'),
+    document.getElementById('grid-'+i+'-1'), 0);
+
+  // This makes the plots respond to
+  // window size changes
+  $(window).resize(function() {
+     setTimeout(function() {
+        Plotly.Plots.resize(document.getElementById('grid-'+i+'-1'));
+        Plotly.Plots.resize(document.getElementById('grid-'+i+'-2'));
+     }, 500);
+  });
+
+  $('#'+'grid-'+i+'-1').bind('plotly_click',function(event,data){
+    console.log('Heatmap click event',event);
+    console.log('Heatmap click data',data);
+    var slice = data['points'][0]['pointNumber'][1];
+    var heatmapDiv = event.currentTarget;
+    var histogramDivId = heatmapDiv.id.slice(0,-1)+'2';
+    var histogramDiv = document.getElementById( histogramDivId );
+    console.log(histogramDiv, heatmapDiv, slice);
+    makeHistogram(histogramDiv, heatmapDiv, slice);
+  });
+}
+
+function changeType(type){
+  // https://plot.ly/javascript-graphing-library/plotlyjs-function-reference/
+
+  for( var i=1; i<=3; i++ ){
+    var heatmapId = 'grid-'+i+'-1';
+    var heatmapDiv = document.getElementById(heatmapId);
+    Plotly.restyle( heatmapDiv,
+          {type:type, contours:{showlines:false} } );
+  }
+}
+
+/******************************/
+/* Fluid layout for Plotly.js */
+/******************************/
+
+window.onresize = function(event) {
+    console.log( 'window resize' );
+    for( var i=1; i<=3; i++ ){
+      Plotly.Plots.resize('grid-'+i+'-2');
+      Plotly.Plots.resize('grid-'+i+'-1');
+    }
+};
+
+/*****************/
+/* Control chart */
+/*****************/
+
+var INTERVAL = 400;
+var MAX_POINTS = 100;
+var X, Y, dX, dY;
+var lastUpdate = 0;
+var UPPER_THRESHOLD = 12;
+var LOWER_THRESHOLD = -12;
+var violations_X = [];
+var violations_Y = [];
+
+var plot = document.getElementById('iplot').contentWindow;
+
+function startTimer() {
+  setInterval(addData, INTERVAL);
+}
+
+function addData() {
+  // get current x, y data
+  plot.postMessage({
+      task: 'getAttributes',
+      attributes: [
+        'data[0].x', 'data[0].y',
+      ]
+    },
+    'https://plot.ly/');
+}
+
+window.addEventListener('message', function(e) {
+    var message = e.data;
+
+    if (message.pong) {
+      console.log('Initial pong, \
+         frame is ready to receive');
+      clearInterval(pinger);
+      clearInterval();
+
+      plot.postMessage({
+        task: 'relayout',
+        hovermode: 'closest',
+        update: {
+          showlegend: false,
+          shapes:[{
+            type: 'line',
+            xref: 'paper',
+            yref: 'y',
+            x0:0,
+            x1:1,
+            y0:UPPER_THRESHOLD,
+            y1:UPPER_THRESHOLD,
+            line:{ color: 'rgb(127,127,127)' }
+          },{
+            type: 'line',
+            xref: 'paper',
+            yref: 'y',
+            x0:0,
+            x1:1,
+            y0:LOWER_THRESHOLD,
+            y1:LOWER_THRESHOLD,
+            line:{ color: 'rgb(127,127,127)' }
+          }]
+        },
+      }, 'https://plot.ly');
+
+      startTimer();
+      return;
+    }
+
+    X = message.response['data[0].x'];
+    Y = message.response['data[0].y'];
+
+    dt = new Date();
+
+    if( dt.getTime()-lastUpdate < INTERVAL ){
+      console.log('Too early.', dt.getTime()-lastUpdate);
+      return;
+    }
+
+    console.log('Time (ms) since last point: ', dt-lastUpdate)
+    lastUpdate = dt.getTime();
+
+    dt = dt.toISOString()
+      .slice(0, 23)
+      .replace('T', ' ');
+
+    if( X === undefined ){
+      var seconds = 5;
+      var dt0 = new Date(
+        (new Date).getTime() - seconds*INTERVAL );
+      dt0 = dt0.toISOString().slice(0, 23).replace('T', ' ');
+      X = [ dt0 ];
+      Y = [ normal()*10 ];
+    }
+    else{
+      // append new data
+      dY = normal()*10;
+      X.push( dt );
+      Y.push( dY );
+    }
+
+    if( X.length > MAX_POINTS ){
+      X.shift(); Y.shift();
+    }
+
+    plot.postMessage({
+      task: 'restyle',
+      indices:[0],
+      update: {
+        x: [X],
+        y: [Y],
+        marker: { color: 'rgb(255, 133, 27)' },
+        line: { width: 0.5 },
+        mode:"lines+markers",
+      },
+    }, 'https://plot.ly');
+
+    if( dY <= LOWER_THRESHOLD || dY >= UPPER_THRESHOLD ){
+
+      violations_X.push( dt );
+      violations_Y.push( dY );
+
+      while(true){
+        if( violations_X[0] < X[0] ){
+          violations_X.shift();
+          violations_Y.shift();
+        }
+        else{
+          break;
+        }
+      }
+
+      if( violations_X.length == 1 ){
+          plot.postMessage({
+            task: 'addTraces',
+            indices:[1],
+            traces: [{
+              x: [violations_X],
+              y: [violations_Y],
+              marker: { color: 'rgba(255, 0, 0, 0.5)', size: 18 },
+              name: 'violation',
+              mode:"markers",
+            }]
+          }, 'https://plot.ly');
+          return;
+      }
+
+      plot.postMessage({
+        task: 'restyle',
+        indices:[1],
+        update: {
+          x: [violations_X],
+          y: [violations_Y],
+          marker: { color: 'rgba(255, 0, 0, 0.5)', size: 18 },
+          name: 'violation',
+          mode:"markers",
+        }
+      }, 'https://plot.ly');
+    }
+});
+
+var pinger = setInterval(function() {
+  plot.postMessage({
+    task: 'ping'
+  }, 'https://plot.ly')
+}, 100);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,191 @@
+---
+permalink: scikit-learn/missing-values/
+description: Imputing missing values before building an estimator.
+name: Imputing Missing Values | plotly
+has_thumbnail: true
+thumbnail: thumbnail/scikit-default.jpg
+layout: user-guide
+name: Imputing Missing Values 
+language: scikit-learn
+title: Imputing Missing Values | plotly
+display_as: general_examples
+has_thumbnail: true
+page_type: example_index
+order: 6
+ipynb: ~Diksha_Gabha/2660
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This example shows that imputing the missing values can give better results than discarding the samples containing any missing value. Imputing does not always improve the predictions, so please check via cross-validation. Sometimes dropping rows or using marker values is more effective.</p>
+<p>Missing values can be replaced by the mean, the median or the most frequent value using the <code>strategy</code> hyper-parameter. The median is a more robust estimator for data with high magnitude variables which could dominate results (otherwise known as a ‘long tail’).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&apos;0.18&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_boston</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">Imputer</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_val_score</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">load_boston</span><span class="p">()</span>
+<span class="n">X_full</span><span class="p">,</span> <span class="n">y_full</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">target</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="n">X_full</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">n_features</span> <span class="o">=</span> <span class="n">X_full</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># Estimate the score on the entire dataset, with no missing values</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_full</span><span class="p">,</span> <span class="n">y_full</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Score with the entire dataset = </span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">score</span><span class="p">)</span>
+
+<span class="c1"># Add missing values in 75% of the lines</span>
+<span class="n">missing_rate</span> <span class="o">=</span> <span class="mf">0.75</span>
+<span class="n">n_missing_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">*</span> <span class="n">missing_rate</span><span class="p">)</span>
+<span class="n">missing_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">-</span> <span class="n">n_missing_samples</span><span class="p">,</span>
+                                      <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span>
+                             <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_missing_samples</span><span class="p">,</span>
+                                     <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)))</span>
+<span class="n">rng</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">missing_samples</span><span class="p">)</span>
+<span class="n">missing_features</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">n_missing_samples</span><span class="p">)</span>
+
+<span class="c1"># Estimate the score without the lines containing missing values</span>
+<span class="n">X_filtered</span> <span class="o">=</span> <span class="n">X_full</span><span class="p">[</span><span class="o">~</span><span class="n">missing_samples</span><span class="p">,</span> <span class="p">:]</span>
+<span class="n">y_filtered</span> <span class="o">=</span> <span class="n">y_full</span><span class="p">[</span><span class="o">~</span><span class="n">missing_samples</span><span class="p">]</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_filtered</span><span class="p">,</span> <span class="n">y_filtered</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Score without the samples containing missing values = </span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">score</span><span class="p">)</span>
+
+<span class="c1"># Estimate the score after imputation of the missing values</span>
+<span class="n">X_missing</span> <span class="o">=</span> <span class="n">X_full</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">X_missing</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">missing_samples</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">missing_features</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">y_missing</span> <span class="o">=</span> <span class="n">y_full</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s2">&quot;imputer&quot;</span><span class="p">,</span> <span class="n">Imputer</span><span class="p">(</span><span class="n">missing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                          <span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                                          <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span>
+                      <span class="p">(</span><span class="s2">&quot;forest&quot;</span><span class="p">,</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                                       <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">))])</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_missing</span><span class="p">,</span> <span class="n">y_missing</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Score after imputation of the missing values = </span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">score</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Score with the entire dataset = 0.56
+</pre>
+</div>
+</div>
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Score without the samples containing missing values = 0.48
+Score after imputation of the missing values = 0.57
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}

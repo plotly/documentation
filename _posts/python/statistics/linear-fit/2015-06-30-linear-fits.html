@@ -1,0 +1,164 @@
+---
+permalink: python/linear-fits/
+description: Create a linear fit / regression in Python and add a line of best fit to your chart.
+name: Linear Fit
+has_thumbnail: true
+thumbnail: thumbnail/linear_fit.jpg
+layout: user-guide
+name: Linear Fit
+language: python
+title: Linear Fit
+display_as: statistics
+has_thumbnail: true
+page_type: example_index
+order: 10
+ipynb: ~notebook_demo/139
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#182;</a></h4><p>Note: Linear fits are available in version <b>1.9.2+</b><br>
+Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;1.12.12&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Linear-Fit">Linear Fit<a class="anchor-link" href="#Linear-Fit">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Learn about API authentication here: https://plot.ly/python/getting-started</span>
+<span class="c1"># Find your api_key here: https://plot.ly/settings/api</span>
+
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="c1"># Scientific libraries</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">arange</span><span class="p">,</span><span class="n">array</span><span class="p">,</span><span class="n">ones</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+
+
+<span class="n">xi</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span> <span class="n">xi</span><span class="p">,</span> <span class="n">ones</span><span class="p">(</span><span class="mi">9</span><span class="p">)])</span>
+
+<span class="c1"># (Almost) linear sequence</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">20.5</span><span class="p">,</span> <span class="mf">21.5</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mf">25.5</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+
+<span class="c1"># Generated linear fit</span>
+<span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">r_value</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">std_err</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="n">line</span> <span class="o">=</span> <span class="n">slope</span><span class="o">*</span><span class="n">xi</span><span class="o">+</span><span class="n">intercept</span>
+
+<span class="c1"># Creating the dataset, and generating the plot</span>
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                  <span class="n">x</span><span class="o">=</span><span class="n">xi</span><span class="p">,</span>
+                  <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+                  <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+                  <span class="n">marker</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(255, 127, 14)&#39;</span><span class="p">),</span>
+                  <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span>
+                  <span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                  <span class="n">x</span><span class="o">=</span><span class="n">xi</span><span class="p">,</span>
+                  <span class="n">y</span><span class="o">=</span><span class="n">line</span><span class="p">,</span>
+                  <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                  <span class="n">marker</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(31, 119, 180)&#39;</span><span class="p">),</span>
+                  <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Fit&#39;</span>
+                  <span class="p">)</span>
+
+<span class="n">annotation</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Annotation</span><span class="p">(</span>
+                  <span class="n">x</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>
+                  <span class="n">y</span><span class="o">=</span><span class="mf">23.5</span><span class="p">,</span>
+                  <span class="n">text</span><span class="o">=</span><span class="s1">&#39;$R^2 = 0.9551,</span><span class="se">\\</span><span class="s1">Y = 0.716X + 19.18$&#39;</span><span class="p">,</span>
+                  <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                  <span class="n">font</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+                  <span class="p">)</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+                <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Linear Fit in Python&#39;</span><span class="p">,</span>
+                <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgb(229, 229, 229)&#39;</span><span class="p">,</span>
+                  <span class="n">xaxis</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">XAxis</span><span class="p">(</span><span class="n">zerolinecolor</span><span class="o">=</span><span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">,</span> <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">),</span>
+                  <span class="n">yaxis</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">zerolinecolor</span><span class="o">=</span><span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">,</span> <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">),</span>
+                  <span class="n">annotations</span><span class="o">=</span><span class="p">[</span><span class="n">annotation</span><span class="p">]</span>
+                <span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">]</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;Linear-Fit-in-python&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>u&#39;https://plot.ly/~PythonPlotBot/162&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}

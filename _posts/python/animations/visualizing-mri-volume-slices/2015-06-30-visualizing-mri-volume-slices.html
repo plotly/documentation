@@ -1,0 +1,361 @@
+---
+permalink: python/visualizing-mri-volume-slices/
+description: How to create an plotly animation with slider that cycles through MRI cross-sections of a human brain.
+name: Visualizing MRI Volume Slices | plotly
+has_thumbnail: true
+thumbnail: thumbnail/brain-mri-animation_square.gif
+layout: user-guide
+name: Visualizing MRI Volume Slices
+language: python
+title: Visualizing MRI Volume Slices | plotly
+display_as: animations
+has_thumbnail: true
+page_type: example_index
+order: 4
+ipynb: ~notebook_demo/190
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#194;&#182;</a></h4><p>Note: Animations are available in version 1.12.10+
+Run <code>pip install plotly --upgrade</code> to update your Plotly version.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.0.15&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Import-Data">Import Data<a class="anchor-link" href="#Import-Data">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">from</span> <span class="nn">plotly.grid_objs</span> <span class="kn">import</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Column</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">io</span>
+
+<span class="n">vol</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s2">&quot;https://s3.amazonaws.com/assets.datacamp.com/blog_assets/attention-mri.tif&quot;</span><span class="p">)</span>
+<span class="n">volume</span> <span class="o">=</span> <span class="n">vol</span><span class="o">.</span><span class="n">T</span>
+<span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">volume</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Set-the-Color-Scale">Set the Color Scale<a class="anchor-link" href="#Set-the-Color-Scale">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pl_bone</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;rgb(0, 0, 0)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="s1">&#39;rgb(10, 10, 14)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;rgb(21, 21, 30)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.15</span><span class="p">,</span> <span class="s1">&#39;rgb(33, 33, 46)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;rgb(44, 44, 62)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;rgb(56, 55, 77)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;rgb(66, 66, 92)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.35</span><span class="p">,</span> <span class="s1">&#39;rgb(77, 77, 108)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;rgb(89, 92, 121)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.45</span><span class="p">,</span> <span class="s1">&#39;rgb(100, 107, 132)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;rgb(112, 123, 143)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="s1">&#39;rgb(122, 137, 154)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;rgb(133, 153, 165)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.65</span><span class="p">,</span> <span class="s1">&#39;rgb(145, 169, 177)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="s1">&#39;rgb(156, 184, 188)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.75</span><span class="p">,</span> <span class="s1">&#39;rgb(168, 199, 199)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;rgb(185, 210, 210)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.85</span><span class="p">,</span> <span class="s1">&#39;rgb(203, 221, 221)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;rgb(220, 233, 233)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="s1">&#39;rgb(238, 244, 244)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Upload-the-Grid">Upload the Grid<a class="anchor-link" href="#Upload-the-Grid">&#194;&#182;</a></h4><p>Note: Since you cannot upload a grid with a filename shared by another grid you own in your profile, <code>str(time.time())</code> is appended to the filename to ensure a unique name is given to the grid.</p>
+<p>Note: Due to the magnanimous size of data being uploaded, it will not work unless your daily data upload limit is high enough. Make sure your subscription is above the Free Community version. See the <a href="https://plot.ly/products/cloud/">Pricing and Plans page</a> for more information.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_columns</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">nr_frames</span> <span class="o">=</span> <span class="mi">68</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr_frames</span><span class="p">):</span>
+    <span class="n">my_columns</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">Column</span><span class="p">((</span><span class="mf">6.7</span> <span class="o">-</span> <span class="n">k</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">)),</span> <span class="s1">&#39;z{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span>
+         <span class="n">Column</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">flipud</span><span class="p">(</span><span class="n">volume</span><span class="p">[</span><span class="mi">67</span> <span class="o">-</span> <span class="n">k</span><span class="p">]),</span> <span class="s1">&#39;surfc{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))]</span>
+    <span class="p">)</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">my_columns</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">grid_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="s1">&#39;anim_sliceshead&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()),</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[8]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>u&#39;https://plot.ly/~AdamKulidjian/3668/&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Create-Data,-Frames,-Layout-and-Sliders">Create Data, Frames, Layout and Sliders<a class="anchor-link" href="#Create-Data,-Frames,-Layout-and-Sliders">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">=</span><span class="p">[</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;surface&#39;</span><span class="p">,</span> 
+        <span class="n">zsrc</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">get_column_reference</span><span class="p">(</span><span class="s1">&#39;z1&#39;</span><span class="p">),</span>
+        <span class="n">surfacecolorsrc</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">get_column_reference</span><span class="p">(</span><span class="s1">&#39;surfc1&#39;</span><span class="p">),</span>
+        <span class="n">colorscale</span><span class="o">=</span><span class="n">pl_bone</span><span class="p">,</span>
+        <span class="n">colorbar</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">ticklen</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">frames</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr_frames</span><span class="p">):</span>
+    <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">zsrc</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">get_column_reference</span><span class="p">(</span><span class="s1">&#39;z{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span>
+                       <span class="n">surfacecolorsrc</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">get_column_reference</span><span class="p">(</span><span class="s1">&#39;surfc{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))],</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;frame{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="n">sliders</span><span class="o">=</span><span class="p">[</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">steps</span><span class="o">=</span><span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;animate&#39;</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;frame{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)],</span>
+                            <span class="nb">dict</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;immediate&#39;</span><span class="p">,</span>
+                                 <span class="n">frame</span><span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">redraw</span><span class="o">=</span> <span class="bp">False</span><span class="p">),</span>
+                                 <span class="n">transition</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">))],</span>
+                    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;{:d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">68</span><span class="p">)],</span> 
+        <span class="n">transition</span><span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+        <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+        <span class="n">currentvalue</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">),</span> 
+                          <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;slice: &#39;</span><span class="p">,</span> 
+                          <span class="n">visible</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+                          <span class="n">xanchor</span><span class="o">=</span><span class="s1">&#39;center&#39;</span>
+                         <span class="p">),</span>  
+        <span class="nb">len</span><span class="o">=</span><span class="mf">1.0</span>
+    <span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">axis3d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+    <span class="n">backgroundcolor</span><span class="o">=</span><span class="s2">&quot;rgb(230, 230,230)&quot;</span><span class="p">,</span>
+    <span class="n">gridcolor</span><span class="o">=</span><span class="s2">&quot;rgb(255, 255, 255)&quot;</span><span class="p">,</span>      
+    <span class="n">zerolinecolor</span><span class="o">=</span><span class="s2">&quot;rgb(255, 255, 255)&quot;</span><span class="p">,</span>  
+<span class="p">)</span>
+
+<span class="n">layout3d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Slices in volumetric data&#39;</span><span class="p">,</span> 
+         <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s1">&#39;Balto&#39;</span><span class="p">),</span>
+         <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+         <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+         <span class="n">scene</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">xaxis</span><span class="o">=</span><span class="p">(</span><span class="n">axis3d</span><span class="p">),</span>
+                    <span class="n">yaxis</span><span class="o">=</span><span class="p">(</span><span class="n">axis3d</span><span class="p">),</span> 
+                    <span class="n">zaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis3d</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">],</span> <span class="n">autorange</span><span class="o">=</span><span class="bp">False</span><span class="p">)),</span> 
+                    <span class="n">aspectratio</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="p">),</span>
+         <span class="n">updatemenus</span><span class="o">=</span><span class="p">[</span>
+             <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;buttons&#39;</span><span class="p">,</span>
+                  <span class="n">showactive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                  <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                  <span class="n">x</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span>
+                  <span class="n">xanchor</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>
+                  <span class="n">yanchor</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+                  <span class="n">pad</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+                  <span class="n">buttons</span><span class="o">=</span><span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Play&#39;</span><span class="p">,</span>
+                                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;animate&#39;</span><span class="p">,</span>
+                                <span class="n">args</span><span class="o">=</span><span class="p">[</span>
+                                    <span class="bp">None</span><span class="p">,</span> 
+                                    <span class="nb">dict</span><span class="p">(</span><span class="n">frame</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">redraw</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+                                         <span class="n">transition</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                                         <span class="n">fromcurrent</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                         <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;immediate&#39;</span><span class="p">)</span>
+                                <span class="p">])])</span>
+         <span class="p">],</span>
+        <span class="n">sliders</span><span class="o">=</span><span class="n">sliders</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Upload-to-Plotly">Upload to Plotly<a class="anchor-link" href="#Upload-to-Plotly">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout3d</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">icreate_animations</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;animslicesHead&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/3669.embed" height="600px" width="600px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Credit:">Credit:<a class="anchor-link" href="#Credit:">&#194;&#182;</a></h4><p>All credit goes to Emilia Petrisor for this excellent animation!</p>
+<p>Here's where you can find her:</p>
+<ul>
+<li>Her <a href="https://twitter.com/mathinpython">Twitter</a> under the handle <code>@mathinpython</code></li>
+<li>Her <a href="https://github.com/empet">GitHub Page</a> with Username <code>empet</code></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#194;&#182;</a></h4><p>For additional information and help setting up a slider in an animation, see <a href="https://plot.ly/python/gapminder-example/">https://plot.ly/python/gapminder-example/</a>. For more documentation on creating animations with Plotly, see <a href="https://plot.ly/python/#animations">https://plot.ly/python/#animations</a>.</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

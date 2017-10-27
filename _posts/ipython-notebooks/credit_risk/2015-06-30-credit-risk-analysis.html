@@ -1,0 +1,1304 @@
+---
+permalink: python/credit-risk-analysis/
+description: Predicting Credit Risk with Python and Plotly
+name: Credit Risk Analysis with Plotly
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+page_type: u-guide
+language: python
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Predicting-Credit-Risk-with-Python-and-Plotly">Predicting Credit Risk with Python and Plotly<a class="anchor-link" href="#Predicting-Credit-Risk-with-Python-and-Plotly">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Random-Forests-using-Python-and-sci-kit-learn">Random Forests using Python and sci-kit learn<a class="anchor-link" href="#Random-Forests-using-Python-and-sci-kit-learn">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The objective of this notebook series is to simulate an analytical workflow between several team members using <a href="https://www.python.org/">Python</a> and <a href="http://www.r-project.org/">R</a>. The data for this notebook is part of a <a href="https://www.kaggle.com/c/GiveMeSomeCredit">Kaggle competition</a> released three years ago. The objective is to predict the probability of credit &amp; loan default from a large set of real customer data. The evaluate metric used in the competition was <a href="https://www.kaggle.com/wiki/AreaUnderCurve">AUC</a>. A perfect model will score an AUC of 1, while random guessing will score an AUC of around 0.5, a meager 50% chance.</p>
+<blockquote><p>This competition requires participants to improve on the state of the art in credit scoring, by predicting the probability that somebody will experience financial distress in the next two years. The goal of this competition is to build a model that borrowers can use to help make the best financial decisions. Historical data are provided on 250,000 borrowers and the prize pool is $5,000.</p>
+</blockquote>
+<p>The top score for the competition was 0.869558, which we will try to match! However, it will be challenging since some of the data from the competition is no longer available.</p>
+<p><a href="https://plot.ly">Plotly</a> is a platform for making interactive graphs with R, Python, MATLAB, and Excel. In this notebook series, <a href="https://plot.ly">Plotly</a> can serve as a sharing platform for data, visualizations, and results between analysts, management, and executives on Plotly’s free public cloud. For collaboration and sensitive data, you can run Plotly <a href="https://plot.ly/product/enterprise/">on your own servers</a>.</p>
+<p>Need help converting <a href="https://plot.ly">Plotly</a> graphs from R or Python?</p>
+<ul>
+<li><a href="https://plot.ly/r/user-guide/">R</a></li>
+<li><a href="https://plot.ly/python/matplotlib-to-plotly-tutorial/">Python</a></li>
+</ul>
+<p><strong>This is the second notebook in the series</strong></p>
+<ul>
+<li>The <a href="">first notebook</a> explores, cleans, and generates new features for the data.</li>
+<li>The <a href="">second notebook</a> tests and optimized the <a href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html">Random Forest</a> model using <a href="https://plot.ly">Plotly</a> and Python.<hr></li>
+</ul>
+<p>For this code to run on your machine, you will need to:</p>
+<ul>
+<li><p>Install some Python libraries: Running <code>sudo pip install &lt;package_name&gt;</code> from your terminal will install python libraries.</p>
+</li>
+<li><p>Register an account with <a href="https://plot.ly/feed/">Plotly</a> to receive your API key.</p>
+</li>
+<li><p>Download the data for this notebook on the <a href="https://www.kaggle.com/c/GiveMeSomeCredit">kaggle website</a>.</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><h1 id="tocheading">Table of Contents</h1></p>
+<p><div id="toc">&lt;/div&gt;</p>
+<p><script src="https://kmahelona.github.io/ipython_notebook_goodies/ipython_notebook_toc.js">&lt;/script&gt;</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this notebook we will train a <a href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html">Random Forest</a> model in Python using <a href="http://scikit-learn.org/stable/">sci-kit learn</a> and finely tune the parameters to improve our previous results.</p>
+<p>In the [previous notebook] we:</p>
+<ol>
+<li>Created over 40 new features by insightfully combining and transforming existing features</li>
+<li>Dealt with missing values</li>
+<li>Standardized the data</li>
+</ol>
+<p>Now we can simply load in this data and get right to modelling. Please see the [previous notebook] for the full details. Below we will summarize the data to give you an idea of the features we created.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Load-libraries-and-data">Load libraries and data<a class="anchor-link" href="#Load-libraries-and-data">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">cufflinks</span> <span class="kn">as</span> <span class="nn">cf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here are the original features given to us from the Kaggle competition.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># Reminder of original feature definitions.</span>
+<span class="n">data_dict</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;https://github.com/plotly/datasets/raw/master/data_dictionary.csv&#39;</span><span class="p">)</span>
+<span class="n">data_dict</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span> <span class="p">:</span> <span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[30]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Variable Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>SeriousDlqin2yrs</td>
+      <td>Person experienced 90 days past due delinquenc...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>RevolvingUtilizationOfUnsecuredLines</td>
+      <td>Total balance on credit cards and personal lin...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>age</td>
+      <td>Age of borrower in years</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>NumberOfTime30-59DaysPastDueNotWorse</td>
+      <td>Number of times borrower has been 30-59 days p...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>DebtRatio</td>
+      <td>Monthly debt payments, alimony,living costs di...</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>MonthlyIncome</td>
+      <td>Monthly income</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>NumberOfOpenCreditLinesAndLoans</td>
+      <td>Number of Open loans (installment like car loa...</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>NumberOfTimes90DaysLate</td>
+      <td>Number of times borrower has been 90 days or m...</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>NumberRealEstateLoansOrLines</td>
+      <td>Number of mortgage and real estate loans inclu...</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>NumberOfTime60-89DaysPastDueNotWorse</td>
+      <td>Number of times borrower has been 60-89 days p...</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>NumberOfDependents</td>
+      <td>Number of dependents in family excluding thems...</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Below are the new features we derived using our intuition about the dataset.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">dt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;https://raw.githubusercontent.com/plotly/datasets/master/processed_data.csv&#39;</span><span class="p">)</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[31]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>NumberOfOpenCreditLinesAndLoans</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>log_age</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>log_income</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>log_income_person</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>log_income_age</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>UnknownIncomeDebtRatio</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>log_Debt</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>log_DebtRatio</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>log_HouseholdSize</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>log_NumberOfTimes90DaysLate</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>log_NumberOfTime60.89DaysPastDueNotWorse</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>log_NumberOfTime30.59DaysPastDueNotWorse</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>NumberOfTimesPastDue</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>NumberOfTime30.89DaysPastDueNotWorse</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Extreme_RevolvingUtilization</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>log_RevolvingUtilizationOfUnsecuredLines</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>log_NumberOfOpenCreditLinesAndLoans</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>log_NumberOfOpenCreditLinesAndLoansPerPerson</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>DelinquenciesPerLine</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>MajorDelinquenciesPerLine</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>MinorDelinquenciesPerLine</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>RevolvingLines</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>RealEstateLoansPerPerson</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>log_NumberRealEstateLoansOrLines</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>DisposableIncome</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>SeriousDlqin2yrs</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>UnknownIncome</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>NoIncome</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Income_100</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Income_1000</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>Income_5000</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>ZeroDebtRatio</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>DTIOver33</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>DTIOver43</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>UnknownNumberOfDependents</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>NoDependents</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>Has.Dependents</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>NumberOfTimes90DaysLateLarge</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>NumberOfTimes90DaysLate96</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>NumberOfTimes90DaysLate98</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>Never90DaysLate</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>NumberOfTime60.89DaysPastDueNotWorseLarge</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>NumberOfTime60.89DaysPastDueNotWorse96</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>NumberOfTime60.89DaysPastDueNotWorse98</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>Never60.89DaysPastDueNotWorse</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>NumberOfTime30.59DaysPastDueNotWorseLarge</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>NumberOfTime30.59DaysPastDueNotWorse96</td>
+    </tr>
+    <tr>
+      <th>47</th>
+      <td>NumberOfTime30.59DaysPastDueNotWorse98</td>
+    </tr>
+    <tr>
+      <th>48</th>
+      <td>Never30.59DaysPastDueNotWorse</td>
+    </tr>
+    <tr>
+      <th>49</th>
+      <td>NeverPastDue</td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td>Never30.89DaysPastDueNotWorse</td>
+    </tr>
+    <tr>
+      <th>51</th>
+      <td>ZeroRevolvingUtilization</td>
+    </tr>
+    <tr>
+      <th>52</th>
+      <td>Weird0999Utilization</td>
+    </tr>
+    <tr>
+      <th>53</th>
+      <td>FullUtilization</td>
+    </tr>
+    <tr>
+      <th>54</th>
+      <td>ExcessUtilization</td>
+    </tr>
+    <tr>
+      <th>55</th>
+      <td>AnyOpenCreditLinesOrLoans</td>
+    </tr>
+    <tr>
+      <th>56</th>
+      <td>HasRevolvingLines</td>
+    </tr>
+    <tr>
+      <th>57</th>
+      <td>HasRealEstateLoans</td>
+    </tr>
+    <tr>
+      <th>58</th>
+      <td>HasMultipleRealEstateLoans</td>
+    </tr>
+    <tr>
+      <th>59</th>
+      <td>EligibleSS</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's plot a few graphs to refresh our memory of the data and show-case the <a href="http://nbviewer.ipython.org/gist/santosjorge/aba934a0d20023a136c2">Cufflinks</a> plotting library, which is designed to work with pandas and Plotly out of the box.</p>
+<p>A full walkthrough of every feature can be found in the <a href="">first notebook</a> of this series. <a href="http://nbviewer.ipython.org/gist/santosjorge/aba934a0d20023a136c2">Cufflinks</a> can set a global theme (style) to use. In this case we will use Matplotlib's ggplot style. With cufflinks and pandas, is it very easy to generate interactive visuals.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">cf</span><span class="o">.</span><span class="n">set_config_file</span><span class="p">(</span><span class="n">theme</span> <span class="o">=</span> <span class="s">&#39;ggplot&#39;</span><span class="p">,</span> <span class="n">world_readable</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">dt</span><span class="p">[</span><span class="s">&#39;log_age&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s">&#39;histogram&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;Log Age Histogram&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[33]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~rmdk/1045.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We could also examine the distribution of a few interesting features using box plots.</p>
+<blockquote><p>You can use your mouse to view the data or click and drag to zoom. You can also click on the legend icons to toggle features on and off.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">dt</span><span class="p">[[</span><span class="s">&#39;log_age&#39;</span><span class="p">,</span> <span class="s">&#39;log_DebtRatio&#39;</span><span class="p">,</span> <span class="s">&#39;log_income&#39;</span><span class="p">,</span> <span class="s">&#39;NumberOfOpenCreditLinesAndLoans&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">kind</span> <span class="o">=</span> <span class="s">&#39;box&#39;</span><span class="p">,</span> <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[34]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~rmdk/1134.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Random-Forests">Random Forests<a class="anchor-link" href="#Random-Forests">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<blockquote><p>Random forests is an ensemble method that averages the predictions from many de-correlated trees trained from a sample drawn with replacement. In addition, when splitting a node during the construction of the tree, the split that is chosen is no longer the best split among all features. Instead, the split that is picked is the best split among a random subset of the features. As a result of this randomness, the bias of the forest usually slightly increases (with respect to the bias of a single non-random tree) but, due to averaging, its variance also decreases, usually more than compensating for the increase in bias, hence yielding an overall better model.</p>
+<ul>
+<li>L. Breiman, “Random Forests”, Machine Learning, 45(1), 5-32, 2001.</li>
+</ul>
+</blockquote>
+<hr>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After loading the data, we split it into training and validation sets using a stratified random sample. A stratified sample ensures that we maintain class proportions between the two new datasets.</p>
+<p>We will train the dataset on a 5-fold stratified CV to tune the model using grid-search, then test the final result on the validation set that we set aside.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">cross_validation</span><span class="p">,</span> <span class="n">grid_search</span>
+
+<span class="n">Y</span> <span class="o">=</span> <span class="n">dt</span><span class="p">[</span><span class="s">&#39;SeriousDlqin2yrs&#39;</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s">&#39;SeriousDlqin2yrs&#39;</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">train_valid</span> <span class="o">=</span> <span class="n">cross_validation</span><span class="o">.</span><span class="n">StratifiedShuffleSplit</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">train_index</span><span class="p">,</span> <span class="n">test_index</span> <span class="ow">in</span> <span class="n">train_valid</span><span class="p">:</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">train_index</span><span class="p">],</span> <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">test_index</span><span class="p">]</span>
+    <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">train_index</span><span class="p">],</span> <span class="n">Y</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">test_index</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First we will train a random forest with the default parameters.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">auc</span><span class="p">,</span> <span class="n">roc_curve</span>
+
+<span class="c"># Create RF classifier</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">class_weight</span> <span class="o">=</span> <span class="s">&#39;auto&#39;</span><span class="p">,</span> <span class="n">n_jobs</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="c"># Fit the classifier on the training data</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c"># Predict the response using the test dataset</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="c"># Examine the AUC score</span>
+<span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[36]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.56553971720617247</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's try and improve the score by tuning the parameters using sci-kit learn's <a href="http://scikit-learn.org/stable/modules/grid_search.html">GridSearchCV</a> function and 5 stratified <a href="http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.KFold.html">K-folds</a>.</p>
+<p>The three parameters we will try to optimize are:</p>
+<ol>
+<li><code>max_features</code>: The number of features to consider when looking for the best split.</li>
+<li><code>min_weight_fraction_leaf</code>: The minimum weighted fraction of the input samples required to be at a leaf node.</li>
+<li><code>n_estimators</code>: The number of trees in the forest.</li>
+</ol>
+<p>We will also specify the <a href="http://scikit-learn.org/stable/modules/grid_search.html">GridSearchCV</a> function to score the best parameters using <a href="https://www.kaggle.com/wiki/AreaUnderCurve">AUC</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+
+<span class="c"># Set up stratified cv methods</span>
+<span class="n">skf</span> <span class="o">=</span> <span class="n">cross_validation</span><span class="o">.</span><span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">n_folds</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+
+<span class="c"># Create RF classifier</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">class_weight</span> <span class="o">=</span> <span class="s">&#39;auto&#39;</span><span class="p">,</span> <span class="n">min_weight_fraction_leaf</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span> <span class="n">n_jobs</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+
+<span class="c"># Tuning options</span>
+<span class="n">max_f</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+<span class="n">n_trees</span> <span class="o">=</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">]</span>
+
+<span class="c"># Create gridsearch cv classifier</span>
+<span class="n">grid_search_clf</span> <span class="o">=</span> <span class="n">grid_search</span><span class="o">.</span><span class="n">GridSearchCV</span><span class="p">(</span>
+                       <span class="n">estimator</span> <span class="o">=</span> <span class="n">clf</span><span class="p">,</span>
+                       <span class="n">param_grid</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">max_features</span> <span class="o">=</span> <span class="n">max_f</span><span class="p">,</span> <span class="n">n_estimators</span> <span class="o">=</span> <span class="n">n_trees</span><span class="p">),</span>
+                       <span class="n">cv</span> <span class="o">=</span> <span class="n">skf</span><span class="p">,</span>
+                       <span class="n">scoring</span> <span class="o">=</span> <span class="s">&#39;roc_auc&#39;</span><span class="p">,</span>
+                       <span class="n">n_jobs</span> <span class="o">=</span> <span class="mi">4</span>
+                    <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># Run the grid search</span>
+<span class="n">grid_search_clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[38]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>GridSearchCV(cv=sklearn.cross_validation.StratifiedKFold(labels=[0 0 ..., 0 0], n_folds=5, shuffle=False, random_state=None),
+       error_score=&apos;raise&apos;,
+       estimator=RandomForestClassifier(bootstrap=True, class_weight=&apos;auto&apos;, criterion=&apos;gini&apos;,
+            max_depth=None, max_features=&apos;auto&apos;, max_leaf_nodes=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.001, n_estimators=10, n_jobs=8,
+            oob_score=False, random_state=None, verbose=0,
+            warm_start=False),
+       fit_params={}, iid=True, loss_func=None, n_jobs=4,
+       param_grid={&apos;n_estimators&apos;: [200, 300, 400], &apos;max_features&apos;: [5, 7, 9]},
+       pre_dispatch=&apos;2*n_jobs&apos;, refit=True, score_func=None,
+       scoring=&apos;roc_auc&apos;, verbose=0)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can look at the results. Below we compute:</p>
+<ol>
+<li>The best parameters found by the grid search.</li>
+<li>The cross validation training prediction scores for each iteration of the grid search.</li>
+<li>The final prediction on the validation set.</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">print</span><span class="p">(</span><span class="s">&quot;Best parameters set found on development set:&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">grid_search_clf</span><span class="o">.</span><span class="n">best_params_</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Grid scores on development set:&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">params</span><span class="p">,</span> <span class="n">mean_score</span><span class="p">,</span> <span class="n">scores</span> <span class="ow">in</span> <span class="n">grid_search_clf</span><span class="o">.</span><span class="n">grid_scores_</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%0.3f</span><span class="s"> (+/-</span><span class="si">%0.03f</span><span class="s">) for </span><span class="si">%r</span><span class="s">&quot;</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">mean_score</span><span class="p">,</span> <span class="n">scores</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Detailed classification report:&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;The model is trained on the full development set.&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;The scores are computed on the full evaluation set.&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">grid_search_clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Best parameters set found on development set:
+
+{&apos;max_features&apos;: 9, &apos;n_estimators&apos;: 400}
+
+Grid scores on development set:
+
+0.862 (+/-0.007) for {&apos;max_features&apos;: 5, &apos;n_estimators&apos;: 200}
+0.862 (+/-0.007) for {&apos;max_features&apos;: 5, &apos;n_estimators&apos;: 300}
+0.862 (+/-0.007) for {&apos;max_features&apos;: 5, &apos;n_estimators&apos;: 400}
+0.863 (+/-0.008) for {&apos;max_features&apos;: 7, &apos;n_estimators&apos;: 200}
+0.863 (+/-0.008) for {&apos;max_features&apos;: 7, &apos;n_estimators&apos;: 300}
+0.863 (+/-0.007) for {&apos;max_features&apos;: 7, &apos;n_estimators&apos;: 400}
+0.864 (+/-0.008) for {&apos;max_features&apos;: 9, &apos;n_estimators&apos;: 200}
+0.863 (+/-0.008) for {&apos;max_features&apos;: 9, &apos;n_estimators&apos;: 300}
+0.864 (+/-0.008) for {&apos;max_features&apos;: 9, &apos;n_estimators&apos;: 400}
+
+Detailed classification report:
+
+The model is trained on the full development set.
+The scores are computed on the full evaluation set.
+
+0.780833465881
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can see that the training AUC is noticably higher than the validation test AUC scores. This is a sign that we are over-fitting our training data, or that we have too few loan defaulters in the test set. To correct this we could try a more complex class balancing techinque such as <a href="https://www.jair.org/media/953/live-953-2037-jair.pdf">SMOTE</a>.</p>
+<p>The final AUC does however beat the decsion tree model from the <a href="">previous notebook</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Plotting-ROC-Curve">Plotting ROC Curve<a class="anchor-link" href="#Plotting-ROC-Curve">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Below we plot the ROC curve for this model using <a href="https://plot.ly/python/matplotlib-to-plotly-tutorial/">Plotly</a>. This time we will demonstrate how to plot simply using the <a href="https://plot.ly/python/matplotlib-to-plotly-tutorial/">matplotlib converter</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="n">rcParams</span>
+<span class="n">rcParams</span><span class="p">[</span><span class="s">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span>
+
+<span class="c"># Compute ROC curve and ROC area for each class</span>
+<span class="n">fpr</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">tpr</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">roc_auc</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+<span class="n">ROC_CURVE</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s">&#39;k--&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;False Positive Rate&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;True Positive Rate&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Receiver operating characteristic&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s">&quot;lower right&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can convert this plot to an interactive <a href="https://plot.ly">Plotly</a> object.</p>
+<p>Please see the Plotly Python <a href="https://plot.ly/python/overview/#in-%5B37%5D">user guide</a> for more insight on how to update plot parameters.</p>
+<blockquote><p>Do not forget you can also easily edit the chart properties using the Plotly GUI interface by clicking the "Play with this data!" link below the chart.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">py</span><span class="o">.</span><span class="n">iplot_mpl</span><span class="p">(</span><span class="n">ROC_CURVE</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[41]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~rmdk/1136.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}

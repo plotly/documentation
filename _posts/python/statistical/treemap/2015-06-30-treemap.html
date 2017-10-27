@@ -1,0 +1,154 @@
+---
+permalink: python/treemaps/
+description: How to make interactive treemap in Python with Plotly and Squarify. An examples of a treemap in Plotly using Squarify.
+name: Python Treemaps | plotly
+has_thumbnail: true
+thumbnail: thumbnail/treemap.jpg
+layout: user-guide
+name: Treemaps
+language: python
+title: Python Treemaps | plotly
+display_as: statistical
+has_thumbnail: true
+ipynb: ~notebook_demo/29
+order: 11
+page_type: u-guide
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#182;</a></h4><p>Plotly's python API is updated frequently. To upgrade, run <code>pip install plotly --upgrade</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Simple-Example-with-Plotly-and-Squarify">Simple Example with Plotly and <a href="https://pypi.python.org/pypi/squarify">Squarify</a><a class="anchor-link" href="#Simple-Example-with-Plotly-and-Squarify">&#182;</a></h4><p>Define the coordinate system for the returned rectangles: these values will range from x to x + width and y to y + height.
+Then define your treemap values. The sum of the treemap values must equal the total area to be laid out (i.e. width <code>*</code> height). The values must be sorted in descending order and must be positive.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">squarify</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">width</span> <span class="o">=</span> <span class="mf">100.</span>
+<span class="n">height</span> <span class="o">=</span> <span class="mf">100.</span>
+
+<span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">433</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+
+<span class="n">normed</span> <span class="o">=</span> <span class="n">squarify</span><span class="o">.</span><span class="n">normalize_sizes</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+<span class="n">rects</span> <span class="o">=</span> <span class="n">squarify</span><span class="o">.</span><span class="n">squarify</span><span class="p">(</span><span class="n">normed</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+
+<span class="c1"># Choose colors from http://colorbrewer2.org/ under &quot;Export&quot;</span>
+<span class="n">color_brewer</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rgb(166,206,227)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(31,120,180)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(178,223,138)&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;rgb(51,160,44)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(251,154,153)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(227,26,28)&#39;</span><span class="p">]</span>
+<span class="n">shapes</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">annotations</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rects</span><span class="p">:</span>
+    <span class="n">shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> 
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;rect&#39;</span><span class="p">,</span> 
+            <span class="n">x0</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> 
+            <span class="n">y0</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> 
+            <span class="n">x1</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">],</span> 
+            <span class="n">y1</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">],</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">),</span>
+            <span class="n">fillcolor</span> <span class="o">=</span> <span class="n">color_brewer</span><span class="p">[</span><span class="n">counter</span><span class="p">]</span>
+        <span class="p">)</span> 
+    <span class="p">)</span>
+    <span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">counter</span><span class="p">],</span>
+            <span class="n">showarrow</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="n">counter</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">counter</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">color_brewer</span><span class="p">):</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># For hover text</span>
+<span class="n">trace0</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rects</span> <span class="p">],</span> 
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rects</span> <span class="p">],</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span> <span class="p">],</span> 
+    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+        
+<span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> 
+    <span class="n">width</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">shapes</span><span class="o">=</span><span class="n">shapes</span><span class="p">,</span>
+    <span class="n">annotations</span><span class="o">=</span><span class="n">annotations</span><span class="p">,</span>
+    <span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># With hovertext</span>
+<span class="n">figure</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">trace0</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="c1"># Without hovertext</span>
+<span class="c1"># figure = dict(data=[Scatter()], layout=layout)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;squarify-treemap&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/407.embed" height="700px" width="700px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#182;</a></h4><p>See <a href="https://plot.ly/python/reference/">https://plot.ly/python/reference/</a> for more information and chart attribute options or <a href="https://pypi.python.org/pypi/squarify">https://pypi.python.org/pypi/squarify</a> for more information about squarify!</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

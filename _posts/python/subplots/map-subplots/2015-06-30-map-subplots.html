@@ -1,0 +1,196 @@
+---
+permalink:  python/map-subplots-and-small-multiples/
+description: How to make map subplots and map small multiples in Python.
+name:  Python Map Subplots and Map Small Multiples| Plotly
+has_thumbnail: true
+thumbnail: thumbnail/map-subplots.jpg
+layout: user-guide
+name: Map Subplots
+language: python
+title: Python Map Subplots | plotly
+display_as: multiple_axes
+has_thumbnail: true
+order: 5
+ipynb: ~notebook_demo/59
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="US-map-small-multiples">US map small multiples<a class="anchor-link" href="#US-map-small-multiples">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/1962_2006_walmart_store_openings.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;New Walmart Stores per year 1962-2006&lt;br&gt;</span><span class="se">\</span>
+<span class="s1">Source: &lt;a href=&quot;http://www.econ.umn.edu/~holmes/data/WalMart/index.html&quot;&gt;</span><span class="se">\</span>
+<span class="s1">University of Minnesota&lt;/a&gt;&#39;</span><span class="p">,</span>
+    <span class="c1"># showlegend = False,</span>
+    <span class="n">autosize</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="mi">900</span><span class="p">,</span>
+    <span class="n">hovermode</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="n">legend</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">bgcolor</span><span class="o">=</span><span class="s2">&quot;rgba(255, 255, 255, 0)&quot;</span><span class="p">,</span>
+        <span class="n">font</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">size</span><span class="o">=</span><span class="mi">11</span> <span class="p">),</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="n">years</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">years</span><span class="p">)):</span>
+    <span class="n">geo_key</span> <span class="o">=</span> <span class="s1">&#39;geo&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;geo&#39;</span>
+    <span class="n">lons</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">years</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">][</span><span class="s1">&#39;LON&#39;</span><span class="p">])</span>
+    <span class="n">lats</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">years</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">][</span><span class="s1">&#39;LAT&#39;</span><span class="p">])</span>
+    <span class="c1"># Walmart store data</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;scattergeo&#39;</span><span class="p">,</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">lon</span> <span class="o">=</span> <span class="n">lons</span><span class="p">,</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="n">lats</span><span class="p">,</span>
+            <span class="n">geo</span> <span class="o">=</span> <span class="n">geo_key</span><span class="p">,</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">years</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;rgb(0, 0, 255)&quot;</span><span class="p">,</span>
+                <span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.5</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="c1"># Year markers</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;scattergeo&#39;</span><span class="p">,</span>
+            <span class="n">showlegend</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="n">lon</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">78</span><span class="p">],</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="p">[</span><span class="mi">47</span><span class="p">],</span>
+            <span class="n">geo</span> <span class="o">=</span> <span class="n">geo_key</span><span class="p">,</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">years</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">layout</span><span class="p">[</span><span class="n">geo_key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">scope</span> <span class="o">=</span> <span class="s1">&#39;usa&#39;</span><span class="p">,</span>
+        <span class="n">showland</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="n">landcolor</span> <span class="o">=</span> <span class="s1">&#39;rgb(229, 229, 229)&#39;</span><span class="p">,</span>
+        <span class="n">showcountries</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">domain</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">x</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[]</span> <span class="p">),</span>
+        <span class="n">subunitcolor</span> <span class="o">=</span> <span class="s2">&quot;rgb(255, 255, 255)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">draw_sparkline</span><span class="p">(</span> <span class="n">domain</span><span class="p">,</span> <span class="n">lataxis</span><span class="p">,</span> <span class="n">lonaxis</span> <span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Returns a sparkline layout object for geo coordinates  &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">showland</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">showframe</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">showcountries</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">showcoastlines</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">domain</span> <span class="o">=</span> <span class="n">domain</span><span class="p">,</span>
+        <span class="n">lataxis</span> <span class="o">=</span> <span class="n">lataxis</span><span class="p">,</span>
+        <span class="n">lonaxis</span> <span class="o">=</span> <span class="n">lonaxis</span><span class="p">,</span>
+        <span class="n">bgcolor</span> <span class="o">=</span> <span class="s1">&#39;rgba(255,200,200,0.0)&#39;</span>
+    <span class="p">)</span>
+
+<span class="c1"># Stores per year sparkline</span>
+<span class="n">layout</span><span class="p">[</span><span class="s1">&#39;geo44&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">draw_sparkline</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:[</span><span class="mf">0.6</span><span class="p">,</span><span class="mf">0.8</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.15</span><span class="p">]},</span> \
+                                 <span class="p">{</span><span class="s1">&#39;range&#39;</span><span class="p">:[</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">]},</span> <span class="p">{</span><span class="s1">&#39;range&#39;</span><span class="p">:[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">40.0</span><span class="p">]}</span> <span class="p">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;scattergeo&#39;</span><span class="p">,</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="s1">&#39;storenum&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">1e1</span><span class="p">),</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="s1">&#39;storenum&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">1e1</span><span class="p">)),</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;rgb(0, 0, 255)&quot;</span> <span class="p">),</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;New stores per year&lt;br&gt;Peak of 178 stores per year in 1990&quot;</span><span class="p">,</span>
+        <span class="n">geo</span> <span class="o">=</span> <span class="s1">&#39;geo44&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Cumulative sum sparkline</span>
+<span class="n">layout</span><span class="p">[</span><span class="s1">&#39;geo45&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">draw_sparkline</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:[</span><span class="mf">0.8</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.15</span><span class="p">]},</span> \
+                                 <span class="p">{</span><span class="s1">&#39;range&#39;</span><span class="p">:[</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">]},</span> <span class="p">{</span><span class="s1">&#39;range&#39;</span><span class="p">:[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">]}</span> <span class="p">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;scattergeo&#39;</span><span class="p">,</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()[</span><span class="s1">&#39;storenum&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">1e2</span><span class="p">),</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="s1">&#39;storenum&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">1e1</span><span class="p">)),</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;rgb(214, 39, 40)&quot;</span> <span class="p">),</span>
+        <span class="n">name</span> <span class="o">=</span><span class="s2">&quot;Cumulative sum&lt;br&gt;3176 stores total in 2006&quot;</span><span class="p">,</span>
+        <span class="n">geo</span> <span class="o">=</span> <span class="s1">&#39;geo45&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">COLS</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">ROWS</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">ROWS</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">COLS</span><span class="p">):</span>
+        <span class="n">geo_key</span> <span class="o">=</span> <span class="s1">&#39;geo&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">z</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;geo&#39;</span>
+        <span class="n">layout</span><span class="p">[</span><span class="n">geo_key</span><span class="p">][</span><span class="s1">&#39;domain&#39;</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">COLS</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">COLS</span><span class="p">)]</span>
+        <span class="n">layout</span><span class="p">[</span><span class="n">geo_key</span><span class="p">][</span><span class="s1">&#39;domain&#39;</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">ROWS</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">ROWS</span><span class="p">)]</span>
+        <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="o">&gt;</span> <span class="mi">42</span><span class="p">:</span>
+            <span class="k">break</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;layout&#39;</span><span class="p">:</span><span class="n">layout</span> <span class="p">}</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span> <span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;US Walmart growth&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">900</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1000</span> <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2309.embed" height="900px" width="1000px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#182;</a></h4><p>See <a href="https://plot.ly/python/reference/#scattergeo">https://plot.ly/python/reference/#scattergeo</a> for more information and chart attribute options!</p>
+
+</div>
+</div>
+</div>{% endraw %}

@@ -1,0 +1,545 @@
+---
+permalink: ipython-notebooks/scoreboard-heatmaps/
+description: Plot Scoreboard Using Python and Plotly
+name: Two Scoreboards for Republican Presidential Candidates
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+page_type: u-guide
+language: python
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Plot-Scoreboard-Using-Python-and-Plotly">Plot Scoreboard Using Python and Plotly<a class="anchor-link" href="#Plot-Scoreboard-Using-Python-and-Plotly">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="ABOUT-THE-AUTHOR:">ABOUT THE AUTHOR:<a class="anchor-link" href="#ABOUT-THE-AUTHOR:">&#182;</a></h5><p>This notebook was contributed by <a href="https://plot.ly/~empet">Plotly user Emilia Petrisor</a>.  You can follow Emilia on Twitter <a href="https://twitter.com/mathinpython">@mathinpython</a> or <a href="https://github.com/empet">Github</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Two-Scoreboards-for-Republican-Presidential-Candidates">Two Scoreboards for Republican Presidential Candidates<a class="anchor-link" href="#Two-Scoreboards-for-Republican-Presidential-Candidates">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Starting with August 6, 2015, The New York Times updates from time to time a scoreboard for the republican presidential <a href="http://www.nytimes.com/interactive/2015/08/06/upshot/2016-republican-presidential-candidates-dashboard.html">candidates</a>.</p>
+<p>In this IPython (Jupyter) Notebook we generate  the scoreboard published on August 14, respectively August 17, as  <a href="https://plot.ly/python/heatmaps/">Heatmap(s)</a> objects in  Python Plotly.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Inspecting the web page <a href="view-source:http://www.nytimes.com/interactive/2015/08/06/upshot/2016-republican-presidential-candidates-dashboard.html?abt=0002&abg=0">source code</a>
+we found out  that the scoreboard heatmap in The New York Times is generated with  <a href="http://colorzilla.com/gradient-editor/">http://colorzilla.com/gradient-editor/</a>.</p>
+<p>To identify the color code of each of the 16 colors defining the color gradient  in The New York Times dashboard we install <code>ColorZilla</code>
+<a href="https://chrome.google.com/webstore/detail/colorzilla/bhlhnicpbhignbdhedgjhgdocnmhomnp?hl=en">Chrome extension</a>.</p>
+<p>When  the <em>newtimes</em> page is opened, we choose   the <em>Web page color analyzer</em> in the  <code>ColorZilla</code> menu and read
+succesively the color codes.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The corresponding   <a href="https://plot.ly/python/heatmaps-contours-and-2dhistograms-tutorial/#Custom-color-scales-in-Plotly">Plotly colorscale</a> is  defined as follows:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">newyorktimes_cs</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.0</span><span class="p">,</span> <span class="s">&#39;#8B0000&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.06666666666666667</span><span class="p">,</span> <span class="s">&#39;#9E051B&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.13333333333333333</span><span class="p">,</span> <span class="s">&#39;#B0122C&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="s">&#39;#C0223B&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.26666666666666666</span><span class="p">,</span> <span class="s">&#39;#CF3447&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.3333333333333333</span><span class="p">,</span> <span class="s">&#39;#DB4551&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="s">&#39;#E75758&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.4666666666666667</span><span class="p">,</span> <span class="s">&#39;#F06A5E&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.5333333333333333</span><span class="p">,</span> <span class="s">&#39;#F87D64&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="s">&#39;#FE906A&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.6666666666666666</span><span class="p">,</span> <span class="s">&#39;#FFA474&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.7333333333333333</span><span class="p">,</span> <span class="s">&#39;#FFB880&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="s">&#39;#FFCB91&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.8666666666666667</span><span class="p">,</span> <span class="s">&#39;#FFDEA7&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">0.9333333333333333</span><span class="p">,</span> <span class="s">&#39;#FFEEC1&#39;</span><span class="p">],</span>
+ <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="s">&#39;#FFFFE0&#39;</span><span class="p">]]</span>
+
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Below we give the table of rankings as for 14 August, by the factors in the list with the same name.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">tab_vals14</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">13</span><span class="p">],</span>
+          <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">12</span><span class="p">],</span>
+          <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">16</span><span class="p">],</span>
+          <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">13</span><span class="p">],</span>
+          <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">15</span><span class="p">]]</span>
+
+<span class="n">candidates</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Bush&#39;</span><span class="p">,</span> <span class="s">&#39;Rubio&#39;</span><span class="p">,</span> <span class="s">&#39;Walker&#39;</span><span class="p">,</span> <span class="s">&#39;Trump&#39;</span><span class="p">,</span> <span class="s">&#39;Kasich&#39;</span><span class="p">,</span> <span class="s">&#39;Cruz&#39;</span><span class="p">,</span> <span class="s">&#39;Fiorina&#39;</span><span class="p">,</span> <span class="s">&#39;Huckabee&#39;</span><span class="p">,</span> <span class="s">&#39;Paul&#39;</span><span class="p">]</span><span class="o">+</span>\
+ <span class="p">[</span><span class="s">&#39;Christie&#39;</span><span class="p">,</span> <span class="s">&#39;Carson&#39;</span><span class="p">,</span> <span class="s">&#39;Santorum&#39;</span><span class="p">,</span> <span class="s">&#39;Perry&#39;</span><span class="p">,</span> <span class="s">&#39;Jindal&#39;</span><span class="p">,</span> <span class="s">&#39;Graham&#39;</span><span class="p">,</span> <span class="s">&#39;Pataki&#39;</span><span class="p">]</span>
+
+<span class="n">factors</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Prediction Market&#39;</span><span class="p">,</span> <span class="s">&#39;NationalEndorsements&#39;</span><span class="p">,</span> <span class="s">&#39;Iowa Polls&#39;</span><span class="p">]</span><span class="o">+</span>\
+<span class="p">[</span><span class="s">&#39;New Hampshire Polls&#39;</span><span class="p">,</span> <span class="s">&#39;Money Raised&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First we define a simple Plotly Heatmap:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">data14</span><span class="o">=</span><span class="n">Data</span><span class="p">([</span><span class="n">Heatmap</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">tab_vals14</span><span class="p">,</span>
+                   <span class="n">y</span><span class="o">=</span><span class="n">factors</span><span class="p">,</span>
+                   <span class="n">x</span><span class="o">=</span><span class="n">candidates</span><span class="p">,</span>
+                   <span class="n">colorscale</span><span class="o">=</span><span class="n">newyorktimes_cs</span><span class="p">,</span>
+                   <span class="n">showscale</span><span class="o">=</span><span class="bp">False</span>
+                   <span class="p">)])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">width</span> <span class="o">=</span> <span class="mi">900</span>
+<span class="n">height</span> <span class="o">=</span><span class="mi">450</span>
+
+<span class="n">anno_text</span><span class="o">=</span><span class="s">&quot;Data source:</span><span class="se">\</span>
+<span class="s">&lt;a href=&#39;http://www.nytimes.com/interactive/2015/08/06/upshot/</span><span class="se">\</span>
+<span class="s">2016-republican-presidential-candidates-dashboard.html&#39;&gt; [1]&lt;/a&gt;&quot;</span>
+
+<span class="n">title</span> <span class="o">=</span> <span class="s">&quot;A scoreboard for republican candidates as of August 14, 2015&quot;</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="p">,</span>
+    <span class="n">font</span><span class="o">=</span><span class="n">Font</span><span class="p">(</span>
+        <span class="n">family</span><span class="o">=</span><span class="s">&#39;Balto, sans-serif&#39;</span><span class="p">,</span>
+        <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s">&#39;rgb(68,68,68)&#39;</span>
+    <span class="p">),</span>
+    <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">showgrid</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">side</span><span class="o">=</span><span class="s">&#39;top&#39;</span>
+    <span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="n">YAxis</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">autorange</span><span class="o">=</span><span class="s">&#39;reversed&#39;</span><span class="p">,</span>
+        <span class="n">showgrid</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">autotick</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">dtick</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">),</span>
+    <span class="n">autosize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+    <span class="n">margin</span><span class="o">=</span><span class="n">Margin</span><span class="p">(</span>
+        <span class="n">l</span><span class="o">=</span><span class="mi">135</span><span class="p">,</span>
+        <span class="n">r</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+        <span class="n">b</span><span class="o">=</span><span class="mi">85</span><span class="p">,</span>
+        <span class="n">t</span><span class="o">=</span><span class="mi">170</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">annotations</span> <span class="o">=</span> <span class="n">Annotations</span><span class="p">([</span>
+    <span class="n">Annotation</span><span class="p">(</span>
+            <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">anno_text</span><span class="p">,</span>
+            <span class="n">xref</span><span class="o">=</span><span class="s">&#39;paper&#39;</span><span class="p">,</span>
+            <span class="n">yref</span><span class="o">=</span><span class="s">&#39;paper&#39;</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span>
+            <span class="n">xanchor</span><span class="o">=</span><span class="s">&#39;left&#39;</span><span class="p">,</span>
+            <span class="n">yanchor</span><span class="o">=</span><span class="s">&#39;bottom&#39;</span><span class="p">,</span>
+            <span class="n">font</span><span class="o">=</span><span class="n">Font</span><span class="p">(</span>
+            <span class="n">size</span><span class="o">=</span><span class="mi">11</span> <span class="p">)</span>
+            <span class="p">)])</span>
+
+<span class="n">fig</span><span class="o">=</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data14</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">[</span><span class="s">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+<span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+<span class="n">annotations</span><span class="o">=</span><span class="n">annotations</span>
+<span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">sign_in</span><span class="p">(</span><span class="s">&#39;empet&#39;</span><span class="p">,</span> <span class="s">&#39;my_api_key&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;Heatmap-republican-candidates-14&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[29]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~empet/2920.embed" height="450px" width="900px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we go further and update the above Figure with  data available on  August 17, and moreover we annotate the Heatmap, displaying  the candidate ranking on each cell.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">tab_vals17</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">13</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">12</span><span class="p">],</span>
+   <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">16</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">13</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">15</span><span class="p">]]</span>
+
+<span class="n">candidates17</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Bush&#39;</span><span class="p">,</span> <span class="s">&#39;Rubio&#39;</span><span class="p">,</span> <span class="s">&#39;Walker&#39;</span><span class="p">,</span> <span class="s">&#39;Trump&#39;</span><span class="p">,</span> <span class="s">&#39;Kasich&#39;</span><span class="p">,</span> <span class="s">&#39;Cruz&#39;</span><span class="p">,</span>  <span class="s">&#39;Huckabee&#39;</span><span class="p">,</span> <span class="s">&#39;Fiorina&#39;</span><span class="p">,</span><span class="s">&#39;Paul&#39;</span><span class="p">]</span><span class="o">+</span>\
+  <span class="p">[</span><span class="s">&#39;Carson&#39;</span><span class="p">,</span>  <span class="s">&#39;Christie&#39;</span><span class="p">,</span> <span class="s">&#39;Santorum&#39;</span><span class="p">,</span> <span class="s">&#39;Perry&#39;</span><span class="p">,</span> <span class="s">&#39;Jindal&#39;</span><span class="p">,</span> <span class="s">&#39;Graham&#39;</span><span class="p">,</span> <span class="s">&#39;Pataki&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first row in <code>tab_vals17</code> changed relative to the same row in <code>tab_vals14</code>, by swapping their positions the    candidates (Fiorina, Huckabee) and  (Christie, Carson), and correspondingly the other rows.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Data</span><span class="p">([</span><span class="n">Heatmap</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">tab_vals17</span><span class="p">,</span>
+                   <span class="n">y</span><span class="o">=</span><span class="n">factors</span><span class="p">,</span>
+                   <span class="n">x</span><span class="o">=</span><span class="n">candidates17</span><span class="p">,</span>
+                   <span class="n">colorscale</span><span class="o">=</span><span class="n">newyorktimes_cs</span><span class="p">,</span>
+                   <span class="n">showscale</span><span class="o">=</span><span class="bp">False</span>
+                   <span class="p">)]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tab_vals17</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+        <span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">Annotation</span><span class="p">(</span>
+                <span class="n">text</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">),</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">candidates</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">factors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">xref</span><span class="o">=</span><span class="s">&#39;x1&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s">&#39;y1&#39;</span><span class="p">,</span>
+                <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">&#39;white&#39;</span> <span class="k">if</span> <span class="n">tab_vals17</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">&lt;</span><span class="mi">12</span> <span class="k">else</span> <span class="s">&#39;rgb(150,150,150)&#39;</span><span class="p">),</span>
+                <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span><span class="p">[</span><span class="s">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+<span class="n">title</span><span class="o">=</span><span class="s">&quot;A scoreboard for republican candidates as of August 17, 2015 &lt;br&gt; Annotated heatmap&quot;</span><span class="p">,</span>
+<span class="n">annotations</span><span class="o">=</span><span class="n">annotations</span>
+<span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;Annotated heatmap-republican-candidates-17&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[33]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~empet/2922.embed" height="450px" width="900px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+<span class="k">def</span>  <span class="nf">css_styling</span><span class="p">():</span>
+    <span class="n">styles</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./custom.css&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">HTML</span><span class="p">(</span><span class="n">styles</span><span class="p">)</span>
+<span class="n">css_styling</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[35]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<style>
+    /*body {
+        background-color: #F5F5F5;
+    }*/
+    div.cell{
+        width: 900px;
+        margin-left: 13% !important;
+        margin-right: auto;
+    }
+    #notebook li { /* More space between bullet points */
+    margin-top:0.8em;
+    }
+
+    h1 {
+        font-family: 'Alegreya Sans', sans-serif;
+    }
+    .text_cell_render h1 {
+        font-weight: 200;
+        font-size: 40pt;
+        line-height: 100%;
+        color: rgb(8, 66, 133);
+        margin-bottom: 0em;
+        margin-top: 0em;
+        display: block;
+    }
+    h2 {
+        font-family: 'Fenix', serif;
+        text-indent:1em;
+        text-align:center;
+    }
+    .text_cell_render h2 {
+        font-weight: 200;
+        font-size: 28pt;
+        line-height: 100%;
+        color: rgb(8, 66, 133);
+        margin-bottom: 1.5em;
+        margin-top: 0.5em;
+        display: block;
+    }
+    h3 {
+        font-family: 'Fenix', serif;
+        %margin-top:12px;
+        %margin-bottom: 3px;
+    }
+    .text_cell_render h3 {
+        font-weight: 300;
+        font-size: 18pt;
+        line-height: 100%;
+        color: rgb(8, 66, 133);
+        margin-bottom: 0.5em;
+        margin-top: 2em;
+        display: block;
+    }
+    h4 {
+        font-family: 'Fenix', serif;
+    }
+    .text_cell_render h4 {
+        font-weight: 300;
+        font-size: 16pt;
+        color: rgb(8, 66, 133);
+        margin-bottom: 0.5em;
+        margin-top: 0.5em;
+        display: block;
+    }
+    h5 {
+        font-family: 'Alegreya Sans', sans-serif;
+    }
+    .text_cell_render h5 {
+        font-weight: 300;
+        font-style: normal;
+        font-size: 16pt;
+        margin-bottom: 0em;
+        margin-top: 1.5em;
+        display: block;
+        }
+    div.text_cell_render{
+        font-family: 'Alegreya Sans',Computer Modern, "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+        line-height: 145%;
+        font-size: 130%;
+        width:900px;
+        margin-left:auto;
+        margin-right:auto;
+        %text-align:justify;
+        %text-justify:inter-word;
+    }
+
+
+    code{
+      font-size: 78%;
+    }
+    .rendered_html code{
+        background-color: transparent;
+        white-space: inherit;
+    }
+    .prompt{
+        display: None;
+     }
+    .rendered_html code{
+    background-color: transparent;
+    }
+
+    blockquote{
+      display:block;
+      background: #f3f3f3;
+      font-family: "Open sans",verdana,arial,sans-serif;
+      width:610px;
+      padding: 15px 15px 15px 15px;
+      text-align:justify;
+      text-justify:inter-word;
+      }
+      blockquote p {
+        margin-bottom: 0;
+        line-height: 125%;
+        font-size: 100%;
+      }
+   /* element.style {
+    } */
+</style>
+<script>
+    MathJax.Hub.Config({
+                        TeX: {
+                           extensions: ["AMSmath.js"]
+                           },
+                tex2jax: {
+                    inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+                    displayMath: [ ["$$","$$"], ["\\[","\\]"] ]
+                },
+                displayAlign: "center", // Change this to "center" to center equations.
+                "HTML-CSS": {
+                    styles: {".MathJax_Display": {"margin": 4}}
+                }
+        });
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}

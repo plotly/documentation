@@ -1,0 +1,2499 @@
+---
+permalink: ipython-notebooks/computational-bayesian-analysis/
+description: Monte Carlo simulations, Markov chains, Gibbs sampling illustrated in Plotly
+title: Computational Methods in Bayesian Analysis
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+name: Computational Methods in Bayesian Analysis
+language: python
+page_type: u-guide
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>About the author:
+This notebook was forked from this <a href="https://github.com/fonnesbeck/scipy2014_tutorial">project</a>. The original author is Chris Fonnesbeck, Assistant Professor of Biostatistics. You can follow Chris on Twitter <a href="https://twitter.com/fonnesbeck">@fonnesbeck</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h4><p>For most problems of interest, Bayesian analysis requires integration over multiple parameters, making the calculation of a <a href="https://en.wikipedia.org/wiki/Posterior_probability">posterior</a> intractable whether via analytic methods or standard methods of numerical integration.</p>
+<p>However, it is often possible to <em>approximate</em> these integrals by drawing samples
+from posterior distributions. For example, consider the expected value (mean) of a vector-valued random variable $\mathbf{x}$:</p>
+$$
+E[\mathbf{x}] = \int \mathbf{x} f(\mathbf{x}) \mathrm{d}\mathbf{x}\,, \quad
+\mathbf{x} = \{x_1, \ldots, x_k\}
+$$<p>where $k$ (dimension of vector $\mathbf{x}$) is perhaps very large.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If we can produce a reasonable number of random vectors $\{{\bf x_i}\}$, we can use these values to approximate the unknown integral. This process is known as <a href="https://en.wikipedia.org/wiki/Monte_Carlo_integration"><strong>Monte Carlo integration</strong></a>. In general, Monte Carlo integration allows integrals against probability density functions</p>
+$$
+I = \int h(\mathbf{x}) f(\mathbf{x}) \mathrm{d}\mathbf{x}
+$$<p>to be estimated by finite sums</p>
+$$
+\hat{I} = \frac{1}{n}\sum_{i=1}^n h(\mathbf{x}_i),
+$$<p>where $\mathbf{x}_i$ is a sample from $f$. This estimate is valid and useful because:</p>
+<ul>
+<li><p>$\hat{I} \rightarrow I$ with probability $1$ by the <a href="https://en.wikipedia.org/wiki/Law_of_large_numbers#Strong_law">strong law of large numbers</a>;</p>
+</li>
+<li><p>simulation error can be measured and controlled.</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Example-(Negative-Binomial-Distribution)">Example (Negative Binomial Distribution)<a class="anchor-link" href="#Example-(Negative-Binomial-Distribution)">&#182;</a></h3><p>We can use this kind of simulation to estimate the expected value of a random variable that is negative binomial-distributed. The <a href="https://en.wikipedia.org/wiki/Negative_binomial_distribution">negative binomial distribution</a> applies to discrete positive random variables. It can be used to model the number of Bernoulli trials that one can expect to conduct until $r$ failures occur.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <a href="https://en.wikipedia.org/wiki/Probability_mass_function">probability mass function</a> reads</p>
+$$
+f(k \mid p, r) = {k + r - 1 \choose k} (1 - p)^k p^r\,,
+$$<p>where $k \in \{0, 1, 2, \ldots \}$ is the value taken by our non-negative discrete random variable and
+$p$ is the probability of success ($0 < p < 1$).</p>
+<p><img src="http://upload.wikimedia.org/wikipedia/commons/8/83/Negbinomial.gif" alt="negative binomial (courtesy Wikipedia)"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Most frequently, this distribution is used to model <em>overdispersed counts</em>, that is, counts that have variance larger
+than the mean (i.e., what would be predicted under a
+<a href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>).</p>
+<p>In fact, the negative binomial can be expressed as a continuous mixture of Poisson distributions,
+where a <a href="http://en.wikipedia.org/wiki/Gamma_distribution">gamma distributions</a> act as mixing weights:</p>
+$$
+f(k \mid p, r) = \int_0^{\infty} \text{Poisson}(k \mid \lambda) \,
+\text{Gamma}_{(r, (1 - p)/p)}(\lambda) \, \mathrm{d}\lambda,
+$$<p>where the parameters of the gamma distribution are denoted as (shape parameter, inverse scale parameter).</p>
+<p>Let's resort to simulation to estimate the mean of a negative binomial distribution with $p = 0.7$ and $r = 3$:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mf">0.7</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Simulate Gamma means (r: shape parameter; p / (1 - p): scale parameter).</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Simulate sample Poisson conditional on lambda.</span>
+<span class="n">sim_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">sim_vals</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>6.3399999999999999</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The actual expected value of the negative binomial distribution is $r p / (1 - p)$, which in this case is 7. That's pretty close, though we can do better if we draw more samples:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">lam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">sim_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span>
+<span class="n">sim_vals</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>7.0135199999999998</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This approach of drawing repeated random samples in order to obtain a desired numerical result is generally known as <strong>Monte Carlo simulation</strong>.</p>
+<p>Clearly, this is a convenient, simplistic example that did not require simuation to obtain an answer. For most problems, it is simply not possible to draw independent random samples from the posterior distribution because they will generally be (1) multivariate and (2) not of a known functional form for which there is a pre-existing random number generator.</p>
+<p>However, we are not going to give up on simulation. Though we cannot generally draw independent samples for our model, we can usually generate <em>dependent</em> samples, and it turns out that if we do this in a particular way, we can obtain samples from almost any posterior distribution.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Markov-Chains">Markov Chains<a class="anchor-link" href="#Markov-Chains">&#182;</a></h2><p>A Markov chain is a special type of <em>stochastic process</em>. The standard definition of a stochastic process is an ordered collection of random variables:</p>
+$$
+\{X_t:t \in T\}
+$$<p>where $t$ is frequently (but not necessarily) a time index. If we think of $X_t$ as a state $X$ at time $t$, and invoke the following dependence condition on each state:</p>
+\begin{align*}
+&Pr(X_{t+1}=x_{t+1} | X_t=x_t, X_{t-1}=x_{t-1},\ldots,X_0=x_0) \\
+&= Pr(X_{t+1}=x_{t+1} | X_t=x_t)
+\end{align*}<p>then the stochastic process is known as a Markov chain. This conditioning specifies that the future depends on the current state, but not past states. Thus, the Markov chain wanders about the state space,
+remembering only where it has just been in the last time step.</p>
+<p>The collection of transition probabilities is sometimes called a <em>transition matrix</em> when dealing with discrete states, or more generally, a <em>transition kernel</em>.</p>
+<p>It is useful to think of the Markovian property as <strong>mild non-independence</strong>.</p>
+<p>If we use Monte Carlo simulation to generate a Markov chain, this is called <strong>Markov chain Monte Carlo</strong>, or MCMC. If the resulting Markov chain obeys some important properties, then it allows us to indirectly generate independent samples from a particular posterior distribution.</p>
+<blockquote><h3 id="Why-MCMC-Works:-Reversible-Markov-Chains">Why MCMC Works: Reversible Markov Chains<a class="anchor-link" href="#Why-MCMC-Works:-Reversible-Markov-Chains">&#182;</a></h3><p>Markov chain Monte Carlo simulates a Markov chain for which some function of interest
+(e.g., the joint distribution of the parameters of some model) is the unique, invariant limiting distribution. An invariant distribution with respect to some Markov chain with transition kernel $Pr(y \mid x)$ implies that:</p>
+$$\int_x Pr(y \mid x) \pi(x) dx = \pi(y).$$<p>Invariance is guaranteed for any <em>reversible</em> Markov chain. Consider a Markov chain in reverse sequence:
+$\{\theta^{(n)},\theta^{(n-1)},...,\theta^{(0)}\}$. This sequence is still Markovian, because:</p>
+$$Pr(\theta^{(k)}=y \mid \theta^{(k+1)}=x,\theta^{(k+2)}=x_1,\ldots ) = Pr(\theta^{(k)}=y \mid \theta^{(k+1)}=x)$$<p>Forward and reverse transition probabilities may be related through Bayes theorem:</p>
+$$\frac{Pr(\theta^{(k+1)}=x \mid \theta^{(k)}=y) \pi^{(k)}(y)}{\pi^{(k+1)}(x)}$$<p>Though not homogeneous in general, $\pi$ becomes homogeneous if:</p>
+<ul>
+<li><p>$n \rightarrow \infty$</p>
+</li>
+<li><p>$\pi^{(i)}=\pi$ for some $i < k$</p>
+</li>
+</ul>
+<p>If this chain is homogeneous it is called reversible, because it satisfies the <strong><em>detailed balance equation</em></strong>:</p>
+$$\pi(x)Pr(y \mid x) = \pi(y) Pr(x \mid y)$$<p>Reversibility is important because it has the effect of balancing movement through the entire state space. When a Markov chain is reversible, $\pi$ is the unique, invariant, stationary distribution of that chain. Hence, if $\pi$ is of interest, we need only find the reversible Markov chain for which $\pi$ is the limiting distribution.
+This is what MCMC does!</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Gibbs-Sampling">Gibbs Sampling<a class="anchor-link" href="#Gibbs-Sampling">&#182;</a></h2><p>The Gibbs sampler is the simplest and most prevalent MCMC algorithm. If a posterior has $k$ parameters to be estimated, we may condition each parameter on current values of the other $k-1$ parameters, and sample from the resultant distributional form (usually easier), and repeat this operation on the other parameters in turn. This procedure generates samples from the posterior distribution. Note that we have now combined Markov chains (conditional independence) and Monte Carlo techniques (estimation by simulation) to yield Markov chain Monte Carlo.</p>
+<p>Here is a stereotypical Gibbs sampling algorithm:</p>
+<ol>
+<li><p>Choose starting values for states (parameters):
+${\bf \theta} = [\theta_1^{(0)},\theta_2^{(0)},\ldots,\theta_k^{(0)}]$.</p>
+</li>
+<li><p>Initialize counter $j=1$.</p>
+</li>
+<li><p>Draw the following values from each of the $k$ conditional
+distributions:</p>
+<p>$$\begin{aligned}
+\theta_1^{(j)} &\sim& \pi(\theta_1 | \theta_2^{(j-1)},\theta_3^{(j-1)},\ldots,\theta_{k-1}^{(j-1)},\theta_k^{(j-1)}) \\
+\theta_2^{(j)} &\sim& \pi(\theta_2 | \theta_1^{(j)},\theta_3^{(j-1)},\ldots,\theta_{k-1}^{(j-1)},\theta_k^{(j-1)}) \\
+\theta_3^{(j)} &\sim& \pi(\theta_3 | \theta_1^{(j)},\theta_2^{(j)},\ldots,\theta_{k-1}^{(j-1)},\theta_k^{(j-1)}) \\
+\vdots \\
+\theta_{k-1}^{(j)} &\sim& \pi(\theta_{k-1} | \theta_1^{(j)},\theta_2^{(j)},\ldots,\theta_{k-2}^{(j)},\theta_k^{(j-1)}) \\
+\theta_k^{(j)} &\sim& \pi(\theta_k | \theta_1^{(j)},\theta_2^{(j)},\theta_4^{(j)},\ldots,\theta_{k-2}^{(j)},\theta_{k-1}^{(j)})\end{aligned}$$</p>
+</li>
+<li><p>Increment $j$ and repeat until convergence occurs.</p>
+</li>
+</ol>
+<p>As we can see from the algorithm, each distribution is conditioned on the last iteration of its chain values, constituting a Markov chain as advertised. The Gibbs sampler has all of the important properties outlined in the previous section: it is aperiodic, homogeneous and ergodic. Once the sampler converges, all subsequent samples are from the target distribution. This convergence occurs at a geometric rate.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Example:-Inferring-patterns-in-UK-coal-mining-disasters">Example: Inferring patterns in UK coal mining disasters<a class="anchor-link" href="#Example:-Inferring-patterns-in-UK-coal-mining-disasters">&#182;</a></h2><p>Let's try to model a more interesting example, a time series of recorded coal mining 
+disasters in the UK from 1851 to 1962.</p>
+<p>Occurrences of disasters in the time series is thought to be derived from a 
+Poisson process with a large rate parameter in the early part of the time 
+series, and from one with a smaller rate in the later part. We are interested 
+in locating the change point in the series, which perhaps is related to changes 
+in mining safety regulations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">disasters_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span>
+                            <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span>
+                            <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+                            <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+                            <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+                            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="n">n_count_data</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">disasters_array</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">pgo</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span>
+        <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;-01-01&#39;</span> <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1851</span><span class="p">,</span> <span class="mi">1962</span><span class="p">)],</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">disasters_array</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines+markers&#39;</span>
+    <span class="p">)</span>
+<span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layout</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;UK coal mining disasters (per year), 1851--1962&#39;</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">XAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1851-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;1962-01-01&#39;</span><span class="p">]),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Disaster count&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;coal_mining_disasters&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~marianne2/1646.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We are going to use Poisson random variables for this type of count data. Denoting year $i$'s accident count by $y_i$,</p>
+$$y_i \sim \text{Poisson}(\lambda).$$<p>For those unfamiliar, Poisson random variables look like this:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data2</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span>
+        <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
+            <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;λ=</span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">l</span>
+        <span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span>
+<span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layout_grey_bg</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">XAxis</span><span class="p">(</span><span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">showgrid</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">showgrid</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">),</span>
+    <span class="n">paper_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+    <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(204, 204, 204, 0.5)&#39;</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layout2</span> <span class="o">=</span> <span class="n">layout_grey_bg</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layout2</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;overlay&#39;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Poisson Means&#39;</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">XAxis</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">]),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig2</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data2</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig2</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;poisson_means&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~marianne2/1655.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The modeling problem is about estimating the values of the $\lambda$ parameters. Looking at the time series above, it appears that the rate declines over time.</p>
+<p>A <strong>changepoint model</strong> identifies a point (here, a year) after which the parameter $\lambda$ drops to a lower value. Let us call this point in time $\tau$. So we are estimating two $\lambda$ parameters:
+$\lambda = \lambda_1$ if $t \lt \tau$ and $\lambda = \lambda_2$ if $t \geq \tau$.</p>
+<p>We need to assign prior probabilities to both $\{\lambda_1, \lambda_2\}$. The gamma distribution not only provides a continuous density function for positive numbers, but it is also <em>conjugate</em> with the Poisson sampling distribution.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">lambda1_lambda2</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data3</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span>
+        <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1000</span><span class="p">),</span>
+            <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;α=</span><span class="si">%i</span><span class="s1">, β=</span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">lambda1_lambda2</span>
+<span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layout3</span> <span class="o">=</span> <span class="n">layout_grey_bg</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">layout3</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;overlay&#39;</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">XAxis</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig3</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data3</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout3</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig3</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;gamma_distributions&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[22]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~marianne2/1660.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will specify suitably vague hyperparameters $\alpha$ and $\beta$ for both priors:</p>
+\begin{align}
+\lambda_1 &\sim \text{Gamma}(1, 10), \\
+\lambda_2 &\sim \text{Gamma}(1, 10).
+\end{align}<p>Since we do not have any intuition about the location of the changepoint (unless we visualize the data), we will assign a discrete uniform prior over the entire observation period [1851, 1962]:</p>
+\begin{align}
+&\tau \sim \text{DiscreteUniform(1851, 1962)}\\
+&\Rightarrow P(\tau = k) = \frac{1}{111}.
+\end{align}
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Implementing-Gibbs-sampling">Implementing Gibbs sampling<a class="anchor-link" href="#Implementing-Gibbs-sampling">&#182;</a></h3><p>We are interested in estimating the joint posterior of $\lambda_1, \lambda_2$ and $\tau$ given the array of annnual disaster counts $\mathbf{y}$. This gives:</p>
+$$
+ P( \lambda_1, \lambda_2, \tau | \mathbf{y} ) \propto P(\mathbf{y} | \lambda_1, \lambda_2, \tau ) P(\lambda_1, \lambda_2, \tau) 
+$$<p>To employ Gibbs sampling, we need to factor the joint posterior into the product of conditional expressions:</p>
+$$
+ P(\lambda_1, \lambda_2, \tau | \mathbf{y}) \propto P(y_{t \lt \tau} | \lambda_1, \tau) P(y_{t \geq \tau} | \lambda_2, \tau) P(\lambda_1) P(\lambda_2) P(\tau)
+$$<p>which we have specified as:</p>
+$$\begin{aligned}
+P( \lambda_1, \lambda_2, \tau | \mathbf{y} ) &\propto \left[\prod_{t=1851}^{\tau} \text{Poi}(y_t|\lambda_1) \prod_{t=\tau+1}^{1962} \text{Poi}(y_t|\lambda_2) \right] \text{Gamma}(\lambda_1|\alpha,\beta) \text{Gamma}(\lambda_2|\alpha, \beta) \frac{1}{111} \\
+&\propto \left[\prod_{t=1851}^{\tau} e^{-\lambda_1}\lambda_1^{y_t} \prod_{t=\tau+1}^{1962} e^{-\lambda_2} \lambda_2^{y_t} \right] \lambda_1^{\alpha-1} e^{-\beta\lambda_1} \lambda_2^{\alpha-1} e^{-\beta\lambda_2} \\
+&\propto \lambda_1^{\sum_{t=1851}^{\tau} y_t +\alpha-1} e^{-(\beta+\tau)\lambda_1} \lambda_2^{\sum_{t=\tau+1}^{1962} y_i + \alpha-1} e^{-\beta\lambda_2}
+\end{aligned}$$<p>So, the full conditionals are known, and critically for Gibbs, can easily be sampled from.</p>
+$$\lambda_1 \sim \text{Gamma}(\sum_{t=1851}^{\tau} y_t +\alpha, \tau+\beta)$$$$\lambda_2 \sim \text{Gamma}(\sum_{t=\tau+1}^{1962} y_i + \alpha, 1962-\tau+\beta)$$$$\tau \sim \text{Categorical}\left( \frac{\lambda_1^{\sum_{t=1851}^{\tau} y_t +\alpha-1} e^{-(\beta+\tau)\lambda_1} \lambda_2^{\sum_{t=\tau+1}^{1962} y_i + \alpha-1} e^{-\beta\lambda_2}}{\sum_{k=1851}^{1962} \lambda_1^{\sum_{t=1851}^{\tau} y_t +\alpha-1} e^{-(\beta+\tau)\lambda_1} \lambda_2^{\sum_{t=\tau+1}^{1962} y_i + \alpha-1} e^{-\beta\lambda_2}} \right)$$<p>Implementing this in Python requires random number generators for both the gamma and discrete uniform distributions. We can leverage NumPy for this:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Function to draw random gamma variate</span>
+<span class="n">rgamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">gamma</span>
+
+<span class="k">def</span> <span class="nf">rcategorical</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="c1"># Function to draw random categorical variate</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, in order to generate probabilities for the conditional posterior of $\tau$, we need the kernel of the gamma density:</p>
+<p>\[\lambda^{\alpha-1} e^{-\beta \lambda}\]</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">dgamma</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">lam</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">lam</span><span class="o">**</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">*</span> <span class="n">lam</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Diffuse hyperpriors for the gamma priors on $\{\lambda_1, \lambda_2\}$:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="mi">10</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For computational efficiency, it is best to pre-allocate memory to store the sampled values. We need 3 arrays, each with length equal to the number of iterations we plan to run:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Specify number of iterations</span>
+<span class="n">n_iterations</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="c1"># Initialize trace of samples</span>
+<span class="n">lambda1</span><span class="p">,</span> <span class="n">lambda2</span><span class="p">,</span> <span class="n">tau</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_iterations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The penultimate step initializes the model paramters to arbitrary values:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">lambda1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">lambda2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">tau</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">50</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can run the Gibbs sampler.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Sample from conditionals</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">):</span>
+    
+    <span class="c1"># Sample early mean</span>
+    <span class="n">lambda1</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rgamma</span><span class="p">(</span><span class="n">disasters_array</span><span class="p">[:</span><span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">beta</span><span class="p">))</span>
+    
+    <span class="c1"># Sample late mean</span>
+    <span class="n">lambda2</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rgamma</span><span class="p">(</span><span class="n">disasters_array</span><span class="p">[</span><span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">]:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">,</span>
+                            <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">n_count_data</span> <span class="o">-</span> <span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">beta</span><span class="p">))</span>
+    
+    <span class="c1"># Sample changepoint: first calculate probabilities (conditional)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dgamma</span><span class="p">(</span><span class="n">lambda1</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">disasters_array</span><span class="p">[:</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="n">beta</span><span class="p">)</span> <span class="o">*</span>
+                  <span class="n">dgamma</span><span class="p">(</span><span class="n">lambda2</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">disasters_array</span><span class="p">[</span><span class="n">t</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">n_count_data</span> <span class="o">-</span> <span class="n">t</span> <span class="o">+</span> <span class="n">beta</span><span class="p">)</span>
+                  <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_count_data</span><span class="p">)])</span>
+    
+    <span class="c1"># ... then draw sample</span>
+    <span class="n">tau</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rcategorical</span><span class="p">(</span><span class="n">p</span><span class="o">/</span><span class="n">p</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Plotting the trace and histogram of the samples reveals the marginal posteriors of each parameter in the model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;#3182bd&#39;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">trace1</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">lambda1</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">lambda1</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace3</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">lambda2</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace4</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">lambda2</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x4&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y4&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace5</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x5&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y5&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace6</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x6&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y6&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data4</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">,</span> <span class="n">trace3</span><span class="p">,</span> <span class="n">trace4</span><span class="p">,</span> <span class="n">trace5</span><span class="p">,</span> <span class="n">trace6</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig4</span> <span class="o">=</span> <span class="n">tls</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]  [ (1,2) x2,y2 ]
+[ (2,1) x3,y3 ]  [ (2,2) x4,y4 ]
+[ (3,1) x5,y5 ]  [ (3,2) x6,y6 ]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig4</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data4</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">add_style</span><span class="p">(</span><span class="n">fig</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;zeroline&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;showgrid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;gridcolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;rgb(255, 255, 255)&#39;</span>
+    <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;paper_bgcolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;rgb(255, 255, 255)&#39;</span>
+    <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;plot_bgcolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;rgba(204, 204, 204, 0.5)&#39;</span>
+    <span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;showlegend&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">False</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">add_style</span><span class="p">(</span><span class="n">fig4</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig4</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">yaxis1</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\lambda_1$&#39;</span><span class="p">),</span>
+    <span class="n">yaxis3</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\lambda_2$&#39;</span><span class="p">),</span>
+    <span class="n">yaxis5</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\tau$&#39;</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig4</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;modelling_params&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[38]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~marianne2/1662.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Metropolis-Hastings-Algorithm">The Metropolis-Hastings Algorithm<a class="anchor-link" href="#The-Metropolis-Hastings-Algorithm">&#182;</a></h2><p>The key to success in applying the Gibbs sampler to the estimation of Bayesian posteriors is being able to specify the form of the complete conditionals of
+${\bf \theta}$, because the algorithm cannot be implemented without them. In practice, the posterior conditionals cannot always be neatly specified.</p>
+<p>Taking a different approach, the Metropolis-Hastings algorithm generates <strong><em>candidate</em></strong>  state transitions from an alternate distribution, and <em>accepts</em> or <em>rejects</em> each candidate probabilistically.</p>
+<p>Let us first consider a simple Metropolis-Hastings algorithm for a single parameter, $\theta$. We will use a standard sampling distribution, referred to as the <em>proposal distribution</em>, to produce candidate variables $q_t(\theta^{\prime} | \theta)$. That is, the generated value, $\theta^{\prime}$, is a <em>possible</em> next value for
+$\theta$ at step $t+1$. We also need to be able to calculate the probability of moving back to the original value from the candidate, or
+$q_t(\theta | \theta^{\prime})$. These probabilistic ingredients are used to define an <em>acceptance ratio</em>:</p>
+$$\begin{gathered}
+\begin{split}a(\theta^{\prime},\theta) = \frac{q_t(\theta^{\prime} | \theta) \pi(\theta^{\prime})}{q_t(\theta | \theta^{\prime}) \pi(\theta)}\end{split}\notag\\\begin{split}\end{split}\notag\end{gathered}$$<p>The value of $\theta^{(t+1)}$ is then determined by:</p>
+$$\theta^{(t+1)} = \left\{\begin{array}{l@{\quad \mbox{with prob.} \quad}l}\theta^{\prime} & \text{with probability } \min(a(\theta^{\prime},\theta^{(t)}),1) \\ \theta^{(t)} & \text{with probability } 1 - \min(a(\theta^{\prime},\theta^{(t)}),1) \end{array}\right.$$<p>This transition kernel implies that movement is not guaranteed at every step. It only occurs if the suggested transition is likely based on the acceptance ratio.</p>
+<p>A single iteration of the Metropolis-Hastings algorithm proceeds as follows:</p>
+<ol>
+<li><p>Sample $\theta^{\prime}$ from $q(\theta^{\prime} | \theta^{(t)})$.</p>
+</li>
+<li><p>Generate a Uniform[0,1] random variate $u$.</p>
+</li>
+<li><p>If $a(\theta^{\prime},\theta) > u$ then
+$\theta^{(t+1)} = \theta^{\prime}$, otherwise
+$\theta^{(t+1)} = \theta^{(t)}$.</p>
+</li>
+</ol>
+<p>The original form of the algorithm specified by Metropolis required that
+$q_t(\theta^{\prime} | \theta) = q_t(\theta | \theta^{\prime})$, which reduces $a(\theta^{\prime},\theta)$ to
+$\pi(\theta^{\prime})/\pi(\theta)$, but this is not necessary. In either case, the state moves to high-density points in the distribution with high probability, and to low-density points with low probability. After convergence, the Metropolis-Hastings algorithm describes the full target posterior density, so all points are recurrent.</p>
+<h3 id="Random-walk-Metropolis-Hastings">Random-walk Metropolis-Hastings<a class="anchor-link" href="#Random-walk-Metropolis-Hastings">&#182;</a></h3><p>A practical implementation of the Metropolis-Hastings algorithm makes use of a random-walk proposal.
+Recall that a random walk is a Markov chain that evolves according to:</p>
+$$
+\theta^{(t+1)} = \theta^{(t)} + \epsilon_t \\
+\epsilon_t \sim f(\phi)
+$$<p>As applied to the MCMC sampling, the random walk is used as a proposal distribution, whereby dependent proposals are generated according to:</p>
+$$\begin{gathered}
+\begin{split}q(\theta^{\prime} | \theta^{(t)}) = f(\theta^{\prime} - \theta^{(t)}) = \theta^{(t)} + \epsilon_t\end{split}\notag\\\begin{split}\end{split}\notag\end{gathered}$$<p>Generally, the density generating $\epsilon_t$ is symmetric about zero,
+resulting in a symmetric chain. Chain symmetry implies that
+$q(\theta^{\prime} | \theta^{(t)}) = q(\theta^{(t)} | \theta^{\prime})$,
+which reduces the Metropolis-Hastings acceptance ratio to:</p>
+$$\begin{gathered}
+\begin{split}a(\theta^{\prime},\theta) = \frac{\pi(\theta^{\prime})}{\pi(\theta)}\end{split}\notag\\\begin{split}\end{split}\notag\end{gathered}$$<p>The choice of the random walk distribution for $\epsilon_t$ is frequently a normal or Student’s $t$ density, but it may be any distribution that generates an irreducible proposal chain.</p>
+<p>An important consideration is the specification of the <strong>scale parameter</strong> for the random walk error distribution. Large values produce random walk steps that are highly exploratory, but tend to produce proposal values in the tails of the target distribution, potentially resulting in very small acceptance rates. Conversely, small values tend to be accepted more frequently, since they tend to produce proposals close to the current parameter value, but may result in chains that <strong><em>mix</em></strong> very slowly.</p>
+<p>Some simulation studies suggest optimal acceptance rates in the range of 20-50%. It is often worthwhile to optimize the proposal variance by iteratively adjusting its value, according to observed acceptance rates early in the MCMC simulation .</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Example:-Linear-model-estimation">Example: Linear model estimation<a class="anchor-link" href="#Example:-Linear-model-estimation">&#182;</a></h2><p>This very simple dataset is a selection of real estate prices \(p\), with the associated age \(a\) of each house. We wish to estimate a simple linear relationship between the two variables, using the Metropolis-Hastings algorithm.</p>
+<p><strong>Linear model</strong>:</p>
+$$\mu_i = \beta_0 + \beta_1 a_i$$<p><strong>Sampling distribution</strong>:</p>
+$$p_i \sim N(\mu_i, \tau)$$<p><strong>Prior distributions</strong>:</p>
+$$\begin{aligned}
+& \beta_i \sim N(0, 10000) \cr
+& \tau \sim \text{Gamma}(0.001, 0.001)
+\end{aligned}$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">age</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> 
+                <span class="mi">15</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> 
+                <span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+
+<span class="n">price</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2950</span><span class="p">,</span> <span class="mi">2300</span><span class="p">,</span> <span class="mi">3900</span><span class="p">,</span> <span class="mi">2800</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">2999</span><span class="p">,</span> <span class="mi">3950</span><span class="p">,</span> <span class="mi">2995</span><span class="p">,</span> <span class="mi">4500</span><span class="p">,</span> <span class="mi">2800</span><span class="p">,</span> 
+                  <span class="mi">1990</span><span class="p">,</span> <span class="mi">3500</span><span class="p">,</span> <span class="mi">5100</span><span class="p">,</span> <span class="mi">3900</span><span class="p">,</span> <span class="mi">2900</span><span class="p">,</span> <span class="mi">4950</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">3400</span><span class="p">,</span> <span class="mi">8999</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> 
+                  <span class="mi">2950</span><span class="p">,</span> <span class="mi">3250</span><span class="p">,</span> <span class="mi">3950</span><span class="p">,</span> <span class="mi">4600</span><span class="p">,</span> <span class="mi">4500</span><span class="p">,</span> <span class="mi">1600</span><span class="p">,</span> <span class="mi">3900</span><span class="p">,</span> <span class="mi">4200</span><span class="p">,</span> <span class="mi">6500</span><span class="p">,</span> <span class="mi">3500</span><span class="p">,</span> 
+                  <span class="mi">2999</span><span class="p">,</span> <span class="mi">2600</span><span class="p">,</span> <span class="mi">3250</span><span class="p">,</span> <span class="mi">2500</span><span class="p">,</span> <span class="mi">2400</span><span class="p">,</span> <span class="mi">3990</span><span class="p">,</span> <span class="mi">4600</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span><span class="mi">4700</span><span class="p">])</span><span class="o">/</span><span class="mf">1000.</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To avoid numerical underflow issues, we typically work with log-transformed likelihoods, so the joint posterior can be calculated as sums of log-probabilities and log-likelihoods.</p>
+<p>This function calculates the joint log-posterior, conditional on values for each parameter:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">distributions</span>
+<span class="n">dgamma</span> <span class="o">=</span> <span class="n">distributions</span><span class="o">.</span><span class="n">gamma</span><span class="o">.</span><span class="n">logpdf</span>
+<span class="n">dnorm</span> <span class="o">=</span> <span class="n">distributions</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">logpdf</span>
+
+<span class="k">def</span> <span class="nf">calc_posterior</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">price</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">age</span><span class="p">):</span>
+    <span class="c1"># Calculate joint posterior, given values for a, b and t</span>
+
+    <span class="c1"># Priors on a,b</span>
+    <span class="n">logp</span> <span class="o">=</span> <span class="n">dnorm</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span> <span class="o">+</span> <span class="n">dnorm</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+    <span class="c1"># Prior on t</span>
+    <span class="n">logp</span> <span class="o">+=</span> <span class="n">dgamma</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+    <span class="c1"># Calculate mu</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">*</span><span class="n">x</span>
+    <span class="c1"># Data likelihood</span>
+    <span class="n">logp</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">dnorm</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">t</span><span class="o">**-</span><span class="mi">2</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">logp</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>metropolis</code> function implements a simple random-walk Metropolis-Hastings sampler for this problem. It accepts as arguments:</p>
+<ul>
+<li>the number of iterations to run</li>
+<li>initial values for the unknown parameters</li>
+<li>the variance parameter of the proposal distribution (normal)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">rnorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span>
+<span class="n">runif</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span>
+
+<span class="k">def</span> <span class="nf">metropolis</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">,</span> <span class="n">initial_values</span><span class="p">,</span> <span class="n">prop_var</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+    <span class="n">n_params</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">initial_values</span><span class="p">)</span>
+            
+    <span class="c1"># Initial proposal standard deviations</span>
+    <span class="n">prop_sd</span> <span class="o">=</span> <span class="p">[</span><span class="n">prop_var</span><span class="p">]</span><span class="o">*</span><span class="n">n_params</span>
+    
+    <span class="c1"># Initialize trace for parameters</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_iterations</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_params</span><span class="p">))</span>
+    
+    <span class="c1"># Set initial values</span>
+    <span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">initial_values</span>
+        
+    <span class="c1"># Calculate joint posterior for initial values</span>
+    <span class="n">current_log_prob</span> <span class="o">=</span> <span class="n">calc_posterior</span><span class="p">(</span><span class="o">*</span><span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    
+    <span class="c1"># Initialize acceptance counts</span>
+    <span class="n">accepted</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">n_params</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">):</span>
+    
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">%</span><span class="k">1000</span>: print(&#39;Iteration %i&#39; % i)
+    
+        <span class="c1"># Grab current parameter values</span>
+        <span class="n">current_params</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_params</span><span class="p">):</span>
+    
+            <span class="c1"># Get current value for parameter j</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    
+            <span class="c1"># Propose new value</span>
+            <span class="k">if</span> <span class="n">j</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                <span class="c1"># Ensure tau is positive</span>
+                <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">rnorm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">current_params</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span> <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">theta</span> <span class="o">=</span> <span class="n">rnorm</span><span class="p">(</span><span class="n">current_params</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            
+            <span class="c1"># Insert new value </span>
+            <span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta</span>
+    
+            <span class="c1"># Calculate log posterior with proposed value</span>
+            <span class="n">proposed_log_prob</span> <span class="o">=</span> <span class="n">calc_posterior</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+    
+            <span class="c1"># Log-acceptance rate</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">proposed_log_prob</span> <span class="o">-</span> <span class="n">current_log_prob</span>
+    
+            <span class="c1"># Sample a uniform random variate</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">runif</span><span class="p">()</span>
+    
+            <span class="c1"># Test proposed value</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">alpha</span><span class="p">:</span>
+                <span class="c1"># Accept</span>
+                <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta</span>
+                <span class="n">current_log_prob</span> <span class="o">=</span> <span class="n">proposed_log_prob</span>
+                <span class="n">accepted</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Reject</span>
+                <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+                
+    <span class="k">return</span> <span class="n">trace</span><span class="p">,</span> <span class="n">accepted</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's run the MH algorithm with a very small proposal variance:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n_iter</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">trace</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="n">metropolis</span><span class="p">(</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">initial_values</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">prop_var</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Iteration 0
+Iteration 1000
+Iteration 2000
+Iteration 3000
+Iteration 4000
+Iteration 5000
+Iteration 6000
+Iteration 7000
+Iteration 8000
+Iteration 9000
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can see that the acceptance rate is way too high:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">acc</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span><span class="o">/</span><span class="n">n_iter</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[43]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([ 0.9768,  0.9689,  0.961 ])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">trace1</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">trace</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">trace</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace3</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">trace</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace4</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">trace</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x4&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y4&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace5</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">trace</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x5&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y5&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace6</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">trace</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x6&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y6&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[45]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data5</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">,</span> <span class="n">trace3</span><span class="p">,</span> <span class="n">trace4</span><span class="p">,</span> <span class="n">trace5</span><span class="p">,</span> <span class="n">trace6</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[46]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig5</span> <span class="o">=</span> <span class="n">tls</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]  [ (1,2) x2,y2 ]
+[ (2,1) x3,y3 ]  [ (2,2) x4,y4 ]
+[ (3,1) x5,y5 ]  [ (3,2) x6,y6 ]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[47]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig5</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data5</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[48]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">add_style</span><span class="p">(</span><span class="n">fig5</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[49]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig5</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                     <span class="n">yaxis1</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;intercept&#39;</span><span class="p">),</span>
+                     <span class="n">yaxis3</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;slope&#39;</span><span class="p">),</span>
+                     <span class="n">yaxis5</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;precision&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[50]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig5</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;MH algorithm small proposal variance&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[50]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~marianne2/1688.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, with a very large proposal variance:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[51]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">trace_hivar</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="n">metropolis</span><span class="p">(</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">initial_values</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">prop_var</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Iteration 0
+Iteration 1000
+Iteration 2000
+Iteration 3000
+Iteration 4000
+Iteration 5000
+Iteration 6000
+Iteration 7000
+Iteration 8000
+Iteration 9000
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[52]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">acc</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span><span class="o">/</span><span class="n">n_iter</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[52]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([ 0.003 ,  0.0001,  0.0009])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[53]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">trace1</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">trace_hivar</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">trace_hivar</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace3</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">trace_hivar</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace4</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">trace_hivar</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x4&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y4&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace5</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">trace_hivar</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x5&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y5&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace6</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">trace_hivar</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x6&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y6&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[54]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data6</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">,</span> <span class="n">trace3</span><span class="p">,</span> <span class="n">trace4</span><span class="p">,</span> <span class="n">trace5</span><span class="p">,</span> <span class="n">trace6</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[55]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig6</span> <span class="o">=</span> <span class="n">tls</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]  [ (1,2) x2,y2 ]
+[ (2,1) x3,y3 ]  [ (2,2) x4,y4 ]
+[ (3,1) x5,y5 ]  [ (3,2) x6,y6 ]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[56]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig6</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data6</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[57]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">add_style</span><span class="p">(</span><span class="n">fig6</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[58]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig6</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">yaxis1</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;intercept&#39;</span><span class="p">),</span>
+    <span class="n">yaxis3</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;slope&#39;</span><span class="p">),</span>
+    <span class="n">yaxis5</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;precision&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[59]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig6</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;MH algorithm large proposal variance&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[59]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~marianne2/1690.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Adaptive-Metropolis">Adaptive Metropolis<a class="anchor-link" href="#Adaptive-Metropolis">&#182;</a></h3><p>In order to avoid having to set the proposal variance by trial-and-error, we can add some tuning logic to the algorithm. The following implementation of Metropolis-Hastings reduces proposal variances  by 10% when the acceptance rate is low, and increases it by 10% when the acceptance rate is high.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[60]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">metropolis_tuned</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">,</span> <span class="n">initial_values</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">calc_posterior</span><span class="p">,</span> <span class="n">prop_var</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+                     <span class="n">tune_for</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tune_interval</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    
+    <span class="n">n_params</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">initial_values</span><span class="p">)</span>
+            
+    <span class="c1"># Initial proposal standard deviations</span>
+    <span class="n">prop_sd</span> <span class="o">=</span> <span class="p">[</span><span class="n">prop_var</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_params</span>
+    
+    <span class="c1"># Initialize trace for parameters</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_iterations</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_params</span><span class="p">))</span>
+    
+    <span class="c1"># Set initial values</span>
+    <span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">initial_values</span>
+    <span class="c1"># Initialize acceptance counts</span>
+    <span class="n">accepted</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">n_params</span>
+    
+    <span class="c1"># Calculate joint posterior for initial values</span>
+    <span class="n">current_log_prob</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    
+    <span class="k">if</span> <span class="n">tune_for</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">tune_for</span> <span class="o">=</span> <span class="n">n_iterations</span><span class="o">/</span><span class="mi">2</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">):</span>
+    
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">%</span><span class="k">1000</span>: print(&#39;Iteration %i&#39; % i)
+    
+        <span class="c1"># Grab current parameter values</span>
+        <span class="n">current_params</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_params</span><span class="p">):</span>
+    
+            <span class="c1"># Get current value for parameter j</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    
+            <span class="c1"># Propose new value</span>
+            <span class="k">if</span> <span class="n">j</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                <span class="c1"># Ensure tau is positive</span>
+                <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">rnorm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">current_params</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span> <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">theta</span> <span class="o">=</span> <span class="n">rnorm</span><span class="p">(</span><span class="n">current_params</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            
+            <span class="c1"># Insert new value </span>
+            <span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta</span>
+    
+            <span class="c1"># Calculate log posterior with proposed value</span>
+            <span class="n">proposed_log_prob</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+    
+            <span class="c1"># Log-acceptance rate</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">proposed_log_prob</span> <span class="o">-</span> <span class="n">current_log_prob</span>
+    
+            <span class="c1"># Sample a uniform random variate</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">runif</span><span class="p">()</span>
+    
+            <span class="c1"># Test proposed value</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">alpha</span><span class="p">:</span>
+                <span class="c1"># Accept</span>
+                <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta</span>
+                <span class="n">current_log_prob</span> <span class="o">=</span> <span class="n">proposed_log_prob</span>
+                <span class="n">accepted</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Reject</span>
+                <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+                
+            <span class="c1"># Tune every 100 iterations</span>
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">tune_interval</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">tune_for</span><span class="p">):</span>
+        
+                <span class="c1"># Calculate aceptance rate</span>
+                <span class="n">acceptance_rate</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">*</span><span class="n">accepted</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">/</span><span class="n">tune_interval</span>
+                <span class="k">if</span> <span class="n">acceptance_rate</span><span class="o">&lt;</span><span class="mf">0.1</span><span class="p">:</span>
+                    <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">0.9</span>
+                <span class="k">if</span> <span class="n">acceptance_rate</span><span class="o">&lt;</span><span class="mf">0.2</span><span class="p">:</span>
+                    <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">0.95</span>
+                <span class="k">if</span> <span class="n">acceptance_rate</span><span class="o">&gt;</span><span class="mf">0.4</span><span class="p">:</span>
+                    <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.05</span>
+                <span class="k">elif</span> <span class="n">acceptance_rate</span><span class="o">&gt;</span><span class="mf">0.6</span><span class="p">:</span>
+                    <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.1</span>
+        
+                <span class="n">accepted</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                
+    <span class="k">return</span> <span class="n">trace</span><span class="p">[</span><span class="n">tune_for</span><span class="p">:],</span> <span class="n">accepted</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[61]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">trace_tuned</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="n">metropolis_tuned</span><span class="p">(</span><span class="n">n_iter</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">initial_values</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">prop_var</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">tune_interval</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">tune_for</span><span class="o">=</span><span class="n">n_iter</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Iteration 0
+Iteration 1000
+Iteration 2000
+Iteration 3000
+Iteration 4000
+Iteration 5000
+Iteration 6000
+Iteration 7000
+Iteration 8000
+Iteration 9000
+Iteration 10000
+Iteration 11000
+Iteration 12000
+Iteration 13000
+Iteration 14000
+Iteration 15000
+Iteration 16000
+Iteration 17000
+Iteration 18000
+Iteration 19000
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[62]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">acc</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">n_iter</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[62]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([ 0.2888,  0.312 ,  0.3421])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[63]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">trace1</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">trace_tuned</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">trace_tuned</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace3</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">trace_tuned</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace4</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">trace_tuned</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x4&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y4&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace5</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">trace_tuned</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x5&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y5&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace6</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">trace_tuned</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x6&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y6&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[64]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data7</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">,</span> <span class="n">trace3</span><span class="p">,</span> <span class="n">trace4</span><span class="p">,</span> <span class="n">trace5</span><span class="p">,</span> <span class="n">trace6</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[65]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig7</span> <span class="o">=</span> <span class="n">tls</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]  [ (1,2) x2,y2 ]
+[ (2,1) x3,y3 ]  [ (2,2) x4,y4 ]
+[ (3,1) x5,y5 ]  [ (3,2) x6,y6 ]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[66]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig7</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data7</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[67]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">add_style</span><span class="p">(</span><span class="n">fig7</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[68]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig7</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">yaxis1</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;intercept&#39;</span><span class="p">),</span>
+    <span class="n">yaxis3</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;slope&#39;</span><span class="p">),</span>
+    <span class="n">yaxis5</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;precision&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[69]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig7</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;adaptive-metropolis&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[69]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~marianne2/1692.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>50 random regression lines drawn from the posterior:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[70]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Data points</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">age</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">price</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Sample models from posterior</span>
+<span class="n">xvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">age</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">age</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+<span class="n">line_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">xvals</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">trace_tuned</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="p">:</span><span class="mi">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">)]</span>
+
+<span class="c1"># Generate Scatter obejcts</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">xvals</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">line</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#e34a33&#39;</span><span class="p">),</span>
+                     <span class="n">line</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">))</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">line_data</span><span class="p">]</span>
+
+<span class="n">data8</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span><span class="n">points</span><span class="p">]</span> <span class="o">+</span> <span class="n">lines</span><span class="p">)</span>
+
+<span class="n">layout8</span> <span class="o">=</span> <span class="n">layout_grey_bg</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">layout8</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">XAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Age&#39;</span><span class="p">,</span> <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="n">showline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">fig8</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data8</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout8</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig8</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;regression_lines&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[70]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~marianne2/1694.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Exercise:-Bioassay-analysis">Exercise: Bioassay analysis<a class="anchor-link" href="#Exercise:-Bioassay-analysis">&#182;</a></h2><p>Gelman et al. (2003) present an example of an acute toxicity test, commonly performed on animals to estimate the toxicity of various compounds.</p>
+<p>In this dataset <code>log_dose</code> includes 4 levels of dosage, on the log scale, each administered to 5 rats during the experiment. The response variable is <code>death</code>, the number of positive responses to the dosage.</p>
+<p>The number of deaths can be modeled as a binomial response, with the probability of death being a linear function of dose:</p>
+<div style="font-size: 150%;">  
+$$\begin{aligned}
+y_i &\sim \text{Bin}(n_i, p_i) \\
+\text{logit}(p_i) &= a + b x_i
+\end{aligned}$$
+</div><p>The common statistic of interest in such experiments is the <strong>LD50</strong>, the dosage at which the probability of death is 50%.</p>
+<p>Use Metropolis-Hastings sampling to fit a Bayesian model to analyze this bioassay data, and to estimate LD50.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[71]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Log dose in each group</span>
+<span class="n">log_dose</span> <span class="o">=</span> <span class="p">[</span><span class="o">-.</span><span class="mi">86</span><span class="p">,</span> <span class="o">-.</span><span class="mi">3</span><span class="p">,</span> <span class="o">-.</span><span class="mo">05</span><span class="p">,</span> <span class="o">.</span><span class="mi">73</span><span class="p">]</span>
+
+<span class="c1"># Sample size in each group</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c1"># Outcomes</span>
+<span class="n">deaths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[72]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">distributions</span>
+<span class="n">dbin</span> <span class="o">=</span> <span class="n">distributions</span><span class="o">.</span><span class="n">binom</span><span class="o">.</span><span class="n">logpmf</span>
+<span class="n">dnorm</span> <span class="o">=</span> <span class="n">distributions</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">logpdf</span>
+
+<span class="n">invlogit</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">calc_posterior</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">deaths</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">log_dose</span><span class="p">):</span>
+
+    <span class="c1"># Priors on a,b</span>
+    <span class="n">logp</span> <span class="o">=</span> <span class="n">dnorm</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span> <span class="o">+</span> <span class="n">dnorm</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+    <span class="c1"># Calculate p</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">invlogit</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="c1"># Data likelihood</span>
+    <span class="n">logp</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">dbin</span><span class="p">(</span><span class="n">yi</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">pi</span><span class="p">)</span> <span class="k">for</span> <span class="n">yi</span><span class="p">,</span><span class="n">pi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">p</span><span class="p">)])</span>
+    
+    <span class="k">return</span> <span class="n">logp</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[73]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">bioassay_trace</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="n">metropolis_tuned</span><span class="p">(</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">calc_posterior</span><span class="p">,</span> <span class="n">initial_values</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">prop_var</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">tune_for</span><span class="o">=</span><span class="mi">9000</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Iteration 0
+Iteration 1000
+Iteration 2000
+Iteration 3000
+Iteration 4000
+Iteration 5000
+Iteration 6000
+Iteration 7000
+Iteration 8000
+Iteration 9000
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[74]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">trace1</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">bioassay_trace</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">bioassay_trace</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace3</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">bioassay_trace</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace4</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">bioassay_trace</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x4&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y4&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[75]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data9</span> <span class="o">=</span> <span class="n">pgo</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">,</span> <span class="n">trace3</span><span class="p">,</span> <span class="n">trace4</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[76]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig9</span> <span class="o">=</span> <span class="n">tls</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]  [ (1,2) x2,y2 ]
+[ (2,1) x3,y3 ]  [ (2,2) x4,y4 ]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[77]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig9</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data9</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[78]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">add_style</span><span class="p">(</span><span class="n">fig9</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[79]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig9</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">yaxis1</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;intercept&#39;</span><span class="p">),</span>
+    <span class="n">yaxis3</span><span class="o">=</span><span class="n">pgo</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;slope&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[80]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig9</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;bioassay&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[80]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~marianne2/1696.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+ 
+
+{% endraw %}

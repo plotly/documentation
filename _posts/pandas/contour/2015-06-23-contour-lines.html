@@ -1,0 +1,70 @@
+---
+name: Contour plot with lines in Pandas
+plot_url: https://plot.ly/~jackp/10579/
+language: pandas
+suite: contour
+order: 1
+sitemap: false
+arrangement: horizontal
+---
+# Learn about API authentication here: https://plot.ly/pandas/getting-started
+# Find your api_key here: https://plot.ly/settings/api
+
+import plotly.plotly as py
+import plotly.graph_objs as go
+import pandas as pd
+import numpy as np
+import scipy.stats as st
+import seaborn as sns
+
+def kde_scipy( m1, m2 ):
+    # http://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.stats.gaussian_kde.html
+    xmin = m1.min()
+    xmax = m1.max()
+    ymin = m2.min()
+    ymax = m2.max()
+
+    X, Y = np.mgrid[xmin:xmax:100j, ymin:ymax:100j]
+    positions = np.vstack([X.ravel(), Y.ravel()])
+    values = np.vstack([m1, m2])
+    kernel = st.gaussian_kde(values)
+    Z = np.reshape(kernel(positions).T, X.shape)
+
+    return Z
+
+def seaborn_to_plotly( scl ):
+    ''' converts a seaborn color palette to a plotly colorscale '''
+    return [ [ float(i)/float(len(scl)-1), 'rgb'+str((scl[i][0]*255, scl[i][1]*255, scl[i][2]*255)) ] \
+            for i in range(len(scl)) ]
+
+Z = kde_scipy( virginica.SepalWidth, virginica.SepalLength )
+
+data = [
+    go.Contour(
+        z=Z,
+        colorscale=seaborn_to_plotly( sns.color_palette(sns.dark_palette("purple")) ),
+        contours = dict( coloring = 'lines' ),
+        line = dict(width=2),
+        ncontours = 40,
+        showscale = False,
+    ),
+]
+
+axis_layout = dict( zeroline = False, ticks = '', gridcolor = 'white' )
+
+layout = go.Layout(
+    width=650,
+    height=600,
+    autosize=False,
+    xaxis = axis_layout,
+    yaxis = axis_layout,
+    plot_bgcolor = 'rgb(234, 234, 242)'
+)
+
+fig = go.Figure( data=data, layout=layout )
+
+# IPython notebook
+# py.iplot(fig, filename='pandas-kde-contour-plot-lines')
+
+url = py.plot(fig, filename='pandas-kde-contour-plot-lines')
+

@@ -1,0 +1,2083 @@
+---
+permalink: scikit-learn/document-classification-20newsgroups/
+description:  
+name: Classification of Text Documents using Sparse Features | plotly
+has_thumbnail: true
+thumbnail: thumbnail/your-tutorial-chart.jpg
+layout: user-guide
+name: Classification of Text Documents using Sparse Features
+language: scikit-learn
+title: Classification of Text Documents using Sparse Features | plotly
+display_as: text_documents
+has_thumbnail: false
+page_type: example_index
+order: 4
+ipynb: ~Diksha_Gabha/3598
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is an example showing how scikit-learn can be used to classify documents by topics using a bag-of-words approach. This example uses a scipy.sparse matrix to store the features and demonstrates various classifiers that can efficiently handle sparse matrices.</p>
+<p>The dataset used in this example is the 20 newsgroups dataset. It will be automatically downloaded, then cached.</p>
+<p>The bar plot indicates the accuracy, training time (normalized) and test time (normalized) of each classifier.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;0.18.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">optparse</span> <span class="kn">import</span> <span class="n">OptionParser</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">fetch_20newsgroups</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">HashingVectorizer</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="kn">import</span> <span class="n">SelectKBest</span><span class="p">,</span> <span class="n">chi2</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">RidgeClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">LinearSVC</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">SGDClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">Perceptron</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">PassiveAggressiveClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.naive_bayes</span> <span class="kn">import</span> <span class="n">BernoulliNB</span><span class="p">,</span> <span class="n">MultinomialNB</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">NearestCentroid</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.extmath</span> <span class="kn">import</span> <span class="n">density</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Display progress logs on stdout</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+                    <span class="n">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Parse commandline arguments</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">op</span> <span class="o">=</span> <span class="n">OptionParser</span><span class="p">()</span>
+<span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;--report&quot;</span><span class="p">,</span>
+              <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;print_report&quot;</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print a detailed classification report.&quot;</span><span class="p">)</span>
+<span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;--chi2_select&quot;</span><span class="p">,</span>
+              <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;select_chi2&quot;</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Select some number of features using a chi-squared test&quot;</span><span class="p">)</span>
+<span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;--confusion_matrix&quot;</span><span class="p">,</span>
+              <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;print_cm&quot;</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print the confusion matrix.&quot;</span><span class="p">)</span>
+<span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;--top10&quot;</span><span class="p">,</span>
+              <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;print_top10&quot;</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print ten most discriminative terms per class&quot;</span>
+                   <span class="s2">&quot; for every classifier.&quot;</span><span class="p">)</span>
+<span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;--all_categories&quot;</span><span class="p">,</span>
+              <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;all_categories&quot;</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Whether to use all categories or not.&quot;</span><span class="p">)</span>
+<span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;--use_hashing&quot;</span><span class="p">,</span>
+              <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Use a hashing vectorizer.&quot;</span><span class="p">)</span>
+<span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;--n_features&quot;</span><span class="p">,</span>
+              <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">16</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;n_features when using the hashing vectorizer.&quot;</span><span class="p">)</span>
+<span class="n">op</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;--filtered&quot;</span><span class="p">,</span>
+              <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Remove newsgroup information that is easily overfit: &quot;</span>
+                   <span class="s2">&quot;headers, signatures, and quoting.&quot;</span><span class="p">)</span>
+
+<span class="n">op</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Usage: __main__.py [options]
+
+Options:
+  -h, --help            show this help message and exit
+  --report              Print a detailed classification report.
+  --chi2_select=SELECT_CHI2
+                        Select some number of features using a chi-squared
+                        test
+  --confusion_matrix    Print the confusion matrix.
+  --top10               Print ten most discriminative terms per class for
+                        every classifier.
+  --all_categories      Whether to use all categories or not.
+  --use_hashing         Use a hashing vectorizer.
+  --n_features=N_FEATURES
+                        n_features when using the hashing vectorizer.
+  --filtered            Remove newsgroup information that is easily overfit:
+                        headers, signatures, and quoting.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To Get command line arguments add</p>
+
+<pre><code>(opts, args) = op.parse_args()
+
+</code></pre>
+<p>and set the following as:</p>
+<p>all_categories = opts.all_categories</p>
+<p>filtered = opts.filtered</p>
+<p>use_hashing = opts.use_hashing</p>
+<p>n_features = opts.n_features</p>
+<p>select_chi2 = opts.select_chi2</p>
+<p>print_cm = opts.print_cm</p>
+<p>print_top10 = opts.print_top10</p>
+<p>print_report = opts.print_report</p>
+<p>For this tutorial we are taking these values as:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">all_categories</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">use_hashing</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">n_features</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">16</span>
+<span class="n">select_chi2</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">print_cm</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">print_top10</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">print_report</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Load some categories from the training set</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">if</span> <span class="n">all_categories</span><span class="p">:</span>
+    <span class="n">categories</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">categories</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;alt.atheism&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;talk.religion.misc&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;comp.graphics&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;sci.space&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">if</span> <span class="n">filtered</span><span class="p">:</span>
+    <span class="n">remove</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;headers&#39;</span><span class="p">,</span> <span class="s1">&#39;footers&#39;</span><span class="p">,</span> <span class="s1">&#39;quotes&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">remove</span> <span class="o">=</span> <span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Loading 20 newsgroups dataset for categories:&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">categories</span> <span class="k">if</span> <span class="n">categories</span> <span class="k">else</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
+
+<span class="n">data_train</span> <span class="o">=</span> <span class="n">fetch_20newsgroups</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">categories</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span>
+                                <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+                                <span class="n">remove</span><span class="o">=</span><span class="n">remove</span><span class="p">)</span>
+
+<span class="n">data_test</span> <span class="o">=</span> <span class="n">fetch_20newsgroups</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">categories</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span>
+                               <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+                               <span class="n">remove</span><span class="o">=</span><span class="n">remove</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;data loaded&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Loading 20 newsgroups dataset for categories:
+all
+data loaded
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Order of labels in <code>target_names</code> can be different from <code>categories</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">target_names</span> <span class="o">=</span> <span class="n">data_train</span><span class="o">.</span><span class="n">target_names</span>
+
+<span class="k">def</span> <span class="nf">size_mb</span><span class="p">(</span><span class="n">docs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e6</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data_train_size_mb</span> <span class="o">=</span> <span class="n">size_mb</span><span class="p">(</span><span class="n">data_train</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">data_test_size_mb</span> <span class="o">=</span> <span class="n">size_mb</span><span class="p">(</span><span class="n">data_test</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> documents - </span><span class="si">%0.3f</span><span class="s2">MB (training set)&quot;</span> <span class="o">%</span> <span class="p">(</span>
+    <span class="nb">len</span><span class="p">(</span><span class="n">data_train</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="n">data_train_size_mb</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> documents - </span><span class="si">%0.3f</span><span class="s2">MB (test set)&quot;</span> <span class="o">%</span> <span class="p">(</span>
+    <span class="nb">len</span><span class="p">(</span><span class="n">data_test</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="n">data_test_size_mb</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>11314 documents - 13.782MB (training set)
+7532 documents - 8.262MB (test set)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Split a training set and a test set</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">data_train</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">data_test</span><span class="o">.</span><span class="n">target</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Extracting features from the training data using a sparse vectorizer&quot;</span><span class="p">)</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">use_hashing</span><span class="p">:</span>
+    <span class="n">vectorizer</span> <span class="o">=</span> <span class="n">HashingVectorizer</span><span class="p">(</span><span class="n">stop_words</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">,</span> <span class="n">non_negative</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                   <span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">)</span>
+    <span class="n">X_train</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data_train</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">vectorizer</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="n">sublinear_tf</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">max_df</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                                 <span class="n">stop_words</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">)</span>
+    <span class="n">X_train</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data_train</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%f</span><span class="s2">s at </span><span class="si">%0.3f</span><span class="s2">MB/s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="n">data_train_size_mb</span> <span class="o">/</span> <span class="n">duration</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;n_samples: </span><span class="si">%d</span><span class="s2">, n_features: </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">print</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Extracting features from the test data using the same vectorizer&quot;</span><span class="p">)</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data_test</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%f</span><span class="s2">s at </span><span class="si">%0.3f</span><span class="s2">MB/s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="n">data_test_size_mb</span> <span class="o">/</span> <span class="n">duration</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;n_samples: </span><span class="si">%d</span><span class="s2">, n_features: </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">print</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Extracting features from the training data using a sparse vectorizer
+done in 3.209865s at 4.294MB/s
+n_samples: 11314, n_features: 65536
+
+Extracting features from the test data using the same vectorizer
+done in 1.774443s at 4.656MB/s
+n_samples: 7532, n_features: 65536
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Mapping from integer feature name to original token string</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">if</span> <span class="n">use_hashing</span><span class="p">:</span>
+    <span class="n">feature_names</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">feature_names</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">select_chi2</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Extracting </span><span class="si">%d</span><span class="s2"> best features by a chi-squared test&quot;</span> <span class="o">%</span>
+          <span class="n">select_chi2</span><span class="p">)</span>
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">ch2</span> <span class="o">=</span> <span class="n">SelectKBest</span><span class="p">(</span><span class="n">chi2</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">select_chi2</span><span class="p">)</span>
+    <span class="n">X_train</span> <span class="o">=</span> <span class="n">ch2</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">X_test</span> <span class="o">=</span> <span class="n">ch2</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">feature_names</span><span class="p">:</span>
+        <span class="c1"># keep selected feature names</span>
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">feature_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span>
+                         <span class="ow">in</span> <span class="n">ch2</span><span class="o">.</span><span class="n">get_support</span><span class="p">(</span><span class="n">indices</span><span class="o">=</span><span class="bp">True</span><span class="p">)]</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;done in </span><span class="si">%f</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">feature_names</span><span class="p">:</span>
+    <span class="n">feature_names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">feature_names</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">trim</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Trim string to fit on terminal (assuming 80-column display)&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">s</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">80</span> <span class="k">else</span> <span class="n">s</span><span class="p">[:</span><span class="mi">77</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Extracting 10 best features by a chi-squared test
+done in 0.427792s
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Benchmark classifiers</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">benchmark</span><span class="p">(</span><span class="n">clf</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;_&#39;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Training: &quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span>
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">train_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;train time: </span><span class="si">%0.3f</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="n">train_time</span><span class="p">)</span>
+
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">test_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;test time:  </span><span class="si">%0.3f</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="n">test_time</span><span class="p">)</span>
+
+    <span class="n">score</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;accuracy:   </span><span class="si">%0.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">score</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="s1">&#39;coef_&#39;</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;dimensionality: </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">clf</span><span class="o">.</span><span class="n">coef_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;density: </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">density</span><span class="p">(</span><span class="n">clf</span><span class="o">.</span><span class="n">coef_</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">print_top10</span> <span class="ow">and</span> <span class="n">feature_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;top 10 keywords per class:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">target_names</span><span class="p">):</span>
+                <span class="n">top10</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">clf</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">trim</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">feature_names</span><span class="p">[</span><span class="n">top10</span><span class="p">]))))</span>
+        <span class="k">print</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">print_report</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;classification report:&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span>
+                                            <span class="n">target_names</span><span class="o">=</span><span class="n">target_names</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">print_cm</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;confusion matrix:&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">))</span>
+
+    <span class="k">print</span><span class="p">()</span>
+    <span class="n">clf_descr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">clf_descr</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">train_time</span><span class="p">,</span> <span class="n">test_time</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">clf</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">RidgeClassifier</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;lsqr&quot;</span><span class="p">),</span> <span class="s2">&quot;Ridge Classifier&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">Perceptron</span><span class="p">(</span><span class="n">n_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span> <span class="s2">&quot;Perceptron&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">PassiveAggressiveClassifier</span><span class="p">(</span><span class="n">n_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span> <span class="s2">&quot;Passive Aggressive&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span> <span class="s2">&quot;kNN&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span> <span class="s2">&quot;Random forest&quot;</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">benchmark</span><span class="p">(</span><span class="n">clf</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">penalty</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;l2&quot;</span><span class="p">,</span> <span class="s2">&quot;l1&quot;</span><span class="p">]:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> penalty&quot;</span> <span class="o">%</span> <span class="n">penalty</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+    <span class="c1"># Train Liblinear model</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">benchmark</span><span class="p">(</span><span class="n">LinearSVC</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span><span class="p">,</span>
+                                            <span class="n">dual</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)))</span>
+
+    <span class="c1"># Train SGD model</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">benchmark</span><span class="p">(</span><span class="n">SGDClassifier</span><span class="p">(</span><span class="n">alpha</span><span class="o">=.</span><span class="mo">0001</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                                           <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span><span class="p">)))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>================================================================================
+Ridge Classifier
+________________________________________________________________________________
+Training: 
+RidgeClassifier(alpha=1.0, class_weight=None, copy_X=True, fit_intercept=True,
+        max_iter=None, normalize=False, random_state=None, solver=&#39;lsqr&#39;,
+        tol=0.01)
+</pre>
+</div>
+</div>
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>train time: 0.216s
+test time:  0.001s
+accuracy:   0.186
+dimensionality: 10
+density: 1.000000
+
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.00      0.00      0.00       319
+           comp.graphics       0.00      0.00      0.00       389
+ comp.os.ms-windows.misc       0.53      0.49      0.51       394
+comp.sys.ibm.pc.hardware       0.00      0.00      0.00       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.00      0.00      0.00       395
+            misc.forsale       0.00      0.00      0.00       390
+               rec.autos       0.69      0.34      0.45       396
+         rec.motorcycles       0.85      0.25      0.39       398
+      rec.sport.baseball       0.00      0.00      0.00       397
+        rec.sport.hockey       0.07      0.96      0.12       399
+               sci.crypt       0.67      0.41      0.50       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.00      0.00      0.00       396
+               sci.space       0.56      0.30      0.39       394
+  soc.religion.christian       0.48      0.42      0.45       398
+      talk.politics.guns       0.56      0.17      0.26       364
+   talk.politics.mideast       0.88      0.23      0.36       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.00      0.00      0.00       251
+
+             avg / total       0.27      0.19      0.18      7532
+
+confusion matrix:
+[[  0   0   0   0   0   0   0   0   1   0 239   1   0   0   6  70   1   1
+    0   0]
+ [  0   0  32   0   0   0   0   2   0   0 329   4   0   0  20   0   1   1
+    0   0]
+ [  0   0 192   0   0   0   0   0   0   0 195   0   0   0   5   0   2   0
+    0   0]
+ [  0   0  38   0   0   0   0   0   0   0 340   3   0   0  11   0   0   0
+    0   0]
+ [  0   0   3   0   0   0   0   1   0   0 369   4   0   0   5   3   0   0
+    0   0]
+ [  0   0  64   0   0   0   0   0   1   0 312   8   0   0   8   1   0   1
+    0   0]
+ [  0   0  12   0   0   0   0  17   4   0 335   7   0   0  14   1   0   0
+    0   0]
+ [  0   0   5   0   0   0   0 133   2   0 252   1   0   0   1   0   2   0
+    0   0]
+ [  0   0   0   0   0   0   0  10 101   0 278   3   0   0   1   3   2   0
+    0   0]
+ [  0   0   0   0   0   0   0   1   1   0 378   8   0   0   2   5   2   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   4   0 382   7   0   0   0   4   1   0
+    0   0]
+ [  0   0   2   0   0   0   0   2   0   0 227 161   0   0   2   1   1   0
+    0   0]
+ [  0   0   6   0   0   0   0  12   1   0 351  15   0   0   6   1   1   0
+    0   0]
+ [  0   0   1   0   0   0   0   1   1   0 377   2   0   0   1  11   1   1
+    0   0]
+ [  0   0   0   0   0   0   0   1   0   0 272   1   0   0 118   2   0   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   0   0 218   3   0   0   3 168   0   5
+    0   0]
+ [  0   0   2   0   0   0   0   1   0   0 285   2   0   0   2   8  63   1
+    0   0]
+ [  0   0   0   0   0   0   0   6   3   0 256   9   0   0   2   9   6  85
+    0   0]
+ [  0   0   4   0   0   0   0   4   0   0 273   2   0   0   1   5  21   0
+    0   0]
+ [  0   0   2   0   0   0   0   2   0   0 180   1   0   0   1  55   8   2
+    0   0]]
+
+================================================================================
+Perceptron
+________________________________________________________________________________
+Training: 
+Perceptron(alpha=0.0001, class_weight=None, eta0=1.0, fit_intercept=True,
+      n_iter=50, n_jobs=1, penalty=None, random_state=0, shuffle=True,
+      verbose=0, warm_start=False)
+</pre>
+</div>
+</div>
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>train time: 0.417s
+test time:  0.001s
+accuracy:   0.129
+dimensionality: 10
+density: 1.000000
+
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.22      0.11      0.15       319
+           comp.graphics       0.04      0.01      0.02       389
+ comp.os.ms-windows.misc       0.00      0.00      0.00       394
+comp.sys.ibm.pc.hardware       0.00      0.00      0.00       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.07      0.02      0.03       395
+            misc.forsale       0.00      0.00      0.00       390
+               rec.autos       0.68      0.33      0.44       396
+         rec.motorcycles       0.91      0.25      0.39       398
+      rec.sport.baseball       0.00      0.00      0.00       397
+        rec.sport.hockey       0.00      0.00      0.00       399
+               sci.crypt       0.87      0.33      0.48       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.00      0.00      0.00       396
+               sci.space       0.64      0.29      0.40       394
+  soc.religion.christian       0.05      0.78      0.10       398
+      talk.politics.guns       0.62      0.12      0.20       364
+   talk.politics.mideast       0.23      0.27      0.25       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.00      0.00      0.00       251
+
+             avg / total       0.22      0.13      0.13      7532
+
+confusion matrix:
+[[ 35   0   0   0   0   0   0   0   1   0   0   1   0   0   5 274   0   3
+    0   0]
+ [  0   4   0   0   0   7   0   0   0   0   0   0   0   0  10 328   0  39
+    1   0]
+ [  0  80   0   0   0   1   0   0   0   0   0   0   0   0   3 194   2 113
+    1   0]
+ [  0   5   0   0   0   4   0   0   0   0   0   1   0   0  10 340   0  32
+    0   0]
+ [  0   2   0   0   0   4   0   1   0   0   0   0   0   0   4 372   0   2
+    0   0]
+ [  0  16   0   0   0   7   0   0   0   0   0   1   0   0   5 313   0  53
+    0   0]
+ [  1   1   0   0   0   6   0  19   3   0   0   1   0   0   5 335   0  19
+    0   0]
+ [  0   0   0   0   0   1   0 131   1   0   0   0   0   0   1 252   2   5
+    3   0]
+ [  2   0   0   0   0   3   0  12  99   0   0   0   0   0   1 280   0   1
+    0   0]
+ [  0   0   0   0   0   5   0   1   1   0   0   4   0   0   2 382   1   1
+    0   0]
+ [  1   0   0   0   0   4   0   0   3   0   0   3   0   0   0 385   1   2
+    0   0]
+ [  0   0   0   0   0  32   0   1   0   0   0 132   0   0   0 228   1   1
+    1   0]
+ [  0   1   0   0   0  12   0  12   1   0   0   4   0   0   6 352   1   4
+    0   0]
+ [  4   0   0   0   0   1   0   1   0   0   0   1   0   0   0 383   0   6
+    0   0]
+ [  2   0   0   0   0   0   0   1   0   0   0   1   0   0 114 273   0   3
+    0   0]
+ [ 76   1   0   0   0   3   0   0   0   0   0   0   0   0   3 310   0   5
+    0   0]
+ [  3   0   0   0   0   2   0   2   0   0   0   0   0   0   4 290  43  20
+    0   0]
+ [  5   0   0   0   0   2   0   5   0   0   0   2   0   0   2 260   0 100
+    0   0]
+ [  2   1   0   0   0   2   0   5   0   0   0   0   0   0   1 275  12  12
+    0   0]
+ [ 29   0   1   0   0   0   0   3   0   0   0   1   0   0   1 203   6   7
+    0   0]]
+
+================================================================================
+Passive Aggressive
+________________________________________________________________________________
+Training: 
+PassiveAggressiveClassifier(C=1.0, class_weight=None, fit_intercept=True,
+              loss=&#39;hinge&#39;, n_iter=50, n_jobs=1, random_state=None,
+              shuffle=True, verbose=0, warm_start=False)
+train time: 0.323s
+test time:  0.001s
+accuracy:   0.170
+dimensionality: 10
+density: 1.000000
+
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.00      0.00      0.00       319
+           comp.graphics       0.00      0.00      0.00       389
+ comp.os.ms-windows.misc       0.55      0.49      0.52       394
+comp.sys.ibm.pc.hardware       0.00      0.00      0.00       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.00      0.00      0.00       395
+            misc.forsale       0.00      0.00      0.00       390
+               rec.autos       0.06      0.97      0.12       396
+         rec.motorcycles       0.85      0.26      0.40       398
+      rec.sport.baseball       1.00      0.00      0.01       397
+        rec.sport.hockey       0.00      0.00      0.00       399
+               sci.crypt       0.69      0.41      0.52       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.00      0.00      0.00       396
+               sci.space       0.58      0.29      0.39       394
+  soc.religion.christian       0.50      0.42      0.46       398
+      talk.politics.guns       0.54      0.17      0.26       364
+   talk.politics.mideast       0.83      0.23      0.36       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.00      0.00      0.00       251
+
+             avg / total       0.29      0.17      0.16      7532
+
+confusion matrix:
+[[  0   0   0   0   0   0   0 239   1   0   0   1   0   0   6  68   2   2
+    0   0]
+ [  0   0  23   0   0   3   0 339   0   0   0   3   0   0  18   0   1   2
+    0   0]
+ [  0   0 192   0   0   0   0 195   0   0   0   0   0   0   4   0   3   0
+    0   0]
+ [  0   0  38   0   0   0   0 341   0   0   0   3   0   0  10   0   0   0
+    0   0]
+ [  0   0   3   0   0   0   0 370   0   0   0   4   0   0   5   3   0   0
+    0   0]
+ [  0   0  60   0   0   0   0 316   1   0   0   8   0   0   8   1   0   1
+    0   0]
+ [  0   0  13   0   0   0   0 353   4   0   0   7   0   0  12   1   0   0
+    0   0]
+ [  0   0   5   0   0   0   0 384   3   0   0   1   0   0   1   0   2   0
+    0   0]
+ [  0   0   0   0   0   0   0 285 105   0   0   2   0   0   1   3   2   0
+    0   0]
+ [  0   0   0   0   0   0   0 379   1   1   0   8   0   0   2   4   2   0
+    0   0]
+ [  0   0   1   0   0   0   0 382   4   0   0   7   0   0   0   3   2   0
+    0   0]
+ [  0   0   0   0   0   0   0 228   0   0   0 163   0   0   2   1   1   1
+    0   0]
+ [  0   0   5   0   0   0   0 364   1   0   0  15   0   0   6   1   1   0
+    0   0]
+ [  0   0   1   0   0   0   0 378   1   0   0   2   0   0   1  11   1   1
+    0   0]
+ [  0   0   1   0   0   0   0 273   0   0   0   2   0   0 116   2   0   0
+    0   0]
+ [  0   0   1   0   0   0   0 220   0   0   0   1   0   0   3 168   0   5
+    0   0]
+ [  0   0   2   0   0   0   0 287   0   0   0   1   0   0   2   8  63   1
+    0   0]
+ [  0   0   0   0   0   0   0 265   3   0   0   6   0   0   2   7   6  87
+    0   0]
+ [  0   0   3   0   0   0   0 277   0   0   0   2   0   0   1   5  22   0
+    0   0]
+ [  0   0   3   0   0   0   0 183   0   0   0   1   0   0   1  50   8   5
+    0   0]]
+
+================================================================================
+kNN
+________________________________________________________________________________
+Training: 
+KNeighborsClassifier(algorithm=&#39;auto&#39;, leaf_size=30, metric=&#39;minkowski&#39;,
+           metric_params=None, n_jobs=1, n_neighbors=10, p=2,
+           weights=&#39;uniform&#39;)
+train time: 0.001s
+test time:  0.804s
+accuracy:   0.161
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.23      0.02      0.03       319
+           comp.graphics       0.43      0.01      0.02       389
+ comp.os.ms-windows.misc       0.06      0.96      0.12       394
+comp.sys.ibm.pc.hardware       0.05      0.00      0.00       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.25      0.03      0.05       395
+            misc.forsale       0.50      0.02      0.03       390
+               rec.autos       0.72      0.31      0.44       396
+         rec.motorcycles       0.89      0.26      0.40       398
+      rec.sport.baseball       0.00      0.00      0.00       397
+        rec.sport.hockey       0.12      0.00      0.00       399
+               sci.crypt       0.72      0.39      0.50       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.20      0.00      0.00       396
+               sci.space       0.61      0.29      0.39       394
+  soc.religion.christian       0.48      0.39      0.43       398
+      talk.politics.guns       0.58      0.17      0.26       364
+   talk.politics.mideast       0.87      0.25      0.39       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.00      0.00      0.00       251
+
+             avg / total       0.34      0.16      0.16      7532
+
+confusion matrix:
+[[  5   0 238   1   0   0   0   0   1   0   0   1   0   0   5  64   1   1
+    0   2]
+ [  0   3 347   1   1  11   1   1   0   0   0   3   0   0  17   0   1   3
+    0   0]
+ [  0   2 379   3   0   4   0   0   0   0   0   0   0   0   4   0   2   0
+    0   0]
+ [  0   0 374   1   0   4   1   0   0   0   0   2   0   0  10   0   0   0
+    0   0]
+ [  1   0 372   0   0   1   0   1   0   0   0   3   0   0   5   2   0   0
+    0   0]
+ [  0   2 364   2   0  10   1   0   0   0   0   8   0   0   6   1   0   1
+    0   0]
+ [  0   0 344   2   0   3   6  16   4   0   0   6   1   0   7   1   0   0
+    0   0]
+ [  0   0 257   6   0   1   0 124   3   0   1   1   0   0   1   0   2   0
+    0   0]
+ [  0   0 278   1   0   0   0   6 102   0   0   4   0   1   1   3   2   0
+    0   0]
+ [  0   0 378   0   1   0   1   1   1   0   0   6   0   0   2   4   2   0
+    0   1]
+ [  0   0 383   0   0   0   0   0   3   0   1   6   1   0   0   4   1   0
+    0   0]
+ [  0   0 232   1   1   0   1   1   0   2   2 153   0   0   0   2   1   0
+    0   0]
+ [  0   0 355   0   1   2   0  12   1   0   0  14   0   0   6   1   1   0
+    0   0]
+ [  1   0 376   1   0   2   0   0   0   0   0   1   1   1   0  10   0   3
+    0   0]
+ [  0   0 272   0   0   1   1   1   0   0   0   1   1   0 114   3   0   0
+    0   0]
+ [ 11   0 219   0   0   0   0   0   0   0   1   0   1   0   3 156   0   4
+    0   3]
+ [  1   0 287   0   0   0   0   1   0   0   1   1   0   0   2   7  62   2
+    0   0]
+ [  0   0 258   1   0   0   0   4   0   0   2   1   0   2   2   9   2  95
+    0   0]
+ [  0   0 276   0   0   0   0   3   0   0   0   2   0   1   1   6  21   0
+    0   0]
+ [  3   0 181   0   0   1   0   2   0   0   0   0   0   0   1  55   8   0
+    0   0]]
+
+================================================================================
+Random forest
+________________________________________________________________________________
+Training: 
+RandomForestClassifier(bootstrap=True, class_weight=None, criterion=&#39;gini&#39;,
+            max_depth=None, max_features=&#39;auto&#39;, max_leaf_nodes=None,
+            min_impurity_split=1e-07, min_samples_leaf=1,
+            min_samples_split=2, min_weight_fraction_leaf=0.0,
+            n_estimators=100, n_jobs=1, oob_score=False, random_state=None,
+            verbose=0, warm_start=False)
+train time: 1.167s
+test time:  0.335s
+accuracy:   0.167
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.16      0.03      0.05       319
+           comp.graphics       0.18      0.02      0.04       389
+ comp.os.ms-windows.misc       0.57      0.33      0.42       394
+comp.sys.ibm.pc.hardware       0.10      0.01      0.02       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.23      0.04      0.07       395
+            misc.forsale       0.25      0.03      0.05       390
+               rec.autos       0.68      0.26      0.37       396
+         rec.motorcycles       0.76      0.25      0.38       398
+      rec.sport.baseball       0.06      0.95      0.12       397
+        rec.sport.hockey       0.09      0.01      0.01       399
+               sci.crypt       0.79      0.38      0.51       396
+         sci.electronics       0.06      0.00      0.00       393
+                 sci.med       0.11      0.00      0.00       396
+               sci.space       0.65      0.23      0.34       394
+  soc.religion.christian       0.47      0.26      0.33       398
+      talk.politics.guns       0.44      0.14      0.21       364
+   talk.politics.mideast       0.77      0.23      0.36       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.19      0.04      0.07       251
+
+             avg / total       0.34      0.17      0.17      7532
+
+confusion matrix:
+[[ 10   0   1   0   0   0   0   0   1 238   2   2   0   0   5  48   1   3
+    1   7]
+ [  0   8  11   7   1   6   3   2   0 328   1   2   1   1  11   0   4   2
+    1   0]
+ [  0  17 131  11   1  25   7   1   0 194   0   1   0   0   5   0   1   0
+    0   0]
+ [  0   5  19   4   2   7   3   0   2 340   0   2   1   0   6   0   0   0
+    1   0]
+ [  1   0   2   1   0   1   0   0   1 371   0   3   0   0   3   2   0   0
+    0   0]
+ [  0   8  37   6   0  16   2   1   0 312   0   1   1   2   2   0   3   3
+    0   1]
+ [  0   1   9   1   0   3  12  11   6 334   0   5   1   0   3   1   1   1
+    1   0]
+ [  1   0   4   1   0   1   6 102  16 252   3   0   3   0   2   2   1   2
+    0   0]
+ [  2   1   0   1   0   0   1   7 101 280   1   1   0   1   0   1   1   0
+    0   0]
+ [  0   0   0   0   0   1   3   1   0 378   1   5   0   0   0   2   2   0
+    1   3]
+ [  0   0   1   0   0   0   0   0   3 382   2   4   1   0   0   2   2   0
+    1   1]
+ [  2   0   1   0   1   4   0   1   0 227   3 149   2   0   1   1   1   1
+    1   1]
+ [  0   0   5   1   1   2   1  11   1 351   1   9   1   0   4   1   3   0
+    1   0]
+ [  2   0   0   0   0   0   0   0   0 376   2   1   1   1   1   4   2   3
+    1   2]
+ [  1   3   3   0   2   2   6   1   1 272   0   1   2   0  90   2   3   1
+    4   0]
+ [ 26   0   2   4   0   0   0   1   0 218   2   0   1   0   3 102   8   4
+    0  27]
+ [  2   0   2   0   0   0   3   6   0 285   0   1   0   1   1   6  51   4
+    2   0]
+ [  5   0   1   0   0   0   0   1   0 256   4   1   1   2   0   9   2  88
+    4   2]
+ [  2   1   1   1   0   1   0   2   1 271   0   1   1   1   0   6  19   0
+    0   2]
+ [  8   0   1   3   0   0   1   2   0 180   0   0   0   0   1  30  10   2
+    2  11]]
+
+================================================================================
+L2 penalty
+________________________________________________________________________________
+Training: 
+LinearSVC(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+     intercept_scaling=1, loss=&#39;l2&#39;, max_iter=1000, multi_class=&#39;ovr&#39;,
+     penalty=&#39;l2&#39;, random_state=None, tol=0.001, verbose=0)
+train time: 0.176s</pre>
+</div>
+</div>
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+test time:  0.002s
+accuracy:   0.186
+dimensionality: 10
+density: 1.000000
+
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.00      0.00      0.00       319
+           comp.graphics       0.00      0.00      0.00       389
+ comp.os.ms-windows.misc       0.52      0.49      0.51       394
+comp.sys.ibm.pc.hardware       0.00      0.00      0.00       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.00      0.00      0.00       395
+            misc.forsale       0.00      0.00      0.00       390
+               rec.autos       0.70      0.33      0.45       396
+         rec.motorcycles       0.85      0.26      0.40       398
+      rec.sport.baseball       0.00      0.00      0.00       397
+        rec.sport.hockey       0.00      0.00      0.00       399
+               sci.crypt       0.67      0.41      0.51       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.06      0.95      0.12       396
+               sci.space       0.57      0.29      0.39       394
+  soc.religion.christian       0.49      0.42      0.45       398
+      talk.politics.guns       0.56      0.17      0.26       364
+   talk.politics.mideast       0.87      0.23      0.36       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.00      0.00      0.00       251
+
+             avg / total       0.27      0.19      0.18      7532
+
+confusion matrix:
+[[  0   0   0   0   0   0   0   0   1   1   0   1   0 238   6  70   1   1
+    0   0]
+ [  0   0  32   0   0   1   0   2   0   0   0   4   0 328  20   0   1   1
+    0   0]
+ [  0   0 193   0   0   0   0   0   0   1   0   0   0 194   4   0   2   0
+    0   0]
+ [  0   0  39   0   0   0   0   0   0   0   0   3   0 340  10   0   0   0
+    0   0]
+ [  0   0   3   0   0   0   0   1   0   0   0   4   0 369   5   3   0   0
+    0   0]
+ [  0   0  64   0   0   0   0   0   1   0   0   8   0 312   8   1   0   1
+    0   0]
+ [  0   0  13   0   0   0   0  17   4   0   0   7   0 335  13   1   0   0
+    0   0]
+ [  0   0   5   0   0   0   0 132   3   0   0   1   0 252   1   0   2   0
+    0   0]
+ [  0   0   0   0   0   0   0   7 105   0   0   2   0 278   1   3   2   0
+    0   0]
+ [  0   0   0   0   0   0   0   1   1   0   0   8   0 378   2   5   2   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   4   0   0   7   0 382   0   4   1   0
+    0   0]
+ [  0   0   2   0   0   0   0   1   0   0   0 162   0 227   2   1   1   0
+    0   0]
+ [  0   0   6   0   0   0   0  12   1   0   0  15   0 351   6   1   1   0
+    0   0]
+ [  0   0   1   0   0   0   0   1   1   1   0   2   0 376   1  11   1   1
+    0   0]
+ [  0   0   1   0   0   0   0   1   0   0   0   2   0 272 116   2   0   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   0   0   0   3   0 218   3 168   0   5
+    0   0]
+ [  0   0   2   0   0   0   0   1   0   0   0   2   0 285   2   8  63   1
+    0   0]
+ [  0   0   0   0   0   0   0   6   3   1   0   8   0 256   2   8   6  86
+    0   0]
+ [  0   0   4   0   0   0   0   4   0   2   0   2   0 271   1   5  21   0
+    0   0]
+ [  0   0   2   0   0   0   0   2   0   0   0   1   0 180   1  54   8   3
+    0   0]]
+
+________________________________________________________________________________
+Training: 
+SGDClassifier(alpha=0.0001, average=False, class_weight=None, epsilon=0.1,
+       eta0=0.0, fit_intercept=True, l1_ratio=0.15,
+       learning_rate=&#39;optimal&#39;, loss=&#39;hinge&#39;, n_iter=50, n_jobs=1,
+       penalty=&#39;l2&#39;, power_t=0.5, random_state=None, shuffle=True,
+       verbose=0, warm_start=False)
+train time: 0.487s
+test time:  0.001s
+accuracy:   0.186
+dimensionality: 10
+density: 1.000000
+
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.00      0.00      0.00       319
+           comp.graphics       0.00      0.00      0.00       389
+ comp.os.ms-windows.misc       0.52      0.49      0.50       394
+comp.sys.ibm.pc.hardware       0.00      0.00      0.00       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.00      0.00      0.00       395
+            misc.forsale       0.00      0.00      0.00       390
+               rec.autos       0.69      0.34      0.45       396
+         rec.motorcycles       0.85      0.26      0.39       398
+      rec.sport.baseball       0.00      0.00      0.00       397
+        rec.sport.hockey       0.00      0.00      0.00       399
+               sci.crypt       0.66      0.41      0.51       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.06      0.95      0.12       396
+               sci.space       0.57      0.30      0.39       394
+  soc.religion.christian       0.49      0.42      0.45       398
+      talk.politics.guns       0.56      0.17      0.26       364
+   talk.politics.mideast       0.87      0.23      0.36       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.00      0.00      0.00       251
+
+             avg / total       0.27      0.19      0.18      7532
+
+confusion matrix:
+[[  0   0   0   0   0   0   0   0   1   0   0   2   0 238   6  70   1   1
+    0   0]
+ [  0   0  34   0   0   0   0   2   0   0   0   4   0 328  19   0   1   1
+    0   0]
+ [  0   0 193   0   0   0   0   0   0   0   0   0   0 194   4   0   3   0
+    0   0]
+ [  0   0  39   0   0   0   0   0   0   0   0   3   0 340  10   0   0   0
+    0   0]
+ [  0   0   3   0   0   0   0   1   0   0   0   4   0 369   5   3   0   0
+    0   0]
+ [  0   0  64   0   0   0   0   0   1   0   0   8   0 312   8   1   0   1
+    0   0]
+ [  0   0  13   0   0   0   0  18   4   0   0   7   0 334  13   1   0   0
+    0   0]
+ [  0   0   5   0   0   0   0 133   2   0   0   1   0 252   1   0   2   0
+    0   0]
+ [  0   0   0   0   0   0   0  10 102   0   0   2   0 278   1   3   2   0
+    0   0]
+ [  0   0   0   0   0   0   0   1   1   0   0   8   0 378   2   5   2   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   4   0   0   7   0 382   0   4   1   0
+    0   0]
+ [  0   0   2   0   0   0   0   1   0   0   0 162   0 227   2   1   1   0
+    0   0]
+ [  0   0   6   0   0   0   0  12   1   0   0  15   0 351   6   1   1   0
+    0   0]
+ [  0   0   1   0   0   0   0   1   1   0   0   3   0 376   1  11   1   1
+    0   0]
+ [  0   0   1   0   0   0   0   1   0   0   0   1   0 272 117   2   0   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   0   0   0   3   0 218   3 168   0   5
+    0   0]
+ [  0   0   2   0   0   0   0   1   0   0   0   2   0 285   2   8  63   1
+    0   0]
+ [  0   0   0   0   0   0   0   6   3   0   0   9   0 256   2   8   6  86
+    0   0]
+ [  0   0   4   0   0   0   0   4   0   0   0   3   0 271   1   6  21   0
+    0   0]
+ [  0   0   2   0   0   0   0   2   0   0   0   1   0 180   1  54   8   3
+    0   0]]
+
+================================================================================
+L1 penalty
+________________________________________________________________________________
+Training: 
+LinearSVC(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+     intercept_scaling=1, loss=&#39;l2&#39;, max_iter=1000, multi_class=&#39;ovr&#39;,
+     penalty=&#39;l1&#39;, random_state=None, tol=0.001, verbose=0)
+train time: 0.023s
+test time:  0.001s
+accuracy:   0.186
+dimensionality: 10
+density: 0.990000
+
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.00      0.00      0.00       319
+           comp.graphics       0.00      0.00      0.00       389
+ comp.os.ms-windows.misc       0.52      0.49      0.51       394
+comp.sys.ibm.pc.hardware       0.00      0.00      0.00       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.00      0.00      0.00       395
+            misc.forsale       0.00      0.00      0.00       390
+               rec.autos       0.70      0.33      0.45       396
+         rec.motorcycles       0.85      0.26      0.40       398
+      rec.sport.baseball       0.00      0.00      0.00       397
+        rec.sport.hockey       0.00      0.00      0.00       399
+               sci.crypt       0.67      0.41      0.51       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.06      0.95      0.12       396
+               sci.space       0.57      0.29      0.39       394
+  soc.religion.christian       0.49      0.42      0.45       398
+      talk.politics.guns       0.56      0.17      0.26       364
+   talk.politics.mideast       0.84      0.23      0.36       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.00      0.00      0.00       251
+
+             avg / total       0.27      0.19      0.18      7532
+
+confusion matrix:
+[[  0   0   0   0   0   0   0   0   1   1   0   1   0 238   6  69   1   2
+    0   0]
+ [  0   0  33   0   0   1   0   2   0   0   0   4   0 328  19   0   1   1
+    0   0]
+ [  0   0 193   0   0   0   0   0   0   1   0   0   0 194   4   0   2   0
+    0   0]
+ [  0   0  39   0   0   0   0   0   0   0   0   3   0 340  10   0   0   0
+    0   0]
+ [  0   0   3   0   0   0   0   1   0   0   0   4   0 369   5   3   0   0
+    0   0]
+ [  0   0  64   0   0   0   0   0   1   0   0   8   0 312   8   1   0   1
+    0   0]
+ [  0   0  13   0   0   0   0  17   4   0   0   7   0 335  13   1   0   0
+    0   0]
+ [  0   0   5   0   0   0   0 132   3   0   0   1   0 252   1   0   2   0
+    0   0]
+ [  0   0   0   0   0   0   0   7 105   0   0   2   0 278   1   3   2   0
+    0   0]
+ [  0   0   0   0   0   0   0   1   1   0   0   8   0 378   2   5   2   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   4   0   0   7   0 382   0   4   1   0
+    0   0]
+ [  0   0   0   0   0   0   0   1   0   0   0 163   0 227   2   1   1   1
+    0   0]
+ [  0   0   6   0   0   0   0  12   1   0   0  15   0 351   6   1   1   0
+    0   0]
+ [  0   0   1   0   0   0   0   1   1   1   0   2   0 376   1  11   1   1
+    0   0]
+ [  0   0   1   0   0   0   0   1   0   0   0   2   0 272 116   2   0   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   0   0   0   3   0 218   3 168   0   5
+    0   0]
+ [  0   0   2   0   0   0   0   1   0   0   0   2   0 285   2   8  63   1
+    0   0]
+ [  0   0   0   0   0   0   0   6   3   2   0   7   0 256   2   7   6  87
+    0   0]
+ [  0   0   4   0   0   0   0   4   0   2   0   2   0 271   1   5  21   0
+    0   0]
+ [  0   0   2   0   0   0   0   2   0   0   0   1   0 180   1  52   8   5
+    0   0]]
+
+________________________________________________________________________________
+Training: 
+SGDClassifier(alpha=0.0001, average=False, class_weight=None, epsilon=0.1,
+       eta0=0.0, fit_intercept=True, l1_ratio=0.15,
+       learning_rate=&#39;optimal&#39;, loss=&#39;hinge&#39;, n_iter=50, n_jobs=1,
+       penalty=&#39;l1&#39;, power_t=0.5, random_state=None, shuffle=True,
+       verbose=0, warm_start=False)
+</pre>
+</div>
+</div>
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>train time: 0.433s
+test time:  0.001s
+accuracy:   0.162
+dimensionality: 10
+density: 0.455000
+
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.00      0.00      0.00       319
+           comp.graphics       0.00      0.00      0.00       389
+ comp.os.ms-windows.misc       0.06      0.98      0.12       394
+comp.sys.ibm.pc.hardware       0.00      0.00      0.00       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.00      0.00      0.00       395
+            misc.forsale       0.00      0.00      0.00       390
+               rec.autos       0.69      0.33      0.45       396
+         rec.motorcycles       0.85      0.26      0.40       398
+      rec.sport.baseball       0.00      0.00      0.00       397
+        rec.sport.hockey       0.00      0.00      0.00       399
+               sci.crypt       0.66      0.41      0.50       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.00      0.00      0.00       396
+               sci.space       0.57      0.29      0.39       394
+  soc.religion.christian       0.49      0.42      0.46       398
+      talk.politics.guns       0.56      0.17      0.26       364
+   talk.politics.mideast       0.84      0.23      0.36       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.00      0.00      0.00       251
+
+             avg / total       0.24      0.16      0.15      7532
+
+confusion matrix:
+[[  0   0 238   0   0   0   0   0   1   0   0   2   0   0   6  68   2   2
+    0   0]
+ [  0   0 362   0   0   0   0   2   0   0   0   4   0   0  19   0   1   1
+    0   0]
+ [  0   0 386   0   0   0   0   1   0   0   0   1   0   0   4   0   2   0
+    0   0]
+ [  0   0 379   0   0   0   0   0   0   0   0   3   0   0  10   0   0   0
+    0   0]
+ [  0   0 372   0   0   0   0   1   0   0   0   4   0   0   5   3   0   0
+    0   0]
+ [  0   0 377   0   0   0   0   0   1   0   0   7   0   0   8   1   0   1
+    0   0]
+ [  0   0 347   0   0   0   0  17   4   0   0   7   0   0  14   1   0   0
+    0   0]
+ [  0   0 257   0   0   0   0 132   3   0   0   1   0   0   1   0   2   0
+    0   0]
+ [  0   0 278   0   0   0   0   7 105   0   0   2   0   0   1   3   2   0
+    0   0]
+ [  0   0 378   0   0   0   0   1   1   0   0   8   0   0   2   5   2   0
+    0   0]
+ [  0   0 383   0   0   0   0   0   4   0   0   7   0   0   0   4   1   0
+    0   0]
+ [  0   0 229   0   0   0   0   1   0   0   0 161   0   0   2   1   1   1
+    0   0]
+ [  0   0 357   0   0   0   0  12   1   0   0  15   0   0   6   1   1   0
+    0   0]
+ [  0   0 377   0   0   0   0   1   1   0   0   3   0   0   1  11   1   1
+    0   0]
+ [  0   0 273   0   0   0   0   1   0   0   0   2   0   0 116   2   0   0
+    0   0]
+ [  0   0 219   0   0   0   0   0   0   0   0   3   0   0   3 168   0   5
+    0   0]
+ [  0   0 287   0   0   0   0   1   0   0   0   2   0   0   2   8  63   1
+    0   0]
+ [  0   0 256   0   0   0   0   6   3   0   0   9   0   0   2   7   6  87
+    0   0]
+ [  0   0 275   0   0   0   0   4   0   0   0   3   0   0   1   6  21   0
+    0   0]
+ [  0   0 182   0   0   0   0   3   0   0   0   1   0   0   1  51   8   5
+    0   0]]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Train SGD with Elastic Net penalty</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Elastic-Net penalty&quot;</span><span class="p">)</span>
+<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">benchmark</span><span class="p">(</span><span class="n">SGDClassifier</span><span class="p">(</span><span class="n">alpha</span><span class="o">=.</span><span class="mo">0001</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                                       <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;elasticnet&quot;</span><span class="p">)))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>================================================================================
+Elastic-Net penalty
+________________________________________________________________________________
+Training: 
+SGDClassifier(alpha=0.0001, average=False, class_weight=None, epsilon=0.1,
+       eta0=0.0, fit_intercept=True, l1_ratio=0.15,
+       learning_rate=&#39;optimal&#39;, loss=&#39;hinge&#39;, n_iter=50, n_jobs=1,
+       penalty=&#39;elasticnet&#39;, power_t=0.5, random_state=None, shuffle=True,
+       verbose=0, warm_start=False)
+train time: 0.488s
+test time:  0.001s
+accuracy:   0.180
+dimensionality: 10
+density: 0.845000
+
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.00      0.00      0.00       319
+           comp.graphics       0.06      0.84      0.11       389
+ comp.os.ms-windows.misc       0.52      0.49      0.50       394
+comp.sys.ibm.pc.hardware       0.00      0.00      0.00       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.00      0.00      0.00       395
+            misc.forsale       0.00      0.00      0.00       390
+               rec.autos       0.69      0.34      0.45       396
+         rec.motorcycles       0.85      0.26      0.39       398
+      rec.sport.baseball       0.00      0.00      0.00       397
+        rec.sport.hockey       0.00      0.00      0.00       399
+               sci.crypt       0.66      0.41      0.51       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.00      0.00      0.00       396
+               sci.space       0.57      0.30      0.39       394
+  soc.religion.christian       0.49      0.42      0.45       398
+      talk.politics.guns       0.56      0.17      0.26       364
+   talk.politics.mideast       0.87      0.23      0.36       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.00      0.00      0.00       251
+
+             avg / total       0.27      0.18      0.18      7532
+
+confusion matrix:
+[[  0 238   0   0   0   0   0   0   1   0   0   2   0   0   6  70   1   1
+    0   0]
+ [  0 328  34   0   0   0   0   2   0   0   0   4   0   0  19   0   1   1
+    0   0]
+ [  0 194 193   0   0   0   0   0   0   0   0   0   0   0   4   0   3   0
+    0   0]
+ [  0 340  39   0   0   0   0   0   0   0   0   3   0   0  10   0   0   0
+    0   0]
+ [  0 369   3   0   0   0   0   1   0   0   0   4   0   0   5   3   0   0
+    0   0]
+ [  0 312  64   0   0   0   0   0   1   0   0   8   0   0   8   1   0   1
+    0   0]
+ [  0 334  13   0   0   0   0  18   4   0   0   7   0   0  13   1   0   0
+    0   0]
+ [  0 252   5   0   0   0   0 133   2   0   0   1   0   0   1   0   2   0
+    0   0]
+ [  0 278   0   0   0   0   0  10 102   0   0   2   0   0   1   3   2   0
+    0   0]
+ [  0 378   0   0   0   0   0   1   1   0   0   8   0   0   2   5   2   0
+    0   0]
+ [  0 382   1   0   0   0   0   0   4   0   0   7   0   0   0   4   1   0
+    0   0]
+ [  0 227   2   0   0   0   0   1   0   0   0 162   0   0   2   1   1   0
+    0   0]
+ [  0 351   6   0   0   0   0  12   1   0   0  15   0   0   6   1   1   0
+    0   0]
+ [  0 376   1   0   0   0   0   1   1   0   0   3   0   0   1  11   1   1
+    0   0]
+ [  0 272   1   0   0   0   0   1   0   0   0   1   0   0 117   2   0   0
+    0   0]
+ [  0 218   1   0   0   0   0   0   0   0   0   3   0   0   3 168   0   5
+    0   0]
+ [  0 285   2   0   0   0   0   1   0   0   0   2   0   0   2   8  63   1
+    0   0]
+ [  0 256   0   0   0   0   0   6   3   0   0   9   0   0   2   8   6  86
+    0   0]
+ [  0 271   4   0   0   0   0   4   0   0   0   3   0   0   1   6  21   0
+    0   0]
+ [  0 180   2   0   0   0   0   2   0   0   0   1   0   0   1  54   8   3
+    0   0]]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Train NearestCentroid without threshold</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;NearestCentroid (aka Rocchio classifier)&quot;</span><span class="p">)</span>
+<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">benchmark</span><span class="p">(</span><span class="n">NearestCentroid</span><span class="p">()))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>================================================================================
+NearestCentroid (aka Rocchio classifier)
+________________________________________________________________________________
+Training: 
+NearestCentroid(metric=&#39;euclidean&#39;, shrink_threshold=None)
+train time: 0.020s
+test time:  0.002s
+accuracy:   0.180
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.17      0.01      0.02       319
+           comp.graphics       1.00      0.01      0.02       389
+ comp.os.ms-windows.misc       0.57      0.48      0.52       394
+comp.sys.ibm.pc.hardware       0.00      0.00      0.00       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.22      0.02      0.04       395
+            misc.forsale       0.00      0.00      0.00       390
+               rec.autos       0.70      0.34      0.45       396
+         rec.motorcycles       0.90      0.25      0.39       398
+      rec.sport.baseball       0.00      0.00      0.00       397
+        rec.sport.hockey       0.17      0.00      0.00       399
+               sci.crypt       0.71      0.34      0.46       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.06      0.95      0.12       396
+               sci.space       0.61      0.29      0.40       394
+  soc.religion.christian       0.50      0.36      0.42       398
+      talk.politics.guns       0.58      0.16      0.26       364
+   talk.politics.mideast       0.90      0.23      0.36       376
+      talk.politics.misc       0.03      0.00      0.01       310
+      talk.religion.misc       0.18      0.04      0.06       251
+
+             avg / total       0.37      0.18      0.18      7532
+
+confusion matrix:
+[[  3   0   0   0   0   0   0   0   1   0   0   0   1 238   5  58   1   1
+    2   9]
+ [  0   3  21   1   3  11   0   0   0   0   0   3   2 328  15   0   1   1
+    0   0]
+ [  0   0 188   0   0   5   0   0   0   0   0   0   0 194   4   0   2   0
+    1   0]
+ [  0   0  33   0   0   5   0   0   0   0   0   1   1 341  11   0   0   0
+    0   0]
+ [  1   0   3   0   0   0   0   1   0   0   0   4   0 369   5   0   0   0
+    0   2]
+ [  0   0  56   1   2   8   0   0   0   0   0   7   1 313   5   1   0   1
+    0   0]
+ [  0   0  13   0   7   0   0  18   4   0   0   6   1 334   6   1   0   0
+    0   0]
+ [  0   0   5   0   0   1   0 133   1   0   0   1   0 252   1   0   2   0
+    0   0]
+ [  0   0   0   0   0   0   0  11  99   0   1   3   0 278   1   4   1   0
+    0   0]
+ [  0   0   0   0   0   0   0   1   1   0   0   5   1 378   2   4   2   0
+    2   1]
+ [  0   0   1   0   0   0   0   0   3   0   1   6   0 382   0   3   1   0
+    2   0]
+ [  0   0   2   0   0   0   0   2   0   0   0 133   3 228   2   2   2   0
+   22   0]
+ [  0   0   3   0   0   3   0  12   1   0   0  15   0 351   6   1   1   0
+    0   0]
+ [  1   0   0   0   1   1   0   0   0   1   1   1   3 376   0   9   0   0
+    1   1]
+ [  0   0   0   0   1   0   0   1   0   0   0   0   0 272 116   3   0   0
+    1   0]
+ [  6   0   1   0   0   0   0   0   0   0   0   0   3 218   3 142   0   5
+    0  20]
+ [  0   0   2   0   0   0   1   2   0   0   0   1   1 285   3   6  60   1
+    0   2]
+ [  0   0   0   0   0   0   2   3   0   0   3   0   7 258   2   6   2  85
+    5   3]
+ [  1   0   2   1   0   1   0   4   0   1   0   1   1 271   1   3  20   0
+    1   2]
+ [  6   0   1   0   0   1   0   2   0   0   0   0   0 180   1  43   8   0
+    0   9]]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Train sparse Naive Bayes classifiers</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Naive Bayes&quot;</span><span class="p">)</span>
+<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">benchmark</span><span class="p">(</span><span class="n">MultinomialNB</span><span class="p">(</span><span class="n">alpha</span><span class="o">=.</span><span class="mo">01</span><span class="p">)))</span>
+<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">benchmark</span><span class="p">(</span><span class="n">BernoulliNB</span><span class="p">(</span><span class="n">alpha</span><span class="o">=.</span><span class="mo">01</span><span class="p">)))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>================================================================================
+Naive Bayes
+________________________________________________________________________________
+Training: 
+MultinomialNB(alpha=0.01, class_prior=None, fit_prior=True)
+train time: 0.009s
+test time:  0.001s
+accuracy:   0.183
+dimensionality: 10
+density: 1.000000
+
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.00      0.00      0.00       319
+           comp.graphics       0.19      0.01      0.01       389
+ comp.os.ms-windows.misc       0.54      0.47      0.50       394
+comp.sys.ibm.pc.hardware       0.33      0.00      0.01       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.27      0.01      0.01       395
+            misc.forsale       0.00      0.00      0.00       390
+               rec.autos       0.71      0.32      0.44       396
+         rec.motorcycles       0.85      0.26      0.40       398
+      rec.sport.baseball       0.08      0.01      0.02       397
+        rec.sport.hockey       0.07      0.96      0.12       399
+               sci.crypt       0.79      0.36      0.49       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.14      0.00      0.00       396
+               sci.space       0.59      0.29      0.39       394
+  soc.religion.christian       0.48      0.42      0.45       398
+      talk.politics.guns       0.60      0.17      0.26       364
+   talk.politics.mideast       0.90      0.23      0.36       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.00      0.00      0.00       251
+
+             avg / total       0.34      0.18      0.18      7532
+
+confusion matrix:
+[[  0   0   0   0   0   0   0   0   1   0 239   1   0   0   5  71   1   1
+    0   0]
+ [  0   3  29   0   4   2   1   1   0   2 328   2   0   1  14   0   1   1
+    0   0]
+ [  0   5 184   0   0   3   1   0   0   0 195   0   0   0   4   0   2   0
+    0   0]
+ [  0   1  35   1   0   2   0   0   0   2 340   1   0   0  10   0   0   0
+    0   0]
+ [  0   0   3   0   0   0   0   1   0   3 369   1   0   0   5   3   0   0
+    0   0]
+ [  0   4  58   0   0   3   0   0   0   0 313   7   0   1   7   1   0   1
+    0   0]
+ [  0   1  12   0   0   0   0  17   4   5 335   2   1   0  12   1   0   0
+    0   0]
+ [  0   0   5   0   0   0   3 127   3   0 252   1   2   0   1   0   2   0
+    0   0]
+ [  0   0   0   0   0   0   0   7 104   2 278   1   0   0   1   3   2   0
+    0   0]
+ [  0   0   0   0   0   0   0   1   1   5 378   4   0   0   3   4   1   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   4   4 382   3   0   0   0   4   1   0
+    0   0]
+ [  0   0   0   2   2   0   0   1   0  17 228 142   0   1   0   2   1   0
+    0   0]
+ [  0   1   4   0   0   1   0  12   1   7 351   8   0   0   6   1   1   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   1   1 379   1   1   1   0  11   0   0
+    0   0]
+ [  0   1   0   0   1   0   0   1   0   0 272   1   0   1 115   2   0   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   0   4 218   0   0   1   3 167   0   4
+    0   0]
+ [  0   0   2   0   0   0   1   1   0   2 285   0   0   0   3   8  61   1
+    0   0]
+ [  0   0   0   0   0   0   0   5   3   3 261   4   2   0   3   9   1  85
+    0   0]
+ [  0   0   4   0   0   0   0   3   0   2 273   0   1   0   1   6  20   0
+    0   0]
+ [  0   0   2   0   0   0   0   2   0   0 181   0   0   1   1  55   8   1
+    0   0]]
+
+________________________________________________________________________________
+Training: 
+BernoulliNB(alpha=0.01, binarize=0.0, class_prior=None, fit_prior=True)
+train time: 0.006s
+test time:  0.001s
+accuracy:   0.184
+dimensionality: 10
+density: 1.000000
+
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.00      0.00      0.00       319
+           comp.graphics       0.00      0.00      0.00       389
+ comp.os.ms-windows.misc       0.52      0.49      0.50       394
+comp.sys.ibm.pc.hardware       0.00      0.00      0.00       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.00      0.00      0.00       395
+            misc.forsale       0.00      0.00      0.00       390
+               rec.autos       0.69      0.33      0.45       396
+         rec.motorcycles       0.85      0.26      0.40       398
+      rec.sport.baseball       0.06      0.95      0.12       397
+        rec.sport.hockey       0.00      0.00      0.00       399
+               sci.crypt       0.65      0.41      0.50       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.00      0.00      0.00       396
+               sci.space       0.58      0.29      0.39       394
+  soc.religion.christian       0.47      0.42      0.44       398
+      talk.politics.guns       0.53      0.16      0.24       364
+   talk.politics.mideast       0.87      0.22      0.35       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.25      0.00      0.01       251
+
+             avg / total       0.28      0.18      0.18      7532
+
+confusion matrix:
+[[  0   0   0   0   0   0   0   0   1 238   0   2   0   0   5  70   2   1
+    0   0]
+ [  0   0  36   0   0   0   0   2   0 328   0   4   0   0  16   0   1   2
+    0   0]
+ [  0   0 193   0   0   0   0   1   0 194   0   1   0   0   3   0   2   0
+    0   0]
+ [  0   0  39   0   0   0   0   0   0 340   0   3   0   0  10   0   0   0
+    0   0]
+ [  0   0   3   0   0   0   0   1   0 369   0   5   0   0   4   3   0   0
+    0   0]
+ [  0   0  65   0   0   0   0   0   1 312   0   7   0   0   8   1   0   1
+    0   0]
+ [  0   0  13   0   0   0   0  18   4 334   0   7   0   0  12   2   0   0
+    0   0]
+ [  0   0   5   0   0   0   1 130   3 252   0   1   0   0   1   0   3   0
+    0   0]
+ [  0   0   0   0   0   0   0   7 105 278   0   2   0   0   1   3   2   0
+    0   0]
+ [  0   0   0   0   0   0   0   1   1 378   0   8   0   0   3   4   1   0
+    0   1]
+ [  0   0   1   0   0   0   0   0   4 382   0   7   0   0   0   4   1   0
+    0   0]
+ [  0   0   0   0   0   0   0   0   0 227   0 162   0   0   2   2   2   1
+    0   0]
+ [  0   0   6   0   0   0   0  11   1 351   0  15   0   0   6   1   2   0
+    0   0]
+ [  0   0   1   0   0   0   0   1   1 376   0   3   0   0   1  11   1   1
+    0   0]
+ [  0   0   2   0   0   0   0   2   0 272   0   1   0   0 114   3   0   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   0 218   0   3   0   0   2 166   1   5
+    0   2]
+ [  0   0   2   0   0   0   0   1   0 285   0   5   0   0   5   8  57   1
+    0   0]
+ [  0   0   0   0   0   0   0   6   3 256   0   9   0   0   3  11   5  83
+    0   0]
+ [  0   0   4   0   0   0   0   4   0 271   0   4   0   0   1   6  20   0
+    0   0]
+ [  0   0   3   0   0   0   0   3   0 180   0   0   0   0   1  55   8   0
+    0   1]]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>LinearSVC with L1-based feature selection</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;LinearSVC with L1-based feature selection&quot;</span><span class="p">)</span>
+<span class="c1"># The smaller C, the stronger the regularization.</span>
+<span class="c1"># The more regularization, the more sparsity.</span>
+<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">benchmark</span><span class="p">(</span><span class="n">Pipeline</span><span class="p">([</span>
+  <span class="p">(</span><span class="s1">&#39;feature_selection&#39;</span><span class="p">,</span> <span class="n">LinearSVC</span><span class="p">(</span><span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;l1&quot;</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)),</span>
+  <span class="p">(</span><span class="s1">&#39;classification&#39;</span><span class="p">,</span> <span class="n">LinearSVC</span><span class="p">())</span>
+<span class="p">])))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>================================================================================
+LinearSVC with L1-based feature selection
+________________________________________________________________________________
+Training: 
+Pipeline(steps=[(&#39;feature_selection&#39;, LinearSVC(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+     intercept_scaling=1, loss=&#39;squared_hinge&#39;, max_iter=1000,
+     multi_class=&#39;ovr&#39;, penalty=&#39;l1&#39;, random_state=None, tol=0.001,
+     verbose=0)), (&#39;classification&#39;, LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=&#39;squared_hinge&#39;, max_iter=1000,
+     multi_class=&#39;ovr&#39;, penalty=&#39;l2&#39;, random_state=None, tol=0.0001,
+     verbose=0))])
+</pre>
+</div>
+</div>
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>train time: 0.436s
+test time:  0.002s
+accuracy:   0.186
+classification report:
+                          precision    recall  f1-score   support
+
+             alt.atheism       0.00      0.00      0.00       319
+           comp.graphics       0.00      0.00      0.00       389
+ comp.os.ms-windows.misc       0.52      0.49      0.51       394
+comp.sys.ibm.pc.hardware       0.00      0.00      0.00       392
+   comp.sys.mac.hardware       0.00      0.00      0.00       385
+          comp.windows.x       0.00      0.00      0.00       395
+            misc.forsale       0.00      0.00      0.00       390
+               rec.autos       0.70      0.33      0.45       396
+         rec.motorcycles       0.85      0.26      0.40       398
+      rec.sport.baseball       0.00      0.00      0.00       397
+        rec.sport.hockey       0.00      0.00      0.00       399
+               sci.crypt       0.67      0.41      0.51       396
+         sci.electronics       0.00      0.00      0.00       393
+                 sci.med       0.06      0.95      0.12       396
+               sci.space       0.57      0.29      0.39       394
+  soc.religion.christian       0.49      0.42      0.45       398
+      talk.politics.guns       0.56      0.17      0.26       364
+   talk.politics.mideast       0.87      0.23      0.36       376
+      talk.politics.misc       0.00      0.00      0.00       310
+      talk.religion.misc       0.00      0.00      0.00       251
+
+             avg / total       0.27      0.19      0.18      7532
+
+confusion matrix:
+[[  0   0   0   0   0   0   0   0   1   1   0   1   0 238   6  70   1   1
+    0   0]
+ [  0   0  32   0   0   1   0   2   0   0   0   4   0 328  20   0   1   1
+    0   0]
+ [  0   0 193   0   0   0   0   0   0   1   0   0   0 194   4   0   2   0
+    0   0]
+ [  0   0  39   0   0   0   0   0   0   0   0   3   0 340  10   0   0   0
+    0   0]
+ [  0   0   3   0   0   0   0   1   0   0   0   4   0 369   5   3   0   0
+    0   0]
+ [  0   0  64   0   0   0   0   0   1   0   0   8   0 312   8   1   0   1
+    0   0]
+ [  0   0  13   0   0   0   0  17   4   0   0   7   0 335  13   1   0   0
+    0   0]
+ [  0   0   5   0   0   0   0 132   3   0   0   1   0 252   1   0   2   0
+    0   0]
+ [  0   0   0   0   0   0   0   7 105   0   0   2   0 278   1   3   2   0
+    0   0]
+ [  0   0   0   0   0   0   0   1   1   0   0   8   0 378   2   5   2   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   4   0   0   7   0 382   0   4   1   0
+    0   0]
+ [  0   0   2   0   0   0   0   1   0   0   0 162   0 227   2   1   1   0
+    0   0]
+ [  0   0   6   0   0   0   0  12   1   0   0  15   0 351   6   1   1   0
+    0   0]
+ [  0   0   1   0   0   0   0   1   1   1   0   2   0 376   1  11   1   1
+    0   0]
+ [  0   0   1   0   0   0   0   1   0   0   0   2   0 272 116   2   0   0
+    0   0]
+ [  0   0   1   0   0   0   0   0   0   0   0   3   0 218   3 168   0   5
+    0   0]
+ [  0   0   2   0   0   0   0   1   0   0   0   2   0 285   2   8  63   1
+    0   0]
+ [  0   0   0   0   0   0   0   6   3   1   0   8   0 256   2   8   6  86
+    0   0]
+ [  0   0   4   0   0   0   0   4   0   2   0   2   0 271   1   5  21   0
+    0   0]
+ [  0   0   2   0   0   0   0   2   0   0   0   1   0 180   1  54   8   3
+    0   0]]
+
+</pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-Results">Plot Results<a class="anchor-link" href="#Plot-Results">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="p">[[</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
+
+<span class="n">clf_names</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">training_time</span><span class="p">,</span> <span class="n">test_time</span> <span class="o">=</span> <span class="n">results</span>
+<span class="n">training_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">training_time</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">training_time</span><span class="p">)</span>
+<span class="n">test_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">test_time</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">test_time</span><span class="p">)</span>
+
+<span class="n">p1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">indices</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">score</span><span class="p">,</span> 
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> 
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;navy&#39;</span><span class="p">))</span>
+
+<span class="n">p2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">indices</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">training_time</span><span class="p">,</span> 
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;training time&quot;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;cyan&#39;</span><span class="p">))</span>
+
+<span class="n">p3</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">indices</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">test_time</span><span class="p">,</span> 
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;test time&quot;</span><span class="p">,</span> 
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;darkorange&#39;</span><span class="p">))</span>
+
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Score&quot;</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[19]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/3596.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Authors:</p>
+
+<pre><code>     Peter Prettenhofer &lt;peter.prettenhofer@gmail.com&gt;
+
+     Olivier Grisel &lt;olivier.grisel@ensta.org&gt;
+
+     Mathieu Blondel &lt;mathieu@mblondel.org&gt;
+
+     Lars Buitinck
+
+</code></pre>
+<p>License:</p>
+
+<pre><code>     BSD 3 clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}

@@ -1,0 +1,877 @@
+---
+permalink: matplotlib/trisurf/
+description: How to make Tri-Surf plots using matplotlib in Plotly.
+title: Matplotlib Tri-Surf Plots | plotly
+has_thumbnail: true
+thumbnail: thumbnail/trisurf.jpg
+layout: user-guide
+name: Tri-Surf Plots
+language: matplotlib
+display_as: 3d_charts
+has_thumbnail: true
+page_type: example_index
+order: 1
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Defining-and-plotting-triangulated-surfaces">Defining and plotting triangulated surfaces<a class="anchor-link" href="#Defining-and-plotting-triangulated-surfaces">&#182;</a></h2><h2 id="with-Plotly-Mesh3d">with Plotly <code>Mesh3d</code><a class="anchor-link" href="#with-Plotly-Mesh3d">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A triangulation of a compact surface is a finite collection of triangles that cover the surface in  such a way that every point on the surface is in a triangle,  and  the intersection of any two triangles is either void, a common edge or a common vertex. A triangulated surface is called tri-surface.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The triangulation of a surface defined as the graph of a continuous function, $z=f(x,y), (x,y)\in D\subset\mathbb{R}^2$ or in a parametric form:
+$$x=x(u,v), y=y(u,v), z=z(u,v), (u,v)\in U\subset\mathbb{R}^2,$$
+is the image through $f$,respectively through the parameterization, of the Delaunay triangulation or an user defined triangulation of the planar domain $D$, respectively $U$.</p>
+<p>The Delaunay triangulation of a planar region is defined and illustrated in a Python Plotly tutorial posted <a href="https://plot.ly/python/alpha-shapes/">here</a>.</p>
+<p>If the planar region $D$  ($U$) is rectangular, then one defines a meshgrid on it, and the points
+of the grid are the input  points for the <code>scipy.spatial.Delaunay</code> function that defines the planar triangulation of $D$, respectively $U$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Triangulation-of-the-Moebius-band">Triangulation of the Moebius band<a class="anchor-link" href="#Triangulation-of-the-Moebius-band">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The Moebius band is parameterized by:</p>
+$$\begin{align*}
+x(u,v)&=(1+0.5 v\cos(u/2))\cos(u)\\
+y(u,v)&=(1+0.5 v\cos(u/2))\sin(u)\quad\quad u\in[0,2\pi],\: v\in[-1,1]\\
+z(u,v)&=0.5 v\sin(u/2) 
+\end{align*}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Define a meshgrid on the rectangle $U=[0,2\pi]\times[-1,1]$:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="kn">as</span> <span class="nn">cm</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">Delaunay</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">u</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+<span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+<span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="c">#evaluate the parameterization at the flattened u and v</span>
+<span class="n">tp</span><span class="o">=</span><span class="mi">1</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">v</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+<span class="n">x</span><span class="o">=</span><span class="n">tp</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">y</span><span class="o">=</span><span class="n">tp</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">z</span><span class="o">=</span><span class="mf">0.5</span><span class="o">*</span><span class="n">v</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+
+<span class="c">#define 2D points, as input data for the Delaunay triangulation of U</span>
+<span class="n">points2D</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="n">tri</span> <span class="o">=</span> <span class="n">Delaunay</span><span class="p">(</span><span class="n">points2D</span><span class="p">)</span><span class="c">#triangulate the rectangle U</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>tri.simplices</code> is a <code>np.array</code> of integers, of shape (<code>ntri</code>,3), where <code>ntri</code> is the number of triangles generated  by <code>scipy.spatial.Delaunay</code>.
+Each row in this array contains  three indices,  i, j, k, such that points2D[i,:], points2D[j,:], points2D[k,:]  are vertices of a triangle in the Delaunay triangularization of the rectangle $U$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">print</span> <span class="n">tri</span><span class="o">.</span><span class="n">simplices</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">tri</span><span class="o">.</span><span class="n">simplices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(322, 3) 
+[73 96 72]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The images  of the <code>points2D</code> through the surface parameterization are 3D points. The same simplices define the triangles on the surface.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Setting   a combination of  keys in <code>Mesh3d</code> leads to generating and plotting of a tri-surface, in the same way as <code>plot_trisurf</code> in matplotlib  or <code>trisurf</code> in Matlab does.</p>
+<p>We note that <code>Mesh3d</code> with different combination of keys can generate  <a href="https://plot.ly/python/alpha-shapes/">alpha-shapes</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In order to plot a tri-surface, we choose a colormap, and associate to each triangle on the surface,  the  color in colormap, corresponding to  the normalized mean value of z-coordinates of the triangle vertices.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Define a function that maps a mean z-value to a matplotlib color, converted to a Plotly color:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">map_z2color</span><span class="p">(</span><span class="n">zval</span><span class="p">,</span> <span class="n">colormap</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+    <span class="c">#map the normalized value zval to a corresponding color in the colormap</span>
+    
+    <span class="k">if</span> <span class="n">vmin</span><span class="o">&gt;</span><span class="n">vmax</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;incorrect relation between vmin and vmax&#39;</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">=</span><span class="p">(</span><span class="n">zval</span><span class="o">-</span><span class="n">vmin</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">((</span><span class="n">vmax</span><span class="o">-</span><span class="n">vmin</span><span class="p">))</span><span class="c">#normalize val</span>
+    <span class="n">R</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">colormap</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s">&#39;rgb(&#39;</span><span class="o">+</span><span class="s">&#39;{:d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="mi">255</span><span class="o">+</span><span class="mf">0.5</span><span class="p">))</span><span class="o">+</span><span class="s">&#39;,&#39;</span><span class="o">+</span><span class="s">&#39;{:d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="mi">255</span><span class="o">+</span><span class="mf">0.5</span><span class="p">))</span><span class="o">+</span>\
+           <span class="s">&#39;,&#39;</span><span class="o">+</span><span class="s">&#39;{:d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">B</span><span class="o">*</span><span class="mi">255</span><span class="o">+</span><span class="mf">0.5</span><span class="p">))</span><span class="o">+</span><span class="s">&#39;)&#39;</span>   
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To plot the triangles on a surface,  we set in Plotly <code>Mesh3d</code> the lists of x, y, respectively z- coordinates of the vertices, and the lists of indices, i, j, k, for x, y, z coordinates of  all  vertices:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">tri_indices</span><span class="p">(</span><span class="n">simplices</span><span class="p">):</span>
+    <span class="c">#simplices is a numpy array defining the simplices of the triangularization</span>
+    <span class="c">#returns the lists of indices i, j, k</span>
+    
+    <span class="k">return</span> <span class="p">([</span><span class="n">triplet</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">triplet</span> <span class="ow">in</span> <span class="n">simplices</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we define a function that returns data  for a Plotly plot of a tri-surface:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">plotly_trisurf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">simplices</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu</span><span class="p">,</span> <span class="n">plot_edges</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="c">#x, y, z are lists of coordinates of the triangle vertices </span>
+    <span class="c">#simplices are the simplices that define the triangularization;</span>
+    <span class="c">#simplices  is a numpy array of shape (no_triangles, 3)</span>
+    <span class="c">#insert here the  type check for input data</span>
+    
+    <span class="n">points3D</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">tri_vertices</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">index</span><span class="p">:</span> <span class="n">points3D</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">simplices</span><span class="p">)</span><span class="c"># vertices of the surface triangles     </span>
+    <span class="n">zmean</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tri</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">tri</span> <span class="ow">in</span> <span class="n">tri_vertices</span> <span class="p">]</span><span class="c"># mean values of z-coordinates of </span>
+                                                      <span class="c">#triangle vertices</span>
+    <span class="n">min_zmean</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">zmean</span><span class="p">)</span>
+    <span class="n">max_zmean</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">zmean</span><span class="p">)</span>  
+    <span class="n">facecolor</span><span class="o">=</span><span class="p">[</span><span class="n">map_z2color</span><span class="p">(</span><span class="n">zz</span><span class="p">,</span>  <span class="n">colormap</span><span class="p">,</span> <span class="n">min_zmean</span><span class="p">,</span> <span class="n">max_zmean</span><span class="p">)</span> <span class="k">for</span> <span class="n">zz</span> <span class="ow">in</span> <span class="n">zmean</span><span class="p">]</span> 
+    <span class="n">I</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">K</span><span class="o">=</span><span class="n">tri_indices</span><span class="p">(</span><span class="n">simplices</span><span class="p">)</span>
+    
+    <span class="n">triangles</span><span class="o">=</span><span class="n">Mesh3d</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                     <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+                     <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">,</span>
+                     <span class="n">facecolor</span><span class="o">=</span><span class="n">facecolor</span><span class="p">,</span> 
+                     <span class="n">i</span><span class="o">=</span><span class="n">I</span><span class="p">,</span>
+                     <span class="n">j</span><span class="o">=</span><span class="n">J</span><span class="p">,</span>
+                     <span class="n">k</span><span class="o">=</span><span class="n">K</span><span class="p">,</span>
+                     <span class="n">name</span><span class="o">=</span><span class="s">&#39;&#39;</span>
+                    <span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">plot_edges</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span><span class="c"># the triangle sides are not plotted </span>
+        <span class="k">return</span> <span class="n">Data</span><span class="p">([</span><span class="n">triangles</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c">#define the lists Xe, Ye, Ze, of x, y, resp z coordinates of edge end points for each triangle</span>
+        <span class="c">#None separates data corresponding to two consecutive triangles</span>
+        <span class="n">lists_coord</span><span class="o">=</span><span class="p">[[[</span><span class="n">T</span><span class="p">[</span><span class="n">k</span><span class="o">%</span><span class="k">3</span>][c] for k in range(4)]+[ None]   for T in tri_vertices]  for c in range(3)]
+        <span class="n">Xe</span><span class="p">,</span> <span class="n">Ye</span><span class="p">,</span> <span class="n">Ze</span><span class="o">=</span><span class="p">[</span><span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">,</span> <span class="n">lists_coord</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+        
+        <span class="c">#define the lines to be plotted</span>
+        <span class="n">lines</span><span class="o">=</span><span class="n">Scatter3d</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Xe</span><span class="p">,</span>
+                        <span class="n">y</span><span class="o">=</span><span class="n">Ye</span><span class="p">,</span>
+                        <span class="n">z</span><span class="o">=</span><span class="n">Ze</span><span class="p">,</span>
+                        <span class="n">mode</span><span class="o">=</span><span class="s">&#39;lines&#39;</span><span class="p">,</span>
+                        <span class="n">line</span><span class="o">=</span><span class="n">Line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span> <span class="s">&#39;rgb(50,50,50)&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+               <span class="p">)</span>
+        <span class="k">return</span> <span class="n">Data</span><span class="p">([</span><span class="n">triangles</span><span class="p">,</span> <span class="n">lines</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Call this  function for data associated to Moebius band:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">data1</span><span class="o">=</span><span class="n">plotly_trisurf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span> <span class="n">tri</span><span class="o">.</span><span class="n">simplices</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu</span><span class="p">,</span> <span class="n">plot_edges</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Set the  layout of the plot:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">axis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+<span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+<span class="n">backgroundcolor</span><span class="o">=</span><span class="s">&quot;rgb(230, 230,230)&quot;</span><span class="p">,</span>
+<span class="n">gridcolor</span><span class="o">=</span><span class="s">&quot;rgb(255, 255, 255)&quot;</span><span class="p">,</span>      
+<span class="n">zerolinecolor</span><span class="o">=</span><span class="s">&quot;rgb(255, 255, 255)&quot;</span><span class="p">,</span>  
+    <span class="p">)</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span>
+         <span class="n">title</span><span class="o">=</span><span class="s">&#39;Moebius band triangulation&#39;</span><span class="p">,</span>
+         <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+         <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+         <span class="n">scene</span><span class="o">=</span><span class="n">Scene</span><span class="p">(</span>  
+         <span class="n">xaxis</span><span class="o">=</span><span class="n">XAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span>
+         <span class="n">yaxis</span><span class="o">=</span><span class="n">YAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span> 
+         <span class="n">zaxis</span><span class="o">=</span><span class="n">ZAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span> 
+        <span class="n">aspectratio</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">z</span><span class="o">=</span><span class="mf">0.5</span>
+        <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="p">)</span>
+
+<span class="n">fig1</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data1</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">py</span><span class="o">.</span><span class="n">sign_in</span><span class="p">(</span><span class="s">&#39;empet&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig1</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;Moebius-band-trisurf&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[11]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~tarzzz/2200.embed" height="800px" width="800px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Triangularization-of-the-surface-$z=\sin(-xy)$,-defined-over-a-disk">Triangularization of the surface  $z=\sin(-xy)$, defined over a disk<a class="anchor-link" href="#Triangularization-of-the-surface-$z=\sin(-xy)$,-defined-over-a-disk">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We consider polar coordinates on the disk, $D(0, 1)$, centered at origin and of radius 1, and define
+a meshgrid on the set of points $(r, \theta)$, with $r\in[0,1]$ and $\theta\in[0,2\pi]$:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">n</span><span class="o">=</span><span class="mi">12</span><span class="c"># number of radii</span>
+<span class="n">h</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="n">theta</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">36</span><span class="p">)</span>
+
+<span class="n">r</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">theta</span><span class="p">)</span>
+<span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="c">#Convert polar coordinates to cartesian coordinates (x,y)</span>
+<span class="n">x</span><span class="o">=</span><span class="n">r</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+<span class="n">y</span><span class="o">=</span><span class="n">r</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+<span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="c">#  a trick to include the center of the disk in the set of points. It was avoided</span>
+                 <span class="c"># initially when we defined r=np.linspace(h, 1.0, n)</span>
+<span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">)</span> 
+
+<span class="n">points2D</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="n">tri</span><span class="o">=</span><span class="n">Delaunay</span><span class="p">(</span><span class="n">points2D</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Plot the  surface with a modified layout:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">data2</span><span class="o">=</span><span class="n">plotly_trisurf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span> <span class="n">tri</span><span class="o">.</span><span class="n">simplices</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">cubehelix</span><span class="p">,</span> <span class="n">plot_edges</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">fig2</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data2</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">fig2</span><span class="p">[</span><span class="s">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&#39;Triangulated surface&#39;</span><span class="p">,</span>
+                          <span class="n">scene</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">camera</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">eye</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">1.75</span><span class="p">,</span> 
+                                                          <span class="n">y</span><span class="o">=-</span><span class="mf">0.7</span><span class="p">,</span> 
+                                                          <span class="n">z</span><span class="o">=</span> <span class="mf">0.75</span><span class="p">)</span>
+                                                <span class="p">)</span>
+                                    <span class="p">)))</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">sign_in</span><span class="p">(</span><span class="s">&#39;empet&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig2</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;trisurf-cubehx&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~tarzzz/2202.embed" height="800px" width="800px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This example is also given as a demo for matplotlib <a href="http://matplotlib.org/examples/mplot3d/trisurf3d_demo.html"><code>plot_trisurf</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plotting-tri-surfaces-from-data-stored-in--ply-files">Plotting tri-surfaces from data stored in  ply-files<a class="anchor-link" href="#Plotting-tri-surfaces-from-data-stored-in--ply-files">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A PLY (Polygon File Format or Stanford Triangle Format) format is a format for storing graphical objects
+that are represented by  a triangulation of an object, resulted usually from scanning that object. A Ply file contains the coordinates of vertices, the codes for faces (triangles) and other elements, as well as the color for faces or the normal direction to faces.</p>
+<p>In the following we show how we can read a ply file via the Python package, <code>plyfile</code>. This package can be installed with <code>pip</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">plyfile</span> <span class="kn">import</span> <span class="n">PlyData</span><span class="p">,</span> <span class="n">PlyElement</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We choose a ply file from a list  provided <a href="http://people.sc.fsu.edu/~jburkardt/data/ply/ply.html">here</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s">&#39;http://people.sc.fsu.edu/~jburkardt/data/ply/chopper.ply&#39;</span><span class="p">)</span> 
+<span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">()</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+<span class="n">plydata</span> <span class="o">=</span> <span class="n">PlyData</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Read the file header:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">plydata</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">element</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>element vertex 1066
+property float x
+property float y
+property float z
+element face 2094
+property list uchar int vertex_indices
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">nr_points</span><span class="o">=</span><span class="n">plydata</span><span class="o">.</span><span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">count</span>
+<span class="n">nr_faces</span><span class="o">=</span><span class="n">plydata</span><span class="o">.</span><span class="n">elements</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">count</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Read the vertex coordinates:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">points</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">plydata</span><span class="p">[</span><span class="s">&#39;vertex&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr_points</span><span class="p">)])</span>
+<span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[19]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(-39.49470138549805, 160.3179931640625, 4.016839981079102)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">points</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">faces</span><span class="o">=</span><span class="p">[</span><span class="n">plydata</span><span class="p">[</span><span class="s">&#39;face&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr_faces</span><span class="p">)]</span>
+<span class="n">faces</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[21]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([0, 1, 2], dtype=int32)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can get data for a Plotly plot of the graphical object read from the ply file:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">data3</span><span class="o">=</span><span class="n">plotly_trisurf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span> <span class="n">faces</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu</span><span class="p">,</span> <span class="n">plot_edges</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Update the layout for this new plot:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">title</span><span class="o">=</span><span class="s">&quot;Trisurf from a PLY file&lt;br&gt;&quot;</span><span class="o">+</span>\
+                <span class="s">&quot;Data Source:&lt;a href=&#39;http://people.sc.fsu.edu/~jburkardt/data/ply/airplane.ply&#39;&gt; [1]&lt;/a&gt;&quot;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">noaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">showbackground</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">showline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>  
+            <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span> 
+          <span class="p">)</span>
+
+<span class="n">fig3</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data3</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">fig3</span><span class="p">[</span><span class="s">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                           <span class="n">width</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                           <span class="n">height</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                           <span class="n">scene</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">xaxis</span><span class="o">=</span><span class="n">noaxis</span><span class="p">,</span>
+                                      <span class="n">yaxis</span><span class="o">=</span><span class="n">noaxis</span><span class="p">,</span> 
+                                      <span class="n">zaxis</span><span class="o">=</span><span class="n">noaxis</span><span class="p">,</span> 
+                                      <span class="n">aspectratio</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">0.4</span><span class="p">),</span>
+                                      <span class="n">camera</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">eye</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span> <span class="mf">1.25</span><span class="p">)</span>     
+                                     <span class="p">)</span>
+                           <span class="p">)</span>
+                     <span class="p">))</span>
+                      
+                     
+
+<span class="n">py</span><span class="o">.</span><span class="n">sign_in</span><span class="p">(</span><span class="s">&#39;empet&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig3</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;Chopper-Ply-cls&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[24]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~tarzzz/2204.embed" height="1000px" width="1000px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This a version of the same object plotted along with  triangle edges:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+<span class="n">HTML</span><span class="p">(</span><span class="s">&#39;&lt;iframe src=https://plot.ly/~empet/13734/trisurf-from-a-ply-file-data-source-1/ </span><span class="se">\</span>
+<span class="s">     width=800 height=800&gt;&lt;/iframe&gt;&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[25]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe src=https://plot.ly/~empet/13734/trisurf-from-a-ply-file-data-source-1/      width=800 height=800></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}

@@ -1,0 +1,338 @@
+---
+permalink: scikit-learn/feature-stacker/
+description:
+name: Concatenating Multiple Feature Extraction Methods  | plotly
+has_thumbnail: true
+thumbnail: thumbnail/scikit-default.jpg
+layout: user-guide
+name: Concatenating Multiple Feature Extraction Methods
+language: scikit-learn
+title: Concatenating Multiple Feature Extraction Methods | plotly
+display_as: general_examples
+has_thumbnail: true
+page_type: example_index
+order: 3
+ipynb: ~Diksha_Gabha/2663
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In many real-world examples, there are many ways to extract features from a dataset. Often it is beneficial to combine several methods to obtain good performance. This example shows how to use FeatureUnion to combine features obtained by PCA and univariate selection.</p>
+<p>Combining features using this transformer has the benefit that it allows cross validation and grid searches over the whole process.</p>
+<p>The combination used in this example is not particularly helpful on this dataset and is only used to illustrate the usage of FeatureUnion.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version">Version<a class="anchor-link" href="#Version">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="k">print</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0.17.1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">FeatureUnion</span>
+<span class="kn">from</span> <span class="nn">sklearn.grid_search</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVC</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_iris</span>
+<span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="kn">import</span> <span class="n">SelectKBest</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculations">Calculations<a class="anchor-link" href="#Calculations">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">iris</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span>
+
+<span class="c1"># This dataset is way to high-dimensional. Better do PCA:</span>
+<span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Maybe some original features where good, too?</span>
+<span class="n">selection</span> <span class="o">=</span> <span class="n">SelectKBest</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Build estimator from PCA and Univariate selection:</span>
+
+<span class="n">combined_features</span> <span class="o">=</span> <span class="n">FeatureUnion</span><span class="p">([(</span><span class="s2">&quot;pca&quot;</span><span class="p">,</span> <span class="n">pca</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;univ_select&quot;</span><span class="p">,</span> <span class="n">selection</span><span class="p">)])</span>
+
+<span class="c1"># Use combined features to transform dataset:</span>
+<span class="n">X_features</span> <span class="o">=</span> <span class="n">combined_features</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="n">svm</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+
+<span class="c1"># Do grid search over k, n_components and C:</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s2">&quot;features&quot;</span><span class="p">,</span> <span class="n">combined_features</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;svm&quot;</span><span class="p">,</span> <span class="n">svm</span><span class="p">)])</span>
+
+<span class="n">param_grid</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">features__pca__n_components</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+                  <span class="n">features__univ_select__k</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+                  <span class="n">svm__C</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+
+<span class="n">grid_search</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">param_grid</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">grid_search</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">grid_search</span><span class="o">.</span><span class="n">best_estimator_</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Fitting 3 folds for each of 18 candidates, totalling 54 fits
+[CV] features__pca__n_components=1, svm__C=0.1, features__univ_select__k=1
+[CV]  features__pca__n_components=1, svm__C=0.1, features__univ_select__k=1, score=0.960784 -   0.0s
+[CV] features__pca__n_components=1, svm__C=0.1, features__univ_select__k=1
+[CV]  features__pca__n_components=1, svm__C=0.1, features__univ_select__k=1, score=0.901961 -   0.0s
+[CV] features__pca__n_components=1, svm__C=0.1, features__univ_select__k=1
+[CV]  features__pca__n_components=1, svm__C=0.1, features__univ_select__k=1, score=0.979167 -   0.0s
+[CV] features__pca__n_components=1, svm__C=1, features__univ_select__k=1
+[CV]  features__pca__n_components=1, svm__C=1, features__univ_select__k=1, score=0.941176 -   0.0s
+[CV] features__pca__n_components=1, svm__C=1, features__univ_select__k=1
+[CV]  features__pca__n_components=1, svm__C=1, features__univ_select__k=1, score=0.921569 -   0.0s
+[CV] features__pca__n_components=1, svm__C=1, features__univ_select__k=1
+[CV]  features__pca__n_components=1, svm__C=1, features__univ_select__k=1, score=0.979167 -   0.0s
+[CV] features__pca__n_components=1, svm__C=10, features__univ_select__k=1
+[CV]  features__pca__n_components=1, svm__C=10, features__univ_select__k=1, score=0.960784 -   0.0s
+[CV] features__pca__n_components=1, svm__C=10, features__univ_select__k=1
+[CV]  features__pca__n_components=1, svm__C=10, features__univ_select__k=1, score=0.921569 -   0.0s
+[CV] features__pca__n_components=1, svm__C=10, features__univ_select__k=1
+[CV]  features__pca__n_components=1, svm__C=10, features__univ_select__k=1, score=0.979167 -   0.0s
+[CV] features__pca__n_components=1, svm__C=0.1, features__univ_select__k=2
+[CV]  features__pca__n_components=1, svm__C=0.1, features__univ_select__k=2, score=0.960784 -   0.0s
+[CV] features__pca__n_components=1, svm__C=0.1, features__univ_select__k=2
+[CV]  features__pca__n_components=1, svm__C=0.1, features__univ_select__k=2, score=0.921569 -   0.0s
+[CV] features__pca__n_components=1, svm__C=0.1, features__univ_select__k=2
+[CV]  features__pca__n_components=1, svm__C=0.1, features__univ_select__k=2, score=0.979167 -   0.0s
+[CV] features__pca__n_components=1, svm__C=1, features__univ_select__k=2
+[CV]  features__pca__n_components=1, svm__C=1, features__univ_select__k=2, score=0.960784 -   0.0s
+[CV] features__pca__n_components=1, svm__C=1, features__univ_select__k=2
+[CV]  features__pca__n_components=1, svm__C=1, features__univ_select__k=2, score=0.921569 -   0.0s
+[CV] features__pca__n_components=1, svm__C=1, features__univ_select__k=2
+[CV]  features__pca__n_components=1, svm__C=1, features__univ_select__k=2, score=1.000000 -   0.0s
+[CV] features__pca__n_components=1, svm__C=10, features__univ_select__k=2
+[CV]  features__pca__n_components=1, svm__C=10, features__univ_select__k=2, score=0.980392 -   0.0s
+[CV] features__pca__n_components=1, svm__C=10, features__univ_select__k=2
+[CV]  features__pca__n_components=1, svm__C=10, features__univ_select__k=2, score=0.901961 -   0.0s
+[CV] features__pca__n_components=1, svm__C=10, features__univ_select__k=2
+[CV]  features__pca__n_components=1, svm__C=10, features__univ_select__k=2, score=1.000000 -   0.0s
+[CV] features__pca__n_components=2, svm__C=0.1, features__univ_select__k=1
+[CV]  features__pca__n_components=2, svm__C=0.1, features__univ_select__k=1, score=0.960784 -   0.0s
+[CV] features__pca__n_components=2, svm__C=0.1, features__univ_select__k=1
+[CV]  features__pca__n_components=2, svm__C=0.1, features__univ_select__k=1, score=0.901961 -   0.0s
+[CV] features__pca__n_components=2, svm__C=0.1, features__univ_select__k=1
+[CV]  features__pca__n_components=2, svm__C=0.1, features__univ_select__k=1, score=0.979167 -   0.0s
+[CV] features__pca__n_components=2, svm__C=1, features__univ_select__k=1
+[CV]  features__pca__n_components=2, svm__C=1, features__univ_select__k=1, score=0.980392 -   0.0s
+[CV] features__pca__n_components=2, svm__C=1, features__univ_select__k=1
+[CV]  features__pca__n_components=2, svm__C=1, features__univ_select__k=1, score=0.941176 -   0.0s
+[CV] features__pca__n_components=2, svm__C=1, features__univ_select__k=1
+[CV]  features__pca__n_components=2, svm__C=1, features__univ_select__k=1, score=0.979167 -   0.0s
+[CV] features__pca__n_components=2, svm__C=10, features__univ_select__k=1
+[CV]  features__pca__n_components=2, svm__C=10, features__univ_select__k=1, score=0.980392 -   0.0s
+[CV] features__pca__n_components=2, svm__C=10, features__univ_select__k=1
+[CV]  features__pca__n_components=2, svm__C=10, features__univ_select__k=1, score=0.941176 -   0.0s
+[CV] features__pca__n_components=2, svm__C=10, features__univ_select__k=1
+[CV]  features__pca__n_components=2, svm__C=10, features__univ_select__k=1, score=0.979167 -   0.0s
+[CV] features__pca__n_components=2, svm__C=0.1, features__univ_select__k=2
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>[Parallel(n_jobs=1)]: Done   1 tasks       | elapsed:    0.0s
+[Parallel(n_jobs=1)]: Done   4 tasks       | elapsed:    0.0s
+[Parallel(n_jobs=1)]: Done   7 tasks       | elapsed:    0.1s
+[Parallel(n_jobs=1)]: Done  12 tasks       | elapsed:    0.1s
+[Parallel(n_jobs=1)]: Done  17 tasks       | elapsed:    0.1s
+[Parallel(n_jobs=1)]: Done  24 tasks       | elapsed:    0.2s
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[CV]  features__pca__n_components=2, svm__C=0.1, features__univ_select__k=2, score=0.980392 -   0.0s
+[CV] features__pca__n_components=2, svm__C=0.1, features__univ_select__k=2
+[CV]  features__pca__n_components=2, svm__C=0.1, features__univ_select__k=2, score=0.941176 -   0.0s
+[CV] features__pca__n_components=2, svm__C=0.1, features__univ_select__k=2
+[CV]  features__pca__n_components=2, svm__C=0.1, features__univ_select__k=2, score=0.979167 -   0.0s
+[CV] features__pca__n_components=2, svm__C=1, features__univ_select__k=2
+[CV]  features__pca__n_components=2, svm__C=1, features__univ_select__k=2, score=1.000000 -   0.0s
+[CV] features__pca__n_components=2, svm__C=1, features__univ_select__k=2
+[CV]  features__pca__n_components=2, svm__C=1, features__univ_select__k=2, score=0.960784 -   0.0s
+[CV] features__pca__n_components=2, svm__C=1, features__univ_select__k=2
+[CV]  features__pca__n_components=2, svm__C=1, features__univ_select__k=2, score=0.979167 -   0.0s
+[CV] features__pca__n_components=2, svm__C=10, features__univ_select__k=2
+[CV]  features__pca__n_components=2, svm__C=10, features__univ_select__k=2, score=0.980392 -   0.0s
+[CV] features__pca__n_components=2, svm__C=10, features__univ_select__k=2
+[CV]  features__pca__n_components=2, svm__C=10, features__univ_select__k=2, score=0.921569 -   0.0s
+[CV] features__pca__n_components=2, svm__C=10, features__univ_select__k=2
+[CV]  features__pca__n_components=2, svm__C=10, features__univ_select__k=2, score=1.000000 -   0.0s
+[CV] features__pca__n_components=3, svm__C=0.1, features__univ_select__k=1
+[CV]  features__pca__n_components=3, svm__C=0.1, features__univ_select__k=1, score=0.980392 -   0.0s
+[CV] features__pca__n_components=3, svm__C=0.1, features__univ_select__k=1
+[CV]  features__pca__n_components=3, svm__C=0.1, features__univ_select__k=1, score=0.941176 -   0.0s
+[CV] features__pca__n_components=3, svm__C=0.1, features__univ_select__k=1
+[CV]  features__pca__n_components=3, svm__C=0.1, features__univ_select__k=1, score=0.979167 -   0.0s
+[CV] features__pca__n_components=3, svm__C=1, features__univ_select__k=1
+[CV]  features__pca__n_components=3, svm__C=1, features__univ_select__k=1, score=1.000000 -   0.0s
+[CV] features__pca__n_components=3, svm__C=1, features__univ_select__k=1
+[CV]  features__pca__n_components=3, svm__C=1, features__univ_select__k=1, score=0.941176 -   0.0s
+[CV] features__pca__n_components=3, svm__C=1, features__univ_select__k=1
+[CV]  features__pca__n_components=3, svm__C=1, features__univ_select__k=1, score=0.979167 -   0.0s
+[CV] features__pca__n_components=3, svm__C=10, features__univ_select__k=1
+[CV]  features__pca__n_components=3, svm__C=10, features__univ_select__k=1, score=1.000000 -   0.0s
+[CV] features__pca__n_components=3, svm__C=10, features__univ_select__k=1
+[CV]  features__pca__n_components=3, svm__C=10, features__univ_select__k=1, score=0.921569 -   0.0s
+[CV] features__pca__n_components=3, svm__C=10, features__univ_select__k=1
+[CV]  features__pca__n_components=3, svm__C=10, features__univ_select__k=1, score=1.000000 -   0.0s
+[CV] features__pca__n_components=3, svm__C=0.1, features__univ_select__k=2
+[CV]  features__pca__n_components=3, svm__C=0.1, features__univ_select__k=2, score=0.980392 -   0.0s
+[CV] features__pca__n_components=3, svm__C=0.1, features__univ_select__k=2
+[CV]  features__pca__n_components=3, svm__C=0.1, features__univ_select__k=2, score=0.941176 -   0.0s
+[CV] features__pca__n_components=3, svm__C=0.1, features__univ_select__k=2
+[CV]  features__pca__n_components=3, svm__C=0.1, features__univ_select__k=2, score=0.979167 -   0.0s
+[CV] features__pca__n_components=3, svm__C=1, features__univ_select__k=2
+[CV]  features__pca__n_components=3, svm__C=1, features__univ_select__k=2, score=1.000000 -   0.0s
+[CV] features__pca__n_components=3, svm__C=1, features__univ_select__k=2
+[CV]  features__pca__n_components=3, svm__C=1, features__univ_select__k=2, score=0.960784 -   0.0s
+[CV] features__pca__n_components=3, svm__C=1, features__univ_select__k=2
+[CV]  features__pca__n_components=3, svm__C=1, features__univ_select__k=2, score=0.979167 -   0.0s
+[CV] features__pca__n_components=3, svm__C=10, features__univ_select__k=2
+[CV]  features__pca__n_components=3, svm__C=10, features__univ_select__k=2, score=1.000000 -   0.0s
+[CV] features__pca__n_components=3, svm__C=10, features__univ_select__k=2
+[CV]  features__pca__n_components=3, svm__C=10, features__univ_select__k=2, score=0.921569 -   0.0s
+[CV] features__pca__n_components=3, svm__C=10, features__univ_select__k=2
+[CV]  features__pca__n_components=3, svm__C=10, features__univ_select__k=2, score=1.000000 -   0.0s
+Pipeline(steps=[(&apos;features&apos;, FeatureUnion(n_jobs=1,
+       transformer_list=[(&apos;pca&apos;, PCA(copy=True, n_components=2, whiten=False)), (&apos;univ_select&apos;, SelectKBest(k=2, score_func=&lt;function f_classif at 0x7f8c6948dc08&gt;))],
+       transformer_weights=None)), (&apos;svm&apos;, SVC(C=1, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape=None, degree=3, gamma=&apos;auto&apos;, kernel=&apos;linear&apos;,
+  max_iter=-1, probability=False, random_state=None, shrinking=True,
+  tol=0.001, verbose=False))])
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>[Parallel(n_jobs=1)]: Done  31 tasks       | elapsed:    0.2s
+[Parallel(n_jobs=1)]: Done  40 tasks       | elapsed:    0.3s
+[Parallel(n_jobs=1)]: Done  49 tasks       | elapsed:    0.4s
+[Parallel(n_jobs=1)]: Done  54 out of  54 | elapsed:    0.4s finished
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="License">License<a class="anchor-link" href="#License">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Author:</p>
+
+<pre><code>    Andreas Mueller (amueller@ais.uni-bonn.de)
+
+</code></pre>
+<p>License:</p>
+
+<pre><code>    BSD 3 clause</code></pre>
+
+</div>
+</div>
+</div>{% endraw %}
