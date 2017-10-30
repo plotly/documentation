@@ -69,6 +69,10 @@ chart_link
 <iframe src="https://plot.ly/~RPlotBot/4367.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 
+Parallel coordinates are richly interactive by default. Drag the lines along the axes to filter regions and drag the axis names across the plot to rearrange variables:
+
+![](https://s3-us-west-1.amazonaws.com/plotly-tutorials/plotly-documentation/images/python_parcoords_ex1.gif)
+
 ### Basic Parallel Cordinates Plot
 
 
