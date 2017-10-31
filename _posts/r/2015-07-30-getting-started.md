@@ -69,7 +69,7 @@ Save these commands in your [.Rprofile](http://www.statmethods.net/interface/cus
 ```r
 library(plotly)
 p <- plot_ly(midwest, x = ~percollege, color = ~state, type = "box")
-plotly_POST(p, filename = "r-docs/midwest-boxplots")
+api_create(p, filename = "r-docs/midwest-boxplots")
 ```
 
 `filename` sets the name of the file inside your online plotly account.
@@ -125,6 +125,6 @@ Plots can be set to three different type of privacies: public, private or secret
 By default all plots are set to public. Users with a free account are limited to creating public plots. If you have private storage needs, please visit [Plotly products page](https://plot.ly/products). If you're a [Personal or Professional USER](https://plot.ly/settings/subscription/?modal=true&utm_source=api-docs&utm_medium=support-oss) and would like the setting for your plots to be private, you can specify sharing as private:
 
 ```r
-plotly_POST(filename = "private-graph", sharing = "private")
+api_create(filename = "private-graph", sharing = "private")
 ```
 For more examples on privacy settings please visit [R privacy documentation](https://plot.ly/r/privacy/)
