@@ -100,8 +100,10 @@ Our Julia tutorials are written in HTML files with embeded plot examples.
   - `git commit -m "include a message about the tutorial you're adding"`
   - `git push origin source-design-merge`
 
-10. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally 
-11. Deploy with `rake deploy`
+10. To proof your work, serve the pages locally by running: `bundle exec jekyll serve --config _config_dev.yml` from the root of the documentation repo.
+For more information see these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally 
+
+11. Deploy changes by running `bundle exec rake deploy` from the root of the documentation repo.
 
 ##### At https://plot.ly/julia
 12. Check your Tutorial!!!! This is a <b>very important</b> step.
