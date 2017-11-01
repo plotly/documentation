@@ -65,6 +65,10 @@ documentation (source-design-merge) $ bundle exec rake deploy
 
 (from the `source-design-merge` branch in the root of the `documentation` repo)
 
+## Search
+
+We now have search via algolia implemented on our index and referece documentation pages! Please refer to our [make README](https://github.com/plotly/documentation/blob/source-design-merge/make_instructions.txt) for more information on how search works and instructions on how to update or edit Plotly search indices. 
+
 ## Style Edits
 
 Please refer to our [Styles README](https://github.com/plotly/documentation/blob/source-design-merge/Styles.md)
