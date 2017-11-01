@@ -110,4 +110,8 @@ Our javascript tutorials are written in HTML files with embeded [codepen](http:/
     - Make sure all plots/codepen embeds appear! (\*you may want to sign out of your Plotly/codepen account to ensure you didn't accidentally embed private plots)
     - The thumbnail image appears on: https://plot.ly/javascript/ 
 
+## Search
+
+We now have search via algolia implemented on our index and referece documentation pages! Please refer to our [make README](https://github.com/plotly/documentation/blob/source-design-merge/make_instructions.txt) for more information on how search works and instructions on how to update or edit Plotly search indices. 
+
 Thanks for contributing to our documentation!!
