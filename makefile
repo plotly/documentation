@@ -18,5 +18,7 @@ update_r_search :
 	bundle exec jekyll algolia push --config _config_r_search.yml
 
 update_ref_search :
+	@echo "Install algoliasearch python package:" 
+	pip install --upgrade algoliasearch
 	@echo "Updating search for reference pages"
 	python update_ref_search.py
