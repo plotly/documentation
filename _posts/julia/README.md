@@ -7,22 +7,16 @@
   $ git fetch origin
   $ git checkout source-design-merge
   ```
-1. [Install ruby](https://www.ruby-lang.org/en/documentation/installation/). <b>IMPORTANT</b> - [Install a version that is compatible with Github Pages: 2.3.3](https://pages.github.com/versions/):
+1. Check Ruby version `$ ruby --version`. We recommend using `version 2.3.3` or the same ruby version as gh-pages: https://pages.github.com/versions/. Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
 
-[Install jekyll](http://jekyllrb.com/docs/installation/). <b>IMPORTANT</b> - [Install a version that is compatible with Github Pages: 3.4.3](https://pages.github.com/versions/):
-
-  ```
-  $ gem install jekyll -v 3.4.3
-  ```
-2. Install some dependencies:
+2. Install bundler and a couple dependencies from the gemfile:
 
   ```
-  $ sudo gem install jekyll-redirect-from
-  $ sudo gem install jekyll-sitemap
-  $ sudo gem install terminal-notifier
-  $ sudo gem install jemoji
-  $ sudo gem install redcarpet
+  $ gem install bundler
+  $ bundle install
+
   ```
+<b>IMPORTANT</b> -If not using bundler and the gemfile, [install the same jekyll version that Github Pages is using](https://pages.github.com/versions/).
 
 ## Create Julia Documentation:
 Our Julia tutorials are written in HTML files with embeded plot examples.
