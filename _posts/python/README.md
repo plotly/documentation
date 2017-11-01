@@ -136,5 +136,8 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
     - There are no empty notebook cells
     - The thumbnail image appears on: https://plot.ly/python/ 
 
+## Search
+
+We now have search via algolia implemented on our index and referece documentation pages! Please refer to our [make README](https://github.com/plotly/documentation/blob/source-design-merge/make_instructions.txt) for more information on how search works and instructions on how to update or edit Plotly search indices. 
 
 Thanks for contributing to our documentation!!
