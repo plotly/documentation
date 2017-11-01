@@ -3,7 +3,7 @@ $(function(config) {
   'use strict';
 
   var applicationId = config.applicationId;
-  var apiKey = config.apiKey;
+  //var apiKey = config.apiKey;
   var indexName = config.indexName;
 
   var algolia = algoliasearch(applicationId, apiKey);
