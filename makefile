@@ -19,4 +19,4 @@ update_r_search :
 
 update_ref_search :
 	@echo "Updating search for reference pages"
-	python update_reference_search.py
+	python update_ref_search.py
