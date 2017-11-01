@@ -5,7 +5,6 @@ $(function(config) {
   var applicationId = config.applicationId;
   var apiKey = config.apiKey;
   var indexName = config.indexName;
-  console.log(config.indexName)
 
   var algolia = algoliasearch(applicationId, apiKey);
   var helper = algoliasearchHelper(algolia, indexName);
