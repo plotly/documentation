@@ -12,7 +12,7 @@
 [Install jekyll](http://jekyllrb.com/docs/installation/). <b>IMPORTANT</b> - [Install a version that is compatible with Github Pages: 3.4.3](https://pages.github.com/versions/):
 
   ```
-  $ gem install jekyll -v 3.0.3
+  $ gem install jekyll -v 3.4.3
   ```
 2. Install some dependencies:
 
