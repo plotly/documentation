@@ -1,0 +1,52 @@
+---
+name: Filter and Aggregates
+plot_url: https://codepen.io/plotly/embed/rYVvOj/?height=500&theme-id=15263&default-tab=result
+language: plotly_js
+suite: multiple-transforms
+order: 3
+sitemap: false
+arrangement: horizontal
+---
+
+Plotly.d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv", function(err, rows){
+
+  function unpack(rows, key) {
+  return rows.map(function(row) { return row[key]; });
+}
+
+  var data = [{
+      type: 'scatter',
+      mode: 'markers',
+      x: unpack(rows, 'lifeExp'),
+      y: unpack(rows, 'gdpPercap'),
+      text: unpack(rows, 'continent'),
+      marker: {
+        size: unpack(rows, 'pop'),
+        sizemode: "area",
+        sizeref: 200000
+      },
+      transforms: [
+        {
+          type: 'filter',
+          target: unpack(rows, 'year'),
+          operation: '=',
+          value: '2007'
+        }, {
+          type: 'aggregate',
+          groups: unpack(rows, 'continent'),
+          aggregations: [
+            {target: 'x', func: 'avg'},
+            {target: 'y', func: 'avg'},
+            {target: 'marker.size', func: 'sum'}
+          ]
+       }]
+    }]
+
+var layout = {
+  yaxis: {
+    type: 'log'
+  }
+}
+
+Plotly.plot('graph', data, layout)
+});
