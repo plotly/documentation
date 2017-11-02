@@ -728,10 +728,10 @@ Command.prototype = {
           command.setOption(entry.option.camelName, entry.value);
       });
 
-      command.init_(item.args);
+      command.init_(item.args.slice());   // use slice to avoid args mutation in handler
 
       if (item.args.length)
-        command.args_.apply(command, item.args);
+        command.args_(item.args.slice()); // use slice to avoid args mutation in handler
 
       // apply regular options
       item.options.forEach(function(entry){

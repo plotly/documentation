@@ -1,3 +1,7 @@
+## 1.2.3 (September 20, 2017)
+
+- Rolled back passing params to `args()` back as array
+
 ## 1.2.2 (September 18, 2017)
 
 - Fixed context passed to `Command#args()`, now it's a command as expected (#10)
