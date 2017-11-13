@@ -13,7 +13,7 @@ indices = []
 # array to fill with dictionaries of each file
 all_js_files = []
 
-for root, dirs, files in os.walk(".", topdown=False):
+for root, dirs, files in os.walk("_posts/plotly_js/", topdown=False):
     for name in files:
         if 'index' in name:
             indices.append(os.path.join(root, name))
