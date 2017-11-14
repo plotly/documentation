@@ -86,8 +86,8 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
       has_thumbnail='true', thumbnail='thumbnail/your-tutorial-chart.jpg', 
       language='python', 
       # page_type='example_index', // note this is only if you want the tutorial to appear on the main page: plot.ly/python
-      display_as='chart_type', order=2,
-      ipynb= '~notebook_demo/1')
+      display_as='chart_type', order=2, ipynb='~notebook_demo/1',
+      uses_plotly_offline=False*)
   ```
   - always include a trailing slash in the permalink (i.e. python/your-tutorial-chart/)
   - `display_as` sets in which section your tutorial is displayed 
@@ -99,6 +99,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
     - '3d_charts' = https://plot.ly/python/#3d-charts
     - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/documentation_eg.html#L1)
   - `order` defines the order in which the tutorials appear on plot.ly/python. Please take a look at https://plot.ly/python/ anorder your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
+  - `uses_plotly_offline` is an optional argument, include as `True` if you're creating an offline doc.
   
 9. Now we can upload/download jupyter (ipython) notebooks to Plotly!!!! 
   - There is a button in our side navigation bar of the python docs so users can click the button and see the notebook hosted on plot.ly where they can download it and run it to follow along with the documentation. 
