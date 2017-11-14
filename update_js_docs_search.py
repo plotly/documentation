@@ -25,18 +25,21 @@ for i in range(len(indices)):
     js_file = {}
     for line in file_content:
         if 'permalink' in line:
-            js_file['permalink']= line.split(':')[1]
+            js_file['permalink']= line.split(': ')[1]
         elif 'name' in line:
-            js_file['name']= line.split(':')[1]
+            try:
+                js_file['name']= line.split(': ')[1]
+            except:
+                pass
         elif 'description' in line:
             try:
-                js_file['description']= line.split(':')[1]
+                js_file['description']= line.split(': ')[1]
             except:
                 pass
         elif 'display_as' in line:
-            js_file['display_as']= line.split(':')[1]
+            js_file['display_as']= line.split(': ')[1]
         elif 'tags' in line:
-            js_file['tags']= line.split(':')[1]
+            js_file['tags']= line.split(': ')[1]
         else:
             pass
     all_js_files.append(js_file)
