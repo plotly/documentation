@@ -1,6 +1,7 @@
 ---
 permalink: python/create-online-dashboard/
 description: How to create and publish a dashboard with the Python API.
+name: Dashboard API | plotly
 has_thumbnail: true
 thumbnail: thumbnail/dashboard.jpg
 layout: user-guide
@@ -8,6 +9,7 @@ name: Dashboard API
 language: python
 title: Dashboard API | plotly
 display_as: file_settings
+has_thumbnail: true
 page_type: example_index
 order: 0
 ipynb: ~notebook_demo/148
@@ -51,7 +53,7 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version.</p
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;2.0.6&#39;</pre>
+<pre>&#39;2.2.1&#39;</pre>
 </div>
 
 </div>
@@ -76,7 +78,7 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version.</p
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.dashboard_objs</span> <span class="kn">as</span> <span class="nn">dashboard</span>
@@ -98,7 +100,7 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version.</p
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[2]:</div>
+<div class="prompt output_prompt">Out[3]:</div>
 
 
 
@@ -351,22 +353,18 @@ Run  <code>pip install plotly --upgrade</code> to update your Plotly version.</p
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">fileId_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return fileId from a url.&quot;&quot;&quot;</span>
-    <span class="n">index</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
-    <span class="n">fileId</span> <span class="o">=</span> <span class="n">url</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
-    <span class="n">local_id_index</span> <span class="o">=</span> <span class="n">fileId</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
 
-    <span class="n">share_key_index</span> <span class="o">=</span> <span class="n">fileId</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;?share_key&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">share_key_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">fileId</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">fileId</span><span class="p">[:</span><span class="n">share_key_index</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">fileId_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return fileId from a url.&quot;&quot;&quot;</span>
+    <span class="n">raw_fileId</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;~[A-z]+/[0-9]+&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span> <span class="p">]</span>
+    <span class="k">return</span> <span class="n">raw_fileId</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">sharekey_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the sharekey from a url.&quot;&quot;&quot;</span>
-    <span class="n">index</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;share_key=&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">url</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="s1">&#39;share_key=&#39;</span><span class="p">):]</span>
+    <span class="k">if</span> <span class="s1">&#39;share_key=&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">url</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;This url is not &#39;sercret&#39;. It does not have a secret key.&quot;</span>
+    <span class="k">return</span> <span class="n">url</span><span class="p">[</span><span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;share_key=&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="s1">&#39;share_key=&#39;</span><span class="p">):]</span>
 
 <span class="n">fileId_1</span> <span class="o">=</span> <span class="n">fileId_from_url</span><span class="p">(</span><span class="n">url_1</span><span class="p">)</span>
 <span class="n">fileId_2</span> <span class="o">=</span> <span class="n">fileId_from_url</span><span class="p">(</span><span class="n">url_2</span><span class="p">)</span>
@@ -804,7 +802,7 @@ Right now there is no native way to adjust the sizes of the dashboard boxes. A c
 <span class="n">text_box</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;box&#39;</span><span class="p">,</span>
     <span class="s1">&#39;boxType&#39;</span><span class="p">:</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;empty space&#39;</span>
+    <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;empty space&#39;</span> 
 <span class="p">}</span>
 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
     <span class="n">stacked_dboard</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">text_box</span><span class="p">,</span> <span class="s1">&#39;below&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -1006,12 +1004,12 @@ Right now there is no native way to adjust the sizes of the dashboard boxes. A c
 
 class dashboard_ops
  |  Interface to Plotly&#39;s Dashboards API.
- |
+ |  
  |  Plotly Dashboards are JSON blobs. They are made up by a bunch of
  |  containers which contain either empty boxes or boxes with file urls.
  |  For more info on Dashboard objects themselves, run
  |  `help(plotly.dashboard_objs)`.
- |
+ |  
  |  Example 1: Upload Simple Dashboard
  |  ```
  |  import plotly.plotly as py
@@ -1022,46 +1020,46 @@ class dashboard_ops
  |      &#39;fileId&#39;: &#39;username:123&#39;,
  |      &#39;title&#39;: &#39;box 1&#39;
  |  }
- |
+ |  
  |  box_2 = {
  |      &#39;type&#39;: &#39;box&#39;,
  |      &#39;boxType&#39;: &#39;plot&#39;,
  |      &#39;fileId&#39;: &#39;username:456&#39;,
  |      &#39;title&#39;: &#39;box 2&#39;
  |  }
- |
+ |  
  |  my_dboard = dashboard.Dashboard()
  |  my_dboard.insert(box_1)
  |  # my_dboard.get_preview()
  |  my_dboard.insert(box_2, &#39;above&#39;, 1)
  |  # my_dboard.get_preview()
- |
+ |  
  |  py.dashboard_ops.upload(my_dboard)
  |  ```
- |
+ |  
  |  Example 2: Retreive Dashboard from Plotly
  |  ```
  |  # works if you have at least one dashboard in your files
  |  import plotly.plotly as py
  |  import plotly.dashboard_objs as dashboard
- |
+ |  
  |  dboard_names = get_dashboard_names()
  |  first_dboard = get_dashboard(dboard_names[0])
- |
+ |  
  |  first_dboard.get_preview()
  |  ```
- |
+ |  
  |  Class methods defined here:
- |
+ |  
  |  get_dashboard(cls, dashboard_name) from __builtin__.classobj
  |      Returns a Dashboard object from a dashboard name.
- |
+ |  
  |  get_dashboard_names(cls) from __builtin__.classobj
  |      Return list of all active dashboard names from users&#39; account.
- |
+ |  
  |  upload(cls, dashboard, filename, sharing=&#39;public&#39;, auto_open=True) from __builtin__.classobj
  |      BETA function for uploading/overwriting dashboards to Plotly.
- |
+ |      
  |      :param (dict) dashboard: the JSON dashboard to be uploaded. Use
  |          plotly.dashboard_objs.dashboard_objs to create a Dashboard
  |          object.
@@ -1084,6 +1082,6 @@ class dashboard_ops
 </div>
 
 </div>
-
+ 
 
 {% endraw %}
