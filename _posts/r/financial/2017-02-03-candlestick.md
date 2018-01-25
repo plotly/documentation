@@ -188,24 +188,16 @@ p <- df %>%
   plot_ly(x = ~Date, type="candlestick",
           open = ~AAPL.Open, close = ~AAPL.Close,
           high = ~AAPL.High, low = ~AAPL.Low) %>%
-  add_lines(y = ~AAPL.Open, line = list(color = 'black', width = 0.75)) %>%
+  add_lines(x = ~Date, y = ~AAPL.Open, line = list(color = 'black', width = 0.75), inherit = F) %>%
   layout(showlegend = FALSE)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="finance/candlestick-trace")
-```
-
-```
-## Error: Client error: (400) Bad Request
-## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 1, u'close'), ('data', 1, u'high'), ('data', 1, u'low'), ('data', 1, u'open')]
-```
-
-```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4309.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4313.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Candlestick Using Segments
 
@@ -271,17 +263,17 @@ p <- df %>%
           open = ~AAPL.Open, close = ~AAPL.Close,
           high = ~AAPL.High, low = ~AAPL.Low, name = "AAPL",
           increasing = i, decreasing = d) %>%
-  add_lines(y = ~up , name = "B Bands",
+  add_lines(x = ~Date, y = ~up , name = "B Bands",
             line = list(color = '#ccc', width = 0.5),
             legendgroup = "Bollinger Bands",
-            hoverinfo = "none") %>%
-  add_lines(y = ~dn, name = "B Bands",
+            hoverinfo = "none", inherit = F) %>%
+  add_lines(x = ~Date, y = ~dn, name = "B Bands",
             line = list(color = '#ccc', width = 0.5),
-            legendgroup = "Bollinger Bands",
+            legendgroup = "Bollinger Bands", inherit = F,
             showlegend = FALSE, hoverinfo = "none") %>%
-  add_lines(y = ~mavg, name = "Mv Avg",
+  add_lines(x = ~Date, y = ~mavg, name = "Mv Avg",
             line = list(color = '#E377C2', width = 0.5),
-            hoverinfo = "none") %>%
+            hoverinfo = "none", inherit = F) %>%
   layout(yaxis = list(title = "Price"))
 
 # plot volume bar chart
@@ -325,18 +317,10 @@ p <- subplot(p, pp, heights = c(0.7,0.2), nrows=2,
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="finance/candlestick-bbands")
-```
-
-```
-## Error: Client error: (400) Bad Request
-## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 1, u'close'), ('data', 1, u'high'), ('data', 1, u'low'), ('data', 1, u'open'), ('data', 2, u'close'), ('data', 2, u'high'), ('data', 2, u'low'), ('data', 2, u'open'), ('data', 3, u'close'), ('data', 3, u'high'), ('data', 3, u'low'), ('data', 3, u'open')]
-```
-
-```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4311.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4315.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
