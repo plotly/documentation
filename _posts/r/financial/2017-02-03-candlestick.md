@@ -35,7 +35,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.6.9000'
+## [1] '4.7.1.9000'
 ```
 
 ### Basic Candlestick
@@ -59,11 +59,38 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="finance/candlestick-basic")
+chart_link = api_create(p, filename="finance/candlestick-basic")
 chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/4305.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Candlestick without Rangeslider
+
+
+```r
+library(plotly)
+library(quantmod)
+
+getSymbols("AAPL",src='yahoo')
+
+df <- data.frame(Date=index(AAPL),coredata(AAPL))
+df <- tail(df, 30)
+
+p <- df %>%
+  plot_ly(x = ~Date, type="candlestick",
+          open = ~AAPL.Open, close = ~AAPL.Close,
+          high = ~AAPL.High, low = ~AAPL.Low) %>%
+  layout(title = "Basic Candlestick Chart",
+         xaxis = list(rangeslider = list(visible = F)))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="finance/candlestick-rangeslider")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5220.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Customise the Figure with Shapes and Annotations
 
@@ -108,7 +135,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="finance/candlestick-custom")
+chart_link = api_create(p, filename="finance/candlestick-custom")
 chart_link
 ```
 
@@ -139,7 +166,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="finance/candlestick-colors")
+chart_link = api_create(p, filename="finance/candlestick-colors")
 chart_link
 ```
 
@@ -166,11 +193,19 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="finance/candlestick-trace")
+chart_link = api_create(p, filename="finance/candlestick-trace")
+```
+
+```
+## Error: Client error: (400) Bad Request
+## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 1, u'close'), ('data', 1, u'high'), ('data', 1, u'low'), ('data', 1, u'open')]
+```
+
+```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4313.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4309.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Candlestick Using Segments
 
@@ -195,7 +230,7 @@ p <- plot_ly(dat, x = ~date, xend = ~date, color = ~Close > Open,
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="finance/candlestick-segments")
+chart_link = api_create(p, filename="finance/candlestick-segments")
 chart_link
 ```
 
@@ -289,11 +324,19 @@ p <- subplot(p, pp, heights = c(0.7,0.2), nrows=2,
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="finance/candlestick-bbands")
+chart_link = api_create(p, filename="finance/candlestick-bbands")
+```
+
+```
+## Error: Client error: (400) Bad Request
+## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 1, u'close'), ('data', 1, u'high'), ('data', 1, u'low'), ('data', 1, u'open'), ('data', 2, u'close'), ('data', 2, u'high'), ('data', 2, u'low'), ('data', 2, u'open'), ('data', 3, u'close'), ('data', 3, u'high'), ('data', 3, u'low'), ('data', 3, u'open')]
+```
+
+```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4315.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/4311.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
