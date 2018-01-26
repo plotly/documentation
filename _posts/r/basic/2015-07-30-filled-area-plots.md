@@ -33,7 +33,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.6.9000'
+## [1] '4.7.1.9000'
 ```
 
 ### Basic Filled Area Plot
@@ -53,7 +53,7 @@ p <- plot_ly(x = ~density$x, y = ~density$y, type = 'scatter', mode = 'lines', f
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="area/basic")
+chart_link = api_create(p, filename="area/basic")
 chart_link
 ```
 
@@ -80,11 +80,68 @@ p <- plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'lines',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="area/basic2")
+chart_link = api_create(p, filename="area/basic2")
 chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/3613.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Selecting Hover Points 
+
+
+```r
+library(plotly)
+
+p <- plot_ly() %>%
+  add_trace(
+    x = c(0,0.5,1,1.5,2),
+    y = c(0,1,2,1,0),
+    type = 'scatter',
+    fill = 'toself',
+    fillcolor = '#ab63fa',
+    hoveron = 'points+fills',
+    marker = list(
+      color = '#ab63fa'
+    ),
+    line = list(
+      color = '#ab63fa'
+    ),
+    text = "Points + Fills",
+    hoverinfo = 'text'
+  ) %>% 
+  add_trace(
+    x = c(3,3.5,4,4.5,5),
+    y = c(0,1,2,1,0),
+    type = 'scatter',
+    fill = 'toself',
+    fillcolor = '#e763fa',
+    hoveron = 'points',
+    marker = list(
+      color = '#e763fa'
+    ),
+    line = list(
+      color = '#e763fa'
+    ),
+    text = "Points only",
+    hoverinfo = 'text'
+  ) %>%
+  layout(
+    title = "hover on <i>points</i> or <i>fill</i>",
+    xaxis = list(
+      range = c(0,5.2)
+    ),
+    yaxis = list(
+      range = c(0,3)
+    )
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="area/hoveron")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5224.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Custom Colors
 
@@ -108,7 +165,7 @@ p <- plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'lines',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="area/colors")
+chart_link = api_create(p, filename="area/colors")
 chart_link
 ```
 
@@ -137,7 +194,7 @@ p <- plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'none', 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="area/nolines")
+chart_link = api_create(p, filename="area/nolines")
 chart_link
 ```
 
@@ -189,7 +246,7 @@ p <- plot_ly(data, x = ~month, y = ~high_2014, type = 'scatter', mode = 'lines',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="area/interior")
+chart_link = api_create(p, filename="area/interior")
 chart_link
 ```
 
@@ -217,7 +274,7 @@ p <- plot_ly(data, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="area/stackedoriginal")
+chart_link = api_create(p, filename="area/stackedoriginal")
 chart_link
 ```
 
@@ -252,7 +309,7 @@ p <- plot_ly(data2, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="area/stackedcum")
+chart_link = api_create(p, filename="area/stackedcum")
 chart_link
 ```
 
