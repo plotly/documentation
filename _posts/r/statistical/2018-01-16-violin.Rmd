@@ -1,0 +1,344 @@
+---
+title: Violin Plots in R | Examples | Plotly
+name: Violin Plots
+permalink: r/violin/
+description: How to create violin plots in R with Plotly.
+layout: base
+thumbnail: thumbnail/violin.jpg
+language: r
+has_thumbnail: true
+display_as: statistical
+order: 10
+output:
+  html_document:
+    keep_md: true
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```
+
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+
+```{r}
+library(plotly)
+packageVersion('plotly')
+```
+
+#### Basic Violin Plot
+
+```{r, results='hide'}
+library(plotly)
+
+df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/violin_data.csv")
+
+p <- df %>%
+  plot_ly(
+    y = ~total_bill,
+    type = 'violin',
+    box = list(
+      visible = T
+    ),
+    meanline = list(
+      visible = T
+    ),
+    x0 = 'Total Bill'
+  ) %>% 
+  layout(
+    yaxis = list(
+      title = "",
+      zeroline = F
+    )
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link <- api_create(p, filename = "violin/basic")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+#### Multiple Trace 
+
+```{r, results='hide'}
+library(plotly)
+
+df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/violin_data.csv")
+
+p <- df %>%
+  plot_ly(
+    x = ~day,
+    y = ~total_bill,
+    split = ~day,
+    type = 'violin',
+    box = list(
+      visible = T
+    ),
+    meanline = list(
+      visible = T
+    )
+  ) %>% 
+  layout(
+    xaxis = list(
+      title = "Day"
+    ),
+    yaxis = list(
+      title = "Total Bill",
+      zeroline = F
+    )
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link <- api_create(p, filename = "violin/multiple")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+#### Grouped Violin Plot
+
+```{r, results='hide'}
+library(plotly)
+
+df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/violin_data.csv")
+
+p <- df %>%
+  plot_ly(type = 'violin') %>%
+  add_trace(
+    x = ~day[df$sex == 'Male'],
+    y = ~total_bill[df$sex == 'Male'],
+    legendgroup = 'M',
+    scalegroup = 'M',
+    name = 'M',
+    box = list(
+      visible = T
+    ),
+    meanline = list(
+      visible = T
+    ),
+    line = list(
+      color = 'blue'
+    )
+  ) %>%
+  add_trace(
+    x = ~day[df$sex == 'Female'],
+    y = ~total_bill[df$sex == 'Female'],
+    legendgroup = 'F',
+    scalegroup = 'F',
+    name = 'F',
+    box = list(
+      visible = T
+    ),
+    meanline = list(
+      visible = T
+    ),
+    line = list(
+      color = 'pink'
+    )
+  ) %>% 
+  layout(
+    yaxis = list(
+      zeroline = F
+    ),
+    violinmode = 'group'
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link <- api_create(p, filename = "violin/grouped")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+#### Split Violin Plot
+
+```{r, results='hide'}
+library(plotly)
+
+df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/violin_data.csv")
+
+p <- df %>%
+  plot_ly(type = 'violin') %>%
+  add_trace(
+    x = ~day[df$smoker == 'Yes'],
+    y = ~total_bill[df$smoker == 'Yes'],
+    legendgroup = 'Yes',
+    scalegroup = 'Yes',
+    name = 'Yes',
+    side = 'negative',
+    box = list(
+      visible = T
+    ),
+    meanline = list(
+      visible = T
+    ),
+    line = list(
+      color = 'blue'
+    )
+  ) %>%
+  add_trace(
+    x = ~day[df$smoker == 'No'],
+    y = ~total_bill[df$smoker == 'No'],
+    legendgroup = 'No',
+    scalegroup = 'No',
+    name = 'No',
+    side = 'positive',
+    box = list(
+      visible = T
+    ),
+    meanline = list(
+      visible = T
+    ),
+    line = list(
+      color = 'green'
+    )
+  ) %>% 
+  layout(
+    xaxis = list(
+      title = ""  
+    ),
+    yaxis = list(
+      title = "",
+      zeroline = F
+    ),
+    violingap = 0,
+    violingroupgap = 0,
+    violinmode = 'overlay'
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link <- api_create(p, filename = "violin/split")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+#### Advanced Violin Plot
+
+```{r, results='hide'}
+library(plotly)
+
+df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/violin_data.csv")
+
+pointposMale <- c(-0.9,-1.1,-0.6,-0.3)
+pointposFemale <- c(0.45,0.55,1,0.4)
+showLegend <- c(T,F,F,F)
+
+p <- plot_ly(type = 'violin')
+
+i = 0
+for (i in 1:length(unique(df$day))) {
+  p <- add_trace(
+    p,
+    x = df$day[df$sex == 'Male' & df$day == unique(df$day)[i]],
+    y = df$total_bill[df$sex == 'Male' & df$day == unique(df$day)[i]],
+    hoveron = "points+kde",
+    legendgroup = 'M',
+    scalegroup = 'M',
+    name = 'M',
+    side = 'negative',
+    box = list(
+      visible = T
+    ),
+    points = 'all',
+    pointpos = pointposMale[i],
+    jitter = 0,
+    scalemode = 'count',
+    meanline = list(
+      visible = T
+    ),
+    line = list(
+      color = "#8dd3c7"
+    ),
+    marker = list(
+      line = list(
+        width = 2,
+        color = "#8dd3c7"
+      ),
+      symbol = 'line-ns'
+    ),
+    showlegend = showLegend[i]
+    ) %>% 
+    add_trace(
+      x = df$day[df$sex == 'Female' & df$day == unique(df$day)[i]],
+      y = df$total_bill[df$sex == 'Female' & df$day == unique(df$day)[i]],
+      hoveron = "points+kde",
+      legendgroup = 'F',
+      scalegroup = 'F',
+      name = 'F',
+      side = 'positive',
+      box = list(
+        visible = T
+      ),
+      points = 'all',
+      pointpos = pointposFemale[i],
+      jitter = 0,
+      scalemode = 'count',
+      meanline = list(
+        visible = T
+      ),
+      line = list(
+        color = "#bebada"
+      ),
+      marker = list(
+        line = list(
+          width = 2,
+          color = "#bebada"
+        ),
+        symbol = 'line-ns'
+      ),
+      showlegend = showLegend[i]
+  )
+}
+
+p <- layout(
+  p,
+  title = "Total bill distribution<br><i>scaled by number of bills per gender",
+  yaxis = list(
+    zeroline = F
+  ),
+  violingap = 0,
+  violingroupgap = 0,
+  violinmode = 'overlay',
+  legend = list(
+    tracegroupgap = 0
+  )
+)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link <- api_create(p, filename = "violin/advanced")
+chart_link
+```
+
+``` {r, echo=FALSE}
+chart_link
+```
+
+#### Reference
+
+See [https://plot.ly/r/reference/](https://plot.ly/r/reference/) for more information and options!
