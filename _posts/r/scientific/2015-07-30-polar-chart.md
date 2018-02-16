@@ -6,7 +6,7 @@ description: How to create a polar chart in R. Three examples of polar line, pol
 layout: base
 thumbnail: thumbnail/polar.jpg
 language: r
-page_type: example_index
+#page_type: example_index
 has_thumbnail: true
 display_as: scientific
 order: 12
@@ -51,10 +51,14 @@ library(plotly)
 p <- plot_ly(
   plotly::mic, r = ~r, t = ~t, color = ~nms, alpha = 0.5, type = "scatter"
 )
-layout(p, title = "Mic Patterns", orientation = -90)
-```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+p <- layout(p, title = "Mic Patterns", orientation = -90)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link <- api_create(p, filename = "polar/basic")
+chart_link
+```
 
 <iframe src="https://plot.ly/~RPlotBot/3165.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
@@ -63,10 +67,14 @@ layout(p, title = "Mic Patterns", orientation = -90)
 p <- plot_ly(
   plotly::hobbs, r = ~r, t = ~t, color = ~nms, alpha = 0.5, type = "scatter"
 )
-layout(p, title = "Hobbs-Pearson Trials", plot_bgcolor = toRGB("grey90"))
-```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+p <- layout(p, title = "Hobbs-Pearson Trials", plot_bgcolor = toRGB("grey90"))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link <- api_create(p, filename = "polar/scatter")
+chart_link
+```
 
 <iframe src="https://plot.ly/~RPlotBot/3167.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
@@ -75,10 +83,13 @@ layout(p, title = "Hobbs-Pearson Trials", plot_bgcolor = toRGB("grey90"))
 
 ```r
 p <- plot_ly(plotly::wind, r = ~r, t = ~t) %>% add_area(color = ~nms)
-layout(p, radialaxis = list(ticksuffix = "%"), orientation = 270)
-```
+p <- layout(p, radialaxis = list(ticksuffix = "%"), orientation = 270)
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png)
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link <- api_create(p, filename = "polar/area")
+chart_link
+```
 
 <iframe src="https://plot.ly/~RPlotBot/3169.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
