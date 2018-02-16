@@ -1,7 +1,7 @@
 ---
 title: Polar Charts in R | Examples | Plotly
 name: Polar Charts
-permalink: r/polar-chart/
+permalink: r/legacy/polar-chart/
 description: How to create a polar chart in R. Three examples of polar line, polar scatter, and polar area chart.
 layout: base
 thumbnail: thumbnail/polar.jpg
@@ -14,6 +14,7 @@ output:
   html_document:
     keep_md: true
 ---
+
 
 
 ### New to Plotly?
@@ -34,8 +35,13 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.2'
+## [1] '4.7.1.9000'
 ```
+
+
+### Legacy Plots
+
+These polar charts are legacy and will likely be deprecated in [Plotly 2.0](https://github.com/plotly/plotly.js/issues/420). Please see the new `scatterpolar` and `scatterpolargl` [trace types](https://plot.ly/r/polar-chart/) for latest and greatest in Plotly polar coordinates.
 
 ### Polar Scatter Chart
 
@@ -48,6 +54,8 @@ p <- plot_ly(
 layout(p, title = "Mic Patterns", orientation = -90)
 ```
 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+
 <iframe src="https://plot.ly/~RPlotBot/3165.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 
@@ -58,6 +66,8 @@ p <- plot_ly(
 layout(p, title = "Hobbs-Pearson Trials", plot_bgcolor = toRGB("grey90"))
 ```
 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+
 <iframe src="https://plot.ly/~RPlotBot/3167.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Polar Area Chart
@@ -67,6 +77,8 @@ layout(p, title = "Hobbs-Pearson Trials", plot_bgcolor = toRGB("grey90"))
 p <- plot_ly(plotly::wind, r = ~r, t = ~t) %>% add_area(color = ~nms)
 layout(p, radialaxis = list(ticksuffix = "%"), orientation = 270)
 ```
+
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png)
 
 <iframe src="https://plot.ly/~RPlotBot/3169.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
