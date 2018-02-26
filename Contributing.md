@@ -28,7 +28,7 @@ Note these dependencies should be the same version that gh-pages is using: https
 - For information about editing **R** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/r/README.md
 
 ## Render Changes Locally
-Please **ALWAYS** locally serve the docs and check your changes before commiting updates.
+Please **ALWAYS** locally serve the docs and check your changes before committing updates.
 1. To serve the docs locally, in the documentation repo run: `$ bundle exec jekyll serve --config _config_dev.yml`
 2. Visit the pages at: [http://localhost:4000/python/](http://localhost:4000/python/)
 3. When you make changes, jekyll should automatically regenerate for you. Read the messages in your terminal to check it out
@@ -67,7 +67,7 @@ documentation (source-design-merge) $ bundle exec rake deploy
 
 ## Search
 
-We now have search via algolia implemented on our index and referece documentation pages! Please refer to our [make README](https://github.com/plotly/documentation/blob/source-design-merge/make_instructions.txt) for more information on how search works and instructions on how to update or edit Plotly search indices. 
+We now have search via algolia implemented on our index and reference documentation pages! Please refer to our [make README](https://github.com/plotly/documentation/blob/source-design-merge/make_instructions.txt) for more information on how search works and instructions on how to update or edit Plotly search indices. 
 
 ## Style Edits
 
