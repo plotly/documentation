@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.7.1'
+## [1] '4.7.1.9000'
 ```
 
 ### Basic Bar Chart
@@ -296,6 +296,40 @@ chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/4571.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Customizing Individual Bar Base
+
+
+```r
+library(plotly)
+
+p <- plot_ly() %>%
+  add_bars(
+    x = c("2016", "2017", "2018"),
+    y = c(500,600,700),
+    base = c(-500,-600,-700),
+    marker = list(
+      color = 'red'
+    ),
+    name = 'expenses'
+  ) %>%
+  add_bars(
+    x = c("2016", "2017", "2018"),
+    y = c(300,400,700),
+    base = 0,
+    marker = list(
+      color = 'blue'
+    ),
+    name = 'revenue'
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="bar/bar-base")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5276.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Mapping a Color Variable
 
