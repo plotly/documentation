@@ -41,7 +41,7 @@ packageVersion('plotly')
 
 #### Polar Charts 1.0
 
-Looking for the old polar chart docs? See [legacy polar charts](https://plot.ly/r/legacy/polar-chart/)
+Looking for the old polar chart docs? See [legacy polar charts](https://plot.ly/r/legacy-polar-chart/)
 
 #### Basic Polar Charts
 
