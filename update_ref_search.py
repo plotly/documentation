@@ -23,7 +23,7 @@ for i in p['schema']['traces']:
     trace ['name'] = i
     trace ['permalink'] = 'reference/#'+i
     if p['schema']['traces'][i]['meta']:
-        trace ['description'] = p['schema']['traces'][i]['meta']['description']
+        trace ['description'] = (p['schema']['traces'][i]['meta']['description']).replace('*', '"')
     else: pass
     schema.append(trace)
 
@@ -36,7 +36,7 @@ for i in p['schema']['traces']:
                 attribute = {}
                 attribute ['name'] = i+' > '+att1
                 attribute ['permalink'] = 'reference/#'+i+'-'+att1
-                attribute ['description'] = p['schema']['traces'][i]['attributes'][att1]['description']
+                attribute ['description'] = (p['schema']['traces'][i]['attributes'][att1]['description']).replace('*', '"')
                 schema.append(attribute)
             except:
                 attribute = {}
@@ -52,7 +52,7 @@ for i in p['schema']['traces']:
                             attribute = {}
                             attribute ['name'] = i+' > '+att1+' > '+att2
                             attribute ['permalink'] = 'reference/#'+i+'-'+att1+'-'+att2
-                            attribute ['description'] = p['schema']['traces'][i]['attributes'][att1][att2]['description']
+                            attribute ['description'] = (p['schema']['traces'][i]['attributes'][att1][att2]['description']).replace('*', '"')
                             schema.append(attribute)
                         except:
                             attribute = {}
@@ -71,7 +71,7 @@ for i in p['schema']['traces']:
                                         attribute = {}
                                         attribute ['name'] = i+' > '+att1+' > '+att2+' > '+att3
                                         attribute ['permalink'] = 'reference/#'+i+'-'+att1+'-'+att2+'-'+att3
-                                        attribute ['description'] = p['schema']['traces'][i]['attributes'][att1][att2][att3]['description']
+                                        attribute ['description'] = (p['schema']['traces'][i]['attributes'][att1][att2][att3]['description']).replace('*', '"')
                                         schema.append(attribute)
                                     except:
                                         attribute = {}
@@ -90,7 +90,7 @@ for i in p['schema']['traces']:
                                                 attribute = {}
                                                 attribute ['name'] = i+' > '+att1+' > '+att2+' > '+att3+' > '+att4
                                                 attribute ['permalink'] = 'reference/#'+i+'-'+att1+'-'+att2+'-'+att3+'-'+att4
-                                                attribute ['description'] = p['schema']['traces'][i]['attributes'][att1][att2][att3][att4]['description']
+                                                attribute ['description'] = (p['schema']['traces'][i]['attributes'][att1][att2][att3][att4]['description']).replace('*', '"')
                                                 schema.append(attribute)
                                             except:
                                                 attribute = {}
@@ -113,7 +113,7 @@ for att1 in p['schema']['layout']['layoutAttributes']:
             attribute = {}
             attribute ['name'] = 'Layout > '+att1
             attribute ['permalink'] = 'reference/#layout-'+att1
-            attribute ['description'] = p['schema']['layout']['layoutAttributes'][att1]['description']
+            attribute ['description'] = (p['schema']['layout']['layoutAttributes'][att1]['description']).replace('*', '"')
             schema.append(attribute)
         except:
             attribute = {}
@@ -129,7 +129,7 @@ for att1 in p['schema']['layout']['layoutAttributes']:
                         attribute = {}
                         attribute ['name'] = 'Layout > '+att1+' > '+att2
                         attribute ['permalink'] = 'reference/#layout-'+att1+'-'+att2
-                        attribute ['description'] = p['schema']['layout']['layoutAttributes'][att1][att2]['description']
+                        attribute ['description'] = (p['schema']['layout']['layoutAttributes'][att1][att2]['description']).replace('*', '"')
                         schema.append(attribute)
                     except:
                         attribute = {}
@@ -147,7 +147,7 @@ for att1 in p['schema']['layout']['layoutAttributes']:
                                 attribute = {}
                                 attribute ['name'] = 'Layout > '+att1+' > '+att2+' > '+att3
                                 attribute ['permalink'] = 'reference/#layout-'+att1+'-'+att2+'-'+att3
-                                attribute ['description'] = p['schema']['layout']['layoutAttributes'][att1][att2][att3]['description']
+                                attribute ['description'] = (p['schema']['layout']['layoutAttributes'][att1][att2][att3]['description']).replace('*', '"')
                                 schema.append(attribute)
                             except:
                                 attribute = {}
@@ -163,7 +163,7 @@ for att1 in p['schema']['layout']['layoutAttributes']:
                                             attribute = {}
                                             attribute ['name'] = 'Layout > '+att1+' > '+att2+' > '+att3+' > '+att4
                                             attribute ['permalink'] = 'reference/#layout-'+att1+'-'+att2+'-'+att3+'-'+att4
-                                            attribute ['description'] = p['schema']['layout']['layoutAttributes'][att1][att2][att3][att4]['description']
+                                            attribute ['description'] = (p['schema']['layout']['layoutAttributes'][att1][att2][att3][att4]['description']).replace('*', '"')
                                             schema.append(attribute)
                                         except:
                                             attribute = {}
