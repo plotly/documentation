@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.7.0.9000'
+## [1] '4.7.1.9000'
 ```
 
 #### Basic Histogram
@@ -68,6 +68,26 @@ chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/5092.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Specify Binning Function
+
+
+```r
+library(plotly)
+
+x = c("Apples","Apples","Apples","Organges", "Bananas")
+y = c("5","10","3","10","5")
+
+p <- plot_ly(y=y, x=x, histfunc='sum', type = "histogram") %>%
+  layout(yaxis=list(type='linear'))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="histogram/histfunc")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5278.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #### Horizontal Histogram
 
