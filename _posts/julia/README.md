@@ -19,10 +19,10 @@
 <b>IMPORTANT</b> -If not using bundler and the gemfile, [install the same jekyll version that Github Pages is using](https://pages.github.com/versions/).
 
 ## Create Julia Documentation:
-Our Julia tutorials are written in HTML files with embeded plot examples.
+Our Julia tutorials are written in HTML files with embedded plot examples.
 ##### In `documentation/_posts/julia`
 1. Create a folder titled with the chart type or topic you're adding to the documentation (i.e. `bar`)  
-2. `cd` into the folder you created and create an html index file labled: `yyyy-mm-dd-chart_type_julia_index.html`. Copy the index file template below and replace with the necessary information pertaining to the doc you are creating.
+2. `cd` into the folder you created and create an html index file labeled: `yyyy-mm-dd-chart_type_julia_index.html`. Copy the index file template below and replace with the necessary information pertaining to the doc you are creating.
   ```
   ---
   title: Julia Add-Chart-Type-or-Topic | Examples | Plotly
@@ -34,13 +34,13 @@ Our Julia tutorials are written in HTML files with embeded plot examples.
   thumbnail: thumbnail/add-chart-type-or-topic.jpg *MORE INFO ON ADDING THUMBNAILS BELOW
   language: julia
   page_type: example_index
-  display_as: **SEE BELOW 
+  display_as: **SEE BELOW
   order: ***SEE BELOW
   ---
   {% assign examples = site.posts | where:"language","julia" | where:"suite","add-chart-type-or-topic"**** | sort: "order" %}
   {% include auto_examples.html examples=examples %}
   ```
-  - **`display_as` sets where your tutorial is displayed 
+  - **`display_as` sets where your tutorial is displayed
       - 'basic' = https://plot.ly/julia/#basic-charts
       - 'statistical' = https://plot.ly/julia/#statistical-charts
       - 'scientific' = https://plot.ly/julia/#scientific-charts
@@ -87,13 +87,13 @@ Our Julia tutorials are written in HTML files with embeded plot examples.
 
 8. Add Thumbnail Images
   - Thumbnail images should named `your-tutorial-chart.jpg` and be *EXACTLY* 160px X 160px
-  - Thumbnail images should be clear and interesting. You do not need to capture the ENTIRE chart, but rather focus on the most interesting part of the chart. 
-  - Use images.plot.ly for adding new images. 
+  - Thumbnail images should be clear and interesting. You do not need to capture the ENTIRE chart, but rather focus on the most interesting part of the chart.
+  - Use images.plot.ly for adding new images.
     - Log-in here: https://661924842005.signin.aws.amazon.com/console
     - Username: Plotly_Editors
     - From the <b>Amazon Web Services Console</b> select <b>S3 (Scalable Storage in the Cloud)</b> then select <b>plotly-tutorials</b> -> <b>plotly-documentation</b> -> <b>thumbnail</b>
     - Now from <b>All Buckets /plotly-tutorials/plotly-documentation/thumbnail</b> select the <b>Actions</b> dropdown and <b>upload</b> your .jpg file
-    
+
 ##### In the terminal in the `documentation` repo
 9. Commit and Push your tutorial
   - `git add` your .html files
@@ -101,7 +101,7 @@ Our Julia tutorials are written in HTML files with embeded plot examples.
   - `git push origin source-design-merge`
 
 10. To proof your work, serve the pages locally by running: `bundle exec jekyll serve --config _config_dev.yml` from the root of the documentation repo.
-For more information see these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally 
+For more information see these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally
 
 11. Deploy changes by running `bundle exec rake deploy` from the root of the documentation repo.
 
@@ -111,6 +111,6 @@ For more information see these steps: https://github.com/plotly/documentation/bl
 
   - Some common problems that you should check for:
     - Make sure all plots/codepen embeds appear! (*you may want to sign out of your Plotly/codepen account to ensure you didn't accidentally embed private plots)
-    - The thumbnail image appears on: https://plot.ly/julia/ 
+    - The thumbnail image appears on: https://plot.ly/julia/
 
 Thanks for contributing to our documentation!!
