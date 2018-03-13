@@ -7,7 +7,7 @@
   $ git fetch origin
   $ git checkout source-design-merge
   ```
-  
+
 2. Check Ruby version `$ ruby --version`. We recommend using the same ruby version as gh-pages: https://pages.github.com/versions/. Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
 
 3. Install bundler and a couple dependencies from the gemfile:
@@ -106,7 +106,7 @@
     - From the <b>Amazon Web Services Console</b> select <b>S3 (Scalable Storage in the Cloud)</b> then select <b>plotly-tutorials</b> -> <b>plotly-documentation</b> -> <b>thumbnail</b>
     - Now from <b>All Buckets /plotly-tutorials/plotly-documentation/thumbnail</b> select the <b>Actions</b> dropdown and <b>upload</b> your .jpg file
 
-##### In the teminal in `documentation`
+##### In the terminal in `documentation`
 4. Commit and Push your tutorial
   - `git add` your .Rmd and .md files
   - `git commit -m "include a message about the tutorial you're adding"`
@@ -122,6 +122,6 @@
 
 ## Search
 
-We now have search via algolia implemented on our index and referece documentation pages! Please refer to our [make README](https://github.com/plotly/documentation/blob/source-design-merge/make_instructions.txt) for more information on how search works and instructions on how to update or edit Plotly search indices. 
+We now have search via algolia implemented on our index and reference documentation pages! Please refer to our [make README](https://github.com/plotly/documentation/blob/source-design-merge/make_instructions.txt) for more information on how search works and instructions on how to update or edit Plotly search indices.
 
 Thanks for contributing to our documentation!!
