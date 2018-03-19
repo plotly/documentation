@@ -61,7 +61,7 @@ p <- plot_ly(airquality_sept) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="multiple/bar_line")
+chart_link = api_create(p, filename="multiple-bar_line")
 chart_link
 ```
 
@@ -84,7 +84,7 @@ p <- plot_ly(mtcars, x = ~disp, color = I("black")) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="multiple/loess")
+chart_link = api_create(p, filename="multiple-loess")
 chart_link
 ```
 
@@ -116,7 +116,7 @@ p <- plot_ly(mtcars, x = ~disp, color = I("black")) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="multiple/loess-se")
+chart_link = api_create(p, filename="multiple-loess-se")
 chart_link
 ```
 
@@ -143,7 +143,7 @@ p <- plot_ly() %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="multiple/forecast")
+chart_link = api_create(p, filename="multiple-forecast")
 chart_link
 ```
 

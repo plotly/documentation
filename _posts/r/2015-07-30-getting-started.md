@@ -64,12 +64,12 @@ Sys.setenv("plotly_api_key"="your_api_key")
 
 Save these commands in your [.Rprofile](http://www.statmethods.net/interface/customizing.html) file to be run every time you start R.
 
-3 - Publish your graphs to Plotly with `plotly_POST`
+3 - Publish your graphs to Plotly with `api_create`
 
 ```r
 library(plotly)
 p <- plot_ly(midwest, x = ~percollege, color = ~state, type = "box")
-api_create(p, filename = "r-docs/midwest-boxplots")
+api_create(p, filename = "r-docs-midwest-boxplots")
 ```
 
 `filename` sets the name of the file inside your online plotly account.

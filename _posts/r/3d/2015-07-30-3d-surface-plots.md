@@ -47,7 +47,7 @@ p <- plot_ly(z = ~volcano) %>% add_surface()
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="surface/1")
+chart_link = api_create(p, filename="surface-1")
 chart_link
 ```
 
@@ -62,7 +62,7 @@ p <- plot_ly(x = kd$x, y = kd$y, z = kd$z) %>% add_surface()
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="surface/2")
+chart_link = api_create(p, filename="surface-2")
 chart_link
 ```
 
@@ -100,7 +100,7 @@ p <- plot_ly(showscale = FALSE) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="surface/3")
+chart_link = api_create(p, filename="surface-3")
 chart_link
 ```
 

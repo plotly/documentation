@@ -83,7 +83,7 @@ p <- plot_ly() %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="contourcarpet/basic", sharing = 'public')
+chart_link = api_create(p, filename="contourcarpet-basic", sharing = 'public')
 chart_link
 ```
 
@@ -155,7 +155,7 @@ p <- plot_ly(width = 600, height = 600) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="contourcarpet/add-contours", sharing = 'public')
+chart_link = api_create(p, filename="contourcarpet-add-contours", sharing = 'public')
 chart_link
 ```
 
@@ -330,7 +330,7 @@ p <- plot_ly() %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="contourcarpet/airfoil", sharing = 'public')
+chart_link = api_create(p, filename="contourcarpet-airfoil", sharing = 'public')
 chart_link
 ```
 

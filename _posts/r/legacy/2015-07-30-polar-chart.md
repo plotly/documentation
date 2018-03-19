@@ -56,7 +56,7 @@ p <- layout(p, title = "Mic Patterns", orientation = -90)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link <- api_create(p, filename = "polar/basic")
+chart_link <- api_create(p, filename = "polar-basic")
 chart_link
 ```
 
@@ -72,7 +72,7 @@ p <- layout(p, title = "Hobbs-Pearson Trials", plot_bgcolor = toRGB("grey90"))
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link <- api_create(p, filename = "polar/scatter")
+chart_link <- api_create(p, filename = "polar-scatter")
 chart_link
 ```
 
@@ -87,7 +87,7 @@ p <- layout(p, radialaxis = list(ticksuffix = "%"), orientation = 270)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link <- api_create(p, filename = "polar/area")
+chart_link <- api_create(p, filename = "polar-area")
 chart_link
 ```
 

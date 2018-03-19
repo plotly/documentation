@@ -53,7 +53,7 @@ p <- plot_ly(x = ~density$x, y = ~density$y, type = 'scatter', mode = 'lines', f
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="area/basic")
+chart_link = api_create(p, filename="area-basic")
 chart_link
 ```
 
@@ -80,7 +80,7 @@ p <- plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'lines',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="area/basic2")
+chart_link = api_create(p, filename="area-basic2")
 chart_link
 ```
 
@@ -137,7 +137,7 @@ p <- plot_ly() %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="area/hoveron")
+chart_link = api_create(p, filename="area-hoveron")
 chart_link
 ```
 
@@ -165,7 +165,7 @@ p <- plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'lines',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="area/colors")
+chart_link = api_create(p, filename="area-colors")
 chart_link
 ```
 
@@ -194,7 +194,7 @@ p <- plot_ly(x = ~density1$x, y = ~density1$y, type = 'scatter', mode = 'none', 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="area/nolines")
+chart_link = api_create(p, filename="area-nolines")
 chart_link
 ```
 
@@ -246,7 +246,7 @@ p <- plot_ly(data, x = ~month, y = ~high_2014, type = 'scatter', mode = 'lines',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="area/interior")
+chart_link = api_create(p, filename="area-interior")
 chart_link
 ```
 
@@ -274,7 +274,7 @@ p <- plot_ly(data, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="area/stackedoriginal")
+chart_link = api_create(p, filename="area-stackedoriginal")
 chart_link
 ```
 
@@ -309,7 +309,7 @@ p <- plot_ly(data2, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="area/stackedcum")
+chart_link = api_create(p, filename="area-stackedcum")
 chart_link
 ```
 

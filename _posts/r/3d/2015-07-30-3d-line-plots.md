@@ -52,7 +52,7 @@ p <- plot_ly(data, x = ~x, y = ~y, z = ~z, type = 'scatter3d', mode = 'lines',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="line3d/basic")
+chart_link = api_create(p, filename="line3d-basic")
 chart_link
 ```
 
@@ -85,7 +85,7 @@ p <- plot_ly(data, x = ~x, y = ~y, z = ~z, type = 'scatter3d', mode = 'lines+mar
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="line3d/markers")
+chart_link = api_create(p, filename="line3d-markers")
 chart_link
 ```
 
@@ -119,7 +119,7 @@ p <- plot_ly(data, x = ~x, y = ~y, z = ~z, type = 'scatter3d', mode = 'lines',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="line3d/color")
+chart_link = api_create(p, filename="line3d-color")
 chart_link
 ```
 
@@ -142,7 +142,7 @@ p <- plot_ly(data, x = ~x1, y = ~y1, z = ~z1, type = 'scatter3d', mode = 'lines'
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="line3d/randomwalk")
+chart_link = api_create(p, filename="line3d-randomwalk")
 chart_link
 ```
 
@@ -164,7 +164,7 @@ p <- plot_ly(data, x = ~x, y = ~y, z = ~cut, type = 'scatter3d', mode = 'lines',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="line3d/density")
+chart_link = api_create(p, filename="line3d-density")
 chart_link
 ```
 

@@ -52,7 +52,7 @@ p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bubble/simple")
+chart_link = api_create(p, filename="bubble-simple")
 chart_link
 ```
 
@@ -74,7 +74,7 @@ p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bubble/color1")
+chart_link = api_create(p, filename="bubble-color1")
 chart_link
 ```
 
@@ -104,7 +104,7 @@ p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bubble/color2")
+chart_link = api_create(p, filename="bubble-color2")
 chart_link
 ```
 
@@ -126,7 +126,7 @@ p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bubble/color3")
+chart_link = api_create(p, filename="bubble-color3")
 chart_link
 ```
 
@@ -153,7 +153,7 @@ p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bubble/color4")
+chart_link = api_create(p, filename="bubble-color4")
 chart_link
 ```
 
@@ -182,7 +182,7 @@ p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bubble/size")
+chart_link = api_create(p, filename="bubble-size")
 chart_link
 ```
 
@@ -212,7 +212,7 @@ p <- plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', siz
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bubble/hovertext")
+chart_link = api_create(p, filename="bubble-hovertext")
 chart_link
 ```
 
@@ -257,7 +257,7 @@ p <- plot_ly(data_2007, x = ~gdpPercap, y = ~lifeExp, color = ~continent, size =
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="bubble/styled")
+chart_link = api_create(p, filename="bubble-styled")
 chart_link
 ```
 

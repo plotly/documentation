@@ -56,7 +56,7 @@ pp <- subplot(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-# chart_link = plotly_POST(pp, filename="histogram2d/basic")
+# chart_link = api_create(pp, filename="histogram2d-basic")
 # chart_link
 ```
 
@@ -71,7 +71,7 @@ p <- p %>% add_histogram2d(colorscale = "Blues")
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-# chart_link = plotly_POST(p, filename="histogram2d/colorscale")
+# chart_link = api_create(p, filename="histogram2d-colorscale")
 # chart_link
 ```
 
@@ -88,7 +88,7 @@ p <- plot_ly(diamonds, x = ~cut, y = ~clarity, z = ~cnt) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-# chart_link = plotly_POST(p, filename="histogram2d/no-binning")
+# chart_link = api_create(p, filename="histogram2d-no-binning")
 # chart_link
 ```
 

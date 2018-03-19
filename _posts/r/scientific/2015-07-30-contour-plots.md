@@ -47,7 +47,7 @@ p <- plot_ly(z = ~volcano, type = "contour")
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="contour/basic")
+chart_link = api_create(p, filename="contour-basic")
 chart_link
 ```
 
@@ -69,7 +69,7 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="contour/coordinates")
+chart_link = api_create(p, filename="contour-coordinates")
 chart_link
 ```
 
@@ -98,7 +98,7 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="contour/range-of-contours")
+chart_link = api_create(p, filename="contour-range-of-contours")
 chart_link
 ```
 
@@ -146,7 +146,7 @@ p <- subplot(p1,p2)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="contour/smoothing-lines")
+chart_link = api_create(p, filename="contour-smoothing-lines")
 chart_link
 ```
 
@@ -171,7 +171,7 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="contour/smoothing-coloring")
+chart_link = api_create(p, filename="contour-smoothing-coloring")
 chart_link
 ```
 
@@ -188,7 +188,7 @@ p <- plot_ly(z = volcano, type = "contour", contours = list(showlabels = TRUE)) 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="contour/labels")
+chart_link = api_create(p, filename="contour-labels")
 chart_link
 ```
 
@@ -228,7 +228,7 @@ p <- plot_ly(mtrx.melt, x = ~wt, y = ~hp, z = ~qsec, type = "contour",
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="contour/advanced")
+chart_link = api_create(p, filename="contour-advanced")
 chart_link
 ```
 
@@ -252,7 +252,7 @@ p <- layout(s, showlegend = FALSE)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="contour/joint")
+chart_link = api_create(p, filename="contour-joint")
 chart_link
 ```
 

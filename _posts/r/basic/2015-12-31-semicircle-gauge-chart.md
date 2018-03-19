@@ -131,7 +131,7 @@ base_chart <- layout(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(base_chart, filename="gauge-meter-in-r")
+chart_link = api_create(base_chart, filename="gauge-meter-in-r")
 chart_link
 ```
 

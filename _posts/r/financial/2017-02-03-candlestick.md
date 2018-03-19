@@ -59,7 +59,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="finance/candlestick-basic")
+chart_link = api_create(p, filename="finance-candlestick-basic")
 chart_link
 ```
 
@@ -86,7 +86,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="finance/candlestick-rangeslider")
+chart_link = api_create(p, filename="finance-candlestick-rangeslider")
 chart_link
 ```
 
@@ -135,7 +135,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="finance/candlestick-custom")
+chart_link = api_create(p, filename="finance-candlestick-custom")
 chart_link
 ```
 
@@ -166,7 +166,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="finance/candlestick-colors")
+chart_link = api_create(p, filename="finance-candlestick-colors")
 chart_link
 ```
 
@@ -193,7 +193,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="finance/candlestick-trace")
+chart_link = api_create(p, filename="finance-candlestick-trace")
 chart_link
 ```
 
@@ -222,7 +222,7 @@ p <- plot_ly(dat, x = ~date, xend = ~date, color = ~Close > Open,
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="finance/candlestick-segments")
+chart_link = api_create(p, filename="finance-candlestick-segments")
 chart_link
 ```
 
@@ -316,7 +316,7 @@ p <- subplot(p, pp, heights = c(0.7,0.2), nrows=2,
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="finance/candlestick-bbands")
+chart_link = api_create(p, filename="finance-candlestick-bbands")
 chart_link
 ```
 

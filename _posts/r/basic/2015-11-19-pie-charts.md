@@ -54,7 +54,7 @@ p <- plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie') %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="pie/basic")
+chart_link = api_create(p, filename="pie-basic")
 chart_link
 ```
 
@@ -87,7 +87,7 @@ p <- plot_ly(data, labels = ~Categorie, values = ~X1960, type = 'pie',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="pie/styled")
+chart_link = api_create(p, filename="pie-styled")
 chart_link
 ```
 
@@ -113,7 +113,7 @@ p <- plot_ly() %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="pie/subplots")
+chart_link = api_create(p, filename="pie-subplots")
 ```
 
 ```
@@ -148,7 +148,7 @@ p <- mtcars %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="pie/donut")
+chart_link = api_create(p, filename="pie-donut")
 chart_link
 ```
 

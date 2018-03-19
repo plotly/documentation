@@ -56,7 +56,7 @@ p <- plot_ly(type = 'scatter', mode = 'markers') %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link <- api_create(p, filename = "hover/text")
+chart_link <- api_create(p, filename = "hover-text")
 chart_link
 ```
 
@@ -91,7 +91,7 @@ p <- plot_ly(type = 'scatter', mode = 'markers') %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link <- api_create(p, filename = "hover/formating")
+chart_link <- api_create(p, filename = "hover-formating")
 chart_link
 ```
 

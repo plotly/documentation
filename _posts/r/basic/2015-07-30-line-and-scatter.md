@@ -48,7 +48,7 @@ p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter/basic")
+chart_link = api_create(p, filename="scatter-basic")
 chart_link
 ```
 
@@ -71,7 +71,7 @@ p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length,
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter/styled")
+chart_link = api_create(p, filename="scatter-styled")
 chart_link
 ```
 
@@ -97,7 +97,7 @@ p <- plot_ly(data, x = ~x) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter/modes")
+chart_link = api_create(p, filename="scatter-modes")
 chart_link
 ```
 
@@ -120,7 +120,7 @@ p <- plot_ly(data, x = ~x, y = ~trace_0, name = 'trace 0', type = 'scatter', mod
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter/modes")
+chart_link = api_create(p, filename="scatter-modes")
 chart_link
 ```
 
@@ -138,7 +138,7 @@ p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter/color")
+chart_link = api_create(p, filename="scatter-color")
 chart_link
 ```
 
@@ -154,7 +154,7 @@ p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter/colorbrewer")
+chart_link = api_create(p, filename="scatter-colorbrewer")
 chart_link
 ```
 
@@ -174,7 +174,7 @@ p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter/color-custom")
+chart_link = api_create(p, filename="scatter-color-custom")
 chart_link
 ```
 
@@ -193,7 +193,7 @@ p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color = ~Species
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter/color-custom2")
+chart_link = api_create(p, filename="scatter-color-custom2")
 chart_link
 ```
 
@@ -211,7 +211,7 @@ p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, type = 'scatter'
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter/symbol")
+chart_link = api_create(p, filename="scatter-symbol")
 chart_link
 ```
 
@@ -232,7 +232,7 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter/colorAndSize")
+chart_link = api_create(p, filename="scatter-colorAndSize")
 chart_link
 ```
 
@@ -255,7 +255,7 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter/hovertext")
+chart_link = api_create(p, filename="scatter-hovertext")
 chart_link
 ```
 

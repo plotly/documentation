@@ -68,7 +68,7 @@ p <- plot_geo(df, locationmode = 'USA-states', sizes = c(1, 250)) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scattergeo/bubble")
+chart_link = api_create(p, filename="scattergeo-bubble")
 chart_link
 ```
 

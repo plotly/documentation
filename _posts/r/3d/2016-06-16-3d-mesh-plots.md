@@ -51,7 +51,7 @@ p <- plot_ly(x = ~x, y = ~y, z = ~z, type = 'mesh3d')
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="mesh3d/basic")
+chart_link = api_create(p, filename="mesh3d-basic")
 chart_link
 ```
 
@@ -77,7 +77,7 @@ p <- plot_ly(type = 'mesh3d',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="mesh3d/tetra")
+chart_link = api_create(p, filename="mesh3d-tetra")
 chart_link
 ```
 
@@ -103,7 +103,7 @@ p <- plot_ly(type = 'mesh3d',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="mesh3d/cube")
+chart_link = api_create(p, filename="mesh3d-cube")
 chart_link
 ```
 

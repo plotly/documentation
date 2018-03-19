@@ -73,7 +73,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="maps/small-multiple")
+chart_link = api_create(p, filename="maps-small-multiple")
 chart_link
 ```
 

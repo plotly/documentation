@@ -58,7 +58,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="finance/ohlc-basic")
+chart_link = api_create(p, filename="finance-ohlc-basic")
 chart_link
 ```
 
@@ -85,7 +85,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="finance/ohlc-rangeslider")
+chart_link = api_create(p, filename="finance-ohlc-rangeslider")
 chart_link
 ```
 
@@ -134,7 +134,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="finance/ohlc-shapes-annot")
+chart_link = api_create(p, filename="finance-ohlc-shapes-annot")
 chart_link
 ```
 
@@ -165,7 +165,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="finance/ohlc-colors")
+chart_link = api_create(p, filename="finance-ohlc-colors")
 chart_link
 ```
 

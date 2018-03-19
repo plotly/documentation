@@ -63,7 +63,7 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link <- api_create(p, filename = "radar/basic")
+chart_link <- api_create(p, filename = "radar-basic")
 chart_link
 ```
 
@@ -100,7 +100,7 @@ p <- plot_ly(
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link <- api_create(p, filename = "radar/multiple")
+chart_link <- api_create(p, filename = "radar-multiple")
 chart_link
 ```
 

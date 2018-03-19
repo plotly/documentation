@@ -46,7 +46,7 @@ p <- plot_ly(x = c(20, 14, 23), y = c('giraffes', 'orangutans', 'monkeys'), type
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="horizontalbar/basic")
+chart_link = api_create(p, filename="horizontalbar-basic")
 chart_link
 ```
 
@@ -77,7 +77,7 @@ p <- plot_ly(data, x = ~SF_Zoo, y = ~y, type = 'bar', orientation = 'h', name = 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="horizontalbar/colored")
+chart_link = api_create(p, filename="horizontalbar-colored")
 chart_link
 ```
 
@@ -175,7 +175,7 @@ p <- plot_ly(data, x = ~x1, y = ~y, type = 'bar', orientation = 'h',
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="horizontalbar/palette")
+chart_link = api_create(p, filename="horizontalbar-palette")
 chart_link
 ```
 
@@ -235,7 +235,7 @@ p <- subplot(p1, p2) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="horizontalbar/subplots")
+chart_link = api_create(p, filename="horizontalbar-subplots")
 chart_link
 ```
 

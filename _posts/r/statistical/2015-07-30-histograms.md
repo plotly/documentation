@@ -46,7 +46,7 @@ p <- plot_ly(x = ~rnorm(50), type = "histogram")
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="histogram/basic")
+chart_link = api_create(p, filename="histogram-basic")
 chart_link
 ```
 
@@ -63,7 +63,7 @@ p <- plot_ly(x = ~rnorm(50),
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="histogram/norm")
+chart_link = api_create(p, filename="histogram-norm")
 chart_link
 ```
 
@@ -83,7 +83,7 @@ p <- plot_ly(y=y, x=x, histfunc='sum', type = "histogram") %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="histogram/histfunc")
+chart_link = api_create(p, filename="histogram-histfunc")
 chart_link
 ```
 
@@ -98,7 +98,7 @@ p <- plot_ly(y = ~rnorm(50), type = "histogram")
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="histogram/horizontal")
+chart_link = api_create(p, filename="histogram-horizontal")
 chart_link
 ```
 
@@ -115,7 +115,7 @@ p <- plot_ly(alpha = 0.6) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="histogram/overlay")
+chart_link = api_create(p, filename="histogram-overlay")
 chart_link
 ```
 
@@ -132,7 +132,7 @@ p <- plot_ly(alpha = 0.6) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="histogram/stack")
+chart_link = api_create(p, filename="histogram-stack")
 chart_link
 ```
 
@@ -149,7 +149,7 @@ p <- plot_ly(x = ~rnorm(50),
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="histogram/cumulative")
+chart_link = api_create(p, filename="histogram-cumulative")
 chart_link
 ```
 

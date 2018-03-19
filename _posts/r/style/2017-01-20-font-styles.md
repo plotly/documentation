@@ -57,7 +57,7 @@ p <- plot_ly(x=c(1,2,3,4,5), y=c(1,2,3,2,1)) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="font/global")
+chart_link = api_create(p, filename="font-global")
 chart_link
 ```
 

@@ -76,7 +76,7 @@ p <- plot_geo(locationmode = 'USA-states', color = I("red")) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="map/flights")
+chart_link = api_create(p, filename="map-flights")
 chart_link
 ```
 
@@ -119,7 +119,7 @@ p <- plot_geo(lat = c(40.7127, 51.5072), lon = c(-74.0059, 0.1275)) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="map/london")
+chart_link = api_create(p, filename="map-london")
 chart_link
 ```
 
@@ -177,7 +177,7 @@ p <- plot_geo(d) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="map/contour")
+chart_link = api_create(p, filename="map-contour")
 chart_link
 ```
 

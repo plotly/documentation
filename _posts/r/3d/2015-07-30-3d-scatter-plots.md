@@ -55,7 +55,7 @@ p <- plot_ly(mtcars, x = ~wt, y = ~hp, z = ~qsec, color = ~am, colors = c('#BF38
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter3d/basic")
+chart_link = api_create(p, filename="scatter3d-basic")
 chart_link
 ```
 
@@ -84,7 +84,7 @@ p <- plot_ly(mtcars, x = ~wt, y = ~hp, z = ~qsec,
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter3d/colorscale")
+chart_link = api_create(p, filename="scatter3d-colorscale")
 chart_link
 ```
 
@@ -132,7 +132,7 @@ p <- plot_ly(data_2007, x = ~gdpPercap, y = ~lifeExp, z = ~pop, color = ~contine
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = plotly_POST(p, filename="scatter3d/bubble")
+chart_link = api_create(p, filename="scatter3d-bubble")
 chart_link
 ```
 

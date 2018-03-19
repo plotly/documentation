@@ -57,7 +57,7 @@ p <- plot_ly(s, color = I("gray80")) %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="dumbell-plots/income")
+chart_link = api_create(p, filename="dumbell-plots-income")
 chart_link
 ```
 

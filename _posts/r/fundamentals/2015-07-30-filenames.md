@@ -38,13 +38,13 @@ packageVersion('plotly')
 ```
 
 #### Save Plot to Server
-To create a plotly figure on a plotly server, use `plotly_POST()`.
+To create a plotly figure on a plotly server, use `api_create()`.
 
 
 ```r
 library(plotly)
 p <- plot_ly(x = c(1, 2), y = c(1, 2))
-plotly_POST(p)
+api_create(p)
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/4350.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -55,7 +55,7 @@ If you don't include a filename, a new plot will be made on your online plotly a
 
 
 ```r
-plotly_POST(p, filename = "name-of-my-plotly-file")
+api_create(p, filename = "name-of-my-plotly-file")
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/505.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -65,7 +65,7 @@ If the filename contains "/", it will automatically create a plotly folder. This
 
 
 ```r
-plotly_POST(p, filename="r-docs/name-of-my-plotly-file")
+api_create(p, filename="r-docs-name-of-my-plotly-file")
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/507.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

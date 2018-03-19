@@ -66,7 +66,7 @@ p <- df %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="animations/basic")
+chart_link = api_create(p, filename="animations-basic")
 chart_link
 ```
 
@@ -99,7 +99,7 @@ p <- gapminder %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="animations/mulitple-trace")
+chart_link = api_create(p, filename="animations-mulitple-trace")
 chart_link
 ```
 
@@ -118,7 +118,7 @@ p <- p %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="animations/animation-options")
+chart_link = api_create(p, filename="animations-animation-options")
 chart_link
 ```
 
@@ -137,7 +137,7 @@ p <- p %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="animations/button-options")
+chart_link = api_create(p, filename="animations-button-options")
 chart_link
 ```
 
@@ -156,7 +156,7 @@ p <- p %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="animations/slider-options")
+chart_link = api_create(p, filename="animations-slider-options")
 chart_link
 ```
 
@@ -196,7 +196,7 @@ p <- gapminder %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="animations/advanced")
+chart_link = api_create(p, filename="animations-advanced")
 chart_link
 ```
 
