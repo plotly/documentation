@@ -1,28 +1,34 @@
 # Contribute to Plotly's [Javascript Documentation](https://plot.ly/javascript/)
+
 ## Initial Steps:
+
 1. Clone the repo and then check out the source-design-merge branch:
 
-  ```
-  $ git clone git@github.com:plotly/documentation.git
-  $ git fetch origin
-  $ git checkout source-design-merge
+  ```sh
+  git clone git@github.com:plotly/documentation.git
+  git fetch origin
+  git checkout source-design-merge
   ```
 
-2. Check Ruby version `$ ruby --version`. We recommend using the same ruby version as gh-pages: https://pages.github.com/versions/. Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
+2. Check Ruby version `$ ruby --version`. We recommend using the same ruby version as [gh-pages](https://pages.github.com/versions/). Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
 
 3. Install bundler and a couple dependencies from the gemfile:
 
-  ```
-  $ gem install bundler
-  $ bundle install
+```sh
+gem install bundler
+bundle install
+```
 
-  ```
 <b>IMPORTANT</b> -If not using bundler and the gemfile, [install the same jekyll version that Github Pages is using](https://pages.github.com/versions/).
 
 ## Create Plotly.js Documentation:
-Our javascript tutorials are written in HTML files with embeded [codepen](http://codepen.io/plotly/) examples.
+
+Our javascript tutorials are written in HTML files with embedded [codepen](http://codepen.io/plotly/) examples.
+
 ##### In `documentation/_posts/plotly_js`
-1. Create a folder titled with the chart type or topic you're adding to the documentation (i.e. `bar`)  
+
+1. Create a folder titled with the chart type or topic you're adding to the documentation (i.e. `bar`)
+
 2. `cd` into the folder you created and create an html index file labeled: `yyyy-mm-dd-chart_type_plotlyjs_index.html`. Copy the index file template below and replace with the necessary information pertaining to the doc you are creating.
   ```
   ---
@@ -94,6 +100,7 @@ Our javascript tutorials are written in HTML files with embeded [codepen](http:/
     - Now from <b>All Buckets /plotly-tutorials/plotly-documentation/thumbnail</b> select the <b>Actions</b> dropdown and <b>upload</b> your .jpg file
 
 ##### In the terminal in the `documentation` repo
+
 9. Commit and Push your tutorial
   - `git add` your .html files
   - `git commit -m "include a message about the tutorial you're adding"`
@@ -103,6 +110,7 @@ Our javascript tutorials are written in HTML files with embeded [codepen](http:/
 11. Deploy with `bundle exec rake deploy`
 
 ##### At https://plot.ly/javascript
+
 12. Check your Tutorial!!!! This is a <b>very important</b> step.
   <b>PLEASE</b> visit https://plot.ly/javascript/your-tutorial and make sure everything looks correct :)
 
