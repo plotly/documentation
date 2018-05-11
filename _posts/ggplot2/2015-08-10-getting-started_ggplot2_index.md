@@ -66,7 +66,7 @@ Plotly graphs are interactive. Click on legend entries to toggle traces, click-a
 
 You can publish your charts to the web with Plotly's web service.
 
-1 - [Create a free Plotly account](https://plot.ly/ssu):<br>
+1 - [Create a free Plotly account](https://plot.ly/api_signup):<br>
 A Plotly account is required to publish charts online. It's free to get started, and you control the privacy of your charts.
 
 2 - Save your authentication credentials<br>

@@ -25,7 +25,7 @@ If you need documentation beyond the tutorials presented here, read either the [
 
 The Scala Plotly client looks for credentials placed in a file called `~/.plotly/.credentials`. If you have already used another Plotly client, for instance the Python client, you probably have this file already and you do not need to do anything else.
 
-Otherwise, start by [creating a free account](https://plot.ly/ssu) on Plotly to get started. Graphs are saved inside your Plotly account and you control the privacy. Public hosting is free. For private hosting, you can use one of the [paid plans](https://plot.ly/products/cloud).
+Otherwise, start by [creating a free account](https://plot.ly/api_signup) on Plotly to get started. Graphs are saved inside your Plotly account and you control the privacy. Public hosting is free. For private hosting, you can use one of the [paid plans](https://plot.ly/products/cloud).
 
 Once you have an account, generate an [API key](https://plot.ly/settings/api/). Copy the key and create the file `~/.plotly/.credentials` with the following content, replacing the username and API key with your own:
 
