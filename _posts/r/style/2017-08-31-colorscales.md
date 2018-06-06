@@ -35,7 +35,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.7.1'
+## [1] '4.7.1.9000'
 ```
 
 ### Colorscale for Scatter Plots
@@ -75,7 +75,31 @@ chart_link = api_create(p, filename="colorscales-scatter")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5148.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5424.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Colorscale Contour
+
+
+```r
+library(plotly)
+
+p <- plot_ly(
+  type = 'contour',
+  z=matrix(c(10, 10.625, 12.5, 15.625, 20,
+      5.625, 6.25, 8.125, 11.25, 15.625,
+      2.5, 3.125, 5., 8.125, 12.5,
+      0.625, 1.25, 3.125, 6.25, 10.625,
+      0, 0.625, 2.5, 5.625, 10),
+      nrow=5, ncol=5)
+)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="colorscales-contour")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5426.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
