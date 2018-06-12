@@ -26,6 +26,7 @@ Note these dependencies should be the same version that gh-pages is using: https
 - For information about editing **plotly.js** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/plotly_js/README.md 
 - For information about editing **python** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/python/README.md
 - For information about editing **R** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/r/README.md
+- For information about editing chart studio documentation found at [https://help.plot.ly/tutorials/](https://help.plot.ly/tutorials/) please see this repo: [https://github.com/plotly/plotly.github.io](https://github.com/plotly/plotly.github.io)
 
 ## Render Changes Locally
 Please **ALWAYS** locally serve the docs and check your changes before committing updates.
