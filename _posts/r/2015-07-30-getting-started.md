@@ -65,12 +65,15 @@ Sys.setenv("plotly_api_key"="your_api_key")
 Save these commands in your [.Rprofile](http://www.statmethods.net/interface/customizing.html) file to be run every time you start R.
 
 3 - Publish your graphs to Plotly with `api_create`
+
 Use `filename` to title the file in your Plotly account.
+
 ```r
 library(plotly)
 p <- plot_ly(midwest, x = ~percollege, color = ~state, type = "box")
 api_create(p, filename = "r-docs-midwest-boxplots")
 ```
+
 4 (optional) - Suppress auto open
 
 When following the instructions above, `api_create(p)` will auto open the created URL in the browser. To suppress this behavior, you can update your browser options in R:
