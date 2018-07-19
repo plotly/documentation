@@ -1,6 +1,6 @@
 ---
-title: Streamtube Plots in R Graphs | Plotly
-name: Streamtube Plots in R Graphs
+title: 3D Streamtube Plots | Plotly
+name: 3D Streamtube Plots 
 permalink: r/streamtube-plot/
 description: How to create streamtube plots with Plotly.
 layout: base
@@ -104,7 +104,7 @@ p <- df %>%
     z = ~z,
     u = ~u,
     v = ~v,
-    w = ~z,
+    w = ~w,
     starts = list(
       x = rep(80, 16),
       y = rep(c(20,30,40,50), 4),
