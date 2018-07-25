@@ -65,8 +65,8 @@ git status
 ```
 Add, commit, and push the files that you'd like to add to your pr:
 ```
-git add file
-git add file
+git add file-a
+git add file-b
 git commit -m 'message about your changes'
 git push origin your_feature_branch
 ```
