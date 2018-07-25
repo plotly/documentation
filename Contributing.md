@@ -56,8 +56,30 @@ exclude: []
 
 and it'll load everything.
 
+## Make a PR
+Ready for your changes to be reviewed? Make a pull request against the `source-design-merge` branch! 
+Create a feature branch and use `git status` to list changed files.
+```
+git checkout -b your_feature_branch
+git status
+```
+Add, commit, and push the files that you'd like to add to your pr:
+```
+git add file
+git add file
+git commit -m 'message about your changes'
+git push origin your_feature_branch
+```
+Visit the [documentation repo](https://github.com/plotly/documentation) and open a pull request against the `source-design-merge` branch. You can then tag @cldougl and @bcdunbar for a review.
+
 ## Deploying Changes
-Our repo has become too big for github to process. Edit files on the `source-design-merge` branch instead of the `gh-pages` branch.
+After your PR has been approved and you have merged it into the `source-design-merge` branch you can deploy your changes! Our repo has become too big for github to process. Edit files on the `source-design-merge` branch instead of the `gh-pages` branch.
+
+First checkout the `source-design-merge` branch (if you were still on your feature branch) and pull (you should see the changes from your latest merged pr):
+```
+git checkout source-design-merge
+git pull origin source-design-merge
+```
 
 Deploy changes with:
 ```
