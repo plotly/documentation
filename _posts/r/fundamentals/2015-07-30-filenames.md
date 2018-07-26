@@ -1,6 +1,6 @@
 ---
-title: Updating Plotly Graphs in R | Examples | Plotly
-name: Updating Plotly Graphs in R
+title: Updating Plotly Graphs | Examples | Plotly
+name: Updating Plotly Graphs
 permalink: r/file-options/
 description: R Filenames, folders, and updating Plotly graphs in the plotly cloud.
 layout: base
@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.6.9000'
+## [1] '4.7.1'
 ```
 
 #### Save Plot to Server
@@ -47,7 +47,7 @@ p <- plot_ly(x = c(1, 2), y = c(1, 2))
 api_create(p)
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4350.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5459.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #### Overwrite Plot
 
@@ -68,6 +68,6 @@ If the filename contains "/", it will automatically create a plotly folder. This
 api_create(p, filename="r-docs-name-of-my-plotly-file")
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/507.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5455.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 View your Plotly graphs at [https://plot.ly/organize](https://plot.ly/organize).
