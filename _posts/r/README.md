@@ -107,10 +107,22 @@
     - Now from <b>All Buckets /plotly-tutorials/plotly-documentation/thumbnail</b> select the <b>Actions</b> dropdown and <b>upload</b> your .jpg file
 
 ##### In the terminal in `documentation`
-4. Commit and Push your tutorial
-  - `git add` your .Rmd and .md files
-  - `git commit -m "include a message about the tutorial you're adding"`
-  - `git push origin source-design-merge`
+4. Make a PR
+
+  - Ready for your changes to be reviewed? Make a pull request against the `source-design-merge` branch!
+  Create a feature branch and use `git status` to list changed files.
+  ```
+  git checkout -b your_feature_branch
+  git status
+  ```
+  - Add, commit, and push the files that you'd like to add to your PR:
+  ```
+  git add file-a
+  git add file-b
+  git commit -m 'message about your changes'
+  git push origin your_feature_branch
+  ```
+  - Visit the [documentation repo](https://github.com/plotly/documentation) and open a pull request against the `source-design-merge` branch. You can then tag **@cldougl** and **@bcdunbar** for a review.
 
 5. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source-design-merge/Contributing.md#rendering-the-pages-locally
 
