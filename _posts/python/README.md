@@ -122,20 +122,20 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
 ##### In the terminal in `documentation`
 9. Make a PR
 
-  Ready for your changes to be reviewed? Make a pull request against the `source-design-merge` branch!
+  - Ready for your changes to be reviewed? Make a pull request against the `source-design-merge` branch!
   Create a feature branch and use `git status` to list changed files.
   ```
   git checkout -b your_feature_branch
   git status
   ```
-  Add, commit, and push the files that you'd like to add to your PR:
+  - Add, commit, and push the files that you'd like to add to your PR:
   ```
   git add file-a
   git add file-b
   git commit -m 'message about your changes'
   git push origin your_feature_branch
   ```
-  Visit the [documentation repo](https://github.com/plotly/documentation) and open a pull request against the `source-design-merge` branch. You can then tag **@cldougl** and **@bcdunbar** for a review.
+  - Visit the [documentation repo](https://github.com/plotly/documentation) and open a pull request against the `source-design-merge` branch. You can then tag **@cldougl** and **@bcdunbar** for a review.
 
 10. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally
 11. Deploy with `bundle exec rake deploy`
