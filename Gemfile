@@ -11,5 +11,5 @@ group :jekyll_plugins do
 end
 
 group :jekyll_plugins do
-  gem 'jekyll-algolia', '~> 1.0'
+  gem 'algoliasearch-jekyll', '~> 0.8.2'
 end
