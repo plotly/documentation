@@ -127,8 +127,7 @@
 5. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source-design-merge/Contributing.md#rendering-the-pages-locally
 
 ##### At https://plot.ly/r
-6. Check your Tutorial!!!!
-  <b>PLEASE</b> visit https://plot.ly/r/your-tutorial and make sure everything looks correct :)
+6. Your changes haven't been deployed yet so they won't be online. That said, <b>PLEASE</b> visit https://plot.ly/r/your-tutorial and make sure everything looks correct once they have been deployed by either **@cldougl** or **@bcdunbar**.
 
 ## Search
 

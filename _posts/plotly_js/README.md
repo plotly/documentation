@@ -114,8 +114,7 @@ Our javascript tutorials are written in HTML files with embeded [codepen](http:/
 10. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally
 
 ##### At https://plot.ly/javascript
-11. Check your Tutorial!!!! This is a <b>very important</b> step.
-  <b>PLEASE</b> visit https://plot.ly/javascript/your-tutorial and make sure everything looks correct :)
+11. Your changes haven't been deployed yet so they won't be online. That said, <b>PLEASE</b> visit https://plot.ly/javascipt/your-tutorial and make sure everything looks correct once they have been deployed by either **@cldougl** or **@bcdunbar**.
 
   - Some common problems that you should check for:
     - Make sure all plots/codepen embeds appear! (\*you may want to sign out of your Plotly/codepen account to ensure you didn't accidentally embed private plots)
