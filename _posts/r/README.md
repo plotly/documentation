@@ -129,6 +129,10 @@
 ##### At https://plot.ly/r
 6. Your changes haven't been deployed yet so they won't be online. That said, <b>PLEASE</b> visit https://plot.ly/r/your-tutorial and make sure everything looks correct once they have been deployed by either **@cldougl** or **@bcdunbar**.
 
+  - Some common problems that you should check for:
+    - Make sure all plots appear!
+    - The thumbnail image appears on: https://plot.ly/r/
+
 ## Search
 
 We now have search via algolia implemented on our index and reference documentation pages! Please refer to our [make README](https://github.com/plotly/documentation/blob/source-design-merge/make_instructions.txt) for more information on how search works and instructions on how to update or edit Plotly search indices.
