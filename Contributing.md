@@ -59,7 +59,8 @@ and it'll load everything.
 ## Make a PR
 Ready for your changes to be reviewed? Make a pull request against the `source-design-merge` branch!
 Create a feature branch and use `git status` to list changed files.
-(Make sure that the feature branch is a branch off from `source-design-merge` local branch in your machine and not from any other previously worked branch.)
+
+(Make sure that the feature branch is a branch off from `source-design-merge` local branch in your machine and not from any other previously worked branch).
 ```
 git checkout -b your_feature_branch
 git status
