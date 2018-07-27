@@ -112,10 +112,9 @@ Our javascript tutorials are written in HTML files with embeded [codepen](http:/
   - Visit the [documentation repo](https://github.com/plotly/documentation) and open a pull request against the `source-design-merge` branch. You can then tag **@cldougl** and **@bcdunbar** for a review.
 
 10. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally
-11. Deploy with `bundle exec rake deploy`
 
 ##### At https://plot.ly/javascript
-12. Check your Tutorial!!!! This is a <b>very important</b> step.
+11. Check your Tutorial!!!! This is a <b>very important</b> step.
   <b>PLEASE</b> visit https://plot.ly/javascript/your-tutorial and make sure everything looks correct :)
 
   - Some common problems that you should check for:

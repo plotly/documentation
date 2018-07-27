@@ -126,10 +126,8 @@
 
 5. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source-design-merge/Contributing.md#rendering-the-pages-locally
 
-6. Deploy with `bundle exec rake deploy`
-
 ##### At https://plot.ly/r
-7. Check your Tutorial!!!!
+6. Check your Tutorial!!!!
   <b>PLEASE</b> visit https://plot.ly/r/your-tutorial and make sure everything looks correct :)
 
 ## Search
