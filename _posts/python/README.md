@@ -138,11 +138,9 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
   - Visit the [documentation repo](https://github.com/plotly/documentation) and open a pull request against the `source-design-merge` branch. You can then tag **@cldougl** and **@bcdunbar** for a review.
 
 10. To proof your work follow these steps: https://github.com/plotly/documentation/blob/source/Contributing.md#rendering-the-pages-locally
-11. Deploy with `bundle exec rake deploy`
 
 ##### At https://plot.ly/python
-12. Check your Tutorial!!!! This is a <b>very important</b> step.
-  <b>PLEASE</b> visit https://plot.ly/python/your-tutorial and make sure everything looks correct :)
+11. Your changes haven't been deployed yet so they won't be online. That said, <b>PLEASE</b> visit https://plot.ly/python/your-tutorial and make sure everything looks correct once they have been deployed by either **@cldougl** or **@bcdunbar**.
 
   - Some common problems that you should check for:
     - Make sure all plots appear! (*you may want to sign out of your Plotly account to ensure you didn't accidentally embed private plots)
