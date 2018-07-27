@@ -1,0 +1,125 @@
+'use strict';
+
+
+const t = require('tape');
+const cluster = require('./');
+const random = require('gauss-random')
+const bitsf64 = require('math-float64-from-bits')
+const ui8bits = require('math-uint8-bits')
+const f64bits = require('math-float64-bits')
+
+
+t('packing 1e6 array', t => {
+	let y = new Float64Array(1e6)
+	let x = new Float64Array(1e6)
+	console.time(1)
+	y.subarray(0e5, 1e5)
+	y.subarray(1e5, 2e5)
+	y.subarray(2e5, 3e5)
+	y.subarray(3e5, 4e5)
+	y.subarray(4e5, 5e5)
+	y.subarray(5e5, 6e5)
+	y.subarray(6e5, 7e5)
+	y.subarray(7e5, 8e5)
+	y.subarray(8e5, 9e5)
+	console.timeEnd(1)
+
+	t.end()
+})
+
+t('float64 packing', t => {
+	// uint8 (level) + uint32 (id) + float32→normalized uint16 (x)
+
+	let f64 = new Float64Array(1)
+	let view = new DataView(f64.buffer)
+	let ui8 = new Uint8Array(f64.buffer)
+	let ui16 = new Uint16Array(f64.buffer)
+	let ui32 = new Uint32Array(f64.buffer)
+
+	// view.setUint8(7, parseInt('10000000', 2))
+	// view.setUint8(6, parseInt('00000000', 2))
+	// ui8[7] = 0xff
+	// ui16[2] = 0x1000
+	ui32[1] = 0x00ff0000 & 0x01 << 16 | 0x0000ffff & 0xffff
+	console.log(f64[0], f64bits(f64[0]))
+
+	let sign = '0' // ignore sign
+	let exp = '00000000000' // write levels as exponent
+	let fract = '0000000000000000000000000000000000000000000000000000'
+
+	console.log(bitsf64(sign + exp + fract))
+
+	// 4    '0100000000010000000000000000000000000000000000000000000000000000'
+	// -0   '1000000000000000000000000000000000000000000000000000000000000000'
+	// NaN  '0111111111111000000000000000000000000000000000000000000000000000'
+	// +Inf '0111111111110000000000000000000000000000000000000000000000000000'
+	// -Inf '1111111111110000000000000000000000000000000000000000000000000000'
+})
+
+t('sorting comparison', t => {
+	let N = 1e6
+
+	let f64 = data(new Float64Array(N))
+	console.time(1)
+	f64.sort()
+	console.timeEnd(1)
+
+
+	let f32 = data(new Float32Array(N))
+	console.time(2)
+	f32.sort()
+	console.timeEnd(2)
+
+
+	let i32 = data(new Uint32Array(N), i => Math.random() * 0xffffffff)
+	console.time(3)
+	i32.sort()
+	console.timeEnd(3)
+
+
+	let i32b = data(new Uint32Array(N), i => Math.random() * 0xffffffff)
+	console.time(4)
+	i32b.sort((a, b) => a - b)
+	console.timeEnd(4)
+
+
+	let points = data(new Float64Array(N))
+	let levels = new Uint32Array(N)
+	let weights = new Uint32Array(N)
+	let ids = new Uint32Array(N)
+
+	let level = 0, i = 0
+	while (i < N) {
+		let amt = Math.floor(Math.random() * (N / 16))
+		let end = Math.min(i + amt, N)
+		for (; i < end; i++) {
+			levels[i] = level
+			ids[i] = i
+		}
+		level++
+	}
+
+	const snapSort = require('snap-points-2d/lib/sort')
+
+	console.time('snapsort')
+	snapSort(levels, points, ids, weights, N)
+	console.timeEnd('snapsort')
+})
+
+
+function data(N=1e6, f) {
+	let points
+	if (N.length) {
+		points = N
+	}
+	else {
+		points = Array(N)
+	}
+
+	for (let i = 0; i < points.length; i++) {
+		points[i] = f ? f(i) : random()
+	}
+
+	return points
+}
+
