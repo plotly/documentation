@@ -77,7 +77,7 @@ $('.copyCode').on('click', function (e) {
 
 });
 
-//$( "<span class='copyCode'>Copy to clipboard!</span>" ).insertAfter( "pre code" );
+$( "<span class='copyCode'>Copy to clipboard!</span>" ).insertAfter( "pre code" );
 
 // Reset Tooltip Text
 
@@ -109,6 +109,3 @@ function copyCodeToClipboard(element) {
     document.execCommand("copy");
     $fickleElement.remove();
 }
-
-
-
