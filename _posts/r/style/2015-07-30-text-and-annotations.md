@@ -37,7 +37,7 @@ packageVersion('plotly')
 ## [1] '4.7.0.9000'
 ```
 
-### Heatmap with Annotations
+### Text Mode
 
 
 ```r
