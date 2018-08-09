@@ -38,7 +38,7 @@ packageVersion('plotly')
 ```
 
 
-### Heatmap with manual annotations
+### Heatmap with Annotations
 
 
 ```r
