@@ -65,7 +65,7 @@ You can also save the image using different formats.
 
 The common image formats: 'PNG', 'JPG/JPEG' are supported. In addition, formats like 'EPS', 'SVG' and 'PDF' are also available for user with a Personal or Professional subscription. You can get more details on our [pricing page] (https://plot.ly/products/cloud/)
 
-**Note:** It is important to note that any WebGL graphs (scattergl, heatmapgl, contourgl, scatter3d, scatterpolargl) that are exported as svg will be rendered as raster and not vector.
+**Note:** It is important to note that any figures with a WebGL trace (scattergl, heatmapgl, contourgl, scatter3d, scatterpolargl) that are exported in a vector format like SVG, EPS or PDF will appear as encapsulated rasters instead of vectors.
 
 
 ## Saving as PNG ##
