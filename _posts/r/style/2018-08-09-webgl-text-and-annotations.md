@@ -2,7 +2,7 @@
 title: WebGL Text and Annotations in R | Examples | Plotly
 name: WebGL Text and Annotations
 permalink: r/webgl-text-and-annotations/
-description: How to add webGL text labels and annotations to plots in R.
+description: How to add WebGL text labels and annotations to plots in R.
 layout: base
 thumbnail: thumbnail/webgl-text-and-annotations.jpg
 language: r
