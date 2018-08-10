@@ -2,6 +2,7 @@
 // Smooth Scrolling
 //----
 
+console.log('main.js');
 
 // to top right away
 if (window.location.hash) scroll(0, 0);
