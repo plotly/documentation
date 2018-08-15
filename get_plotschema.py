@@ -8,6 +8,7 @@ plotschema = requests.get('https://api.plot.ly/v2/plot-schema/?sha1=%27%27',
                          auth=('plotly_docs', 'ikwqmjam2o')).content
 f = open('plotschema.json', 'w')
 
+# put quotes around all hex-color dflt lists with len 10
 n = 10  # number of colors in colorway
 pattern = '"dflt":[ ]*\[' + '"#[0-z]+",[ ]*'*(n-1) + '"#[0-z]+"[ ]*\]'
 colorway = re.findall(pattern, plotschema)
@@ -16,7 +17,6 @@ for j in range(len(colorway)):
     colorway[j] = colorway[j].replace('[', "\'[")
     colorway[j] = colorway[j].replace(']', "]\'")
 
-print colorway
 new_plotschema = ''
 if len(colorway) > 0:
     split = re.split(pattern, plotschema)
