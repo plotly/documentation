@@ -5,7 +5,7 @@ Edit or add files in the `_posts` folder in the [source-design-merge](http://git
 1. Clone the repo and then check out the source-design-merge branch:
 
   ```
-  $ git clone git@github.com:plotly/documentation.git
+  $ git clone https://github.com/plotly/documentation.git
   $ git fetch origin
   $ git checkout source-design-merge
   ```
