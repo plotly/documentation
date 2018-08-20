@@ -1,15 +1,15 @@
 ## Repo Organization
 Edit or add files in the `_posts` folder in the [source-design-merge](http://github.com/plotly/documentation/tree/source-design-merge) branch.
 
-## Clone the Repo and Install Dependencies 
+## Clone the Repo and Install Dependencies
 1. Clone the repo and then check out the source-design-merge branch:
 
   ```
-  $ git clone git@github.com:plotly/documentation.git
+  $ git clone https://github.com/plotly/documentation.git
   $ git fetch origin
   $ git checkout source-design-merge
   ```
- 
+
 2. Check Ruby version `$ ruby --version`. We recommend using the same ruby version as gh-pages: https://pages.github.com/versions/. Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
 
 3. Install bundler and dependencies from the `gemfile`:
@@ -23,9 +23,10 @@ Note these dependencies should be the same version that gh-pages is using: https
 4. When we deploy, a function is run to update the plot schema. To do this successfully you have to make sure you have the `requests` python package: `pip install requests`
 
 ## Making Changes
-- For information about editing **plotly.js** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/plotly_js/README.md 
+- For information about editing **plotly.js** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/plotly_js/README.md
 - For information about editing **python** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/python/README.md
 - For information about editing **R** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/r/README.md
+- For information about editing chart studio documentation found at [https://help.plot.ly/tutorials/](https://help.plot.ly/tutorials/) please see this repo: [https://github.com/plotly/plotly.github.io](https://github.com/plotly/plotly.github.io)
 
 ## Render Changes Locally
 Please **ALWAYS** locally serve the docs and check your changes before committing updates.
@@ -55,19 +56,29 @@ exclude: []
 
 and it'll load everything.
 
-## Deploying Changes
-Our repo has become too big for github to process. Edit files on the `source-design-merge` branch instead of the `gh-pages` branch.
+## Make a PR
+Ready for your changes to be reviewed? Make a pull request against the `source-design-merge` branch!
+Create a feature branch and use `git status` to list changed files.
 
-Deploy changes with:
+(Make sure that the feature branch is a branch off from `source-design-merge` local branch in your machine and not from any other previously worked branch).
 ```
-documentation (source-design-merge) $ bundle exec rake deploy
+git checkout -b your_feature_branch
+git status
 ```
+Add, commit, and push the files that you'd like to add to your pr:
+```
+git add file-a
+git add file-b
+git commit -m 'message about your changes'
+git push origin your_feature_branch
+```
+Visit the [documentation repo](https://github.com/plotly/documentation) and open a pull request against the `source-design-merge` branch. You can then tag **@cldougl** and **@bcdunbar** for a review.
 
-(from the `source-design-merge` branch in the root of the `documentation` repo)
+After your PR has been reviewed and approved, you can merge it into the `source-design-merge` branch! Your changes haven't been deployed yet so they won't be online. That said, be sure to check them after they have been deployed by either **@cldougl** or **@bcdunbar**.
 
 ## Search
 
-We now have search via algolia implemented on our index and reference documentation pages! Please refer to our [make README](https://github.com/plotly/documentation/blob/source-design-merge/make_instructions.txt) for more information on how search works and instructions on how to update or edit Plotly search indices. 
+We now have search via algolia implemented on our index and reference documentation pages! Please refer to our [make README](https://github.com/plotly/documentation/blob/source-design-merge/make_instructions.txt) for more information on how search works and instructions on how to update or edit Plotly search indices.
 
 ## Style Edits
 
