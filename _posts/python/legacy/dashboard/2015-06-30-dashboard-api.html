@@ -1,0 +1,1099 @@
+---
+permalink: python/create-online-dashboard/
+description: How to create and publish a dashboard with the Python API.
+name: Dashboard API | plotly
+has_thumbnail: true
+thumbnail: thumbnail/dashboard.jpg
+layout: user-guide
+name: Dashboard API
+language: python
+title: Dashboard API | plotly
+display_as: legacy_charts
+has_thumbnail: true
+page_type: u-guide
+order: 0
+ipynb: ~notebook_demo/148
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#194;&#182;</a></h4><p>Note: The dashboard API is available in version <b>2.0.5.+</b><br>
+Run  <code>pip install plotly --upgrade</code> to update your Plotly version.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.5.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Plotly-Dashboards">Plotly Dashboards<a class="anchor-link" href="#Plotly-Dashboards">&#194;&#182;</a></h4><p>A dashboard is a collection of plots and images organized with a certain layout. There are two ways to create a Plotly dashboard: using the <a href="https://plot.ly/dashboard/create/">online creator</a> or programmatically with Plotly's python API.</p>
+<p>In Plotly, dashboards can contain plots, text and webpage images. To use the online creator, see <a href="https://plot.ly/dashboard/create/">https://plot.ly/dashboard/create/</a>. Dashboards are stored in your Plotly account: <a href="https://plot.ly/organize">https://plot.ly/organize</a></p>
+<h4 id="Dashboard-Privacy">Dashboard Privacy<a class="anchor-link" href="#Dashboard-Privacy">&#194;&#182;</a></h4><p>In the same way that a <code>plot</code> can be <code>public</code>, <code>private</code> or <code>secret</code>, dashboards can also be <code>public</code>, <code>private</code> or <code>secret</code> independent of the plots inside them. So if you're sharing a <code>dashboard</code> with someone and one or more of your plots are set to <code>private</code>, they will not show for the other user. For more information about this refer to the <a href="http://help.plot.ly/dashboard-privacy/">Dashboard Privacy Doc</a>.</p>
+<h4 id="Initialize-a-Dashboard">Initialize a Dashboard<a class="anchor-link" href="#Initialize-a-Dashboard">&#194;&#182;</a></h4><p>Now you can programmatically create and modify dashboards in Python. These dashboards can be uploaded to the Plotly server to join your other dashboards. You can also retrieve dashboards from Plotly.</p>
+<p>Let's start by creating a new dashboard. To get a preview of the HTML representation of the dashboard organization - i.e. where the items in the dashboard are located with respect to one another - run the <code>.get_preview()</code> method in a notebook cell. Everytime you modify your dashboard you should run this to check what it looks like.</p>
+<p><code>IMPORTANT NOTE</code>: because of the way <code>.get_preview()</code> works <em>only</em> one cell of the Jupyter notebook can display the preview of the dashboard after running this method. A good setup is to designate one cell to look like <code>my_dboard.get_preview()</code> and then run that every time you make a change to update the HTML representation of the dashboard. For the purposes of clarity, each modification of the dashboard in this tutorial is clearly shown.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[50]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.dashboard_objs</span> <span class="kn">as</span> <span class="nn">dashboard</span>
+
+<span class="kn">import</span> <span class="nn">IPython.display</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
+
+<span class="n">my_dboard</span> <span class="o">=</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">Dashboard</span><span class="p">()</span>
+<span class="n">my_dboard</span><span class="o">.</span><span class="n">get_preview</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Choose-Plots">Choose Plots<a class="anchor-link" href="#Choose-Plots">&#194;&#182;</a></h4><p>In order to use the dashboard, we need to put some plots into it. You can either make these on-the-fly in Jupyter or use a plot you've already created by using its url.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="n">colorscale</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;#FAEE1C&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.33</span><span class="p">,</span> <span class="s1">&#39;#F3558E&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.66</span><span class="p">,</span> <span class="s1">&#39;#9C1DE7&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;#581B98&#39;</span><span class="p">]]</span>
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">size</span><span class="o">=</span><span class="s1">&#39;16&#39;</span><span class="p">,</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span>
+        <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span>
+        <span class="n">showscale</span><span class="o">=</span><span class="bp">True</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace1</span><span class="p">]</span>
+<span class="n">url_1</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;scatter-for-dashboard&#39;</span><span class="p">,</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;scatter-for-dashboard&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PlotBot/1296.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a plot with a secret key:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span>
+<span class="n">x3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span> <span class="o">+</span> <span class="mi">6</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#FAEE1C&#39;</span><span class="p">,</span> <span class="s1">&#39;#F3558E&#39;</span><span class="p">,</span> <span class="s1">&#39;#9C1DE7&#39;</span><span class="p">,</span> <span class="s1">&#39;#581B98&#39;</span><span class="p">]</span>
+
+<span class="n">trace0</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">]})</span>
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x1</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="mi">1</span><span class="p">]})</span>
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x2</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="mi">2</span><span class="p">]})</span>
+<span class="n">trace3</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x3</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="mi">3</span><span class="p">]})</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace0</span><span class="p">,</span> <span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">,</span> <span class="n">trace3</span><span class="p">]</span>
+
+<span class="n">url_2</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;box-plots-for-dashboard&#39;</span><span class="p">,</span> <span class="n">sharing</span><span class="o">=</span><span class="s1">&#39;secret&#39;</span><span class="p">,</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;box-plots-for-dashboard&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PlotBot/1342.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">url_2</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>u&#39;https://plot.ly/~PlotBot/1342?share_key=uVoeGB1i8Xf4fk0b57sT2l&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-a-Box">Add a Box<a class="anchor-link" href="#Add-a-Box">&#194;&#182;</a></h4><p>If you want to place a plot, text box or a webpage into the dashboard, you need to place it in a <code>box</code> (which is just a dictionary) and <code>insert</code> it into your dashboard. We will be inserting a plot, a text box, and a secret plot.</p>
+<p>A box with a plot in it takes the form:</p>
+
+<pre><code>{
+    'type': 'box',
+    'boxType': 'plot',
+    'fileId': '',
+    'shareKey': None,
+    'title': ''
+}</code></pre>
+<ul>
+<li><code>fileId</code> is of the form <code>username:number</code> (eg. 'PlotBot:1300') which can be found in the url of your plot once it's up on the Plotly server.</li>
+<li><code>shareKey</code>: optional - the sharekey if your plot is secret.</li>
+<li><code>title</code>: optional - sets the title of your box.</li>
+</ul>
+<p>A box with text in it takes the form:</p>
+
+<pre><code>{
+    'type': 'box',
+    'boxType': 'text',
+    'text': '',
+    'title': ''
+}</code></pre>
+<ul>
+<li><code>text</code>: the text you want displayed in your box.</li>
+<li><code>title</code>: optional - sets the title of your box.</li>
+</ul>
+<p>A box with a webpage in it takes the form:</p>
+
+<pre><code>{
+    'type': 'box',
+    'boxType': 'webpage',
+    'url': '',
+    'title': ''
+}</code></pre>
+<ul>
+<li><code>url</code>: the url of your webpage (eg. '<a href="https://en.wikipedia.org/wiki/Main_Page">https://en.wikipedia.org/wiki/Main_Page</a>').</li>
+<li><code>title</code>: optional - sets the title of your box.</li>
+</ul>
+<p>Note: As above, you can run <code>py.plot()</code> to return the url of your plot and then assign it to a variable to use in a dashboard later.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To extract the fileId from a url, use the <code>fileId_from_url</code> below. If your url is <code>secret</code>, use <code>sharekey_from_url</code> to return the sharekey from the url, then place in your box that contains a secret plot.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[51]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+
+<span class="k">def</span> <span class="nf">fileId_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return fileId from a url.&quot;&quot;&quot;</span>
+    <span class="n">raw_fileId</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;~[A-z]+/[0-9]+&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span> <span class="p">]</span>
+    <span class="k">return</span> <span class="n">raw_fileId</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">sharekey_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the sharekey from a url.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;share_key=&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">url</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;This url is not &#39;sercret&#39;. It does not have a secret key.&quot;</span>
+    <span class="k">return</span> <span class="n">url</span><span class="p">[</span><span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;share_key=&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="s1">&#39;share_key=&#39;</span><span class="p">):]</span>
+
+<span class="n">fileId_1</span> <span class="o">=</span> <span class="n">fileId_from_url</span><span class="p">(</span><span class="n">url_1</span><span class="p">)</span>
+<span class="n">fileId_2</span> <span class="o">=</span> <span class="n">fileId_from_url</span><span class="p">(</span><span class="n">url_2</span><span class="p">)</span>
+
+<span class="n">box_a</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;box&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;boxType&#39;</span><span class="p">:</span> <span class="s1">&#39;plot&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;fileId&#39;</span><span class="p">:</span> <span class="n">fileId_1</span><span class="p">,</span>
+    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;scatter-for-dashboard&#39;</span>
+<span class="p">}</span>
+
+<span class="n">text_for_box</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot; </span>
+<span class="s2">## Distributions: </span>
+
+
+<span class="s2">#### Scatter Plot</span>
+<span class="s2">1. Ranging 0 - 500</span>
+<span class="s2">2. Even distribution</span>
+
+<span class="s2">#### Box Plot</span>
+<span class="s2">1. Similar Range</span>
+<span class="s2">2. Outliers present in trace 1 and trace 3</span>
+
+<span class="s2">You can view more markdown tips [here](https://daringfireball.net/projects/markdown/syntax).</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">box_b</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;box&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;boxType&#39;</span><span class="p">:</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">text_for_box</span><span class="p">,</span>
+    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Markdown Options for Text Box&#39;</span>
+<span class="p">}</span>
+
+<span class="n">box_c</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;box&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;boxType&#39;</span><span class="p">:</span> <span class="s1">&#39;plot&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;fileId&#39;</span><span class="p">:</span> <span class="n">fileId_2</span><span class="p">,</span>
+    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;box-for-dashboard&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;shareKey&#39;</span><span class="p">:</span> <span class="n">sharekey_from_url</span><span class="p">(</span><span class="n">url_2</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">my_dboard</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">box_c</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://images.plot.ly/plotly-documentation/images/dashboard_1.png" alt="IPython terminal"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[52]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">get_preview</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[52]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+    <script>
+      var canvas = document.getElementById('myCanvas');
+      var context = canvas.getContext('2d');
+      <!-- Dashboard -->
+      context.beginPath();
+      context.rect(0, 0, 500, 500);
+      context.lineWidth = 2;
+      context.strokeStyle = 'black';
+      context.stroke();
+     <!-- Insert box numbers -->
+          context.font = '9pt Times New Roman';
+          context.textAlign = 'center';
+          context.fillText(1, 0 + 0.5*500, 0 + 0.5*500);
+     </script>
+  </body>
+</html>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[53]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">box_a</span><span class="p">,</span> <span class="s1">&#39;above&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://images.plot.ly/plotly-documentation/images/dashboard_2.png" alt="IPython terminal"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-Box-with-Custom-Sizing">Add Box with Custom Sizing<a class="anchor-link" href="#Add-Box-with-Custom-Sizing">&#194;&#182;</a></h4><p>By default when a box is inserted into the dashboard layout it splits the box it is referencing equally into two parts. You can now manually control the percentage that the new box takes. Use <code>fill_percent</code> to specify the percentage of the container box from the given side that the new box occupies. Run <code>help(dashboard.Dashboard.insert)</code> for more help.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[54]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">box_b</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fill_percent</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://images.plot.ly/plotly-documentation/images/dashboard_3.png" alt="IPython terminal"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Get-Box">Get Box<a class="anchor-link" href="#Get-Box">&#194;&#182;</a></h4><p>Each time <code>my_dboard.get_preview()</code> is run a layout of the dashboard is returned where each rectangular area is denoted by a number in the center. These numbers or <code>box ids</code> are essentially lookup keys that are assigned on-the-fly each time <code>.get_preview()</code> is run and are liable to change.</p>
+<p>Remember that a box is just a dictionary that specifies the plot, webpage or text that it contains. For example, let's say you want to see what plot will show up in the region <code>1</code> of the dashboard. Run <code>my_dboard.get_box(1)</code> and the dict of the box will be returned:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[55]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[55]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;boxType&#39;: &#39;text&#39;,
+ &#39;text&#39;: &#39; \n## Distributions: \n\n\n#### Scatter Plot\n1. Ranging 0 - 500\n2. Even distribution\n\n#### Box Plot\n1. Similar Range\n2. Outliers present in trace 1 and trace 3\n\nYou can view more markdown tips [here](https://daringfireball.net/projects/markdown/syntax).\n&#39;,
+ &#39;title&#39;: &#39;Markdown Options for Text Box&#39;,
+ &#39;type&#39;: &#39;box&#39;}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can now reassign the values in the dictionary to update that box. For example, you can change the title of that plot:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[56]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;a new title&#39;</span>
+<span class="n">my_dboard</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[56]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;boxType&#39;: &#39;text&#39;,
+ &#39;text&#39;: &#39; \n## Distributions: \n\n\n#### Scatter Plot\n1. Ranging 0 - 500\n2. Even distribution\n\n#### Box Plot\n1. Similar Range\n2. Outliers present in trace 1 and trace 3\n\nYou can view more markdown tips [here](https://daringfireball.net/projects/markdown/syntax).\n&#39;,
+ &#39;title&#39;: &#39;a new title&#39;,
+ &#39;type&#39;: &#39;box&#39;}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Swap-Boxes">Swap Boxes<a class="anchor-link" href="#Swap-Boxes">&#194;&#182;</a></h4><p>If you want to swap the locations of two boxes you've already placed in the dashboard, run <code>my_dboard.get_preview()</code> to look at the layout of the dashboard, then simply pick two <em>unique</em> box ids and you will swap the contents stored at those locations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[57]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">3</span><span class="p">)[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[57]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;box-for-dashboard&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[58]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">swap</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">my_dboard</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">3</span><span class="p">)[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[58]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;scatter-for-dashboard&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Remove-Box">Remove Box<a class="anchor-link" href="#Remove-Box">&#194;&#182;</a></h4><p>You can remove a box from the dashboard by identifying its box id from the <code>my_dboard.get_preview()</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[59]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">box_a</span><span class="p">,</span> <span class="s1">&#39;below&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://images.plot.ly/plotly-documentation/images/dashboard_4.png" alt="IPython terminal"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[60]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://images.plot.ly/plotly-documentation/images/dashboard_3.png" alt="IPython terminal"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-Title">Add Title<a class="anchor-link" href="#Add-Title">&#194;&#182;</a></h4><p>Set the title of your dashboard.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[61]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;My First Dashboard with Python&#39;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-a-Logo">Add a Logo<a class="anchor-link" href="#Add-a-Logo">&#194;&#182;</a></h4><p>Add a logo to the top-left corner of the dashboard.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[62]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;logoUrl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;https://images.plot.ly/language-icons/api-home/python-logo.png&#39;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-Links">Add Links<a class="anchor-link" href="#Add-Links">&#194;&#182;</a></h4><p>Add some links to the header of the dashboard.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[63]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;links&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;links&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Link to Plotly&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://plot.ly/&#39;</span><span class="p">})</span>
+<span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;links&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Link to Python Website&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.python.org/&#39;</span><span class="p">})</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Change-Color-Settings">Change Color Settings<a class="anchor-link" href="#Change-Color-Settings">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[64]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;foregroundColor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#000000&#39;</span>
+<span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;backgroundColor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#adcaea&#39;</span>
+<span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;headerForegroundColor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#ffffff&#39;</span>
+<span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;headerBackgroundColor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#D232C8&#39;</span>
+<span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;boxBackgroundColor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#ffffff&#39;</span>
+<span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;boxBorderColor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#000000&#39;</span>
+<span class="n">my_dboard</span><span class="p">[</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;boxHeaderBackgroundColor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#ffffff&#39;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Update-Dashboard-Size">Update Dashboard Size<a class="anchor-link" href="#Update-Dashboard-Size">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[65]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">stacked_dboard</span> <span class="o">=</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">Dashboard</span><span class="p">()</span>
+<span class="n">text_box</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;box&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;boxType&#39;</span><span class="p">:</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;empty space&#39;</span> 
+<span class="p">}</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">stacked_dboard</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">text_box</span><span class="p">,</span> <span class="s1">&#39;below&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c1"># stacked_dboard.get_preview()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If a dashboard looks like the one above with small boxes, it may be difficult to resize in the <a href="https://plot.ly/dashboard/create/">online creator</a>. To avoid this issue, resize the dashboard:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[66]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">stacked_dboard</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3000</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Upload-Dashboard">Upload Dashboard<a class="anchor-link" href="#Upload-Dashboard">&#194;&#182;</a></h4><p>To upload your dashboard to your <a href="https://plot.ly/organize/home/">Plotly cloud account</a> use <code>py.dashboard_ops.upload()</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[67]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="n">py</span><span class="o">.</span><span class="n">dashboard_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">my_dboard</span><span class="p">,</span> <span class="s1">&#39;My First Dashboard with Python&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[67]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>u&#39;https://plot.ly/~PlotBot/1327/my-first-dashboard-with-python/&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://plot.ly/~PythonPlotBot/540/my-first-dashboard-with-python/"><img src="https://images.plot.ly/plotly-documentation/images/my_dboard_from_API_with_logo_and_links.png" alt=""></a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Retrieve-Dashboard">Retrieve Dashboard<a class="anchor-link" href="#Retrieve-Dashboard">&#194;&#182;</a></h4><p>You can also retrieve any of your dashboards from Plotly. To see what dashboards you have in the Plotly cloud, run <code>py.dashboard_ops.get_dashboard_names()</code> to get a list of the dashboards you have in your files. To grab a specific dashboard, simply input its name into <code>py.dashboard_ops.get_dashboard()</code> to create a <code>Dashboard()</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[70]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">dashboard_ops</span><span class="o">.</span><span class="n">get_dashboard_names</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[70]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;My First Dashboard with Python&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[71]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">recent_dboard</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">dashboard_ops</span><span class="o">.</span><span class="n">get_dashboard</span><span class="p">(</span><span class="s1">&#39;My First Dashboard with Python&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Examples">Examples<a class="anchor-link" href="#Examples">&#194;&#182;</a></h4><ul>
+<li><a href="https://plot.ly/dashboard/jackp:16823/present">Twitter Marketing Campaign</a></li>
+<li><a href="https://plot.ly/dashboard/jackp:16820/present">Shell: Integrated Gas</a></li>
+<li><a href="https://plot.ly/dashboard/jackluo:430/present">US Wind Turbine Example</a></li>
+<li><a href="https://plot.ly/dashboard/jackp%3A16818/present">Motorcars Example</a>.</li>
+</ul>
+<p>You can learn more about making dashboards by going to <a href="https://plot.ly/python/dashboard/">https://plot.ly/python/dashboard/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[72]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">py</span><span class="o">.</span><span class="n">dashboard_ops</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Help on class dashboard_ops in module plotly.plotly.plotly:
+
+class dashboard_ops
+ |  Interface to Plotly&#39;s Dashboards API.
+ |  
+ |  Plotly Dashboards are JSON blobs. They are made up by a bunch of
+ |  containers which contain either empty boxes or boxes with file urls.
+ |  For more info on Dashboard objects themselves, run
+ |  `help(plotly.dashboard_objs)`.
+ |  
+ |  Example 1: Upload Simple Dashboard
+ |  ```
+ |  import plotly.plotly as py
+ |  import plotly.dashboard_objs as dashboard
+ |  box_1 = {
+ |      &#39;type&#39;: &#39;box&#39;,
+ |      &#39;boxType&#39;: &#39;plot&#39;,
+ |      &#39;fileId&#39;: &#39;username:123&#39;,
+ |      &#39;title&#39;: &#39;box 1&#39;
+ |  }
+ |  
+ |  box_2 = {
+ |      &#39;type&#39;: &#39;box&#39;,
+ |      &#39;boxType&#39;: &#39;plot&#39;,
+ |      &#39;fileId&#39;: &#39;username:456&#39;,
+ |      &#39;title&#39;: &#39;box 2&#39;
+ |  }
+ |  
+ |  my_dboard = dashboard.Dashboard()
+ |  my_dboard.insert(box_1)
+ |  # my_dboard.get_preview()
+ |  my_dboard.insert(box_2, &#39;above&#39;, 1)
+ |  # my_dboard.get_preview()
+ |  
+ |  py.dashboard_ops.upload(my_dboard)
+ |  ```
+ |  
+ |  Example 2: Retreive Dashboard from Plotly
+ |  ```
+ |  # works if you have at least one dashboard in your files
+ |  import plotly.plotly as py
+ |  import plotly.dashboard_objs as dashboard
+ |  
+ |  dboard_names = get_dashboard_names()
+ |  first_dboard = get_dashboard(dboard_names[0])
+ |  
+ |  first_dboard.get_preview()
+ |  ```
+ |  
+ |  Class methods defined here:
+ |  
+ |  get_dashboard(cls, dashboard_name) from __builtin__.classobj
+ |      Returns a Dashboard object from a dashboard name.
+ |  
+ |  get_dashboard_names(cls) from __builtin__.classobj
+ |      Return list of all active dashboard names from users&#39; account.
+ |  
+ |  upload(cls, dashboard, filename, sharing=&#39;public&#39;, auto_open=True) from __builtin__.classobj
+ |      BETA function for uploading/overwriting dashboards to Plotly.
+ |      
+ |      :param (dict) dashboard: the JSON dashboard to be uploaded. Use
+ |          plotly.dashboard_objs.dashboard_objs to create a Dashboard
+ |          object.
+ |      :param (str) filename: the name of the dashboard to be saved in
+ |          your Plotly account. Will overwrite a dashboard of the same
+ |          name if it already exists in your files.
+ |      :param (str) sharing: can be set to either &#39;public&#39;, &#39;private&#39;
+ |          or &#39;secret&#39;. If &#39;public&#39;, your dashboard will be viewable by
+ |          all other users. If &#39;private&#39; only you can see your dashboard.
+ |          If &#39;secret&#39;, the url will be returned with a sharekey appended
+ |          to the url. Anyone with the url may view the dashboard.
+ |      :param (bool) auto_open: automatically opens the dashboard in the
+ |          browser.
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+ 
+
+{% endraw %}
