@@ -51,6 +51,16 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
 6. Best Practices:
   - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displays the headers you add to your notebook so add a header for each example and try to make headers as informative and concise as possible. Ex: `#### Basic Line Chart`
   - Order examples from basic -> advanced.
+  - Keep import order consistent and import plotly packages first, then a space, then additional packages. For example:
+
+    ```
+    import plotly.plotly as py
+    import plotly.graph_objs as go
+
+    import pandas as pd
+    import numpy as np
+    ```
+
   - Try and write all of the code for a given example in a *single* ipython notebook cell. This makes it easier for users to use the `copy to clipboard` button that appears on the codeblocks and easily/quickly reproduce each example.
   - If you're using "real" data, upload the datafile to https://github.com/plotly/datasets then import data rather than pasting a large chunk of data in the tutorial. (Using random data is okay for some examples too :) )
 
