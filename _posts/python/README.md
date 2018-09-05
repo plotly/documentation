@@ -51,6 +51,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
 6. Best Practices:
   - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displays the headers you add to your notebook so add a header for each example and try to make headers as informative and concise as possible. Furthermore, capitalize all headers (except for `code`). Ex: `#### Basic Line Chart`
   - Order examples from basic -> advanced.
+  - Run examples with user: `PythonPlotBot`
   - Keep import order consistent and import plotly packages first, then a space, then additional packages. For example:
 
     ```
