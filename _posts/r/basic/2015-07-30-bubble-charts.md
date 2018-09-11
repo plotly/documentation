@@ -188,6 +188,55 @@ chart_link
 
 <iframe src="https://plot.ly/~RPlotBot/5477.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
+### Scaling using Sizeref
+
+To scale the bubble size, use the attribute sizeref. We recommend using the following formula to calculate a sizeref value:<br><br>
+sizeref = 2. * max(array of size values) / (desired maximum marker size ** 2)
+<br><br>
+Note that setting sizeref to a value greater than 1 decreases the rendered marker sizes, while setting sizeref to less than 1 increases the rendered marker sizes. See [https://plot.ly/python/reference/#scatter-marker-sizeref](https://plot.ly/python/reference/#scatter-marker-sizeref) for more information.
+<br><br>
+Additionally, we recommend setting the sizemode attribute: [https://plot.ly/python/reference/#scatter-marker-sizemode](https://plot.ly/python/reference/#scatter-marker-sizemode) to area.
+
+
+
+```r
+library(plotly)
+
+data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
+
+data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Pennsylvania', 'New Jersey', 'Illinois', 'Washington DC',
+                          'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
+                          'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
+
+#Use the ideal sizeref value
+desired_maximum_marker_size <- 40
+your_list_of_size_values <- data['Gap']
+sizeref <- 2.0 * max(your_list_of_size_values) / (desired_maximum_marker_size**2)
+
+
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~Gap, color = ~State, colors = 'Paired',
+        marker = list(opacity = 0.5, sizemode = 'area', sizeref = sizeref)) %>%
+  layout(title = 'Gender Gap in Earnings per University',
+         xaxis = list(showgrid = FALSE),
+         yaxis = list(showgrid = FALSE),
+         showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="bubble-size")
+```
+
+```
+## Error: Client error: (400) Bad Request
+## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 1, u'marker', u'size'), ('data', 2, u'marker', u'size'), ('data', 3, u'marker', u'size'), ('data', 4, u'marker', u'size'), ('data', 6, u'marker', u'size'), ('data', 7, u'marker', u'size'), ('data', 8, u'marker', u'size'), ('data', 10, u'marker', u'size'), ('data', 11, u'marker', u'size'), ('data', 12, u'marker', u'size'), ('data', 13, u'marker', u'size')]
+```
+
+```r
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5477.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
 ### Scaling V2
 
 
@@ -235,7 +284,7 @@ p <- plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', siz
         sizes = c(10, 50),
         marker = list(opacity = 0.5, sizemode = 'diameter'),
         hoverinfo = 'text',
-        text = ~paste('School:', School, '<br>Gender gap:', gap)) %>%
+        text = ~paste('School:', School, '<br>Gender Gap:', Gap)) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE),
@@ -244,17 +293,10 @@ p <- plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', siz
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="bubble-hovertext")
-```
-
-```
-## Error in paste("School:", School, "<br>Gender gap:", gap): object 'gap' not found
-```
-
-```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5477.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5479.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Styled Buble Chart
 
