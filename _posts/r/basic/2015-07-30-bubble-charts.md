@@ -213,9 +213,9 @@ desired_maximum_marker_size <- 40
 your_list_of_size_values <- data['Gap']
 sizeref <- 2.0 * max(your_list_of_size_values) / (desired_maximum_marker_size**2)
 
-
-p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~Gap, color = ~State, colors = 'Paired',
-        marker = list(opacity = 0.5, sizemode = 'area', sizeref = sizeref)) %>%
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', color = ~State, colors = 'Paired',
+        sizes = c(10, 50),
+        marker = list(size = your_list_of_size_values, opacity = 0.5, sizemode = 'area', sizeref = sizeref)) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE),
@@ -223,19 +223,11 @@ p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="bubble-size")
-```
-
-```
-## Error: Client error: (400) Bad Request
-## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 1, u'marker', u'size'), ('data', 2, u'marker', u'size'), ('data', 3, u'marker', u'size'), ('data', 4, u'marker', u'size'), ('data', 6, u'marker', u'size'), ('data', 7, u'marker', u'size'), ('data', 8, u'marker', u'size'), ('data', 10, u'marker', u'size'), ('data', 11, u'marker', u'size'), ('data', 12, u'marker', u'size'), ('data', 13, u'marker', u'size')]
-```
-
-```r
+chart_link = api_create(p, filename="bubble-sizeref")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5477.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5481.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Scaling V2
 
@@ -261,11 +253,11 @@ p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode 
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="bubble-size")
+chart_link = api_create(p, filename="bubble-size-v2")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5477.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5483.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 
 ### Hover Text with Bubble Charts
