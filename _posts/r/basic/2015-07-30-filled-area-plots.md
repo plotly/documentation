@@ -33,7 +33,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.7.1.9000'
+## [1] '4.8.0'
 ```
 
 ### Basic Filled Area Plot
@@ -57,7 +57,7 @@ chart_link = api_create(p, filename="area-basic")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3621.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5322.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Filled Area Plot with Multiple Traces
 
@@ -84,7 +84,7 @@ chart_link = api_create(p, filename="area-basic2")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3613.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5324.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Selecting Hover Points 
 
@@ -141,7 +141,7 @@ chart_link = api_create(p, filename="area-hoveron")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5224.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5326.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Custom Colors
 
@@ -169,7 +169,7 @@ chart_link = api_create(p, filename="area-colors")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3615.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5328.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Area Plot without Lines
 
@@ -198,7 +198,7 @@ chart_link = api_create(p, filename="area-nolines")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3617.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5330.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Interior Filling for Area Chart
 
@@ -250,7 +250,7 @@ chart_link = api_create(p, filename="area-interior")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3619.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5332.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Stacked Area Chart with Original Values
 
@@ -261,7 +261,7 @@ library(plotly)
 data <- t(USPersonalExpenditure)
 data <- data.frame("year"=rownames(data), data)
 
-p <- plot_ly(data, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type = 'scatter', mode = 'none', fill = 'tozeroy', fillcolor = '#F5FF8D') %>%
+p <- plot_ly(data, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type = 'scatter', mode = 'none', stackgroup = 'one', fillcolor = '#F5FF8D') %>%
   add_trace(y = ~Household.Operation, name = 'Household Operation', fillcolor = '#50CB86') %>%
   add_trace(y = ~Medical.and.Health, name = 'Medical and Health', fillcolor = '#4C74C9') %>%
   add_trace(y = ~Personal.Care, name = 'Personal Care', fillcolor = '#700961') %>%
@@ -278,7 +278,7 @@ chart_link = api_create(p, filename="area-stackedoriginal")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3623.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5334.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Stacked Area Chart with Cumulative Values
 
@@ -287,15 +287,9 @@ chart_link
 library(plotly)
 
 data <- t(USPersonalExpenditure)
-data2 <- data/rowSums(data)*100
-data2 <- data.frame("year"=rownames(data2), data2)
+data <- data.frame("year"=rownames(data), data)
 
-# Transforming into a cumulative table:
-for (i in c(6:3)) {
-  data2[,i-1] <- data2[,i-1] + data2[,i]
-}
-
-p <- plot_ly(data2, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type = 'scatter', mode = 'none', fill = 'tozeroy', fillcolor = '#F5FF8D') %>%
+p <- plot_ly(data, x = ~year, y = ~Food.and.Tobacco, name = 'Food and Tobacco', type = 'scatter', mode = 'none', stackgroup = 'one', groupnorm = 'percent', fillcolor = '#F5FF8D') %>%
   add_trace(y = ~Household.Operation, name = 'Household Operation', fillcolor = '#50CB86') %>%
   add_trace(y = ~Medical.and.Health, name = 'Medical and Health', fillcolor = '#4C74C9') %>%
   add_trace(y = ~Personal.Care, name = 'Personal Care', fillcolor = '#700961') %>%
@@ -313,7 +307,7 @@ chart_link = api_create(p, filename="area-stackedcum")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3625.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5336.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
