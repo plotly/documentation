@@ -1,12 +1,15 @@
 ---
 name: Bubble Size Scaling on Charts
-plot_url: https://codepen.io/plotly/embed/46742b2c62abe7267d746654fb4221c2/?height=500&theme-id=15263&default-tab=result
+plot_url: https://codepen.io/plotly/embed/bxLqRG/?height=500&theme-id=15263&default-tab=result
 language: plotly_js
 suite: bubble
 order: 4
 sitemap: false
 arrangement: horizontal
 ---
+// To scale the bubble size, use the attribute sizeref. We recommend using the following formula to calculate a sizeref value:
+// sizeref = 2.0 * Math.max(...size) / (desired_maximum_marker_size**2)
+// Note that setting 'sizeref' to a value greater than 1, decreases the rendered marker sizes, while setting 'sizeref' to less than 1, increases the rendered marker sizes. See https://plot.ly/python/reference/#scatter-marker-sizeref for more information. Additionally, we recommend setting the sizemode attribute: https://plot.ly/python/reference/#scatter-marker-sizemode to area.
 
 var trace1 = {
   x: [1, 2, 3, 4],
@@ -45,7 +48,23 @@ var trace3 = {
   }
 };
 
-var data = [trace1, trace2, trace3];
+// sizeref using above forumla
+var desired_maximum_marker_size = 40;
+var size = [400, 600, 800, 1000];
+var trace4 = {
+  x: [1, 2, 3, 4],
+  y: [26, 27, 28, 29],
+  text: ['A</br>size: 40</br>sixeref: 1.25', 'B</br>size: 60</br>sixeref: 1.25', 'C</br>size: 80</br>sixeref: 1.25', 'D</br>size: 100</br>sixeref: 1.25'],
+  mode: 'markers',
+  marker: {
+    size: size,
+    //set 'sizeref' to an 'ideal' size given by the formula sizeref = 2. * max(array_of_size_values) / (desired_maximum_marker_size ** 2)
+    sizeref: 2.0 * Math.max(...size) / (desired_maximum_marker_size**2),
+    sizemode: 'area'
+  }
+};
+
+var data = [trace1, trace2, trace3, trace4];
 
 var layout = {
   title: 'Bubble Chart Size Scaling',
