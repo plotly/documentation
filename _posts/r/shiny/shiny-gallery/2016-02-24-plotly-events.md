@@ -4,6 +4,7 @@ name: Shiny app using Plotly
 permalink: r/shinyapp-plotly-events/
 description: Shiny app to showcase different plotly events
 layout: base
+display_as: shiny
 language: r
 page_type: example_index
 has_thumbnail: false

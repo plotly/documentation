@@ -2,7 +2,7 @@
 title: requests.exceptions.ConnectionError - Getting Around Corporate Proxies
 name: Making Requests Behind Corporate Proxies
 permalink: pandas/proxy-configuration/
-description: How to configure Plotly's Python API to work with corporate proxies
+description: How to configure Plotly's Python Open Source Graphing Library to work with corporate proxies
 layout: base
 language: pandas
 page_type: example_index
@@ -10,7 +10,7 @@ has_thumbnail: false
 display_as: file_settings
 ---
 
-### Using Plotly's Python API Behind a Corporate Proxy
+### Using Plotly's Python Open Source Graphing Library Behind a Corporate Proxy
 
 If you are behind a corporate firewall, you may see the error message:
 
