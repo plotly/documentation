@@ -32,7 +32,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.2'
+## [1] '4.8.0'
 ```
 
 ### Customize Margins and Plot Size
@@ -55,4 +55,27 @@ chart_link = api_create(p, filename="sizing-1")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3157.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5489.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Automatically Adjust Margins
+
+```r
+library(plotly)
+yaxis <- list(
+  title = 'Y-axis Title',
+  ticktext = list('long label','Very long label','3','label'),
+  tickvals = list(1, 2, 3, 4),
+  tickmode = "array",
+  automargin = TRUE,
+  titlefont = list(size=30)
+)
+p <- plot_ly(x = c('Apples', 'Oranges', 'Watermelon', 'Pears'), y = c(3, 1, 2, 4), width = 500, height = 500, type = 'bar') %>%
+  layout(autosize = F, yaxis = yaxis)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="automargin-1")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5491.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
