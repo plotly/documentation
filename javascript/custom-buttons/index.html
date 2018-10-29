@@ -37,8 +37,6 @@
     <!-- Icon -->
     <link rel="shortcut icon" href="/images/plotly-ico.png" type="image/x-icon"/>
 
-    <script async>(function(s,u,m,o,j,v){j=u.createElement(m);v=u.getElementsByTagName(m)[0];j.async=1;j.src=o;j.dataset.sumoSiteId='f3c81f006746fb000d45ff008ccf6600517dc0001fe60e0045e9200020854300';v.parentNode.insertBefore(j,v)})(window,document,'script','//load.sumo.com/');</script>
-
     <!-- Global site tag (gtag.js) - AdWords: 1009791370 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1009791370"></script>
     <script>
@@ -372,37 +370,103 @@
     <div class="section">
         <div class="row auto-eg-padding">
       <div class=" row twelve columns">
-        <h4 id="bind-button-events-to-plotly.js-charts"><a class="no_underline plot-blue" href="#bind-button-events-to-plotly.js-charts">Bind button events to Plotly.js charts</a></h4>
+        <h4 id="restyle-button-single-attribute"><a class="no_underline plot-blue" href="#restyle-button-single-attribute">Restyle Button Single Attribute</a></h4>
       </div>
       <div class="row">
         <div class="twelve columns">
           
+            <p>The <code>restyle</code> method should be used when modifying the data and data attributes of the graph
+This example demonstrates how to update a single data attribute: chart type with the <code>restyle</code> method.</p>
+
+          
           
             <div class="z-depth-1">
-              <pre><code class="plotly_js">var d3 = Plotly.d3,
-    y1 = d3.range(100).map(d3.random.normal(6)),
-    y2 = d3.range(100).map(d3.random.normal(9)),
-    layout = {
-        title:'Click buttons to toggle traces',
-        showlegend:false
-    },
-    data = [{
-        y:y1, marker: {color: 'fuchsia'}
-    }, {
-      y:y2, marker: {color: '#FFD966'}
-    }];
+              <pre><code class="plotly_js">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv', function(err, rows){
+function unpack(rows, key) {
+  return rows.map(function(row) { return row[key]; });
+}
+var z_data=[ ]
+for(i=0;i<24;i++)
+{
+  z_data.push(unpack(rows,i));
+}
+
+var data = [{
+        z: z_data,
+        type:'surface',
+        colorscale:'Viridis'
+}]
+
+var updatemenus=[
+    {
+        buttons: [
+            {
+                args: ['type', 'surface'],
+                label: '3D Surface',
+                method: 'restyle'
+            },
+            {
+                args: ['type', 'heatmap'],
+                label:'Heatmap',
+                method:'restyle'
+            }
+        ],
+        direction: 'left',
+        pad: {'r': 10, 't': 10},
+        showactive: true,
+        type: 'buttons',
+        x: 0.1,
+        xanchor: 'left',
+        y: 1.1,
+        yanchor: 'top'
+    }
+]
+
+var annotations = [
+    {
+      text: 'Trace type:',
+      x: 0,
+      y: 1.085,
+      yref: 'paper',
+      align: 'left',
+      showarrow: false
+    }
+]
+
+var layout = {
+    width: 800,
+    height: 900,
+    autosize: false,
+    margin: {t: 0, b: 0, l: 0, r: 0},
+    updatemenus: updatemenus,
+    annotations: annotations,
+    scene: {
+        xaxis:{
+            gridcolor: 'rgb(255, 255, 255)',
+            zerolinecolor: 'rgb(255, 255, 255)',
+            showbackground: true,
+            backgroundcolor:'rgb(230, 230,230)'
+        },
+        yaxis: {
+            gridcolor: 'rgb(255, 255, 255)',
+            zerolinecolor: 'rgb(255, 255, 255)',
+            showbackground: true,
+            backgroundcolor: 'rgb(230, 230, 230)'
+        },
+        zaxis: {
+            gridcolor: 'rgb(255, 255, 255)',
+            zerolinecolor: 'rgb(255, 255, 255)',
+            showbackground: true,
+            backgroundcolor: 'rgb(230, 230,230)'
+        },
+        aspectratio: {x: 1, y: 1, z: 0.7},
+        aspectmode: 'manual'
+  }
+}
+
 
 Plotly.plot("myDiv", data, layout);
 
-$('.hideshow button').click(function(){
-    var btn_id = this.parentNode.id,
-        data_index = ( btn_id === 'top' ) ? 0 : 1,
-        myDiv = document.getElementById("myDiv"),
-        visible = myDiv.data[data_index].visible;
-
-    if( visible === undefined ) visible = true;
-
-    Plotly.restyle("myDiv", 'visible', !visible, data_index);
 });
 </code></pre>
             </div>
@@ -413,7 +477,811 @@ $('.hideshow button').click(function(){
           <div class="twelve columns">
             <div class="border" style="text-align:center;">
               
-              <iframe id="auto-examples" src="https://codepen.io/plotly/embed/xGyzxz/?height=500&theme-id=15263&default-tab=result"
+              <iframe id="auto-examples" src="https://codepen.io/plotly/embed/MPQGaQ/?height=500&theme-id=15263&default-tab=result"
+                style="width: 100%; height: 550px; border: none;"></iframe>
+              
+            </div>
+          </div>
+      
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="restyle-button-multiple-attributes"><a class="no_underline plot-blue" href="#restyle-button-multiple-attributes">Restyle Button Multiple Attributes</a></h4>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          
+            <p>This example demonstrates how to use a restyle button to update single attributes by passing a two element array
+to a button&#39;s <code>args</code> attribute or update multiple attributes at the same time by passing an array containing an object.</p>
+
+          
+          
+            <div class="z-depth-1">
+              <pre><code class="plotly_js">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv', function(err, rows){
+function unpack(rows, key) {
+  return rows.map(function(row) { return row[key]; });
+}
+
+var button_layer_1_height = 1.12
+var button_layer_2_height = 1.0
+var annotation_offset = 0.04
+
+var z_data=[ ]
+for(i=0;i<24;i++)
+{
+  z_data.push(unpack(rows,i));
+}
+
+var data = [{
+        z: z_data,
+        type:'surface',
+        colorscale:'Viridis'
+}]
+
+var updatemenus=[
+    {
+        buttons: [
+            {
+                args: ['type', 'surface'],
+                label: '3D Surface',
+                method: 'restyle'
+            },
+            {
+                args: ['type', 'heatmap'],
+                label:'Heatmap',
+                method:'restyle'
+            },
+            {
+                args: ['type', 'contour'],
+                label:'Contour',
+                method:'restyle'
+            }
+        ],
+        direction: 'left',
+        pad: {'r': 10, 't': 10},
+        showactive: true,
+        type: 'buttons',
+        x: 0.15,
+        xanchor: 'left',
+        y: button_layer_2_height,
+        yanchor: 'top'
+    },
+    {
+        buttons: [
+            {
+                args: ['reversescale', true],
+                label: 'Reverse',
+                method: 'restyle'
+            },
+            {
+                args: ['reversescale', false],
+                label:'Undo Reverse',
+                method:'restyle'
+            }
+        ],
+        direction: 'down',
+        pad: {'r': 10, 't': 10},
+        showactive: true,
+        type: 'dropdown',
+        x: 0.56,
+        xanchor: 'left',
+        y: button_layer_2_height,
+        yanchor: 'top'
+    },
+    {
+        buttons: [
+            {
+                args: [{'contours.showlines':false, 'type':'contour'}],
+                label: 'Hide lines',
+                method: 'restyle'
+            },
+            {
+                args: [{'contours.showlines':true, 'type':'contour'}],
+                label:'Show lines',
+                method:'restyle'
+            }
+        ],
+        direction: 'down',
+        pad: {'r': 10, 't': 10},
+        showactive: true,
+        type: 'dropdown',
+        x: 0.78,
+        xanchor: 'left',
+        y: button_layer_2_height,
+        yanchor: 'top'
+    },
+    {
+        buttons: [
+            {
+                args: ['colorscale', 'Viridis'],
+                label: 'Viridis',
+                method: 'restyle'
+            },
+            {
+                args: ['colorscale', 'Electric'],
+                label:'Electric',
+                method:'restyle'
+            },
+            {
+                args: ['colorscale', 'Earth'],
+                label:'Earth',
+                method:'restyle'
+            },
+            {
+                args: ['colorscale', 'Hot'],
+                label:'Hot',
+                method:'restyle'
+            },
+            {
+                args: ['colorscale', 'Jet'],
+                label:'Jet',
+                method:'restyle'
+            },
+            {
+                args: ['colorscale', 'Portland'],
+                label:'Portland',
+                method:'restyle'
+            },
+            {
+                args: ['colorscale', 'Rainbow'],
+                label:'Rainbow',
+                method:'restyle'
+            },
+            {
+                args: ['colorscale', 'Blackbody'],
+                label:'Blackbody',
+                method:'restyle'
+            },
+
+            {
+                args: ['colorscale', 'Cividis'],
+                label:'Cividis',
+                method:'restyle'
+            }
+        ],
+        direction: 'left',
+        pad: {'r': 10, 't': 10},
+        showactive: true,
+        type: 'buttons',
+        x: 0.15,
+        xanchor: 'left',
+        y: button_layer_1_height,
+        yanchor: 'top'
+    },
+]
+
+var annotations = [
+    {
+      text: 'Trace type:',
+      x: 0,
+      y: button_layer_2_height - annotation_offset,
+      yref: 'paper',
+      align: 'left',
+      showarrow: false
+    },
+    {
+      text: 'Colorscale:',
+      x: 0,
+      y: button_layer_1_height - annotation_offset,
+      yref: 'paper',
+      align: 'left',
+      showarrow: false
+    },
+]
+
+var layout = {
+    margin: {t: 0, b: 0, l: 0, r: 0},
+    updatemenus: updatemenus,
+    annotations: annotations,
+    scene: {
+        xaxis:{
+            gridcolor: 'rgb(255, 255, 255)',
+            zerolinecolor: 'rgb(255, 255, 255)',
+            showbackground: true,
+            backgroundcolor:'rgb(230, 230,230)'
+        },
+        yaxis: {
+            gridcolor: 'rgb(255, 255, 255)',
+            zerolinecolor: 'rgb(255, 255, 255)',
+            showbackground: true,
+            backgroundcolor: 'rgb(230, 230, 230)'
+        },
+        zaxis: {
+            gridcolor: 'rgb(255, 255, 255)',
+            zerolinecolor: 'rgb(255, 255, 255)',
+            showbackground: true,
+            backgroundcolor: 'rgb(230, 230,230)'
+        },
+        aspectratio: {x: 1, y: 1, z: 0.7},
+        aspectmode: 'manual'
+  }
+}
+
+
+Plotly.plot("myDiv", data, layout);
+
+});
+</code></pre>
+            </div>
+          
+          
+        </div>
+        
+          <div class="twelve columns">
+            <div class="border" style="text-align:center;">
+              
+              <iframe id="auto-examples" src="https://codepen.io/plotly/embed/oaEymG/?height=500&theme-id=15263&default-tab=result"
+                style="width: 100%; height: 550px; border: none;"></iframe>
+              
+            </div>
+          </div>
+      
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="relayout-button"><a class="no_underline plot-blue" href="#relayout-button">Relayout Button</a></h4>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          
+            <p>The <code>relayout</code> method should be used when modifying the layout attributes of the graph.
+<strong>Update One Layout Attribute</strong>
+This example demonstrates how to update a layout attribute: chart type with the <code>relayout</code> method.</p>
+
+          
+          
+            <div class="z-depth-1">
+              <pre><code class="plotly_js">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/normal-clusters.csv', function(err, rows){
+function unpack(rows, key) {
+  return rows.map(function(row) { return parseFloat(row[key]); });
+}
+
+var button_layer_height = 1.2
+var x0 = unpack(rows,'x0')
+var x1 = unpack(rows,'x1')
+var x2 = unpack(rows,'x2')
+var y0 = unpack(rows,'y0')
+var y1 = unpack(rows,'y1')
+var y2 = unpack(rows,'y2')
+
+var data = [{
+    x: x0,
+    y: y0,
+    mode: 'markers',
+    marker: {color: '#835AF1'}
+  },
+  {
+    x: x1,
+    y: y1,
+    mode: 'markers',
+    marker: {color: '#7FA6EE'}
+  },
+  {
+    x: x2,
+    y: y2,
+    mode: 'markers',
+    marker: {color: '#B8F7D4'}
+  },
+
+]
+
+var cluster0 = {type: 'circle',
+                 xref: 'x', yref: 'y',
+                 x0: Math.min(...x0), y0: Math.min(...y0),
+                 x1: Math.max(...x0), y1: Math.max(...y0),
+                 opacity: 0.25,
+                 line: {color: '#835AF1'},
+                 fillcolor: '#835AF1'}
+
+var cluster1 = {type: 'circle',
+                 xref: 'x', yref: 'y',
+                 x0: Math.min(...x1), y0: Math.min(...y1),
+                 x1: Math.max(...x1), y1: Math.max(...y1),
+                 opacity: 0.25,
+                 line: {color: '#7FA6EE'},
+                 fillcolor: '#7FA6EE'}
+
+var cluster2 = {type: 'circle',
+                 xref: 'x', yref: 'y',
+                 x0: Math.min(...x2), y0: Math.min(...y2),
+                 x1: Math.max(...x2), y1: Math.max(...y2),
+                 opacity: 0.25,
+                 line: {color: '#B8F7D4'},
+                 fillcolor: '#B8F7D4'}
+
+var updatemenus=[
+    {
+        buttons: [
+            {
+                args: ['shapes', []],
+                label: 'None',
+                method: 'relayout'
+            },
+            {
+                args: ['shapes', [cluster0]],
+                label: 'Cluster 0',
+                method: 'relayout'
+            },
+            {
+                args: ['shapes', [cluster1]],
+                label: 'Cluster 1',
+                method: 'relayout'
+            },
+            {
+                args: ['shapes', [cluster2]],
+                label: 'Cluster 2',
+                method: 'relayout'
+            },
+            {
+                args: ['shapes', [cluster0, cluster1, cluster2]],
+                label: 'All',
+                method: 'relayout'
+            },
+        ],
+        direction: 'left',
+        pad: {'r': 10, 't': 10},
+        showactive: true,
+        type: 'buttons',
+        x: 0.1,
+        xanchor: 'left',
+        y: button_layer_height,
+        yanchor: 'top'
+    },
+
+]
+
+var layout = {
+    updatemenus: updatemenus,
+    showlegend: false
+}
+
+
+Plotly.plot("myDiv", data, layout);
+
+});</code></pre>
+            </div>
+          
+          
+        </div>
+        
+          <div class="twelve columns">
+            <div class="border" style="text-align:center;">
+              
+              <iframe id="auto-examples" src="https://codepen.io/plotly/embed/mzXQPQ/?height=500&theme-id=15263&default-tab=result"
+                style="width: 100%; height: 550px; border: none;"></iframe>
+              
+            </div>
+          </div>
+      
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="update-button"><a class="no_underline plot-blue" href="#update-button">Update Button</a></h4>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          
+            <p>The <code>update</code> method should be used when modifying the data and layout sections of the graph.
+This example demonstrates how to update which traces are displayed while simulaneously updating
+layout attributes such as the chart title and annotations.</p>
+
+          
+          
+            <div class="z-depth-1">
+              <pre><code class="plotly_js">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv', function(err, rows){
+function unpack(rows, key) {
+  return rows.map(function(row) { return row[key]; });
+}
+
+const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length
+
+var button_layer_2_height = 1.2
+var high = unpack(rows, 'AAPL.High').map(x => parseFloat(x))
+var low = unpack(rows, 'AAPL.Low').map(x => parseFloat(x))
+var date = unpack(rows, 'Date')
+
+
+var high_ave = arrAvg(high)
+var high_max = Math.max(...high)
+var low_ave = arrAvg(low)
+var low_min = Math.min(...low)
+
+var data = [{
+    x: date,
+    y: high,
+    mode: 'lines',
+    name: 'High',
+    marker: {color: '#33CFA5'}
+  },
+  {
+    x: date,
+    y: date.map(a => high_ave),
+    mode: 'lines',
+    name: 'Low Average',
+    line: {color: '#33CFA5', dash: 'dash'},
+    visible: false
+  },
+  {
+    x: date,
+    y: low,
+    name: 'Low',
+    mode: 'lines',
+    marker: {color: '#F06A6A'}
+  },
+  {
+    x: date,
+    y: date.map(a => low_ave),
+    mode: 'lines',
+    name: 'High Average',
+    visible: false,
+    line: {color: '#F06A6A', dash: 'dash'}
+  },
+
+]
+
+var high_annotations = [
+    {
+      text: 'High Average:<br>' + high_ave.toFixed(2),
+      x: '2016-03-01',
+      y: high_ave,
+      yref: 'y', xref: 'x',
+      ay: -40, ax: 0
+    },
+    {
+      text: 'High Max:<br>' + high_max.toFixed(2),
+      x: date[high.indexOf(high_max)],
+      y: high_max,
+      yref: 'y', xref: 'x',
+      ay: -40, ax: 0
+    },
+]
+
+var low_annotations = [{
+      text: 'Low Average:<br>' + low_ave.toFixed(2),
+      x: '2015-05-01',
+      y: low_ave,
+      yref: 'y', xref: 'x',
+      ay: 40, ax: 0
+    },
+    {
+      text: 'Low Min:<br>' + low_min.toFixed(2),
+      x: date[low.indexOf(low_min)],
+      y: low_min,
+      yref: 'y', xref: 'x',
+      ay: 40, ax: 0
+    }
+ ]
+
+var updatemenus=[
+    {
+        buttons: [
+            {
+                args: [{'visible': [true, true, false, false]},
+                       {'title': 'Yahoo High',
+                        'annotations': high_annotations}],
+                label: 'High',
+                method: 'update'
+            },
+            {
+                args: [{'visible': [false, false, true, true,]},
+                       {'title': 'Yahoo Low',
+                        'annotations': low_annotations}],
+                label: 'Low',
+                method: 'update'
+            },
+            {
+                args: [{'visible': [true, true, true, true,]},
+                       {'title': 'Yahoo',
+                        'annotations': [...low_annotations, ...high_annotations]}],
+                label: 'Both',
+                method: 'update'
+            },
+            {
+                args: [{'visible': [true, false, true, false,]},
+                       {'title': 'Yahoo',
+                        'annotations': []}],
+                label: 'Reset',
+                method: 'update'
+            },
+
+        ],
+        direction: 'left',
+        pad: {'r': 10, 't': 10},
+        showactive: true,
+        type: 'buttons',
+        x: 0.1,
+        xanchor: 'left',
+        y: button_layer_2_height,
+        yanchor: 'top'
+    },
+
+]
+
+var layout = {
+    title: 'Yahoo',
+    updatemenus: updatemenus,
+    showlegend: false
+}
+
+
+Plotly.plot("myDiv", data, layout);
+
+});
+});</code></pre>
+            </div>
+          
+          
+        </div>
+        
+          <div class="twelve columns">
+            <div class="border" style="text-align:center;">
+              
+              <iframe id="auto-examples" src="https://codepen.io/plotly/embed/BqYMqq/?height=500&theme-id=15263&default-tab=result"
+                style="width: 100%; height: 550px; border: none;"></iframe>
+              
+            </div>
+          </div>
+      
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="animate-button"><a class="no_underline plot-blue" href="#animate-button">Animate Button</a></h4>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          
+            <p>Refer to our animation docs: <a href="https://plot.ly/javascript/#animations">https://plot.ly/javascript/#animations</a> for examples on how to use the animate method with Plotly buttons.</p>
+
+          
+          
+          
+        </div>
+        
+      </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <div class="row auto-eg-padding">
+      <div class=" row twelve columns">
+        <h4 id="style-the-buttons"><a class="no_underline plot-blue" href="#style-the-buttons">Style the Buttons</a></h4>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          
+            <p>When adding buttons to Plotly charts, users have the option of styling the color, font, padding,
+and position of the buttons. The example below demostrates how to apply different styling options.
+See all updatemenus styling attributes here: <a href="https://plot.ly/javascript/reference/#layout-updatemenus">https://plot.ly/javascript/reference/#layout-updatemenus</a>.</p>
+
+          
+          
+            <div class="z-depth-1">
+              <pre><code class="plotly_js">Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv', function(err, rows){
+function unpack(rows, key) {
+  return rows.map(function(row) { return row[key]; });
+}
+
+var button_layer_1_height = 1.12
+var button_layer_2_height = 1.0
+var annotation_offset = 0.04
+
+var z_data=[ ]
+for(i=0;i<24;i++)
+{
+  z_data.push(unpack(rows,i));
+}
+
+var data = [{
+        z: z_data,
+        type:'surface',
+        colorscale:'Viridis'
+}]
+
+var updatemenus=[
+    {
+        buttons: [
+            {
+                args: ['type', 'surface'],
+                label: '3D Surface',
+                method: 'restyle'
+            },
+            {
+                args: ['type', 'heatmap'],
+                label:'Heatmap',
+                method:'restyle'
+            },
+            {
+                args: ['type', 'contour'],
+                label:'Contour',
+                method:'restyle'
+            }
+        ],
+        direction: 'left',
+        pad: {'r': 10, 't': 10},
+        showactive: true,
+        type: 'buttons',
+        x: 0.15,
+        xanchor: 'left',
+        y: button_layer_2_height,
+        yanchor: 'top',
+        font: {color: '#5072a8'}
+    },
+    {
+        buttons: [
+            {
+                args: ['reversescale', true],
+                label: 'Reverse',
+                method: 'restyle'
+            },
+            {
+                args: ['reversescale', false],
+                label:'Undo Reverse',
+                method:'restyle'
+            }
+        ],
+        direction: 'down',
+        pad: {'r': 10, 't': 10},
+        showactive: true,
+        type: 'dropdown',
+        x: 0.56,
+        xanchor: 'left',
+        y: button_layer_2_height,
+        yanchor: 'top',
+        active: 1,
+        font: {color: '#5072a8'}
+    },
+    {
+        buttons: [
+            {
+                args: [{'contours.showlines':false, 'type':'contour'}],
+                label: 'Hide lines',
+                method: 'restyle'
+            },
+            {
+                args: [{'contours.showlines':true, 'type':'contour'}],
+                label:'Show lines',
+                method:'restyle'
+            }
+        ],
+        direction: 'down',
+        pad: {'r': 10, 't': 10},
+        showactive: true,
+        type: 'dropdown',
+        x: 0.78,
+        xanchor: 'left',
+        y: button_layer_2_height,
+        yanchor: 'top',
+        font: {color: '#5072a8'}
+    },
+    {
+        buttons: [
+            {
+                args: ['colorscale', 'Viridis'],
+                label: 'Viridis',
+                method: 'restyle'
+            },
+            {
+                args: ['colorscale', 'Electric'],
+                label:'Electric',
+                method:'restyle'
+            },
+            {
+                args: ['colorscale', 'Earth'],
+                label:'Earth',
+                method:'restyle'
+            },
+            {
+                args: ['colorscale', 'Hot'],
+                label:'Hot',
+                method:'restyle'
+            },
+            {
+                args: ['colorscale', 'Jet'],
+                label:'Jet',
+                method:'restyle'
+            },
+            {
+                args: ['colorscale', 'Portland'],
+                label:'Portland',
+                method:'restyle'
+            },
+            {
+                args: ['colorscale', 'Rainbow'],
+                label:'Rainbow',
+                method:'restyle'
+            },
+            {
+                args: ['colorscale', 'Blackbody'],
+                label:'Blackbody',
+                method:'restyle'
+            },
+
+            {
+                args: ['colorscale', 'Cividis'],
+                label:'Cividis',
+                method:'restyle'
+            }
+        ],
+        direction: 'left',
+        pad: {'r': 10, 't': 10},
+        showactive: true,
+        type: 'buttons',
+        x: 0.15,
+        xanchor: 'left',
+        y: button_layer_1_height,
+        yanchor: 'top',
+        active: 1,
+        bgcolor: '#aaaaaa',
+        bordercolor: '#FFFFFF'
+    },
+]
+
+var annotations = [
+    {
+      text: 'Trace type:',
+      x: 0,
+      y: button_layer_2_height - annotation_offset,
+      yref: 'paper',
+      align: 'left',
+      showarrow: false
+    },
+    {
+      text: 'Colorscale:',
+      x: 0,
+      y: button_layer_1_height - annotation_offset,
+      yref: 'paper',
+      align: 'left',
+      showarrow: false
+    },
+]
+
+var layout = {
+    paper_bgcolor: 'black',
+    margin: {t: 0, b: 0, l: 0, r: 0},
+    updatemenus: updatemenus,
+    annotations: annotations,
+    scene: {
+        bgcolor: 'black',
+        aspectratio: {x: 1, y: 1, z: 0.7},
+        aspectmode: 'manual'
+  }
+}
+
+
+Plotly.plot("myDiv", data, layout);
+
+});
+</code></pre>
+            </div>
+          
+          
+        </div>
+        
+          <div class="twelve columns">
+            <div class="border" style="text-align:center;">
+              
+              <iframe id="auto-examples" src="https://codepen.io/plotly/embed/ePrXVJ/?height=500&theme-id=15263&default-tab=result"
                 style="width: 100%; height: 550px; border: none;"></iframe>
               
             </div>
