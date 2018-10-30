@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+        {% include google-tag-head.html %}
 
 <meta charset="utf-8" />
 <title>credit_risk-R</title>
@@ -156,14 +157,14 @@ div#notebook {
   div.cell {
     display: block;
     page-break-inside: avoid;
-  } 
-  div.output_wrapper { 
-    display: block;
-    page-break-inside: avoid; 
   }
-  div.output { 
+  div.output_wrapper {
     display: block;
-    page-break-inside: avoid; 
+    page-break-inside: avoid;
+  }
+  div.output {
+    display: block;
+    page-break-inside: avoid;
   }
 }
 </style>
@@ -1035,8 +1036,8 @@ py<span class="o">$</span>ggplotly<span class="p">(</span>plt_age<span class="p"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-r"><pre><span class="c1"># Cut DebtRatio into meaningful factors</span>
-tmp<span class="o">$</span>age <span class="o">&lt;-</span> <span class="kp">cut</span><span class="p">(</span>dt<span class="o">$</span>age<span class="p">,</span> breaks <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">18</span><span class="p">,</span> <span class="m">25</span><span class="p">,</span> <span class="m">35</span><span class="p">,</span> <span class="m">45</span><span class="p">,</span> <span class="m">55</span><span class="p">,</span> <span class="m">65</span><span class="p">,</span> <span class="m">75</span><span class="p">,</span> <span class="m">1e6</span><span class="p">),</span> 
-                       labels <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;0&quot;</span><span class="p">,</span> <span class="s">&quot;0-18&quot;</span><span class="p">,</span> <span class="s">&quot;18-25&quot;</span><span class="p">,</span> <span class="s">&quot;25-35&quot;</span><span class="p">,</span> <span class="s">&quot;35-45&quot;</span><span class="p">,</span> <span class="s">&quot;45-55&quot;</span><span class="p">,</span> <span class="s">&quot;55-65&quot;</span><span class="p">,</span> <span class="s">&quot;65-75&quot;</span><span class="p">),</span> 
+tmp<span class="o">$</span>age <span class="o">&lt;-</span> <span class="kp">cut</span><span class="p">(</span>dt<span class="o">$</span>age<span class="p">,</span> breaks <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">18</span><span class="p">,</span> <span class="m">25</span><span class="p">,</span> <span class="m">35</span><span class="p">,</span> <span class="m">45</span><span class="p">,</span> <span class="m">55</span><span class="p">,</span> <span class="m">65</span><span class="p">,</span> <span class="m">75</span><span class="p">,</span> <span class="m">1e6</span><span class="p">),</span>
+                       labels <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;0&quot;</span><span class="p">,</span> <span class="s">&quot;0-18&quot;</span><span class="p">,</span> <span class="s">&quot;18-25&quot;</span><span class="p">,</span> <span class="s">&quot;25-35&quot;</span><span class="p">,</span> <span class="s">&quot;35-45&quot;</span><span class="p">,</span> <span class="s">&quot;45-55&quot;</span><span class="p">,</span> <span class="s">&quot;55-65&quot;</span><span class="p">,</span> <span class="s">&quot;65-75&quot;</span><span class="p">),</span>
                        ordered.result <span class="o">=</span> <span class="bp">T</span><span class="p">)</span>
 </pre></div>
 
@@ -1052,8 +1053,8 @@ tmp<span class="o">$</span>age <span class="o">&lt;-</span> <span class="kp">cut
     <div class="input_area">
 <div class=" highlight hl-r"><pre><span class="c1"># Function used to prepare the data</span>
 bin_ <span class="o">&lt;-</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">)</span> <span class="p">{</span>
-    tmp <span class="o">%&gt;%</span> 
-    group_by_<span class="p">(</span>x<span class="p">,</span> <span class="s">&#39;Y&#39;</span><span class="p">)</span> <span class="o">%&gt;%</span> summarise<span class="p">(</span>N <span class="o">=</span> n<span class="p">())</span> <span class="o">%&gt;%</span> 
+    tmp <span class="o">%&gt;%</span>
+    group_by_<span class="p">(</span>x<span class="p">,</span> <span class="s">&#39;Y&#39;</span><span class="p">)</span> <span class="o">%&gt;%</span> summarise<span class="p">(</span>N <span class="o">=</span> n<span class="p">())</span> <span class="o">%&gt;%</span>
         group_by_<span class="p">(</span>x<span class="p">)</span>  <span class="o">%&gt;%</span> mutate<span class="p">(</span><span class="bp">T</span> <span class="o">=</span> <span class="kp">sum</span><span class="p">(</span>N<span class="p">))</span> <span class="o">%&gt;%</span>
         ungroup<span class="p">()</span> <span class="o">%&gt;%</span>
         mutate<span class="p">(</span>Probability.of.Default <span class="o">=</span> <span class="kp">round</span><span class="p">(</span>N <span class="o">/</span> <span class="bp">T</span> <span class="o">*</span> <span class="m">100</span><span class="p">,</span> <span class="m">2</span><span class="p">))</span> <span class="o">%&gt;%</span> filter<span class="p">(</span>Y <span class="o">==</span> <span class="m">1</span><span class="p">)</span>
@@ -1121,7 +1122,7 @@ py<span class="o">$</span>ggplotly<span class="p">(</span>age_bins<span class="p
 <div class="prompt input_prompt">In&nbsp;[85]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre>median_age <span class="o">&lt;-</span> median<span class="p">(</span>dt<span class="o">$</span>age<span class="p">)</span> 
+<div class=" highlight hl-r"><pre>median_age <span class="o">&lt;-</span> median<span class="p">(</span>dt<span class="o">$</span>age<span class="p">)</span>
 
 dt<span class="o">$</span>age<span class="p">[</span>dt<span class="o">$</span>age <span class="o">==</span> <span class="m">0</span><span class="p">]</span> <span class="o">&lt;-</span> median_age
 </pre></div>
@@ -1221,8 +1222,8 @@ dt<span class="o">$</span>log_age<span class="p">[</span>dt<span class="o">$</sp
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-r"><pre><span class="c1"># Cut DebtRatio into meaningful factors</span>
-tmp<span class="o">$</span>MonthlyIncome <span class="o">&lt;-</span> <span class="kp">cut</span><span class="p">(</span>dt<span class="o">$</span>MonthlyIncome<span class="p">,</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">100</span><span class="p">,</span> <span class="m">5000</span><span class="p">,</span> <span class="m">1e4</span><span class="p">,</span> <span class="m">1.5e4</span><span class="p">,</span> <span class="m">1e8</span><span class="p">),</span> 
-                       <span class="kt">c</span><span class="p">(</span><span class="s">&quot;0&quot;</span><span class="p">,</span> <span class="s">&quot;2-100&quot;</span><span class="p">,</span> <span class="s">&quot;100-5,000&quot;</span><span class="p">,</span> <span class="s">&quot;5,000-10,000&quot;</span><span class="p">,</span> <span class="s">&quot;10,000-15,000&quot;</span><span class="p">,</span> <span class="s">&quot;15,000+&quot;</span><span class="p">),</span> 
+tmp<span class="o">$</span>MonthlyIncome <span class="o">&lt;-</span> <span class="kp">cut</span><span class="p">(</span>dt<span class="o">$</span>MonthlyIncome<span class="p">,</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">100</span><span class="p">,</span> <span class="m">5000</span><span class="p">,</span> <span class="m">1e4</span><span class="p">,</span> <span class="m">1.5e4</span><span class="p">,</span> <span class="m">1e8</span><span class="p">),</span>
+                       <span class="kt">c</span><span class="p">(</span><span class="s">&quot;0&quot;</span><span class="p">,</span> <span class="s">&quot;2-100&quot;</span><span class="p">,</span> <span class="s">&quot;100-5,000&quot;</span><span class="p">,</span> <span class="s">&quot;5,000-10,000&quot;</span><span class="p">,</span> <span class="s">&quot;10,000-15,000&quot;</span><span class="p">,</span> <span class="s">&quot;15,000+&quot;</span><span class="p">),</span>
                          ordered.result <span class="o">=</span> <span class="bp">T</span><span class="p">,</span> include.lowest <span class="o">=</span> <span class="bp">T</span><span class="p">)</span>
 </pre></div>
 
@@ -1390,8 +1391,8 @@ dt<span class="o">$</span>log_income_age <span class="o">&lt;-</span> dt<span cl
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-r"><pre><span class="c1"># Cut DebtRatio into meaningful factors</span>
-tmp<span class="o">$</span>DebtRatio <span class="o">&lt;-</span> <span class="kp">cut</span><span class="p">(</span>dt<span class="o">$</span>DebtRatio<span class="p">,</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0.25</span><span class="p">,</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">0.75</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">1e6</span><span class="p">),</span> 
-                       <span class="kt">c</span><span class="p">(</span><span class="s">&quot;0 - .25&quot;</span><span class="p">,</span> <span class="s">&quot;.25 - .50&quot;</span><span class="p">,</span> <span class="s">&quot;.50 - .75&quot;</span><span class="p">,</span> <span class="s">&quot;.75 - 1&quot;</span><span class="p">,</span> <span class="s">&quot;1 - 2&quot;</span><span class="p">,</span> <span class="s">&quot;2+&quot;</span><span class="p">),</span> 
+tmp<span class="o">$</span>DebtRatio <span class="o">&lt;-</span> <span class="kp">cut</span><span class="p">(</span>dt<span class="o">$</span>DebtRatio<span class="p">,</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0.25</span><span class="p">,</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">0.75</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">1e6</span><span class="p">),</span>
+                       <span class="kt">c</span><span class="p">(</span><span class="s">&quot;0 - .25&quot;</span><span class="p">,</span> <span class="s">&quot;.25 - .50&quot;</span><span class="p">,</span> <span class="s">&quot;.50 - .75&quot;</span><span class="p">,</span> <span class="s">&quot;.75 - 1&quot;</span><span class="p">,</span> <span class="s">&quot;1 - 2&quot;</span><span class="p">,</span> <span class="s">&quot;2+&quot;</span><span class="p">),</span>
                        ordered.result <span class="o">=</span> <span class="bp">T</span><span class="p">,</span> include.lowest <span class="o">=</span> <span class="bp">T</span><span class="p">)</span>
 </pre></div>
 
@@ -1539,7 +1540,7 @@ dt<span class="o">$</span>log_DebtRatio<span class="p">[</span><span class="o">!
 <div class="prompt input_prompt">In&nbsp;[96]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre>tmp<span class="o">$</span>NumberOfDependents <span class="o">&lt;-</span> <span class="kp">cut</span><span class="p">(</span>dt<span class="o">$</span>NumberOfDependents<span class="p">,</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">1e4</span><span class="p">),</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;0&quot;</span><span class="p">,</span> <span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="s">&quot;2&quot;</span><span class="p">,</span> <span class="s">&quot;3&quot;</span><span class="p">,</span> <span class="s">&quot;4&quot;</span><span class="p">,</span> <span class="s">&quot;5+&quot;</span><span class="p">),</span> 
+<div class=" highlight hl-r"><pre>tmp<span class="o">$</span>NumberOfDependents <span class="o">&lt;-</span> <span class="kp">cut</span><span class="p">(</span>dt<span class="o">$</span>NumberOfDependents<span class="p">,</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">1e4</span><span class="p">),</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;0&quot;</span><span class="p">,</span> <span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="s">&quot;2&quot;</span><span class="p">,</span> <span class="s">&quot;3&quot;</span><span class="p">,</span> <span class="s">&quot;4&quot;</span><span class="p">,</span> <span class="s">&quot;5+&quot;</span><span class="p">),</span>
                                 ordered.result <span class="o">=</span> <span class="bp">T</span><span class="p">,</span> include.lowest <span class="o">=</span> <span class="bp">T</span><span class="p">)</span>
 </pre></div>
 
@@ -1553,7 +1554,7 @@ dt<span class="o">$</span>log_DebtRatio<span class="p">[</span><span class="o">!
 <div class="prompt input_prompt">In&nbsp;[97]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre>dependents_bins <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;NumberOfDependents&#39;</span><span class="p">),</span> aes<span class="p">(</span>NumberOfDependents<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span> 
+<div class=" highlight hl-r"><pre>dependents_bins <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;NumberOfDependents&#39;</span><span class="p">),</span> aes<span class="p">(</span>NumberOfDependents<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span>
                             geom_bar<span class="p">(</span>stat <span class="o">=</span> <span class="s">&#39;identity&#39;</span><span class="p">)</span>
 
 py<span class="o">$</span>ggplotly<span class="p">(</span>dependents_bins<span class="p">,</span> session <span class="o">=</span> <span class="s">&#39;notebook&#39;</span><span class="p">)</span>
@@ -1603,7 +1604,7 @@ dt<span class="o">$</span>NoDependents <span class="o">&lt;-</span> <span class=
 dt<span class="o">$</span>NoDependents<span class="p">[</span><span class="kp">is.na</span><span class="p">(</span>dt<span class="o">$</span>NoDependents<span class="p">)]</span> <span class="o">&lt;-</span> <span class="m">0</span>
 
 <span class="c1"># When dependents NA assign 0</span>
-dt<span class="o">$</span>NumberOfDependents<span class="p">[</span>dt<span class="o">$</span>UnknownNumberOfDependents <span class="o">==</span> <span class="m">1</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="m">0</span> 
+dt<span class="o">$</span>NumberOfDependents<span class="p">[</span>dt<span class="o">$</span>UnknownNumberOfDependents <span class="o">==</span> <span class="m">1</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="m">0</span>
 
 <span class="c1"># Has dependents</span>
 dt<span class="o">$</span>Has.Dependents <span class="o">&lt;-</span> <span class="kp">as.integer</span><span class="p">(</span>dt<span class="o">$</span>NumberOfDependents <span class="o">&gt;</span> <span class="m">0</span><span class="p">)</span>
@@ -1697,7 +1698,7 @@ dt<span class="o">$</span>log_HouseholdSize <span class="o">&lt;-</span> <span c
 <div class="prompt input_prompt">In&nbsp;[101]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre>times_90_days_late <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;Times90DaysLate&#39;</span><span class="p">),</span> aes<span class="p">(</span>Times90DaysLate<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span> 
+<div class=" highlight hl-r"><pre>times_90_days_late <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;Times90DaysLate&#39;</span><span class="p">),</span> aes<span class="p">(</span>Times90DaysLate<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span>
                         geom_bar<span class="p">(</span>stat <span class="o">=</span> <span class="s">&#39;identity&#39;</span><span class="p">)</span>
 
 py<span class="o">$</span>ggplotly<span class="p">(</span>times_90_days_late<span class="p">,</span> session <span class="o">=</span> <span class="s">&#39;notebook&#39;</span><span class="p">)</span>
@@ -1755,9 +1756,9 @@ py<span class="o">$</span>ggplotly<span class="p">(</span>times_90_days_late<spa
 
 <div class="output_text output_subarea output_execute_result">
 <pre>
-     0      1      2      3      4      5      6      7      8      9     10 
-141662   5243   1555    667    291    131     80     38     21     19      8 
-    11     12     13     14     15     17     96     98 
+     0      1      2      3      4      5      6      7      8      9     10
+141662   5243   1555    667    291    131     80     38     21     19      8
+    11     12     13     14     15     17     96     98
      5      2      4      2      2      1      5    264 </pre>
 </div>
 
@@ -1885,7 +1886,7 @@ dt<span class="o">$</span>log_NumberOfTimes90DaysLate<span class="p">[</span><sp
 <div class="prompt input_prompt">In&nbsp;[106]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre>times_60_89_days_late <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;Times60_89DaysLate&#39;</span><span class="p">),</span> aes<span class="p">(</span>Times60_89DaysLate<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span> 
+<div class=" highlight hl-r"><pre>times_60_89_days_late <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;Times60_89DaysLate&#39;</span><span class="p">),</span> aes<span class="p">(</span>Times60_89DaysLate<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span>
                                 geom_bar<span class="p">(</span>stat <span class="o">=</span> <span class="s">&#39;identity&#39;</span><span class="p">)</span>
 
 py<span class="o">$</span>ggplotly<span class="p">(</span>times_60_89_days_late<span class="p">,</span> session <span class="o">=</span> <span class="s">&#39;notebook&#39;</span><span class="p">)</span>
@@ -2020,7 +2021,7 @@ dt<span class="o">$</span>log_NumberOfTime60.89DaysPastDueNotWorse<span class="p
 <div class="prompt input_prompt">In&nbsp;[110]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre>times_30_59_days_late <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;Times30_59DaysLate&#39;</span><span class="p">),</span> aes<span class="p">(</span>Times30_59DaysLate<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span> 
+<div class=" highlight hl-r"><pre>times_30_59_days_late <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;Times30_59DaysLate&#39;</span><span class="p">),</span> aes<span class="p">(</span>Times30_59DaysLate<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span>
                                 geom_bar<span class="p">(</span>stat <span class="o">=</span> <span class="s">&#39;identity&#39;</span><span class="p">)</span>
 
 py<span class="o">$</span>ggplotly<span class="p">(</span>times_30_59_days_late<span class="p">,</span> session <span class="o">=</span> <span class="s">&#39;notebook&#39;</span><span class="p">)</span>
@@ -2189,7 +2190,7 @@ dt<span class="o">$</span>Never30.89DaysPastDueNotWorse <span class="o">&lt;-</s
 <div class="prompt input_prompt">In&nbsp;[114]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre>tmp<span class="o">$</span>RollingCreditUtilization <span class="o">&lt;-</span> <span class="kp">cut</span><span class="p">(</span>dt<span class="o">$</span>RevolvingUtilizationOfUnsecuredLines<span class="p">,</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">.1</span><span class="p">,</span> <span class="m">.25</span><span class="p">,</span> <span class="m">.5</span><span class="p">,</span> <span class="m">.75</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1e6</span><span class="p">),</span> 
+<div class=" highlight hl-r"><pre>tmp<span class="o">$</span>RollingCreditUtilization <span class="o">&lt;-</span> <span class="kp">cut</span><span class="p">(</span>dt<span class="o">$</span>RevolvingUtilizationOfUnsecuredLines<span class="p">,</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">.1</span><span class="p">,</span> <span class="m">.25</span><span class="p">,</span> <span class="m">.5</span><span class="p">,</span> <span class="m">.75</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1e6</span><span class="p">),</span>
                                    <span class="kt">c</span><span class="p">(</span><span class="s">&#39;0&#39;</span><span class="p">,</span> <span class="s">&#39;0-25%&#39;</span><span class="p">,</span> <span class="s">&#39;25-50%&#39;</span><span class="p">,</span> <span class="s">&#39;50-75%&#39;</span><span class="p">,</span> <span class="s">&#39;75-100%&#39;</span><span class="p">,</span> <span class="s">&#39;100% +&#39;</span><span class="p">))</span>
 </pre></div>
 
@@ -2203,7 +2204,7 @@ dt<span class="o">$</span>Never30.89DaysPastDueNotWorse <span class="o">&lt;-</s
 <div class="prompt input_prompt">In&nbsp;[115]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre>rolling_credit_bin <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;RollingCreditUtilization&#39;</span><span class="p">),</span> aes<span class="p">(</span>RollingCreditUtilization<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span> 
+<div class=" highlight hl-r"><pre>rolling_credit_bin <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;RollingCreditUtilization&#39;</span><span class="p">),</span> aes<span class="p">(</span>RollingCreditUtilization<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span>
                             geom_bar<span class="p">(</span>stat <span class="o">=</span> <span class="s">&#39;identity&#39;</span><span class="p">)</span>
 
 py<span class="o">$</span>ggplotly<span class="p">(</span>rolling_credit_bin<span class="p">,</span> session <span class="o">=</span> <span class="s">&#39;notebook&#39;</span><span class="p">)</span>
@@ -2345,7 +2346,7 @@ dt<span class="o">$</span>log_RevolvingUtilizationOfUnsecuredLines<span class="p
 <div class="prompt input_prompt">In&nbsp;[119]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre>open_credit_loans_bin <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;Open_CreditLines_and_Loans&#39;</span><span class="p">),</span> aes<span class="p">(</span>Open_CreditLines_and_Loans<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span> 
+<div class=" highlight hl-r"><pre>open_credit_loans_bin <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;Open_CreditLines_and_Loans&#39;</span><span class="p">),</span> aes<span class="p">(</span>Open_CreditLines_and_Loans<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span>
                             geom_bar<span class="p">(</span>stat <span class="o">=</span> <span class="s">&#39;identity&#39;</span><span class="p">)</span>
 
 py<span class="o">$</span>ggplotly<span class="p">(</span>open_credit_loans_bin<span class="p">,</span> session <span class="o">=</span> <span class="s">&#39;notebook&#39;</span><span class="p">)</span>
@@ -2481,7 +2482,7 @@ dt<span class="o">$</span>MinorDelinquenciesPerLine<span class="p">[</span>dt<sp
 <div class="prompt input_prompt">In&nbsp;[123]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre>real_estate_bins <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;NumberRealEstateLoansOrLines&#39;</span><span class="p">),</span> 
+<div class=" highlight hl-r"><pre>real_estate_bins <span class="o">&lt;-</span> ggplot<span class="p">(</span>bin_<span class="p">(</span><span class="s">&#39;NumberRealEstateLoansOrLines&#39;</span><span class="p">),</span>
                            aes<span class="p">(</span>NumberRealEstateLoansOrLines<span class="p">,</span> Probability.of.Default<span class="p">))</span> <span class="o">+</span> geom_bar<span class="p">(</span>stat <span class="o">=</span> <span class="s">&#39;identity&#39;</span><span class="p">)</span>
 
 py<span class="o">$</span>ggplotly<span class="p">(</span>real_estate_bins<span class="p">,</span> session <span class="o">=</span> <span class="s">&#39;notebook&#39;</span><span class="p">)</span>
@@ -2745,7 +2746,7 @@ dt<span class="o">$</span>NumberRealEstateLoansOrLines <span class="o">&lt;-</sp
     <div class="input_area">
 <div class=" highlight hl-r"><pre><span class="kr">for</span> <span class="p">(</span>col <span class="kr">in</span> <span class="m">1</span><span class="o">:</span><span class="kp">length</span><span class="p">(</span>dt<span class="p">)){</span>
     feature <span class="o">&lt;-</span> dt<span class="p">[,</span><span class="kp">col</span><span class="p">]</span>
-    
+
     <span class="kr">if</span><span class="p">(</span><span class="kp">length</span><span class="p">(</span><span class="kp">unique</span><span class="p">(</span>feature<span class="p">))</span> <span class="o">==</span> <span class="m">2</span><span class="p">){</span>
         dt<span class="p">[,</span><span class="kp">col</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="kp">as.factor</span><span class="p">(</span>feature<span class="p">)</span>
     <span class="p">}</span> <span class="kr">else</span> <span class="p">{</span>
@@ -2958,7 +2959,7 @@ tree_model <span class="o">&lt;-</span> rpart<span class="p">(</span>SeriousDlqi
 <div class=" highlight hl-r"><pre>cv_results <span class="o">&lt;-</span> <span class="kt">data.frame</span><span class="p">(</span>tree_model<span class="o">$</span>cptable<span class="p">)</span>
 
 splits_vs_error <span class="o">&lt;-</span> ggplot<span class="p">(</span>cv_results<span class="p">,</span> aes<span class="p">(</span>nsplit<span class="p">,</span> xerror<span class="p">))</span> <span class="o">+</span> geom_line<span class="p">(</span>color<span class="o">=</span><span class="s">&#39;darkblue&#39;</span><span class="p">)</span> <span class="o">+</span>
-                        xlab<span class="p">(</span><span class="s">&#39;Number of Splits&#39;</span><span class="p">)</span> <span class="o">+</span> ylab<span class="p">(</span><span class="s">&#39;Relative CV Error&#39;</span><span class="p">)</span> 
+                        xlab<span class="p">(</span><span class="s">&#39;Number of Splits&#39;</span><span class="p">)</span> <span class="o">+</span> ylab<span class="p">(</span><span class="s">&#39;Relative CV Error&#39;</span><span class="p">)</span>
 
 py<span class="o">$</span>ggplotly<span class="p">(</span>splits_vs_error<span class="p">,</span> session <span class="o">=</span> <span class="s">&#39;notebook&#39;</span><span class="p">)</span>
 </pre></div>
@@ -3025,25 +3026,25 @@ confusionMatrix<span class="p">(</span>tree_pred<span class="p">,</span> testing
 Prediction     0     1
          0 25436   438
          1  9557  2068
-                                             
-               Accuracy : 0.7335             
-                 95% CI : (0.729, 0.7379)    
-    No Information Rate : 0.9332             
-    P-Value [Acc &gt; NIR] : 1                  
-                                             
-                  Kappa : 0.2053             
+
+               Accuracy : 0.7335
+                 95% CI : (0.729, 0.7379)
+    No Information Rate : 0.9332
+    P-Value [Acc &gt; NIR] : 1
+
+                  Kappa : 0.2053
  Mcnemar&apos;s Test P-Value : &lt;0.0000000000000002
-                                             
-            Sensitivity : 0.7269             
-            Specificity : 0.8252             
-         Pos Pred Value : 0.9831             
-         Neg Pred Value : 0.1779             
-             Prevalence : 0.9332             
-         Detection Rate : 0.6783             
-   Detection Prevalence : 0.6900             
-      Balanced Accuracy : 0.7761             
-                                             
-       &apos;Positive&apos; Class : 0                  
+
+            Sensitivity : 0.7269
+            Specificity : 0.8252
+         Pos Pred Value : 0.9831
+         Neg Pred Value : 0.1779
+             Prevalence : 0.9332
+         Detection Rate : 0.6783
+   Detection Prevalence : 0.6900
+      Balanced Accuracy : 0.7761
+
+       &apos;Positive&apos; Class : 0
                                              </pre>
 </div>
 
