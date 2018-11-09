@@ -1,0 +1,44 @@
+var gd = document.getElementById('myDiv');
+
+Plotly.d3.csv(
+  "https://raw.githubusercontent.com/plotly/datasets/master/titanic.csv",
+  function(titanicData) {
+    var classDim = {
+      values: titanicData.map(function(row) {return row['Pclass']}),
+      categoryorder: 'category ascending',
+      label: "Class"
+    };
+
+    var genderDim = {
+      values: titanicData.map(function(row) {return row['Sex']}),
+      label: "Gender"
+    };
+
+    var survivalDim = {
+      values: titanicData.map(function(row) {return row['Survived']}),
+      label: "Outcome",
+      categoryarray: [0, 1],
+      ticktext: ['perished', 'survived'],
+    };
+
+    var color = survivalDim.values;
+    var colorscale = [[0, 'lightsteelblue'], [1, 'mediumseagreen']];
+
+    // Build Traces
+    var traces = [
+      {type: 'parcats',
+       dimensions: [classDim, genderDim, survivalDim],
+       line: {color: color,
+              colorscale: colorscale},
+       hoveron: 'color',
+       hoverinfo: 'count+probability',
+       labelfont: {size: 14},
+       arrangement: 'freeform'
+      }
+    ];
+
+    var layout = {width: 600};
+
+    // Make plot
+    Plotly.newPlot(gd, traces, layout);
+  });
