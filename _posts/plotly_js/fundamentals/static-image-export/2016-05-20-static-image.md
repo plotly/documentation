@@ -19,7 +19,7 @@ You can save plotly graphs to static images and view them in your browser. Consi
     var d3 = Plotly.d3;
     var img_jpg= d3.select('#jpg-export');
 
-    // Ploting the Graph
+    // Plotting the Graph
 
     var trace={x:[3,9,8,10,4,6,5],y:[5,7,6,7,8,9,8],type:"scatter"};
     var trace1={x:[3,4,1,6,8,9,5],y:[4,2,5,2,1,7,3],type:"scatter"};
@@ -33,16 +33,16 @@ You can save plotly graphs to static images and view them in your browser. Consi
     // static image in jpg format
 
     .then(
-    	function(gd)
-	     {
-	      Plotly.toImage(gd,{height:300,width:300})
-	         .then(
-	         	function(url)
-	         {
-	             img_jpg.attr("src", url);
-	             return Plotly.toImage(gd,{format:'jpeg',height:400,width:400});
-	         }
-	         )
+        function(gd)
+         {
+          Plotly.toImage(gd,{height:300,width:300})
+             .then(
+                 function(url)
+             {
+                 img_jpg.attr("src", url);
+                 return Plotly.toImage(gd,{format:'jpeg',height:400,width:400});
+             }
+             )
         });
 To view this image in your page include following HTML tag:
 
@@ -50,14 +50,12 @@ To view this image in your page include following HTML tag:
 
 Height and width of the image can be adjusted by specifying the same in `toImage` call:
 
-
     Plotly.toImage(
     gd,{
       format:'jpeg',
       height:desired_height,
       width:desired_width,
     });
-
 
 You can also save the image using different formats.
 
@@ -68,8 +66,8 @@ The common image formats: 'PNG', 'JPG/JPEG' are supported. In addition, formats 
 **Note:** It is important to note that any figures containing WebGL traces (i.e. of type scattergl, heatmapgl, contourgl, scatter3d, surface, mesh3d, scatterpolargl, cone, streamtube, splom, or parcoords) that are exported in a vector format like SVG, EPS or PDF will include encapsulated rasters instead of vectors for some parts of the image.
 
 ## Saving as PNG ##
-	  img_png.attr("src", url);
-	  Plotly.toImage(gd,{format:'png',height:400,width:400});
+      img_png.attr("src", url);
+      Plotly.toImage(gd,{format:'png',height:400,width:400});
 
 ## Saving as SVG ##
     img_svg.attr("src", url);
