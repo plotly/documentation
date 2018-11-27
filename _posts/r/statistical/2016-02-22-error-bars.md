@@ -48,32 +48,17 @@ data <- rename(data, c("data_sd.length" = "sd"))
 data$dose <- as.factor(data$dose)
 
 p <- plot_ly(data = data[which(data$supp == 'OJ'),], x = ~dose, y = ~length, type = 'bar', name = 'OJ',
-        error_y = ~list(value = sd,
+        error_y = ~list(array = sd,
                         color = '#000000')) %>%
   add_trace(data = data[which(data$supp == 'VC'),], name = 'VC')
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="error-bar")
-```
-
-```
-## Error: Client error: (400) Bad Request
-## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 0, u'error_y', u'value'), ('data', 1, u'error_y', u'value')]
-```
-
-```r
 chart_link
 ```
 
-```
-## Error in eval(expr, envir, enclos): object 'chart_link' not found
-```
-
-
-```
-## Error in eval(expr, envir, enclos): object 'chart_link' not found
-```
+<iframe src="https://plot.ly/~RPlotBot/5505.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Scatterplot with Error Bars
 
@@ -90,32 +75,17 @@ data$dose <- as.factor(data$dose)
 
 p <- plot_ly(data = data[which(data$supp == 'OJ'),], x = ~dose, y = ~length, type = 'scatter', mode = 'markers',
         name = 'OJ',
-        error_y = ~list(value = sd,
+        error_y = ~list(array = sd,
                         color = '#000000')) %>%
   add_trace(data = data[which(data$supp == 'VC'),], name = 'VC')
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="error-scatter")
-```
-
-```
-## Error: Client error: (400) Bad Request
-## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 0, u'error_y', u'value'), ('data', 1, u'error_y', u'value')]
-```
-
-```r
 chart_link
 ```
 
-```
-## Error in eval(expr, envir, enclos): object 'chart_link' not found
-```
-
-
-```
-## Error in eval(expr, envir, enclos): object 'chart_link' not found
-```
+<iframe src="https://plot.ly/~RPlotBot/5507.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Line Graph with Error Bars
 
@@ -132,32 +102,17 @@ data$dose <- as.factor(data$dose)
 
 p <- plot_ly(data = data[which(data$supp == 'OJ'),], x = ~dose, y = ~length, type = 'scatter', mode = 'lines+markers',
         name = 'OJ',
-        error_y = ~list(value = sd,
+        error_y = ~list(array = sd,
                         color = '#000000')) %>%
   add_trace(data = data[which(data$supp == 'VC'),], name = 'VC')
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="error-line")
-```
-
-```
-## Error: Client error: (400) Bad Request
-## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 0, u'error_y', u'value'), ('data', 1, u'error_y', u'value')]
-```
-
-```r
 chart_link
 ```
 
-```
-## Error in eval(expr, envir, enclos): object 'chart_link' not found
-```
-
-
-```
-## Error in eval(expr, envir, enclos): object 'chart_link' not found
-```
+<iframe src="https://plot.ly/~RPlotBot/5509.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Reference
 

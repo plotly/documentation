@@ -4,6 +4,7 @@ name: Proxy Interface
 permalink: r/plotlyproxy/
 description: Getting Started with Plotly's Proxy Interface
 layout: base
+display_as: shiny
 language: r
 page_type: example_index
 has_thumbnail: false

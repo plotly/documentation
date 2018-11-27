@@ -33,7 +33,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.6.9000'
+## [1] '4.8.0'
 ```
 
 ### Simple Bubble Chart
@@ -45,7 +45,7 @@ library(plotly)
 data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 
 p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers',
-        marker = list(size = ~gap, opacity = 0.5)) %>%
+        marker = list(size = ~Gap, opacity = 0.5)) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE))
@@ -56,7 +56,7 @@ chart_link = api_create(p, filename="bubble-simple")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3597.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5467.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Setting Markers Color
 
@@ -67,7 +67,7 @@ library(plotly)
 data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 
 p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers',
-        marker = list(size = ~gap, opacity = 0.5, color = 'rgb(255, 65, 54)')) %>%
+        marker = list(size = ~Gap, opacity = 0.5, color = 'rgb(255, 65, 54)')) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE))
@@ -78,7 +78,7 @@ chart_link = api_create(p, filename="bubble-color1")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3599.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5469.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Setting Multiple Colors
 
@@ -97,7 +97,7 @@ colors <- c('rgba(204,204,204,1)', 'rgba(222,45,38,0.8)', 'rgba(204,204,204,1)',
 
 
 p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers',
-        marker = list(size = ~gap, opacity = 0.5, color = colors)) %>%
+        marker = list(size = ~Gap, opacity = 0.5, color = colors)) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE))
@@ -108,7 +108,7 @@ chart_link = api_create(p, filename="bubble-color2")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3601.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5471.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Mapping a Color Variable (Continuous)
 
@@ -118,8 +118,8 @@ library(plotly)
 
 data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
 
-p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', color = ~gap, colors = 'Reds',
-        marker = list(size = ~gap, opacity = 0.5)) %>%
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', color = ~Gap, colors = 'Reds',
+        marker = list(size = ~Gap, opacity = 0.5)) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE))
@@ -130,7 +130,7 @@ chart_link = api_create(p, filename="bubble-color3")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3603.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5473.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Mapping a Color Variable (Categorical)
 
@@ -144,7 +144,7 @@ data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Penns
                           'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
                           'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
 
-p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~Gap, color = ~State, colors = 'Paired',
         marker = list(opacity = 0.5, sizemode = 'diameter')) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
@@ -157,7 +157,7 @@ chart_link = api_create(p, filename="bubble-color4")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3605.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5475.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Scaling the Size of Bubble Charts
 
@@ -171,7 +171,7 @@ data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Penns
                           'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
                           'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
 
-p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~Gap, color = ~State, colors = 'Paired',
         #Choosing the range of the bubbles' sizes:
         sizes = c(10, 50),
         marker = list(opacity = 0.5, sizemode = 'diameter')) %>%
@@ -186,7 +186,79 @@ chart_link = api_create(p, filename="bubble-size")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3607.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5477.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Scaling using Sizeref
+
+To scale the bubble size, use the attribute sizeref. We recommend using the following formula to calculate a sizeref value:<br><br>
+sizeref = 2. * max(array of size values) / (desired maximum marker size ** 2)
+<br><br>
+Note that setting sizeref to a value greater than 1 decreases the rendered marker sizes, while setting sizeref to less than 1 increases the rendered marker sizes. See [https://plot.ly/python/reference/#scatter-marker-sizeref](https://plot.ly/python/reference/#scatter-marker-sizeref) for more information.
+<br><br>
+Additionally, we recommend setting the sizemode attribute: [https://plot.ly/python/reference/#scatter-marker-sizemode](https://plot.ly/python/reference/#scatter-marker-sizemode) to area.
+
+
+
+```r
+library(plotly)
+
+data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
+
+data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Pennsylvania', 'New Jersey', 'Illinois', 'Washington DC',
+                          'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
+                          'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
+
+#Use the ideal sizeref value
+desired_maximum_marker_size <- 40
+your_list_of_size_values <- data['Gap']
+sizeref <- 2.0 * max(your_list_of_size_values) / (desired_maximum_marker_size**2)
+
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', color = ~State, colors = 'Paired',
+        sizes = c(10, 50),
+        marker = list(size = your_list_of_size_values, opacity = 0.5, sizemode = 'area', sizeref = sizeref)) %>%
+  layout(title = 'Gender Gap in Earnings per University',
+         xaxis = list(showgrid = FALSE),
+         yaxis = list(showgrid = FALSE),
+         showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="bubble-sizeref")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5481.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Scaling V2
+
+
+
+```r
+library(plotly)
+
+data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/school_earnings.csv")
+
+data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Pennsylvania', 'New Jersey', 'Illinois', 'Washington DC',
+                          'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
+                          'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
+
+p <- plot_ly(data, x = ~Women, y = ~Men, text = ~School, type = 'scatter', mode = 'markers', size = ~Gap, color = ~State, colors = 'Paired',
+        #Choosing the range of the bubbles' sizes:
+        sizes = c(10, 50),
+        marker = list(opacity = 0.5, sizemode = 'diameter')) %>%
+  layout(title = 'Gender Gap in Earnings per University',
+         xaxis = list(showgrid = FALSE),
+         yaxis = list(showgrid = FALSE),
+         showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="bubble-size-v2")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5483.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
 
 ### Hover Text with Bubble Charts
 
@@ -200,11 +272,11 @@ data$State <- as.factor(c('Massachusetts', 'California', 'Massachusetts', 'Penns
                           'Massachusetts', 'Connecticut', 'New York', 'North Carolina', 'New Hampshire', 'New York', 'Indiana',
                           'New York', 'Michigan', 'Rhode Island', 'California', 'Georgia', 'California', 'California'))
 
-p <- plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', size = ~gap, color = ~State, colors = 'Paired',
+p <- plot_ly(data, x = ~Women, y = ~Men, type = 'scatter', mode = 'markers', size = ~Gap, color = ~State, colors = 'Paired',
         sizes = c(10, 50),
         marker = list(opacity = 0.5, sizemode = 'diameter'),
         hoverinfo = 'text',
-        text = ~paste('School:', School, '<br>Gender gap:', gap)) %>%
+        text = ~paste('School:', School, '<br>Gender Gap:', Gap)) %>%
   layout(title = 'Gender Gap in Earnings per University',
          xaxis = list(showgrid = FALSE),
          yaxis = list(showgrid = FALSE),
@@ -216,7 +288,7 @@ chart_link = api_create(p, filename="bubble-hovertext")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3609.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5479.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Styled Buble Chart
 
@@ -261,7 +333,7 @@ chart_link = api_create(p, filename="bubble-styled")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3611.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5320.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
