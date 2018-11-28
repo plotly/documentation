@@ -66,25 +66,28 @@ $('.--sidebar-container').not('.toggle-sidebar').on('click', function (e) {
 //----
 
 $('.copy').on('click', function (e) {
+    console.log(".copy");
     var link = $(this).prev();
     copyToClipboard(link);
     $(this).attr('data-tooltip', 'Copied!');
 });
 
 $('.copyCode').on('click', function (e) {
+    console.log(".copyCode");
     var link = $(this).prev($('code'));
     copyCodeToClipboard(link);
     $(this).attr('data-tooltip', 'Copied!');
 
 });
 
-$( "<span class='copyCode'>Copy to clipboard!</span>" ).insertAfter( "pre code" );
+// $( "<span class='copyCode'>Copy to clipboard right away man!</span>" ).insertAfter( "pre code" );
+$( "<span class='copyCode'>asdfghjk</span>" ).insertAfter( "pre code" );
 
 // Reset Tooltip Text
 
 $(".copy").hover(
     function () {
-        //$(this).attr('data-tooltip', 'Copied!');
+        $(this).attr('data-tooltip', 'Copied!');
     },
     function () {
         $(this).attr('data-tooltip', 'Click to copy direct link.');
@@ -92,6 +95,10 @@ $(".copy").hover(
 );
 
 // Copy functions
+
+function fun() {
+    console.log("here we are fam");
+}
 
 function copyToClipboard(element) {
     var $temp = $("<input>");
