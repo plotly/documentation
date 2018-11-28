@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.2'
+## [1] '4.8.0'
 ```
 
 # Basic 3D Surface Plot
@@ -51,7 +51,39 @@ chart_link = api_create(p, filename="surface-1")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3380.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5493.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+# Surface Plot With Contours
+
+
+```r
+library(plotly)
+# volcano is a numeric matrix that ships with R
+p <- plot_ly(z = ~volcano) %>% add_surface(
+  contours = list(
+    z = list(
+      show=TRUE,
+      usecolormap=TRUE,
+      highlightcolor="#ff0000",
+      project=list(z=TRUE)
+      )
+    )
+  ) %>%
+  layout(
+    scene = list(
+      camera=list(
+        eye = list(x=1.87, y=0.88, z=-0.64)
+        )
+      )
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="surface-contours-1")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5495.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### 2D Kernel Density Estimation
 
@@ -66,7 +98,7 @@ chart_link = api_create(p, filename="surface-2")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3382.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5497.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Multiple Surfaces
 
@@ -104,4 +136,4 @@ chart_link = api_create(p, filename="surface-3")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3384.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5499.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

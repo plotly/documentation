@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.7.1'
+## [1] '4.8.0'
 ```
 
 ### Basic Contour
@@ -51,7 +51,7 @@ chart_link = api_create(p, filename="contour-basic")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3115.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5511.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Set X and Y Coordinates
 
@@ -62,8 +62,8 @@ library(plotly)
 p <- plot_ly(
   x = c(-9, -6, -5, -3, -1), 
   y = c(0, 1, 4, 5, 7), 
-  z = c(10, 10.625, 12.5, 15.625, 20, 5.625, 6.25, 8.125, 11.25, 15.625, 2.5, 3.125, 5, 8.125, 12.5, 0.625, 1.25, 3.125,
-        6.25, 10.625, 0, 0.625, 2.5, 5.625, 10), 
+  z = matrix(c(10, 10.625, 12.5, 15.625, 20, 5.625, 6.25, 8.125, 11.25, 15.625, 2.5, 3.125, 5, 8.125, 12.5, 0.625, 1.25, 3.125,
+        6.25, 10.625, 0, 0.625, 2.5, 5.625, 10), nrow = 5, ncol = 5), 
   type = "contour" 
 )
 
@@ -73,7 +73,7 @@ chart_link = api_create(p, filename="contour-coordinates")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5139.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5515.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Set Size and Range of a Contours
 
@@ -102,7 +102,7 @@ chart_link = api_create(p, filename="contour-range-of-contours")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5141.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5517.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Smoothing Contour Lines
 
@@ -150,7 +150,7 @@ chart_link = api_create(p, filename="contour-smoothing-lines")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5143.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5519.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Smoothing Contour Coloring
 
@@ -175,7 +175,7 @@ chart_link = api_create(p, filename="contour-smoothing-coloring")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5145.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5521.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Add Contour Labels
 
@@ -192,7 +192,7 @@ chart_link = api_create(p, filename="contour-labels")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5135.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5523.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Create Matrix and Plot Contour
 This example is based on (this)[https://www.r-statistics.com/2016/07/using-2d-contour-plots-within-ggplot2-to-visualize-relationships-between-three-variables/] r-statistics post.
@@ -232,7 +232,7 @@ chart_link = api_create(p, filename="contour-advanced")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3469.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5525.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### 2D Density Contour Plot
 
@@ -256,7 +256,7 @@ chart_link = api_create(p, filename="contour-joint")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3117.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5527.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Contour Colorscales
 
