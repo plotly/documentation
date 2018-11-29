@@ -95,7 +95,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
       'How to make your-tutorial-chart plots in Python with Plotly.',
       title = 'Python Your Tutorial Chart | Plotly',
       has_thumbnail='true', thumbnail='thumbnail/your-tutorial-chart.jpg',
-      language='python',
+      language='python', version='2',
       # page_type='example_index', // note this is only if you want the tutorial to appear on the main page: plot.ly/python
       display_as='chart_type', order=2, ipynb='~notebook_demo/1',
       uses_plotly_offline=False*)
