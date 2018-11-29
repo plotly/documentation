@@ -1,0 +1,223 @@
+---
+permalink: python/1d-correlation/
+description: Learn how to perform 1 dimensional correlation between two signals in Python.
+name: 1D Correlation | plotly
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+name: 1D Correlation
+language: python
+title: 1D Correlation in Python | plotly
+display_as: signal-analysis
+has_thumbnail: false
+page_type: example_index
+order: 5
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Imports">Imports<a class="anchor-link" href="#Imports">&#194;&#182;</a></h4><p>The tutorial below imports <a href="http://www.numpy.org/">NumPy</a>, <a href="https://plot.ly/pandas/intro-to-pandas-tutorial/">Pandas</a>, <a href="https://www.scipy.org/">SciPy</a> and <a href="https://plot.ly/python/getting-started/">Plotly</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="k">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="k">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">signal</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Correlation-Between-Saw-and-Square-Wave">Correlation Between Saw and Square Wave<a class="anchor-link" href="#Correlation-Between-Saw-and-Square-Wave">&#194;&#182;</a></h4><p>Similar to convolution, the 1D Cross-Correlation between two functions $f$ and $g$ is a measure of their similarity in terms of the lag of one to another (<a href="https://en.wikipedia.org/wiki/Convolution">source</a>). Since we are dealing with arrays of data rather than continuous functions, the cross-correlation is mathematically defined as:</p>
+$$
+\begin{align*}
+(f*g)[n] = \sum_{m=-\infty}^{\infty} f^{*}[m]g[n+m]
+\end{align*}
+$$<p>where $f^*$ is the <code>complex conjugate</code> of $f$.</p>
+<p>To give us an intuitive glance at what this does, let us look at the cross-correlation between a saw wave and a square wave.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">saw_y</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">sawtooth</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+<span class="n">square_y</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+<span class="n">convolve_y</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">saw_y</span><span class="p">,</span> <span class="n">square_y</span><span class="p">)</span>
+
+<span class="n">trace_saw</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">saw_y</span><span class="p">,</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Saw&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#57D1C9&#39;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace_square</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">square_y</span><span class="p">,</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Square&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#ED5485&#39;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">trace_convolution</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">convolve_y</span><span class="p">,</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Convolution&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#FFE869&#39;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace_saw</span><span class="p">,</span> <span class="n">trace_square</span><span class="p">,</span> <span class="n">trace_convolution</span><span class="p">]</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;1d-convolution-of-saw-and-square&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~chelsea_lyn/17352.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Correlation-Between-Saw-and-Shifted-Saw-Wave">Correlation Between Saw and Shifted Saw Wave<a class="anchor-link" href="#Correlation-Between-Saw-and-Shifted-Saw-Wave">&#194;&#182;</a></h4><p>To compare with the plot above, we can plot a saw wave, a phase shifted saw wave and the convolution between the two to see how they correlate along the axis.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+
+<span class="n">saw_y</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">sawtooth</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+<span class="n">square_y</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+<span class="n">shifted_saw_y</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">sawtooth</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+<span class="n">convolve_y</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">saw_y</span><span class="p">,</span> <span class="n">shifted_saw_y</span><span class="p">)</span>
+
+<span class="n">trace_saw</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">saw_y</span><span class="p">,</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Saw&#39;</span><span class="p">,</span>
+    <span class="n">marker</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#FF7844&#39;</span>
+    <span class="p">),</span>
+    <span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="p">)</span>
+
+<span class="n">trace_shifted_saw</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">shifted_saw_y</span><span class="p">,</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Shifted Saw&#39;</span><span class="p">,</span>
+    <span class="n">marker</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#A64942&#39;</span>
+    <span class="p">),</span>
+    <span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="p">)</span>
+
+<span class="n">trace_convolution</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">convolve_y</span><span class="p">,</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Convolution&#39;</span><span class="p">,</span>
+    <span class="n">marker</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#53354A&#39;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace_saw</span><span class="p">,</span> <span class="n">trace_shifted_saw</span><span class="p">,</span> <span class="n">trace_convolution</span><span class="p">]</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;1d-convolution-of-saw-and-shifted-saw&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~chelsea_lyn/17354.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+ 
+
+{% endraw %}

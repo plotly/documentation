@@ -1,0 +1,757 @@
+---
+permalink: python/apache-spark/
+description: A tutorial showing how to plot Apache Spark DataFrames with Plotly
+name: Plot Data from Apache Spark
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+language: python
+title: Plotting Spark DataFrames | Plotly
+redirect_from: ipython-notebooks/apache-spark/
+display_as: databases
+has_thumbnail: false
+page_type: example_index
+order: 2
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#182;</a></h4><p>Plotly's python package is updated frequently. Run <code>pip install plotly --upgrade</code> to use the latest version.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.0.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="About-Apache-Spark">About Apache Spark<a class="anchor-link" href="#About-Apache-Spark">&#182;</a></h4><p><a href="https://spark.apache.org/">Apache Spark</a>'s meteoric rise has been incredible. It is one of the fastest growing open source projects and is a perfect fit for the graphing tools that <a href="https://plot.ly/">Plotly</a> provides. Plotly's ability to graph and share images from <a href="https://spark.apache.org/docs/latest/sql-programming-guide.html">Spark DataFrames</a> quickly and easily make it a great tool for any data scientist and <a href="https://plot.ly/product/enterprise/">Plotly Enterprise</a> make it easy to securely host and share those Plotly graphs.</p>
+<p>This notebook will go over the details of getting set up with IPython Notebooks for graphing Spark data with Plotly.</p>
+<h4 id="Create-a-Profile">Create a Profile<a class="anchor-link" href="#Create-a-Profile">&#182;</a></h4><p>First you'll have to create an ipython profile for pyspark, you can do this locally or you can do it on the cluster that you're running Spark.</p>
+<p>Start off by creating a new ipython profile. (Spark should have ipython install but you may need to install ipython notebook yourself).</p>
+<div class="highlight"><pre><span></span>ipython profile create pyspark
+</pre></div>
+<p>Next you'll have to edit some configurations. Spark/Hadoop have plenty of ports that they open up so you'll have to change the below file to avoid any conflicts that might come up.</p>
+<div class="highlight"><pre><span></span>~/.ipython/profile_pyspark/ipython_notebook_config.py
+</pre></div>
+<p>If you're not running Spark locally, you'll have to add some other configurations. <a href="http://blog.cloudera.com/blog/2014/08/how-to-use-ipython-notebook-with-apache-spark/">Cloudera's blog</a> has a great post about some of the other things you can add, like passwords.</p>
+<p>IPython's documentation also has some excellent recommendations for settings that you can find on <a href="http://ipython.org/ipython-doc/3/notebook/public_server.html#running-a-notebook-server">the "Securing a Notebook Server" post on ipython.org.</a></p>
+<p>You'll likely want to set a port, and an IP address to be able to access the notebook.</p>
+<p>Next you'll need to set a couple of environmental variables. You can do this at the command line or you can set it up in your computer's/master node's bash_rc/bash_profile files.</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">SPARK_HOME</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/Downloads/spark-1.3.1&quot;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Setup">Setup<a class="anchor-link" href="#Setup">&#182;</a></h4><p>Now we'll need to add a file to make sure that we boot up with the Spark Context. Basically when we start the IPython Notebook, we need to be bring in the Spark Context. We need to set up a startup script that runs everytime we start a notebook from this profile.</p>
+<p>Setting startup scripts are actually extremely easy - you just put them in the IPython Notebook directory under the "startup" folder. You can learn more about IPython configurations on the <a href="http://ipython.org/ipython-doc/1/config/overview.html">IPython site</a>.</p>
+<p>We'll create a file called <code>pyspark_setup.py</code></p>
+<p>in it we'll put</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">spark_home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SPARK_HOME&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+<span class="c1"># check if it exists</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">spark_home</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;SPARK_HOME environment variable is not set&#39;</span><span class="p">)</span>
+
+<span class="c1"># check if it is a directory</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">spark_home</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;SPARK_HOME environment variable is not a directory&#39;</span><span class="p">)</span>
+
+<span class="c1">#check if we can find the python sub-directory</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spark_home</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">)):</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;SPARK_HOME directory does not contain python&#39;</span><span class="p">)</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spark_home</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">))</span>
+
+<span class="c1">#check if we can find the py4j zip file</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spark_home</span><span class="p">,</span> <span class="s1">&#39;python/lib/py4j-0.8.2.1-src.zip&#39;</span><span class="p">)):</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Could not find the py4j library - </span><span class="se">\</span>
+<span class="s1">            maybe your version number is different?(Looking for 0.8.2.1)&#39;</span><span class="p">)</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spark_home</span><span class="p">,</span> <span class="s1">&#39;python/lib/py4j-0.8.2.1-src.zip&#39;</span><span class="p">))</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spark_home</span><span class="p">,</span> <span class="s1">&#39;python/pyspark/shell.py&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spark_home</span><span class="p">,</span> <span class="s1">&#39;python/pyspark/shell.py&#39;</span><span class="p">),</span> <span class="s1">&#39;exec&#39;</span><span class="p">)</span>
+    <span class="k">exec</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+</pre></div>
+<p>And now we're all set! When we start up an ipython notebook, we'll have the Spark Context available in our IPython notebooks. This is one time set up! So now we're ready to run things normally! We just have to start a specific pyspark profile.</p>
+<p><code>ipython notebook --profile=pyspark</code></p>
+<p>We can test for the Spark Context's existence with <code>print sc</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span> <span class="c1">#python 3 support</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;pyspark.context.SparkContext object at 0x10e797950&gt;
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Spark-Tools">Spark Tools<a class="anchor-link" href="#Spark-Tools">&#182;</a></h4><p>Now that we've got the SparkContext, let's pull in some other useful Spark tools that we'll need. We'll be using pandas for some downstream analysis as well as Plotly for our graphing.</p>
+<p>We'll also need the SQLContext to be able to do some nice Spark SQL transformations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SQLContext</span>
+<span class="n">sqlContext</span> <span class="o">=</span> <span class="n">SQLContext</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="n">requests</span><span class="o">.</span><span class="n">packages</span><span class="o">.</span><span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The data we'll be working with is a sample of the <a href="http://www.bayareabikeshare.com/datachallenge">open bike rental data.</a> Essentially people can rent bikes and ride them from one station to another. This data provides that information. <a href="https://github.com/anabranch/Interactive-Graphs-with-Plotly/raw/master/btd2.json">You can snag the sample I am using in JSON format here.</a>.</p>
+<p>Now we can import it.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">btd</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">jsonFile</span><span class="p">(</span><span class="s2">&quot;btd2.json&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can see that it's a DataFrame by printing its type.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">btd</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class &#39;pyspark.sql.dataframe.DataFrame&#39;&gt;
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now <strong>RDD</strong> is the base abstraction of Apache Spark, it's the Resilient Distributed Dataset. It is an immutable, partitioned collection of elements that can be operated on in a distributed manner. The DataFrame builds on that but is also immutable - meaning you've got to think in terms of transformations - not just manipulations.</p>
+<p>Because we've got a json file, we've loaded it up as a DataFrame - a new introduction in Spark 1.3. The DataFrame interface which is similar to pandas style DataFrames except for that immutability described above.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can print the schema easily, which gives us the layout of the data. Everything that I'm describing can be <a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.htm">found in the Pyspark SQL documentation.</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">btd</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>root
+ |-- Bike #: string (nullable = true)
+ |-- Duration: string (nullable = true)
+ |-- End Date: string (nullable = true)
+ |-- End Station: string (nullable = true)
+ |-- End Terminal: string (nullable = true)
+ |-- Start Date: string (nullable = true)
+ |-- Start Station: string (nullable = true)
+ |-- Start Terminal: string (nullable = true)
+ |-- Subscription Type: string (nullable = true)
+ |-- Trip ID: string (nullable = true)
+ |-- Zip Code: string (nullable = true)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can grab a couple, to see what the layout looks like.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">btd</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[Row(Bike #=u&#39;520&#39;, Duration=u&#39;63&#39;, End Date=u&#39;8/29/13 14:14&#39;, End Station=u&#39;South Van Ness at Market&#39;, End Terminal=u&#39;66&#39;, Start Date=u&#39;8/29/13 14:13&#39;, Start Station=u&#39;South Van Ness at Market&#39;, Start Terminal=u&#39;66&#39;, Subscription Type=u&#39;Subscriber&#39;, Trip ID=u&#39;4576&#39;, Zip Code=u&#39;94127&#39;),
+ Row(Bike #=u&#39;661&#39;, Duration=u&#39;70&#39;, End Date=u&#39;8/29/13 14:43&#39;, End Station=u&#39;San Jose City Hall&#39;, End Terminal=u&#39;10&#39;, Start Date=u&#39;8/29/13 14:42&#39;, Start Station=u&#39;San Jose City Hall&#39;, Start Terminal=u&#39;10&#39;, Subscription Type=u&#39;Subscriber&#39;, Trip ID=u&#39;4607&#39;, Zip Code=u&#39;95138&#39;),
+ Row(Bike #=u&#39;48&#39;, Duration=u&#39;71&#39;, End Date=u&#39;8/29/13 10:17&#39;, End Station=u&#39;Mountain View City Hall&#39;, End Terminal=u&#39;27&#39;, Start Date=u&#39;8/29/13 10:16&#39;, Start Station=u&#39;Mountain View City Hall&#39;, Start Terminal=u&#39;27&#39;, Subscription Type=u&#39;Subscriber&#39;, Trip ID=u&#39;4130&#39;, Zip Code=u&#39;97214&#39;)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now one thing I'd like to look at is the duration distribution - can we see how common certain ride times are?</p>
+<p>To answer that we'll get the durations and the way we'll be doing it is through the Spark SQL Interface. To do so we'll register it as a table.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">sqlCtx</span><span class="o">.</span><span class="n">registerDataFrameAsTable</span><span class="p">(</span><span class="n">btd</span><span class="p">,</span> <span class="s2">&quot;bay_area_bike&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now as you may have noted above, the durations are in seconds. Let's start off by looking at all rides under 2 hours.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">2</span> <span class="c1"># 2 hours in seconds</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[8]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>7200</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df2</span> <span class="o">=</span> <span class="n">sqlCtx</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT Duration as d1 from bay_area_bike where Duration &lt; 7200&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We've created a new DataFrame from the transformation and query - now we're ready to plot it. One of the great things about plotly is that you can throw very large datasets at it and it will do just fine. It's certainly a much more scalable solution than matplotlib.</p>
+<p>Below I create a histogram of the data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">go</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">df2</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()[</span><span class="s1">&#39;d1&#39;</span><span class="p">])]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;spark/less_2_hour_rides&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/bill_chambers/.virtualenvs/plotly-notebook/lib/python2.7/site-packages/plotly/plotly/plotly.py:187: UserWarning:
+
+Woah there! Look at all those points! Due to browser limitations, Plotly has a hard time graphing more than 500k data points for line charts, or 40k points for other types of charts. Here are some suggestions:
+(1) Trying using the image API to return an image instead of a graph URL
+(2) Use matplotlib
+(3) See if you can create your visualization with fewer data points
+
+If the visualization you&#39;re using aggregates points (e.g., box plot, histogram, etc.) you can disregard this warning.
+
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/97.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>That was simple and we can see that plotly was able to handle the data without issue. We can see that big uptick in rides that last less than ~30 minutes (2000 seconds) - so let's look at that distribution.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df3</span> <span class="o">=</span> <span class="n">sqlCtx</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT Duration as d1 from bay_area_bike where Duration &lt; 2000&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A great thing about Apache Spark is that you can sample easily from large datasets, you just set the amount you would like to sample and you're all set. Plotly converts those samples into beautifully overlayed histograms. This is a great way to eyeball different distributions.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">s1</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">s2</span> <span class="o">=</span> <span class="n">df3</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">2500</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">s1</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()[</span><span class="s1">&#39;d1&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Large Sample&quot;</span><span class="p">),</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">s2</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()[</span><span class="s1">&#39;d1&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Small Sample&quot;</span><span class="p">)</span>
+    <span class="p">]</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;spark/sample_rides&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[15]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/125.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>What's really powerful about Plotly is sharing this data is simple. I can take the above graph and change the styling or bins visually. A common workflow is to make a rough sketch of the graph in code, then make a more refined version with notes to share with management like the one below. Plotly's online interface allows you to edit graphs in other languages as well.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>
+<span class="n">tls</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="s2">&quot;https://plot.ly/~bill_chambers/101&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[16]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/101.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now let's check out bike rentals from individual stations. We can do a groupby with Spark DataFrames just as we might in Pandas. We've also seen at this point how easy it is to convert a Spark DataFrame to a pandas DataFrame.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">dep_stations</span> <span class="o">=</span> <span class="n">btd</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="n">btd</span><span class="p">[</span><span class="s1">&#39;Start Station&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">dep_stations</span><span class="p">[</span><span class="s1">&#39;Start Station&#39;</span><span class="p">][:</span><span class="mi">3</span><span class="p">]</span> <span class="c1"># top 3 stations</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[18]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>34    San Francisco Caltrain (Townsend at 4th)
+47        Harry Bridges Plaza (Ferry Building)
+0                       Embarcadero at Sansome
+Name: Start Station, dtype: object</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>we'll add a handy function to help us convert all of these into appropriate count data. We're just using pandas resampling function to turn this into day count data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">transform_df</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;counts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Start Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Start Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Start Date&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">)</span>
+
+<span class="n">pop_stations</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># being popular stations - we could easily extend this to more stations</span>
+<span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">dep_stations</span><span class="p">[</span><span class="s1">&#39;Start Station&#39;</span><span class="p">][:</span><span class="mi">3</span><span class="p">]:</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">transform_df</span><span class="p">(</span><span class="n">btd</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">btd</span><span class="p">[</span><span class="s1">&#39;Start Station&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">station</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;Start Date&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">())</span>
+    <span class="n">pop_stations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">temp</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">temp</span><span class="o">.</span><span class="n">counts</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">station</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">pop_stations</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;spark/over_time&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[21]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/126.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Interestingly we can see similar patterns for the Embarcadero and Ferry Buildings. We also get a consistent break between work weeks and work days. There also seems to be an interesting pattern between fall and winter usage for the downtown stations that doesn't seem to affect the Caltrain station.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="References">References<a class="anchor-link" href="#References">&#182;</a></h4><p>You can learn more about Plotly Enterprise and collaboration tools with the links below:</p>
+<ul>
+<li><a href="https://plot.ly/ipython-notebooks/collaboration/">Collaborations and Language Support</a></li>
+<li><a href="https://plot.ly/ipython-notebooks/network-graphs/">Network Graphing</a></li>
+<li><a href="https://plot.ly/ipython-notebooks/basemap-maps/">Maps with Plotly</a></li>
+<li><a href="https://plot.ly/product/enterprise/">Plotly Enterprise</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+
+
+{% endraw %}

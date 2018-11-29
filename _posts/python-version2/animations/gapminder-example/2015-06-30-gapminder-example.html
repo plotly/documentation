@@ -1,0 +1,524 @@
+---
+permalink: python/gapminder-example/
+description: How to make the classic Gapminder Animation using sliders and buttons in Python.
+name: Adding Sliders to Animations | plotly
+has_thumbnail: true
+thumbnail: thumbnail/gapminder_animation.gif
+layout: user-guide
+name: Adding Sliders to Animations
+language: python
+title: Adding Sliders to Animations | plotly
+display_as: animations
+has_thumbnail: true
+page_type: example_index
+order: 2
+ipynb: ~notebook_demo/129
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#194;&#182;</a></h4><p>Note: Animations are available in version 1.12.10+
+Run <code>pip install plotly --upgrade</code> to update your Plotly version.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.0.15&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Import-Data">Import Data<a class="anchor-link" href="#Import-Data">&#194;&#182;</a></h4><p>This tutorial walks you through how to make an example using the <a href="http://www.gapminder.org/world/">Gapminder dataset</a> to present the GDP per Capita vs Life Expectancy across the years 1952 to 2007 in an animated Bubble Chart, in which the bubbles represent countries and their sizes represent the population.</p>
+<p>First import the Gapminder data that we will be using for the example and store in a dataframe:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">from</span> <span class="nn">plotly.grid_objs</span> <span class="kn">import</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Column</span>
+<span class="kn">from</span> <span class="nn">plotly.tools</span> <span class="kn">import</span> <span class="n">FigureFactory</span> <span class="k">as</span> <span class="n">FF</span> 
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv&#39;</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">FF</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;animations-gapminder-data-preview&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/56.embed" height="380px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Make-the-Grid">Make the Grid<a class="anchor-link" href="#Make-the-Grid">&#194;&#182;</a></h4><p>Since we are using the v2 api for animations in Plotly, we need to first make a <code>grid</code>. You can learn more in the <a href="https://plot.ly/python/animations/">introduction to animation doc</a>.</p>
+<p>We will first define a list of <em>string</em> years which will represent the values that our <code>slider</code> will take on. Going through the dataset, we will take out all the unique continents from the column <code>continent</code> and store them as well. Finally, we make a grid with each column representing a slice of the dataframe by <em>year</em>, <em>continent</em> and <em>column name</em>, making sure to name each column uniquly by these variables:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">years_from_col</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">])</span>
+<span class="n">years_ints</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">years_from_col</span><span class="p">))</span>
+<span class="n">years</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years_ints</span><span class="p">]</span>
+<span class="n">years</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;1957&#39;</span><span class="p">)</span>
+
+<span class="c1"># make list of continents</span>
+<span class="n">continents</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">continent</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;continent&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">continent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">continents</span><span class="p">:</span> 
+        <span class="n">continents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">continent</span><span class="p">)</span>
+
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1"># make grid</span>
+<span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">continent</span> <span class="ow">in</span> <span class="n">continents</span><span class="p">:</span>
+        <span class="n">dataset_by_year</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">year</span><span class="p">)]</span>
+        <span class="n">dataset_by_year_and_cont</span> <span class="o">=</span> <span class="n">dataset_by_year</span><span class="p">[</span><span class="n">dataset_by_year</span><span class="p">[</span><span class="s1">&#39;continent&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">continent</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">dataset_by_year_and_cont</span><span class="p">:</span>
+            <span class="c1"># each column name is unique</span>
+            <span class="n">column_name</span> <span class="o">=</span> <span class="s1">&#39;{year}_{continent}_{header}_gapminder_grid&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">continent</span><span class="o">=</span><span class="n">continent</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">col_name</span>
+            <span class="p">)</span>
+            <span class="n">a_column</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dataset_by_year_and_cont</span><span class="p">[</span><span class="n">col_name</span><span class="p">]),</span> <span class="n">column_name</span><span class="p">)</span>
+            <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a_column</span><span class="p">)</span>
+
+<span class="c1"># upload grid</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+<span class="n">url</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">grid_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="s1">&#39;gapminder_grid&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()),</span> <span class="n">auto_open</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">url</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>u&#39;https://plot.ly/~PythonPlotBot/2476/&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Make-the-Figure">Make the Figure<a class="anchor-link" href="#Make-the-Figure">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">figure</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s1">&#39;frames&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;config&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;scrollzoom&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># fill in most of layout</span>
+<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;xaxis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">85</span><span class="p">],</span> <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Life Expectancy&#39;</span><span class="p">,</span> <span class="s1">&#39;gridcolor&#39;</span><span class="p">:</span> <span class="s1">&#39;#FFFFFF&#39;</span><span class="p">}</span>
+<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;yaxis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;GDP per Capita&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="s1">&#39;gridcolor&#39;</span><span class="p">:</span> <span class="s1">&#39;#FFFFFF&#39;</span><span class="p">}</span>
+<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;hovermode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;closest&#39;</span>
+<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;plot_bgcolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;rgb(223, 232, 243)&#39;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-Slider">Add Slider<a class="anchor-link" href="#Add-Slider">&#194;&#182;</a></h4><p>For the slider to appear, we need to adda <code>sliders</code> dictionary to <code>layout</code>. The <code>sliders</code> dictionary is set in the following way:</p>
+
+<pre><code>figure['layout']['sliders] = {
+    'active': 0,
+    'yanchor': 'top',
+    'xanchor': 'left',
+    'currentvalue': {
+        'font': {'size': 20},
+        'prefix': 'text-before-value-on-display',
+        'visible': True,
+        'xanchor': 'right'
+    },
+    'transition': {'duration': 300, 'easing': 'cubic-in-out'},
+    'pad': {'b': 10, 't': 50},
+    'len': 0.9,
+    'x': 0.1,
+    'y': 0,
+    'steps': [...]
+}</code></pre>
+<ul>
+<li><code>yanchor</code> determines whether the slider is on the <em>top</em> or <em>bottom</em> of the chart page</li>
+<li><code>xanchor</code> is similar, only with <em>left</em> and <em>right</em> as possible values</li>
+<li><code>currentvalue</code> sets the display of the current value that the slider is hovering on. It contains args such as <code>prefix</code>, which sets the text that appears before the value.</li>
+<li><code>steps</code> is a list of dictionaries each of which corresponds to a frame in the figure. They should be ordered in the sequence in which the frames occur in the animation.</li>
+</ul>
+<p>Each dictionary in <code>steps</code> has the following form:</p>
+
+<pre><code>{
+    'method': 'animate',
+    'label': 'label-for-frame',
+    'value': 'value-for-frame(defaults to label)',
+    'args': [{'frame': {'duration': 300, 'redraw': False},
+         'mode': 'immediate'}
+    ],
+}</code></pre>
+<ul>
+<li>the first item in the list <code>args</code> is a list containing the slider-value of that frame</li>
+<li><code>label</code> is the text that appears next to the <code>prefix</code> arg mentioned in the <code>slider</code> section (eg. <em>Year: 1952</em>)</li>
+</ul>
+<p>For more information, check out the <a href="https://plot.ly/python/reference/#layout-sliders">documentation</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">sliders_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;active&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;yanchor&#39;</span><span class="p">:</span> <span class="s1">&#39;top&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;xanchor&#39;</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;currentvalue&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;font&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">},</span>
+        <span class="s1">&#39;prefix&#39;</span><span class="p">:</span> <span class="s1">&#39;Year:&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;visible&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="s1">&#39;xanchor&#39;</span><span class="p">:</span> <span class="s1">&#39;right&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;transition&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;duration&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="s1">&#39;easing&#39;</span><span class="p">:</span> <span class="s1">&#39;cubic-in-out&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;pad&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">},</span>
+    <span class="s1">&#39;len&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span>
+    <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;steps&#39;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Add-Play-and-Pause-Buttons">Add Play and Pause Buttons<a class="anchor-link" href="#Add-Play-and-Pause-Buttons">&#194;&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;updatemenus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;buttons&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;frame&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;duration&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="s1">&#39;redraw&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">},</span>
+                         <span class="s1">&#39;fromcurrent&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;transition&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;duration&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="s1">&#39;easing&#39;</span><span class="p">:</span> <span class="s1">&#39;quadratic-in-out&#39;</span><span class="p">}}],</span>
+                <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;Play&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;animate&#39;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="bp">None</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;frame&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;duration&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;redraw&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">},</span> <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;immediate&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;transition&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;duration&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}}],</span>
+                <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;Pause&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;animate&#39;</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="s1">&#39;direction&#39;</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;pad&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">87</span><span class="p">},</span>
+        <span class="s1">&#39;showactive&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;buttons&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="s1">&#39;xanchor&#39;</span><span class="p">:</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;yanchor&#39;</span><span class="p">:</span> <span class="s1">&#39;top&#39;</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+
+<span class="n">custom_colors</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Asia&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(171, 99, 250)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Europe&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(230, 99, 250)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Africa&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(99, 110, 250)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Americas&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(25, 211, 243)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Oceania&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(50, 170, 255)&#39;</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Fill-in-Figure-with-Data-and-Frames">Fill in Figure with Data and Frames<a class="anchor-link" href="#Fill-in-Figure-with-Data-and-Frames">&#194;&#182;</a></h4><p>Now we can put the data from our grid into the figure. Since we are using referenced data from the grid, we use the <code>.get_column_reference()</code> method on the grid and supply the name of the column we want via a looping through all the years and continents. First we</p>
+<p>Note: If you are using referenced data for a particular parameter, you <code>MUST</code> change the parameter name from <code>name</code> to <code>namesrc</code> to indicate that you are using referenced data from a grid. For instance, <code>x</code> becomes <code>xsrc</code>, <code>text</code> becomes <code>textsrc</code>, etc.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">col_name_template</span> <span class="o">=</span> <span class="s1">&#39;{year}_{continent}_{header}_gapminder_grid&#39;</span>
+<span class="n">year</span> <span class="o">=</span> <span class="mi">1952</span>
+<span class="k">for</span> <span class="n">continent</span> <span class="ow">in</span> <span class="n">continents</span><span class="p">:</span>
+    <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;xsrc&#39;</span><span class="p">:</span> <span class="n">grid</span><span class="o">.</span><span class="n">get_column_reference</span><span class="p">(</span><span class="n">col_name_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">continent</span><span class="o">=</span><span class="n">continent</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;lifeExp&#39;</span>
+        <span class="p">)),</span>
+        <span class="s1">&#39;ysrc&#39;</span><span class="p">:</span> <span class="n">grid</span><span class="o">.</span><span class="n">get_column_reference</span><span class="p">(</span><span class="n">col_name_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">continent</span><span class="o">=</span><span class="n">continent</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;gdpPercap&#39;</span>
+        <span class="p">)),</span>
+        <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;textsrc&#39;</span><span class="p">:</span> <span class="n">grid</span><span class="o">.</span><span class="n">get_column_reference</span><span class="p">(</span><span class="n">col_name_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">continent</span><span class="o">=</span><span class="n">continent</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;country&#39;</span>
+        <span class="p">)),</span>
+        <span class="s1">&#39;marker&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;sizemode&#39;</span><span class="p">:</span> <span class="s1">&#39;area&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;sizeref&#39;</span><span class="p">:</span> <span class="mi">200000</span><span class="p">,</span>
+            <span class="s1">&#39;sizesrc&#39;</span><span class="p">:</span> <span class="n">grid</span><span class="o">.</span><span class="n">get_column_reference</span><span class="p">(</span><span class="n">col_name_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                 <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">continent</span><span class="o">=</span><span class="n">continent</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;pop&#39;</span>
+            <span class="p">)),</span>
+            <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">custom_colors</span><span class="p">[</span><span class="n">continent</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">continent</span>
+    <span class="p">}</span>
+    <span class="n">figure</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_dict</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Create-Frames">Create Frames<a class="anchor-link" href="#Create-Frames">&#194;&#182;</a></h3><p>Finally we make our <code>frames</code>. Here we are running again through the years and continents, but for each combination we instantiate a frame dictionary of the form:</p>
+
+<pre><code>frame = {'data': [], 'name': value-name}</code></pre>
+<p>We add a dictionary of data to this list and at the end of each loop, we ensure to add the <code>steps</code> dictionary to the steps list. At the end, we attatch the <code>sliders</code> dictionary to the figure via:</p>
+
+<pre><code>figure['layout']['sliders'] = [sliders_dict]</code></pre>
+<p>and then we plot! Enjoy the Gapminder example!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)}</span>
+    <span class="k">for</span> <span class="n">continent</span> <span class="ow">in</span> <span class="n">continents</span><span class="p">:</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;xsrc&#39;</span><span class="p">:</span> <span class="n">grid</span><span class="o">.</span><span class="n">get_column_reference</span><span class="p">(</span><span class="n">col_name_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">continent</span><span class="o">=</span><span class="n">continent</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;lifeExp&#39;</span>
+            <span class="p">)),</span>
+            <span class="s1">&#39;ysrc&#39;</span><span class="p">:</span> <span class="n">grid</span><span class="o">.</span><span class="n">get_column_reference</span><span class="p">(</span><span class="n">col_name_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">continent</span><span class="o">=</span><span class="n">continent</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;gdpPercap&#39;</span>
+            <span class="p">)),</span>
+            <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;textsrc&#39;</span><span class="p">:</span> <span class="n">grid</span><span class="o">.</span><span class="n">get_column_reference</span><span class="p">(</span><span class="n">col_name_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">continent</span><span class="o">=</span><span class="n">continent</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;country&#39;</span>
+                <span class="p">)),</span>
+            <span class="s1">&#39;marker&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;sizemode&#39;</span><span class="p">:</span> <span class="s1">&#39;area&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;sizeref&#39;</span><span class="p">:</span> <span class="mi">200000</span><span class="p">,</span>
+                <span class="s1">&#39;sizesrc&#39;</span><span class="p">:</span> <span class="n">grid</span><span class="o">.</span><span class="n">get_column_reference</span><span class="p">(</span><span class="n">col_name_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">continent</span><span class="o">=</span><span class="n">continent</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;pop&#39;</span>
+                <span class="p">)),</span>
+                <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">custom_colors</span><span class="p">[</span><span class="n">continent</span><span class="p">]</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">continent</span>
+        <span class="p">}</span>
+        <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_dict</span><span class="p">)</span>
+
+    <span class="n">figure</span><span class="p">[</span><span class="s1">&#39;frames&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+    <span class="n">slider_step</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="n">year</span><span class="p">],</span>
+        <span class="p">{</span><span class="s1">&#39;frame&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;duration&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="s1">&#39;redraw&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">},</span>
+         <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;immediate&#39;</span><span class="p">,</span>
+       <span class="s1">&#39;transition&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;duration&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">}}</span>
+     <span class="p">],</span>
+     <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">year</span><span class="p">,</span>
+     <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;animate&#39;</span><span class="p">}</span>
+    <span class="n">sliders_dict</span><span class="p">[</span><span class="s1">&#39;steps&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slider_step</span><span class="p">)</span>
+
+<span class="n">figure</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;sliders&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">sliders_dict</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-Animation">Plot Animation<a class="anchor-link" href="#Plot-Animation">&#194;&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">icreate_animations</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="s1">&#39;gapminder_example&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[12]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/2477.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#194;&#182;</a></h4><p>For additional information and attributes for creating bubble charts in Plotly see: <a href="https://plot.ly/python/bubble-charts/">https://plot.ly/python/bubble-charts/</a>.
+For more documentation on creating animations with Plotly, see <a href="https://plot.ly/python/#animations">https://plot.ly/python/#animations</a>.</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

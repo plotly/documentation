@@ -1,0 +1,404 @@
+---
+permalink: python/mapbox-county-choropleth/
+description: How to make a Mapbox Choropleth Map of the Florida Counties in Python with Plotly.
+name: Python Mapbox Choropleth Maps | plotly
+has_thumbnail: true
+thumbnail: thumbnail/county-level-choropleth.jpg
+layout: user-guide
+name: Mapbox Choropleth Maps
+language: python
+title: Python Mapbox Choropleth Maps | plotly
+display_as: maps
+has_thumbnail: true
+ipynb: ~notebook_demo/56
+order: 1.5
+page_type: u-guide
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by dowloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#194;&#182;</a></h4><p>Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.4.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this tutorial, we will be creating a choropleth of Florida's counties with the Republican and Democratic counties colored red and blue respectively.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Mapbox-Access-Token">Mapbox Access Token<a class="anchor-link" href="#Mapbox-Access-Token">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To plot on Mapbox maps with Plotly you'll need a Mapbox account and a <a href="https://www.mapbox.com/studio">Mapbox Access Token</a> which you can add to your <a href="https://plot.ly/settings/mapbox">Plotly settings</a>. If you're using a Plotly On-Premise server, please see additional instructions here: <a href="https://help.plot.ly/mapbox-atlas/">https://help.plot.ly/mapbox-atlas/</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Read-the-Data">Read the Data<a class="anchor-link" href="#Read-the-Data">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Read both a <a href="http://catalog.civicdashboards.com/dataset/cda82e8b-7a8b-411e-95ba-1200b921c35d/resource/5c5d19a0-b817-49e6-b76e-ea63a8e2c0f6/download/fd880c1e4d23463ca869f1122109b3eftemp.geojson">GeoJSON file</a> of the Florida counties and a <a href="http://dos.myflorida.com/elections/data-statistics/voter-registration-statistics/voter-registration-monthly-reports/voter-registration-current-by-county/">webpage</a> indicating Florida's voting registration by county</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">urllib</span>
+
+<span class="n">repub_democ_counties_url</span> <span class="o">=</span> <span class="s1">&#39;http://dos.myflorida.com/elections/data-statistics/voter-registration-statistics/voter-registration-monthly-reports/voter-registration-current-by-county/&#39;</span>
+<span class="n">florida_data_url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/florida_county_data.geojson&#39;</span>
+
+<span class="n">repub_democ_counties</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">repub_democ_counties_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">florida_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">florida_data_url</span><span class="p">)</span>
+
+<span class="n">county_names</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">county_names_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">county</span> <span class="ow">in</span> <span class="n">florida_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">county</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">])):</span>
+        <span class="k">if</span> <span class="n">county</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">][</span><span class="n">m</span><span class="p">:</span><span class="n">m</span><span class="o">+</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;County&#39;</span><span class="p">:</span>
+            <span class="n">county_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">county</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">county_names_dict</span><span class="p">[</span><span class="n">county</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">county</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            
+<span class="k">print</span> <span class="n">county_names</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[u&#39;Charlotte&#39;, u&#39;Seminole&#39;, u&#39;Baker&#39;, u&#39;DeSoto&#39;, u&#39;Levy&#39;, u&#39;Alachua&#39;, u&#39;Pasco&#39;, u&#39;Hendry&#39;, u&#39;Okeechobee&#39;, u&#39;Broward&#39;, u&#39;St. Johns&#39;, u&#39;Gulf&#39;, u&#39;Glades&#39;, u&#39;Marion&#39;, u&#39;Duval&#39;, u&#39;Madison&#39;, u&#39;Osceola&#39;, u&#39;Lee&#39;, u&#39;Volusia&#39;, u&#39;Sarasota&#39;, u&#39;Indian River&#39;, u&#39;Clay&#39;, u&#39;Putnam&#39;, u&#39;Wakulla&#39;, u&#39;Holmes&#39;, u&#39;Escambia&#39;, u&#39;Flagler&#39;, u&#39;Union&#39;, u&#39;Brevard&#39;, u&#39;Suwannee&#39;, u&#39;Orange&#39;, u&#39;Martin&#39;, u&#39;Nassau&#39;, u&#39;Jefferson&#39;, u&#39;Santa Rosa&#39;, u&#39;Hamilton&#39;, u&#39;Calhoun&#39;, u&#39;Hernando&#39;, u&#39;Miami-Dade&#39;, u&#39;Pinellas&#39;, u&#39;Palm Beach&#39;, u&#39;Hillsborough&#39;, u&#39;Collier&#39;, u&#39;Gilchrist&#39;, u&#39;Dixie&#39;, u&#39;Bay&#39;, u&#39;Gadsden&#39;, u&#39;Okaloosa&#39;, u&#39;Citrus&#39;, u&#39;Lafayette&#39;, u&#39;Manatee&#39;, u&#39;Monroe&#39;, u&#39;Columbia&#39;, u&#39;Sumter&#39;, u&#39;Washington&#39;, u&#39;St. Lucie&#39;, u&#39;Polk&#39;, u&#39;Taylor&#39;, u&#39;Leon&#39;, u&#39;Lake&#39;, u&#39;Highlands&#39;, u&#39;Hardee&#39;, u&#39;Bradford&#39;, u&#39;Liberty&#39;, u&#39;Franklin&#39;, u&#39;Walton&#39;, u&#39;Jackson&#39;]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since we want to separate the counties into Republican and Democratic for the seperate coloring, and since the county names in the GeoJSON are fuller text descriptions of each county on the website, we need to parse through and convert the names in the GeoJSON to the website format</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Color-the-Counties">Color the Counties<a class="anchor-link" href="#Color-the-Counties">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We now run a script to color our counties based on political party. This involves parsing through our list of counties, finding their cooresponding Republican/Democratic votes on the website, and place our data into the cooresponding list <code>red_counties</code> or <code>blue_counties</code>, based on which party has more votes</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">red_counties</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">blue_counties</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">county</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">county_names</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">repub_democ_counties</span><span class="p">)):</span>
+        <span class="n">county_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">county</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">repub_democ_counties</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="n">county_len</span><span class="p">]</span> <span class="o">==</span> <span class="n">string</span><span class="o">.</span><span class="n">upper</span><span class="p">(</span><span class="n">county</span><span class="p">):</span>
+            <span class="n">new_j</span> <span class="o">=</span> <span class="n">j</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">repub_democ_counties</span><span class="p">[</span><span class="n">new_j</span><span class="p">])</span>
+                    <span class="k">break</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">new_j</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">repub_votes</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">while</span> <span class="n">repub_democ_counties</span><span class="p">[</span><span class="n">new_j</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">repub_democ_counties</span><span class="p">[</span><span class="n">new_j</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;,&#39;</span><span class="p">:</span>
+            <span class="n">repub_votes</span> <span class="o">+=</span> <span class="n">repub_democ_counties</span><span class="p">[</span><span class="n">new_j</span><span class="p">]</span>
+        <span class="n">new_j</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+    <span class="c1"># advance to next set of numbers</span>
+    <span class="n">new_j</span> <span class="o">+=</span> <span class="mi">11</span>
+
+    <span class="n">democ_votes</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">while</span> <span class="n">repub_democ_counties</span><span class="p">[</span><span class="n">new_j</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">repub_democ_counties</span><span class="p">[</span><span class="n">new_j</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;,&#39;</span><span class="p">:</span>
+            <span class="n">democ_votes</span> <span class="o">+=</span> <span class="n">repub_democ_counties</span><span class="p">[</span><span class="n">new_j</span><span class="p">]</span>
+        <span class="n">new_j</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">repub_votes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">repub_votes</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">repub_votes</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">democ_votes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">democ_votes</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">democ_votes</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">repub_votes</span> <span class="o">&gt;=</span> <span class="n">democ_votes</span><span class="p">:</span>
+        <span class="n">red_counties</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">florida_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">blue_counties</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">florida_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/ipykernel_launcher.py:7: UnicodeWarning:
+
+Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Create-JSON-Files">Create JSON Files<a class="anchor-link" href="#Create-JSON-Files">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In <a href="https://github.com/plotly/datasets">plotly/datasets</a>, you can find the generated JSON files below for the <a href="https://raw.githubusercontent.com/plotly/datasets/master/florida-red-data.json">red counties</a> and <a href="https://raw.githubusercontent.com/plotly/datasets/master/florida-blue-data.json">blue counties</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">red_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FeatureCollection&quot;</span><span class="p">}</span>
+<span class="n">red_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">red_counties</span>
+
+<span class="n">blue_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FeatureCollection&quot;</span><span class="p">}</span>
+<span class="n">blue_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">blue_counties</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;florida-red-data.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">red_data</span><span class="p">))</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;florida-blue-data.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">blue_data</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>and we can now plot our choropleth using Python. Make sure to have a <a href="https://www.mapbox.com/studio">Mapbox Access Tolken</a> for the generation of the plot. For more information on plotting Mapbox maps in Python, checkout the <a href="https://plot.ly/python/scattermapbox/">documentation</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">graph_objs</span>
+
+<span class="n">mapbox_access_token</span> <span class="o">=</span> <span class="s2">&quot;ADD_YOUR_TOKEN_HERE&quot;</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">graph_objs</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span>
+    <span class="n">graph_objs</span><span class="o">.</span><span class="n">Scattermapbox</span><span class="p">(</span>
+        <span class="n">lat</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;45.5017&#39;</span><span class="p">],</span>
+        <span class="n">lon</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;-73.5673&#39;</span><span class="p">],</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">])</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">graph_objs</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+    <span class="n">autosize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span><span class="p">,</span>
+    <span class="n">mapbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">layers</span><span class="o">=</span><span class="p">[</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">sourcetype</span> <span class="o">=</span> <span class="s1">&#39;geojson&#39;</span><span class="p">,</span>
+                <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/florida-red-data.json&#39;</span><span class="p">,</span>
+                <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;fill&#39;</span><span class="p">,</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;rgba(163,22,19,0.8)&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">sourcetype</span> <span class="o">=</span> <span class="s1">&#39;geojson&#39;</span><span class="p">,</span>
+                <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/florida-blue-data.json&#39;</span><span class="p">,</span>
+                <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;fill&#39;</span><span class="p">,</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;rgba(40,0,113,0.8)&#39;</span>
+            <span class="p">)</span>
+        <span class="p">],</span>
+        <span class="n">accesstoken</span><span class="o">=</span><span class="n">mapbox_access_token</span><span class="p">,</span>
+        <span class="n">bearing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">center</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">lat</span><span class="o">=</span><span class="mf">27.8</span><span class="p">,</span>
+            <span class="n">lon</span><span class="o">=-</span><span class="mi">83</span>
+        <span class="p">),</span>
+        <span class="n">pitch</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">zoom</span><span class="o">=</span><span class="mf">5.2</span><span class="p">,</span>
+        <span class="n">style</span><span class="o">=</span><span class="s1">&#39;light&#39;</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;county-level-choropleths-python&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/705.embed" height="600px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#194;&#182;</a></h4><p>See <a href="https://plot.ly/python/reference/#scattermapbox">https://plot.ly/python/reference/#scattermapbox</a> for more information about mapbox and their attribute options.</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

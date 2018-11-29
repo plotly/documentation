@@ -1,0 +1,415 @@
+---
+permalink: python/delete-plots/
+description: How to delete plotly graphs in python.
+name: Deleting Plots with the Python API
+has_thumbnail: true
+thumbnail: thumbnail/delete.jpg
+layout: user-guide
+name: Deleting Plots
+language: python
+display_as: file_settings
+has_thumbnail: true
+ipynb: ~notebook_demo/98
+page_type: u-guide
+order: 9
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Imports-and-Credentials">Imports and Credentials<a class="anchor-link" href="#Imports-and-Credentials">&#182;</a></h4><p>In additional to importing python's <code>requests</code> and <code>json</code> packages, this tutorial also uses <a href="https://api.plot.ly/v2/">Plotly's REST API</a></p>
+<p>First define YOUR <a href="https://plot.ly/settings/api">username and api key</a> and create <code>auth</code> and <code>headers</code> to use with <code>requests</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">requests.auth</span> <span class="kn">import</span> <span class="n">HTTPBasicAuth</span>
+
+<span class="n">username</span> <span class="o">=</span> <span class="s1">&#39;private_plotly&#39;</span> <span class="c1"># Replace with YOUR USERNAME</span>
+<span class="n">api_key</span> <span class="o">=</span> <span class="s1">&#39;k0yy0ztssk&#39;</span> <span class="c1"># Replace with YOUR API KEY</span>
+
+<span class="n">auth</span> <span class="o">=</span> <span class="n">HTTPBasicAuth</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Plotly-Client-Platform&#39;</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">}</span>
+
+<span class="n">plotly</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">set_credentials_file</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Trash-and-Restore"><a href="https://api.plot.ly/v2/files/#trash">Trash</a> and <a href="https://api.plot.ly/v2/files/#restore">Restore</a><a class="anchor-link" href="#Trash-and-Restore">&#182;</a></h4><p>Create a plot and return the url to see the file id which will be used to delete the plot.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">plot</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+                         <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}],</span>
+               <span class="s2">&quot;layout&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Let&#39;s Trash This Plot&lt;br&gt;(then restore it)&quot;</span><span class="p">}},</span>
+              <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;trash example&#39;</span><span class="p">)</span> 
+
+<span class="n">url</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[32]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>u&#39;https://plot.ly/~private_plotly/52&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Include the file id in your request. <br>The file id is your <code>username:plot_id#</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fid</span> <span class="o">=</span> <span class="n">username</span><span class="o">+</span><span class="s1">&#39;:18&#39;</span>
+<span class="n">fid</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[33]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;private_plotly:18&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The following request moves the plot from the <a href="https://plot.ly/organize/home">organize folder</a> into the trash. <br>Note: a successful trash request will return a <code>Response [200]</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;https://api.plot.ly/v2/files/&#39;</span><span class="o">+</span><span class="n">fid</span><span class="o">+</span><span class="s1">&#39;/trash&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[34]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;Response [200]&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now if you visit the url, the plot won't be there. <br>However, at this point, there is the option to restore the plot (i.e. move it out of trash and back to the organize folder) with the following request:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="PERMANENT-Delete"><a href="https://api.plot.ly/v2/files/#permanent_delete"><b>PERMANENT</b> Delete</a><a class="anchor-link" href="#PERMANENT-Delete">&#182;</a></h4><p>This request <b>CANNOT!!!!!!!</b> be restored. 
+Only use <code>permanent_delete</code> when <b>absolutely sure the plot is no longer needed</b>.<br></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">plot</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+                         <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}],</span>
+               <span class="s2">&quot;layout&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Let&#39;s Delete This Plot&lt;br&gt;&lt;b&gt;FOREVER!!!!&lt;/b&gt;&quot;</span><span class="p">}},</span>
+              <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;PERMANENT delete ex&#39;</span><span class="p">)</span> 
+<span class="n">url</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[35]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>u&#39;https://plot.ly/~private_plotly/79&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">fid_permanent_delete</span> <span class="o">=</span> <span class="n">username</span><span class="o">+</span><span class="s1">&#39;:79&#39;</span>
+<span class="n">fid_permanent_delete</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[36]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;private_plotly:79&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To <b>PERMANENTLY</b> delete a plot, first move the plot to the trash (as seen above):</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;https://api.plot.ly/v2/files/&#39;</span><span class="o">+</span><span class="n">fid_permanent_delete</span><span class="o">+</span><span class="s1">&#39;/trash&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[37]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;Response [200]&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then <a href="https://api.plot.ly/v2/files/#permanent_delete"><b>permanent</b> delete</a>.<br>
+Note: a successful permanent delete request will return a <code>Response [204]</code> (No Content).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;https://api.plot.ly/v2/files/&#39;</span><span class="o">+</span><span class="n">fid_permanent_delete</span><span class="o">+</span><span class="s1">&#39;/permanent_delete&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[38]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;Response [204]&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Delete-All-Plots-and-Grids-PERMANENTLY!">Delete All Plots and Grids PERMANENTLY!<a class="anchor-link" href="#Delete-All-Plots-and-Grids-PERMANENTLY!">&#182;</a></h4><p>In order to delete all plots and grids permanently, you need to delete all of your plots first, then delete all the associated grids.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">get_pages</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">page_size</span><span class="p">):</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://api.plot.ly/v2/folders/all?user=&#39;</span><span class="o">+</span><span class="n">username</span><span class="o">+</span><span class="s1">&#39;&amp;page_size=&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">page_size</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">page</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="n">page</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="s1">&#39;next&#39;</span><span class="p">]</span> 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">resource</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">page</span>
+        
+<span class="k">def</span> <span class="nf">permanently_delete_files</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">filetype_to_delete</span><span class="o">=</span><span class="s1">&#39;plot&#39;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">get_pages</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">page_size</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">page</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="s1">&#39;results&#39;</span><span class="p">])):</span>
+            <span class="n">fid</span> <span class="o">=</span> <span class="n">page</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">][</span><span class="s1">&#39;fid&#39;</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://api.plot.ly/v2/files/&#39;</span> <span class="o">+</span> <span class="n">fid</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="n">json_res</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">json_res</span><span class="p">[</span><span class="s1">&#39;filetype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">filetype_to_delete</span><span class="p">:</span>
+                    <span class="c1"># move to trash</span>
+                    <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;https://api.plot.ly/v2/files/&#39;</span><span class="o">+</span><span class="n">fid</span><span class="o">+</span><span class="s1">&#39;/trash&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+                    <span class="c1"># permanently delete</span>
+                    <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;https://api.plot.ly/v2/files/&#39;</span><span class="o">+</span><span class="n">fid</span><span class="o">+</span><span class="s1">&#39;/permanent_delete&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+<span class="n">permanently_delete_files</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">filetype_to_delete</span><span class="o">=</span><span class="s1">&#39;plot&#39;</span><span class="p">)</span>
+<span class="n">permanently_delete_files</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">filetype_to_delete</span><span class="o">=</span><span class="s1">&#39;grid&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>{% endraw %}

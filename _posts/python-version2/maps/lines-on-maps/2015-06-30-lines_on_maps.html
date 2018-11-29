@@ -1,0 +1,328 @@
+---
+permalink: python/lines-on-maps/
+description: How to draw lines, great circles, and contours on maps in Python.
+name: Lines on maps | plotly
+has_thumbnail: true
+thumbnail: thumbnail/flight-paths.jpg
+layout: user-guide
+name: Lines on Maps
+language: python
+title: Lines on maps | plotly
+display_as: maps
+has_thumbnail: true
+page_type: example_index
+order: 4
+ipynb: ~notebook_demo/58
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="US-Flight-Paths-Map">US Flight Paths Map<a class="anchor-link" href="#US-Flight-Paths-Map">&#194;&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">df_airports</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv&#39;</span><span class="p">)</span>
+<span class="n">df_airports</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+
+<span class="n">df_flight_paths</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2011_february_aa_flight_paths.csv&#39;</span><span class="p">)</span>
+<span class="n">df_flight_paths</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+
+<span class="n">airports</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;scattergeo&#39;</span><span class="p">,</span>
+        <span class="n">locationmode</span> <span class="o">=</span> <span class="s1">&#39;USA-states&#39;</span><span class="p">,</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">df_airports</span><span class="p">[</span><span class="s1">&#39;long&#39;</span><span class="p">],</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">df_airports</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">],</span>
+        <span class="n">hoverinfo</span> <span class="o">=</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">df_airports</span><span class="p">[</span><span class="s1">&#39;airport&#39;</span><span class="p">],</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+        <span class="n">marker</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> 
+            <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> 
+            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(255, 0, 0)&#39;</span><span class="p">,</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgba(68, 68, 68, 0)&#39;</span>
+            <span class="p">)</span>
+        <span class="p">))]</span>
+        
+<span class="n">flight_paths</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span> <span class="n">df_flight_paths</span> <span class="p">)</span> <span class="p">):</span>
+    <span class="n">flight_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;scattergeo&#39;</span><span class="p">,</span>
+            <span class="n">locationmode</span> <span class="o">=</span> <span class="s1">&#39;USA-states&#39;</span><span class="p">,</span>
+            <span class="n">lon</span> <span class="o">=</span> <span class="p">[</span> <span class="n">df_flight_paths</span><span class="p">[</span><span class="s1">&#39;start_lon&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">df_flight_paths</span><span class="p">[</span><span class="s1">&#39;end_lon&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="p">],</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="p">[</span> <span class="n">df_flight_paths</span><span class="p">[</span><span class="s1">&#39;start_lat&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">df_flight_paths</span><span class="p">[</span><span class="s1">&#39;end_lat&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="p">],</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">opacity</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">df_flight_paths</span><span class="p">[</span><span class="s1">&#39;cnt&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">df_flight_paths</span><span class="p">[</span><span class="s1">&#39;cnt&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    
+<span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Feb. 2011 American Airline flight paths&lt;br&gt;(Hover for airport names)&#39;</span><span class="p">,</span>
+        <span class="n">showlegend</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> 
+        <span class="n">geo</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">scope</span><span class="o">=</span><span class="s1">&#39;north america&#39;</span><span class="p">,</span>
+            <span class="n">projection</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;azimuthal equal area&#39;</span> <span class="p">),</span>
+            <span class="n">showland</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="n">landcolor</span> <span class="o">=</span> <span class="s1">&#39;rgb(243, 243, 243)&#39;</span><span class="p">,</span>
+            <span class="n">countrycolor</span> <span class="o">=</span> <span class="s1">&#39;rgb(204, 204, 204)&#39;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    
+<span class="n">fig</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">data</span><span class="o">=</span><span class="n">flight_paths</span> <span class="o">+</span> <span class="n">airports</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span> <span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span> <span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;d3-flight-paths&#39;</span> <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2303.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="London-to-NYC-Great-Circle">London to NYC Great Circle<a class="anchor-link" href="#London-to-NYC-Great-Circle">&#194;&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+
+<span class="n">nyc_london</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;scattergeo&#39;</span><span class="p">,</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">40.7127</span><span class="p">,</span> <span class="mf">51.5072</span> <span class="p">],</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="p">[</span> <span class="o">-</span><span class="mf">74.0059</span><span class="p">,</span> <span class="mf">0.1275</span> <span class="p">],</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span> <span class="p">]</span>
+    
+<span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;London to NYC Great Circle&#39;</span><span class="p">,</span>
+        <span class="n">showlegend</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>         
+        <span class="n">geo</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">resolution</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+            <span class="n">showland</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="n">showlakes</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="n">landcolor</span> <span class="o">=</span> <span class="s1">&#39;rgb(204, 204, 204)&#39;</span><span class="p">,</span>
+            <span class="n">countrycolor</span> <span class="o">=</span> <span class="s1">&#39;rgb(204, 204, 204)&#39;</span><span class="p">,</span>
+            <span class="n">lakecolor</span> <span class="o">=</span> <span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">projection</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;equirectangular&quot;</span> <span class="p">),</span>
+            <span class="n">coastlinewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">lataxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="nb">range</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">60</span> <span class="p">],</span>
+                <span class="n">showgrid</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                <span class="n">tickmode</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+                <span class="n">dtick</span> <span class="o">=</span> <span class="mi">10</span>
+            <span class="p">),</span>
+            <span class="n">lonaxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="nb">range</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
+                <span class="n">showgrid</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                <span class="n">tickmode</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+                <span class="n">dtick</span> <span class="o">=</span> <span class="mi">20</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    
+<span class="n">fig</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">data</span><span class="o">=</span><span class="n">nyc_london</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span> <span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span> <span class="n">fig</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;d3-great-circle&#39;</span> <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2305.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Contour-lines-on-globe">Contour lines on globe<a class="anchor-link" href="#Contour-lines-on-globe">&#194;&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Python 2</span>
+    <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="c1"># Python 3</span>
+        <span class="n">izip</span> <span class="o">=</span> <span class="nb">zip</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/globe_contours.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+
+<span class="n">contours</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">scl</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rgb(213,62,79)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(244,109,67)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(253,174,97)&#39;</span><span class="p">,</span>\
+       <span class="s1">&#39;rgb(254,224,139)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(255,255,191)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(230,245,152)&#39;</span><span class="p">,</span>\
+       <span class="s1">&#39;rgb(171,221,164)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(102,194,165)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(50,136,189)&#39;</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">pairwise</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">izip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+<span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+<span class="k">for</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+    <span class="n">contours</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;scattergeo&#39;</span><span class="p">,</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">lon</span><span class="p">],</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">lat</span><span class="p">],</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">scl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="p">)</span> <span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span> <span class="k">else</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+    
+<span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Contour lines over globe&lt;br&gt;(Click and drag to rotate)&#39;</span><span class="p">,</span>
+        <span class="n">showlegend</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>         
+        <span class="n">geo</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">showland</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="n">showlakes</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="n">showcountries</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="n">showocean</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="n">countrywidth</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">landcolor</span> <span class="o">=</span> <span class="s1">&#39;rgb(230, 145, 56)&#39;</span><span class="p">,</span>
+            <span class="n">lakecolor</span> <span class="o">=</span> <span class="s1">&#39;rgb(0, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">oceancolor</span> <span class="o">=</span> <span class="s1">&#39;rgb(0, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">projection</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> 
+                <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;orthographic&#39;</span><span class="p">,</span>
+                <span class="n">rotation</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">lon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span>
+                    <span class="n">lat</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span>
+                    <span class="n">roll</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="p">)</span>            
+            <span class="p">),</span>
+            <span class="n">lonaxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> 
+                <span class="n">showgrid</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                <span class="n">gridcolor</span> <span class="o">=</span> <span class="s1">&#39;rgb(102, 102, 102)&#39;</span><span class="p">,</span>
+                <span class="n">gridwidth</span> <span class="o">=</span> <span class="mf">0.5</span>
+            <span class="p">),</span>
+            <span class="n">lataxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> 
+                <span class="n">showgrid</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                <span class="n">gridcolor</span> <span class="o">=</span> <span class="s1">&#39;rgb(102, 102, 102)&#39;</span><span class="p">,</span>
+                <span class="n">gridwidth</span> <span class="o">=</span> <span class="mf">0.5</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    
+<span class="n">fig</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">data</span><span class="o">=</span><span class="n">contours</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span> <span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span> <span class="n">fig</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;d3-globe&#39;</span> <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~Diksha_Gabha/2307.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#194;&#182;</a></h4><p>See <a href="https://plot.ly/python/reference/#scattergeo">https://plot.ly/python/reference/#scattergeo</a> for more information and chart attribute options!</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

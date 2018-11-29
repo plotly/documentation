@@ -1,0 +1,1148 @@
+---
+permalink: python/alpha-shapes/
+description: How to make Alpha Shapes in Python with Plotly.
+title: Python Alpha Shapes | plotly
+has_thumbnail: true
+thumbnail: thumbnail/alpha_shapes.jpg
+layout: user-guide
+name: Alpha Shapes
+language: python
+display_as: scientific
+has_thumbnail: true
+order: 17
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Generating-and-Visualizing-Alpha-Shapes-with-Python-Plotly">Alpha Shapes with Python Plotly<a class="anchor-link" href="#Generating-and-Visualizing-Alpha-Shapes-with-Python-Plotly">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Starting with a finite set of 3D points, Plotly can generate a <a href="https://plot.ly/python/reference/#mesh3d"><code>Mesh3d</code></a>  object, that  depending on a key value can be the convex hull of that set, its Delaunay triangulation or an alpha set.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This notebook is devoted to the presentation of the  alpha shape as a computational geometric object, its interpretation, and visualization with Plotly. <a href="https://github.com/plotly/documentation/tree/source/_posts/python/alpha-shapes" target="_blank">The Notebook code and data files are available here.</a></p>
+<p>Alpha shape of a finite point set $S$ is a <a href="https://en.wikipedia.org/wiki/Polytope">polytope</a> whose structure depends only on the set $S$ and a parameter $\alpha$.</p>
+<p>Although it is less known in comparison to other computational geometric objects,  it has been used in many  practical applications in pattern recognition, surface reconstruction, molecurar structure modeling, porous media, astrophysics.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In order to understand how the algorithm underlying <code>Mesh3d</code> works,  we present shortly a few notions of Computational Geometry.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Simplicial-complexes-and-Delaunay-triangulation">Simplicial complexes and Delaunay triangulation<a class="anchor-link" href="#Simplicial-complexes-and-Delaunay-triangulation">&#182;</a></h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let S be a finite set of 2D or 3D points. A point is called $0$-simplex or vertex. The <a href="https://en.wikipedia.org/wiki/Convex_hull">convex hull</a> of:</p>
+<ul>
+<li>two distinct points is  a 1-simplex or edge;</li>
+<li>three non-colinear points is a 2-simplex or triangle;</li>
+<li>four non-coplanar points in $\mathbb{R}^3$  is a 3-simplex or tetrahedron;</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+<span class="n">HTML</span><span class="p">(</span><span class="s">&#39;&lt;iframe src=https://plot.ly/~empet/13475/ width=850 height=350&gt;&lt;/iframe&gt;&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe src=https://plot.ly/~empet/13475/ width=850 height=350></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If $T$ is the set of points defining a $k$-simplex, then any proper subset of
+$T$ defines an $\ell$-simplex, <br />with $\ell$<$k$.</p>
+<p>These $\ell$-simplexes (or $\ell$-simplices) are called faces.</p>
+<p>A 2-simplex has three $1$-simplexes, and three 0-simplexes as faces, whereas a tetrahedron has as faces three  2-simplexes, six 1-simplexes and four zero simplexes.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>k-simplexes are building blocks for different structures in Computational Geometry, mainly for creating meshes from point clouds.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let $S$ be a finite set in $\mathbb{R}^d$, $d=2,3$ (i.e. a set of 2D or 3D points). A collection  $\mathcal{K}$ of k-simplexes, $0\leq k\leq d$,  having as vertices  the  points of $S$,
+ is a <em>simplicial complex</em> if its simplexes have the following properties:</p>
+<ol>
+<li>If $\sigma$ is a simplex in $\mathcal{K}$, then all its faces are also simplexes in $\mathcal{K}$;</li>
+<li>If $\sigma, \tau$ are two simplexes in $\mathcal{K}$, then their intersection is either empty or a face in both simplexes.</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The next figure illustrates a simplicial complex(left), and a collection of $k$-simplexes (right), $0\leq k\leq 2$
+that do not form a simplicial complex because the condition 2 in the definition above is violated.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">HTML</span><span class="p">(</span><span class="s">&#39;&lt;iframe src=https://plot.ly/~empet/13503/ width=600 height=475&gt;&lt;/iframe&gt;&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe src=https://plot.ly/~empet/13503/ width=600 height=475></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Triangular meshes used in computer graphics are examples of simplicial complexes.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The underlying space of a simplicial complex, $\mathcal{K}$, denoted $|\mathcal{K}|$,
+is the union of its simplexes, i.e. it is a region in plane or in the 3D space, depending on whether d=2 or 3.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A <em>subcomplex</em> of the simplicial complex $\mathcal{K}$ is a collection, $\mathcal{L}$, of simplexes in $\mathcal{K}$ that also form a simplicial complex.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The points of a finite set $S$ in $\mathbb{R}^2$ (respectively $\mathbb{R}^3$) are in <em>general position</em> if no $3$ (resp 4)  points are collinear (coplanar), and no 4 (resp 5) points lie on the same circle (sphere).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A particular simplicial complex associated to a finite set of 2D or 3D points,  in general position, is the <em>Delaunay triangulation</em>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A triangulation of a finite point set $S \subset \mathbb{R}^2$ (or $\mathbb{R}^3$)
+is a collection $\mathcal{T}$ of triangles (tetrahedra),
+such that:</p>
+<ol>
+<li>The union of all triangles (tetrahedra) in $\mathcal{T}$ is the convex hull of $S$.</li>
+<li>The union of all  vertices of triangles (tetrahedra) in  $\mathcal{T}$ is the set  $S$.</li>
+<li>For every distinct pair $\sigma, \tau \in \mathcal{T}$, the intersection $\sigma \cap \tau$ is either empty or  a common  face  of $\sigma$ and $\tau$.</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A Delaunay triangulation of the set $S\subset\mathbb{R}^2$ ($\mathbb{R}^3$) is a triangulation with the property
+that  the open balls bounded by the  circumcircles (circumspheres) of the triangulation
+ triangles (tetrahedra) contain no point in $S$. One says that these balls are empty.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If the points of $S$ are in general position, then the Delaunay triangulation of $S$ is unique.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here is an example of Delaunay triangulation of a set of ten 2D points. It illustrates the emptiness of two balls bounded by circumcircles.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">HTML</span><span class="p">(</span><span class="s">&#39;&lt;iframe src=https://plot.ly/~empet/13497/ width=550 height=550&gt;&lt;/iframe&gt;&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe src=https://plot.ly/~empet/13497/ width=550 height=550></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Alpha-shape-of-a-finite-set-of-points">Alpha shape of a finite set of points<a class="anchor-link" href="#Alpha-shape-of-a-finite-set-of-points">&#182;</a></h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The notion of Alpha Shape was introduced by <a href="https://users.cs.duke.edu/~edels/Papers/1983-J-06-ShapeSetPoints.pdf">Edelsbrunner</a> with the aim to give  a mathematical description of the  shape of  a point set.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this notebook we give a constructive definition of this geometric structure. A more detailed approach of 3D alpha shapes can be found in the original <a href="https://users.cs.duke.edu/~edels/Papers/1994-J-04-3DAlphaShapes.pdf">paper</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>An intuitive description of the alpha shape was given by Edelsbrunner and his coauthor
+in  a preprint of the last paper mentioned above:</p>
+<p>A huge mass of ice-cream fills a region in the 3D space,
+and the point set $S$ consists in hard chocolate pieces spread in the ice-cream mass.
+Using a sphere-formed ice-cream spoon we carve out the ice-cream such that to avoid  bumping into
+chocolate pieces.  At the end of this operation the region  containing the ciocolate pieces
+and the remaining ice cream is bounded by caps, arcs and points of chocolate. Straightening
+all round faces to triangles and line segments we get the intuitive image of the
+alpha shape of the point set $S$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we give the steps of the computational alpha shape construction.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let  $S$ be a finite set of points from $\mathbb{R}^d$, in general position,  $\mathcal{D}$ its Delaunay triangulation
+and $\alpha$ a positive number.</p>
+<p>Select the d-simplexes of $\mathcal{D}$ (i.e.  triangles in the case d=2, respectively  tetrahedra
+for d=3) whose circumsphere has the radius less than $\alpha$. These simplexes and their faces form
+a simplicial subcomplex of the Delaunay triangulation, $\mathcal{D}$.
+It is denoted $\mathcal{C}_\alpha$, and called  $\alpha$-complex.</p>
+<p>The $\alpha$-shape of the set $S$ is defined by its authors, either as the underlying space of the $\alpha$-complex,
+i.e. the union of all its simplexes or as the boundary of the $\alpha$-complex.</p>
+<p>The boundary of the $\alpha$-complex is the subcomplex consisting in all k-simplexes,  $0\leq k<d$, that are faces of a single $d$-simplex (these are called external faces).</p>
+<p>In the ice-cream example the alpha shape was defined as the boundary of the alpha-complex.</p>
+<p>The underlying space of the $\alpha$-complex is the region where the ice-cream spoon has no access, because its  radius ($\alpha$) exceeds the radius of circumscribed spheres to tetrahedra formed by  pieces of chocolate.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To get insight into the process of construction of an alpha shape we illustrate it first  for a set of 2D points.</p>
+<p>The following panel displays the  Delaunay triangulation of a set of 2D points, and a sequence of $\alpha$-complexes (and alpha shapes):</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">HTML</span><span class="p">(</span><span class="s">&#39;&lt;iframe src=https://plot.ly/~empet/13479/ width=825 height=950&gt;&lt;/iframe&gt;&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[4]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe src=https://plot.ly/~empet/13479/ width=825 height=950></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We notice that the Delaunay triangulation has as boundary a convex set (it is a triangulation of the convex hull
+                                                                        of the given point set).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Each $\alpha$-complex is obtained from the Delaunay triangulation, removing  the triangles whose circumcircle has radius greater or equal to alpha.</p>
+<p>In the last subplot the triangles of the  $0.115$-complex are filled in with light blue. The filled in region  is the underlying space of the $0.115$-complex.</p>
+<p>The $0.115$-alpha shape of the given point set can be considered either the filled in region or its boundary.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This example illustrates that the underlying space of an  $\alpha$-complex in neither convex nor necessarily connected. It can consist in many connected components (in our illustration above, $|\mathcal{C}_{0.115}|$ has three components).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In a family of alpha shapes, the parameter $\alpha$ controls the level of detail of the associated alpha shape.  If $\alpha$ decreases to zero, the corresponding alpha shape degenerates to the point set, $S$, while  if it tends to infinity the alpha shape tends to the convex hull of the set $S$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Plotly-Mesh3d">Plotly <code>Mesh3d</code><a class="anchor-link" href="#Plotly-Mesh3d">&#182;</a></h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In order to generate the alpha shape of a given set of 3D points corresponding to a parameter $\alpha$,
+the Delaunay triagulation or the convex hull we define a <code>Mesh3d</code> object or a dict. The real value
+of the key <code>alphahull</code> points out the mesh type to be generated:</p>
+<p><code>alphahull</code>=$1/\alpha$    generates the $\alpha$-shape, -1 corresponds to the Delaunay
+triangulation and 0, to the convex hull of the point set.</p>
+<p>The other keys in the definition of a <code>Mesh3d</code> are given <a href="https://plot.ly/python/reference/#mesh3d">here</a>.</p>
+<p><code>Mesh3d</code> generates and displays an $\alpha$-shape as the boundary of the $\alpha$-complex.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>An intuitive idea on the topological structure modification, as $\alpha=1/$<code>alphahull</code> varies can be gained from the following three different alpha shapes of the same point set:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">HTML</span><span class="p">(</span><span class="s">&#39;&lt;iframe src=https://plot.ly/~empet/13481/ width=900 height=950&gt;&lt;/iframe&gt;&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe src=https://plot.ly/~empet/13481/ width=900 height=950></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We notice in the subplots above that as <code>alphahull</code> increases, i.e. $\alpha$ decreases, some parts of the alpha shape shrink and
+develop enclosed void regions. The last plotted alpha shape points out a polytope that contains faces of tetrahedra,
+and patches of triangles.</p>
+<p>In some cases as $\alpha$ varies it is also possible to develop  components that are strings of edges and even isolated points.</p>
+<p>Such experimental results suggested the use of alpha shapes in modeling molecular structure.
+A search on WEB gives many results related to applications of alpha shapes in structural molecular biology.</p>
+<p><a href="https://plot.ly/~empet/13485/molecular-like-structure-defined-as-an-alpha-shape-alphahull1730/">Here</a>
+is an alpha shape illustrating a molecular-like structure associated to a point set of 5000 points.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Generating-an-alpha-shape-with-Mesh3d">Generating an alpha shape with <code>Mesh3d</code><a class="anchor-link" href="#Generating-an-alpha-shape-with-Mesh3d">&#182;</a></h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Load data:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">pts</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;data-file.txt&#39;</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">pts</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">plotly</span> <span class="kn">import</span> <span class="n">tools</span> <span class="k">as</span> <span class="n">tls</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Define two traces: one for plotting the point set and another for the alpha shape:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">points</span><span class="o">=</span><span class="n">Scatter3d</span><span class="p">(</span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;markers&#39;</span><span class="p">,</span>
+                 <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">x</span> <span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                 <span class="n">y</span><span class="o">=</span> <span class="n">y</span><span class="p">,</span>
+                 <span class="n">z</span><span class="o">=</span> <span class="n">z</span><span class="p">,</span>
+                 <span class="n">marker</span> <span class="o">=</span> <span class="n">Marker</span><span class="p">(</span> <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;#458B00&#39;</span> <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">simplexes</span> <span class="o">=</span> <span class="n">Mesh3d</span><span class="p">(</span><span class="n">alphahull</span> <span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+                   <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
+                   <span class="n">x</span> <span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                   <span class="n">y</span><span class="o">=</span> <span class="n">y</span><span class="p">,</span>
+                   <span class="n">z</span><span class="o">=</span> <span class="n">z</span><span class="p">,</span>
+                   <span class="n">color</span><span class="o">=</span><span class="s">&#39;90EE90&#39;</span><span class="p">,</span> <span class="c">#set the color of simplexes in alpha shape</span>
+                   <span class="n">opacity</span><span class="o">=</span><span class="mf">0.15</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">x_style</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">2.85</span><span class="p">,</span> <span class="mf">4.25</span><span class="p">],</span> <span class="n">tickvals</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">2.85</span><span class="p">,</span> <span class="mf">4.25</span><span class="p">,</span> <span class="mi">5</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">y_style</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">2.65</span><span class="p">,</span> <span class="mf">1.32</span><span class="p">],</span> <span class="n">tickvals</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">2.65</span><span class="p">,</span> <span class="mf">1.32</span><span class="p">,</span> <span class="mi">4</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">z_style</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">3.67</span><span class="p">,</span><span class="mf">1.4</span><span class="p">],</span> <span class="n">tickvals</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">3.67</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">layout</span><span class="o">=</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&#39;Alpha shape of a set of 3D points. Alpha=0.1&#39;</span><span class="p">,</span>
+              <span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+              <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+              <span class="n">scene</span> <span class="o">=</span> <span class="n">Scene</span><span class="p">(</span>
+              <span class="n">xaxis</span> <span class="o">=</span> <span class="n">x_style</span><span class="p">,</span>
+              <span class="n">yaxis</span> <span class="o">=</span> <span class="n">y_style</span><span class="p">,</span>
+              <span class="n">zaxis</span> <span class="o">=</span> <span class="n">z_style</span>
+             <span class="p">)</span>
+             <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">fig</span><span class="o">=</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">Data</span><span class="p">([</span><span class="n">points</span><span class="p">,</span> <span class="n">simplexes</span><span class="p">]),</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">sign_in</span><span class="p">(</span><span class="s">&#39;empet&#39;</span><span class="p">,</span> <span class="s">&#39;smtbajoo93&#39;</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;3D-AlphaS-ex&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~empet/13499.embed" height="500px" width="500px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Generating-alpha-shape-of-a-set--of-2D-points">Generating alpha shape of a set  of 2D points<a class="anchor-link" href="#Generating-alpha-shape-of-a-set--of-2D-points">&#182;</a></h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We construct the alpha shape of a set of 2D points from the Delaunay triangulation,
+defined as a <code>scipy.spatial.Delaunay object</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">Delaunay</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">sq_norm</span><span class="p">(</span><span class="n">v</span><span class="p">):</span> <span class="c">#squared norm </span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Compute the circumcenter and circumradius of a triangle (see their definitions <a href="https://en.wikipedia.org/wiki/Circumscribed_circle#Circumcircle_equations">here</a>):</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">circumcircle</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">simplex</span><span class="p">):</span>
+    <span class="n">A</span><span class="o">=</span><span class="p">[</span><span class="n">points</span><span class="p">[</span><span class="n">simplex</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+    <span class="n">M</span><span class="o">=</span><span class="p">[[</span><span class="mf">1.0</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">M</span><span class="o">+=</span><span class="p">[[</span><span class="n">sq_norm</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">k</span><span class="p">]),</span> <span class="n">A</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="mf">1.0</span> <span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+    <span class="n">M</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">S</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:,[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]]),</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:,[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">]])])</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">1</span><span class="p">:])</span>
+    <span class="n">b</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">S</span><span class="o">/</span><span class="n">a</span><span class="p">,</span>  <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">/</span><span class="n">a</span><span class="o">+</span><span class="n">sq_norm</span><span class="p">(</span><span class="n">S</span><span class="p">)</span><span class="o">/</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="c">#center=S/a, radius=np.sqrt(b/a+sq_norm(S)/a**2)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Filter the Delaunay triangulation to get the $\alpha$-complex:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">get_alpha_complex</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">simplexes</span><span class="p">):</span>
+    <span class="c">#alpha is the parameter for the alpha shape</span>
+    <span class="c">#points are given data points </span>
+    <span class="c">#simplexes is the  list of indices in the array of points </span>
+    <span class="c">#that define 2-simplexes in the Delaunay triangulation</span>
+
+    <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">circumcircle</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">simplex</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;</span><span class="n">alpha</span><span class="p">,</span> <span class="n">simplexes</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">pts</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;data-ex-2d.txt&#39;</span><span class="p">)</span>
+<span class="n">tri</span> <span class="o">=</span> <span class="n">Delaunay</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;#C0223B&#39;</span><span class="p">,</span> <span class="s">&#39;#404ca0&#39;</span><span class="p">,</span> <span class="s">&#39;rgba(173,216,230, 0.5)&#39;</span><span class="p">]</span><span class="c"># colors for vertices, edges and 2-simplexes</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Get data for Plotly plot of a subcomplex of the Delaunay triangulation:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">Plotly_data</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">complex_s</span><span class="p">):</span>
+    <span class="c">#points are the given data points, </span>
+    <span class="c">#complex_s is the list of indices in the array of points defining 2-simplexes(triangles) </span>
+    <span class="c">#in the simplicial complex to be plotted</span>
+    <span class="n">X</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">Y</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">complex_s</span><span class="p">:</span>
+        <span class="n">X</span><span class="o">+=</span><span class="p">[</span><span class="n">points</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span><span class="o">+</span><span class="p">[</span><span class="bp">None</span><span class="p">]</span>
+        <span class="n">Y</span><span class="o">+=</span><span class="p">[</span><span class="n">points</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span><span class="o">+</span><span class="p">[</span><span class="bp">None</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span><span class="n">Y</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">make_trace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>  <span class="n">point_color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line_color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span><span class="c"># define the trace</span>
+                                                                   <span class="c">#for an alpha complex</span>
+    <span class="k">return</span> <span class="n">Scatter</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;markers+lines&#39;</span><span class="p">,</span> <span class="c">#set vertices and </span>
+                                         <span class="c">#edges of the alpha-complex</span>
+                   <span class="n">name</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                   <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                   <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+                   <span class="n">marker</span><span class="o">=</span><span class="n">Marker</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mf">6.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">point_color</span><span class="p">),</span>
+                   <span class="n">line</span><span class="o">=</span><span class="n">Line</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">line_color</span><span class="p">),</span>
+
+                  <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">make_XAxis</span><span class="p">(</span><span class="n">axis_style</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">XAxis</span><span class="p">(</span><span class="n">axis_style</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">make_YAxis</span><span class="p">(</span><span class="n">axis_style</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">YAxis</span><span class="p">(</span><span class="n">axis_style</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">figure</span> <span class="o">=</span> <span class="n">tls</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                           <span class="n">subplot_titles</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;Delaunay triangulation&#39;</span><span class="p">,</span>  <span class="s">&#39;Alpha shape, alpha=0.15&#39;</span><span class="p">),</span>
+                           <span class="n">horizontal_spacing</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                          <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]  [ (1,2) x2,y2 ]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">pl_width</span><span class="o">=</span><span class="mi">800</span>
+<span class="n">pl_height</span><span class="o">=</span><span class="mi">460</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s">&#39;Delaunay triangulation and Alpha Complex/Shape for a Set of 2D Points&#39;</span>
+
+<span class="n">figure</span><span class="p">[</span><span class="s">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                        <span class="n">font</span><span class="o">=</span> <span class="n">Font</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s">&quot;Open Sans, sans-serif&quot;</span><span class="p">),</span>
+                        <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">hovermode</span><span class="o">=</span><span class="s">&#39;closest&#39;</span><span class="p">,</span>
+                        <span class="n">autosize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                        <span class="n">width</span><span class="o">=</span><span class="n">pl_width</span><span class="p">,</span>
+                        <span class="n">height</span><span class="o">=</span><span class="n">pl_height</span><span class="p">,</span>
+                        <span class="n">margin</span><span class="o">=</span><span class="n">Margin</span><span class="p">(</span>
+                            <span class="n">l</span><span class="o">=</span><span class="mi">65</span><span class="p">,</span>
+                            <span class="n">r</span><span class="o">=</span><span class="mi">65</span><span class="p">,</span>
+                            <span class="n">b</span><span class="o">=</span><span class="mi">85</span><span class="p">,</span>
+                            <span class="n">t</span><span class="o">=</span><span class="mi">120</span>
+                            <span class="p">),</span>
+                       <span class="n">shapes</span><span class="o">=</span><span class="p">[]</span>
+                       <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">axis_style</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">showline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                  <span class="n">mirror</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                  <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                  <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                  <span class="n">showticklabels</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                  <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.1</span><span class="p">],</span>
+                  <span class="n">tickvals</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+                  <span class="n">ticklen</span><span class="o">=</span><span class="mi">5</span>
+                 <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">figure</span><span class="p">[</span><span class="s">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;xaxis{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="n">make_XAxis</span><span class="p">(</span><span class="n">axis_style</span><span class="p">)})</span><span class="c"># set xaxis style</span>
+    <span class="n">figure</span><span class="p">[</span><span class="s">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;yaxis{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="n">make_YAxis</span><span class="p">(</span><span class="n">axis_style</span><span class="p">)})</span><span class="c"># set yaxis style</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">alpha_complex</span><span class="o">=</span><span class="n">get_alpha_complex</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">pts</span><span class="p">,</span> <span class="n">tri</span><span class="o">.</span><span class="n">simplices</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="o">=</span><span class="n">Plotly_data</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">tri</span><span class="o">.</span><span class="n">simplices</span><span class="p">)</span><span class="c"># get data for Delaunay triangulation</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">make_trace</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="o">=</span><span class="n">Plotly_data</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">alpha_complex</span><span class="p">)</span><span class="c"># data for alpha complex</span>
+<span class="n">figure</span><span class="o">.</span><span class="n">append_trace</span><span class="p">(</span><span class="n">make_trace</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">alpha_complex</span><span class="p">:</span> <span class="c">#fill in the triangles of the alpha complex</span>
+    <span class="n">A</span><span class="o">=</span><span class="n">pts</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">B</span><span class="o">=</span><span class="n">pts</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">C</span><span class="o">=</span><span class="n">pts</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+    <span class="n">figure</span><span class="p">[</span><span class="s">&#39;layout&#39;</span><span class="p">][</span><span class="s">&#39;shapes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s">&#39;M &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s">&#39;,&#39;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s">&#39; &#39;</span><span class="o">+</span><span class="s">&#39;L &#39;</span><span class="o">+</span>\
+                                                 <span class="nb">str</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s">&#39;, &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span> <span class="s">&#39; &#39;</span><span class="o">+</span><span class="s">&#39;L &#39;</span><span class="o">+</span>\
+                                                 <span class="nb">str</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s">&#39;, &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s">&#39; Z&#39;</span><span class="p">,</span>
+                                           <span class="n">fillcolor</span><span class="o">=</span><span class="s">&#39;rgba(173,216,230, 0.5)&#39;</span><span class="p">,</span>
+                                           <span class="n">line</span><span class="o">=</span><span class="n">Line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="mf">1.25</span><span class="p">),</span>
+                                           <span class="n">xref</span><span class="o">=</span><span class="s">&#39;x2&#39;</span><span class="p">,</span>
+                                           <span class="n">yref</span><span class="o">=</span><span class="s">&#39;y2&#39;</span>
+                                           <span class="p">)</span>
+                                     <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;2D-AlphaS-ex&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">850</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[30]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~empet/13501.embed" height="460px" width="800px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+<span class="k">def</span>  <span class="nf">css_styling</span><span class="p">():</span>
+    <span class="n">styles</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;./custom.css&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">HTML</span><span class="p">(</span><span class="n">styles</span><span class="p">)</span>
+<span class="n">css_styling</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[31]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+</div>
+
+</div>
+
+</div>
+</div>
+</div>{% endraw %}

@@ -1,0 +1,426 @@
+---
+permalink: python/linear-algebra/
+description: Learn how to perform several operations on matrices including inverse, eigenvalues, and determinents
+name: Linear Algebra | plotly
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+name: Linear Algebra
+language: python
+title: Linear Algebra in Python. | plotly
+display_as: mathematics
+has_thumbnail: false
+page_type: example_index
+order: 10
+ipynb: ~notebook_demo/104
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by dowloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h4><p>The tutorial below imports <a href="http://www.numpy.org/">NumPy</a>, <a href="https://plot.ly/pandas/intro-to-pandas-tutorial/">Pandas</a>, and <a href="https://www.scipy.org/">SciPy</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">from</span> <span class="nn">plotly.tools</span> <span class="kn">import</span> <span class="n">FigureFactory</span> <span class="k">as</span> <span class="n">FF</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-Two-Matrices">Add Two Matrices<a class="anchor-link" href="#Add-Two-Matrices">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A Matrix is a 2D array that stores real or complex numbers. A <em>Real Matrix</em> is one such that all its elements $r$ belong to $\mathbb{R}$. Likewise, a <em>Complex Matrix</em> has entries $c$ in $\mathbb{C}$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">matrix1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+    <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="n">matrix2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+    <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="n">matrix_sum</span> <span class="o">=</span> <span class="n">matrix1</span> <span class="o">+</span> <span class="n">matrix2</span>
+
+<span class="n">colorscale</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;#EAEFC4&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;#9BDF46&#39;</span><span class="p">]]</span>
+<span class="n">font</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="s1">&#39;#000000&#39;</span><span class="p">]</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">FF</span><span class="o">.</span><span class="n">create_annotated_heatmap</span><span class="p">(</span><span class="n">matrix_sum</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span> <span class="n">font_colors</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;matrix-sum&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/638.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Multiply-Two-Matrices">Multiply Two Matrices<a class="anchor-link" href="#Multiply-Two-Matrices">&#182;</a></h4><p>How to find the product of two matrices</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">matrix1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+    <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="n">matrix2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+    <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="n">matrix_prod</span> <span class="o">=</span> <span class="n">matrix1</span> <span class="o">*</span> <span class="n">matrix2</span>
+
+<span class="n">colorscale</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;#F1FFD9&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;#8BDBF5&#39;</span><span class="p">]]</span>
+<span class="n">font</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="s1">&#39;#000000&#39;</span><span class="p">]</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">FF</span><span class="o">.</span><span class="n">create_annotated_heatmap</span><span class="p">(</span><span class="n">matrix_prod</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span> <span class="n">font_colors</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;matrix-prod&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/640.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Solve-Matrix-Equation">Solve Matrix Equation<a class="anchor-link" href="#Solve-Matrix-Equation">&#182;</a></h4><p>How to find the solution of $AX=B$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+    <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+    <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+
+<span class="n">colorscale</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;#497285&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;#DFEBED&#39;</span><span class="p">]]</span>
+<span class="n">font</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="s1">&#39;#000000&#39;</span><span class="p">]</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">FF</span><span class="o">.</span><span class="n">create_annotated_heatmap</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span> <span class="n">font_colors</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;matrix-eq&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[4]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/642.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Find-the-Determinant">Find the Determinant<a class="anchor-link" href="#Find-the-Determinant">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+    <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="n">det</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+<span class="n">det</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>-7.9999999999999982</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Find-the-Inverse">Find the Inverse<a class="anchor-link" href="#Find-the-Inverse">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+    <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="n">inverse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+
+<span class="n">colorscale</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;#F1FAFB&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;#A0E4F1&#39;</span><span class="p">]]</span>
+<span class="n">font</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="s1">&#39;#000000&#39;</span><span class="p">]</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">FF</span><span class="o">.</span><span class="n">create_annotated_heatmap</span><span class="p">(</span><span class="n">inverse</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span> <span class="n">font_colors</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;inverse&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/644.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Find-Eigenvalues">Find Eigenvalues<a class="anchor-link" href="#Find-Eigenvalues">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+    <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="n">eigvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvals</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;The eignevalues are </span><span class="si">%f</span><span class="s2"> and </span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span><span class="p">(</span><span class="n">eigvals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eigvals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>The eignevalues are 3.372281 and -2.372281
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Find-SVD">Find SVD<a class="anchor-link" href="#Find-SVD">&#182;</a></h4><p>How to find the Singular Value Decomposition of a matrix, i.e. break up a matrix into the product of three matrices: $U$, $\Sigma$, $V^*$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
+    <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="n">svd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">svd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="n">svd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">svd</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="n">colorscale</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;#111111&#39;</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;#222222&#39;</span><span class="p">]]</span>
+<span class="n">font</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="s1">&#39;#ffffff&#39;</span><span class="p">]</span>
+
+<span class="n">matrix_prod</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">&#39;$U$&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;$\Sigma$&#39;</span><span class="p">,</span> <span class="s1">&#39;$V^*$&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">sigma</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]],</span>
+    <span class="p">[</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">sigma</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+<span class="p">]</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">FF</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">matrix_prod</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;svd&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/646.embed" height="140px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>{% endraw %}

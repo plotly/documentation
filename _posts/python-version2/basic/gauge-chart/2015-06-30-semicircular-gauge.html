@@ -1,0 +1,322 @@
+---
+permalink: python/gauge-charts/
+description: How to make guage meter charts in Python with Plotly. 
+name: Python Gauge Chart | plotly
+has_thumbnail: true
+thumbnail: thumbnail/gauge.jpg
+layout: user-guide
+name: Gauge Charts
+language: python
+title: Python Gauge Chart | plotly
+display_as: basic
+has_thumbnail: true
+ipynb: ~notebook_demo/11
+order: 11
+page_type: u-guide
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Gauge-Chart-Outline">Gauge Chart Outline<a class="anchor-link" href="#Gauge-Chart-Outline">&#194;&#182;</a></h5><p>We will use <code>donut</code> charts with custom colors to create a <code>semi-circular</code> gauge meter, such that lower half of the chart is invisible(same color as background).</p>
+<p>This <code>semi-circular</code> meter will be overlapped on a base <code>donut</code> chart to create the <code>analog range</code> of the meter. We will have to rotate the base chart to align the range marks in the edges of meter's section, because by default <code>Plotly</code> places them at the center of a pie section.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Base-Chart-(rotated)">Base Chart (rotated)<a class="anchor-link" href="#Base-Chart-(rotated)">&#194;&#182;</a></h5><p>To make a <code>gauge meter</code> with 5 equally sized sections, we will create 6 sections in the base chart. So that center(position of label) aligns with the edges of each section.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="n">base_chart</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+    <span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;20&quot;</span><span class="p">,</span> <span class="s2">&quot;40&quot;</span><span class="p">,</span> <span class="s2">&quot;60&quot;</span><span class="p">,</span> <span class="s2">&quot;80&quot;</span><span class="p">,</span> <span class="s2">&quot;100&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">48</span><span class="p">]},</span>
+    <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;colors&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgb(255, 255, 255)&#39;</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;line&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Gauge&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hole&quot;</span><span class="p">:</span> <span class="o">.</span><span class="mi">4</span><span class="p">,</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pie&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;direction&quot;</span><span class="p">:</span> <span class="s2">&quot;clockwise&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rotation&quot;</span><span class="p">:</span> <span class="mi">108</span><span class="p">,</span>
+    <span class="s2">&quot;showlegend&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="s2">&quot;hoverinfo&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;textinfo&quot;</span><span class="p">:</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;textposition&quot;</span><span class="p">:</span> <span class="s2">&quot;outside&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Outline of the generated <code>base chart</code> will look like the one below.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div>
+    <a href="https://plot.ly/~pravj648/233/" target="_blank" title="Gauge" style="display: block; text-align: center;"><img src="https://plot.ly/~pravj648/233.png" alt="Gauge" style="max-width: 100%;width: 600px;"  width="600" onerror="this.onerror=null;this.src='https://plot.ly/404.png';" /></a>
+    <script data-plotly="pravj648:233"  src="https://plot.ly/embed.js" async></script>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Meter-Chart">Meter Chart<a class="anchor-link" href="#Meter-Chart">&#194;&#182;</a></h5><p>Now we will superimpose our <code>semi-circular</code> meter on top of this.<br>
+For that, we will also use 6 sections, but one of them will be invisible to form the lower half (colored same as the background).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">meter_chart</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+    <span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Log Level&quot;</span><span class="p">,</span> <span class="s2">&quot;Debug&quot;</span><span class="p">,</span> <span class="s2">&quot;Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Warn&quot;</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Fatal&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgb(232,226,202)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgb(226,210,172)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgb(223,189,139)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgb(223,162,103)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rgb(226,126,64)&#39;</span>
+        <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">]},</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Gauge&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hole&quot;</span><span class="p">:</span> <span class="o">.</span><span class="mi">3</span><span class="p">,</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pie&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;direction&quot;</span><span class="p">:</span> <span class="s2">&quot;clockwise&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rotation&quot;</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
+    <span class="s2">&quot;showlegend&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="s2">&quot;textinfo&quot;</span><span class="p">:</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;textposition&quot;</span><span class="p">:</span> <span class="s2">&quot;inside&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hoverinfo&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can see that the first section's value is equal to the sum of other sections.<br>
+We are using <code>rotation</code> and <code>direction</code> parameters to start the sections from 3 o'clock <code>[rotation=90]</code> instead of the default value of 12 o'clock <code>[rotation=0]</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After imposing on the base chart, it'll look like this.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div>
+    <a href="https://plot.ly/~pravj648/235/" target="_blank" title="Gauge vs Gauge" style="display: block; text-align: center;"><img src="https://plot.ly/~pravj648/235.png" alt="Gauge vs Gauge" style="max-width: 100%;width: 600px;"  width="600" onerror="this.onerror=null;this.src='https://plot.ly/404.png';" /></a>
+    <script data-plotly="pravj648:235"  src="https://plot.ly/embed.js" async></script>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Dial">Dial<a class="anchor-link" href="#Dial">&#194;&#182;</a></h5><p>Now we need a <code>dial</code> to show the current position in the meter at a particular time.<br>
+<code>Plotly's</code> <a href="https://plot.ly/python/reference/#layout-shapes-path">path shape</a> can be used for this. A nice explanation of SVG path is available <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths">here</a> by Mozilla.<br>
+We can use a <code>filled triangle</code> to create our <code>Dial</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="s1">&#39;shapes&#39;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;path&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;M 0.235 0.5 L 0.24 0.62 L 0.245 0.5 Z&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;fillcolor&#39;</span><span class="p">:</span> <span class="s1">&#39;rgba(44, 160, 101, 0.5)&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;line&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.5</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;xref&#39;</span><span class="p">:</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;yref&#39;</span><span class="p">:</span> <span class="s1">&#39;paper&#39;</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+<span class="o">...</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For the <code>filled-triangle</code>, the first point <code>(0.235, 0.5)</code> is left to the center of meter <code>(0.24, 0.5)</code>, the second point <code>(0.24 0.62)</code> is representing the current position on the <code>semi-circle</code> and the third point <code>(0.245, 0.5)</code> is just right to the center.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>M</code> represents the <code>'Move'</code> command that moves cursor to a particular point, <code>L</code> is the <code>'Line To'</code> command and <code>Z</code> represents the <code>'Close Path'</code> command. This way, this path string makes a triangle with those three points.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layout</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;xaxis&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;showticklabels&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="s1">&#39;showgrid&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="s1">&#39;zeroline&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;yaxis&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;showticklabels&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="s1">&#39;showgrid&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="s1">&#39;zeroline&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;shapes&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;path&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;M 0.235 0.5 L 0.24 0.65 L 0.245 0.5 Z&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;fillcolor&#39;</span><span class="p">:</span> <span class="s1">&#39;rgba(44, 160, 101, 0.5)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;line&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.5</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;xref&#39;</span><span class="p">:</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;yref&#39;</span><span class="p">:</span> <span class="s1">&#39;paper&#39;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;annotations&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;xref&#39;</span><span class="p">:</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;yref&#39;</span><span class="p">:</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mf">0.23</span><span class="p">,</span>
+            <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mf">0.45</span><span class="p">,</span>
+            <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;50&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;showarrow&#39;</span><span class="p">:</span> <span class="bp">False</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># we don&#39;t want the boundary now</span>
+<span class="n">base_chart</span><span class="p">[</span><span class="s1">&#39;marker&#39;</span><span class="p">][</span><span class="s1">&#39;line&#39;</span><span class="p">][</span><span class="s1">&#39;width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">base_chart</span><span class="p">,</span> <span class="n">meter_chart</span><span class="p">],</span>
+       <span class="s2">&quot;layout&quot;</span><span class="p">:</span> <span class="n">layout</span><span class="p">}</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;gauge-meter-chart&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~jordanpeterson/412.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#194;&#182;</a></h4><p>See <a href="https://plot.ly/python/reference/">https://plot.ly/python/reference/</a> for more information and chart attribute options!</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

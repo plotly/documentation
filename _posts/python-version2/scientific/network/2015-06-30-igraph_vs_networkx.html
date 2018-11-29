@@ -1,0 +1,317 @@
+---
+permalink: python/igraph-networkx-comparison/
+description: Comparing a Network Graph created with igraph to one created with networkx in Python with Plotly. 
+name: Python Network Graphs Comparison | plotly
+has_thumbnail: true
+thumbnail: thumbnail/networks.jpg
+layout: user-guide
+name: Network Graphs Comparison
+language: python
+display_as: scientific
+has_thumbnail: true
+ipynb: ~notebook_demo/222
+order: 14
+page_type: u-guide
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!# Network Graphs with Plotly</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Comparison">Comparison<a class="anchor-link" href="#Comparison">&#182;</a></h4><p>In this tutorial we plot the same network - the coauthorship network of scientists working on network theory and experiment - first as an <code>igraph.Graph</code> object, with the Kamada-Kawai layout, and then as a <code>networkx.Graph</code>, with the Fruchterman-Reingold layout. Install the Python libraries with <code>sudo pip install python-igraph</code> and <code>sudo pip install networkx</code>.</p>
+<p>The graph data are read from a gml file, posted at UC Irvine <a href="http://networkdata.ics.uci.edu/data/netscience/netscience.gml">Network Data Repository</a>:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="igraph">igraph<a class="anchor-link" href="#igraph">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">igraph</span> <span class="kn">as</span> <span class="nn">ig</span>
+
+<span class="n">G</span><span class="o">=</span><span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Read_GML</span><span class="p">(</span><span class="s1">&#39;netscience.gml.txt&#39;</span><span class="p">)</span>
+<span class="n">labels</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">])</span>
+<span class="n">N</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+<span class="n">E</span><span class="o">=</span><span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">tuple</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">es</span><span class="p">]</span><span class="c1"># list of edges</span>
+<span class="n">layt</span><span class="o">=</span><span class="n">G</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span><span class="s1">&#39;kk&#39;</span><span class="p">)</span> <span class="c1">#kamada-kawai layout</span>
+<span class="nb">type</span><span class="p">(</span><span class="n">layt</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>igraph.layout.Layout</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">Xn</span><span class="o">=</span><span class="p">[</span><span class="n">layt</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">Yn</span><span class="o">=</span><span class="p">[</span><span class="n">layt</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">Xe</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">Ye</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">E</span><span class="p">:</span>
+    <span class="n">Xe</span><span class="o">+=</span><span class="p">[</span><span class="n">layt</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">],</span><span class="n">layt</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">None</span><span class="p">]</span>
+    <span class="n">Ye</span><span class="o">+=</span><span class="p">[</span><span class="n">layt</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">1</span><span class="p">],</span><span class="n">layt</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">],</span> <span class="bp">None</span><span class="p">]</span> 
+    
+<span class="n">trace1</span><span class="o">=</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Xe</span><span class="p">,</span>
+               <span class="n">y</span><span class="o">=</span><span class="n">Ye</span><span class="p">,</span>
+               <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+               <span class="n">line</span><span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(210,210,210)&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+               <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;none&#39;</span>
+               <span class="p">)</span>
+<span class="n">trace2</span><span class="o">=</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Xn</span><span class="p">,</span>
+               <span class="n">y</span><span class="o">=</span><span class="n">Yn</span><span class="p">,</span>
+               <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+               <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ntw&#39;</span><span class="p">,</span>
+               <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;circle-dot&#39;</span><span class="p">,</span>
+                                        <span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                                        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#6959CD&#39;</span><span class="p">,</span>
+                                        <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(50,50,50)&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+                                        <span class="p">),</span>
+               <span class="n">text</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+               <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;text&#39;</span>
+               <span class="p">)</span>
+
+<span class="n">axis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">showline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="c1"># hide axis line, grid, ticklabels and  title</span>
+          <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+          <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+          <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span> 
+          <span class="p">)</span>
+
+<span class="n">width</span><span class="o">=</span><span class="mi">800</span>
+<span class="n">height</span><span class="o">=</span><span class="mi">800</span>
+<span class="n">layout</span><span class="o">=</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span> <span class="s2">&quot;Coauthorship network of scientists working on network theory and experiment&quot;</span><span class="o">+</span>\
+              <span class="s2">&quot;&lt;br&gt; Data source: &lt;a href=&#39;https://networkdata.ics.uci.edu/data.php?id=11&#39;&gt; [1]&lt;/a&gt;&quot;</span><span class="p">,</span>  
+    <span class="n">font</span><span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">),</span>
+    <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">autosize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="n">layout</span><span class="o">.</span><span class="n">XAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="n">layout</span><span class="o">.</span><span class="n">YAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span>          
+    <span class="n">margin</span><span class="o">=</span><span class="n">layout</span><span class="o">.</span><span class="n">Margin</span><span class="p">(</span>
+        <span class="n">l</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+        <span class="n">r</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+        <span class="n">b</span><span class="o">=</span><span class="mi">85</span><span class="p">,</span>
+        <span class="n">t</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span><span class="p">,</span>
+    <span class="n">annotations</span><span class="o">=</span><span class="p">[</span>
+           <span class="nb">dict</span><span class="p">(</span>
+           <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> 
+            <span class="n">text</span><span class="o">=</span><span class="s1">&#39;This igraph.Graph has the Kamada-Kawai layout&#39;</span><span class="p">,</span>  
+            <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span>     
+            <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span>     
+            <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  
+            <span class="n">y</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span>  
+            <span class="n">xanchor</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>   
+            <span class="n">yanchor</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span>  
+            <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">size</span><span class="o">=</span><span class="mi">14</span> 
+            <span class="p">)</span>     
+            <span class="p">)</span>
+        <span class="p">]</span>          
+    <span class="p">)</span>
+
+<span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">]</span>
+<span class="n">fig</span><span class="o">=</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;Coautorship-network-igraph&#39;</span><span class="p">)</span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~priyatharsan/178.embed" height="800px" width="800px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Networkx">Networkx<a class="anchor-link" href="#Networkx">&#182;</a></h4><p>Now let us read the same gml file, define the network as a networkx.Graph, and plot it with Fruchterman Reingold layout (networkx does not provide the Kamada-Kawai layout).</p>
+<p>Because networkx cannot read the gml file (why?!!), we define the networkx.Graph from data provided by the igraph approach above.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
+
+<span class="n">V</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="c1"># list of vertices</span>
+<span class="n">g</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="c1"># E is the list of edges</span>
+
+<span class="n">pos</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">fruchterman_reingold_layout</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Data for the Plotly plot of the same network but with a different layout:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">Xv</span><span class="o">=</span><span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">Yv</span><span class="o">=</span><span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">Xed</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">Yed</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">E</span><span class="p">:</span>
+    <span class="n">Xed</span><span class="o">+=</span><span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">],</span><span class="n">pos</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">None</span><span class="p">]</span>
+    <span class="n">Yed</span><span class="o">+=</span><span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">1</span><span class="p">],</span><span class="n">pos</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">],</span> <span class="bp">None</span><span class="p">]</span> 
+    
+<span class="n">trace3</span><span class="o">=</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Xed</span><span class="p">,</span>
+               <span class="n">y</span><span class="o">=</span><span class="n">Yed</span><span class="p">,</span>
+               <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+               <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(210,210,210)&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+               <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;none&#39;</span>
+               <span class="p">)</span>
+<span class="n">trace4</span><span class="o">=</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Xv</span><span class="p">,</span>
+               <span class="n">y</span><span class="o">=</span><span class="n">Yv</span><span class="p">,</span>
+               <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+               <span class="n">name</span><span class="o">=</span><span class="s1">&#39;net&#39;</span><span class="p">,</span>
+               <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;circle-dot&#39;</span><span class="p">,</span>
+                             <span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> 
+                             <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#6959CD&#39;</span><span class="p">,</span>
+                             <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(50,50,50)&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+                             <span class="p">),</span>
+               <span class="n">text</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+               <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;text&#39;</span>
+               <span class="p">)</span>
+
+<span class="n">annot</span><span class="o">=</span><span class="s2">&quot;This networkx.Graph has the Fruchterman-Reingold layout&lt;br&gt;Code:&quot;</span><span class="o">+</span>\
+<span class="s2">&quot;&lt;a href=&#39;http://nbviewer.ipython.org/gist/empet/07ea33b2e4e0b84193bd&#39;&gt; [2]&lt;/a&gt;&quot;</span>
+
+<span class="n">data1</span><span class="o">=</span><span class="p">[</span><span class="n">trace3</span><span class="p">,</span> <span class="n">trace4</span><span class="p">]</span>
+<span class="n">fig1</span><span class="o">=</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data1</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">fig1</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;annotations&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">annot</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig1</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;Coautorship-network-nx&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~priyatharsan/180.embed" height="800px" width="800px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Zoom in a selected region of nodes to see that edges are also plotted, but due to the node positions assigned by FR layout, they are invisible at the first sight.</p>
+<p>We get a similar plot setting pos=nx.spring_layout(g).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#182;</a></h4><p>See <a href="https://plot.ly/python/reference/#scatter">https://plot.ly/python/reference/#scatter</a> for more information and chart attribute options!</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

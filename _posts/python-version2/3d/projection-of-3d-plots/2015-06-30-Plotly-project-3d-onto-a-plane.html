@@ -1,0 +1,298 @@
+---
+permalink: python/2d-projection-of-3d-surface/
+description: How to project 3D Surface plots in 2D with Plotly.
+name: Projection of 3D Surface
+has_thumbnail: true
+thumbnail: thumbnail/projection-3d.jpg
+layout: user-guide
+language: python
+title: 2D Projection of 3D surface | plotly
+display_as: 3d_charts
+has_thumbnail: true
+ipynb: ~notebook_demo/79
+order: 19
+page_type: u-guide
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Projections-of-a-3d-surface-onto-planes">Projections of a 3d surface onto planes<a class="anchor-link" href="#Projections-of-a-3d-surface-onto-planes">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This example will demonstrate how to create heatmaps of projections of a 3d surface onto planes perpendicular to the z, x, respectively y-direction. Usually surfaces in the 3d space are colored with  a colormap associated to the normalized range of the z coordinates of points on that surface.
+Recently, Plotly devised a method to color a surface according to a custom color function.</p>
+<p>Namely, if $x, y, z$ are numpy arrays of shape (m, n), defined by a discretization (via a meshgrid) of a surface z=f(x,y) or in parametric form, $x=x(u,v), y=y(u,v), z=z(u,v)$, then a custom function, <code>Color(x,y,z)</code>, returns a numpy array <code>C</code>, of the same shape as z, and the surface is colored by a colormap, according to the values in <code>C</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This method allows to project a surface onto planes perpendicular to the z, x or y-direction in the 3d space
+and interpret the projection as a planar surface colored according to the z, x or y value at each point
+of the coresponding plane.</p>
+<p>First, define the surface and its discretization:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="n">xx</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">yy</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">)</span>
+<span class="n">z</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="mi">10</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">3</span><span class="o">+</span><span class="n">y</span><span class="o">**</span><span class="mi">4</span><span class="o">-</span><span class="n">x</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Color-according-to-normalized-z-values">Color according to normalized z-values<a class="anchor-link" href="#Color-according-to-normalized-z-values">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">colorscale</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;rgb(20,29,67)&#39;</span><span class="p">],</span>
+           <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;rgb(28,76,96)&#39;</span><span class="p">],</span>
+           <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;rgb(16,125,121)&#39;</span><span class="p">],</span>
+           <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;rgb(92,166,133)&#39;</span><span class="p">],</span>
+           <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;rgb(182,202,175)&#39;</span><span class="p">],</span>
+           <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;rgb(253,245,243)&#39;</span><span class="p">],</span>
+           <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;rgb(230,183,162)&#39;</span><span class="p">],</span>
+           <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="s1">&#39;rgb(211,118,105)&#39;</span><span class="p">],</span>
+           <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;rgb(174,63,95)&#39;</span><span class="p">],</span>
+           <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;rgb(116,25,93)&#39;</span><span class="p">],</span>
+           <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;rgb(51,13,53)&#39;</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-hover-text-for-the-surface:">Add hover text for the surface:<a class="anchor-link" href="#Add-hover-text-for-the-surface:">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">textz</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;x: &#39;</span><span class="o">+</span><span class="s1">&#39;{:0.5f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39;&lt;br&gt;y: &#39;</span><span class="o">+</span><span class="s1">&#39;{:0.5f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span><span class="o">+</span>
+        <span class="s1">&#39;&lt;br&gt;z: &#39;</span><span class="o">+</span><span class="s1">&#39;{:0.5f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+
+<span class="n">trace1</span><span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+    <span class="n">y</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>
+    <span class="n">z</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+    <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="n">textz</span><span class="p">,</span>
+    <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Set-Plot-Layout:">Set Plot Layout:<a class="anchor-link" href="#Set-Plot-Layout:">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">axis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+<span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+<span class="n">backgroundcolor</span><span class="o">=</span><span class="s2">&quot;rgb(230, 230,230)&quot;</span><span class="p">,</span> 
+<span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>    
+<span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>  
+<span class="n">showline</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">ztickvals</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Projections of a surface onto coordinate planes&quot;</span> <span class="p">,</span> 
+                <span class="n">autosize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span>
+                <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+                <span class="n">scene</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">]),</span>
+                            <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">]),</span>
+                            <span class="n">zaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span> <span class="p">,</span> <span class="n">tickvals</span><span class="o">=</span><span class="n">ztickvals</span><span class="p">),</span>
+                            <span class="n">aspectratio</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                             <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                             <span class="n">z</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+                           <span class="p">)</span>
+                <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Discretization-of-each-Plane">Discretization of each Plane<a class="anchor-link" href="#Discretization-of-each-Plane">&#194;&#182;</a></h4><p>The surface projections will be plotted in the planes of equations
+<code>Z=np.min(z)-2</code>, <code>X=np.min(xx)</code>, respectively <code>Y=np.min(yy)</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">z_offset</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="c1">#</span>
+<span class="n">x_offset</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">xx</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">y_offset</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">yy</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Define the color functions and the color numpy arrays, <code>C_z</code>, <code>C_x</code>, <code>C_y</code>, corresponding to each plane:<br>
+Define the 3-tuples of coordinates to be displayed at hovering the mouse over the projections. 
+The first two coordinates give the position in the projection plane, whereas the third one  is used 
+for assigning the color, just in the same way the coordinate z is used for the z-direction projection.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">proj_z</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">z</span><span class="c1">#projection in the z-direction</span>
+<span class="n">colorsurfz</span><span class="o">=</span><span class="n">proj_z</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+<span class="n">proj_x</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">x</span>
+<span class="n">colorsurfx</span><span class="o">=</span><span class="n">proj_z</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+<span class="n">proj_y</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">y</span>
+<span class="n">colorsurfy</span><span class="o">=</span><span class="n">proj_z</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+
+<span class="n">textx</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;y: &#39;</span><span class="o">+</span><span class="s1">&#39;{:0.5f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39;&lt;br&gt;z: &#39;</span><span class="o">+</span><span class="s1">&#39;{:0.5f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span><span class="o">+</span>
+        <span class="s1">&#39;&lt;br&gt;x: &#39;</span><span class="o">+</span><span class="s1">&#39;{:0.5f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+<span class="n">texty</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;x: &#39;</span><span class="o">+</span><span class="s1">&#39;{:0.5f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39;&lt;br&gt;z: &#39;</span><span class="o">+</span><span class="s1">&#39;{:0.5f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span>
+        <span class="s1">&#39;&lt;br&gt;y: &#39;</span><span class="o">+</span><span class="s1">&#39;{:0.5f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>  
+
+<span class="n">tracex</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                <span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">x_offset</span><span class="p">),</span>
+                <span class="n">y</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>
+                <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span>
+                <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">showscale</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">surfacecolor</span><span class="o">=</span><span class="n">colorsurfx</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="n">textx</span><span class="p">,</span>
+                <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;text&#39;</span>
+               <span class="p">)</span>
+<span class="n">tracey</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                <span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+                <span class="n">y</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">y_offset</span><span class="p">),</span>
+                <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span>
+                <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">showscale</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">surfacecolor</span><span class="o">=</span><span class="n">colorsurfy</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="n">texty</span><span class="p">,</span>
+                <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;text&#39;</span>
+               <span class="p">)</span>
+<span class="n">tracez</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">z_offset</span><span class="p">),</span>
+                <span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+                <span class="n">y</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>
+                <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span>
+                <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">showscale</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">surfacecolor</span><span class="o">=</span><span class="n">colorsurfx</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="n">textz</span><span class="p">,</span>
+                <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;text&#39;</span>
+               <span class="p">)</span>
+
+<span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">trace1</span><span class="p">,</span> <span class="n">tracex</span><span class="p">,</span> <span class="n">tracey</span><span class="p">,</span> <span class="n">tracez</span><span class="p">]</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~jordanpeterson/1174.embed" height="600px" width="700px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+ 
+
+{% endraw %}

@@ -1,0 +1,182 @@
+---
+permalink: python/convolution/
+description: Learn how to perform convolution between two signals in Python.
+name: Convolution | plotly
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+name: Convolution
+language: python
+title: Convolution in Python | plotly
+display_as: signal-analysis
+has_thumbnail: false
+page_type: example_index
+order: 4
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Imports">Imports<a class="anchor-link" href="#Imports">&#194;&#182;</a></h4><p>The tutorial below imports <a href="http://www.numpy.org/">NumPy</a>, <a href="https://plot.ly/pandas/intro-to-pandas-tutorial/">Pandas</a>, <a href="https://www.scipy.org/">SciPy</a> and <a href="https://plot.ly/python/getting-started/">Plotly</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="kn">as</span> <span class="nn">ff</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Import-Data">Import Data<a class="anchor-link" href="#Import-Data">&#194;&#182;</a></h4><p>Let us import some stock data to apply convolution on.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">stock_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/stockdata.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">stock_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">15</span><span class="p">]</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;stockdata-peak-fitting&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~chelsea_lyn/17356.embed" height="530px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Convolve-Two-Signals">Convolve Two Signals<a class="anchor-link" href="#Convolve-Two-Signals">&#194;&#182;</a></h4><p><code>Convolution</code> is a type of transform that takes two functions <code>f</code> and <code>g</code> and produces another function via an integration. In particular, the convolution $(f*g)(t)$ is defined as:</p>
+$$
+\begin{align*}
+\int_{-\infty}^{\infty} {f(\tau)g(t - \tau)d\tau}
+\end{align*}
+$$<p>We can use convolution in the discrete case between two n-dimensional arrays.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">sample</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">saw</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">sawtooth</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">sample</span><span class="p">)</span>
+
+<span class="n">data_sample</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">stock_data</span><span class="p">[</span><span class="s1">&#39;SBUX&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">100</span><span class="p">])</span>
+<span class="n">data_sample2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">stock_data</span><span class="p">[</span><span class="s1">&#39;AAPL&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">100</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_sample</span><span class="p">)))</span>
+<span class="n">y_convolve</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">saw</span><span class="p">,</span> <span class="n">data_sample2</span><span class="p">)</span>
+<span class="n">x_convolve</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_convolve</span><span class="p">)))</span>
+
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">data_sample</span><span class="p">,</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;SBUX&#39;</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">data_sample2</span><span class="p">,</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;AAPL&#39;</span>
+<span class="p">)</span>
+
+<span class="n">trace3</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x_convolve</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y_convolve</span><span class="p">,</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Convolution&#39;</span>
+<span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">,</span> <span class="n">trace3</span><span class="p">]</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;convolution-of-two-signals&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~chelsea_lyn/17358.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+ 
+
+{% endraw %}

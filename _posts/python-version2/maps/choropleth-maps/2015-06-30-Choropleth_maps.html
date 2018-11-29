@@ -1,0 +1,410 @@
+---
+permalink: python/choropleth-maps/
+description: How to make choropleth maps in Python with Plotly.
+name: Choropleth Maps
+has_thumbnail: true
+thumbnail: thumbnail/choropleth.jpg
+layout: user-guide
+language: python
+title: Python Choropleth Maps | Plotly
+display_as: maps
+has_thumbnail: true
+ipynb: ~notebook_demo/55
+order: 1
+page_type: u-guide
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="United-States-Choropleth-Map">United States Choropleth Map<a class="anchor-link" href="#United-States-Choropleth-Map">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+<span class="n">scl</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;rgb(242,240,247)&#39;</span><span class="p">],[</span><span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;rgb(218,218,235)&#39;</span><span class="p">],[</span><span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;rgb(188,189,220)&#39;</span><span class="p">],</span>\
+            <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;rgb(158,154,200)&#39;</span><span class="p">],[</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;rgb(117,107,177)&#39;</span><span class="p">],[</span><span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;rgb(84,39,143)&#39;</span><span class="p">]]</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;&lt;br&gt;&#39;</span> <span class="o">+</span>\
+    <span class="s1">&#39;Beef &#39;</span><span class="o">+</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;beef&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; Dairy &#39;</span><span class="o">+</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;dairy&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;&lt;br&gt;&#39;</span><span class="o">+</span>\
+    <span class="s1">&#39;Fruits &#39;</span><span class="o">+</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;total fruits&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; Veggies &#39;</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;total veggies&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;&lt;br&gt;&#39;</span><span class="o">+</span>\
+    <span class="s1">&#39;Wheat &#39;</span><span class="o">+</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;wheat&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; Corn &#39;</span><span class="o">+</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;corn&#39;</span><span class="p">]</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;choropleth&#39;</span><span class="p">,</span>
+        <span class="n">colorscale</span> <span class="o">=</span> <span class="n">scl</span><span class="p">,</span>
+        <span class="n">autocolorscale</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">locations</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">],</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;total exports&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span>
+        <span class="n">locationmode</span> <span class="o">=</span> <span class="s1">&#39;USA-states&#39;</span><span class="p">,</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span>
+        <span class="n">marker</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span> <span class="p">(</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">,</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="p">)</span> <span class="p">),</span>
+        <span class="n">colorbar</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Millions USD&quot;</span><span class="p">)</span>
+        <span class="p">)</span> <span class="p">]</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;2011 US Agriculture Exports by State&lt;br&gt;(Hover for breakdown)&#39;</span><span class="p">,</span>
+        <span class="n">geo</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">scope</span><span class="o">=</span><span class="s1">&#39;usa&#39;</span><span class="p">,</span>
+            <span class="n">projection</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;albers usa&#39;</span> <span class="p">),</span>
+            <span class="n">showlakes</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="n">lakecolor</span> <span class="o">=</span> <span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">),</span>
+             <span class="p">)</span>
+    
+<span class="n">fig</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span> <span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span> <span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;d3-cloropleth-map&#39;</span> <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/6694.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="World-Choropleth-Map">World Choropleth Map<a class="anchor-link" href="#World-Choropleth-Map">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2014_world_gdp_with_codes.csv&#39;</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;choropleth&#39;</span><span class="p">,</span>
+        <span class="n">locations</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;CODE&#39;</span><span class="p">],</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;GDP (BILLIONS)&#39;</span><span class="p">],</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;COUNTRY&#39;</span><span class="p">],</span>
+        <span class="n">colorscale</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;rgb(5, 10, 172)&quot;</span><span class="p">],[</span><span class="mf">0.35</span><span class="p">,</span><span class="s2">&quot;rgb(40, 60, 190)&quot;</span><span class="p">],[</span><span class="mf">0.5</span><span class="p">,</span><span class="s2">&quot;rgb(70, 100, 245)&quot;</span><span class="p">],</span>\
+            <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span><span class="s2">&quot;rgb(90, 120, 245)&quot;</span><span class="p">],[</span><span class="mf">0.7</span><span class="p">,</span><span class="s2">&quot;rgb(106, 137, 247)&quot;</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;rgb(220, 220, 220)&quot;</span><span class="p">]],</span>
+        <span class="n">autocolorscale</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">reversescale</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="n">marker</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span> <span class="p">(</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;rgb(180,180,180)&#39;</span><span class="p">,</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="mf">0.5</span>
+            <span class="p">)</span> <span class="p">),</span>
+        <span class="n">colorbar</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">autotick</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="n">tickprefix</span> <span class="o">=</span> <span class="s1">&#39;$&#39;</span><span class="p">,</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;GDP&lt;br&gt;Billions US$&#39;</span><span class="p">),</span>
+      <span class="p">)</span> <span class="p">]</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;2014 Global GDP&lt;br&gt;Source:</span><span class="se">\</span>
+<span class="s1">            &lt;a href=&quot;https://www.cia.gov/library/publications/the-world-factbook/fields/2195.html&quot;&gt;</span><span class="se">\</span>
+<span class="s1">            CIA World Factbook&lt;/a&gt;&#39;</span><span class="p">,</span>
+    <span class="n">geo</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">showframe</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">showcoastlines</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">projection</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;Mercator&#39;</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span> <span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span> <span class="n">fig</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;d3-world-map&#39;</span> <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/6696.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Choropleth-Inset-Map">Choropleth Inset Map<a class="anchor-link" href="#Choropleth-Inset-Map">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/2014_ebola.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+
+<span class="n">cases</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rgb(239,243,255)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(189,215,231)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(107,174,214)&#39;</span><span class="p">,</span><span class="s1">&#39;rgb(33,113,181)&#39;</span><span class="p">]</span>
+<span class="n">months</span> <span class="o">=</span> <span class="p">{</span><span class="mi">6</span><span class="p">:</span><span class="s1">&#39;June&#39;</span><span class="p">,</span><span class="mi">7</span><span class="p">:</span><span class="s1">&#39;July&#39;</span><span class="p">,</span><span class="mi">8</span><span class="p">:</span><span class="s1">&#39;Aug&#39;</span><span class="p">,</span><span class="mi">9</span><span class="p">:</span><span class="s1">&#39;Sept&#39;</span><span class="p">}</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">10</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="n">cases</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scattergeo</span><span class="p">(</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span> <span class="p">][</span><span class="s1">&#39;Lon&#39;</span><span class="p">],</span> <span class="c1">#-(max(range(6,10))-i),</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span> <span class="p">][</span><span class="s1">&#39;Lat&#39;</span><span class="p">],</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span> <span class="p">][</span><span class="s1">&#39;Value&#39;</span><span class="p">],</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">months</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">marker</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span> <span class="p">][</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">50</span><span class="p">,</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">6</span><span class="p">],</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">width</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">),</span>
+    <span class="p">)</span> <span class="p">)</span>
+
+<span class="n">cases</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">9</span> <span class="p">][</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s1">&#39;{:.0f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span>\
+    <span class="n">df</span><span class="p">[</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">9</span> <span class="p">][</span><span class="s1">&#39;Country&#39;</span><span class="p">]</span>
+<span class="n">cases</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;markers+text&#39;</span>
+<span class="n">cases</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;textposition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;bottom center&#39;</span>
+
+<span class="n">inset</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">go</span><span class="o">.</span><span class="n">Choropleth</span><span class="p">(</span>
+        <span class="n">locationmode</span> <span class="o">=</span> <span class="s1">&#39;country names&#39;</span><span class="p">,</span>
+        <span class="n">locations</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">9</span> <span class="p">][</span><span class="s1">&#39;Country&#39;</span><span class="p">],</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">9</span> <span class="p">][</span><span class="s1">&#39;Value&#39;</span><span class="p">],</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">9</span> <span class="p">][</span><span class="s1">&#39;Country&#39;</span><span class="p">],</span>
+        <span class="n">colorscale</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;rgb(0, 0, 0)&#39;</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;rgb(0, 0, 0)&#39;</span><span class="p">]],</span>
+        <span class="n">autocolorscale</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">showscale</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">geo</span> <span class="o">=</span> <span class="s1">&#39;geo2&#39;</span>
+    <span class="p">),</span>
+    <span class="n">go</span><span class="o">.</span><span class="n">Scattergeo</span><span class="p">(</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="p">[</span><span class="mf">21.0936</span><span class="p">],</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="p">[</span><span class="mf">7.1881</span><span class="p">],</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Africa&#39;</span><span class="p">],</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span>
+        <span class="n">showlegend</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">geo</span> <span class="o">=</span> <span class="s1">&#39;geo2&#39;</span>
+    <span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Ebola cases reported by month in West Africa 2014&lt;br&gt; </span><span class="se">\</span>
+<span class="s1">Source: &lt;a href=&quot;https://data.hdx.rwlabs.org/dataset/rowca-ebola-cases&quot;&gt;</span><span class="se">\</span>
+<span class="s1">HDX&lt;/a&gt;&#39;</span><span class="p">,</span>
+    <span class="n">geo</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">resolution</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="n">scope</span> <span class="o">=</span> <span class="s1">&#39;africa&#39;</span><span class="p">,</span>
+        <span class="n">showframe</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">showcoastlines</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="n">showland</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="n">landcolor</span> <span class="o">=</span> <span class="s2">&quot;rgb(229, 229, 229)&quot;</span><span class="p">,</span>
+        <span class="n">countrycolor</span> <span class="o">=</span> <span class="s2">&quot;rgb(255, 255, 255)&quot;</span> <span class="p">,</span>
+        <span class="n">coastlinecolor</span> <span class="o">=</span> <span class="s2">&quot;rgb(255, 255, 255)&quot;</span><span class="p">,</span>
+        <span class="n">projection</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;Mercator&#39;</span>
+        <span class="p">),</span>
+        <span class="n">lonaxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="nb">range</span><span class="o">=</span> <span class="p">[</span> <span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.0</span> <span class="p">]</span> <span class="p">),</span>
+        <span class="n">lataxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="nb">range</span><span class="o">=</span> <span class="p">[</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">12.0</span> <span class="p">]</span> <span class="p">),</span>
+        <span class="n">domain</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="p">],</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="p">),</span>
+    <span class="n">geo2</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">scope</span> <span class="o">=</span> <span class="s1">&#39;africa&#39;</span><span class="p">,</span>
+        <span class="n">showframe</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">showland</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="n">landcolor</span> <span class="o">=</span> <span class="s2">&quot;rgb(229, 229, 229)&quot;</span><span class="p">,</span>
+        <span class="n">showcountries</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">domain</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.6</span> <span class="p">],</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.6</span> <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">bgcolor</span> <span class="o">=</span> <span class="s1">&#39;rgba(255, 255, 255, 0.0)&#39;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">legend</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+           <span class="n">traceorder</span> <span class="o">=</span> <span class="s1">&#39;reversed&#39;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">cases</span><span class="o">+</span><span class="n">inset</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;West Africa Ebola cases 2014&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/6698.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Full-County-Choropleths">Full County Choropleths<a class="anchor-link" href="#Full-County-Choropleths">&#194;&#182;</a></h4><p>For the full county choropleth doc page checkout <a href="https://plot.ly/python/county-choropleth/">https://plot.ly/python/county-choropleth/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="kn">as</span> <span class="nn">ff</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">df_sample</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/laucnty16.csv&#39;</span><span class="p">)</span>
+<span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;State FIPS Code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;State FIPS Code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;County FIPS Code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;County FIPS Code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;FIPS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;State FIPS Code&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;County FIPS Code&#39;</span><span class="p">]</span>
+
+<span class="n">colorscale</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#f7fbff&quot;</span><span class="p">,</span><span class="s2">&quot;#ebf3fb&quot;</span><span class="p">,</span><span class="s2">&quot;#deebf7&quot;</span><span class="p">,</span><span class="s2">&quot;#d2e3f3&quot;</span><span class="p">,</span><span class="s2">&quot;#c6dbef&quot;</span><span class="p">,</span><span class="s2">&quot;#b3d2e9&quot;</span><span class="p">,</span><span class="s2">&quot;#9ecae1&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#85bcdb&quot;</span><span class="p">,</span><span class="s2">&quot;#6baed6&quot;</span><span class="p">,</span><span class="s2">&quot;#57a0ce&quot;</span><span class="p">,</span><span class="s2">&quot;#4292c6&quot;</span><span class="p">,</span><span class="s2">&quot;#3082be&quot;</span><span class="p">,</span><span class="s2">&quot;#2171b5&quot;</span><span class="p">,</span><span class="s2">&quot;#1361a9&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#08519c&quot;</span><span class="p">,</span><span class="s2">&quot;#0b4083&quot;</span><span class="p">,</span><span class="s2">&quot;#08306b&quot;</span><span class="p">]</span>
+<span class="n">endpts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">colorscale</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">fips</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;FIPS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">values</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;Unemployment Rate (%)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_choropleth</span><span class="p">(</span>
+    <span class="n">fips</span><span class="o">=</span><span class="n">fips</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;usa&#39;</span><span class="p">],</span>
+    <span class="n">binning_endpoints</span><span class="o">=</span><span class="n">endpts</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span>
+    <span class="n">show_state_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">show_hover</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">centroid_marker</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;opacity&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+    <span class="n">asp</span><span class="o">=</span><span class="mf">2.9</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;USA by Unemployment %&#39;</span><span class="p">,</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">% u</span><span class="s1">nemployed&#39;</span>
+<span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;choropleth_full_usa&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>The draw time for this plot will be slow for clients without much RAM.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/6672.embed" height="450px" width="900px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#194;&#182;</a></h4><p>See <a href="https://plot.ly/python/reference/#choropleth">https://plot.ly/python/reference/#choropleth</a> for more information and chart attribute options!</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

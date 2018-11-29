@@ -1,0 +1,399 @@
+---
+permalink: python/table-subplots/
+description: How to create a subplot with tables and charts in Python with Plotly.
+name: Table and Chart Subplots
+has_thumbnail: true
+thumbnail: thumbnail/table_subplots.jpg
+layout: user-guide
+language: python
+title: Table and Chart Subplots | plotly
+display_as: multiple_axes
+has_thumbnail: true
+page_type: u-guide
+order: 11
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#194;&#182;</a></h4><p>Note: Tables are available in version <b>2.1.0+</b><br>
+Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[2]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.2.2&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Import-CSV-Data">Import CSV Data<a class="anchor-link" href="#Import-CSV-Data">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/Mining-BTC-180.csv&#39;</span><span class="p">)</span>
+
+<span class="c1"># remove min:sec:millisec from dates </span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39; 00:00:00&#39;</span><span class="p">)</span>
+    <span class="n">datetime</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="n">columnwidth</span><span class="o">=</span><span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.47</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+    <span class="n">header</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="c1">#values=list(df.columns[1:]),</span>
+        <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="s1">&#39;Number&lt;br&gt;Transactions&#39;</span><span class="p">,</span> <span class="s1">&#39;Output&lt;br&gt;Volume (BTC)&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Market&lt;br&gt;Price&#39;</span><span class="p">,</span> <span class="s1">&#39;Hash&lt;br&gt;Rate&#39;</span><span class="p">,</span> <span class="s1">&#39;Cost per&lt;br&gt;trans-USD&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Mining&lt;br&gt;Revenue-USD&#39;</span><span class="p">,</span> <span class="s1">&#39;Trasaction&lt;br&gt;fees-BTC&#39;</span><span class="p">],</span>
+        <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(50, 50, 50)&#39;</span><span class="p">),</span>
+        <span class="n">align</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">fill</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#d562be&#39;</span><span class="p">),</span>
+    <span class="p">),</span>
+    <span class="n">cells</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]],</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(50, 50, 50)&#39;</span><span class="p">),</span>
+        <span class="n">align</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">fill</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#f5f5fa&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">([</span><span class="n">table</span><span class="p">],</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;table-of-mining-data&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/5494.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Table-and-Right-Aligned-Plots">Table and Right Aligned Plots<a class="anchor-link" href="#Table-and-Right-Aligned-Plots">&#194;&#182;</a></h4><p>In Plotly there is no native way to insert a Plotly Table into a Subplot. To do this, create your own <code>Layout</code> object and defining multiple <code>xaxis</code> and <code>yaxis</code> to split up the chart area into different domains. Then for the traces you wish to insert in your final chart, set their <code>xaxis</code> and <code>yaxis</code> individually to map to the domains definied in the <code>Layout</code>. See the example below to see how to align 3 Scatter plots to the right and a Table on the top.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">table_trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="n">domain</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span>
+    <span class="n">columnwidth</span> <span class="o">=</span> <span class="p">[</span><span class="mi">30</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">33</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">33</span><span class="p">],</span>
+    <span class="n">columnorder</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">height</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+                  <span class="n">values</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;&lt;b&gt;Date&lt;/b&gt;&#39;</span><span class="p">],[</span><span class="s1">&#39;&lt;b&gt;Number&lt;br&gt;transactions&lt;/b&gt;&#39;</span><span class="p">],</span>
+                            <span class="p">[</span><span class="s1">&#39;&lt;b&gt;Output&lt;br&gt;volume(BTC)&lt;/b&gt;&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;&lt;b&gt;Market&lt;br&gt;Price&lt;/b&gt;&#39;</span><span class="p">]],</span>
+                  <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(50, 50, 50)&#39;</span><span class="p">),</span>
+                  <span class="n">align</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span>
+                  <span class="n">font</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rgb(45, 45, 45)&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span>
+                  <span class="n">fill</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#d562be&#39;</span><span class="p">)),</span>
+    <span class="n">cells</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span>
+                          <span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="s1">&#39;Number-transactions&#39;</span><span class="p">,</span> <span class="s1">&#39;Output-volume(BTC)&#39;</span><span class="p">,</span> <span class="s1">&#39;Market-price&#39;</span><span class="p">]],</span>
+                 <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#506784&#39;</span><span class="p">),</span>
+                 <span class="n">align</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span>
+                 <span class="n">font</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rgb(40, 40, 40)&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">),</span>
+                 <span class="n">format</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;, .2f&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;,.4f&#39;</span><span class="p">],</span>
+                 <span class="n">prefix</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="se">\u20BF</span><span class="s1">&#39;</span><span class="p">],</span>
+                 <span class="n">suffix</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
+                 <span class="n">height</span> <span class="o">=</span> <span class="mi">27</span><span class="p">,</span>
+                 <span class="n">fill</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rgb(235, 193, 238)&#39;</span><span class="p">,</span> <span class="s1">&#39;rgba(228, 222, 249, 0.65)&#39;</span><span class="p">]))</span>
+<span class="p">)</span>
+
+<span class="n">trace1</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Hash-rate&#39;</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#9748a1&#39;</span><span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;hash-rate-TH/s&#39;</span>
+<span class="p">)</span>
+
+<span class="n">trace2</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Mining-revenue-USD&#39;</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#b04553&#39;</span><span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;mining revenue&#39;</span>
+<span class="p">)</span>
+
+<span class="n">trace3</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Transaction-fees-BTC&#39;</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#af7bbd&#39;</span><span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;transact-fee&#39;</span>
+<span class="p">)</span>
+
+<span class="n">axis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+    <span class="n">showline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">showgrid</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">mirror</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">ticklen</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> 
+    <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span>
+    <span class="n">tickfont</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">layout1</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">950</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+    <span class="n">autosize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Bitcoin mining stats for 180 days&#39;</span><span class="p">,</span>
+    <span class="n">margin</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>
+    <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>   
+    <span class="n">xaxis1</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span> <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">)),</span>
+    <span class="n">xaxis2</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span> <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">)),</span>        
+    <span class="n">xaxis3</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">)),</span> 
+    <span class="n">yaxis1</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.66</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">hoverformat</span><span class="o">=</span><span class="s1">&#39;.2f&#39;</span><span class="p">)),</span>  
+    <span class="n">yaxis2</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.3</span> <span class="o">+</span> <span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.63</span><span class="p">],</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="n">tickprefix</span><span class="o">=</span><span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="n">hoverformat</span><span class="o">=</span><span class="s1">&#39;.2f&#39;</span><span class="p">)),</span>
+    <span class="n">yaxis3</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="n">tickprefix</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;</span><span class="se">\u20BF</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">hoverformat</span><span class="o">=</span><span class="s1">&#39;.2f&#39;</span><span class="p">)),</span>
+    <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(228, 222, 249, 0.65)&#39;</span>
+<span class="p">)</span>
+
+<span class="n">fig1</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">table_trace1</span><span class="p">,</span> <span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">,</span> <span class="n">trace3</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout1</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig1</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;table-right-aligned-plots&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/5496.embed" height="800px" width="950px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Vertical-Table-and-Graph-Subplot">Vertical Table and Graph Subplot<a class="anchor-link" href="#Vertical-Table-and-Graph-Subplot">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="n">table_trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="n">domain</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span>  
+    <span class="n">columnwidth</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="n">columnorder</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">height</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+                  <span class="n">values</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;&lt;b&gt;Date&lt;/b&gt;&#39;</span><span class="p">],[</span><span class="s1">&#39;&lt;b&gt;Hash Rate, TH/sec&lt;/b&gt;&#39;</span><span class="p">],</span> 
+                            <span class="p">[</span><span class="s1">&#39;&lt;b&gt;Mining revenue&lt;/b&gt;&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;&lt;b&gt;Transaction fees&lt;/b&gt;&#39;</span><span class="p">]],</span> 
+                  <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(50, 50, 50)&#39;</span><span class="p">),</span>
+                  <span class="n">align</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span>
+                  <span class="n">font</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rgb(45, 45, 45)&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span>
+                  <span class="n">fill</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#d562be&#39;</span><span class="p">)),</span>
+    <span class="n">cells</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="s1">&#39;Hash-rate&#39;</span><span class="p">,</span> <span class="s1">&#39;Mining-revenue-USD&#39;</span><span class="p">,</span> <span class="s1">&#39;Transaction-fees-BTC&#39;</span><span class="p">]],</span>
+                 <span class="n">line</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#506784&#39;</span><span class="p">),</span>
+                 <span class="n">align</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span>
+                 <span class="n">font</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rgb(40, 40, 40)&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">),</span>
+                 <span class="n">format</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;, .2f&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;,.4f&#39;</span><span class="p">],</span>  
+                 <span class="n">prefix</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="se">\u20BF</span><span class="s1">&#39;</span><span class="p">],</span>
+                 <span class="n">suffix</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
+                 <span class="n">height</span> <span class="o">=</span> <span class="mi">27</span><span class="p">,</span>
+                 <span class="n">fill</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rgb(235, 193, 238)&#39;</span><span class="p">,</span> <span class="s1">&#39;rgba(228, 222, 249, 0.65)&#39;</span><span class="p">]))</span>
+<span class="p">)</span>
+
+<span class="n">trace4</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Hash-rate&#39;</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#9748a1&#39;</span><span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;hash-rate-TH/s&#39;</span>
+<span class="p">)</span>
+
+<span class="n">trace5</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Mining-revenue-USD&#39;</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#b04553&#39;</span><span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;mining revenue&#39;</span>
+<span class="p">)</span>
+
+<span class="n">trace6</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Transaction-fees-BTC&#39;</span><span class="p">],</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#af7bbd&#39;</span><span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;transact-fee&#39;</span>
+<span class="p">)</span>
+
+<span class="n">axis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+    <span class="n">showline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">showgrid</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">mirror</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+    <span class="n">ticklen</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> 
+    <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span>
+    <span class="n">tickfont</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">layout2</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">950</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+    <span class="n">autosize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Bitcoin mining stats for 180 days&#39;</span><span class="p">,</span>
+    <span class="n">margin</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>
+    <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>          
+    <span class="n">xaxis1</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span> <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">)),</span>
+    <span class="n">xaxis2</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span> <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">)),</span>          
+    <span class="n">xaxis3</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">)),</span> 
+    <span class="n">yaxis1</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="mf">0.21</span> <span class="o">+</span> <span class="mf">0.02</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.68</span><span class="p">],</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">hoverformat</span><span class="o">=</span><span class="s1">&#39;.2f&#39;</span><span class="p">)),</span>  
+    <span class="n">yaxis2</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.21</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="mf">0.21</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">],</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="n">tickprefix</span><span class="o">=</span><span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="n">hoverformat</span><span class="o">=</span><span class="s1">&#39;.2f&#39;</span><span class="p">)),</span>
+    <span class="n">yaxis3</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.21</span><span class="p">],</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="n">tickprefix</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;</span><span class="se">\u20BF</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">hoverformat</span><span class="o">=</span><span class="s1">&#39;.2f&#39;</span><span class="p">)),</span>
+    <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(228, 222, 249, 0.65)&#39;</span>
+<span class="p">)</span>
+
+<span class="n">fig2</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">table_trace2</span><span class="p">,</span> <span class="n">trace4</span><span class="p">,</span> <span class="n">trace5</span><span class="p">,</span> <span class="n">trace6</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout2</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig2</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;vertical-stacked-subplot-tables&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~AdamKulidjian/5498.embed" height="800px" width="950px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#194;&#182;</a></h4><p>See  <a href="https://plot.ly/python/reference/#table">https://plot.ly/python/reference/#table</a> for more information regarding chart attributes! <br>
+For examples of Plotly Tables, see: <a href="https://plot.ly/python/table/">https://plot.ly/python/table/</a></p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

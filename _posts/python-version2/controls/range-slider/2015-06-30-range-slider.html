@@ -1,0 +1,432 @@
+---
+permalink: python/range-slider/
+description: Now you can implement range sliders and selectors in your Plotly graphs purely with python!
+name: Python Range Slider and Selectors | plotly
+has_thumbnail: true
+thumbnail: thumbnail/sliders.jpg
+layout: user-guide
+name: Range Slider and Selector
+language: python
+title: Python Range Slider and Selectors | plotly
+display_as: controls
+has_thumbnail: true
+page_type: example_index
+order: 3
+ipynb: ~notebook_demo/211
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#182;</a></h4><p>Note: range sliders and range selectors are available in version <b>1.9.7+</b><br>
+Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;3.1.0&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Basic-Range-Slider-and-Range-Selectors">Basic Range Slider and Range Selectors<a class="anchor-link" href="#Basic-Range-Slider-and-Range-Selectors">&#182;</a></h4><p>Note this example works with version 0.5.0 of <code>pandas_datareader</code>. Run <code>pip install --upgrade pandas_datareader</code> to ensure you are using the right version of the module.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span> 
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">pandas_datareader.data</span> <span class="kn">as</span> <span class="nn">web</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">DataReader</span><span class="p">(</span><span class="s1">&#39;AAPL.US&#39;</span><span class="p">,</span> <span class="s1">&#39;quandl&#39;</span><span class="p">,</span>
+                    <span class="n">datetime</span><span class="p">(</span><span class="mi">2007</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                    <span class="n">datetime</span><span class="p">(</span><span class="mi">2009</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="n">trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span>
+                   <span class="n">y</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">High</span><span class="p">))</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace</span><span class="p">]</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Time series with range slider and selectors&#39;</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">rangeselector</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">buttons</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                     <span class="n">label</span><span class="o">=</span><span class="s1">&#39;1m&#39;</span><span class="p">,</span>
+                     <span class="n">step</span><span class="o">=</span><span class="s1">&#39;month&#39;</span><span class="p">,</span>
+                     <span class="n">stepmode</span><span class="o">=</span><span class="s1">&#39;backward&#39;</span><span class="p">),</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+                     <span class="n">label</span><span class="o">=</span><span class="s1">&#39;6m&#39;</span><span class="p">,</span>
+                     <span class="n">step</span><span class="o">=</span><span class="s1">&#39;month&#39;</span><span class="p">,</span>
+                     <span class="n">stepmode</span><span class="o">=</span><span class="s1">&#39;backward&#39;</span><span class="p">),</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;YTD&#39;</span><span class="p">,</span>
+                    <span class="n">step</span><span class="o">=</span><span class="s1">&#39;year&#39;</span><span class="p">,</span>
+                    <span class="n">stepmode</span><span class="o">=</span><span class="s1">&#39;todate&#39;</span><span class="p">),</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;1y&#39;</span><span class="p">,</span>
+                    <span class="n">step</span><span class="o">=</span><span class="s1">&#39;year&#39;</span><span class="p">,</span>
+                    <span class="n">stepmode</span><span class="o">=</span><span class="s1">&#39;backward&#39;</span><span class="p">),</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+            <span class="p">])</span>
+        <span class="p">),</span>
+        <span class="n">rangeslider</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">visible</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="p">),</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;date&#39;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~priyatharsan/54.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Range-Slider-with-Vertically-Stacked-Subplots">Range Slider with Vertically Stacked Subplots<a class="anchor-link" href="#Range-Slider-with-Vertically-Stacked-Subplots">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+     <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;2013-01-15&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-01-29&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-02-26&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-04-19&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-07-02&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-08-27&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;2013-10-22&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-01-20&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-05-05&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-07-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-02-09&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-04-13&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;2015-05-13&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-06-08&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-08-05&quot;</span><span class="p">,</span> <span class="s2">&quot;2016-02-25&quot;</span><span class="p">],</span> 
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;8&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;10&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;6&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;7&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;10&quot;</span><span class="p">,</span> <span class="s2">&quot;10&quot;</span><span class="p">,</span> <span class="s2">&quot;9&quot;</span><span class="p">,</span> <span class="s2">&quot;14&quot;</span><span class="p">],</span> 
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;var0&quot;</span><span class="p">,</span> 
+    <span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;8&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;10&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;6&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;7&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;10&quot;</span><span class="p">,</span> <span class="s2">&quot;10&quot;</span><span class="p">,</span> <span class="s2">&quot;9&quot;</span><span class="p">,</span> <span class="s2">&quot;14&quot;</span><span class="p">],</span> 
+    <span class="n">yaxis</span> <span class="o">=</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> 
+<span class="p">)</span>
+
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;2015-04-13&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-05-13&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-06-08&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-08-05&quot;</span><span class="p">,</span> <span class="s2">&quot;2016-02-25&quot;</span><span class="p">],</span> 
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;53.0&quot;</span><span class="p">,</span> <span class="s2">&quot;69.0&quot;</span><span class="p">,</span> <span class="s2">&quot;89.0&quot;</span><span class="p">,</span> <span class="s2">&quot;41.0&quot;</span><span class="p">,</span> <span class="s2">&quot;41.0&quot;</span><span class="p">],</span> 
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;var1&quot;</span><span class="p">,</span> 
+    <span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;53.0&quot;</span><span class="p">,</span> <span class="s2">&quot;69.0&quot;</span><span class="p">,</span> <span class="s2">&quot;89.0&quot;</span><span class="p">,</span> <span class="s2">&quot;41.0&quot;</span><span class="p">,</span> <span class="s2">&quot;41.0&quot;</span><span class="p">],</span> 
+    <span class="n">yaxis</span> <span class="o">=</span> <span class="s2">&quot;y2&quot;</span><span class="p">,</span> 
+<span class="p">)</span>
+
+<span class="n">trace3</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;2013-01-29&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-02-26&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-04-19&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-07-02&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-08-27&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-10-22&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;2014-01-20&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-04-09&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-05-05&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-07-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-09-30&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-02-09&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;2015-04-13&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-06-08&quot;</span><span class="p">,</span> <span class="s2">&quot;2016-02-25&quot;</span><span class="p">],</span> 
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;9.6&quot;</span><span class="p">,</span> <span class="s2">&quot;4.6&quot;</span><span class="p">,</span> <span class="s2">&quot;2.7&quot;</span><span class="p">,</span> <span class="s2">&quot;8.3&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">,</span> <span class="s2">&quot;7.3&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;7.5&quot;</span><span class="p">,</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="s2">&quot;0.5&quot;</span><span class="p">,</span> <span class="s2">&quot;2.8&quot;</span><span class="p">,</span> <span class="s2">&quot;9.2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;13&quot;</span><span class="p">,</span> <span class="s2">&quot;5.8&quot;</span><span class="p">,</span> <span class="s2">&quot;6.9&quot;</span><span class="p">],</span> 
+    <span class="n">name</span> <span class="o">=</span>  <span class="s2">&quot;var2&quot;</span><span class="p">,</span> 
+    <span class="n">text</span> <span class="o">=</span>  <span class="p">[</span><span class="s2">&quot;9.6&quot;</span><span class="p">,</span> <span class="s2">&quot;4.6&quot;</span><span class="p">,</span> <span class="s2">&quot;2.7&quot;</span><span class="p">,</span> <span class="s2">&quot;8.3&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">,</span> <span class="s2">&quot;7.3&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;7.5&quot;</span><span class="p">,</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="s2">&quot;0.5&quot;</span><span class="p">,</span> <span class="s2">&quot;2.8&quot;</span><span class="p">,</span> <span class="s2">&quot;9.2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;13&quot;</span><span class="p">,</span> <span class="s2">&quot;5.8&quot;</span><span class="p">,</span> <span class="s2">&quot;6.9&quot;</span><span class="p">],</span> 
+    <span class="n">yaxis</span> <span class="o">=</span> <span class="s2">&quot;y3&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">trace4</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;2013-01-29&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-02-26&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-04-19&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-07-02&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-08-27&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-10-22&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;2014-01-20&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-04-09&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-05-05&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-07-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-09-30&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-02-09&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;2015-04-13&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-06-08&quot;</span><span class="p">,</span> <span class="s2">&quot;2016-02-25&quot;</span><span class="p">],</span> 
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;6.9&quot;</span><span class="p">,</span> <span class="s2">&quot;7.5&quot;</span><span class="p">,</span> <span class="s2">&quot;7.3&quot;</span><span class="p">,</span> <span class="s2">&quot;7.3&quot;</span><span class="p">,</span> <span class="s2">&quot;6.9&quot;</span><span class="p">,</span> <span class="s2">&quot;7.1&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">,</span> <span class="s2">&quot;7.8&quot;</span><span class="p">,</span> <span class="s2">&quot;7.4&quot;</span><span class="p">,</span> <span class="s2">&quot;7.9&quot;</span><span class="p">,</span> <span class="s2">&quot;7.9&quot;</span><span class="p">,</span> <span class="s2">&quot;7.6&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;7.2&quot;</span><span class="p">,</span> <span class="s2">&quot;7.2&quot;</span><span class="p">,</span> <span class="s2">&quot;8.0&quot;</span><span class="p">],</span> 
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;var3&quot;</span><span class="p">,</span> 
+    <span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;6.9&quot;</span><span class="p">,</span> <span class="s2">&quot;7.5&quot;</span><span class="p">,</span> <span class="s2">&quot;7.3&quot;</span><span class="p">,</span> <span class="s2">&quot;7.3&quot;</span><span class="p">,</span> <span class="s2">&quot;6.9&quot;</span><span class="p">,</span> <span class="s2">&quot;7.1&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">,</span> <span class="s2">&quot;7.8&quot;</span><span class="p">,</span> <span class="s2">&quot;7.4&quot;</span><span class="p">,</span> <span class="s2">&quot;7.9&quot;</span><span class="p">,</span> <span class="s2">&quot;7.9&quot;</span><span class="p">,</span> <span class="s2">&quot;7.6&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;7.2&quot;</span><span class="p">,</span> <span class="s2">&quot;7.2&quot;</span><span class="p">,</span> <span class="s2">&quot;8.0&quot;</span><span class="p">],</span> 
+    <span class="n">yaxis</span> <span class="o">=</span> <span class="s2">&quot;y4&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">trace5</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;2013-02-26&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-07-02&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-09-26&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-10-22&quot;</span><span class="p">,</span> <span class="s2">&quot;2013-12-04&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-01-02&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;2014-01-20&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-05-05&quot;</span><span class="p">,</span> <span class="s2">&quot;2014-07-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-02-09&quot;</span><span class="p">,</span> <span class="s2">&quot;2015-05-05&quot;</span><span class="p">],</span> 
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;290&quot;</span><span class="p">,</span> <span class="s2">&quot;1078&quot;</span><span class="p">,</span> <span class="s2">&quot;263&quot;</span><span class="p">,</span> <span class="s2">&quot;407&quot;</span><span class="p">,</span> <span class="s2">&quot;660&quot;</span><span class="p">,</span> <span class="s2">&quot;740&quot;</span><span class="p">,</span> <span class="s2">&quot;33&quot;</span><span class="p">,</span> <span class="s2">&quot;374&quot;</span><span class="p">,</span> <span class="s2">&quot;95&quot;</span><span class="p">,</span> <span class="s2">&quot;734&quot;</span><span class="p">,</span> <span class="s2">&quot;3000&quot;</span><span class="p">],</span> 
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;var4&quot;</span><span class="p">,</span> 
+    <span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;290&quot;</span><span class="p">,</span> <span class="s2">&quot;1078&quot;</span><span class="p">,</span> <span class="s2">&quot;263&quot;</span><span class="p">,</span> <span class="s2">&quot;407&quot;</span><span class="p">,</span> <span class="s2">&quot;660&quot;</span><span class="p">,</span> <span class="s2">&quot;740&quot;</span><span class="p">,</span> <span class="s2">&quot;33&quot;</span><span class="p">,</span> <span class="s2">&quot;374&quot;</span><span class="p">,</span> <span class="s2">&quot;95&quot;</span><span class="p">,</span> <span class="s2">&quot;734&quot;</span><span class="p">,</span> <span class="s2">&quot;3000&quot;</span><span class="p">],</span> 
+    <span class="n">yaxis</span> <span class="o">=</span> <span class="s2">&quot;y5&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">,</span> <span class="n">trace3</span><span class="p">,</span> <span class="n">trace4</span><span class="p">,</span> <span class="n">trace5</span><span class="p">]</span>
+
+<span class="c1"># style all the traces</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;hoverinfo&quot;</span><span class="p">:</span> <span class="s2">&quot;name+x+text&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;line&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span> 
+            <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">},</span>
+            <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;lines+markers&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;showlegend&quot;</span><span class="p">:</span> <span class="bp">False</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">&quot;annotations&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="s2">&quot;2013-06-01&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+      <span class="s2">&quot;arrowcolor&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(63, 81, 181, 0.2)&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;arrowsize&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> 
+      <span class="s2">&quot;ax&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+      <span class="s2">&quot;ay&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> 
+      <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;state1&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;xref&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;yanchor&quot;</span><span class="p">:</span> <span class="s2">&quot;bottom&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;yref&quot;</span><span class="p">:</span> <span class="s2">&quot;y&quot;</span>
+    <span class="p">},</span> 
+    <span class="p">{</span>
+      <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="s2">&quot;2014-09-13&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+      <span class="s2">&quot;arrowcolor&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(76, 175, 80, 0.1)&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;arrowsize&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> 
+      <span class="s2">&quot;ax&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s2">&quot;ay&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+      <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;state2&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;xref&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;yanchor&quot;</span><span class="p">:</span> <span class="s2">&quot;bottom&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;yref&quot;</span><span class="p">:</span> <span class="s2">&quot;y&quot;</span>
+    <span class="p">}</span>
+  <span class="p">],</span> 
+  <span class="s2">&quot;dragmode&quot;</span><span class="p">:</span> <span class="s2">&quot;zoom&quot;</span><span class="p">,</span> 
+  <span class="s2">&quot;hovermode&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> 
+  <span class="s2">&quot;legend&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;traceorder&quot;</span><span class="p">:</span> <span class="s2">&quot;reversed&quot;</span><span class="p">},</span> 
+  <span class="s2">&quot;margin&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> 
+    <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">100</span>
+  <span class="p">},</span> 
+  <span class="s2">&quot;shapes&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;fillcolor&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(63, 81, 181, 0.2)&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;line&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> 
+      <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;rect&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;x0&quot;</span><span class="p">:</span> <span class="s2">&quot;2013-01-15&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;x1&quot;</span><span class="p">:</span> <span class="s2">&quot;2013-10-17&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;xref&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;y0&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+      <span class="s2">&quot;y1&quot;</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">,</span> 
+      <span class="s2">&quot;yref&quot;</span><span class="p">:</span> <span class="s2">&quot;paper&quot;</span>
+    <span class="p">},</span> 
+    <span class="p">{</span>
+      <span class="s2">&quot;fillcolor&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(76, 175, 80, 0.1)&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;line&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> 
+      <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;rect&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;x0&quot;</span><span class="p">:</span> <span class="s2">&quot;2013-10-22&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;x1&quot;</span><span class="p">:</span> <span class="s2">&quot;2015-08-05&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;xref&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> 
+      <span class="s2">&quot;y0&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+      <span class="s2">&quot;y1&quot;</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">,</span> 
+      <span class="s2">&quot;yref&quot;</span><span class="p">:</span> <span class="s2">&quot;paper&quot;</span>
+    <span class="p">}</span>
+  <span class="p">],</span> 
+  <span class="s2">&quot;xaxis&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;autorange&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;2012-10-31 18:36:37.3129&quot;</span><span class="p">,</span> <span class="s2">&quot;2016-05-10 05:23:22.6871&quot;</span><span class="p">],</span> 
+    <span class="s2">&quot;rangeslider&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;autorange&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+      <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;2012-10-31 18:36:37.3129&quot;</span><span class="p">,</span> <span class="s2">&quot;2016-05-10 05:23:22.6871&quot;</span><span class="p">]</span>
+    <span class="p">},</span> 
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;date&quot;</span>
+  <span class="p">},</span> 
+  <span class="s2">&quot;yaxis&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;anchor&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;autorange&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> 
+    <span class="s2">&quot;linecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;#673ab7&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;mirror&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">60.0858369099</span><span class="p">,</span> <span class="mf">28.4406294707</span><span class="p">],</span> 
+    <span class="s2">&quot;showline&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;tickfont&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#673ab7&quot;</span><span class="p">},</span> 
+    <span class="s2">&quot;tickmode&quot;</span><span class="p">:</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;ticks&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;titlefont&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#673ab7&quot;</span><span class="p">},</span> 
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;zeroline&quot;</span><span class="p">:</span> <span class="bp">False</span>
+  <span class="p">},</span> 
+  <span class="s2">&quot;yaxis2&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;anchor&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;autorange&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span> 
+    <span class="s2">&quot;linecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;#E91E63&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;mirror&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">29.3787777032</span><span class="p">,</span> <span class="mf">100.621222297</span><span class="p">],</span> 
+    <span class="s2">&quot;showline&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;tickfont&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#E91E63&quot;</span><span class="p">},</span> 
+    <span class="s2">&quot;tickmode&quot;</span><span class="p">:</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;ticks&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;titlefont&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#E91E63&quot;</span><span class="p">},</span> 
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;zeroline&quot;</span><span class="p">:</span> <span class="bp">False</span>
+  <span class="p">},</span> 
+  <span class="s2">&quot;yaxis3&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;anchor&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;autorange&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span> 
+    <span class="s2">&quot;linecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;#795548&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;mirror&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">3.73690396239</span><span class="p">,</span> <span class="mf">22.2369039624</span><span class="p">],</span> 
+    <span class="s2">&quot;showline&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;tickfont&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#795548&quot;</span><span class="p">},</span> 
+    <span class="s2">&quot;tickmode&quot;</span><span class="p">:</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;ticks&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;mg/L&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;titlefont&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#795548&quot;</span><span class="p">},</span> 
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;zeroline&quot;</span><span class="p">:</span> <span class="bp">False</span>
+  <span class="p">},</span> 
+  <span class="s2">&quot;yaxis4&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;anchor&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;autorange&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span> 
+    <span class="s2">&quot;linecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;#607d8b&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;mirror&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">6.63368032236</span><span class="p">,</span> <span class="mf">8.26631967764</span><span class="p">],</span> 
+    <span class="s2">&quot;showline&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;tickfont&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#607d8b&quot;</span><span class="p">},</span> 
+    <span class="s2">&quot;tickmode&quot;</span><span class="p">:</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;ticks&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;mmol/L&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;titlefont&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#607d8b&quot;</span><span class="p">},</span> 
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;zeroline&quot;</span><span class="p">:</span> <span class="bp">False</span>
+  <span class="p">},</span> 
+  <span class="s2">&quot;yaxis5&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;anchor&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;autorange&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> 
+    <span class="s2">&quot;linecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;#2196F3&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;mirror&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">685.336803224</span><span class="p">,</span> <span class="mf">3718.33680322</span><span class="p">],</span> 
+    <span class="s2">&quot;showline&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> 
+    <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;tickfont&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#2196F3&quot;</span><span class="p">},</span> 
+    <span class="s2">&quot;tickmode&quot;</span><span class="p">:</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ticks&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;mg/Kg&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;titlefont&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#2196F3&quot;</span><span class="p">},</span> 
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;zeroline&quot;</span><span class="p">:</span> <span class="bp">False</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~priyatharsan/56.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#182;</a></h4><p>See <a href="https://plot.ly/python/reference/#layout-xaxis-rangeselector">https://plot.ly/python/reference/#layout-xaxis-rangeselector</a> <br>and <a href="https://plot.ly/python/reference/#layout-xaxis-rangeslider">https://plot.ly/python/reference/#layout-xaxis-rangeslider</a> <br>for more information and attribute options!</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

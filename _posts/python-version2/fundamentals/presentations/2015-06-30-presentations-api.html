@@ -1,0 +1,1145 @@
+---
+permalink: python/presentations-tool/
+description: How to create and publish a spectacle-presentation with the Python API.
+name: Presentations Tool | plotly
+has_thumbnail: true
+thumbnail: thumbnail/pres_api.jpg
+layout: user-guide
+name: Presentations Tool
+language: python
+title: Presentations Tool | plotly
+display_as: file_settings
+has_thumbnail: true
+page_type: u-guide
+order: 0.6
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#194;&#182;</a></h4><p>Note: The presentations API is available in version <b>2.2.1.+</b><br>
+Run  <code>pip install plotly --upgrade</code> to update your Plotly version.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.4.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Plotly-Presentations">Plotly Presentations<a class="anchor-link" href="#Plotly-Presentations">&#194;&#182;</a></h4><p>To use Plotly's Presentations API you will write your presentation code in a string of markdown and then pass that through the Presentations API function <code>pres.Presentation()</code>. This creates a JSON version of your presentation. To upload the presentation online pass it through <code>py.presentation_ops.upload()</code>.</p>
+<p>In your string, use <code>---</code> on a single line to seperate two slides. To put a title in your slide, put a line that starts with any number of <code>#</code>s. Only your first title will be appear in your slide. A title looks like:</p>
+<p><code># slide title</code></p>
+<p>Anything that comes after the title will be put as text in your slide. Check out the example below to see this in action.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Current-Limitations">Current Limitations<a class="anchor-link" href="#Current-Limitations">&#194;&#182;</a></h4><p><code>Boldface</code>, <em>italics</em> and <a href="https://www.w3.org/WhatIs.html">hypertext</a> are not supported features of the Presentation API.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Display-in-Jupyter">Display in Jupyter<a class="anchor-link" href="#Display-in-Jupyter">&#194;&#182;</a></h4><p>The function below generates HTML code to display the presentation in an iframe directly in Jupyter.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">url_to_iframe</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="c1"># style</span>
+    <span class="n">html</span> <span class="o">+=</span> <span class="s1">&#39;&#39;&#39;&lt;head&gt;</span>
+<span class="s1">    &lt;style&gt;</span>
+<span class="s1">    div.textbox {</span>
+<span class="s1">        margin: 30px;</span>
+<span class="s1">        font-weight: bold;   </span>
+<span class="s1">    }</span>
+<span class="s1">    &lt;/style&gt;</span>
+<span class="s1">    &lt;/head&gt;&#39;</span>
+<span class="s1">    &#39;&#39;&#39;</span>
+    <span class="c1"># iframe</span>
+    <span class="n">html</span> <span class="o">+=</span> <span class="s1">&#39;&lt;iframe src=&#39;</span> <span class="o">+</span> <span class="n">url</span> <span class="o">+</span> <span class="s1">&#39;.embed#{} width=750 height=400 frameBorder=&quot;0&quot;&gt;&lt;/iframe&gt;&#39;</span>
+    <span class="k">if</span> <span class="n">text</span><span class="p">:</span>
+        <span class="n">html</span> <span class="o">+=</span> <span class="s1">&#39;&#39;&#39;&lt;body&gt;</span>
+<span class="s1">        &lt;div class=&quot;textbox&quot;&gt;</span>
+<span class="s1">            &lt;p&gt;Click on the presentation above and use left/right arrow keys to flip through the slides.&lt;/p&gt;</span>
+<span class="s1">        &lt;/div&gt;</span>
+<span class="s1">        &lt;/body&gt;</span>
+<span class="s1">        &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">html</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Simple-Example">Simple Example<a class="anchor-link" href="#Simple-Example">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.presentation_objs</span> <span class="kn">as</span> <span class="nn">pres</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;simple-pres&#39;</span>
+<span class="n">markdown_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># slide 1</span>
+<span class="s2">There is only one slide.</span>
+
+<span class="s2">---</span>
+<span class="s2"># slide 2</span>
+<span class="s2">Again, another slide on this page.</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">my_pres</span> <span class="o">=</span> <span class="n">pres</span><span class="o">.</span><span class="n">Presentation</span><span class="p">(</span><span class="n">markdown_string</span><span class="p">)</span>
+<span class="n">pres_url_0</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">presentation_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">my_pres</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://plot.ly/~AdamKulidjian/3700/simple-pres/">https://plot.ly/~AdamKulidjian/3700/simple-pres/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">IPython</span>
+
+<span class="n">iframe_0</span> <span class="o">=</span> <span class="n">url_to_iframe</span><span class="p">(</span><span class="n">pres_url_0</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">iframe_0</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<head>
+    <style>
+    div.textbox {
+        margin: 30px;
+        font-weight: bold;   
+    }
+    </style>
+    </head>'
+    <iframe src=https://plot.ly/~AdamKulidjian/3700/simple-pres/.embed#{} width=750 height=400 frameBorder="0"></iframe><body>
+        <div class="textbox">
+            <p>Click on the presentation above and use left/right arrow keys to flip through the slides.</p>
+        </div>
+        </body>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Insert-Plotly-Chart">Insert Plotly Chart<a class="anchor-link" href="#Insert-Plotly-Chart">&#194;&#182;</a></h4><p>If you want to insert a Plotly chart into your presentation, all you need to do is write a line in your presentation that takes the form:</p>
+<p><code>Plotly(url)</code></p>
+<p>where url is a Plotly url. For example:</p>
+<p><code>Plotly(https://plot.ly/~AdamKulidjian/3564)</code></p>
+<p>The Plotly url lines should be written on a separate line after your title line. You can put as many images in your slide as you want, as the API will arrange them on the slide automatically, but it is <em>highly</em> encouraged that you use <code>4 OR FEWER IMAGES PER SLIDE</code>. This will produce the cleanest look.</p>
+<p><code>Useful Tip</code>: <br>
+For Plotly charts it is HIGHLY ADVISED that you use a chart that has <code>layout['autosize']</code> set to <code>True</code>. If it is <code>False</code> the image may be cropped or only partially visible when it appears in the presentation slide.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.presentation_objs</span> <span class="kn">as</span> <span class="nn">pres</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;pres-with-plotly-chart&#39;</span>
+<span class="n">markdown_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># 3D scatterplots</span>
+<span class="s2">3D Scatterplot are just a collection of balls in a 3D cartesian space each of which have assigned properties like color, size, and more.</span>
+
+<span class="s2">---</span>
+<span class="s2"># simple 3d scatterplot</span>
+
+<span class="s2">Plotly(https://plot.ly/~AdamKulidjian/3698)</span>
+<span class="s2">---</span>
+<span class="s2"># different colorscales</span>
+
+<span class="s2">There are various colorscales and colorschemes to try in Plotly. Check out plotly.colors to find a list of valid and available colorscales.</span>
+
+<span class="s2">Plotly(https://plot.ly/~AdamKulidjian/3582)</span>
+<span class="s2">Plotly(https://plot.ly/~AdamKulidjian/3698)</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">my_pres</span> <span class="o">=</span> <span class="n">pres</span><span class="o">.</span><span class="n">Presentation</span><span class="p">(</span><span class="n">markdown_string</span><span class="p">)</span>
+<span class="n">pres_url_1</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">presentation_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">my_pres</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://plot.ly/~AdamKulidjian/3710/pres-with-plotly-chart/">https://plot.ly/~AdamKulidjian/3710/pres-with-plotly-chart/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">IPython</span>
+
+<span class="n">iframe_1</span> <span class="o">=</span> <span class="n">url_to_iframe</span><span class="p">(</span><span class="n">pres_url_1</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">iframe_1</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<head>
+    <style>
+    div.textbox {
+        margin: 30px;
+        font-weight: bold;   
+    }
+    </style>
+    </head>'
+    <iframe src=https://plot.ly/~AdamKulidjian/3710/pres-with-plotly-chart/.embed#{} width=750 height=400 frameBorder="0"></iframe><body>
+        <div class="textbox">
+            <p>Click on the presentation above and use left/right arrow keys to flip through the slides.</p>
+        </div>
+        </body>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Insert-Web-Images">Insert Web Images<a class="anchor-link" href="#Insert-Web-Images">&#194;&#182;</a></h4><p>To insert an image from the web, insert the a <code>Image(url)</code> where url is the image url.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.presentation_objs</span> <span class="kn">as</span> <span class="nn">pres</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;pres-with-images&#39;</span>
+<span class="n">markdown_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># Animals of the Wild</span>
+<span class="s2">---</span>
+<span class="s2"># The Lion</span>
+
+<span class="s2">Panthera leo is one of the big cats in the Felidae family and a member of genus Panthera. It has been listed as Vulnerable on the IUCN Red List since 1996, as populations in African range countries declined by about 43</span><span class="si">% s</span><span class="s2">ince the early 1990s. Lion populations are untenable outside designated protected areas. Although the cause of the decline is not fully understood, habitat loss and conflicts with humans are the greatest causes of concern. The West African lion population is listed as Critically Endangered since 2016. The only lion population in Asia survives in and around India&#39;s Gir Forest National Park and is listed as Endangered since 1986.</span>
+
+<span class="s2">Image(https://i.pinimg.com/736x/da/af/73/daaf73960eb5a21d6bca748195f12052--lion-photography-lion-kings.jpg)</span>
+<span class="s2">---</span>
+<span class="s2"># The Giraffe</span>
+
+<span class="s2">The giraffe is a genus of African even-toed ungulate mammals, the tallest living terrestrial animals and the largest ruminants. The genus currently consists of one species, Giraffa camelopardalis, the type species. Seven other species are extinct, prehistoric species known from fossils. Taxonomic classifications of one to eight extant giraffe species have been described, based upon research into the mitochondrial and nuclear DNA, as well as morphological measurements of Giraffa, but the IUCN currently recognizes only one species with nine subspecies.</span>
+
+<span class="s2">Image(https://img.purch.com/w/192/aHR0cDovL3d3dy5saXZlc2NpZW5jZS5jb20vaW1hZ2VzL2kvMDAwLzA2OC8wOTQvaTMwMC9naXJhZmZlLmpwZz8xNDA1MDA4NDQy)</span>
+<span class="s2">Image(https://upload.wikimedia.org/wikipedia/commons/9/9f/Giraffe_standing.jpg)</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">my_pres</span> <span class="o">=</span> <span class="n">pres</span><span class="o">.</span><span class="n">Presentation</span><span class="p">(</span><span class="n">markdown_string</span><span class="p">)</span>
+<span class="n">pres_url_2</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">presentation_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">my_pres</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://plot.ly/~AdamKulidjian/3702/pres-with-images/">https://plot.ly/~AdamKulidjian/3702/pres-with-images/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">IPython</span>
+
+<span class="n">iframe_2</span> <span class="o">=</span> <span class="n">url_to_iframe</span><span class="p">(</span><span class="n">pres_url_2</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">iframe_2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<head>
+    <style>
+    div.textbox {
+        margin: 30px;
+        font-weight: bold;   
+    }
+    </style>
+    </head>'
+    <iframe src=https://plot.ly/~AdamKulidjian/3702/pres-with-images/.embed#{} width=750 height=400 frameBorder="0"></iframe><body>
+        <div class="textbox">
+            <p>Click on the presentation above and use left/right arrow keys to flip through the slides.</p>
+        </div>
+        </body>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Image-Stretch">Image Stretch<a class="anchor-link" href="#Image-Stretch">&#194;&#182;</a></h4><p>If you want to ensure that your image maintains its original width:height ratio, include the parameter <code>imgStretch=False</code> in your <code>pres.Presentation()</code> function call.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.presentation_objs</span> <span class="kn">as</span> <span class="nn">pres</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;pres-with-no-imgstretch&#39;</span>
+<span class="n">markdown_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># images in native aspect ratio</span>
+
+<span class="s2">Image(https://raw.githubusercontent.com/jackparmer/gradient-backgrounds/master/moods1.png)</span>
+<span class="s2">Image(https://raw.githubusercontent.com/jackparmer/gradient-backgrounds/master/moods1.png)</span>
+<span class="s2">Image(https://raw.githubusercontent.com/jackparmer/gradient-backgrounds/master/moods1.png)</span>
+<span class="s2">Image(https://raw.githubusercontent.com/jackparmer/gradient-backgrounds/master/moods1.png)</span>
+<span class="s2">Image(https://raw.githubusercontent.com/jackparmer/gradient-backgrounds/master/moods1.png)</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">my_pres</span> <span class="o">=</span> <span class="n">pres</span><span class="o">.</span><span class="n">Presentation</span><span class="p">(</span><span class="n">markdown_string</span><span class="p">,</span> <span class="n">imgStretch</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">pres_url_3</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">presentation_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">my_pres</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://plot.ly/~AdamKulidjian/3703/pres-with-no-imgstretch/">https://plot.ly/~AdamKulidjian/3703/pres-with-no-imgstretch/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">IPython</span>
+
+<span class="n">iframe_3</span> <span class="o">=</span> <span class="n">url_to_iframe</span><span class="p">(</span><span class="n">pres_url_3</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">iframe_3</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[9]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<head>
+    <style>
+    div.textbox {
+        margin: 30px;
+        font-weight: bold;   
+    }
+    </style>
+    </head>'
+    <iframe src=https://plot.ly/~AdamKulidjian/3703/pres-with-no-imgstretch/.embed#{} width=750 height=400 frameBorder="0"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Insert-Code-Blocks">Insert Code Blocks<a class="anchor-link" href="#Insert-Code-Blocks">&#194;&#182;</a></h4><p>The Presentations API also supports the insertion of blocks of code with various available langauges to choose from.</p>
+<p>To instantiate a "code environment" in your string, place a ``` at the beginning of a line, followed by the name of the programming language you want your code block to be styled in. Then the next lines will be considered "code lines ". To close the "code environment" put another ``` at the end of the line For example:</p>
+
+<pre><code>```python
+# code goes here
+```</code></pre>
+<p>The valid languages to choose from are: arecpp, cs, css, fsharp, go, haskell, java, javascript, jsx, julia, xml, matlab, php, python, r, ruby, scala, sql and yaml.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.presentation_objs</span> <span class="kn">as</span> <span class="nn">pres</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;pres-with-code&#39;</span>
+<span class="n">markdown_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># Getting Started Using Code</span>
+<span class="s2">A beginner&#39;s introduction to computer science.</span>
+
+<span class="s2">---</span>
+<span class="s2"># Python Functions</span>
+<span class="s2">Functions are one of the most useful tools in Python. Intuitively, you select an input and get an output.</span>
+
+<span class="s2">In order to set up a function use the key word &quot;def&quot; then the name of the function with open parentheses afterwards. Inside the parentheses, write variable names your function will use. These variables can then go into the body of your function and when you give a value to the variable in the call signature, it will pass through the guts of the function until it returns a value.</span>
+
+<span class="s2">```python</span>
+<span class="s2">def somePrintFunction():</span>
+
+<span class="s2">    print(&quot;boo&quot;)</span>
+
+<span class="s2">somePrintFunction()</span>
+
+
+
+
+<span class="s2">&gt;&gt;&gt;print(new_z)</span>
+<span class="s2">10</span>
+
+<span class="s2">def someAddFunction(a, b):</span>
+
+<span class="s2">    print(a+b)</span>
+
+
+
+
+<span class="s2">&gt;&gt;&gt;someAddFunction(12,451)</span>
+<span class="s2">463</span>
+<span class="s2">```</span>
+<span class="s2">---</span>
+<span class="s2"># Use scala</span>
+<span class="s2">You can write functions in other languages as well. For example, check out this scala code and notice how the print functions look different:</span>
+
+<span class="s2">We write &#39;println()&#39; as opposed to &#39;print()&#39; as we do in Python.</span>
+
+<span class="s2">```scala</span>
+<span class="s2">/** Basic command line parsing. */</span>
+<span class="s2">object Main {</span>
+<span class="s2">  var verbose = false</span>
+
+<span class="s2">  def main(args: Array[String]) {</span>
+<span class="s2">    for (a &lt;- args) a match {</span>
+<span class="s2">      case &quot;-h&quot; | &quot;-help&quot;    =&gt;</span>
+<span class="s2">        println(&quot;Usage: scala Main [-help|-verbose]&quot;)</span>
+<span class="s2">      case &quot;-v&quot; | &quot;-verbose&quot; =&gt;</span>
+<span class="s2">        verbose = true</span>
+<span class="s2">      case x =&gt;</span>
+<span class="s2">        println(&quot;Unknown option: &#39;&quot; + x + &quot;&#39;&quot;)</span>
+<span class="s2">    }</span>
+<span class="s2">    if (verbose)</span>
+<span class="s2">      println(&quot;How are you today?&quot;)</span>
+<span class="s2">  }</span>
+<span class="s2">}</span>
+<span class="s2">```</span>
+<span class="s2">---</span>
+<span class="s2"># Under the Hood</span>
+
+<span class="s2">There are many things to find when you look under the Plotly Hood. Of many things, one expected thing is the compliance and adherance to alphebetized and PEP-8&#39;ed imports at the top of any module.</span>
+
+<span class="s2">This is what the PEP-8 guide has more to say about Imports:</span>
+
+<span class="s2">Wildcard imports (from &lt;module&gt; import *) should be avoided, as they make it unclear which names are present in the namespace, confusing both readers and many automated tools. There is one defensible use case for a wildcard import, which is to republish an internal interface as part of a public API (for example, overwriting a pure Python implementation of an interface with the definitions from an optional accelerator module and exactly which definitions will be overwritten isn&#39;t known in advance).</span>
+
+<span class="s2">Image(https://help.plot.ly/images/dashboard-carousel.jpg)</span>
+
+<span class="s2">```python</span>
+<span class="s2">from __future__ import absolute_import</span>
+
+<span class="s2">import copy</span>
+<span class="s2">import json</span>
+<span class="s2">import os</span>
+<span class="s2">import time</span>
+<span class="s2">import warnings</span>
+<span class="s2">import webbrowser</span>
+
+<span class="s2">import six</span>
+<span class="s2">import six.moves</span>
+<span class="s2">from requests.compat import json as _json</span>
+
+<span class="s2">from plotly import exceptions, files, session, tools, utils</span>
+<span class="s2">from plotly.api import v1, v2</span>
+<span class="s2">from plotly.plotly import chunked_requests</span>
+<span class="s2">from plotly.grid_objs import Grid, Column</span>
+<span class="s2">from plotly.dashboard_objs import dashboard_objs as dashboard</span>
+<span class="s2">```</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">my_pres</span> <span class="o">=</span> <span class="n">pres</span><span class="o">.</span><span class="n">Presentation</span><span class="p">(</span><span class="n">markdown_string</span><span class="p">)</span>
+<span class="n">pres_url_4</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">presentation_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">my_pres</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://plot.ly/~AdamKulidjian/3704/pres-with-code/">https://plot.ly/~AdamKulidjian/3704/pres-with-code/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">IPython</span>
+
+<span class="n">iframe_4</span> <span class="o">=</span> <span class="n">url_to_iframe</span><span class="p">(</span><span class="n">pres_url_4</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">iframe_4</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<head>
+    <style>
+    div.textbox {
+        margin: 30px;
+        font-weight: bold;   
+    }
+    </style>
+    </head>'
+    <iframe src=https://plot.ly/~AdamKulidjian/3704/pres-with-code/.embed#{} width=750 height=400 frameBorder="0"></iframe><body>
+        <div class="textbox">
+            <p>Click on the presentation above and use left/right arrow keys to flip through the slides.</p>
+        </div>
+        </body>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Style-Your-Presentation">Style Your Presentation<a class="anchor-link" href="#Style-Your-Presentation">&#194;&#182;</a></h4><p>The Presentations API currently has two styles to choose from: <a href="https://www.pinterest.ca/pin/822540319412564330/"><em>Martik</em></a> and <a href="https://www.pinterest.ca/pin/822540319412564320/"><em>Moods</em></a>. These themes are inspired by  already existing PowerPoint Templates. Let's use the same <code>markdown_string</code> in the previous example but this time try the <code>Martik</code> style.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.presentation_objs</span> <span class="kn">as</span> <span class="nn">pres</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;martik-style&#39;</span>
+<span class="n">markdown_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># Getting Started Using Code</span>
+<span class="s2">A beginner&#39;s introduction to computer science.</span>
+
+<span class="s2">---</span>
+<span class="s2"># Python Functions</span>
+<span class="s2">Functions are one of the most useful tools in Python. Intuitively, you select an input and get an output.</span>
+
+<span class="s2">In order to set up a function use the key word &quot;def&quot; then the name of the function with open parentheses afterwards. Inside the parentheses, write variable names your function will use. These variables can then go into the body of your function and when you give a value to the variable in the call signature, it will pass through the guts of the function until it returns a value.</span>
+
+<span class="s2">```python</span>
+<span class="s2">def somePrintFunction():</span>
+
+<span class="s2">    print(&quot;boo&quot;)</span>
+
+<span class="s2">somePrintFunction()</span>
+
+
+
+
+<span class="s2">&gt;&gt;&gt;print(new_z)</span>
+<span class="s2">10</span>
+
+<span class="s2">def someAddFunction(a, b):</span>
+
+<span class="s2">    print(a+b)</span>
+
+
+
+
+<span class="s2">&gt;&gt;&gt;someAddFunction(12,451)</span>
+<span class="s2">463</span>
+<span class="s2">```</span>
+<span class="s2">---</span>
+<span class="s2"># Use scala</span>
+<span class="s2">You can write functions in other languages as well. For example, check out this scala code and notice how the print functions look different:</span>
+
+<span class="s2">We write &#39;println()&#39; as opposed to &#39;print()&#39; as we do in Python.</span>
+
+<span class="s2">```scala</span>
+<span class="s2">/** Basic command line parsing. */</span>
+<span class="s2">object Main {</span>
+<span class="s2">  var verbose = false</span>
+
+<span class="s2">  def main(args: Array[String]) {</span>
+<span class="s2">    for (a &lt;- args) a match {</span>
+<span class="s2">      case &quot;-h&quot; | &quot;-help&quot;    =&gt;</span>
+<span class="s2">        println(&quot;Usage: scala Main [-help|-verbose]&quot;)</span>
+<span class="s2">      case &quot;-v&quot; | &quot;-verbose&quot; =&gt;</span>
+<span class="s2">        verbose = true</span>
+<span class="s2">      case x =&gt;</span>
+<span class="s2">        println(&quot;Unknown option: &#39;&quot; + x + &quot;&#39;&quot;)</span>
+<span class="s2">    }</span>
+<span class="s2">    if (verbose)</span>
+<span class="s2">      println(&quot;How are you today?&quot;)</span>
+<span class="s2">  }</span>
+<span class="s2">}</span>
+<span class="s2">```</span>
+<span class="s2">---</span>
+<span class="s2"># Under the Hood</span>
+
+<span class="s2">There are many things to find when you look under the Plotly Hood. Of many things, one expected thing is the compliance and adherance to alphebetized and PEP-8&#39;ed imports at the top of any module.</span>
+
+<span class="s2">This is what the PEP-8 guide has more to say about Imports:</span>
+
+<span class="s2">Wildcard imports (from &lt;module&gt; import *) should be avoided, as they make it unclear which names are present in the namespace, confusing both readers and many automated tools. There is one defensible use case for a wildcard import, which is to republish an internal interface as part of a public API (for example, overwriting a pure Python implementation of an interface with the definitions from an optional accelerator module and exactly which definitions will be overwritten isn&#39;t known in advance).</span>
+
+<span class="s2">Image(https://help.plot.ly/images/dashboard-carousel.jpg)</span>
+
+<span class="s2">```python</span>
+<span class="s2">from __future__ import absolute_import</span>
+
+<span class="s2">import copy</span>
+<span class="s2">import json</span>
+<span class="s2">import os</span>
+<span class="s2">import time</span>
+<span class="s2">import warnings</span>
+<span class="s2">import webbrowser</span>
+
+<span class="s2">import six</span>
+<span class="s2">import six.moves</span>
+<span class="s2">from requests.compat import json as _json</span>
+
+<span class="s2">from plotly import exceptions, files, session, tools, utils</span>
+<span class="s2">from plotly.api import v1, v2</span>
+<span class="s2">from plotly.plotly import chunked_requests</span>
+<span class="s2">from plotly.grid_objs import Grid, Column</span>
+<span class="s2">from plotly.dashboard_objs import dashboard_objs as dashboard</span>
+<span class="s2">```</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">my_pres</span> <span class="o">=</span> <span class="n">pres</span><span class="o">.</span><span class="n">Presentation</span><span class="p">(</span><span class="n">markdown_string</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;martik&#39;</span><span class="p">)</span>
+<span class="n">pres_url_5</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">presentation_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">my_pres</span><span class="p">,</span> <span class="s1">&#39;martik-style&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">IPython</span>
+
+<span class="n">iframe_5</span> <span class="o">=</span> <span class="n">url_to_iframe</span><span class="p">(</span><span class="n">pres_url_5</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">iframe_5</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[13]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<head>
+    <style>
+    div.textbox {
+        margin: 30px;
+        font-weight: bold;   
+    }
+    </style>
+    </head>'
+    <iframe src=https://plot.ly/~AdamKulidjian/3707/martik-style/.embed#{} width=750 height=400 frameBorder="0"></iframe><body>
+        <div class="textbox">
+            <p>Click on the presentation above and use left/right arrow keys to flip through the slides.</p>
+        </div>
+        </body>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Transitions">Transitions<a class="anchor-link" href="#Transitions">&#194;&#182;</a></h4><p>You can specify how your want your slides to transition to one another. Just like in the Plotly Presentation Application, there are 4 types of transitions: <code>slide</code>, <code>zoom</code>, <code>fade</code> and <code>spin</code>.</p>
+<p>To apply any combination of these transition to a slide, just insert transitions at the top of the slide as follows:</p>
+<p><code>transition: slide, zoom</code></p>
+<p>Make sure that this line comes before any heading that you define in the slide, i.e. like this:</p>
+
+<pre><code>transition: slide, zoom
+# slide title</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.presentation_objs</span> <span class="kn">as</span> <span class="nn">pres</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;pres-with-transitions&#39;</span>
+<span class="n">markdown_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">transition: slide</span>
+<span class="s2"># slide</span>
+<span class="s2">---</span>
+<span class="s2">transition: zoom</span>
+<span class="s2"># zoom</span>
+<span class="s2">---</span>
+<span class="s2">transition: fade</span>
+<span class="s2"># fade</span>
+<span class="s2">---</span>
+<span class="s2">transition: spin</span>
+<span class="s2"># spin</span>
+<span class="s2">---</span>
+<span class="s2">transition: spin and slide</span>
+<span class="s2"># spin, slide</span>
+<span class="s2">---</span>
+<span class="s2">transition: fade zoom</span>
+<span class="s2"># fade, zoom</span>
+<span class="s2">---</span>
+<span class="s2">transition: slide, zoom, fade, spin, spin, spin, zoom, fade</span>
+<span class="s2"># slide, zoom, fade, spin</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">my_pres</span> <span class="o">=</span> <span class="n">pres</span><span class="o">.</span><span class="n">Presentation</span><span class="p">(</span><span class="n">markdown_string</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;moods&#39;</span><span class="p">)</span>
+<span class="n">pres_url_6</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">presentation_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">my_pres</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">IPython</span>
+
+<span class="n">iframe_6</span> <span class="o">=</span> <span class="n">url_to_iframe</span><span class="p">(</span><span class="n">pres_url_6</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">iframe_6</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[15]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<head>
+    <style>
+    div.textbox {
+        margin: 30px;
+        font-weight: bold;   
+    }
+    </style>
+    </head>'
+    <iframe src=https://plot.ly/~AdamKulidjian/3708/pres-with-transitions/.embed#{} width=750 height=400 frameBorder="0"></iframe><body>
+        <div class="textbox">
+            <p>Click on the presentation above and use left/right arrow keys to flip through the slides.</p>
+        </div>
+        </body>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Add-Thin-Border-Around-Text-Boxes">Add Thin Border Around Text Boxes<a class="anchor-link" href="#Add-Thin-Border-Around-Text-Boxes">&#194;&#182;</a></h4><p>Every <code>slide</code> has <code>children</code>, and each of these <code>children</code> have a <code>style</code> attribute. This <code>style</code> property is derived from the CSS element of the same name. Since you have the power of CSS to work with, you could customize text borders in your presentation if you want.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.presentation_objs</span> <span class="kn">as</span> <span class="nn">pres</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;pres-with-custom-css&#39;</span>
+<span class="n">markdown_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># custom css</span>
+<span class="s2">---</span>
+<span class="s2">transition: zoom, slide, spin, fade</span>
+<span class="s2"># fun with css</span>
+
+<span class="s2">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</span>
+<span class="s2">```python</span>
+<span class="s2">x = 4</span>
+
+<span class="s2">if x &lt; 2:</span>
+<span class="s2">    x = 2 * x</span>
+<span class="s2">    if x &gt;= 2:</span>
+<span class="s2">        break</span>
+<span class="s2">```</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">my_pres</span> <span class="o">=</span> <span class="n">pres</span><span class="o">.</span><span class="n">Presentation</span><span class="p">(</span><span class="n">markdown_string</span><span class="p">)</span>
+
+<span class="c1"># change text border style</span>
+<span class="n">my_pres</span><span class="p">[</span><span class="s1">&#39;presentation&#39;</span><span class="p">][</span><span class="s1">&#39;slides&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;props&#39;</span><span class="p">][</span><span class="s1">&#39;style&#39;</span><span class="p">][</span><span class="s1">&#39;border&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;solid red&#39;</span>
+
+<span class="n">pres_url_7</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">presentation_ops</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">my_pres</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://plot.ly/~AdamKulidjian/3709/pres-with-custom-css/">https://plot.ly/~AdamKulidjian/3709/pres-with-custom-css/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">IPython</span>
+
+<span class="n">iframe_7</span> <span class="o">=</span> <span class="n">url_to_iframe</span><span class="p">(</span><span class="n">pres_url_7</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">iframe_7</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<head>
+    <style>
+    div.textbox {
+        margin: 30px;
+        font-weight: bold;   
+    }
+    </style>
+    </head>'
+    <iframe src=https://plot.ly/~AdamKulidjian/3709/pres-with-custom-css/.embed#{} width=750 height=400 frameBorder="0"></iframe><body>
+        <div class="textbox">
+            <p>Click on the presentation above and use left/right arrow keys to flip through the slides.</p>
+        </div>
+        </body>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#194;&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">py</span><span class="o">.</span><span class="n">presentation_ops</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Help on class presentation_ops in module plotly.plotly.plotly:
+
+class presentation_ops
+ |  Interface to Plotly&#39;s Spectacle-Presentations API.
+ |  
+ |  Class methods defined here:
+ |  
+ |  upload(cls, presentation, filename, sharing=&#39;public&#39;, auto_open=True) from __builtin__.classobj
+ |      Function for uploading presentations to Plotly.
+ |      
+ |      :param (dict) presentation: the JSON presentation to be uploaded. Use
+ |          plotly.presentation_objs.Presentation to create presentations
+ |          from a Markdown-like string.
+ |      :param (str) filename: the name of the presentation to be saved in
+ |          your Plotly account. Will overwrite a presentation of the same
+ |          name if it already exists in your files.
+ |      :param (str) sharing: can be set to either &#39;public&#39;, &#39;private&#39;
+ |          or &#39;secret&#39;. If &#39;public&#39;, your presentation will be viewable by
+ |          all other users. If &#39;private&#39; only you can see your presentation.
+ |          If it is set to &#39;secret&#39;, the url will be returned with a string
+ |          of random characters appended to the url which is called a
+ |          sharekey. The point of a sharekey is that it makes the url very
+ |          hard to guess, but anyone with the url can view the presentation.
+ |      :param (bool) auto_open: automatically opens the presentation in the
+ |          browser.
+ |      
+ |      See the documentation online for examples.
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+ 
+
+{% endraw %}

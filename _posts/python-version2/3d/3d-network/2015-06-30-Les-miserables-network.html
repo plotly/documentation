@@ -1,0 +1,453 @@
+---
+permalink: python/3d-network-graph/
+description: How to make 3D Network Graphs in Python. 
+name: Python 3D Network Graphs
+has_thumbnail: true
+thumbnail: thumbnail/3dnetwork.jpg
+layout: user-guide
+name: 3D Network Graphs
+language: python
+title: 3D Network Graphs in Python | plotly
+display_as: 3d_charts
+has_thumbnail: true
+page_type: example_index
+order: 13
+ipynb: ~notebook_demo/226
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4>Network reflecting coappearances of characters in <br>Victor Hugo's novel Les Miserables</h4>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We define our graph as an <code>igraph.Graph</code> object. <a href="http://igraph.org/python/">Python <code>igraph</code></a>
+is a library for high-performance graph generation  and analysis. Install the Python library with <code>sudo pip install python-igraph</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">igraph</span> <span class="kn">as</span> <span class="nn">ig</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Read graph data from a <code>json</code> file:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s2">&quot;https://raw.githubusercontent.com/plotly/datasets/master/miserables.json&quot;</span><span class="p">)</span>
+<span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">()</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+<span class="k">print</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[u&#39;nodes&#39;, u&#39;links&#39;]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Get the number of nodes:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">N</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">])</span>
+<span class="n">N</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>77</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Define the list of edges and the Graph object from Edges:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">L</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;links&#39;</span><span class="p">])</span>
+<span class="n">Edges</span><span class="o">=</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;links&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;source&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;links&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;target&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+
+<span class="n">G</span><span class="o">=</span><span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">Edges</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Extract the node attributes, 'group', and 'name':</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{u&#39;group&#39;: 1, u&#39;name&#39;: u&#39;Myriel&#39;}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">labels</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">group</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">]:</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;group&#39;</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Get the node positions, set by the Kamada-Kawai layout for 3D graphs:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layt</span><span class="o">=</span><span class="n">G</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span><span class="s1">&#39;kk&#39;</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>layt</code> is a list of three elements lists (the coordinates of nodes):</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layt</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[8]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[4.195949332184983, 1.172321178571202, -2.5543268281789135]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Set data for the Plotly plot of the graph:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">Xn</span><span class="o">=</span><span class="p">[</span><span class="n">layt</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span><span class="c1"># x-coordinates of nodes</span>
+<span class="n">Yn</span><span class="o">=</span><span class="p">[</span><span class="n">layt</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span><span class="c1"># y-coordinates</span>
+<span class="n">Zn</span><span class="o">=</span><span class="p">[</span><span class="n">layt</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span><span class="c1"># z-coordinates</span>
+<span class="n">Xe</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">Ye</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">Ze</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">Edges</span><span class="p">:</span>
+    <span class="n">Xe</span><span class="o">+=</span><span class="p">[</span><span class="n">layt</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">],</span><span class="n">layt</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">None</span><span class="p">]</span><span class="c1"># x-coordinates of edge ends</span>
+    <span class="n">Ye</span><span class="o">+=</span><span class="p">[</span><span class="n">layt</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">1</span><span class="p">],</span><span class="n">layt</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">],</span> <span class="bp">None</span><span class="p">]</span>  
+    <span class="n">Ze</span><span class="o">+=</span><span class="p">[</span><span class="n">layt</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">2</span><span class="p">],</span><span class="n">layt</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">2</span><span class="p">],</span> <span class="bp">None</span><span class="p">]</span>  
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="n">trace1</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter3d</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Xe</span><span class="p">,</span>
+               <span class="n">y</span><span class="o">=</span><span class="n">Ye</span><span class="p">,</span>
+               <span class="n">z</span><span class="o">=</span><span class="n">Ze</span><span class="p">,</span>
+               <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+               <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(125,125,125)&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+               <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;none&#39;</span>
+               <span class="p">)</span>
+
+<span class="n">trace2</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter3d</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Xn</span><span class="p">,</span>
+               <span class="n">y</span><span class="o">=</span><span class="n">Yn</span><span class="p">,</span>
+               <span class="n">z</span><span class="o">=</span><span class="n">Zn</span><span class="p">,</span>
+               <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+               <span class="n">name</span><span class="o">=</span><span class="s1">&#39;actors&#39;</span><span class="p">,</span>
+               <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;circle&#39;</span><span class="p">,</span>
+                             <span class="n">size</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+                             <span class="n">color</span><span class="o">=</span><span class="n">group</span><span class="p">,</span>
+                             <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;Viridis&#39;</span><span class="p">,</span>
+                             <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;rgb(50,50,50)&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+                             <span class="p">),</span>
+               <span class="n">text</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+               <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">&#39;text&#39;</span>
+               <span class="p">)</span>
+
+<span class="n">axis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">showbackground</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+          <span class="n">showline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+          <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+          <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+          <span class="n">showticklabels</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+          <span class="p">)</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+         <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Network of coappearances of characters in Victor Hugo&#39;s novel&lt;br&gt; Les Miserables (3D visualization)&quot;</span><span class="p">,</span>
+         <span class="n">width</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+         <span class="n">height</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+         <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+         <span class="n">scene</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+             <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span>
+             <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span>
+             <span class="n">zaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span>
+        <span class="p">),</span>
+     <span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">t</span><span class="o">=</span><span class="mi">100</span>
+    <span class="p">),</span>
+    <span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span><span class="p">,</span>
+    <span class="n">annotations</span><span class="o">=</span><span class="p">[</span>
+           <span class="nb">dict</span><span class="p">(</span>
+           <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Data source: &lt;a href=&#39;http://bost.ocks.org/mike/miserables/miserables.json&#39;&gt;[1] miserables.json&lt;/a&gt;&quot;</span><span class="p">,</span>
+            <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span>
+            <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+            <span class="n">xanchor</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+            <span class="n">yanchor</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span>
+            <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">size</span><span class="o">=</span><span class="mi">14</span>
+            <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">],</span>    <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">]</span>
+<span class="n">fig</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;Les-Miserables&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~priyatharsan/186.embed" height="1000px" width="1000px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#182;</a></h4><p>See <a href="https://plot.ly/python/reference/#scatter3d">https://plot.ly/python/reference/#scatter3d</a> for more information and chart attribute options!</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

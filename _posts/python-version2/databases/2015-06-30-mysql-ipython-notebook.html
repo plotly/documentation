@@ -1,0 +1,380 @@
+---
+permalink: python/graph-data-from-mysql-database-in-python/
+description: How to graph data from a MySQL database with Python.
+name: Plot Data from MySQL
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+language: python
+title: Plot Data from a MySQL Database | Plotly
+display_as: databases
+has_thumbnail: false
+page_type: example_index
+order: 1
+---
+{% raw %}<script type="text/javascript"         src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#182;</a></h4><p>Plotly's python package is updated frequently. Run <code>pip install plotly --upgrade</code> to use the latest version.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.4.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h4><p>This notebook uses the MySQL world database:<a href="http://dev.mysql.com/doc/index-other.html">http://dev.mysql.com/doc/index-other.html</a>. Instructions for setting up the world database in MySQL are <a href="https://dev.mysql.com/doc/world-setup/en/">here</a>. This notebook was created for <a href="http://mod.plot.ly/graph-data-from-mysql-database-in-python/">this article in <em>Modern Data</em></a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">MySQLdb</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Connect-to-MySQL-Database">Connect to MySQL Database<a class="anchor-link" href="#Connect-to-MySQL-Database">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">conn</span> <span class="o">=</span> <span class="n">MySQLdb</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s2">&quot;root&quot;</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="s2">&quot;xxxx&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;select Name, Continent, Population, LifeExpectancy, GNP from Country&#39;</span><span class="p">);</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="nb">str</span><span class="p">(</span><span class="n">rows</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">300</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#34;((&#39;Aruba&#39;, &#39;North America&#39;, 103000L, 78.4, 828.0), (&#39;Afghanistan&#39;, &#39;Asia&#39;, 22720000L, 45.9, 5976.0), (&#39;Angola&#39;, &#39;Africa&#39;, 12878000L, 38.3, 6648.0), (&#39;Anguilla&#39;, &#39;North America&#39;, 8000L, 76.1, 63.2), (&#39;Albania&#39;, &#39;Europe&#39;, 3401200L, 71.6, 3205.0), (&#39;Andorra&#39;, &#39;Europe&#39;, 78000L, 83.5, 1630.0), (&#39;Netherla&#34;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span> <span class="p">[[</span><span class="n">ij</span> <span class="k">for</span> <span class="n">ij</span> <span class="ow">in</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span> <span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Continent&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Population&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;LifeExpectancy&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span><span class="s1">&#39;GNP&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">);</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;LifeExpectancy&#39;</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Some country names cause serialization errors in early versions of Plotly's Python client. The code block below takes care of this.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">country_names</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">country_names</span><span class="p">)):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">country_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">country_names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">country_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Country name decode error&#39;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\Python27\lib\site-packages\ipykernel_launcher.py:4: SettingWithCopyWarning:
+
+
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;GNP&#39;</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LifeExpectancy&#39;</span><span class="p">],</span>
+    <span class="n">text</span><span class="o">=</span><span class="n">country_names</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span>
+<span class="p">)</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Life expectancy vs GNP from MySQL world database&#39;</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;GNP&#39;</span> <span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Life expectancy&#39;</span> <span class="p">)</span>
+<span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace1</span><span class="p">]</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;world GNP vs life expectancy&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/2739.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># (!) Set &#39;size&#39; values to be proportional to rendered area,</span>
+<span class="c1">#     instead of diameter. This makes the range of bubble sizes smaller</span>
+<span class="n">sizemode</span><span class="o">=</span><span class="s1">&#39;area&#39;</span>
+
+<span class="c1"># (!) Set a reference for &#39;size&#39; values (i.e. a population-to-pixel scaling).</span>
+<span class="c1">#     Here the max bubble area will be on the order of 100 pixels</span>
+<span class="n">sizeref</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Population&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">/</span><span class="mf">1e2</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Asia&#39;</span><span class="p">:</span><span class="s2">&quot;rgb(255,65,54)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;Europe&#39;</span><span class="p">:</span><span class="s2">&quot;rgb(133,20,75)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;Africa&#39;</span><span class="p">:</span><span class="s2">&quot;rgb(0,116,217)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;North America&#39;</span><span class="p">:</span><span class="s2">&quot;rgb(255,133,27)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;South America&#39;</span><span class="p">:</span><span class="s2">&quot;rgb(23,190,207)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;Antarctica&#39;</span><span class="p">:</span><span class="s2">&quot;rgb(61,153,112)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;Oceania&#39;</span><span class="p">:</span><span class="s2">&quot;rgb(255,220,0)&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># Define a hover-text generating function (returns a list of strings)</span>
+<span class="k">def</span> <span class="nf">make_text</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">&#39;Country: </span><span class="si">%s</span><span class="se">\</span>
+<span class="s1">    &lt;br&gt;Life Expectancy: </span><span class="si">%s</span><span class="s1"> years</span><span class="se">\</span>
+<span class="s1">    &lt;br&gt;Population: </span><span class="si">%s</span><span class="s1"> million&#39;</span>\
+    <span class="o">%</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="s1">&#39;LifeExpectancy&#39;</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="s1">&#39;Population&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">1e6</span><span class="p">)</span>
+
+<span class="c1"># Define a trace-generating function (returns a Scatter object)</span>
+<span class="k">def</span> <span class="nf">make_trace</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">continent</span><span class="p">,</span> <span class="n">sizes</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="s1">&#39;GNP&#39;</span><span class="p">],</span>  <span class="c1"># GDP on the x-xaxis</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="s1">&#39;LifeExpectancy&#39;</span><span class="p">],</span>    <span class="c1"># life Exp on th y-axis</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">continent</span><span class="p">,</span>    <span class="c1"># label continent names on hover</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>    <span class="c1"># (!) point markers only on this plot</span>
+        <span class="n">text</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">make_text</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+        <span class="n">marker</span><span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>           <span class="c1"># marker color</span>
+            <span class="n">size</span><span class="o">=</span><span class="n">sizes</span><span class="p">,</span>            <span class="c1"># (!) marker sizes (sizes is a list)</span>
+            <span class="n">sizeref</span><span class="o">=</span><span class="n">sizeref</span><span class="p">,</span>       <span class="c1"># link sizeref</span>
+            <span class="n">sizemode</span><span class="o">=</span><span class="n">sizemode</span><span class="p">,</span>     <span class="c1"># link sizemode</span>
+            <span class="n">opacity</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>           <span class="c1"># (!) partly transparent markers</span>
+            <span class="n">line</span><span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>  <span class="c1"># marker borders</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="c1"># Initialize data object </span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Group data frame by continent sub-dataframe (named X), </span>
+<span class="c1">#   make one trace object per continent and append to data object</span>
+<span class="k">for</span> <span class="n">continent</span><span class="p">,</span> <span class="n">X</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Continent&#39;</span><span class="p">):</span>
+
+    <span class="n">sizes</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="s1">&#39;Population&#39;</span><span class="p">]</span>                 <span class="c1"># get population array </span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">continent</span><span class="p">]</span>               <span class="c1"># get bubble color</span>
+
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">make_trace</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">continent</span><span class="p">,</span> <span class="n">sizes</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>  <span class="c1"># append trace to data object</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Set plot and axis titles</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Life expectancy vs GNP from MySQL world database (bubble chart)&quot;</span>
+<span class="n">x_title</span> <span class="o">=</span> <span class="s2">&quot;Gross National Product&quot;</span>
+<span class="n">y_title</span> <span class="o">=</span> <span class="s2">&quot;Life Expectancy [in years]&quot;</span>
+
+<span class="c1"># Define a dictionary of axis style options</span>
+<span class="n">axis_style</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span>
+    <span class="n">zeroline</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>       <span class="c1"># remove thick zero line</span>
+    <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;#FFFFFF&#39;</span><span class="p">,</span>  <span class="c1"># white grid lines</span>
+    <span class="n">ticks</span><span class="o">=</span><span class="s1">&#39;outside&#39;</span><span class="p">,</span>      <span class="c1"># draw ticks outside axes </span>
+    <span class="n">ticklen</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>            <span class="c1"># tick length</span>
+    <span class="n">tickwidth</span><span class="o">=</span><span class="mf">1.5</span>         <span class="c1">#   and width</span>
+<span class="p">)</span>
+
+<span class="c1"># Make layout object</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>             <span class="c1"># set plot title</span>
+    <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;#EFECEA&#39;</span><span class="p">,</span>  <span class="c1"># set plot color to grey</span>
+    <span class="n">hovermode</span><span class="o">=</span><span class="s2">&quot;closest&quot;</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">axis_style</span><span class="p">,</span>      <span class="c1"># add axis style dictionary</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">x_title</span><span class="p">,</span>   <span class="c1"># x-axis title</span>
+        <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">7.2</span><span class="p">],</span> <span class="c1"># log of min and max x limits</span>
+    <span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">axis_style</span><span class="p">,</span>      <span class="c1"># add axis style dictionary</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">y_title</span><span class="p">,</span>   <span class="c1"># y-axis title</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Make Figure object</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="c1"># (@) Send to Plotly and show in notebook</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;s3_life-gdp&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/2741.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="References">References<a class="anchor-link" href="#References">&#182;</a></h4><p>See <a href="https://plot.ly/python/getting-started/">https://plot.ly/python/getting-started/</a> for more information about Plotly's Python Open Source Graphing Library!</p>
+
+</div>
+</div>
+</div>
+
+
+{% endraw %}

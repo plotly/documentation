@@ -1,0 +1,796 @@
+---
+permalink: python/county-choropleth/
+description: How to create colormaped representations of USA counties by FIPS values in Python.
+name: USA County Choropleth Maps
+has_thumbnail: true
+thumbnail: thumbnail/county-choropleth-usa-greybkgd.jpg
+layout: user-guide
+language: python
+title: Python USA County Choropleth Maps | Plotly
+display_as: maps
+has_thumbnail: true
+page_type: example_index
+order: 0
+ipynb: ~notebook_demo/212
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#182;</a></h4><p>Note: <code>United States County Choropleths</code> are available in version <b>2.5.1+</b><br>
+Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.7.0&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Required-Packages">Required Packages<a class="anchor-link" href="#Required-Packages">&#182;</a></h4><p><code>geopandas</code>, <code>pyshp</code> and <code>shapely</code> must be installed for this figure factory.</p>
+<p>Run the following commands to install the correct versions of the following modules:</p>
+
+<pre><code>pip install geopandas==0.3.0
+pip install pyshp==1.2.10
+pip install shapely==1.6.3</code></pre>
+<p>If you are using Windows, follow this post to properly install geopandas and dependencies: <a href="http://geoffboeing.com/2014/09/using-geopandas-windows/">http://geoffboeing.com/2014/09/using-geopandas-windows/</a>. If you are using Anaconda, do not use PIP to install the packages above. Instead use conda to install them:</p>
+
+<pre><code>conda install plotly
+conda install geopandas</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="FIPS-and-Values">FIPS and Values<a class="anchor-link" href="#FIPS-and-Values">&#182;</a></h4><p>Every US state and county has an assined ID regulated by the US Federal Government under the term FIPS (Federal Information Processing Standards) codes. There are state codes and county codes: the 2016 state and county FIPS codes can be found at the <a href="https://www.census.gov/geographies/reference-files/2016/demo/popest/2016-fips.html">US Census Website</a>.</p>
+<p>Combine a state FIPS code (eg. <code>06</code> for California) with a county FIPS code of the state (eg. <code>059</code> for Orange county) and this new state-county FIPS code (<code>06059</code>) uniquely refers to the specified state and county.</p>
+<p><code>ff.create_choropleth</code> only needs a list of FIPS codes and a list of values. Each FIPS code points to one county and each corresponding value in <code>values</code> determines the color of the county.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Simple-Example">Simple Example<a class="anchor-link" href="#Simple-Example">&#182;</a></h4><p>A simple example of this is a choropleth a few counties in California:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="kn">as</span> <span class="nn">ff</span>
+
+<span class="n">fips</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;06021&#39;</span><span class="p">,</span> <span class="s1">&#39;06023&#39;</span><span class="p">,</span> <span class="s1">&#39;06027&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;06029&#39;</span><span class="p">,</span> <span class="s1">&#39;06033&#39;</span><span class="p">,</span> <span class="s1">&#39;06059&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;06047&#39;</span><span class="p">,</span> <span class="s1">&#39;06049&#39;</span><span class="p">,</span> <span class="s1">&#39;06051&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;06055&#39;</span><span class="p">,</span> <span class="s1">&#39;06061&#39;</span><span class="p">]</span>
+<span class="n">values</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fips</span><span class="p">))</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_choropleth</span><span class="p">(</span><span class="n">fips</span><span class="o">=</span><span class="n">fips</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;choropleth of some cali counties - full usa scope&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/home/michael/.virtualenvs/plot2py2/local/lib/python2.7/site-packages/pandas/core/frame.py:6211: FutureWarning:
+
+Sorting because non-concatenation axis is not aligned. A future version
+of pandas will change to not sort by default.
+
+To accept the future behavior, pass &#39;sort=False&#39;.
+
+To retain the current behavior and silence the warning, pass &#39;sort=True&#39;.
+
+
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~michaelbabyn/97.embed" height="450px" width="900px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Change-the-Scope">Change the Scope<a class="anchor-link" href="#Change-the-Scope">&#182;</a></h4><p>Even if your FIPS values belong to a single state, the scope defaults to the entire United States as displayed in the example above. Changing the scope of the choropleth shifts the zoom and position of the USA map. You can define the scope with a list of state names and the zoom will automatically adjust to include the state outlines of the selected states.</p>
+<p>By default <code>scope</code> is set to <code>['USA']</code> which the API treats as identical to passing a list of all 50 state names:<br></p>
+<p><code>['AK', 'AL', 'CA', ...]</code></p>
+<p>State abbreviations (eg. <code>CA</code>) or the proper names (eg. <code>California</code>) as strings are accepted. If the state name is not recognized, the API will throw a Warning and indicate which FIPS values were ignored.</p>
+<p>Another param used in the example below is <code>binning_endpoints</code>. If your <code>values</code> is a list of numbers, you can bin your values into half-open intervals on the real line.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="kn">as</span> <span class="nn">ff</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">df_sample</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/minoritymajority.csv&#39;</span><span class="p">)</span>
+<span class="n">df_sample_r</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;STNAME&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;California&#39;</span><span class="p">]</span>
+
+<span class="n">values</span> <span class="o">=</span> <span class="n">df_sample_r</span><span class="p">[</span><span class="s1">&#39;TOT_POP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">fips</span> <span class="o">=</span> <span class="n">df_sample_r</span><span class="p">[</span><span class="s1">&#39;FIPS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="n">colorscale</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;rgb(193, 193, 193)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rgb(239,239,239)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rgb(195, 196, 222)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rgb(144,148,194)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rgb(101,104,168)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rgb(65, 53, 132)&#39;</span>
+<span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_choropleth</span><span class="p">(</span>
+    <span class="n">fips</span><span class="o">=</span><span class="n">fips</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CA&#39;</span><span class="p">,</span> <span class="s1">&#39;AZ&#39;</span><span class="p">,</span> <span class="s1">&#39;Nevada&#39;</span><span class="p">,</span> <span class="s1">&#39;Oregon&#39;</span><span class="p">,</span> <span class="s1">&#39; Idaho&#39;</span><span class="p">],</span>
+    <span class="n">binning_endpoints</span><span class="o">=</span><span class="p">[</span><span class="mi">14348</span><span class="p">,</span> <span class="mi">63983</span><span class="p">,</span> <span class="mi">134827</span><span class="p">,</span> <span class="mi">426762</span><span class="p">,</span> <span class="mi">2081313</span><span class="p">],</span> <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span>
+    <span class="n">county_outline</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span> <span class="n">round_legend_values</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s1">&#39;Population by County&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;California and Nearby States&#39;</span>
+<span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;choropleth_california_and_surr_states_outlines&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~michaelbabyn/99.embed" height="450px" width="900px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Single-State">Single State<a class="anchor-link" href="#Single-State">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="kn">as</span> <span class="nn">ff</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">df_sample</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/minoritymajority.csv&#39;</span><span class="p">)</span>
+<span class="n">df_sample_r</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;STNAME&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Florida&#39;</span><span class="p">]</span>
+
+<span class="n">values</span> <span class="o">=</span> <span class="n">df_sample_r</span><span class="p">[</span><span class="s1">&#39;TOT_POP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">fips</span> <span class="o">=</span> <span class="n">df_sample_r</span><span class="p">[</span><span class="s1">&#39;FIPS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="n">endpts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">values</span><span class="p">):</span><span class="nb">max</span><span class="p">(</span><span class="n">values</span><span class="p">):</span><span class="mi">4j</span><span class="p">])</span>
+<span class="n">colorscale</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#030512&quot;</span><span class="p">,</span><span class="s2">&quot;#1d1d3b&quot;</span><span class="p">,</span><span class="s2">&quot;#323268&quot;</span><span class="p">,</span><span class="s2">&quot;#3d4b94&quot;</span><span class="p">,</span><span class="s2">&quot;#3e6ab0&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#4989bc&quot;</span><span class="p">,</span><span class="s2">&quot;#60a7c7&quot;</span><span class="p">,</span><span class="s2">&quot;#85c5d3&quot;</span><span class="p">,</span><span class="s2">&quot;#b7e0e4&quot;</span><span class="p">,</span><span class="s2">&quot;#eafcfd&quot;</span><span class="p">]</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_choropleth</span><span class="p">(</span>
+    <span class="n">fips</span><span class="o">=</span><span class="n">fips</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Florida&#39;</span><span class="p">],</span> <span class="n">show_state_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span> <span class="n">binning_endpoints</span><span class="o">=</span><span class="n">endpts</span><span class="p">,</span> <span class="n">round_legend_values</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgb(229,229,229)&#39;</span><span class="p">,</span>
+    <span class="n">paper_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgb(229,229,229)&#39;</span><span class="p">,</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s1">&#39;Population by County&#39;</span><span class="p">,</span>
+    <span class="n">county_outline</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
+    <span class="n">exponent_format</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;choropleth_florida&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~michaelbabyn/101.embed" height="450px" width="900px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Multiple-States">Multiple States<a class="anchor-link" href="#Multiple-States">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="kn">as</span> <span class="nn">ff</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">NE_states</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Connecticut&#39;</span><span class="p">,</span> <span class="s1">&#39;Maine&#39;</span><span class="p">,</span> <span class="s1">&#39;Massachusetts&#39;</span><span class="p">,</span> <span class="s1">&#39;New Hampshire&#39;</span><span class="p">,</span> <span class="s1">&#39;Rhode Island&#39;</span><span class="p">,</span> <span class="s1">&#39;Vermont&#39;</span><span class="p">]</span>
+<span class="n">df_sample</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/minoritymajority.csv&#39;</span><span class="p">)</span>
+<span class="n">df_sample_r</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;STNAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">NE_states</span><span class="p">)]</span>
+
+<span class="n">values</span> <span class="o">=</span> <span class="n">df_sample_r</span><span class="p">[</span><span class="s1">&#39;TOT_POP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">fips</span> <span class="o">=</span> <span class="n">df_sample_r</span><span class="p">[</span><span class="s1">&#39;FIPS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="n">colorscale</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;rgb(68.0, 1.0, 84.0)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rgb(66.0, 64.0, 134.0)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rgb(38.0, 130.0, 142.0)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rgb(63.0, 188.0, 115.0)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rgb(216.0, 226.0, 25.0)&#39;</span>
+<span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_choropleth</span><span class="p">(</span>
+    <span class="n">fips</span><span class="o">=</span><span class="n">fips</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">scope</span><span class="o">=</span><span class="n">NE_states</span><span class="p">,</span> <span class="n">county_outline</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s1">&#39;Population per county&#39;</span>
+   
+<span class="p">)</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;legend&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">][</span><span class="s1">&#39;annotations&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.12</span><span class="p">,</span> <span class="s1">&#39;xanchor&#39;</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">})</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;choropleth_new_england&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~michaelbabyn/103.embed" height="450px" width="900px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Simplify-County,-State-Lines">Simplify County, State Lines<a class="anchor-link" href="#Simplify-County,-State-Lines">&#182;</a></h4><p>Below is a choropleth that uses several other parameters. For a full list of all available params call <code>help(ff.create_choropleth)</code></p>
+<ul>
+<li><code>simplify_county</code> determines the simplification factor for the counties. The larger the number, the fewer vertices and edges each polygon has. See <a href="http://toblerity.org/shapely/manual.html#object.simplify">http://toblerity.org/shapely/manual.html#object.simplify</a> for more information.</li>
+<li><code>simplify_state</code> simplifies the state outline polygon. See the <a href="http://toblerity.org/shapely/manual.html#object.simplify">documentation</a> for more information.
+Default for both <code>simplify_county</code> and <code>simplif_state</code> is 0.02</li>
+</ul>
+<p>Note: This choropleth uses a divergent categorical colorscale. See <a href="http://react-colorscales.getforge.io/">http://react-colorscales.getforge.io/</a> for other cool colorscales.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="kn">as</span> <span class="nn">ff</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Oregon&#39;</span><span class="p">]</span>
+<span class="n">df_sample</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/minoritymajority.csv&#39;</span>
+<span class="p">)</span>
+<span class="n">df_sample_r</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;STNAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">scope</span><span class="p">)]</span>
+
+<span class="n">values</span> <span class="o">=</span> <span class="n">df_sample_r</span><span class="p">[</span><span class="s1">&#39;TOT_POP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">fips</span> <span class="o">=</span> <span class="n">df_sample_r</span><span class="p">[</span><span class="s1">&#39;FIPS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="n">colorscale</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#8dd3c7&quot;</span><span class="p">,</span> <span class="s2">&quot;#ffffb3&quot;</span><span class="p">,</span> <span class="s2">&quot;#bebada&quot;</span><span class="p">,</span> <span class="s2">&quot;#fb8072&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#80b1d3&quot;</span><span class="p">,</span> <span class="s2">&quot;#fdb462&quot;</span><span class="p">,</span> <span class="s2">&quot;#b3de69&quot;</span><span class="p">,</span> <span class="s2">&quot;#fccde5&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#d9d9d9&quot;</span><span class="p">,</span> <span class="s2">&quot;#bc80bd&quot;</span><span class="p">,</span> <span class="s2">&quot;#ccebc5&quot;</span><span class="p">,</span> <span class="s2">&quot;#ffed6f&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#8dd3c7&quot;</span><span class="p">,</span> <span class="s2">&quot;#ffffb3&quot;</span><span class="p">,</span> <span class="s2">&quot;#bebada&quot;</span><span class="p">,</span> <span class="s2">&quot;#fb8072&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#80b1d3&quot;</span><span class="p">,</span> <span class="s2">&quot;#fdb462&quot;</span><span class="p">,</span> <span class="s2">&quot;#b3de69&quot;</span><span class="p">,</span> <span class="s2">&quot;#fccde5&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#d9d9d9&quot;</span><span class="p">,</span> <span class="s2">&quot;#bc80bd&quot;</span><span class="p">,</span> <span class="s2">&quot;#ccebc5&quot;</span><span class="p">,</span> <span class="s2">&quot;#ffed6f&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#8dd3c7&quot;</span><span class="p">,</span> <span class="s2">&quot;#ffffb3&quot;</span><span class="p">,</span> <span class="s2">&quot;#bebada&quot;</span><span class="p">,</span> <span class="s2">&quot;#fb8072&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#80b1d3&quot;</span><span class="p">,</span> <span class="s2">&quot;#fdb462&quot;</span><span class="p">,</span> <span class="s2">&quot;#b3de69&quot;</span><span class="p">,</span> <span class="s2">&quot;#fccde5&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#d9d9d9&quot;</span><span class="p">,</span> <span class="s2">&quot;#bc80bd&quot;</span><span class="p">,</span> <span class="s2">&quot;#ccebc5&quot;</span><span class="p">,</span> <span class="s2">&quot;#ffed6f&quot;</span><span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_choropleth</span><span class="p">(</span>
+    <span class="n">fips</span><span class="o">=</span><span class="n">fips</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">,</span>
+    <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span> <span class="n">round_legend_values</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">simplify_county</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">simplify_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">county_outline</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(15, 15, 55)&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
+    <span class="n">state_outline</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s1">&#39;pop. per county&#39;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Oregon&#39;</span>
+<span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;choropleth_oregon_ono_simplification_factor&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~michaelbabyn/105.embed" height="450px" width="900px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="The-Entire-USA">The Entire USA<a class="anchor-link" href="#The-Entire-USA">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="kn">as</span> <span class="nn">ff</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">df_sample</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/laucnty16.csv&#39;</span><span class="p">)</span>
+<span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;State FIPS Code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;State FIPS Code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;County FIPS Code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;County FIPS Code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;FIPS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;State FIPS Code&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;County FIPS Code&#39;</span><span class="p">]</span>
+
+<span class="n">colorscale</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#f7fbff&quot;</span><span class="p">,</span><span class="s2">&quot;#ebf3fb&quot;</span><span class="p">,</span><span class="s2">&quot;#deebf7&quot;</span><span class="p">,</span><span class="s2">&quot;#d2e3f3&quot;</span><span class="p">,</span><span class="s2">&quot;#c6dbef&quot;</span><span class="p">,</span><span class="s2">&quot;#b3d2e9&quot;</span><span class="p">,</span><span class="s2">&quot;#9ecae1&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#85bcdb&quot;</span><span class="p">,</span><span class="s2">&quot;#6baed6&quot;</span><span class="p">,</span><span class="s2">&quot;#57a0ce&quot;</span><span class="p">,</span><span class="s2">&quot;#4292c6&quot;</span><span class="p">,</span><span class="s2">&quot;#3082be&quot;</span><span class="p">,</span><span class="s2">&quot;#2171b5&quot;</span><span class="p">,</span><span class="s2">&quot;#1361a9&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;#08519c&quot;</span><span class="p">,</span><span class="s2">&quot;#0b4083&quot;</span><span class="p">,</span><span class="s2">&quot;#08306b&quot;</span><span class="p">]</span>
+<span class="n">endpts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">colorscale</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">fips</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;FIPS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">values</span> <span class="o">=</span> <span class="n">df_sample</span><span class="p">[</span><span class="s1">&#39;Unemployment Rate (%)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">create_choropleth</span><span class="p">(</span>
+    <span class="n">fips</span><span class="o">=</span><span class="n">fips</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">binning_endpoints</span><span class="o">=</span><span class="n">endpts</span><span class="p">,</span>
+    <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span>
+    <span class="n">show_state_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">show_hover</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">centroid_marker</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;opacity&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+    <span class="n">asp</span><span class="o">=</span><span class="mf">2.9</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;USA by Unemployment %&#39;</span><span class="p">,</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">% u</span><span class="s1">nemployed&#39;</span>
+<span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;choropleth_full_usa&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>The draw time for this plot will be slow for clients without much RAM.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/home/michael/.virtualenvs/plot2py2/local/lib/python2.7/site-packages/plotly/api/v1/clientresp.py:40: UserWarning:
+
+Estimated Draw Time Slow
+
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~michaelbabyn/107.embed" height="450px" width="900px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Also see Mapbox county choropleths made in Python: <a href="https://plot.ly/python/mapbox-county-choropleth/">https://plot.ly/python/mapbox-county-choropleth/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">ff</span><span class="o">.</span><span class="n">create_choropleth</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Help on function create_choropleth in module plotly.figure_factory._county_choropleth:
+
+create_choropleth(fips, values, scope=[&#39;usa&#39;], binning_endpoints=None, colorscale=None, order=None, simplify_county=0.02, simplify_state=0.02, asp=None, show_hover=True, show_state_data=True, state_outline=None, county_outline=None, centroid_marker=None, round_legend_values=False, exponent_format=False, legend_title=&#39;&#39;, **layout_options)
+    Returns figure for county choropleth. Uses data from package_data.
+    
+    :param (list) fips: list of FIPS values which correspond to the con
+        catination of state and county ids. An example is &#39;01001&#39;.
+    :param (list) values: list of numbers/strings which correspond to the
+        fips list. These are the values that will determine how the counties
+        are colored.
+    :param (list) scope: list of states and/or states abbreviations. Fits
+        all states in the camera tightly. Selecting [&#39;usa&#39;] is the equivalent
+        of appending all 50 states into your scope list. Selecting only &#39;usa&#39;
+        does not include &#39;Alaska&#39;, &#39;Puerto Rico&#39;, &#39;American Samoa&#39;,
+        &#39;Commonwealth of the Northern Mariana Islands&#39;, &#39;Guam&#39;,
+        &#39;United States Virgin Islands&#39;. These must be added manually to the
+        list.
+        Default = [&#39;usa&#39;]
+    :param (list) binning_endpoints: ascending numbers which implicitly define
+        real number intervals which are used as bins. The colorscale used must
+        have the same number of colors as the number of bins and this will
+        result in a categorical colormap.
+    :param (list) colorscale: a list of colors with length equal to the
+        number of categories of colors. The length must match either all
+        unique numbers in the &#39;values&#39; list or if endpoints is being used, the
+        number of categories created by the endpoints.
+    
+        For example, if binning_endpoints = [4, 6, 8], then there are 4 bins:
+        [-inf, 4), [4, 6), [6, 8), [8, inf)
+    :param (list) order: a list of the unique categories (numbers/bins) in any
+        desired order. This is helpful if you want to order string values to
+        a chosen colorscale.
+    :param (float) simplify_county: determines the simplification factor
+        for the counties. The larger the number, the fewer vertices and edges
+        each polygon has. See
+        http://toblerity.org/shapely/manual.html#object.simplify for more
+        information.
+        Default = 0.02
+    :param (float) simplify_state: simplifies the state outline polygon.
+        See http://toblerity.org/shapely/manual.html#object.simplify for more
+        information.
+        Default = 0.02
+    :param (float) asp: the width-to-height aspect ratio for the camera.
+        Default = 2.5
+    :param (bool) show_hover: show county hover and centroid info
+    :param (bool) show_state_data: reveals state boundary lines
+    :param (dict) state_outline: dict of attributes of the state outline
+        including width and color. See
+        https://plot.ly/python/reference/#scatter-marker-line for all valid
+        params
+    :param (dict) county_outline: dict of attributes of the county outline
+        including width and color. See
+        https://plot.ly/python/reference/#scatter-marker-line for all valid
+        params
+    :param (dict) centroid_marker: dict of attributes of the centroid marker.
+        The centroid markers are invisible by default and appear visible on
+        selection. See https://plot.ly/python/reference/#scatter-marker for
+        all valid params
+    :param (bool) round_legend_values: automatically round the numbers that
+        appear in the legend to the nearest integer.
+        Default = False
+    :param (bool) exponent_format: if set to True, puts numbers in the K, M,
+        B number format. For example 4000.0 becomes 4.0K
+        Default = False
+    :param (str) legend_title: title that appears above the legend
+    :param **layout_options: a **kwargs argument for all layout parameters
+    
+    
+    Example 1: Florida
+    ```
+    import plotly.plotly as py
+    import plotly.figure_factory as ff
+    
+    import numpy as np
+    import pandas as pd
+    
+    df_sample = pd.read_csv(
+        &#39;https://raw.githubusercontent.com/plotly/datasets/master/minoritymajority.csv&#39;
+    )
+    df_sample_r = df_sample[df_sample[&#39;STNAME&#39;] == &#39;Florida&#39;]
+    
+    values = df_sample_r[&#39;TOT_POP&#39;].tolist()
+    fips = df_sample_r[&#39;FIPS&#39;].tolist()
+    
+    binning_endpoints = list(np.mgrid[min(values):max(values):4j])
+    colorscale = [&#34;#030512&#34;,&#34;#1d1d3b&#34;,&#34;#323268&#34;,&#34;#3d4b94&#34;,&#34;#3e6ab0&#34;,
+                  &#34;#4989bc&#34;,&#34;#60a7c7&#34;,&#34;#85c5d3&#34;,&#34;#b7e0e4&#34;,&#34;#eafcfd&#34;]
+    fig = ff.create_choropleth(
+        fips=fips, values=values, scope=[&#39;Florida&#39;], show_state_data=True,
+        colorscale=colorscale, binning_endpoints=binning_endpoints,
+        round_legend_values=True, plot_bgcolor=&#39;rgb(229,229,229)&#39;,
+        paper_bgcolor=&#39;rgb(229,229,229)&#39;, legend_title=&#39;Florida Population&#39;,
+        county_outline={&#39;color&#39;: &#39;rgb(255,255,255)&#39;, &#39;width&#39;: 0.5},
+        exponent_format=True,
+    )
+    py.iplot(fig, filename=&#39;choropleth_florida&#39;)
+    ```
+    
+    Example 2: New England
+    ```
+    import plotly.plotly as py
+    import plotly.figure_factory as ff
+    
+    import pandas as pd
+    
+    NE_states = [&#39;Connecticut&#39;, &#39;Maine&#39;, &#39;Massachusetts&#39;,
+                 &#39;New Hampshire&#39;, &#39;Rhode Island&#39;]
+    df_sample = pd.read_csv(
+        &#39;https://raw.githubusercontent.com/plotly/datasets/master/minoritymajority.csv&#39;
+    )
+    df_sample_r = df_sample[df_sample[&#39;STNAME&#39;].isin(NE_states)]
+    colorscale = [&#39;rgb(68.0, 1.0, 84.0)&#39;,
+     &#39;rgb(66.0, 64.0, 134.0)&#39;,
+     &#39;rgb(38.0, 130.0, 142.0)&#39;,
+     &#39;rgb(63.0, 188.0, 115.0)&#39;,
+     &#39;rgb(216.0, 226.0, 25.0)&#39;]
+    
+    values = df_sample_r[&#39;TOT_POP&#39;].tolist()
+    fips = df_sample_r[&#39;FIPS&#39;].tolist()
+    fig = ff.create_choropleth(
+        fips=fips, values=values, scope=NE_states, show_state_data=True
+    )
+    py.iplot(fig, filename=&#39;choropleth_new_england&#39;)
+    ```
+    
+    Example 3: California and Surrounding States
+    ```
+    import plotly.plotly as py
+    import plotly.figure_factory as ff
+    
+    import pandas as pd
+    
+    df_sample = pd.read_csv(
+        &#39;https://raw.githubusercontent.com/plotly/datasets/master/minoritymajority.csv&#39;
+    )
+    df_sample_r = df_sample[df_sample[&#39;STNAME&#39;] == &#39;California&#39;]
+    
+    values = df_sample_r[&#39;TOT_POP&#39;].tolist()
+    fips = df_sample_r[&#39;FIPS&#39;].tolist()
+    
+    colorscale = [
+        &#39;rgb(193, 193, 193)&#39;,
+        &#39;rgb(239,239,239)&#39;,
+        &#39;rgb(195, 196, 222)&#39;,
+        &#39;rgb(144,148,194)&#39;,
+        &#39;rgb(101,104,168)&#39;,
+        &#39;rgb(65, 53, 132)&#39;
+    ]
+    
+    fig = ff.create_choropleth(
+        fips=fips, values=values, colorscale=colorscale,
+        scope=[&#39;CA&#39;, &#39;AZ&#39;, &#39;Nevada&#39;, &#39;Oregon&#39;, &#39; Idaho&#39;],
+        binning_endpoints=[14348, 63983, 134827, 426762, 2081313],
+        county_outline={&#39;color&#39;: &#39;rgb(255,255,255)&#39;, &#39;width&#39;: 0.5},
+        legend_title=&#39;California Counties&#39;,
+        title=&#39;California and Nearby States&#39;
+    )
+    py.iplot(fig, filename=&#39;choropleth_california_and_surr_states_outlines&#39;)
+    ```
+    
+    Example 4: USA
+    ```
+    import plotly.plotly as py
+    import plotly.figure_factory as ff
+    
+    import numpy as np
+    import pandas as pd
+    
+    df_sample = pd.read_csv(
+        &#39;https://raw.githubusercontent.com/plotly/datasets/master/laucnty16.csv&#39;
+    )
+    df_sample[&#39;State FIPS Code&#39;] = df_sample[&#39;State FIPS Code&#39;].apply(
+        lambda x: str(x).zfill(2)
+    )
+    df_sample[&#39;County FIPS Code&#39;] = df_sample[&#39;County FIPS Code&#39;].apply(
+        lambda x: str(x).zfill(3)
+    )
+    df_sample[&#39;FIPS&#39;] = (
+        df_sample[&#39;State FIPS Code&#39;] + df_sample[&#39;County FIPS Code&#39;]
+    )
+    
+    binning_endpoints = list(np.linspace(1, 12, len(colorscale) - 1))
+    colorscale = [&#34;#f7fbff&#34;, &#34;#ebf3fb&#34;, &#34;#deebf7&#34;, &#34;#d2e3f3&#34;, &#34;#c6dbef&#34;,
+                  &#34;#b3d2e9&#34;, &#34;#9ecae1&#34;, &#34;#85bcdb&#34;, &#34;#6baed6&#34;, &#34;#57a0ce&#34;,
+                  &#34;#4292c6&#34;, &#34;#3082be&#34;, &#34;#2171b5&#34;, &#34;#1361a9&#34;, &#34;#08519c&#34;,
+                  &#34;#0b4083&#34;,&#34;#08306b&#34;]
+    fips = df_sample[&#39;FIPS&#39;]
+    values = df_sample[&#39;Unemployment Rate (%)&#39;]
+    fig = ff.create_choropleth(
+        fips=fips, values=values, scope=[&#39;usa&#39;],
+        binning_endpoints=binning_endpoints, colorscale=colorscale,
+        show_hover=True, centroid_marker={&#39;opacity&#39;: 0},
+        asp=2.9, title=&#39;USA by Unemployment %&#39;,
+        legend_title=&#39;Unemployment %&#39;
+    )
+    
+    py.iplot(fig, filename=&#39;choropleth_full_usa&#39;)
+    ```
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+ 
+
+{% endraw %}

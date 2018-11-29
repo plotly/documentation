@@ -1,0 +1,902 @@
+---
+permalink: python/custom-buttons/
+description: How to add custom buttons to update Plotly chart attributes in Python.
+name: Custom Buttons | plotly
+has_thumbnail: true
+thumbnail: thumbnail/custom-buttons.jpg
+layout: user-guide
+name: Custom Buttons
+language: python
+title: Custom Buttons | plotly
+display_as: controls
+has_thumbnail: true
+page_type: example_index
+order: 1
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#194;&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by dowloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#194;&#182;</a></h4><p>Note: Python Buttons are available in version <b>1.12.12+</b><br>
+Run  <code>pip install plotly --upgrade</code> to update your Plotly version</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.0.5&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Methods">Methods<a class="anchor-link" href="#Methods">&#194;&#182;</a></h4><p>The <a href="https://plot.ly/python/reference/#layout-updatemenus-buttons-method">updatemenu method</a> determines which <a href="https://plot.ly/javascript/plotlyjs-function-reference/">plotly.js function</a> will be used to modify the chart. There are 4 possible methods:</p>
+<ul>
+<li><code>"restyle"</code>: modify data or data attributes</li>
+<li><code>"relayout"</code>: modify layout attributes</li>
+<li><code>"update"</code>: modify data <strong>and</strong> layout attributes </li>
+<li><code>"animate"</code>: start or pause an <a href="https://plot.ly/python/#animations">animation</a>)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Restyle-Button">Restyle Button<a class="anchor-link" href="#Restyle-Button">&#194;&#182;</a></h4><p>The <code>"restyle"</code> method should be used when modifying the data and data attributes of the graph.<br>
+<strong>Update One Data Attribute</strong><br>
+This example demonstrates how to update a single data attribute: chart <code>type</code> with the <code>"restyle"</code> method.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">from</span> <span class="nn">plotly.tools</span> <span class="kn">import</span> <span class="n">FigureFactory</span> <span class="k">as</span> <span class="n">FF</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/volcano.csv&#39;</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">go</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;Viridis&#39;</span><span class="p">)]</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">900</span><span class="p">,</span>
+    <span class="n">autosize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">scene</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">zerolinecolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">backgroundcolor</span><span class="o">=</span><span class="s1">&#39;rgb(230, 230,230)&#39;</span>
+        <span class="p">),</span>
+        <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">zerolinecolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">backgroundcolor</span><span class="o">=</span><span class="s1">&#39;rgb(230, 230, 230)&#39;</span>
+        <span class="p">),</span>
+        <span class="n">zaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">zerolinecolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">backgroundcolor</span><span class="o">=</span><span class="s1">&#39;rgb(230, 230,230)&#39;</span>
+        <span class="p">),</span>
+        <span class="n">aspectratio</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">0.7</span><span class="p">),</span>
+        <span class="n">aspectmode</span> <span class="o">=</span> <span class="s1">&#39;manual&#39;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">updatemenus</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">buttons</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>   
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;surface&#39;</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;3D Surface&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;heatmap&#39;</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Heatmap&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">)</span>             
+        <span class="p">]),</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+        <span class="n">showactive</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;buttons&#39;</span><span class="p">,</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">xanchor</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mf">1.1</span><span class="p">,</span>
+        <span class="n">yanchor</span> <span class="o">=</span> <span class="s1">&#39;top&#39;</span> 
+    <span class="p">),</span>
+<span class="p">])</span>
+
+<span class="n">annotations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">([</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Trace type:&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.085</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="n">layout</span><span class="p">[</span><span class="s1">&#39;updatemenus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">updatemenus</span>
+<span class="n">layout</span><span class="p">[</span><span class="s1">&#39;annotations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">annotations</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;cmocean-picker-one-button&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/483.embed" height="900px" width="800px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Update Several Data Attributes</strong><br>
+This example demonstrates how to update several data attributes: colorscale, chart type, and line display with the "restyle" method.
+This example uses the cmocean python package. You can install this package with <code>pip install cmocean</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">from</span> <span class="nn">plotly.tools</span> <span class="kn">import</span> <span class="n">FigureFactory</span> <span class="k">as</span> <span class="n">FF</span>
+
+<span class="kn">import</span> <span class="nn">cmocean</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="k">def</span> <span class="nf">cmocean_to_plotly</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">pl_entries</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">pl_entries</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pl_colorscale</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pl_entries</span><span class="p">):</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cmap</span><span class="p">(</span><span class="n">k</span><span class="o">*</span><span class="n">h</span><span class="p">)[:</span><span class="mi">3</span><span class="p">])</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span>
+        <span class="n">pl_colorscale</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">k</span><span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="s1">&#39;rgb&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]))])</span>
+        
+    <span class="k">return</span> <span class="n">pl_colorscale</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/plotly/datasets/master/volcano.csv&#39;</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">go</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;Viridis&#39;</span><span class="p">)]</span>
+
+<span class="n">button_layer_1_height</span> <span class="o">=</span> <span class="mf">1.12</span>
+<span class="n">button_layer_2_height</span> <span class="o">=</span> <span class="mf">1.065</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">900</span><span class="p">,</span>
+    <span class="n">autosize</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">scene</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">zerolinecolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">backgroundcolor</span><span class="o">=</span><span class="s1">&#39;rgb(230, 230,230)&#39;</span>
+        <span class="p">),</span>
+        <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">zerolinecolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">backgroundcolor</span><span class="o">=</span><span class="s1">&#39;rgb(230, 230,230)&#39;</span>
+        <span class="p">),</span>
+        <span class="n">zaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">zerolinecolor</span><span class="o">=</span><span class="s1">&#39;rgb(255, 255, 255)&#39;</span><span class="p">,</span>
+            <span class="n">showbackground</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">backgroundcolor</span><span class="o">=</span><span class="s1">&#39;rgb(230, 230,230)&#39;</span>
+        <span class="p">),</span>
+        <span class="n">aspectratio</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">0.7</span> <span class="p">),</span>
+        <span class="n">aspectmode</span> <span class="o">=</span> <span class="s1">&#39;manual&#39;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">updatemenus</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">buttons</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;colorscale&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cmocean_to_plotly</span><span class="p">(</span><span class="n">cmocean</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">haline</span><span class="p">))</span> <span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Haline&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;colorscale&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cmocean_to_plotly</span><span class="p">(</span><span class="n">cmocean</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">turbid</span><span class="p">))],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Turbid&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;colorscale&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cmocean_to_plotly</span><span class="p">(</span><span class="n">cmocean</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">speed</span><span class="p">))],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;colorscale&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cmocean_to_plotly</span><span class="p">(</span><span class="n">cmocean</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">haline</span><span class="p">))</span> <span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Tempo&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;colorscale&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cmocean_to_plotly</span><span class="p">(</span><span class="n">cmocean</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">gray</span><span class="p">))],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Gray&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;colorscale&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cmocean_to_plotly</span><span class="p">(</span><span class="n">cmocean</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">phase</span><span class="p">))],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Phase&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>  
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;colorscale&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cmocean_to_plotly</span><span class="p">(</span><span class="n">cmocean</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">balance</span><span class="p">))</span> <span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Balance&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;colorscale&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cmocean_to_plotly</span><span class="p">(</span><span class="n">cmocean</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">delta</span><span class="p">))],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Delta&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;colorscale&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cmocean_to_plotly</span><span class="p">(</span><span class="n">cmocean</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">curl</span><span class="p">))],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Curl&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>                       
+        <span class="p">]),</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+        <span class="n">showactive</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;buttons&#39;</span><span class="p">,</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">xanchor</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">button_layer_1_height</span><span class="p">,</span>
+        <span class="n">yanchor</span> <span class="o">=</span> <span class="s1">&#39;top&#39;</span>            
+    <span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">buttons</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>   
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;reversescale&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Reverse&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;reversescale&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Undo&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">)</span>                    
+        <span class="p">]),</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+        <span class="n">showactive</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;buttons&#39;</span><span class="p">,</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">0.45</span><span class="p">,</span>
+        <span class="n">xanchor</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">button_layer_2_height</span><span class="p">,</span>
+        <span class="n">yanchor</span> <span class="o">=</span> <span class="s1">&#39;top&#39;</span>            
+    <span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">buttons</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>   
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;contours.showlines&#39;</span><span class="p">:</span><span class="bp">False</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;contour&#39;</span><span class="p">}],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Hide lines&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;contours.showlines&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;contour&#39;</span><span class="p">}],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Show lines&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>                    
+        <span class="p">]),</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+        <span class="n">showactive</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;buttons&#39;</span><span class="p">,</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">0.65</span><span class="p">,</span>
+        <span class="n">xanchor</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">button_layer_2_height</span><span class="p">,</span>
+        <span class="n">yanchor</span> <span class="o">=</span> <span class="s1">&#39;top&#39;</span>            
+    <span class="p">),</span>        
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">buttons</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>   
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;surface&#39;</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;3d Surface&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;heatmap&#39;</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Heatmap&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">),</span>  
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;contour&#39;</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Contour&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;restyle&#39;</span>
+            <span class="p">)</span>                     
+        <span class="p">]),</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+        <span class="n">showactive</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;buttons&#39;</span><span class="p">,</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">xanchor</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">button_layer_2_height</span><span class="p">,</span>
+        <span class="n">yanchor</span> <span class="o">=</span> <span class="s1">&#39;top&#39;</span> 
+    <span class="p">),</span>
+<span class="p">])</span>
+
+<span class="n">annotations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">([</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;cmocean&lt;br&gt;scale&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.11</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span> <span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Trace type&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.05</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span> <span class="p">)</span>
+<span class="p">])</span>
+<span class="n">layout</span><span class="p">[</span><span class="s1">&#39;updatemenus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">updatemenus</span>
+<span class="n">layout</span><span class="p">[</span><span class="s1">&#39;annotations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">annotations</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;cmocean-picker&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/481.embed" height="900px" width="800px"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Relayout-Button">Relayout Button<a class="anchor-link" href="#Relayout-Button">&#194;&#182;</a></h4><p>The <code>"relayout"</code> method should be used when modifying the layout attributes of the graph.<br>
+<strong>Update One Layout Attribute</strong><br>
+This example demonstrates how to update a layout attribute: chart <code>type</code> with the <code>"relayout"</code> method.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+<span class="n">y0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+<span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+
+<span class="n">trace0</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">y0</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#835AF1&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">x1</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">y1</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#7FA6EE&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">trace2</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">x2</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">y2</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#B8F7D4&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace0</span><span class="p">,</span> <span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">]</span>
+
+<span class="n">cluster0</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;circle&#39;</span><span class="p">,</span>
+                 <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+                 <span class="n">x0</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">x0</span><span class="p">),</span> <span class="n">y0</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">y0</span><span class="p">),</span> 
+                 <span class="n">x1</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">x0</span><span class="p">),</span> <span class="n">y1</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">y0</span><span class="p">),</span> 
+                 <span class="n">opacity</span><span class="o">=.</span><span class="mi">25</span><span class="p">,</span>
+                 <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#835AF1&#39;</span><span class="p">),</span>
+                 <span class="n">fillcolor</span><span class="o">=</span><span class="s1">&#39;#835AF1&#39;</span><span class="p">)]</span>
+<span class="n">cluster1</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;circle&#39;</span><span class="p">,</span>
+                 <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+                 <span class="n">x0</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="n">y0</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">y1</span><span class="p">),</span> 
+                 <span class="n">x1</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="n">y1</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">y1</span><span class="p">),</span> 
+                 <span class="n">opacity</span><span class="o">=.</span><span class="mi">25</span><span class="p">,</span>
+                 <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#7FA6EE&#39;</span><span class="p">),</span>
+                 <span class="n">fillcolor</span><span class="o">=</span><span class="s1">&#39;#7FA6EE&#39;</span><span class="p">)]</span>
+<span class="n">cluster2</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;circle&#39;</span><span class="p">,</span>
+                 <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+                 <span class="n">x0</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">x2</span><span class="p">),</span> <span class="n">y0</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">y2</span><span class="p">),</span> 
+                 <span class="n">x1</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">x2</span><span class="p">),</span> <span class="n">y1</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">y2</span><span class="p">),</span> 
+                 <span class="n">opacity</span><span class="o">=.</span><span class="mi">25</span><span class="p">,</span>
+                 <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#B8F7D4&#39;</span><span class="p">),</span>
+                 <span class="n">fillcolor</span><span class="o">=</span><span class="s1">&#39;#B8F7D4&#39;</span><span class="p">)]</span>
+
+<span class="n">updatemenus</span> <span class="o">=</span> <span class="nb">list</span><span class="p">([</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;buttons&quot;</span><span class="p">,</span>
+         <span class="n">buttons</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>   
+            <span class="nb">dict</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span>
+                 <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;relayout&#39;</span><span class="p">,</span>
+                 <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;shapes&#39;</span><span class="p">,</span> <span class="p">[]]),</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Cluster 0&#39;</span><span class="p">,</span>
+                 <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;relayout&#39;</span><span class="p">,</span>
+                 <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;shapes&#39;</span><span class="p">,</span> <span class="n">cluster0</span><span class="p">]),</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Cluster 1&#39;</span><span class="p">,</span>
+                 <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;relayout&#39;</span><span class="p">,</span>
+                 <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;shapes&#39;</span><span class="p">,</span> <span class="n">cluster1</span><span class="p">]),</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Cluster 2&#39;</span><span class="p">,</span>
+                 <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;relayout&#39;</span><span class="p">,</span>
+                 <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;shapes&#39;</span><span class="p">,</span> <span class="n">cluster2</span><span class="p">]),</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">,</span>
+                 <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;relayout&#39;</span><span class="p">,</span>
+                 <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;shapes&#39;</span><span class="p">,</span> <span class="n">cluster0</span><span class="o">+</span><span class="n">cluster1</span><span class="o">+</span><span class="n">cluster2</span><span class="p">])</span>
+        <span class="p">]),</span>
+    <span class="p">)</span>
+<span class="p">])</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Highlight Clusters&#39;</span><span class="p">,</span> <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+              <span class="n">updatemenus</span><span class="o">=</span><span class="n">updatemenus</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;relayout_option&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[31]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/530.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Update-Button">Update Button<a class="anchor-link" href="#Update-Button">&#194;&#182;</a></h4><p>The <code>"update"</code> method should be used when modifying the data and layout sections of the graph.<br>
+This example demonstrates how to update which traces are displayed while simulaneously updating layout attributes such as the chart title and annotations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span> 
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">pandas_datareader.data</span> <span class="kn">as</span> <span class="nn">web</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">DataReader</span><span class="p">(</span><span class="s2">&quot;aapl&quot;</span><span class="p">,</span> <span class="s1">&#39;yahoo&#39;</span><span class="p">,</span>
+                    <span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                    <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="n">trace_high</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span>
+                        <span class="n">y</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">High</span><span class="p">),</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;High&#39;</span><span class="p">,</span>
+                        <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#33CFA5&#39;</span><span class="p">))</span>
+
+<span class="n">trace_high_avg</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span>
+                            <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">High</span><span class="o">.</span><span class="n">mean</span><span class="p">()]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span>
+                            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;High Average&#39;</span><span class="p">,</span>
+                            <span class="n">visible</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#33CFA5&#39;</span><span class="p">,</span> <span class="n">dash</span><span class="o">=</span><span class="s1">&#39;dash&#39;</span><span class="p">))</span>
+
+<span class="n">trace_low</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span>
+                       <span class="n">y</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Low</span><span class="p">),</span>
+                       <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Low&#39;</span><span class="p">,</span>
+                       <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#F06A6A&#39;</span><span class="p">))</span>
+
+<span class="n">trace_low_avg</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span>
+                           <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">Low</span><span class="o">.</span><span class="n">mean</span><span class="p">()]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span>
+                           <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Low Average&#39;</span><span class="p">,</span>
+                           <span class="n">visible</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                           <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#F06A6A&#39;</span><span class="p">,</span> <span class="n">dash</span><span class="o">=</span><span class="s1">&#39;dash&#39;</span><span class="p">))</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace_high</span><span class="p">,</span> <span class="n">trace_high_avg</span><span class="p">,</span> <span class="n">trace_low</span><span class="p">,</span> <span class="n">trace_low_avg</span><span class="p">]</span>
+
+<span class="n">high_annotations</span><span class="o">=</span><span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;2016-03-01&#39;</span><span class="p">,</span>
+                       <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">High</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+                       <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+                       <span class="n">text</span><span class="o">=</span><span class="s1">&#39;High Average:&lt;br&gt;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">High</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+                       <span class="n">ax</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ay</span><span class="o">=-</span><span class="mi">40</span><span class="p">),</span>
+                  <span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">High</span><span class="o">.</span><span class="n">idxmax</span><span class="p">(),</span>
+                       <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">High</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+                       <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+                       <span class="n">text</span><span class="o">=</span><span class="s1">&#39;High Max:&lt;br&gt;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">High</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
+                       <span class="n">ax</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ay</span><span class="o">=-</span><span class="mi">40</span><span class="p">)]</span>
+<span class="n">low_annotations</span><span class="o">=</span><span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;2015-05-01&#39;</span><span class="p">,</span>
+                      <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">Low</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+                      <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+                      <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Low Average:&lt;br&gt;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Low</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+                      <span class="n">ax</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ay</span><span class="o">=</span><span class="mi">40</span><span class="p">),</span>
+                 <span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">High</span><span class="o">.</span><span class="n">idxmin</span><span class="p">(),</span>
+                      <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">Low</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+                      <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+                      <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Low Min:&lt;br&gt;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Low</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span>
+                      <span class="n">ax</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ay</span><span class="o">=</span><span class="mi">40</span><span class="p">)]</span>
+
+<span class="n">updatemenus</span> <span class="o">=</span> <span class="nb">list</span><span class="p">([</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;buttons&quot;</span><span class="p">,</span>
+         <span class="n">active</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+         <span class="n">buttons</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;High&#39;</span><span class="p">,</span>
+                 <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;update&#39;</span><span class="p">,</span>
+                 <span class="n">args</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;visible&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">]},</span>
+                         <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Yahoo High&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;annotations&#39;</span><span class="p">:</span> <span class="n">high_annotations</span><span class="p">}]),</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Low&#39;</span><span class="p">,</span>
+                 <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;update&#39;</span><span class="p">,</span>
+                 <span class="n">args</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;visible&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">]},</span>
+                         <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Yahoo Low&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;annotations&#39;</span><span class="p">:</span> <span class="n">low_annotations</span><span class="p">}]),</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Both&#39;</span><span class="p">,</span>
+                 <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;update&#39;</span><span class="p">,</span>
+                 <span class="n">args</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;visible&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">]},</span>
+                         <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Yahoo&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;annotations&#39;</span><span class="p">:</span> <span class="n">high_annotations</span><span class="o">+</span><span class="n">low_annotations</span><span class="p">}]),</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Reset&#39;</span><span class="p">,</span>
+                 <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;update&#39;</span><span class="p">,</span>
+                 <span class="n">args</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;visible&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">]},</span>
+                         <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Yahoo&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;annotations&#39;</span><span class="p">:</span> <span class="p">[]}])</span>
+        <span class="p">]),</span>
+    <span class="p">)</span>
+<span class="p">])</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Yahoo&#39;</span><span class="p">,</span> <span class="n">showlegend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+              <span class="n">updatemenus</span><span class="o">=</span><span class="n">updatemenus</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;update_button&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~jordanpeterson/767.embed" height="525px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Animate-Button">Animate Button<a class="anchor-link" href="#Animate-Button">&#194;&#182;</a></h4><p>Refer to our animation docs: <a href="https://plot.ly/python/#animations">https://plot.ly/python/#animations</a> for examples on how to use the <code>animate</code> method with Plotly buttons.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Style-Buttons">Style Buttons<a class="anchor-link" href="#Style-Buttons">&#194;&#182;</a></h4><p>When adding buttons to Plotly charts, users have the option of styling the color, font, padding, and position of the buttons. The example below demonstrates how to apply different styling options. See all updatemenu styling attributes here: <a href="https://plot.ly/python/reference/#layout-updatemenus">https://plot.ly/python/reference/#layout-updatemenus</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">df_wind</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://plot.ly/~datasets/2805.csv&#39;</span><span class="p">)</span>
+
+<span class="n">df_known_capacity</span> <span class="o">=</span> <span class="n">df_wind</span><span class="p">[</span> <span class="n">df_wind</span><span class="p">[</span><span class="s1">&#39;total_cpcy&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">99999.000</span> <span class="p">]</span>
+<span class="n">df_sum</span> <span class="o">=</span> <span class="n">df_known_capacity</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;manufac&#39;</span><span class="p">)[</span><span class="s1">&#39;total_cpcy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+
+<span class="n">df_farms</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://plot.ly/~jackp/17256.csv&#39;</span><span class="p">)</span>
+<span class="n">df_farms</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Wind Farm&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">wind_farms</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">[</span> <span class="p">{</span> 
+            <span class="s1">&#39;mapbox.center.lat&#39;</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span>
+            <span class="s1">&#39;mapbox.center.lon&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">94</span><span class="p">,</span>
+            <span class="s1">&#39;mapbox.zoom&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span>
+            <span class="s1">&#39;annotations[0].text&#39;</span><span class="p">:</span><span class="s1">&#39;All US wind turbines (scroll to zoom)&#39;</span>
+        <span class="p">}</span> <span class="p">],</span>
+        <span class="n">label</span><span class="o">=</span><span class="s1">&#39;USA&#39;</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s1">&#39;relayout&#39;</span>
+    <span class="p">)</span>
+<span class="p">])</span>
+
+<span class="k">for</span> <span class="n">farm</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df_farms</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_farms</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;DegMinSec&#39;</span><span class="p">,</span><span class="s1">&#39;Latitude&#39;</span><span class="p">,</span><span class="s1">&#39;Longitude&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;None&#39;</span><span class="p">,</span><span class="s1">&#39;nan&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]:</span> 
+                <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">col</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">desc</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">farm</span><span class="p">)</span>
+    <span class="n">wind_farms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> 
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">args</span><span class="o">=</span><span class="p">[</span> <span class="p">{</span> 
+                <span class="s1">&#39;mapbox.center.lat&#39;</span><span class="p">:</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;Latitude&#39;</span><span class="p">],</span> 
+                <span class="s1">&#39;mapbox.center.lon&#39;</span><span class="p">:</span><span class="nb">float</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;Longitude&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)),</span> 
+                <span class="s1">&#39;mapbox.zoom&#39;</span><span class="p">:</span><span class="mi">9</span><span class="p">,</span>
+                <span class="s1">&#39;annotations[0].text&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;br&gt;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+            <span class="p">}</span> <span class="p">],</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">farm</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]),</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;relayout&#39;</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">mfr</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_sum</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">mfr</span> <span class="o">!=</span> <span class="s1">&#39;unknown&#39;</span><span class="p">:</span>
+        <span class="n">trace</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="n">df_wind</span><span class="p">[</span> <span class="n">df_wind</span><span class="p">[</span><span class="s1">&#39;manufac&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">mfr</span> <span class="p">][</span><span class="s1">&#39;lat_DD&#39;</span><span class="p">],</span>
+            <span class="n">lon</span> <span class="o">=</span> <span class="n">df_wind</span><span class="p">[</span> <span class="n">df_wind</span><span class="p">[</span><span class="s1">&#39;manufac&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">mfr</span> <span class="p">][</span><span class="s1">&#39;long_DD&#39;</span><span class="p">],</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">mfr</span><span class="p">,</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;scattermapbox&#39;</span>
+        <span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+
+<span class="n">mapbox_access_token</span> <span class="o">=</span> <span class="s1">&#39;pk.eyJ1IjoiY2hlbHNlYXBsb3RseSIsImEiOiJjaXFqeXVzdDkwMHFrZnRtOGtlMGtwcGs4In0.SLidkdBMEap9POJGIe1eGw&#39;</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="mi">800</span><span class="p">,</span>
+    <span class="n">margin</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">0</span> <span class="p">),</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#FFFFFF&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">11</span> <span class="p">),</span>
+    <span class="n">paper_bgcolor</span> <span class="o">=</span> <span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+    <span class="n">mapbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">accesstoken</span><span class="o">=</span><span class="n">mapbox_access_token</span><span class="p">,</span>
+        <span class="n">bearing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">center</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">lat</span><span class="o">=</span><span class="mi">38</span><span class="p">,</span>
+            <span class="n">lon</span><span class="o">=-</span><span class="mi">94</span>
+        <span class="p">),</span>
+        <span class="n">pitch</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">zoom</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">style</span><span class="o">=</span><span class="s1">&#39;dark&#39;</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">updatemenus</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">buttons</span> <span class="o">=</span> <span class="n">wind_farms</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;buttons&#39;</span><span class="p">,</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">xanchor</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">yanchor</span> <span class="o">=</span> <span class="s1">&#39;top&#39;</span><span class="p">,</span>
+        <span class="n">bgcolor</span> <span class="o">=</span> <span class="s1">&#39;#AAAAAA&#39;</span><span class="p">,</span>
+        <span class="n">active</span> <span class="o">=</span> <span class="mi">99</span><span class="p">,</span>
+        <span class="n">bordercolor</span> <span class="o">=</span> <span class="s1">&#39;#FFFFFF&#39;</span><span class="p">,</span>
+        <span class="n">font</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">)</span>
+    <span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">buttons</span> <span class="o">=</span> <span class="n">wind_farms</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">10</span><span class="p">],</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;buttons&#39;</span><span class="p">,</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">xanchor</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span>
+        <span class="n">yanchor</span> <span class="o">=</span> <span class="s1">&#39;top&#39;</span><span class="p">,</span>
+        <span class="n">bgcolor</span> <span class="o">=</span> <span class="s1">&#39;#AAAAAA&#39;</span><span class="p">,</span>
+        <span class="n">active</span> <span class="o">=</span> <span class="mi">99</span><span class="p">,</span>
+        <span class="n">bordercolor</span> <span class="o">=</span> <span class="s1">&#39;#FFFFFF&#39;</span><span class="p">,</span>
+        <span class="n">font</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">)</span>
+    <span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">buttons</span><span class="o">=</span><span class="nb">list</span><span class="p">([</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mapbox.style&#39;</span><span class="p">,</span> <span class="s1">&#39;dark&#39;</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Dark&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;relayout&#39;</span>
+            <span class="p">),</span>                    
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mapbox.style&#39;</span><span class="p">,</span> <span class="s1">&#39;light&#39;</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Light&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;relayout&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mapbox.style&#39;</span><span class="p">,</span> <span class="s1">&#39;satellite&#39;</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Satellite&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;relayout&#39;</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mapbox.style&#39;</span><span class="p">,</span> <span class="s1">&#39;satellite-streets&#39;</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Satellite with Streets&#39;</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;relayout&#39;</span>
+            <span class="p">)</span>                    
+        <span class="p">]),</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;up&#39;</span><span class="p">,</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">0.75</span><span class="p">,</span>
+        <span class="n">xanchor</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">yanchor</span> <span class="o">=</span> <span class="s1">&#39;bottom&#39;</span><span class="p">,</span>
+        <span class="n">bgcolor</span> <span class="o">=</span> <span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+        <span class="n">bordercolor</span> <span class="o">=</span> <span class="s1">&#39;#FFFFFF&#39;</span><span class="p">,</span>
+        <span class="n">font</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+    <span class="p">),</span>        
+<span class="p">])</span>
+
+<span class="n">annotations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">([</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;All US wind turbines (scroll to zoom)&#39;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;magenta&#39;</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span> <span class="n">borderpad</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> 
+         <span class="n">x</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">xref</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Wind&lt;br&gt;Farms&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">showarrow</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">))</span>
+<span class="p">])</span>
+
+<span class="n">layout</span><span class="p">[</span><span class="s1">&#39;updatemenus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">updatemenus</span>
+<span class="n">layout</span><span class="p">[</span><span class="s1">&#39;annotations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">annotations</span>
+
+<span class="n">figure</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;wind-turbine-territory&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~jordanpeterson/769.embed" height="800px" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Reference">Reference<a class="anchor-link" href="#Reference">&#194;&#182;</a></h4><p>See <a href="https://plot.ly/python/reference/#layout-updatemenus">https://plot.ly/python/reference/#layout-updatemenus</a> for more information about <code>updatemenu</code> buttons.</p>
+
+</div>
+</div>
+</div>
+ 
+
+{% endraw %}

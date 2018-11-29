@@ -1,0 +1,734 @@
+---
+permalink: python/salesforce/
+description: Create interactive graphs with salesforce, IPython Notebooks and Plotly
+name: Plot Data from Salesforce
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+language: python
+title: Interactive Salesforce Graphing | Plotly
+redirect_from: ipython-notebooks/salesforce/
+display_as: databases
+has_thumbnail: false
+page_type: example_index
+order: 4
+ipynb: ~notebook_demo/1
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#182;</a></h4><p>Plotly's python package is updated frequently. Run <code>pip install plotly --upgrade</code> to use the latest version.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.0.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h4><p>Salesforce reports are great for getting a handle on the numbers but <a href="https://plot.ly/">Plotly</a> allows for interactivity not built into the Reports Module in Salesforce. Luckily Salesforce has amazing tools around exporting data, from excel and csv files to a robust and reliable API. With <a href="https://github.com/neworganizing/simple-salesforce">Simple Salesforce</a>, it's simple to make REST calls to the Salesforce API and get your hands on data to make real time, interactive charts.</p>
+<p>This notebook walks you through that basic process of getting something like that set up.
+First you'll need <a href="https://plot.ly/">Plotly</a>. Plotly is a free web-based platform for making graphs. You can keep graphs private, make them public, and run Plotly on your own servers (<a href="https://plot.ly/product/enterprise/">https://plot.ly/product/enterprise/</a>). To get started visit <a href="https://plot.ly/python/getting-started/">https://plot.ly/python/getting-started/</a> . It's simple interface makes it easy to get interactive graphics done quickly.</p>
+<p>You'll also need a Salesforce Developer (or regular Salesforce Account). <a href="https://developer.salesforce.com/signup">You can get a salesforce developer account for free</a> at their developer portal.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="kn">from</span> <span class="nn">simple_salesforce</span> <span class="kn">import</span> <span class="n">Salesforce</span>
+<span class="n">requests</span><span class="o">.</span><span class="n">packages</span><span class="o">.</span><span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">()</span> <span class="c1"># this squashes insecure SSL warnings - DO NOT DO THIS ON PRODUCTION!</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Log-In-to-Salesforce">Log In to Salesforce<a class="anchor-link" href="#Log-In-to-Salesforce">&#182;</a></h4><p>I've stored my Salesforce login in a text file however you're free to store them as environmental variables. As a reminder, login details should NEVER be included in version control. Logging into Salesforce is as easy as entering in your username, password, and security token given to you by Salesforce. <a href="https://help.salesforce.com/apex/HTViewHelpDoc?id=user_security_token.htm">Here's how to get your security token from Salesforce.</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;salesforce_login.txt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">token</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()]</span>
+<span class="n">sf</span> <span class="o">=</span> <span class="n">Salesforce</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">security_token</span><span class="o">=</span><span class="n">token</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="SOQL-Queries">SOQL Queries<a class="anchor-link" href="#SOQL-Queries">&#182;</a></h4><p>At this time we're going to write a simple SOQL query to get some basic information from some leads. We'll query the status and Owner from our leads. Further reference for the Salesforce API and writing SOQL queries: <a href="http://www.salesforce.com/us/developer/docs/soql_sosl/">http://www.salesforce.com/us/developer/docs/soql_sosl/</a> SOQL is just Salesforce's version of SQL.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">leads_for_status</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;SELECT Id, Status, Owner.Name FROM Lead&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we'll use a quick list comprehension to get just our statuses from those records (which are in an ordered dictionary format).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">statuses</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Status&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">leads_for_status</span><span class="p">[</span><span class="s2">&quot;records&quot;</span><span class="p">]]</span>
+<span class="n">status_counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">statuses</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can take advantage of Plotly's simple IPython Notebook interface to plot the graph in our notebook.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">status_counts</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">y</span><span class="o">=</span><span class="n">status_counts</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;salesforce/lead-distributions&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/49.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>While this graph gives us a great overview what status our leads are in, we'll likely want to know how each of the sales representatives are doing with their own leads. For that we'll need to get the owners using a similar list comprehension as we did above for the status.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">owners</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Owner&#39;</span><span class="p">][</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">leads_for_status</span><span class="p">[</span><span class="s2">&quot;records&quot;</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For simplicity in grouping the values, I'm going to plug them into a pandas DataFrame.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Owners&#39;</span><span class="p">:</span><span class="n">owners</span><span class="p">,</span> <span class="s1">&#39;Status&#39;</span><span class="p">:</span><span class="n">statuses</span><span class="p">})</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that we've got that we can do a simple lead comparison to compare how our Sales Reps are doing with their leads. We just create the bars for each lead owner.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">lead_comparison</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Owners&#39;</span><span class="p">):</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+    <span class="n">lead_comparison</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">lead_comparison</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;salesforce/lead-owner-status-groupings&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[9]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/50.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>What's great is that plotly makes it simple to compare across groups. However now that we've seen leads, it's worth it to look into Opportunities.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">opportunity_amounts</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;SELECT Id, Probability, StageName, Amount, Owner.Name FROM Opportunity WHERE AMOUNT &lt; 10000&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">amounts</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Amount&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">opportunity_amounts</span><span class="p">[</span><span class="s1">&#39;records&#39;</span><span class="p">]]</span>
+<span class="n">owners</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Owner&#39;</span><span class="p">][</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">opportunity_amounts</span><span class="p">[</span><span class="s1">&#39;records&#39;</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">hist1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Histogram</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">amounts</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">([</span><span class="n">hist1</span><span class="p">],</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;salesforce/opportunity-probability-histogram&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[13]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/51.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Amounts&#39;</span><span class="p">:</span><span class="n">amounts</span><span class="p">,</span><span class="s1">&#39;Owners&#39;</span><span class="p">:</span><span class="n">owners</span><span class="p">})</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">opportunity_comparisons</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">df2</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Owners&#39;</span><span class="p">):</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">Histogram</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">vals</span><span class="p">[</span><span class="s1">&#39;Amounts&#39;</span><span class="p">],</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">opportunity_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+    <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;stack&#39;</span>
+<span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">opportunity_comparisons</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;salesforce/opportunities-histogram&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/53.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>By clicking on the "play with this data!" you can export, share, collaborate, and embed these plots. I've used it to share annotations about data and try out more colors. The GUI makes it easy for less technically oriented people to play with the data as well. Check out how the above was changed below or you can follow the link to make your own edits.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+<span class="n">HTML</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;&lt;div&gt;</span>
+<span class="s2">    &lt;a href=&quot;https://plot.ly/~bill_chambers/21/&quot; target=&quot;_blank&quot; title=&quot;Chuck vs Bill Sales Amounts&quot; style=&quot;display: block; text-align: center;&quot;&gt;&lt;img src=&quot;https://plot.ly/~bill_chambers/21.png&quot; alt=&quot;Chuck vs Bill Sales Amounts&quot; style=&quot;max-width: 100%;width: 1368px;&quot;  width=&quot;1368&quot; onerror=&quot;this.onerror=null;this.src=&#39;https://plot.ly/404.png&#39;;&quot; /&gt;&lt;/a&gt;</span>
+<span class="s2">    &lt;script data-plotly=&quot;bill_chambers:21&quot; src=&quot;https://plot.ly/embed.js&quot; async&gt;&lt;/script&gt;</span>
+<span class="s2">&lt;/div&gt;&quot;&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[18]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+    <a href="https://plot.ly/~bill_chambers/21/" target="_blank" title="Chuck vs Bill Sales Amounts" style="display: block; text-align: center;"><img src="https://plot.ly/~bill_chambers/21.png" alt="Chuck vs Bill Sales Amounts" style="max-width: 100%;width: 1368px;"  width="1368" onerror="this.onerror=null;this.src='https://plot.ly/404.png';" /></a>
+    <script data-plotly="bill_chambers:21" src="https://plot.ly/embed.js" async></script>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After comparing those two representatives. It's always helpful to have that high level view of the sales pipeline. Below I'm querying all of our open opportunities with their Probabilities and close dates. This will help us make a forecasting graph of what's to come soon.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">large_opps</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;SELECT Id, Name, Probability, ExpectedRevenue, StageName, Amount, CloseDate, Owner.Name FROM Opportunity WHERE StageName NOT IN (&#39;Closed Lost&#39;, &#39;Closed Won&#39;) AND Amount &gt; 5000&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">large_opps_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">large_opps</span><span class="p">[</span><span class="s1">&#39;records&#39;</span><span class="p">])</span>
+<span class="n">large_opps_df</span><span class="p">[</span><span class="s1">&#39;Owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">large_opps_df</span><span class="o">.</span><span class="n">Owner</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">])</span> <span class="c1"># just extract owner name</span>
+<span class="n">large_opps_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># get rid of extra return data from Salesforce</span>
+<span class="n">large_opps_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[20]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div style="max-height:1000px;max-width:1500px;overflow:auto;">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Amount</th>
+      <th>CloseDate</th>
+      <th>ExpectedRevenue</th>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Owner</th>
+      <th>Probability</th>
+      <th>StageName</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>  15000</td>
+      <td> 2015-06-03</td>
+      <td>  9000</td>
+      <td> 0061a000002vYrwAAE</td>
+      <td>              Grand Hotels Kitchen Generator</td>
+      <td>           Bill C</td>
+      <td> 60</td>
+      <td>  Id. Decision Makers</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>  90000</td>
+      <td> 2015-05-03</td>
+      <td> 81000</td>
+      <td> 0061a000002vYsIAAU</td>
+      <td>                            Grand Hotels SLA</td>
+      <td> Chuck Brockerson</td>
+      <td> 90</td>
+      <td>   Negotiation/Review</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>  80000</td>
+      <td> 2015-05-22</td>
+      <td> 60000</td>
+      <td> 0061a000002vYs3AAE</td>
+      <td> Express Logistics Portable Truck Generators</td>
+      <td>           Bill C</td>
+      <td> 75</td>
+      <td> Proposal/Price Quote</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>  22000</td>
+      <td> 2015-05-07</td>
+      <td> 11000</td>
+      <td> 0061a000002vYruAAE</td>
+      <td>         Express Logistics Standby Generator</td>
+      <td> Chuck Brockerson</td>
+      <td> 50</td>
+      <td>    Value Proposition</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td> 100000</td>
+      <td> 2015-06-17</td>
+      <td> 90000</td>
+      <td> 0061a000002vYsCAAU</td>
+      <td>              University of AZ Installations</td>
+      <td>           Bill C</td>
+      <td> 90</td>
+      <td>   Negotiation/Review</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">scatters</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">temp_df</span> <span class="ow">in</span> <span class="n">large_opps_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Owner&#39;</span><span class="p">):</span>
+    <span class="n">hover_text</span> <span class="o">=</span> <span class="n">temp_df</span><span class="o">.</span><span class="n">Name</span> <span class="o">+</span> <span class="s2">&quot;&lt;br&gt;Close Probability: &quot;</span> <span class="o">+</span> <span class="n">temp_df</span><span class="o">.</span><span class="n">Probability</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&lt;br&gt;Stage:&quot;</span> <span class="o">+</span> <span class="n">temp_df</span><span class="o">.</span><span class="n">StageName</span>
+    <span class="n">scatters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">temp_df</span><span class="o">.</span><span class="n">CloseDate</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">temp_df</span><span class="o">.</span><span class="n">Amount</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">hover_text</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">temp_df</span><span class="o">.</span><span class="n">Probability</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># helps keep the bubbles of managable size</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">scatters</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Open Large Deals&#39;</span><span class="p">,</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Close Date&#39;</span>
+    <span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Deal Amount&#39;</span><span class="p">,</span>
+        <span class="n">showgrid</span><span class="o">=</span><span class="bp">False</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;salesforce/open-large-deals-scatter&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[22]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/56.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Plotly makes it easy to create many different kinds of charts. The above graph shows the deals in the pipeline over the coming months. The larger the bubble, the more likely it is to close. Hover over the bubbles to see that data. This graph is ideal for a sales manager to see how each of his sales reps are doing over the coming months.</p>
+<p>One of the benefits of Plotly is the availability of features.</p>
+<h4 id="References">References<a class="anchor-link" href="#References">&#182;</a></h4><ul>
+<li><a href="http://moderndata.plot.ly/update-plotly-charts-with-cron-jobs-and-python/">Live update Plotly graphs in Python with cron jobs</a></li>
+<li><a href="http://moderndata.plot.ly/graph-data-from-mysql-database-in-python/">Graph mysql data with Plotly and Python</a></li>
+<li><a href="https://plot.ly/python/">More on creating web-based visualizations in Python with Plotly</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+
+
+{% endraw %}

@@ -1,0 +1,734 @@
+---
+permalink: python/streaming-tutorial/
+description: Plotly Streaming
+name: Plotly Streaming
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+name: Plotly Streaming
+language: python
+title: Plotly Streaming
+redirect_from: python/streaming-line-tutorial/
+ipynb: ~notebook_demo/80
+page_type: u-guide
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Streaming-Support">Streaming Support<a class="anchor-link" href="#Streaming-Support">&#182;</a></h3><p><strong>Streaming is no longer supported in Plotly Cloud.<br>Streaming is still available as part of <a href="https://plot.ly/products/on-premise/">Plotly On-Premises</a>. Additionally, <a href="https://plot.ly/products/dash/">Dash</a> supports streaming, as demonstrated by the <a href="https://github.com/plotly/dash-wind-streaming">Dash Wind Streaming example</a>.</strong></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Getting-Started-with-Streaming">Getting Started with Streaming<a class="anchor-link" href="#Getting-Started-with-Streaming">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> 
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>  
+<span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>   
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Before you start streaming, you're going to need some <a href="https://plot.ly/settings/api">stream tokens</a>. You will need <strong>one unique stream token for every <code>trace object</code> </strong> you wish to stream to. Thus if you have two traces that you want to plot and stream, you're going to require two unique stream tokens. Notice that more tokens can be added via the settings section of your Plotly profile: <a href="https://plot.ly/settings/api">https://plot.ly/settings/api</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://cloud.githubusercontent.com/assets/12302455/15023505/bb729d8c-11fe-11e6-87a6-332ff9dfad2d.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now in the same way that you set your credentials, as shown in <a href="https://plot.ly/python/getting-started/">Getting Started</a>, you can add stream tokens to your credentials file.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">stream_ids</span> <span class="o">=</span> <span class="n">tls</span><span class="o">.</span><span class="n">get_credentials_file</span><span class="p">()[</span><span class="s1">&#39;stream_ids&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">stream_ids</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[u&#39;a3yx8ev3pg&#39;, u&#39;2w50b45d0z&#39;, u&#39;cew1sbgo4s&#39;, u&#39;nhlxf6ig3d&#39;, u&#39;n9s75hv9ic&#39;, u&#39;96kd717ava&#39;, u&#39;v6f5oeb8ut&#39;, u&#39;4lm5a0gsr8&#39;, u&#39;0xhh453c6m&#39;]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You'll see that <code>stream_ids</code> will contain a list of the stream tokens we added to the credentials file.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="An-Example-to-Get-You-Started">An Example to Get You Started<a class="anchor-link" href="#An-Example-to-Get-You-Started">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that you have some stream tokens to play with, we're going to go over how we're going to put these into action. 
+There are two main objects that will be created and used for streaming:</p>
+<ul>
+<li>Stream Id Object</li>
+<li>Stream link Object</li>
+</ul>
+<p>We're going to look at these objects sequentially as we work through our first streaming example. For our first example, we're going to be streaming random data to a single scatter trace, and get something that behaves like the following:</p>
+<p><img src="https://cloud.githubusercontent.com/assets/12302455/14826664/e7d59c56-0bac-11e6-953e-e215410f3f03.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Stream-Id-Object">Stream Id Object<a class="anchor-link" href="#Stream-Id-Object">&#182;</a></h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>Stream Id Object</code> comes bundled in the <code>graph_objs</code> package. We can then call help to see the description of this object:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Stream</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Help on class Stream in module plotly.graph_objs.graph_objs:
+
+class Stream(PlotlyDict)
+ |  Valid attributes for &#39;stream&#39; at path [] under parents ():
+ |  
+ |      [&#39;token&#39;, &#39;maxpoints&#39;]
+ |  
+ |  Run `&lt;stream-object&gt;.help(&#39;attribute&#39;)` on any of the above.
+ |  &#39;&lt;stream-object&gt;&#39; is the object at []
+ |  
+ |  Method resolution order:
+ |      Stream
+ |      PlotlyDict
+ |      __builtin__.dict
+ |      PlotlyBase
+ |      __builtin__.object
+ |  
+ |  Methods inherited from PlotlyDict:
+ |  
+ |  __copy__(self)
+ |  
+ |  __deepcopy__(self, memodict={})
+ |  
+ |  __dir__(self)
+ |      Dynamically return the existing and possible attributes.
+ |  
+ |  __getattr__(self, key)
+ |      Python only calls this when key is missing!
+ |  
+ |  __getitem__(self, key)
+ |      Calls __missing__ when key is not found. May mutate object.
+ |  
+ |  __init__(self, *args, **kwargs)
+ |  
+ |  __missing__(self, key)
+ |      Mimics defaultdict. This is called from __getitem__ when key DNE.
+ |  
+ |  __setattr__(self, key, value)
+ |      Maps __setattr__ onto __setitem__
+ |  
+ |  __setitem__(self, key, value, _raise=True)
+ |      Validates/Converts values which should be Graph Objects.
+ |  
+ |  force_clean(self, **kwargs)
+ |      Recursively remove empty/None values.
+ |  
+ |  get_data(self, flatten=False)
+ |      Returns the JSON for the plot with non-data elements stripped.
+ |  
+ |  get_ordered(self, **kwargs)
+ |      Return a predictable, OrderedDict version of self.
+ |  
+ |  help(self, attribute=None, return_help=False)
+ |      Print help string for this object or an attribute of this object.
+ |      
+ |      :param (str) attribute: A valid attribute string for this object.
+ |      :param (bool) return_help: Return help_string instead of printing it?
+ |      :return: (None|str)
+ |  
+ |  strip_style(self)
+ |      Recursively strip style from the current representation.
+ |      
+ |      All PlotlyDicts and PlotlyLists are guaranteed to survive the
+ |      stripping process, though they made be left empty. This is allowable.
+ |      
+ |      Keys that will be stripped in this process are tagged with
+ |      `&#39;type&#39;: &#39;style&#39;` in graph_objs_meta.json. Note that a key tagged as
+ |      style, but with an array as a value may still be considered data.
+ |  
+ |  to_string(self, level=0, indent=4, eol=&#39;\n&#39;, pretty=True, max_chars=80)
+ |      Returns a formatted string showing graph_obj constructors.
+ |      
+ |      :param (int) level: The number of indentations to start with.
+ |      :param (int) indent: The indentation amount.
+ |      :param (str) eol: The end of line character(s).
+ |      :param (bool) pretty: Curtail long list output with a &#39;..&#39; ?
+ |      :param (int) max_chars: The max characters per line.
+ |      
+ |      Example:
+ |      
+ |          print(obj.to_string())
+ |  
+ |  update(self, dict1=None, **dict2)
+ |      Update current dict with dict1 and then dict2.
+ |      
+ |      This recursively updates the structure of the original dictionary-like
+ |      object with the new entries in the second and third objects. This
+ |      allows users to update with large, nested structures.
+ |      
+ |      Note, because the dict2 packs up all the keyword arguments, you can
+ |      specify the changes as a list of keyword agruments.
+ |      
+ |      Examples:
+ |      # update with dict
+ |      obj = Layout(title=&#39;my title&#39;, xaxis=XAxis(range=[0,1], domain=[0,1]))
+ |      update_dict = dict(title=&#39;new title&#39;, xaxis=dict(domain=[0,.8]))
+ |      obj.update(update_dict)
+ |      obj
+ |      {&#39;title&#39;: &#39;new title&#39;, &#39;xaxis&#39;: {&#39;range&#39;: [0,1], &#39;domain&#39;: [0,.8]}}
+ |      
+ |      # update with list of keyword arguments
+ |      obj = Layout(title=&#39;my title&#39;, xaxis=XAxis(range=[0,1], domain=[0,1]))
+ |      obj.update(title=&#39;new title&#39;, xaxis=dict(domain=[0,.8]))
+ |      obj
+ |      {&#39;title&#39;: &#39;new title&#39;, &#39;xaxis&#39;: {&#39;range&#39;: [0,1], &#39;domain&#39;: [0,.8]}}
+ |      
+ |      This &#39;fully&#39; supports duck-typing in that the call signature is
+ |      identical, however this differs slightly from the normal update
+ |      method provided by Python&#39;s dictionaries.
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data descriptors inherited from PlotlyDict:
+ |  
+ |  __dict__
+ |      dictionary for instance variables (if defined)
+ |  
+ |  __weakref__
+ |      list of weak references to the object (if defined)
+ |  
+ |  ----------------------------------------------------------------------
+ |  Methods inherited from __builtin__.dict:
+ |  
+ |  __cmp__(...)
+ |      x.__cmp__(y) &lt;==&gt; cmp(x,y)
+ |  
+ |  __contains__(...)
+ |      D.__contains__(k) -&gt; True if D has a key k, else False
+ |  
+ |  __delitem__(...)
+ |      x.__delitem__(y) &lt;==&gt; del x[y]
+ |  
+ |  __eq__(...)
+ |      x.__eq__(y) &lt;==&gt; x==y
+ |  
+ |  __ge__(...)
+ |      x.__ge__(y) &lt;==&gt; x&gt;=y
+ |  
+ |  __getattribute__(...)
+ |      x.__getattribute__(&#39;name&#39;) &lt;==&gt; x.name
+ |  
+ |  __gt__(...)
+ |      x.__gt__(y) &lt;==&gt; x&gt;y
+ |  
+ |  __iter__(...)
+ |      x.__iter__() &lt;==&gt; iter(x)
+ |  
+ |  __le__(...)
+ |      x.__le__(y) &lt;==&gt; x&lt;=y
+ |  
+ |  __len__(...)
+ |      x.__len__() &lt;==&gt; len(x)
+ |  
+ |  __lt__(...)
+ |      x.__lt__(y) &lt;==&gt; x&lt;y
+ |  
+ |  __ne__(...)
+ |      x.__ne__(y) &lt;==&gt; x!=y
+ |  
+ |  __repr__(...)
+ |      x.__repr__() &lt;==&gt; repr(x)
+ |  
+ |  __sizeof__(...)
+ |      D.__sizeof__() -&gt; size of D in memory, in bytes
+ |  
+ |  clear(...)
+ |      D.clear() -&gt; None.  Remove all items from D.
+ |  
+ |  copy(...)
+ |      D.copy() -&gt; a shallow copy of D
+ |  
+ |  fromkeys(...)
+ |      dict.fromkeys(S[,v]) -&gt; New dict with keys from S and values equal to v.
+ |      v defaults to None.
+ |  
+ |  get(...)
+ |      D.get(k[,d]) -&gt; D[k] if k in D, else d.  d defaults to None.
+ |  
+ |  has_key(...)
+ |      D.has_key(k) -&gt; True if D has a key k, else False
+ |  
+ |  items(...)
+ |      D.items() -&gt; list of D&#39;s (key, value) pairs, as 2-tuples
+ |  
+ |  iteritems(...)
+ |      D.iteritems() -&gt; an iterator over the (key, value) items of D
+ |  
+ |  iterkeys(...)
+ |      D.iterkeys() -&gt; an iterator over the keys of D
+ |  
+ |  itervalues(...)
+ |      D.itervalues() -&gt; an iterator over the values of D
+ |  
+ |  keys(...)
+ |      D.keys() -&gt; list of D&#39;s keys
+ |  
+ |  pop(...)
+ |      D.pop(k[,d]) -&gt; v, remove specified key and return the corresponding value.
+ |      If key is not found, d is returned if given, otherwise KeyError is raised
+ |  
+ |  popitem(...)
+ |      D.popitem() -&gt; (k, v), remove and return some (key, value) pair as a
+ |      2-tuple; but raise KeyError if D is empty.
+ |  
+ |  setdefault(...)
+ |      D.setdefault(k[,d]) -&gt; D.get(k,d), also set D[k]=d if k not in D
+ |  
+ |  values(...)
+ |      D.values() -&gt; list of D&#39;s values
+ |  
+ |  viewitems(...)
+ |      D.viewitems() -&gt; a set-like object providing a view on D&#39;s items
+ |  
+ |  viewkeys(...)
+ |      D.viewkeys() -&gt; a set-like object providing a view on D&#39;s keys
+ |  
+ |  viewvalues(...)
+ |      D.viewvalues() -&gt; an object providing a view on D&#39;s values
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes inherited from __builtin__.dict:
+ |  
+ |  __hash__ = None
+ |  
+ |  __new__ = &lt;built-in method __new__ of type object&gt;
+ |      T.__new__(S, ...) -&gt; a new object with type S, a subtype of T
+ |  
+ |  ----------------------------------------------------------------------
+ |  Methods inherited from PlotlyBase:
+ |  
+ |  to_graph_objs(self, **kwargs)
+ |      Everything is cast into graph_objs. Here for backwards compat.
+ |  
+ |  validate(self)
+ |      Everything is *always* validated now. keep for backwards compat.
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As we can see, the <code>Stream Id Object</code> is a dictionary-like object that takes two parameters, and has all the methods that are assoicated with dictionaries. 
+We will need one of these objects for each of trace that we wish to stream data to. 
+We'll now create a single stream token for our streaming example, which will include one scatter trace.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Get stream id from stream id list </span>
+<span class="n">stream_id</span> <span class="o">=</span> <span class="n">stream_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Make instance of stream id object </span>
+<span class="n">stream_1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Stream</span><span class="p">(</span>
+    <span class="n">token</span><span class="o">=</span><span class="n">stream_id</span><span class="p">,</span>  <span class="c1"># link stream id to &#39;token&#39; key</span>
+    <span class="n">maxpoints</span><span class="o">=</span><span class="mi">80</span>      <span class="c1"># keep a max of 80 pts on screen</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>'maxpoints'</code> key sets the maxiumum number of points to keep on the plotting surface at any given time.
+More over, if you want to avoid the use of these <code>Stream Id Objects</code>, you can just create a dictionary with at least the token parameter defined, for example:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">stream_1</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">stream_id</span><span class="p">,</span> <span class="n">maxpoints</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that we have our <code>Stream Id Object</code> ready to go, we can set up our plot. We do this in the same way that we would any other plot, the only thing is that we now have to set the stream parameter in our trace object.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Initialize trace of streaming plot by embedding the unique stream_id</span>
+<span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">y</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines+markers&#39;</span><span class="p">,</span>
+    <span class="n">stream</span><span class="o">=</span><span class="n">stream_1</span>         <span class="c1"># (!) embed stream id, 1 per trace</span>
+<span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Data</span><span class="p">([</span><span class="n">trace1</span><span class="p">])</span>
+
+<span class="c1"># Add title to layout object</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Time Series&#39;</span><span class="p">)</span>
+
+<span class="c1"># Make a figure object</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Stream-Link-Object">Stream Link Object<a class="anchor-link" href="#Stream-Link-Object">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The Stream Link Object is what will be used to communicate with the Plotly server in order to update the data contained in your trace objects. This object is in the <code>plotly.plotly</code> object, an can be reference with <code>py.Stream</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">py</span><span class="o">.</span><span class="n">Stream</span><span class="p">)</span>  <span class="c1"># run help() of the Stream link object</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Help on class Stream in module plotly.plotly.plotly:
+
+class Stream
+ |  Interface to Plotly&#39;s real-time graphing API.
+ |  
+ |  Initialize a Stream object with a stream_id
+ |  found in https://plot.ly/settings.
+ |  Real-time graphs are initialized with a call to `plot` that embeds
+ |  your unique `stream_id`s in each of the graph&#39;s traces. The `Stream`
+ |  interface plots data to these traces, as identified with the unique
+ |  stream_id, in real-time.
+ |  Every viewer of the graph sees the same data at the same time.
+ |  
+ |  View examples and tutorials here:
+ |  https://plot.ly/python/streaming/
+ |  
+ |  Stream example:
+ |  # Initialize a streaming graph
+ |  # by embedding stream_id&#39;s in the graph&#39;s traces
+ |  import plotly.plotly as py
+ |  from plotly.graph_objs import Data, Scatter, Stream
+ |  stream_id = &#34;your_stream_id&#34; # See https://plot.ly/settings
+ |  py.plot(Data([Scatter(x=[], y=[],
+ |                        stream=Stream(token=stream_id, maxpoints=100))]))
+ |  # Stream data to the import trace
+ |  stream = Stream(stream_id) # Initialize a stream object
+ |  stream.open() # Open the stream
+ |  stream.write(dict(x=1, y=1)) # Plot (1, 1) in your graph
+ |  
+ |  Methods defined here:
+ |  
+ |  __init__(self, stream_id)
+ |      Initialize a Stream object with your unique stream_id.
+ |      Find your stream_id at https://plot.ly/settings.
+ |      
+ |      For more help, see: `help(plotly.plotly.Stream)`
+ |      or see examples and tutorials here:
+ |      https://plot.ly/python/streaming/
+ |  
+ |  close(self)
+ |      Close the stream connection to plotly&#39;s streaming servers.
+ |      
+ |      For more help, see: `help(plotly.plotly.Stream)`
+ |      or see examples and tutorials here:
+ |      https://plot.ly/python/streaming/
+ |  
+ |  heartbeat(self, reconnect_on=(200, &#39;&#39;, 408))
+ |      Keep stream alive. Streams will close after ~1 min of inactivity.
+ |      
+ |      If the interval between stream writes is &gt; 30 seconds, you should
+ |      consider adding a heartbeat between your stream.write() calls like so:
+ |      &gt;&gt;&gt; stream.heartbeat()
+ |  
+ |  open(self)
+ |      Open streaming connection to plotly.
+ |      
+ |      For more help, see: `help(plotly.plotly.Stream)`
+ |      or see examples and tutorials here:
+ |      https://plot.ly/python/streaming/
+ |  
+ |  write(self, trace, layout=None, validate=True, reconnect_on=(200, &#39;&#39;, 408))
+ |      Write to an open stream.
+ |      
+ |      Once you&#39;ve instantiated a &#39;Stream&#39; object with a &#39;stream_id&#39;,
+ |      you can &#39;write&#39; to it in real time.
+ |      
+ |      positional arguments:
+ |      trace - A valid plotly trace object (e.g., Scatter, Heatmap, etc.).
+ |              Not all keys in these are `stremable` run help(Obj) on the type
+ |              of trace your trying to stream, for each valid key, if the key
+ |              is streamable, it will say &#39;streamable = True&#39;. Trace objects
+ |              must be dictionary-like.
+ |      
+ |      keyword arguments:
+ |      layout (default=None) - A valid Layout object
+ |                              Run help(plotly.graph_objs.Layout)
+ |      validate (default = True) - Validate this stream before sending?
+ |                                  This will catch local errors if set to
+ |                                  True.
+ |      
+ |      Some valid keys for trace dictionaries:
+ |          &#39;x&#39;, &#39;y&#39;, &#39;text&#39;, &#39;z&#39;, &#39;marker&#39;, &#39;line&#39;
+ |      
+ |      Examples:
+ |      &gt;&gt;&gt; write(dict(x=1, y=2))  # assumes &#39;scatter&#39; type
+ |      &gt;&gt;&gt; write(Bar(x=[1, 2, 3], y=[10, 20, 30]))
+ |      &gt;&gt;&gt; write(Scatter(x=1, y=2, text=&#39;scatter text&#39;))
+ |      &gt;&gt;&gt; write(Scatter(x=1, y=3, marker=Marker(color=&#39;blue&#39;)))
+ |      &gt;&gt;&gt; write(Heatmap(z=[[1, 2, 3], [4, 5, 6]]))
+ |      
+ |      The connection to plotly&#39;s servers is checked before writing
+ |      and reconnected if disconnected and if the response status code
+ |      is in `reconnect_on`.
+ |      
+ |      For more help, see: `help(plotly.plotly.Stream)`
+ |      or see examples and tutorials here:
+ |      http://nbviewer.ipython.org/github/plotly/python-user-guide/blob/master/s7_streaming/s7_streaming.ipynb
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You're going to need to set up one of these stream link objects for each trace you wish to stream data to. 
+<br>Below we'll set one up for the scatter trace we have in our plot.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># We will provide the stream link object the same token that&#39;s associated with the trace we wish to stream to</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">Stream</span><span class="p">(</span><span class="n">stream_id</span><span class="p">)</span>
+
+<span class="c1"># We then open a connection</span>
+<span class="n">s</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can now use the Stream Link object <code>s</code> in order to <code>stream</code> data to our plot. 
+<br>As an example, we will send a time stream and some random numbers:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[49]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># (*) Import module keep track and format current time</span>
+<span class="kn">import</span> <span class="nn">datetime</span> 
+<span class="kn">import</span> <span class="nn">time</span>   
+ 
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>    <span class="c1"># a counter</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">5</span>    <span class="c1"># some shape parameter</span>
+
+<span class="c1"># Delay start of stream by 5 sec (time to switch tabs)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> 
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    
+    <span class="c1"># Current time on x-axis, random numbers on y-axis</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">k</span><span class="o">*</span><span class="n">i</span><span class="o">/</span><span class="mf">50.</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">i</span><span class="o">/</span><span class="mf">50.</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> 
+        
+    <span class="c1"># Send data to your plot</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">))</span>  
+    
+    <span class="c1">#     Write numbers to stream to append current data on plot,</span>
+    <span class="c1">#     write lists to overwrite existing data on plot</span>
+            
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># plot a point every second    </span>
+<span class="c1"># Close the stream when done plotting</span>
+<span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+ 
+
+{% endraw %}

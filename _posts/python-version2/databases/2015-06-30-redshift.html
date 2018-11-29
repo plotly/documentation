@@ -1,0 +1,911 @@
+---
+permalink: python/amazon-redshift/
+description: A tutorial showing how to plot Amazon AWS Redshift data with Plotly.
+name: Plot Data From Amazon Redshift
+has_thumbnail: false
+thumbnail: /images/static-image
+layout: user-guide
+language: python
+title: Plot Data from Amazon Redshift | plotly
+redirect_from: ipython-notebooks/amazon-redshift/
+display_as: databases
+has_thumbnail: false
+page_type: example_index
+order: 3
+ipynb: ~notebook_demo/1
+---
+{% raw %}
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-to-Plotly?">New to Plotly?<a class="anchor-link" href="#New-to-Plotly?">&#182;</a></h4><p>Plotly's Python library is free and open source! <a href="https://plot.ly/python/getting-started/">Get started</a> by downloading the client and <a href="https://plot.ly/python/getting-started/">reading the primer</a>.
+<br>You can set up Plotly to work in <a href="https://plot.ly/python/getting-started/#initialization-for-online-plotting">online</a> or <a href="https://plot.ly/python/getting-started/#initialization-for-offline-plotting">offline</a> mode, or in <a href="https://plot.ly/python/getting-started/#start-plotting-online">jupyter notebooks</a>.
+<br>We also have a quick-reference <a href="https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf">cheatsheet</a> (new!) to help you get started!</p>
+<h4 id="Version-Check">Version Check<a class="anchor-link" href="#Version-Check">&#182;</a></h4><p>Plotly's python package is updated frequently. Run <code>pip install plotly --upgrade</code> to use the latest version.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;2.0.1&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This notebook will go over one of the easiest ways to graph data from your <a href="http://aws.amazon.com/redshift/">Amazon Redshift data warehouse</a> using <a href="https://plot.ly/">Plotly's public platform</a> for publishing beautiful, interactive graphs from Python to the web.</p>
+<p><a href="https://plot.ly/product/enterprise/">Plotly's Enterprise platform</a> allows for an easy way for your company to build and share graphs without the data leaving your servers.</p>
+<h4 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h4><p>In this notebook we'll be using <a href="http://docs.aws.amazon.com/redshift/latest/gsg/rs-gsg-create-sample-db.html">Amazon's Sample Redshift Data</a> for this notebook. Although we won't be connecting through a JDBC/ODBC connection we'll be using the <a href="http://initd.org/psycopg/docs/index.html">psycopg2 package</a> with <a href="http://www.sqlalchemy.org/">SQLAlchemy</a>  and <a href="http://pandas.pydata.org/">pandas</a> to make it simple to query and analyze our data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span> <span class="c1">#python 3 support</span>
+
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="kn">as</span> <span class="nn">go</span>
+<span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="n">requests</span><span class="o">.</span><span class="n">packages</span><span class="o">.</span><span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">()</span> <span class="c1"># this squashes insecure SSL warnings - DO NOT DO THIS ON PRODUCTION!</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Connect-to-Redshift">Connect to Redshift<a class="anchor-link" href="#Connect-to-Redshift">&#182;</a></h4><p>You'll need your <a href="http://docs.aws.amazon.com/redshift/latest/gsg/rs-gsg-connect-to-cluster.html">Redshift Endpoint URL</a> in order to access your Redshift instance. I've obscured mine below but yours will be in a format similar to <code>datawarehouse.some_chars_here.region_name.redshift.amazonaws.com</code>. Connecting to Redshift is made extremely simple once you've set your cluster configuration. This configuration needs to include the username, password, port, host and database name. I've opted to store mine as environmental variables on my machine.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">redshift_endpoint</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;REDSHIFT_ENDPOINT&quot;</span><span class="p">)</span>
+<span class="n">redshift_user</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;REDSHIFT_USER&quot;</span><span class="p">)</span>
+<span class="n">redshift_pass</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;REDSHIFT_PASS&quot;</span><span class="p">)</span>
+<span class="n">port</span> <span class="o">=</span> <span class="mi">5439</span>
+<span class="n">dbname</span> <span class="o">=</span> <span class="s1">&#39;dev&#39;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As I mentioned there are numerous ways to connect to a Redshift databause and I've included two below. We can use either the SQLAlchemy package or we can use the psycopg2 package for a more direct access.</p>
+<p>Both will allow us to execute SQL queries and get results however the SQLAlchemy engine makes it a bit easier to directly return our data as a dataframe using pandas. Plotly has a tight integration with pandas as well, making it extremely easy to make interactive graphs to share with your company.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="SQLAlchemy">SQLAlchemy<a class="anchor-link" href="#SQLAlchemy">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+<span class="n">engine_string</span> <span class="o">=</span> <span class="s2">&quot;postgresql+psycopg2://</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">@</span><span class="si">%s</span><span class="s2">:</span><span class="si">%d</span><span class="s2">/</span><span class="si">%s</span><span class="s2">&quot;</span> \
+<span class="o">%</span> <span class="p">(</span><span class="n">redshift_user</span><span class="p">,</span> <span class="n">redshift_pass</span><span class="p">,</span> <span class="n">redshift_endpoint</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">dbname</span><span class="p">)</span>
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">engine_string</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Psycopg2">Psycopg2<a class="anchor-link" href="#Psycopg2">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+    <span class="n">host</span><span class="o">=</span><span class="s2">&quot;datawarehouse.cm4z2iunjfsc.us-west-2.redshift.amazonaws.com&quot;</span><span class="p">,</span>
+    <span class="n">user</span><span class="o">=</span><span class="n">redshift_user</span><span class="p">,</span>
+    <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
+    <span class="n">password</span><span class="o">=</span><span class="n">redshift_pass</span><span class="p">,</span>
+    <span class="n">dbname</span><span class="o">=</span><span class="n">dbname</span><span class="p">)</span>
+<span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="c1"># create a cursor for executing queries</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Load-Data">Load Data<a class="anchor-link" href="#Load-Data">&#182;</a></h4><p>This next section goes over loading in the sample data from Amazon's sample database. This is strictly for the purposes of the tutorial so feel free to skim this section if you're going to be working with your own data.</p>
+<p>-----------------START DATA LOADING-----------------</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;drop table users;</span>
+
+<span class="s2">drop table venue;</span>
+
+<span class="s2">drop table category;</span>
+
+<span class="s2">drop table date;</span>
+
+<span class="s2">drop table event;</span>
+
+<span class="s2">drop table listing;</span>
+
+<span class="s2">drop table sales;&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">aws_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;AWS_ACCESS_KEY_ID&quot;</span><span class="p">)</span> <span class="c1"># needed to access S3 Sample Data</span>
+<span class="n">aws_secret</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;AWS_SECRET_ACCESS_KEY&quot;</span><span class="p">)</span>
+
+<span class="n">base_copy_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;copy </span><span class="si">%s</span><span class="s2"> from &#39;s3://awssampledbuswest2/tickit/</span><span class="si">%s</span><span class="s2">.txt&#39; </span>
+<span class="s2">credentials &#39;aws_access_key_id=</span><span class="si">%s</span><span class="s2">;aws_secret_access_key=</span><span class="si">%s</span><span class="s2">&#39; </span>
+<span class="s2">delimiter &#39;</span><span class="si">%s</span><span class="s2">&#39;;&quot;&quot;&quot;</span> <span class="c1"># the base COPY string that we&#39;ll be using</span>
+
+<span class="c1">#easily generate each table that we&#39;ll need to COPY data from</span>
+<span class="n">tables</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;users&quot;</span><span class="p">,</span> <span class="s2">&quot;venue&quot;</span><span class="p">,</span> <span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="s2">&quot;event&quot;</span><span class="p">,</span> <span class="s2">&quot;listing&quot;</span><span class="p">]</span>
+<span class="n">data_files</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;allusers_pipe&quot;</span><span class="p">,</span> <span class="s2">&quot;venue_pipe&quot;</span><span class="p">,</span> <span class="s2">&quot;category_pipe&quot;</span><span class="p">,</span> <span class="s2">&quot;date2008_pipe&quot;</span><span class="p">,</span> <span class="s2">&quot;allevents_pipe&quot;</span><span class="p">,</span> <span class="s2">&quot;listings_pipe&quot;</span><span class="p">]</span>
+<span class="n">delimiters</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">]</span>
+
+<span class="c1">#the generated COPY statements we&#39;ll be using to load data;</span>
+<span class="n">copy_statements</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">tab</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">delim</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tables</span><span class="p">,</span> <span class="n">data_files</span><span class="p">,</span> <span class="n">delimiters</span><span class="p">):</span>
+    <span class="n">copy_statements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base_copy_string</span> <span class="o">%</span> <span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">aws_key</span><span class="p">,</span> <span class="n">aws_secret</span><span class="p">,</span> <span class="n">delim</span><span class="p">))</span>
+
+<span class="c1"># add in Sales data, delimited by &#39;\t&#39;</span>
+<span class="n">copy_statements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;copy sales from &#39;s3://awssampledbuswest2/tickit/sales_tab.txt&#39; </span>
+<span class="s2">credentials &#39;aws_access_key_id=</span><span class="si">%s</span><span class="s2">;aws_secret_access_key=</span><span class="si">%s</span><span class="s2">&#39; </span>
+<span class="s2">delimiter &#39;</span><span class="se">\t</span><span class="s2">&#39; timeformat &#39;MM/DD/YYYY HH:MI:SS&#39;;&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">aws_key</span><span class="p">,</span> <span class="n">aws_secret</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Create Table Statements</span>
+<span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">create table users(</span>
+<span class="s2">	userid integer not null distkey sortkey,</span>
+<span class="s2">	username char(8),</span>
+<span class="s2">	firstname varchar(30),</span>
+<span class="s2">	lastname varchar(30),</span>
+<span class="s2">	city varchar(30),</span>
+<span class="s2">	state char(2),</span>
+<span class="s2">	email varchar(100),</span>
+<span class="s2">	phone char(14),</span>
+<span class="s2">	likesports boolean,</span>
+<span class="s2">	liketheatre boolean,</span>
+<span class="s2">	likeconcerts boolean,</span>
+<span class="s2">	likejazz boolean,</span>
+<span class="s2">	likeclassical boolean,</span>
+<span class="s2">	likeopera boolean,</span>
+<span class="s2">	likerock boolean,</span>
+<span class="s2">	likevegas boolean,</span>
+<span class="s2">	likebroadway boolean,</span>
+<span class="s2">	likemusicals boolean);</span>
+
+<span class="s2">create table venue(</span>
+<span class="s2">	venueid smallint not null distkey sortkey,</span>
+<span class="s2">	venuename varchar(100),</span>
+<span class="s2">	venuecity varchar(30),</span>
+<span class="s2">	venuestate char(2),</span>
+<span class="s2">	venueseats integer);</span>
+
+<span class="s2">create table category(</span>
+<span class="s2">	catid smallint not null distkey sortkey,</span>
+<span class="s2">	catgroup varchar(10),</span>
+<span class="s2">	catname varchar(10),</span>
+<span class="s2">	catdesc varchar(50));</span>
+
+<span class="s2">create table date(</span>
+<span class="s2">	dateid smallint not null distkey sortkey,</span>
+<span class="s2">	caldate date not null,</span>
+<span class="s2">	day character(3) not null,</span>
+<span class="s2">	week smallint not null,</span>
+<span class="s2">	month character(5) not null,</span>
+<span class="s2">	qtr character(5) not null,</span>
+<span class="s2">	year smallint not null,</span>
+<span class="s2">	holiday boolean default(&#39;N&#39;));</span>
+
+<span class="s2">create table event(</span>
+<span class="s2">	eventid integer not null distkey,</span>
+<span class="s2">	venueid smallint not null,</span>
+<span class="s2">	catid smallint not null,</span>
+<span class="s2">	dateid smallint not null sortkey,</span>
+<span class="s2">	eventname varchar(200),</span>
+<span class="s2">	starttime timestamp);</span>
+
+<span class="s2">create table listing(</span>
+<span class="s2">	listid integer not null distkey,</span>
+<span class="s2">	sellerid integer not null,</span>
+<span class="s2">	eventid integer not null,</span>
+<span class="s2">	dateid smallint not null  sortkey,</span>
+<span class="s2">	numtickets smallint not null,</span>
+<span class="s2">	priceperticket decimal(8,2),</span>
+<span class="s2">	totalprice decimal(8,2),</span>
+<span class="s2">	listtime timestamp);</span>
+
+<span class="s2">create table sales(</span>
+<span class="s2">	salesid integer not null,</span>
+<span class="s2">	listid integer not null distkey,</span>
+<span class="s2">	sellerid integer not null,</span>
+<span class="s2">	buyerid integer not null,</span>
+<span class="s2">	eventid integer not null,</span>
+<span class="s2">	dateid smallint not null sortkey,</span>
+<span class="s2">	qtysold smallint not null,</span>
+<span class="s2">	pricepaid decimal(8,2),</span>
+<span class="s2">	commission decimal(8,2),</span>
+<span class="s2">	saletime timestamp);&quot;&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">copy_statement</span> <span class="ow">in</span> <span class="n">copy_statements</span><span class="p">:</span> <span class="c1"># execute each COPY statement</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">copy_statement</span><span class="p">)</span>
+<span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tables</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;sales&quot;</span><span class="p">]:</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;select count(*) from </span><span class="si">%s</span><span class="s2">;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">table</span><span class="p">,))</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">())</span>
+<span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span> <span class="c1"># make sure data went through and commit our statements permanently.</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>-----------------END DATA LOADING-----------------</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that we've loaded some data into our Redshift cluster, we can start running queries against it.</p>
+<p>We're going to start off by exploring and presenting some of our user's tastes and habits. Pandas makes it easy to query our data base and get back a dataframe in return. In this query, I'm simply getting the preferences of our users. What kinds of events do they like?</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">SELECT sum(likesports::int) as sports, sum(liketheatre::int) as theatre,  </span>
+<span class="s2">sum(likeconcerts::int) as concerts, sum(likejazz::int) as jazz, </span>
+<span class="s2">sum(likeclassical::int) as classical, sum(likeopera::int) as opera,  </span>
+<span class="s2">sum(likerock::int) as rock, sum(likevegas::int) as vegas,  </span>
+<span class="s2">sum(likebroadway::int) as broadway, sum(likemusicals::int) as musical, </span>
+<span class="s2">state</span>
+<span class="s2">FROM users </span>
+<span class="s2">GROUP BY state</span>
+<span class="s2">ORDER BY state asc;</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that I've gotten a DataFrame back, let's make a quick heatmap using plotly.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Heatmap</span><span class="p">(</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
+            <span class="n">colorscale</span> <span class="o">=</span> <span class="s1">&#39;Hot&#39;</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;State and Music Tastes&quot;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">autotick</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dtick</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">),</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;redshift/state and music taste heatmap&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/140.embed" height="1000" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><em>the above graph is interactive, click and drag to zoom, double click to return to initial layout, shift click to pan</em></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This graph is simple to produce and even more simple to explore. The interactivity makes it great for those that aren't completely familiar with heatmaps.</p>
+<p>Looking at this particular one we can easily get a sense of popularity. We can see here that sports events don't seem to be particularly popular among our users and that certain states have much higher preferences (and possibly users) than others.</p>
+<p>A common next step might be to create some box plots of these user preferences.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Declared User Preference Box Plots&quot;</span><span class="p">,</span>
+                <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">())</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">pref</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="c1"># for every preference type, make a box plot</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">pref</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">pref</span><span class="p">))</span>
+
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">),</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;redshift/user preference box plots&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/188.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><em>the above graph is interactive, click and drag to zoom, double click to return to initial layout, shift click to pan</em></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It seems to be that sports are just a bit more compressed than the rest. This may be because there's simply fewer people interested in sports or our company doesn't have many sporting events.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that we've explored a little bit about some of our customers we've stumbled upon this sports anomoly. Are we listing less sports events? Do we sell approximately the same amount of all event types and our users just aren't drawn to sports events?</p>
+<p>We've got to understand a bit more and to do so we'll be plotting a simple bar graph of our event information.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">SELECT sum(event.catid) as category_sum, catname as category_name</span>
+<span class="s2">FROM event, category</span>
+<span class="s2">where event.catid = category.catid</span>
+<span class="s2">GROUP BY category.catname</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Event Categories Sum&quot;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Sum&quot;</span><span class="p">))</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">category_name</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">category_sum</span><span class="p">)]</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[9]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/242.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It's a good thing we started exploring this data because we've got to rush to management and report the discrepancy between our users' preferences and the kinds of events that we're hosting! Luckily, sharing plotly's graphs is extremely easy using the <code>play with this data</code> link at the bottom right.</p>
+<p>However for our report, let's dive a bit deeper into the events that we're listing and when we're listing them. Maybe we're trending upwards with certain event types?</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">SELECT sum(sales.qtysold) as quantity_sold, date.caldate  </span>
+<span class="s2">FROM sales, date</span>
+<span class="s2">WHERE sales.dateid = date.dateid </span>
+<span class="s2">GROUP BY date.caldate </span>
+<span class="s2">ORDER BY date.caldate asc;</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Event Sales Per Day&quot;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Sales Quantity&quot;</span><span class="p">))</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">caldate</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">quantity_sold</span><span class="p">)]</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/243.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>Overall it seems inconclusive except that our events seem to be seasonal. This aggregate graph doesn't show too much so it's likely worth exploring a bit more about each category.
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">SELECT sum(sales.qtysold) as quantity_sold, date.caldate, category.catname as category_name  </span>
+<span class="s2">FROM sales, date, event, category</span>
+<span class="s2">WHERE sales.dateid = date.dateid </span>
+<span class="s2">AND sales.eventid = event.eventid</span>
+<span class="s2">AND event.catid = category.catid</span>
+<span class="s2">GROUP BY date.caldate, category_name</span>
+<span class="s2">ORDER BY date.caldate asc;</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It's always great to try and better understand which graph type conveys your message the best. Sometimes subplots do the best and other times it's best to put them all on one graph. Plotly makes it easy to do either one!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">count</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;category_name&quot;</span><span class="p">)):</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">caldate</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">quantity_sold</span><span class="p">,</span>
+            <span class="n">xaxis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">))</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">tls</span><span class="o">.</span><span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">cols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Event Sales Per Day By Category&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is the format of your plot grid:
+[ (1,1) x1,y1 ]  [ (1,2) x2,y2 ]
+[ (2,1) x3,y3 ]  [ (2,2) x4,y4 ]
+
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[13]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/244.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The above subplots seem to tell an interesting story although it's important to note that with subplots the axes are not always aligned. So let's try plotting all of them together, with lines for each category.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;category_name&quot;</span><span class="p">):</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">caldate</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">quantity_sold</span>
+        <span class="p">))</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Event Sales Per Day By Category&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data</span>
+<span class="n">py</span><span class="o">.</span><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;redshift/Event Sales Per Day by Category&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[14]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/200.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This looks much better and explains the story perfectly. It seems that all of our events are fairly regular through the year except for a spike in musicals and plays around March. This might be of interest to so I'm going to mark up this graph and share it with some of the relevant sales representatives in my company.</p>
+<p>The rest of my team can edit the graph with me in a web app. Collaborating does not require coding, emailing, or downloading software. I can even fit a function to the data in the web app.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://i.imgur.com/nUVihzx.png&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[16]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<img src="http://i.imgur.com/nUVihzx.png"/>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">tls</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="s2">&quot;https://plot.ly/~bill_chambers/195&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~bill_chambers/195.embed" height="525" width="100%"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Plotly makes it easier for data analysts and data scientists to share data in meaningful ways. By marking up drawings and embedding comments on the graph, I can make sure that I'm sharing everything within a context. Rather than having to send a static image, I can share an interactive plot a coworker can explore and understand as well. Plotly makes it easy for companies to make sure that information is conveyed in the right context.</p>
+<h4 id="References">References<a class="anchor-link" href="#References">&#182;</a></h4><p>Learn more about:</p>
+<ul>
+<li><a href="http://aws.amazon.com/redshift/">Amazon Redshift Data Warehouse</a></li>
+<li><a href="https://plot.ly/product/enterprise/">Plotly Enterprise - Plotly Hosted on your servers</a></li>
+<li><a href="https://plot.ly/python/subplots/">Subplots in Plotly</a></li>
+<li><a href="https://plot.ly/online-graphing/tutorials/create-a-line-of-best-fit-online/">Creating a plot of best fit</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+
+
+{% endraw %}
