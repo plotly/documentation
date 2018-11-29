@@ -5,6 +5,7 @@ permalink: python/proxy-configuration/
 description: How to configure Plotly's Python API to work with corporate proxies
 layout: user-guide
 language: python
+current: true
 has_thumbnail: true
 thumbnail: thumbnail/net.jpg
 display_as: file_settings
