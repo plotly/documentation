@@ -39,7 +39,7 @@ packageVersion('plotly')
 
 ### Mapbox Access Token
 
-To create mapbox maps with Plotly, you'll need a Mapbox account and a [Mapbox Access Token](https://www.mapbox.com/studio/) that you can add to your [Plotly Settings](https://plot.ly/settings/mapbox). If you're using a Plotly On-Premise server, please see additional instructions here: https://help.plot.ly/mapbox-atlas/.
+To create mapbox maps with Plotly, you'll need a Mapbox account and a [Mapbox Access Token](https://www.mapbox.com/studio/) that you can add to your [Plotly Settings](https://plot.ly/settings/mapbox). If you're using a Chart Studio Enterprise server, please see additional instructions here: https://help.plot.ly/mapbox-atlas/.
 
 
 ```r
