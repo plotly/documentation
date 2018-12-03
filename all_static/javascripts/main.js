@@ -80,8 +80,7 @@ $('.copyCode').on('click', function (e) {
 
 });
 
-// $( "<span class='copyCode'>Copy to clipboard right away man!</span>" ).insertAfter( "pre code" );
-$( "<span class='copyCode'>asdfghjk</span>" ).insertAfter( "pre code" );
+$( "<span class='copyCode'>Copy to clipboard right away man!</span>" ).insertAfter( "pre code" );
 
 // Reset Tooltip Text
 
@@ -95,10 +94,6 @@ $(".copy").hover(
 );
 
 // Copy functions
-
-function fun() {
-    console.log("here we are fam");
-}
 
 function copyToClipboard(element) {
     var $temp = $("<input>");
