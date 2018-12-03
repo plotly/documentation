@@ -89,11 +89,11 @@ api_create(p, filename = "getting-started/ggplotly")
 
 `filename` sets the name of the file inside your online plotly account.
 
-#### Special Instructions for Plotly On-Premise Users
+#### Special Instructions for Chart Studio Enterprise Users
 
-Your API key for account on the public cloud will be different than the API key in [Plotly On-Premise](https://plot.ly/product/enterprise/). Visit https://plotly.your-company.com/settings/api/ to find your Plotly On-Premise API key. Remember to replace "your-company.com" with the URL of your Plotly On-Premise server.
+Your API key for account on the public cloud will be different than the API key in [Chart Studio Enterprise](https://plot.ly/product/enterprise/). Visit https://plotly.your-company.com/settings/api/ to find your Chart Studio Enterprise API key. Remember to replace "your-company.com" with the URL of your Chart Studio Enterprise server.
 
-If your company has a Plotly On-Premise server, change the R API endpoint so that it points to your company's Plotly server instead of Plotly's cloud.
+If your company has a Chart Studio Enterprise server, change the R API endpoint so that it points to your company's Plotly server instead of Plotly's cloud.
 
 In your .RProfile write:
 
@@ -102,7 +102,7 @@ In your .RProfile write:
 Sys.setenv("plotly_domain"="https://plotly.your-company.com")
 ```
 
-Remember to replace "your-company" with the URL of your Plotly On-Premise server.
+Remember to replace "your-company" with the URL of your Chart Studio Enterprise server.
 
 #### Online Plot Privacy
 
