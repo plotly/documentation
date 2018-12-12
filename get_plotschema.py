@@ -4,8 +4,8 @@ Update _data/plotschema.json for rakefile.
 import requests
 
 plotschema = requests.get('https://api.plot.ly/v2/plot-schema/?sha1=%27%27',
-                         headers={'plotly-client-platform': 'python'},
-                         auth=('plotly_docs', 'ikwqmjam2o')).content
+                          headers={'plotly-client-platform': 'python'},
+                          auth=('plotly_docs', 'ikwqmjam2o')).content
 f = open('plotschema.json', 'w')
 
 # put quotes around all hex-color dflt lists with len 10

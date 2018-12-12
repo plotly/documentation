@@ -1,6 +1,6 @@
 # Styles
 
-The styling for this repo is broken up into two different parts: [gulp](https://github.com/plotly/documentation/blob/source-design-merge/gulpfile.js) + browsersync + sass and vanilla css. 
+The styling for this repo is broken up into two different parts: [gulp](https://github.com/plotly/documentation/blob/source-design-merge/gulpfile.js) + browsersync + sass and vanilla css.
 
 It is recommended to use something to create a local server environment such as MAMP Pro which allows you to set virtual hosts (e.g.: http://api.plotly.dev)
 
@@ -16,14 +16,13 @@ Once the repo has been cloned successfully (see [Contributing.md](https://github
 
 Generally it's best to work with two instances of terminal, one to use for anything related to `$ jekyll` and then another to keep the `$ gulp` task running.
 
-
 1. run `$ jekyll serve --config _config_dev.yml` to create a local server @ http://localhost:4000 that browsersync leverages (see gulpfile.js to adjust as needed)
 
 OR
 
-2. run `$ jekyll build --config _config_dev.yml` and leverage a local server @ http://api.plotly.dev through a service like MAMP Pro that browsersync leverages (see gulpfile.js to adjust as needed)
-3. run `$ gulp`
-4. make any updates to the scss files
+1. run `$ jekyll build --config _config_dev.yml` and leverage a local server @ http://api.plotly.dev through a service like MAMP Pro that browsersync leverages (see gulpfile.js to adjust as needed)
+2. run `$ gulp`
+3. make any updates to the scss files
 
 ### markup + scss workflow
 
@@ -55,7 +54,8 @@ When you run a `$ jekyll` you need to update any scss file as jekyll will automa
    - main.css *(the css conversion of main.scss)*
 
 ## Deploying Changes After Editing the SCSS
-   - Run `gulp build` in the root of the documentation repo after making any scss edits. This will update `main.css` as well as the [verion](https://github.com/plotly/documentation/blob/source-design-merge/_data/cache_bust_css.yml) which is used to prevent css caching.
+
+   - Run `gulp build` in the root of the documentation repo after making any scss edits. This will update `main.css` as well as the [version](https://github.com/plotly/documentation/blob/source-design-merge/_data/cache_bust_css.yml) which is used to prevent css caching.
    - `git add` the files you've changed as well as the generated `main.css` and `cache_bust_css.yml` files, `git commit -m 'message about update'`, and `git push origin source-design-merge` to add your updates to the repo.
    - run `rake deploy` to deploy changes.
 

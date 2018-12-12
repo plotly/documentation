@@ -17,7 +17,6 @@ January 28, 2016
 modularity using a mono-repo, one npm package and several CommonJS require-able
 modules.
 
-
 The current era of client-side javascript stands between two major events: the
 npm-modules explosion is a few years behind us, but wide-spread implementation
 of native client-side modules by browsers is several years away.
@@ -46,8 +45,7 @@ they need.
 In the past two months, we surveyed library design solutions in an effort to
 provide the best experience for plotly.js consumers. We hope that our efforts
 may help maintainers of other client-side libraries make judicious design
-choices. We present Plotly's solution to client-side modularization below.
-
+choices. We present Plotly’s solution to client-side modularization below.
 
 ### Problem
 
@@ -89,7 +87,6 @@ important in 2016. Its endorsement by the version 4 of
 [d3](http://bost.ocks.org/mike/d3-plugin/) may make ES6 module definitions
 common place for the next generation of large client-side libraries.
 
-
 ### Possible solution 1
 
 Split up the library's modules into multiple repos, with each module linked to
@@ -112,7 +109,6 @@ discarded.
  - Can't easily share testing and building resources from module to module
  - Possible code duplication unless the internal modules become npm packages too
    (more on that in the next section)
-
 
 ### Possible solution 2
 
@@ -181,7 +177,6 @@ To sum up:
    from within the mono-repo is non-trivial. Hats off to the lodash team for
    pulling it off.
  - Internal modules are prone to code duplication in the resulting bundles.
-
 
 ### Possible solution 3
 
@@ -252,8 +247,7 @@ made the `require` statements even cleaner e.g. `require('plotly.js/core')`
 instead of `require('plotly.js/lib/core')`. But considering the large number of
 these `lib` files we have, we opt for a `lib` directory in order to not pollute
 the repo's root. Note that the `"main"` package.json field cannot be set to a
-directory (more info [here](Mention
-https://github.com/nodejs/node/issues/3953)).
+directory (more info [here](https://github.com/nodejs/node/issues/3953).
 
 Our solution results in a minor increase in build time, but we feel that the
 flexibility it allows is well worth the hit. Browserify and webpack both have
@@ -280,7 +274,6 @@ appropriately.
    `require('plotly.js/lib/bar')`
  - Webpack users will need to add [ify-loader](https://github.com/hughsk/ify-loader)
    to their config file
-
 
 You can check out our latest (modular) [plotly.js release on GitHub](https://github.com/plotly/plotly.js/releases/tag/v1.5.0). If this is your first time hearing about plotly.js, check out our [gallery and documentation](https://plot.ly/javascript). We just recently open-sourced the project and you can learn more about our decision in our [open-source announcement](https://plot.ly/javascript/open-source-announcement).
 
