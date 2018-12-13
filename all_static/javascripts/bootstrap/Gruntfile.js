@@ -132,7 +132,7 @@ module.exports = function (grunt) {
       docsJs: {
         src: [
           'docs/assets/js/_vendor/holder.js',
-          'docs/assets/js/_vendor/ZeroClipboard.min.js',
+          'docs/assets/js/_vendor/ZeroClipboard.js',
           'docs/assets/js/_src/application.js'
         ],
         dest: 'docs/assets/js/docs.min.js'
