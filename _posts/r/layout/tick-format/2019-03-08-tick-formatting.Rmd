@@ -115,6 +115,108 @@ chart_link
 chart_link
 ```
 
+### Using Tickformat (Date)
+
+```{r, results = "hide"}
+library(plotly)
+
+df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv')
+
+p <- plot_ly(
+  type = "scatter",
+  x = df$Date, 
+  y = df$AAPL.High,
+  name = 'AAPL High',
+  mode = "lines",
+  line = list(
+        color = '#17BECF'
+  )) %>%
+  add_trace(
+    type = "scatter",
+    x = df$Date, 
+    y = df$AAPL.Low,
+    name = 'AAPL Low',
+    mode = "lines",
+    line = list(
+        color = '#7F7F7F'
+  )) %>%
+  layout(
+    title = "Time Series with Custom Date-Time Format",
+    xaxis = list(
+        type = 'date',
+        tickformat = "%d %B (%a)<br>%Y"
+  ))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="using-tickformat-attribute-date")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Tickformatstops to customize for different zoom levels
+
+```{r, results = "hide"}
+library(plotly)
+df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv')
+p <- plot_ly(
+  type = "scatter",
+  x = df$Date, 
+  y = df$mavg,
+  mode = "lines") %>%
+  layout(
+    xaxis = list(
+      type='date',
+      tickformatstops = list(
+        list(
+          dtickrange = list(NULL, 1000), 
+          value = "%H:%M:%S.%L ms"
+        ), 
+        list(
+          dtickrange = list(1000, 60000), 
+          value = "%H:%M:%S s"
+        ), 
+        list(
+          dtickrange = list(60000, 3600000), 
+          value = "%H:%M m"
+        ), 
+        list(
+          dtickrange = list(3600000, 86400000), 
+          value = "%H:%M h"
+        ), 
+        list(
+          dtickrange = list(86400000, 604800000), 
+          value = "%e. %b d"
+        ), 
+        list(
+          dtickrange = list(604800000, "M1"), 
+          value = "%e. %b w"
+        ), 
+        list(
+          dtickrange = list("M1", "M12"), 
+          value = "%b '%y M"
+        ), 
+        list(
+          dtickrange = list("M12", NULL), 
+          value = "%Y Y"
+        )
+      )
+    )
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="using-tickformatstops")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
 ### Using Exponentformat
 
 ```{r, results = "hide"}
