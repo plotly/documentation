@@ -109,102 +109,28 @@ chart_link
 
 <iframe src="https://plot.ly/~RPlotBot/5619.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-### Using Tickformat (Date)
+### Using Exponentformat
 
 
 ```r
 library(plotly)
 
-df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv')
-
 p <- plot_ly(
   type = "scatter",
-  x = df$Date, 
-  y = df$AAPL.High,
-  name = 'AAPL High',
-  mode = "lines",
-  line = list(
-        color = '#17BECF'
-  )) %>%
-  add_trace(
-    type = "scatter",
-    x = df$Date, 
-    y = df$AAPL.Low,
-    name = 'AAPL Low',
-    mode = "lines",
-    line = list(
-        color = '#7F7F7F'
-  )) %>%
+  x = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), 
+  y = c(68000, 52000, 60000, 20000, 95000, 40000, 60000, 79000, 74000, 42000, 20000, 90000),
+  mode = "markers+lines") %>%
   layout(
-    title = "Time Series with Custom Date-Time Format",
-    xaxis = list(
-        tickformat = "%d %B (%a)<br>%Y"
-  ))
-
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="using-tickformat-attribute-date")
-chart_link
-```
-
-<iframe src="https://plot.ly/~RPlotBot/5621.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-### Tickformatstops to customize for different zoom levels
-
-
-```r
-library(plotly)
-
-df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv')
-
-p <- plot_ly(
-  type = "scatter",
-  x = df$Date, 
-  y = df$mavg,
-  mode = "lines") %>%
-  layout(
-    xaxis = list(
-      tickformatstops = list(
-        list(
-          dtickrange = c(NULL, 1000), 
-          value = "%H:%M:%S.%L ms"
-        ), 
-        list(
-          dtickrange = c(1000, 60000), 
-          value = "%H:%M:%S s"
-        ), 
-        list(
-          dtickrange = c(60000, 3600000), 
-          value = "%H:%M m"
-        ), 
-        list(
-          dtickrange = c(3600000, 86400000), 
-          value = "%H:%M h"
-        ), 
-        list(
-          dtickrange = c(86400000, 604800000), 
-          value = "%e. %b d"
-        ), 
-        list(
-          dtickrange = c(604800000, "M1"), 
-          value = "%e. %b w"
-        ), 
-        list(
-          dtickrange = c("M1", "M12"), 
-          value = "%b '%y M"
-        ), 
-        list(
-          dtickrange = c("M12", NULL), 
-          value = "%Y Y"
-        )
-      )
+    yaxis = list(
+      showexponent = "all",
+      exponentformat = "e"
     )
   )
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="tickformatstops")
+chart_link = api_create(p, filename="using-exponentformat")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5623.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5625.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
