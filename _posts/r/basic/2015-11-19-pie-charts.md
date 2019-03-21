@@ -35,7 +35,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.7.1.9000'
+## [1] '4.8.0.9000'
 ```
 
 ### Basic Pie Chart
@@ -58,7 +58,7 @@ chart_link = api_create(p, filename="pie-basic")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3821.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5366.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Styled Pie Chart
 
@@ -91,7 +91,7 @@ chart_link = api_create(p, filename="pie-styled")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3829.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5368.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Subplots
 In order to create pie chart subplots, you need to use the [domain](https://plot.ly/javascript/reference/#pie-domain) attribute. It is important to note that the `X` array set the horizontal position whilst the `Y` array sets the vertical. For example, `x=[0,0.5], y=[0, 0.5]` would mean the bottom left position of the plot.
@@ -103,9 +103,9 @@ library(dplyr)
 p <- plot_ly() %>%
   add_pie(data = count(diamonds, cut), labels = ~cut, values = ~n,
           name = "Cut", domain = list(x = c(0, 0.4), y = c(0.4, 1))) %>%
-  add_pie(data = count(diamonds, color), labels = ~cut, values = ~n,
+  add_pie(data = count(diamonds, color), labels = ~color, values = ~n,
           name = "Color", domain = list(x = c(0.6, 1), y = c(0.4, 1))) %>%
-  add_pie(data = count(diamonds, clarity), labels = ~cut, values = ~n,
+  add_pie(data = count(diamonds, clarity), labels = ~clarity, values = ~n,
           name = "Clarity", domain = list(x = c(0.25, 0.75), y = c(0, 0.6))) %>%
   layout(title = "Pie Charts with Subplots", showlegend = F,
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
@@ -114,17 +114,39 @@ p <- plot_ly() %>%
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="pie-subplots")
-```
-
-```
-## Error in as.vector(x, "list"): cannot coerce type 'closure' to vector of type 'list'
-```
-
-```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3829.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5633.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Subplots Using Grid
+This example uses a plotly [grid](https://plot.ly/javascript/reference/#layout-grid) attribute for the suplots. Reference the row and column destination using the [domain](https://plot.ly/javascript/reference/#pie-domain) attribute.
+
+```r
+library(plotly)
+library(dplyr)
+
+p <- plot_ly() %>%
+  add_pie(data = count(diamonds, cut), labels = ~cut, values = ~n,
+          name = "Cut", domain = list(row = 0, column = 0)) %>%
+  add_pie(data = count(diamonds, color), labels = ~color, values = ~n,
+          name = "Color", domain = list(row = 0, column = 1)) %>%
+  add_pie(data = count(diamonds, clarity), labels = ~clarity, values = ~n,
+          name = "Clarity", domain = list(row = 1, column = 0)) %>%
+  add_pie(data = count(diamonds, cut), labels = ~cut, values = ~n,
+          name = "Clarity", domain = list(row = 1, column = 1)) %>%
+  layout(title = "Pie Charts with Subplots", showlegend = F,
+         grid=list(rows=2, columns=2),
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+
+chart_link = api_create(p, filename="pie-subplots-grid")        
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5635.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 See more examples of subplots [here](https://plot.ly/r/subplots/).
 
@@ -152,7 +174,7 @@ chart_link = api_create(p, filename="pie-donut")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3248.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5370.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
