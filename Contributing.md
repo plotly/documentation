@@ -12,7 +12,7 @@ git fetch origin
 git checkout source-design-merge
 ```
 
-2. Check Ruby version `$ ruby --version`. We recommend using the same ruby version as [gh-pages](https://pages.github.com/versions/). Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
+2. Check Ruby version `$ ruby --version`. We recommend using `version 2.3.3` or the same ruby version as [gh-pages](https://pages.github.com/versions/). Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
 
 3. Install bundler and dependencies from the `gemfile`:
 
