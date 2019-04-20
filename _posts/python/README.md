@@ -17,7 +17,7 @@
   $ bundle install
 
   ```
-<b>IMPORTANT</b> -If not using bundler and the gemfile, [install the same jekyll version that Github Pages is using](https://pages.github.com/versions/).
+<b>IMPORTANT</b> -If not using bundler and the gemfile, [install the same jekyll version that GitHub Pages is using](https://pages.github.com/versions/).
 
 ## Create Python Documentation:
 Our python tutorials are written in [ipython notebooks](http://ipython.org/notebook.html) (.ipynb file)
