@@ -24,7 +24,7 @@ You can save plotly graphs to static images and view them in your browser. Consi
     var trace={x:[3,9,8,10,4,6,5],y:[5,7,6,7,8,9,8],type:"scatter"};
     var trace1={x:[3,4,1,6,8,9,5],y:[4,2,5,2,1,7,3],type:"scatter"};
     var data = [trace,trace1];
-    var layout = {title : "Simple Javascript Graph"};
+    var layout = {title : "Simple JavaScript Graph"};
     Plotly.plot(
       'plotly_div',
        data,

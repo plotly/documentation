@@ -1,4 +1,4 @@
-# Contribute to Plotly's [Javascript Documentation](https://plot.ly/javascript/)
+# Contribute to Plotly's [JavaScript Documentation](https://plot.ly/javascript/)
 
 ## Initial Steps:
 
@@ -19,7 +19,7 @@ gem install bundler
 bundle install
 ```
 
-<b>IMPORTANT</b> -If not using bundler and the gemfile, [install the same jekyll version that Github Pages is using](https://pages.github.com/versions/).
+<b>IMPORTANT</b> -If not using bundler and the gemfile, [install the same jekyll version that GitHub Pages is using](https://pages.github.com/versions/).
 
 ## Create Plotly.js Documentation:
 
@@ -32,7 +32,7 @@ Our javascript tutorials are written in HTML files with embedded [codepen](http:
 2. `cd` into the folder you created and create an html index file labeled: `yyyy-mm-dd-chart_type_plotlyjs_index.html`. Copy the index file template below and replace with the necessary information pertaining to the doc you are creating.
   ```
   ---
-  title: Javascript Graphing Library D3.js-based Add-Chart-Type-or-Topic | Examples | Plotly
+  title: JavaScript Graphing Library D3.js-based Add-Chart-Type-or-Topic | Examples | Plotly
   name: Add-Chart-Type-or-Topic
   permalink: javascript/add-chart-type-or-topic/
   description: How to make a D3.js-based add-chart-type-or-topic in javascript. Add an additional sentence summarizing chart-type or topic.
