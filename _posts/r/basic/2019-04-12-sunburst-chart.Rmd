@@ -1,7 +1,7 @@
 ---
 title: R Sunburst Charts | Examples | Plotly
 name: Sunburst Charts
-permalink: r/sunburst/
+permalink: r/sunburst-charts/
 description: How to make sunburst charts in R with Plotly.
 layout: base
 thumbnail: thumbnail/sunburst.gif
