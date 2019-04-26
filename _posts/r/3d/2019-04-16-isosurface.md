@@ -1,0 +1,161 @@
+---
+title: 3D Isosurface Plots | Plotly
+name: 3D Isosurface Plots 
+permalink: r/3d-isosurface-plots/
+description: How to create 3D isosurface plots with Plotly.
+layout: base
+thumbnail: thumbnail/isosurface.jpg
+language: r
+has_thumbnail: true
+display_as: 3d_charts
+order: 20
+output:
+  html_document:
+    keep_md: true
+---
+
+
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+
+```r
+library(plotly)
+packageVersion('plotly')
+```
+
+```
+## [1] '4.9.0'
+```
+
+
+#### Basic Isosurface Plot
+
+
+```r
+library(plotly)
+
+p <- plot_ly(
+  type='isosurface',
+  x = c(0,0,0,0,1,1,1,1),
+  y = c(1,0,1,0,1,0,1,0),
+  z = c(1,1,0,0,1,1,0,0),
+  value = c(1,2,3,4,5,6,7,8),
+  isomin=2,
+  isomax=6
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="isosurface-basic")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5639.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Isosurface with Additional Slices
+
+
+```r
+library(plotly)
+
+df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/clebsch-cubic.csv')
+
+p <- plot_ly(
+  df,
+  type='isosurface',
+  x = ~x,
+  y = ~y,
+  z = ~z,
+  value = ~value,
+  isomin = -100,
+  isomax = 100,
+  colorscale='RdBu',
+  surface = list(show = TRUE, count = 1),
+  slices = list(z = list(
+          show = TRUE, locations = c(-0.3, 0.5)
+  )),
+  caps = list(
+    x = list(show = FALSE),
+    y = list(show = FALSE),
+    z = list(show = FALSE)
+    )
+) %>%
+  layout(
+    margin=list(t = 0, l = 0, b = 0),
+    scene=list(
+        camera=list(
+            eye=list(
+                x = 1.86,
+                y = 0.61,
+                z = 0.98
+            )
+        )
+    )
+)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="isosurface-slices")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5641.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Multiple Isosurfaces with Caps
+
+
+```r
+library(plotly)
+
+df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/clebsch-cubic.csv')
+
+p <- plot_ly(
+  df,
+  type='isosurface',
+  x = ~x,
+  y = ~y,
+  z = ~z,
+  value = ~value,
+  isomin = -10,
+  isomax = 10,
+  surface = list(show = TRUE, count = 4, fill = 0.8, pattern = 'odd'),
+  caps = list(
+    x = list(show = TRUE),
+    y = list(show = TRUE),
+    z = list(show = TRUE)
+    )
+) %>%
+  layout(
+    margin=list(t = 0, l = 0, b = 0),
+    scene=list(
+        camera=list(
+            eye=list(
+                x = 1.86,
+                y = 0.61,
+                z = 0.98
+            )
+        )
+    )
+)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="multiple-isosurface-caps")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5643.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+
+#### Reference
+
+See our [reference page](https://plot.ly/r/reference/) for more information and chart attribute options!.
