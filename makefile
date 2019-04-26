@@ -7,7 +7,7 @@ search_readme :
 
 update_js_search :
 	@echo "Install algoliasearch python package:"
-	pip install --upgrade algoliasearch
+	pip install algoliasearch==1.15.3
 	@echo "Updating js_docs search index"
 	python update_js_docs_search.py
 
