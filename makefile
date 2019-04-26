@@ -21,6 +21,6 @@ update_r_search :
 
 update_ref_search :
 	@echo "Install algoliasearch python package:"
-	pip install --upgrade algoliasearch
+	pip install algoliasearch==1.15.3
 	@echo "Updating search for reference pages"
 	python update_ref_search.py
