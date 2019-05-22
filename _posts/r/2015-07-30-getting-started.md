@@ -22,7 +22,7 @@ Plotly is now on CRAN!
 install.packages("plotly")
 ```
 
-Or install the latest development version (on Github) via devtools:
+Or install the latest development version (on GitHub) via devtools:
 
 ```r
 devtools::install_github("ropensci/plotly")
