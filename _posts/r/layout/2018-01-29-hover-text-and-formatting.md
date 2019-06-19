@@ -35,7 +35,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.7.1.9000'
+## [1] '4.9.0'
 ```
 
 #### Add Hover Text
@@ -60,7 +60,7 @@ chart_link <- api_create(p, filename = "hover-text")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5226.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5658.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #### Format Hover Text 
 
@@ -95,7 +95,77 @@ chart_link <- api_create(p, filename = "hover-formating")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5228.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5660.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Hovertemplate
+
+
+```r
+library(plotly)
+
+p <- plot_ly() %>%
+  add_trace(
+    type = 'scatter',
+    mode = 'lines+markers',
+    x = c(1,2,3,4,5),
+    y = c(2.02825,1.63728,6.83839,4.8485,4.73463),
+    text = c("Text A", "Text B", "Text C", "Text D", "Text E"),
+    hovertemplate = paste('<i>Price</i>: $%{y:.2f}',
+                        '<br><b>X</b>: %{x}<br>',
+                        '<b>%{text}</b>'),
+    showlegend = FALSE
+  ) %>%
+  add_trace(
+    type = 'scatter',
+    mode = 'lines+markers',
+    x = c(1,2,3,4,5),
+    y = c(3.02825,2.63728,4.83839,3.8485,1.73463),
+    hovertemplate = 'Price: %{y:$.2f}<extra></extra>',
+    showlegend = FALSE
+  )
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link <- api_create(p, filename = "hovertemplate-basic")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5662.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Advanced Hovertemplate
+
+
+```r
+library(plotly)
+
+d <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/job-automation-probability.csv')
+
+p <- d %>% 
+  plot_ly(
+    type = 'scatter',
+    mode = 'markers',
+    x = ~prob,
+    y = ~Average.annual.wage,
+    marker = list(size = ~numbEmployed, sizeref = 4000, sizemode = 'area'),
+    color = ~education,
+    text = ~short.occupation,
+    hovertemplate = paste(
+      "<b>%{text}</b><br><br>",
+      "%{yaxis.title.text}: %{y:$,.0f}<br>",
+      "%{xaxis.title.text}: %{x:.0%}<br>",
+      "Number Employed: %{marker.size:,}",
+      "<extra></extra>"
+      )
+    ) %>%
+  layout(legend = list(orientation = 'h', y = -0.3))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link <- api_create(p, filename = "hovertemplate-advanced")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5664.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #### Reference
 
