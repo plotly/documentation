@@ -88,4 +88,4 @@ We now have search via algolia implemented on our index and reference documentat
 
 ## Style Edits
 
-Please refer to our [Styles README](https://github.com/plotly/documentation/blob/source-design-merge/Styles.md)
+Please refer to our [Styles README](https://github.com/plotly/documentation/blob/source-design-merge/style_README.md)
