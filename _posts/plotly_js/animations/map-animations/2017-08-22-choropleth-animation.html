@@ -1,6 +1,6 @@
 ---
 name: Map Animations
-plot_url: https://codepen.io/bcd/embed/rzrJjb/?height=500&theme-id=15263&default-tab=result
+plot_url: https://codepen.io/plotly/embed/WqZOVG/?height=500&theme-id=15263&default-tab=result
 language: plotly_js
 suite: map-animations
 order: 1
@@ -8,46 +8,49 @@ sitemap: false
 arrangement: horizontal
 ---
 
-Plotly.d3.csv("https://raw.githubusercontent.com/bcdunbar/datasets/master/usa_pop_melted.csv", function(err, rows){
+Plotly.d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/gapminder_with_codes.csv", function(err, rows){
 
-  function unpack(rows, key) {
-  return rows.map(function(row) { return row[key]; })
+  function filter_and_unpack(rows, key, year) {
+  return rows.filter(row => row['year'] == year).map(row => row[key])
   }
 
   var frames = []
-  var z = unpack(rows, 'pop')
-  var locations = unpack(rows, 'abb')
+  var slider_steps = []
 
-  var n = 7;
-  var j = 51;
-  var k = 0;
-  var num = 2009
-  for (var i = 0; i < n; i++) {
-    k++
-    num++
-    j = 51
-    j = j*k
-    frames[i] = {data: [{z: [], locations: []}], name: num}
-    frames[i].data[0].z = z.slice(0, j);
-    frames[i].data[0].locations = locations.slice(0, j);
+  var n = 11;
+  var num = 1952;
+  for (var i = 0; i <= n; i++) {
+    var z = filter_and_unpack(rows, 'lifeExp', num)
+    var locations = filter_and_unpack(rows, 'iso_alpha', num)
+    frames[i] = {data: [{z: z, locations: locations, text: locations}], name: num}
+    slider_steps.push ({
+        label: num.toString(),
+        method: "animate",
+        args: [[num], {
+            mode: "immediate",
+            transition: {duration: 300},
+            frame: {duration: 300}
+          }
+        ]
+      })
+    num = num + 5
   }
 
 var data = [{
       type: 'choropleth',
-      locationmode: 'USA-states',
+      locationmode: 'world',
       locations: frames[0].data[0].locations,
       z: frames[0].data[0].z,
       text: frames[0].data[0].locations,
       zauto: false,
-      zmin: 500000,
-      zmax: 50000000
+      zmin: 30,
+      zmax: 90
 
 }];
-
 var layout = {
-    title: 'USA State Population<br>2010 - 2016',
+    title: 'World Life Expectency<br>1952 - 2007',
     geo:{
-       scope: 'usa',
+       scope: 'world',
        countrycolor: 'rgb(255, 255, 255)',
        showland: true,
        landcolor: 'rgb(217, 217, 217)',
@@ -74,8 +77,7 @@ var layout = {
             duration: 200,
           },
           frame: {
-            duration: 500,
-            redraw: false
+            duration: 500
           }
         }],
         label: "Play"
@@ -89,8 +91,7 @@ var layout = {
               duration: 0
             },
             frame: {
-              duration: 0,
-              redraw: false
+              duration: 0
             }
           }
         ],
@@ -99,70 +100,7 @@ var layout = {
     }],
     sliders: [{
       active: 0,
-      steps: [{
-        label: "2010",
-        method: "animate",
-        args: [["2010"], {
-            mode: "immediate",
-            transition: {duration: 300},
-            frame: {duration: 300, "redraw": false}
-          }
-        ]
-      },{
-        label: "2011",
-        method: "animate",
-        args: [["2011"], {
-            mode: "immediate",
-            transition: {duration: 300},
-            frame: {duration: 300, "redraw": false}
-          }
-        ]
-      }, {
-        label: "2012",
-        method: "animate",
-        args: [["2012"], {
-            mode: "immediate",
-            transition: {duration: 300},
-            frame: {duration: 300, "redraw": false}
-          }
-        ]
-      }, {
-        label: "2013",
-        method: "animate",
-        args: [["2013"], {
-            mode: "immediate",
-            transition: {duration: 300},
-            frame: {duration: 300, "redraw": false}
-          }
-        ]
-      }, {
-        label: "2014",
-        method: "animate",
-        args: [["2014"], {
-            mode: "immediate",
-            transition: {duration: 300},
-            frame: {duration: 300, "redraw": false}
-          }
-        ]
-      }, {
-        label: "2015",
-        method: "animate",
-        args: [["2015"], {
-            mode: "immediate",
-            transition: {duration: 300},
-            frame: {duration: 300, "redraw": false}
-          }
-        ]
-      }, {
-        label: "2016",
-        method: "animate",
-        args: [["2016"], {
-            mode: "immediate",
-            transition: {duration: 300},
-            frame: {duration: 300, "redraw": false}
-          }
-        ]
-      }],
+      steps: slider_steps,
       x: 0.1,
       len: 0.9,
       xanchor: "left",
@@ -185,7 +123,7 @@ var layout = {
     }]
 };
 
-Plotly.plot(myDiv, data, layout).then(function() {
+Plotly.newPlot(myDiv, data, layout).then(function() {
     Plotly.addFrames('myDiv', frames);
   });
 })
