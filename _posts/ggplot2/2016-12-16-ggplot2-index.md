@@ -14,8 +14,7 @@ redirect_from: ggplot2/reference/
       <div class="--category-img"><img src="https://images.plot.ly/language-icons/api-home/ggplot2-logo.png" alt=""></div>
       <div class="--body">
         <h1>Plotly ggplot2 Library</h1>
-        <p>{{page.description}}</consectetur>
-        </p>
+        <p>{{page.description}}</p>
       </div>
     </div>
   </div>
