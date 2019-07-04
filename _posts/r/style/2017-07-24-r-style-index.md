@@ -20,7 +20,7 @@ order: 10
 			<div class="--category-img"><img src="https://plot.ly/gh-pages/documentation/static/images/r-small.png" alt=""></div>
 			<div class="--body">
 				<h1>Plotly R Library Style Options</h1>
-				<p>{{page.description}}</consectetur>
+				<p>{{page.description}}</p>
 				</p>
 			</div>
 		</div>
