@@ -15,7 +15,6 @@ redirect_from: ggplot2/reference/
       <div class="--body">
         <h1>Plotly ggplot2 Library</h1>
         <p>{{page.description}}</p>
-        </p>
       </div>
     </div>
   </div>

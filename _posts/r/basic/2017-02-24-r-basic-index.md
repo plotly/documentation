@@ -21,7 +21,6 @@ order: 20
 			<div class="--body">
 				<h1>Plotly R Library Basic Charts</h1>
 				<p>{{page.description}}</p>
-				</p>
 			</div>
 		</div>
 	</div>

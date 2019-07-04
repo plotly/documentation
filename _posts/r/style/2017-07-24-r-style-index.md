@@ -21,7 +21,6 @@ order: 10
 			<div class="--body">
 				<h1>Plotly R Library Style Options</h1>
 				<p>{{page.description}}</p>
-				</p>
 			</div>
 		</div>
 	</div>
