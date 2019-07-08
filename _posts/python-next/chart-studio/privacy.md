@@ -22,18 +22,19 @@ jupyter:
     pygments_lexer: ipython3
     version: 3.6.5
   plotly:
-    description: How to set the privacy settings of plotly graphs in python. Three
-      examples of different privacy options&#58; public, private and secret.
-    display_as: file_settings
+    permalink: python/privacy/
+    description: How to set the privacy settings of plotly graphs in python. Three examples of different privacy options&#58; public, private and secret.
+    name: Privacy
     has_thumbnail: true
-    ipynb: ~notebook_demo/97
-    language: python
+    thumbnail: thumbnail/privacy.jpg
     layout: user-guide
     name: Privacy
-    order: 2
-    permalink: python/privacy/
-    thumbnail: thumbnail/privacy.jpg
+    language: python
     title: Privacy | plotly
+    display_as: chart_studio
+    has_thumbnail: True
+    order: 2
+    ipynb: ~notebook_demo/97
     v4upgrade: true
 ---
 

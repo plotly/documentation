@@ -23,18 +23,19 @@ jupyter:
     version: 3.6.5
   plotly:
     v4upgrade: true
-    description: How to create and publish a spectacle-presentation with the Python
-      API.
-    display_as: file_settings
+    permalink: python/presentations-tool/
+    description: How to create and publish a spectacle-presentation with the Python API.
+    name: Presentations Tool | plotly
     has_thumbnail: true
-    language: python
+    thumbnail: thumbnail/pres_api.jpg
     layout: user-guide
     name: Presentations Tool
-    order: 0.6
-    page_type: u-guide
-    permalink: python/presentations-tool/
-    thumbnail: thumbnail/pres_api.jpg
+    language: python
     title: Presentations Tool | plotly
+    display_as: chart_studio
+    has_thumbnail: true
+    page_type: u-guide
+    order: 0.6
 ---
 
 #### Plotly Presentations

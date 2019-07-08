@@ -22,17 +22,19 @@ jupyter:
     pygments_lexer: ipython3
     version: 3.6.5
   plotly:
+    permalink: python/data-api/
     description: How to upload data to Plotly from Python with the Plotly Grid API.
-    display_as: file_settings
+    name: Upload Data to Plotly from Python
     has_thumbnail: true
-    language: python
+    thumbnail: thumbnail/table.jpg
     layout: user-guide
     name: Plots from Grids
-    order: 5
-    page_type: u-guide
-    permalink: python/data-api/
-    thumbnail: thumbnail/table.jpg
+    language: python
     title: Plotly Data API
+    display_as: chart_studio
+    has_thumbnail: true
+    page_type: u-guide
+    order: 5
     v4upgrade: true
 ---
 

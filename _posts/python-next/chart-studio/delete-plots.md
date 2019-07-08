@@ -22,17 +22,19 @@ jupyter:
     pygments_lexer: ipython3
     version: 3.6.5
   plotly:
+    permalink: python/delete-plots/
     description: How to delete plotly graphs in python.
-    display_as: file_settings
+    name: Deleting Plots with the Python API
     has_thumbnail: true
-    ipynb: ~notebook_demo/98
-    language: python
+    thumbnail: thumbnail/delete.jpg
     layout: user-guide
     name: Deleting Plots
-    order: 9
+    language: python
+    display_as: chart_studio
+    has_thumbnail: true
+    ipynb: ~notebook_demo/98
     page_type: u-guide
-    permalink: python/delete-plots/
-    thumbnail: thumbnail/delete.jpg
+    order: 9
     v4upgrade: true
 ---
 

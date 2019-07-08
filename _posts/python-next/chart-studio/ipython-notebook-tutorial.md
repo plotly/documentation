@@ -22,19 +22,20 @@ jupyter:
     pygments_lexer: ipython3
     version: 3.6.5
   plotly:
-    description: Jupyter notebook tutorial on how to install, run, and use Jupyter
-      for interactive matplotlib plotting, data analysis, and publishing code
-    display_as: file_settings
+    permalink: python/ipython-notebook-tutorial/
+    description: Jupyter notebook tutorial on how to install, run, and use Jupyter for interactive matplotlib plotting, data analysis, and publishing code
+    name: Jupyter Notebook Tutorial
     has_thumbnail: true
-    ipynb: ~chelsea_lyn/14070
-    language: python
+    thumbnail: thumbnail/ipythonnb.jpg
     layout: user-guide
     name: Jupyter Notebook Tutorial
-    order: 11
-    page_type: example_index
-    permalink: python/ipython-notebook-tutorial/
-    thumbnail: thumbnail/ipythonnb.jpg
+    language: python
     title: Jupyter Notebook Tutorial | plotly
+    display_as: chart_studio
+    has_thumbnail: true
+    page_type: example_index
+    order: 11
+    ipynb: ~chelsea_lyn/14070
     v4upgrade: true
 ---
 
