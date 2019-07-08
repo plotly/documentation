@@ -22,17 +22,17 @@ jupyter:
     pygments_lexer: ipython3
     version: 3.6.5
   plotly:
-    v4upgrade: true
-    title: Python Embedding Graphs in HTML | Examples | Plotly
-    name: Embedding Graphs in HTML
-    permalink: python/embedding-plotly-graphs-in-HTML/
     description: How to embed plotly graphs with an iframe in HTML.
-    layout: user-guide
-    language: python
-    has_thumbnail: true
-    thumbnail: thumbnail/embed.jpg
     display_as: chart_studio
+    has_thumbnail: true
+    language: python
+    layout: user-guide
+    name: Embedding Graphs in HTML
     order: 6
+    permalink: python/embedding-plotly-graphs-in-HTML/
+    thumbnail: thumbnail/embed.jpg
+    title: Python Embedding Graphs in HTML | Examples | Plotly
+    v4upgrade: true
 ---
 
 Plotly graphs can be embedded in any HTML page. This includes [IPython notebooks](https://plot.ly/ipython-notebooks/), [Wordpress sites](https://wordpress.org/plugins/wp-plotly), dashboards, blogs, and more.
@@ -46,4 +46,8 @@ From Python, you can generate the HTML code to embed Plotly graphs with the `plo
 import chart_studio.tools as tls
 
 tls.get_embed('https://plot.ly/~chris/1638')
+```
+
+```python
+
 ```
