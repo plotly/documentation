@@ -18,6 +18,9 @@ task :deploy => [:check_git] do
 
   puts "...git pull origin  \"#{source_branch}\""
   system "git pull origin  \"#{source_branch}\""
+  puts "...getting latest python docs"
+  system "rm -rf _posts/python-next/html"
+  system "git clone -b built git@github.com:plotly/plotly.py-docs _posts/python-next/html"
   puts "...update plot schema"
   system "python ./get_plotschema.py && git add _data/plotschema.json && git commit -m \"Updated plotschema at #{Time.now.utc}\" && git push origin \"#{source_branch}\""
   puts "...generate _site"
