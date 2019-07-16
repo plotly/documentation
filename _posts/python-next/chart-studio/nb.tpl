@@ -2,14 +2,8 @@
 {%- block header -%}
 ---
 {% for k in nb.metadata.get("plotly") -%}
-{%- if k == "permalink" -%}
-permalink: {{ nb.metadata.get("plotly")[k].replace("python/", "python/next/") }}
-{% elif k == "language" -%}
-language: python/next
-{% else -%}
 {{ k }}: {{ nb.metadata.get("plotly")[k] }}
-{% endif -%}
-{%- endfor -%}
+{% endfor -%}
 ---
 {{ super() }}
 {{ '{% raw %}' }}
