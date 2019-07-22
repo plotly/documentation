@@ -78,9 +78,9 @@ git add file-b
 git commit -m 'message about your changes'
 git push origin your_feature_branch
 ```
-Visit the [documentation repo](https://github.com/plotly/documentation) and open a pull request against the `source-design-merge` branch. You can then tag **@cldougl** and **@bcdunbar** for a review.
+Visit the [documentation repo](https://github.com/plotly/documentation) and open a pull request against the `source-design-merge` branch.
 
-After your PR has been reviewed and approved, you can merge it into the `source-design-merge` branch! Your changes haven't been deployed yet so they won't be online. That said, be sure to check them after they have been deployed by either **@cldougl** or **@bcdunbar**.
+After your PR has been reviewed and approved, you can merge it into the `source-design-merge` branch! Your changes haven't been deployed yet so they won't be online. That said, be sure to check them after they have been deployed.
 
 ## Search
 
