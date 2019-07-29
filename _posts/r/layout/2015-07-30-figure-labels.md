@@ -33,7 +33,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.2'
+## [1] '4.9.0'
 ```
 
 #### Figure Labels for 2D Charts
@@ -62,7 +62,7 @@ chart_link = api_create(p, filename="scatter2d-axis-labels")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2817.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5722.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #### Figure Labels for 3D Charts
 
@@ -90,4 +90,4 @@ chart_link = api_create(p, filename="scatter3d-axis-labels")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/2814.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5724.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>

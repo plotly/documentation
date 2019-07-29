@@ -32,7 +32,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.8.0'
+## [1] '4.9.0'
 ```
 
 ### Customize Margins and Plot Size

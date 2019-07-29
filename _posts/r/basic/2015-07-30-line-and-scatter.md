@@ -17,14 +17,14 @@ output:
 
 
 
-#### New to Plotly?
+### New to Plotly?
 
 Plotly's R library is free and open source!<br>
 [Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
 You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
 We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
 
-#### Version Check
+### Version Check
 
 Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
 Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
@@ -35,10 +35,10 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.6.9000'
+## [1] '4.9.0'
 ```
 
-#### Basic Scatter Plot
+### Basic Scatter Plot
 
 
 ```r
@@ -52,9 +52,9 @@ chart_link = api_create(p, filename="scatter-basic")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4324.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5346.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-#### Styled Scatter Plot
+### Styled Scatter Plot
 
 
 ```r
@@ -75,9 +75,9 @@ chart_link = api_create(p, filename="scatter-styled")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4326.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5348.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-#### Plotting Markers and Lines
+### Plotting Markers and Lines
 
 
 ```r
@@ -124,7 +124,7 @@ chart_link = api_create(p, filename="scatter-modes")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4330.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5350.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 See more examples of line charts [here](https://plot.ly/r/line-charts/).
 
@@ -142,7 +142,7 @@ chart_link = api_create(p, filename="scatter-color")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4332.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5352.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### ColorBrewer Palette Names
 
@@ -158,7 +158,7 @@ chart_link = api_create(p, filename="scatter-colorbrewer")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4334.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5354.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Custom Color Scales
 
@@ -178,7 +178,7 @@ chart_link = api_create(p, filename="scatter-color-custom")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4336.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5356.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 To ensure a particular data value gets mapped to particular color, provide a character vector of color codes, and match the names attribute accordingly.
 
@@ -197,7 +197,7 @@ chart_link = api_create(p, filename="scatter-color-custom2")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4338.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5358.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Mapping Data to Symbols
 
@@ -215,7 +215,7 @@ chart_link = api_create(p, filename="scatter-symbol")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4340.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5360.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Adding Color and Size Mapping
 
@@ -236,7 +236,7 @@ chart_link = api_create(p, filename="scatter-colorAndSize")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4342.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5362.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Data Labels on Hover
 
@@ -259,7 +259,7 @@ chart_link = api_create(p, filename="scatter-hovertext")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4344.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5364.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 

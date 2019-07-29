@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.8.0'
+## [1] '4.9.0'
 ```
 
 # Basic 3D Surface Plot
