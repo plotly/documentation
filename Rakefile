@@ -19,13 +19,13 @@ task :deploy => [:check_git] do
   puts "...git pull origin  \"#{source_branch}\""
   system "git pull origin  \"#{source_branch}\""
   puts "...getting latest python docs"
-  system "rm -rf _posts/python/html"
-  system "git clone -b built git@github.com:plotly/plotly.py-docs _posts/python/html"
+  system "rm -rf _posts/python/html"  or exit!(1)
+  system "git clone -b built git@github.com:plotly/plotly.py-docs _posts/python/html"  or exit!(1)
   puts "...update plot schema"
-  system "python ./get_plotschema.py && git add _data/plotschema.json && git commit -m \"Updated plotschema at #{Time.now.utc}\" && git push origin \"#{source_branch}\""
+  system "python ./get_plotschema.py && git add _data/plotschema.json && git commit -m \"Updated plotschema at #{Time.now.utc}\" && git push origin \"#{source_branch}\""  or exit!(1)
   puts "...generate _site"
-  system "jekyll build --verbose && git checkout \"#{deploy_branch}\" && git pull origin \"#{deploy_branch}\" && cp -r _site/* . && rm -rf _site/ && touch .nojekyll && git add . && git commit -m \"#{message}\" && git push origin \"#{deploy_branch}\""
+  system "jekyll build --verbose && git checkout \"#{deploy_branch}\" && git pull origin \"#{deploy_branch}\" && cp -r _site/* . && rm -rf _site/ && touch .nojekyll && git add . && git commit -m \"#{message}\" && git push origin \"#{deploy_branch}\""  or exit!(1)
   puts "...git checkout \"#{source_branch}\""
-  system "git checkout \"#{source_branch}\""
+  system "git checkout \"#{source_branch}\"" or exit!(1)
   system "osascript -e 'display notification \"rake deploy just finished\" with title \"Docs are ready!\"'"
 end
