@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.5.5.9000'
+## [1] '4.9.0'
 ```
 
 #### Basic 3D Scatter Plot
@@ -59,7 +59,7 @@ chart_link = api_create(p, filename="scatter3d-basic")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3911.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5686.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #### 3D Scatter Plot with Color Scaling
 
@@ -88,7 +88,7 @@ chart_link = api_create(p, filename="scatter3d-colorscale")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3054.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5688.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #### 3D Bubble Plot
 
@@ -136,7 +136,7 @@ chart_link = api_create(p, filename="scatter3d-bubble")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3913.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5690.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 

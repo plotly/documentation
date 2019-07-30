@@ -34,7 +34,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.7.1.9000'
+## [1] '4.9.0'
 ```
 
 ### Basic Bar Chart
@@ -56,7 +56,7 @@ chart_link = api_create(p, filename="bar-basic")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3543.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5292.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Grouped Bar Chart
 
@@ -79,7 +79,7 @@ chart_link = api_create(p, filename="bar-grouped")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3512.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5294.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Stacked Bar Chart
 
@@ -102,7 +102,7 @@ chart_link = api_create(p, filename="bar-stacked")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3514.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5296.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Bar Chart with Hover Text
 
@@ -129,7 +129,7 @@ chart_link = api_create(p, filename="bar-text")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3516.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5298.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Bar Chart with Direct Labels
 
@@ -156,7 +156,7 @@ chart_link = api_create(p, filename="bar-labels")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3518.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5300.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Grouped Bar Chart with Direct Labels
 
@@ -191,7 +191,7 @@ chart_link = api_create(p, filename="bar-grouped-labels")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5137.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5302.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Rotated Bar Chart Labels
 
@@ -220,7 +220,7 @@ chart_link = api_create(p, filename="bar-rotated")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3520.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5304.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Customizing Bar Color
 
@@ -243,7 +243,7 @@ chart_link = api_create(p, filename="bar-color")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3522.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5306.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Customizing Individual Bar Colors
 
@@ -269,7 +269,7 @@ chart_link = api_create(p, filename="bar-colors")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3524.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5308.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Customizing Individual Bar Widths
 
@@ -295,7 +295,7 @@ chart_link = api_create(p, filename="bar-bar-width")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4571.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5310.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Customizing Individual Bar Base
 
@@ -329,7 +329,7 @@ chart_link = api_create(p, filename="bar-bar-base")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5276.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5312.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Mapping a Color Variable
 
@@ -347,7 +347,7 @@ chart_link = api_create(p, filename="bar-colorvar")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3526.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5314.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Colored and Styled Bar Chart
 
@@ -386,7 +386,7 @@ chart_link = api_create(p, filename="bar-style")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3528.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5316.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Waterfall Bar Chart
 
@@ -439,7 +439,7 @@ chart_link = api_create(p, filename="bar-waterfall")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/3530.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5318.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Horizontal Bar Chart
 
