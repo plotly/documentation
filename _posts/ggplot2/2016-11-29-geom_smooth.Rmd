@@ -9,7 +9,7 @@ language: ggplot2
 page_type: example_index
 has_thumbnail: true
 display_as: statistical
-order: 5
+order: 6
 output:
   html_document:
     keep_md: true
