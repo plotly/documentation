@@ -48,6 +48,8 @@ Source: [Dave Wassermann and Ally Flinn](https://docs.google.com/spreadsheets/d/
 ```r
 library(plotly)
 district_density <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/district_density.csv", stringsAsFactors = FALSE)
+district_density$cluster <- factor(district_density$cluster, levels=c("Pure urban", "Urban-suburban mix", "Dense suburban", "Sparse suburban", "Rural-suburban mix", "Pure rural"))
+# MAKE THIS A FACTOR, AND ALSO ADD A THUMBNAIL
 
 p <- ggplot(district_density,aes(x=cluster, y=dem_margin, fill=cluster)) +
   geom_violin(colour=NA) +
@@ -66,7 +68,7 @@ chart_link
 <iframe src="https://plot.ly/~RPlotBot/5785.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Flipping the Axes
-With geom_violin(), the y-axis must always be the continuous variable, and the x-axis the ctegorical variable. To create horizontal violin graphs, add coord_flip() without changing .
+With geom\_violin(), the y-axis must always be the continuous variable, and the x-axis the categorical variable. To create horizontal violin graphs, keep the x- and y-variables as is and add coord\_flip().
 
 
 ```r
@@ -115,7 +117,7 @@ chart_link
 <iframe src="https://plot.ly/~RPlotBot/5789.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Customized Appearance
-Add colour to the facet titles, centre-align the itle, rotate the y-axis title, change the font, and get rid of the unnecessary legend. Note that coord_flip() flips the axes for the variables and the titles, but does not flip theme() elements.
+Add colour to the facet titles, centre-align the title, rotate the y-axis title, change the font, and get rid of the unnecessary legend. Note that coord_flip() flips the axes for the variables and the titles, but does not flip theme() elements.
 
 
 ```r
@@ -145,7 +147,7 @@ chart_link
 <iframe src="https://plot.ly/~RPlotBot/5791.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Rotated Axis Text
-Rotated the x-axis text 45 degrees, and used facet_grid to create a 4x4 facet (compared to facet_wrap, which defaults to 2x2).
+Rotated the x-axis text 45 degrees, and used facet\_grid to create a 4x1 facet (compared to facet\_wrap, which defaults to 2x2).
 
 
 ```r
