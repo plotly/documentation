@@ -46,9 +46,8 @@ It's good to show the ful airport names for destinations, rather than just the a
 
 
 ```r
-flightdata <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/flightdata.csv", stringsAsFactors = FALSE)
-
 library(plotly)
+flightdata <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/flightdata.csv", stringsAsFactors = FALSE)
 
 p <- ggplot(flightdata, aes(y=airline, x=dest, colour = dest, group=airport)) +
   geom_count(alpha=0.5) +
@@ -72,6 +71,7 @@ By using facets, we can add a third variable: which of New York's three airports
 
 ```r
 library(plotly)
+flightdata <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/flightdata.csv", stringsAsFactors = FALSE)
 
 p <- ggplot(flightdata, aes(y=airline, x=origin, colour=origin, group=airport)) +
   geom_count(alpha=0.5) +
@@ -97,6 +97,7 @@ The airport labels at the bottom aren't very visible and aren't very important, 
 ```r
 library(plotly)
 library(LaCroixColoR)
+flightdata <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/flightdata.csv", stringsAsFactors = FALSE)
 
 p <- ggplot(flightdata, aes(y=airline, x=origin, colour=origin, group=airport)) +
   geom_count(alpha=0.5) +
@@ -125,8 +126,8 @@ Here's a comparison of geom\_count and geom\_point on the same dataset (rounded 
 ```r
 library(plotly)
 library(dplyr)
-
 beers <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/beers.csv", stringsAsFactors = FALSE)
+
 df <- beers %>%
   mutate(abv = round(abv*100),
          ibu = round(ibu/10)*10) %>%
@@ -150,6 +151,7 @@ chart_link
 ```r
 library(plotly)
 library(dplyr)
+beers <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/beers.csv", stringsAsFactors = FALSE)
 
 df <- filter(beers, !is.na(style2))
 
