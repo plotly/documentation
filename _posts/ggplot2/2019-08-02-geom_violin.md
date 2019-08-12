@@ -73,6 +73,9 @@ With geom\_violin(), the y-axis must always be the continuous variable, and the 
 
 ```r
 library(plotly)
+district_density <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/district_density.csv", stringsAsFactors = FALSE)
+district_density$cluster <- factor(district_density$cluster, levels=c("Pure urban", "Urban-suburban mix", "Dense suburban", "Sparse suburban", "Rural-suburban mix", "Pure rural"))
+district_density$region <- factor(district_density$region, levels=c("West", "South", "Midwest", "Northeast"))
 
 p <- ggplot(district_density,aes(x=cluster, y=dem_margin, fill=cluster)) +
   geom_violin(colour=NA) +
@@ -97,6 +100,9 @@ Including facetting by region.
 
 ```r
 library(plotly)
+district_density <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/district_density.csv", stringsAsFactors = FALSE)
+district_density$cluster <- factor(district_density$cluster, levels=c("Pure urban", "Urban-suburban mix", "Dense suburban", "Sparse suburban", "Rural-suburban mix", "Pure rural"))
+district_density$region <- factor(district_density$region, levels=c("West", "South", "Midwest", "Northeast"))
 
 p <- ggplot(district_density,aes(x=cluster, y=dem_margin, fill=cluster)) +
   geom_violin(colour=NA) +
@@ -122,6 +128,9 @@ Add colour to the facet titles, centre-align the title, rotate the y-axis title,
 
 ```r
 library(plotly)
+district_density <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/district_density.csv", stringsAsFactors = FALSE)
+district_density$cluster <- factor(district_density$cluster, levels=c("Pure urban", "Urban-suburban mix", "Dense suburban", "Sparse suburban", "Rural-suburban mix", "Pure rural"))
+district_density$region <- factor(district_density$region, levels=c("West", "South", "Midwest", "Northeast"))
 
 p <- ggplot(district_density,aes(x=cluster, y=dem_margin, fill=cluster)) +
   geom_violin(colour=NA) +
@@ -152,6 +161,9 @@ Rotated the x-axis text 45 degrees, and used facet\_grid to create a 4x1 facet (
 
 ```r
 library(plotly)
+district_density <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/district_density.csv", stringsAsFactors = FALSE)
+district_density$cluster <- factor(district_density$cluster, levels=c("Pure urban", "Urban-suburban mix", "Dense suburban", "Sparse suburban", "Rural-suburban mix", "Pure rural"))
+district_density$region <- factor(district_density$region, levels=c("West", "South", "Midwest", "Northeast"))
 
 p <- ggplot(district_density,aes(x=cluster, y=dem_margin, fill=cluster)) +
   geom_violin(colour=NA) +
