@@ -44,6 +44,7 @@ Source: [Brett Carpenter from Data.World](https://data.world/brettcarpenter/craf
 
 
 ```r
+library(plotly)
 beers <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/beers.csv", stringsAsFactors = FALSE)
 
 p <- ggplot(beers, aes(x=abv, y=ibu)) +
@@ -66,6 +67,9 @@ Since each of the lines (in the above graph) shows a different "level", setting 
 
 
 ```r
+library(plotly)
+beers <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/beers.csv", stringsAsFactors = FALSE)
+
 p <- ggplot(beers, aes(x=abv, y=ibu)) +
   stat_density_2d(aes(fill = stat(level)), geom="polygon") +
   labs(y = "bitterness (IBU)",
@@ -85,6 +89,9 @@ chart_link
 ["Viridis" colourscales](https://ggplot2.tidyverse.org/reference/scale_viridis.html) are designed to still be perceptible in black-and-white, as well as for those with colourblindness. It comes with five colourscales, selected using the option= parameter: "magma" (or "A"), "inferno" (or "B"), "plasma" (or "C"), "viridis" (or "D", the default), and "cividis" (or "E").
 
 ```r
+library(plotly)
+beers <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/beers.csv", stringsAsFactors = FALSE)
+
 p <- ggplot(beers, aes(x=abv, y=ibu)) +
   stat_density_2d(aes(fill = stat(level)), geom="polygon") +
   scale_fill_viridis_c(option = "plasma") +
@@ -106,6 +113,9 @@ chart_link
 You can also set your own colour gradients by defining a high and low point.
 
 ```r
+library(plotly)
+beers <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/beers.csv", stringsAsFactors = FALSE)
+
 p <- ggplot(beers, aes(x=abv, y=ibu)) +
   stat_density_2d(aes(fill = stat(level)), geom="polygon") +
   scale_fill_gradient(low = "lightskyblue1", high = "darkred") +
@@ -128,7 +138,9 @@ I use variable "style2" to filter out the six most common beer styles. This way,
 
 
 ```r
+library(plotly)
 library(dplyr)
+beers <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/beers.csv", stringsAsFactors = FALSE)
 
 p <- ggplot(beers, aes(x=abv, y=ibu)) +
   geom_density_2d(alpha=0.5) +
