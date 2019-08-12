@@ -84,7 +84,7 @@ chart_link
 <iframe src="https://plot.ly/~RPlotBot/5834.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Filled Plot
-It's possible to colour in each of the layers, by changing geom\_contour to stat\_contour as below. (As the edges of the graph indicate, filled contour plots only work when each layer is an enclosed shape rather than an open line.)
+It's possible to colour in each of the layers, by changing geom\_contour to stat\_contour as below. As the edges of the graph indicate, filled contour plots only work when each layer is an enclosed shape rather than an open line; a geom more suited to this functionality would be geom\_tile or geom\_raster.
 
 
 ```r
