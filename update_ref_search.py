@@ -56,6 +56,9 @@ for i in p['schema']['traces']:
     chain_dict = {'name':i, 'permalink':'reference/#'+i }
     next_level(p['schema']['traces'][i]['attributes'], chain_dict)
 
+    # if there are layoutAttributes in the trace add them too.
+    if p['schema']['traces'][i].get('layoutAttributes'):
+        next_level(p['schema']['traces'][i]['layoutAttributes'], layout_chain_dict)
 
 # recursively add layout attributes to schema
 next_level(p['schema']['layout']['layoutAttributes'], layout_chain_dict)
