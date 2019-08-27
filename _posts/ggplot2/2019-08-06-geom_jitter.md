@@ -36,7 +36,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.9.0.9000'
+## [1] '4.8.0.9000'
 ```
 
 ### Basic Jitter Plot
@@ -181,11 +181,14 @@ chart_link
 ### Position Jitterdodge
 Up to this point, we've subdivided points by making one category the x-axis, and facetting by the other. Another way is to make one category the x-axis, then use "position = dodge" so that the points are distinct rather than overlapping. Since we want points to be jittered and dodged, we can use geom\_point with position\_jitterdodge().
 
+Make sure to specify the "group" variable: this graph specifies three potential grouping variables (cluster, region, cd_code), and position\_jitterdodge can't tell which two to use unless specified. Further, you can use the ggplotly() function to specify what shows up on the tooltip.
+
 
 ```r
 library(plotly)
 
-p <- ggplot(district_density,aes(x=cluster, y=dem_margin, colour=region)) +
+p <- ggplot(district_density,aes(x=cluster, y=dem_margin, colour=region, 
+                                 district=cd_code, group=paste(cluster, region))) +
   geom_point(position=position_jitterdodge(), alpha=0.5) +
   geom_hline(yintercept=0) +
   theme(axis.text.x = element_text(angle = -30, hjust = 0.1),
@@ -194,7 +197,7 @@ p <- ggplot(district_density,aes(x=cluster, y=dem_margin, colour=region)) +
        x = "Density Index from CityLab",
        y = "Democratic Margin of Victory/Defeat") +
   theme(text = element_text(family = 'Fira Sans'))
-ggplotly(p)
+ggplotly(p, tooltip=c("district","y"))
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
