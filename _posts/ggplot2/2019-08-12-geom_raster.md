@@ -45,9 +45,10 @@ geom\_raster creates a coloured heatmap, with two variables acting as the x- and
 
 ```r
 library(reshape2)
+library(plotly)
+
 df <- melt(volcano)
 
-library(plotly)
 p <- ggplot(df, aes(Var1, Var2)) +
   geom_raster(aes(fill=value)) +
   labs(x="West to East",
@@ -69,9 +70,10 @@ This uses the Spectral palette from [ColorBrewer](https://ggplot2.tidyverse.org/
 
 ```r
 library(reshape2)
+library(plotly)
+
 df <- melt(volcano)
 
-library(plotly)
 p <- ggplot(df, aes(Var1, Var2)) +
   geom_raster(aes(fill=value)) +
   scale_fill_distiller(palette = "Spectral", direction = -1) +
