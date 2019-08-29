@@ -44,7 +44,10 @@ geom\_rect is defined by its four sides (xmin, xmax, ymin, ymax), which are all 
 This line graph shows the unemployment number in the United States every month, beginning in July 1967. (This dataset comes with R.) We use geom\_rect to shade the background according to the President's party. An important note: the President does not control economic policy, something that this graph hopefully makes apparent. This is for illutrustive purposes, using a simple case and a default dataset.
 
 ```{r, results='hide'}
+library(plotly)
+
 library(dplyr)
+
 df <- data.frame(name = c("Nixon", "Ford", "Carter", "Reagan", "Bush", "Clinton", "Bush", "Obama"),
                    start = as.Date(c("1969-01-20", "1974-08-09", "1977-01-20", "1981-01-20",
                              "1989-01-20", "1993-01-20", "2001-01-20", "2009-01-20")),
@@ -54,7 +57,6 @@ df <- data.frame(name = c("Nixon", "Ford", "Carter", "Reagan", "Bush", "Clinton"
                    stringsAsFactors = FALSE) %>%
   mutate(median_x = start + floor((end-start)/2))
 
-library(plotly)
 p <- ggplot(economics, aes(x=date,y=unemploy)) +
   geom_rect(data=df, aes(NULL,NULL,xmin=start,xmax=end,fill=party),
             ymin=0,ymax=16000, colour="white", size=0.5, alpha=0.2) +
@@ -76,10 +78,17 @@ chart_link
 ```
 
 ### A Timeline Using geom\_rect
-geom\_rect could also be the "main course" rather than just the background, for example by making a timeline. Here are the leaders of the current European Union member countries, since 2000. Data comes from ParlGov (which is where the parties' left-right scores come from, so please direct your complaints elsewhere).
+geom\_rect could also be the "main course" rather than just the background, for example by making a timeline.
+Here are the leaders of the current European Union member countries, since 2000. Data comes from ParlGov
+(which is where the parties' left-right scores come from, so please direct your complaints elsewhere). The
+`LaCroixColoR` package is used and can be installed using the [instructions in the GitHub Readme](https://github.com/johannesbjork/LaCroixColoR#install-package).
 
 ```{r, results='hide'}
+library(plotly)
+
+library(LaCroixColoR)
 library(dplyr)
+
 european_leaders <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/european_leaders.csv",
                              stringsAsFactors = FALSE) %>%
   mutate(stint_start = as.Date(stint_start),
@@ -87,8 +96,6 @@ european_leaders <- read.csv("https://raw.githubusercontent.com/plotly/datasets/
          median_x = as.Date(median_x),
          left_right = as.character(left_right))
 
-library(plotly)
-library(LaCroixColoR)
 p <- ggplot(european_leaders, aes(xmin=stint_start, xmax=stint_end, ymin=vert_min, ymax=vert_max, fill=left_right)) +
   geom_rect(colour="white", size=0.1) +
   geom_text(aes(x=median_x, y=median_y, size=size, label=pm_name, #all names of separate variables
