@@ -36,15 +36,55 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.9.0'
+## [1] '4.8.0.9000'
 ```
 
 ### Basic Example
+While common linear regression is a method of estimating the conditional mean of variable y based on the values of variable(s) x, quantile regression is a method that can give the conditional median (50th percentile) as well as any other quantile.
+
+[This dataset](https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/birthwt.html) gives the effect of the mother's weight on her baby's birth weight, further divided according to whether the mother smokes or not. The line shows the *median* birth weight conditional on these two other variables.
 
 
 ```r
 library(plotly)
 library(MASS)
+
+df <- MASS::birthwt
+
+df <- with(df, { #Make sure variables properly show up as categories
+  race <- factor(race, labels = c("white", "black", "other"))
+  ptd <- factor(ptl > 0)
+  ftv <- factor(ftv)
+  levels(ftv)[-(1:2)] <- "2+"
+  data.frame(low = factor(low), age, lwt, race, smoke = (smoke > 0),
+             ptd, ht = (ht > 0), ui = (ui > 0), ftv, bwt)
+})
+
+p <- ggplot(df, aes(lwt, bwt, colour = smoke)) +
+  geom_point(size = 1) +
+  geom_quantile(quantiles = 0.5)
+
+ggplotly(p)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="geom_quantile/basic")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/4422.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+
+### With Quantiles
+geom\_quantile is capable of showing more than just the conditional median: here we show the median, the 10th percentile, and 90th percentiles as well. We see that, among nonsmokers, the likelihood of underweight babies decreases significantly as the mother's weight increases, but that mothers of all weights are roughly equally likely to give birth to the heaviest babies. Conversely, among smoking mothers, the likelihood of underweight babies seem to *increase* as mother's weight increases. 
+
+Given the small sample size for this dataset, it's wise not to draw too many conclusions; this is meant to illustrate the purpose of quantile regression. You can also adjust the lines' appearance.
+
+
+```r
+library(plotly)
+library(MASS)
+library(dplyr)
 
 df <- MASS::birthwt
 
@@ -57,19 +97,20 @@ df <- with(df, {
              ptd, ht = (ht > 0), ui = (ui > 0), ftv, bwt)
 })
 
-p <- ggplot(df, aes(lwt, bwt, colour = smoke)) +
+p <- ggplot(df, aes(lwt, bwt, colour=smoke)) +
   geom_point(size = 1) +
-  geom_quantile(quantiles = 0.5, size = 0.5, alpha = 0.5)
+  geom_quantile(quantiles = c(0.1, 0.5, 0.9), size = 2, alpha = 0.5)
 
-p <- ggplotly(p)
+ggplotly(p)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="geom_quantile/basic")
+chart_link = api_create(p, filename="geom_quantile/quantiles")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/4422.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5876.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
 Reference: [ggplot2 docs](http://ggplot2.tidyverse.org/reference/geom_quantile.html#examples)
 
 ### Reference
