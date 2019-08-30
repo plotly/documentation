@@ -10,7 +10,7 @@ page_type: example_index
 has_thumbnail: true
 display_as: statistical
 order: 3
-redirect_from: ggplot2/line-shapes/
+redirect_from: ggplot2/histograms/
 output:
   html_document:
     keep_md: true

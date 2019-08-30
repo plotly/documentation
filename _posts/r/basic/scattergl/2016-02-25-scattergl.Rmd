@@ -2,6 +2,7 @@
 title: WebGL vs SVG| Examples | Plotly
 name: WebGL vs SVG in R
 permalink: r/webgl-vs-svg/
+redirect_from: r/webgl-vs-svg-line-chart/
 description: How to create plots using WebGL
 layout: base
 thumbnail: thumbnail/webgl.jpg

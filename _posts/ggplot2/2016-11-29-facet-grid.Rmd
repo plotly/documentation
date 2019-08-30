@@ -2,6 +2,7 @@
 title: ggplot2 facet_grid | Examples | Plotly
 name: facet_grid
 permalink: ggplot2/facet_grid/
+redirect_from: ggplot2/facet/
 description: How to make subplots with facet_wrap and facet_grid in ggplot2 and R.
 layout: base
 thumbnail: thumbnail/facet_grid.jpg

@@ -2,6 +2,7 @@
 title: R Gauge Charts | Examples | Plotly
 name: Gauge Charts
 permalink: r/gauge-charts/
+redirect_from: r/gauge-meter/
 description: How to make gauge charts in R with Plotly.
 layout: base
 thumbnail: thumbnail/gauge.jpg
