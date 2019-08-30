@@ -15,7 +15,7 @@ p = json.load(open('_data/plotschema.json'))
 schema = []
 
 ## Data Level 1: Traces
-# Add trace dictionaries to schema array.
+# Add dictionaries to schema array.
 # The trace dictionary include name: trace name, permalink: reference/#trace-name, and description if applicable.
 
 for i in p['schema']['traces']:
@@ -27,154 +27,41 @@ for i in p['schema']['traces']:
     else: pass
     schema.append(trace)
 
-## Data Level 2: Nested Attributes
-
-for i in p['schema']['traces']:
-    for att1 in p['schema']['traces'][i]['attributes']:
-        if not any(value in att1 for value in ("src", "_deprecated", "impliedEdits", "uid", "editType")):
-            try:
-                attribute = {}
-                attribute ['name'] = i+' > '+att1
-                attribute ['permalink'] = 'reference/#'+i+'-'+att1
-                attribute ['description'] = (p['schema']['traces'][i]['attributes'][att1]['description']).replace('*', '"')
-                schema.append(attribute)
-            except:
-                attribute = {}
-                attribute ['name'] = i+' > '+att1
-                attribute ['permalink'] = 'reference/#'+i+'-'+att1
-                attribute ['description'] = 'Properties for '+att1
-                schema.append(attribute)
-        for att2 in p['schema']['traces'][i]['attributes'][att1]:
-            if not any(value in att2 for value in ("src", "_deprecated", "impliedEdits", "uid", "editType")):
-                try:
-                    if isinstance(p['schema']['traces'][i]['attributes'][att1][att2], dict):
-                        try:
-                            attribute = {}
-                            attribute ['name'] = i+' > '+att1+' > '+att2
-                            attribute ['permalink'] = 'reference/#'+i+'-'+att1+'-'+att2
-                            attribute ['description'] = (p['schema']['traces'][i]['attributes'][att1][att2]['description']).replace('*', '"')
-                            schema.append(attribute)
-                        except:
-                            attribute = {}
-                            attribute ['name'] = i+' > '+att1+' > '+att2
-                            attribute ['permalink'] = 'reference/#'+i+'-'+att1+'-'+att2
-                            attribute ['description'] = 'Properties for '+att2
-                            schema.append(attribute)
-                except:
-                    pass
-                try:
-                    for att3 in p['schema']['traces'][i]['attributes'][att1][att2]:
-                        if not any(value in att3 for value in ("src", "_deprecated", "impliedEdits", "uid", "editType")):
-                            try:
-                                if isinstance(p['schema']['traces'][i]['attributes'][att1][att2][att3], dict):
-                                    try:
-                                        attribute = {}
-                                        attribute ['name'] = i+' > '+att1+' > '+att2+' > '+att3
-                                        attribute ['permalink'] = 'reference/#'+i+'-'+att1+'-'+att2+'-'+att3
-                                        attribute ['description'] = (p['schema']['traces'][i]['attributes'][att1][att2][att3]['description']).replace('*', '"')
-                                        schema.append(attribute)
-                                    except:
-                                        attribute = {}
-                                        attribute ['name'] = i+' > '+att1+' > '+att2+' > '+att3
-                                        attribute ['permalink'] = 'reference/#'+i+'-'+att1+'-'+att2+'-'+att3
-                                        attribute ['description'] = 'Properties for '+att3
-                                        schema.append(attribute)
-                            except:
-                                pass
-                        try:
-                            for att4 in p['schema']['traces'][i]['attributes'][att1][att2][att3]:
-                                if not any(value in att4 for value in ("src", "_deprecated", "impliedEdits", "uid", "editType")):
-                                    try:
-                                        if isinstance(p['schema']['traces'][i]['attributes'][att1][att2][att3][att4], dict):
-                                            try:
-                                                attribute = {}
-                                                attribute ['name'] = i+' > '+att1+' > '+att2+' > '+att3+' > '+att4
-                                                attribute ['permalink'] = 'reference/#'+i+'-'+att1+'-'+att2+'-'+att3+'-'+att4
-                                                attribute ['description'] = (p['schema']['traces'][i]['attributes'][att1][att2][att3][att4]['description']).replace('*', '"')
-                                                schema.append(attribute)
-                                            except:
-                                                attribute = {}
-                                                attribute ['name'] = i+' > '+att1+' > '+att2+' > '+att3+' > '+att4
-                                                attribute ['permalink'] = 'reference/#'+i+'-'+att1+'-'+att2+'-'+att3+'-'+att4
-                                                attribute ['description'] = 'Properties for '+att4
-                                                schema.append(attribute)
-                                    except:
-                                        pass
-                        except:
-                            pass
-                except:
-                    pass
-
-## Layout Attributes
-
-for att1 in p['schema']['layout']['layoutAttributes']:
-    if not any(value in att1 for value in ("src", "_deprecated", "impliedEdits", "uid", "editType")):
+def next_level(previous_level,chain_dict):
+    for sub_attr in previous_level:
         try:
-            attribute = {}
-            attribute ['name'] = 'Layout > '+att1
-            attribute ['permalink'] = 'reference/#layout-'+att1
-            attribute ['description'] = (p['schema']['layout']['layoutAttributes'][att1]['description']).replace('*', '"')
-            schema.append(attribute)
+            if isinstance(previous_level[sub_attr],dict):
+                if not any(value in sub_attr for value in ("src", "_deprecated", "impliedEdits", "uid", "editType")):
+                    try:
+                        attribute = {}
+                        attribute ['name'] = chain_dict['name']+' > '+sub_attr
+                        attribute ['permalink'] = chain_dict['permalink']+'-'+sub_attr
+                        attribute ['description'] = (previous_level[sub_attr]['description']).replace('*', '"')
+                        schema.append(attribute)
+                        next_level(previous_level[sub_attr],{'name':attribute['name'], 'permalink':attribute['permalink']})
+                    except:
+                        attribute = {}
+                        attribute ['name'] = chain_dict['name']+' > '+sub_attr
+                        attribute ['permalink'] = chain_dict['permalink']+'-'+sub_attr
+                        attribute ['description'] = 'Properties for '+sub_attr
+                        schema.append(attribute)
+                        next_level(previous_level[sub_attr],{'name':attribute['name'], 'permalink':attribute['permalink']})
         except:
-            attribute = {}
-            attribute ['name'] = 'Layout > '+att1
-            attribute ['permalink'] = 'reference/#layout-'+att1
-            attribute ['description'] = 'Properties for '+att1
-            schema.append(attribute)
-    for att2 in p['schema']['layout']['layoutAttributes'][att1]:
-        if not any(value in att2 for value in ("src", "_deprecated", "impliedEdits", "uid", "editType")):
-            try:
-                if isinstance(p['schema']['layout']['layoutAttributes'][att1][att2], dict):
-                    try:
-                        attribute = {}
-                        attribute ['name'] = 'Layout > '+att1+' > '+att2
-                        attribute ['permalink'] = 'reference/#layout-'+att1+'-'+att2
-                        attribute ['description'] = (p['schema']['layout']['layoutAttributes'][att1][att2]['description']).replace('*', '"')
-                        schema.append(attribute)
-                    except:
-                        attribute = {}
-                        attribute ['name'] = 'Layout > '+att1+' > '+att2
-                        attribute ['permalink'] = 'reference/#layout-'+att1+'-'+att2
-                        attribute ['description'] = 'Properties for '+att2
-                        schema.append(attribute)
-            except:
-                pass
-            try:
-                for att3 in p['schema']['layout']['layoutAttributes'][att1][att2]:
-                    if not any(value in att3 for value in ("src", "_deprecated", "impliedEdits", "uid", "editType")):
-                        if isinstance(p['schema']['layout']['layoutAttributes'][att1][att2][att3], dict):
-                            try:
-                                attribute = {}
-                                attribute ['name'] = 'Layout > '+att1+' > '+att2+' > '+att3
-                                attribute ['permalink'] = 'reference/#layout-'+att1+'-'+att2+'-'+att3
-                                attribute ['description'] = (p['schema']['layout']['layoutAttributes'][att1][att2][att3]['description']).replace('*', '"')
-                                schema.append(attribute)
-                            except:
-                                attribute = {}
-                                attribute ['name'] = 'Layout > '+att1+' > '+att2+' > '+att3
-                                attribute ['permalink'] = 'reference/#layout-'+att1+'-'+att2+'-'+att3
-                                attribute ['description'] = 'Properties for '+att3
-                                schema.append(attribute)
-                    try:
-                        for att4 in p['schema']['layout']['layoutAttributes'][att1][att2][att3]:
-                            if not any(value in att4 for value in ("src", "_deprecated", "impliedEdits", "uid", "editType")):
-                                    if isinstance(p['schema']['layout']['layoutAttributes'][att1][att2][att3][att4], dict):
-                                        try:
-                                            attribute = {}
-                                            attribute ['name'] = 'Layout > '+att1+' > '+att2+' > '+att3+' > '+att4
-                                            attribute ['permalink'] = 'reference/#layout-'+att1+'-'+att2+'-'+att3+'-'+att4
-                                            attribute ['description'] = (p['schema']['layout']['layoutAttributes'][att1][att2][att3][att4]['description']).replace('*', '"')
-                                            schema.append(attribute)
-                                        except:
-                                            attribute = {}
-                                            attribute ['name'] = 'Layout > '+att1+' > '+att2+' > '+att3+' > '+att4
-                                            attribute ['permalink'] = 'reference/#layout-'+att1+'-'+att2+'-'+att3+'-'+att4
-                                            attribute ['description'] = 'Properties for '+att4
-                                            schema.append(attribute)
-                    except:
-                        pass
-            except:
-                pass
+            pass
+
+layout_chain_dict = {'name':'Layout', 'permalink':'reference/#layout'}
+
+# recursively add trace attributes to schema
+for i in p['schema']['traces']:
+    chain_dict = {'name':i, 'permalink':'reference/#'+i }
+    next_level(p['schema']['traces'][i]['attributes'], chain_dict)
+
+    # if there are layoutAttributes in the trace add them too.
+    if p['schema']['traces'][i].get('layoutAttributes'):
+        next_level(p['schema']['traces'][i]['layoutAttributes'], layout_chain_dict)
+
+# recursively add layout attributes to schema
+next_level(p['schema']['layout']['layoutAttributes'], layout_chain_dict)
 
 ## Send to Algolia
 
