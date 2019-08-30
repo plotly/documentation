@@ -23,6 +23,7 @@ jupyter:
     version: 3.6.5
   plotly:
     permalink: python/ipython-notebook-tutorial/
+    redirect_from: ipython-notebooks/ipython-notebook-tutorial/
     description: Jupyter notebook tutorial on how to install, run, and use Jupyter for interactive matplotlib plotting, data analysis, and publishing code
     name: Jupyter Notebook Tutorial
     has_thumbnail: true
