@@ -27,3 +27,12 @@ task :deploy => [:check_git] do
   system "git checkout \"#{source_branch}\""
   system "osascript -e 'display notification \"rake deploy just finished\" with title \"Docs are ready!\"'"
 end
+
+desc "Serve as if deploying"
+task :serve => [] do
+
+  puts "...getting latest python docs"
+  system "rm -rf _posts/python/html"  or exit!(1)
+  system "git clone -b built git@github.com:plotly/plotly.py-docs _posts/python/html"  or exit!(1)
+  system "jekyll serve"
+end
