@@ -1,0 +1,73 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    resource_class: xlarge
+    docker:
+      # a packaged system that has the instructions for creating a running container.
+      - image: circleci/ruby:2.4-node
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: ~/Plotly/documentation
+    
+    # actions that need to be taken to perform your job
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:USaw9IC3qDmo5lTDeDE1ctu2VeLlrFbqhYZrPVJlw2U"
+
+      # checks out the source code for a job over SSH
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+            brew install gnupg
+            host pool.sks-keyservers.net
+            gpg --keyserver hkp://95.216.167.177 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+
+            npm install electron@1.8.4 orca
+            pip install -r requirements.txt
+            sudo apt-get install -y poppler-utils libxtst6 xvfb libgtk2.0-0 libgconf-2-4 libnss3 libasound2
+
+      # Caches dependencies with a cache key
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+
+      - run:
+          name: make html
+          command: |
+            make -kj8 || make -kj8
+            if [ "${CIRCLE_BRANCH}" == "source-design-merge" ]; then
+              cd build/html
+              git init
+              git config user.name mahdis-z
+              git config user.email maahhddiiss@gmail.com
+              git add *
+              git commit -m build
+              git push --force git@github.com:plotly/documentation.git source-design-merge:built
+              rm -rf .git
+              cd ../..
+            fi
+            
+
+      - store_artifacts:
+          path: build
+          destination: build
