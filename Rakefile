@@ -1,6 +1,6 @@
 def git_clean?
   git_state = `git status 2> /dev/null | tail -n1`
-  clean = (git_state =~ /working tree clean/)
+  clean = (git_state =~ /clean/)
 end
 
 task :check_git do
