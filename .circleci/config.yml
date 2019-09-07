@@ -5,8 +5,6 @@ jobs:
     docker:
       # a packaged system that has the instructions for creating a running container.
       - image: circleci/ruby:2.3.3
-   
-    working_directory: ~/repo
 
     # actions that need to be taken to perform your job
     steps:
@@ -17,15 +15,25 @@ jobs:
       # checks out the source code for a job over SSH
       - checkout
       
+      - restore_cache:
+          keys:
+            - gem-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+            - gem-cache-v1-{{ arch }}-{{ .Branch }}
+            - gem-cache-v1
+            
       - run:
           name: install dependencies
-          command: |
-            gem install bundler
-            bundle install
-
+          command: bundle install --path vendor/bundle
+          
+      - save_cache:
+          key: gem-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+            
       - run:
           name: deployment
           command: |
+            git status
             if [ "${CIRCLE_BRANCH}" == "source-design-merge" ]; then
                rake deploy
             else
