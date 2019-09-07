@@ -1,0 +1,33 @@
+version: 2
+jobs:
+  build:
+    resource_class: xlarge
+    docker:
+      # a packaged system that has the instructions for creating a running container.
+      - image: circleci/ruby:2.3.3
+   
+    working_directory: ~/repo
+
+    # actions that need to be taken to perform your job
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:USaw9IC3qDmo5lTDeDE1ctu2VeLlrFbqhYZrPVJlw2U"
+
+      # checks out the source code for a job over SSH
+      - checkout
+      
+      - run:
+          name: install dependencies
+          command: |
+            gem install bundler
+            bundle install
+
+      - run:
+          name: deployment
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "source-design-merge" ]; then
+               rake deploy
+            else
+               bundle exec jekyll build
+            fi
