@@ -36,7 +36,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.8.0.9000'
+## [1] '4.9.0.9000'
 ```
 
 ### Basic Example
@@ -64,7 +64,7 @@ p <- ggplot(df, aes(lwt, bwt, colour = smoke)) +
   geom_point(size = 1) +
   geom_quantile(quantiles = 0.5)
 
-ggplotly(p)
+p <- ggplotly(p)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
@@ -99,9 +99,9 @@ df <- with(df, {
 
 p <- ggplot(df, aes(lwt, bwt, colour=smoke)) +
   geom_point(size = 1) +
-  geom_quantile(quantiles = c(0.1, 0.5, 0.9), size = 2, alpha = 0.5)
-
-ggplotly(p)
+  geom_quantile(quantiles = c(0.1, 0.5, 0.9), size = 2, aes(alpha = ..quantile..)) +
+  scale_alpha(range = c(0.3, 0.7))
+p <- ggplotly(p)
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
