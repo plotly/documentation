@@ -33,3 +33,12 @@ task :serve => [] do
   system "git clone -b built git@github.com:plotly/plotly.py-docs _posts/python/html"  or exit!(1)
   system "jekyll serve"
 end
+
+desc "Serve using copy of adjacent py-docs and _config_personal.yml"
+task :personal => [] do
+
+  puts "...getting latest python docs"
+  system "rm -rf _posts/python/html"  or exit!(1)
+  system "cp -r ../plotly.py-docs/build/html _posts/python/html"  or exit!(1)
+  system "jekyll serve --config _config_personal.yml"
+end
