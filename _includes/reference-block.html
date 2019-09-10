@@ -114,12 +114,14 @@
                 {% if obj[1].valType == "flaglist" %}
                     <br><em>Default:</em> <code>*{{ obj[1].dflt }}*</code>
                 {% else %}
-                    <br><em>Default:</em> <code>{% if obj[1].dflt == "" %}**{% else %}{% if obj[1].valType == "string" or obj[1].valType == "color" or (obj[1].valType == "enumerated" and obj[1].dflt != true and obj[1].dflt != false) or obj[1].dflt == "auto" %}*{{ obj[1].dflt }}*{% elsif obj[1].valType == "info_array" %}[{{obj[1].dflt[0]}}, {{obj[1].dflt[1]}}]{% else %}{{obj[1].dflt}}{% endif %}{% endif %}</code>
+                    <br><em>Default:</em> <code>
+                        {%- if obj[1].dflt == "" -%}**
+                        {%- elsif obj[1].valType == "info_array" or obj[1].valType == "colorlist" -%}[{{obj[1].dflt | join: ", "}}]
+                        {%- elsif obj[1].valType == "string" or obj[1].valType == "color" or obj[1].dflt == "auto" or
+                            (obj[1].valType == "enumerated" and obj[1].dflt != true and obj[1].dflt != false) -%}*{{ obj[1].dflt }}*
+                        {%- else -%}{{obj[1].dflt}}
+                        {%- endif %}</code>
                 {% endif %}
-            {% endif %}
-
-            {% if display_info and obj[1].description %}
-                <br><br>{{ obj[1].description | escape }}
             {% endif %}
 
             {% if obj[1].items and obj[1].valType != "info_array" %}
@@ -134,6 +136,10 @@
             {% elsif obj[1].role == "object" %}
                 <br><em>Type:</em> {% raw %}{object}{% endraw %} containing one or more of the keys listed below.
 
+            {% endif %}
+
+            {% if display_info and obj[1].description and obj[1].description!= "" %}
+                <br><br>{{ obj[1].description | escape }}
             {% endif %}
 
             {% if obj[1].role == "object" %}
