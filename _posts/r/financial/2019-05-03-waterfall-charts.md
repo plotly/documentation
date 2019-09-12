@@ -6,9 +6,10 @@ description: How to make waterfall charts in R with Plotly.
 layout: base
 thumbnail: thumbnail/waterfall-charts.jpg
 language: r
+page_type: example_index
 has_thumbnail: true
-display_as: basic
-order: 7.2
+display_as: financial
+order: 4
 output:
   html_document:
     keep_md: true
