@@ -1,5 +1,5 @@
 ---
-permalink: r/fundamentals/
+permalink: r/plotly-fundamentals/
 title: R Graphing Library Plotly Fundamentals
 description: Plotly's R graphing library makes interactive, publication-quality graphs online. Tutorials and tips about fundamental features of Plotly's R API.
 name: More Plotly Fundamentals
@@ -8,6 +8,7 @@ language: r
 display_as: file_settings
 has_thumbnail: true
 thumbnail: thumbnail/mixed.jpg
+redirect_from: r/fundamentals/
 page_type: example_index
 order: 20
 ---

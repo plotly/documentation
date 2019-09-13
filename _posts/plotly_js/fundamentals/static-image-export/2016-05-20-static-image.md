@@ -11,6 +11,7 @@ display_as: chart_type
 page_type: example_index
 has_thumbnail: true
 display_as: file_settings
+order: 1
 sitemap: false
 ---
 
