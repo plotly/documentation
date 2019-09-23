@@ -4,7 +4,7 @@ description: Monte Carlo simulations, Markov chains, Gibbs sampling illustrated 
 title: Computational Methods in Bayesian Analysis
 has_thumbnail: false
 thumbnail: /images/static-image
-layout: user-guide
+layout: base
 name: Computational Methods in Bayesian Analysis
 language: python
 page_type: u-guide
@@ -306,12 +306,12 @@ distributions:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Example:-Inferring-patterns-in-UK-coal-mining-disasters">Example: Inferring patterns in UK coal mining disasters<a class="anchor-link" href="#Example:-Inferring-patterns-in-UK-coal-mining-disasters">&#182;</a></h2><p>Let's try to model a more interesting example, a time series of recorded coal mining 
+<h2 id="Example:-Inferring-patterns-in-UK-coal-mining-disasters">Example: Inferring patterns in UK coal mining disasters<a class="anchor-link" href="#Example:-Inferring-patterns-in-UK-coal-mining-disasters">&#182;</a></h2><p>Let's try to model a more interesting example, a time series of recorded coal mining
 disasters in the UK from 1851 to 1962.</p>
-<p>Occurrences of disasters in the time series is thought to be derived from a 
-Poisson process with a large rate parameter in the early part of the time 
-series, and from one with a smaller rate in the later part. We are interested 
-in locating the change point in the series, which perhaps is related to changes 
+<p>Occurrences of disasters in the time series is thought to be derived from a
+Poisson process with a large rate parameter in the early part of the time
+series, and from one with a smaller rate in the later part. We are interested
+in locating the change point in the series, which perhaps is related to changes
 in mining safety regulations.</p>
 
 </div>
@@ -682,7 +682,7 @@ $\lambda = \lambda_1$ if $t \lt \tau$ and $\lambda = \lambda_2$ if $t \geq \tau$
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Implementing-Gibbs-sampling">Implementing Gibbs sampling<a class="anchor-link" href="#Implementing-Gibbs-sampling">&#182;</a></h3><p>We are interested in estimating the joint posterior of $\lambda_1, \lambda_2$ and $\tau$ given the array of annnual disaster counts $\mathbf{y}$. This gives:</p>
 $$
- P( \lambda_1, \lambda_2, \tau | \mathbf{y} ) \propto P(\mathbf{y} | \lambda_1, \lambda_2, \tau ) P(\lambda_1, \lambda_2, \tau) 
+ P( \lambda_1, \lambda_2, \tau | \mathbf{y} ) \propto P(\mathbf{y} | \lambda_1, \lambda_2, \tau ) P(\lambda_1, \lambda_2, \tau)
 $$<p>To employ Gibbs sampling, we need to factor the joint posterior into the product of conditional expressions:</p>
 $$
  P(\lambda_1, \lambda_2, \tau | \mathbf{y}) \propto P(y_{t \lt \tau} | \lambda_1, \tau) P(y_{t \geq \tau} | \lambda_2, \tau) P(\lambda_1) P(\lambda_2) P(\tau)
@@ -831,19 +831,19 @@ $$\lambda_1 \sim \text{Gamma}(\sum_{t=1851}^{\tau} y_t +\alpha, \tau+\beta)$$$$\
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Sample from conditionals</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">):</span>
-    
+
     <span class="c1"># Sample early mean</span>
     <span class="n">lambda1</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rgamma</span><span class="p">(</span><span class="n">disasters_array</span><span class="p">[:</span><span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">beta</span><span class="p">))</span>
-    
+
     <span class="c1"># Sample late mean</span>
     <span class="n">lambda2</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rgamma</span><span class="p">(</span><span class="n">disasters_array</span><span class="p">[</span><span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">]:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">,</span>
                             <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">n_count_data</span> <span class="o">-</span> <span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">beta</span><span class="p">))</span>
-    
+
     <span class="c1"># Sample changepoint: first calculate probabilities (conditional)</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dgamma</span><span class="p">(</span><span class="n">lambda1</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">disasters_array</span><span class="p">[:</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="n">beta</span><span class="p">)</span> <span class="o">*</span>
                   <span class="n">dgamma</span><span class="p">(</span><span class="n">lambda2</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">disasters_array</span><span class="p">[</span><span class="n">t</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">n_count_data</span> <span class="o">-</span> <span class="n">t</span> <span class="o">+</span> <span class="n">beta</span><span class="p">)</span>
                   <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_count_data</span><span class="p">)])</span>
-    
+
     <span class="c1"># ... then draw sample</span>
     <span class="n">tau</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rcategorical</span><span class="p">(</span><span class="n">p</span><span class="o">/</span><span class="n">p</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
 </pre></div>
@@ -1152,13 +1152,13 @@ $$\begin{aligned}
 <div class="prompt input_prompt">In&nbsp;[39]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">age</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> 
-                <span class="mi">15</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> 
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">age</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span>
+                <span class="mi">15</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span>
                 <span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
 
-<span class="n">price</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2950</span><span class="p">,</span> <span class="mi">2300</span><span class="p">,</span> <span class="mi">3900</span><span class="p">,</span> <span class="mi">2800</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">2999</span><span class="p">,</span> <span class="mi">3950</span><span class="p">,</span> <span class="mi">2995</span><span class="p">,</span> <span class="mi">4500</span><span class="p">,</span> <span class="mi">2800</span><span class="p">,</span> 
-                  <span class="mi">1990</span><span class="p">,</span> <span class="mi">3500</span><span class="p">,</span> <span class="mi">5100</span><span class="p">,</span> <span class="mi">3900</span><span class="p">,</span> <span class="mi">2900</span><span class="p">,</span> <span class="mi">4950</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">3400</span><span class="p">,</span> <span class="mi">8999</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> 
-                  <span class="mi">2950</span><span class="p">,</span> <span class="mi">3250</span><span class="p">,</span> <span class="mi">3950</span><span class="p">,</span> <span class="mi">4600</span><span class="p">,</span> <span class="mi">4500</span><span class="p">,</span> <span class="mi">1600</span><span class="p">,</span> <span class="mi">3900</span><span class="p">,</span> <span class="mi">4200</span><span class="p">,</span> <span class="mi">6500</span><span class="p">,</span> <span class="mi">3500</span><span class="p">,</span> 
+<span class="n">price</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2950</span><span class="p">,</span> <span class="mi">2300</span><span class="p">,</span> <span class="mi">3900</span><span class="p">,</span> <span class="mi">2800</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">2999</span><span class="p">,</span> <span class="mi">3950</span><span class="p">,</span> <span class="mi">2995</span><span class="p">,</span> <span class="mi">4500</span><span class="p">,</span> <span class="mi">2800</span><span class="p">,</span>
+                  <span class="mi">1990</span><span class="p">,</span> <span class="mi">3500</span><span class="p">,</span> <span class="mi">5100</span><span class="p">,</span> <span class="mi">3900</span><span class="p">,</span> <span class="mi">2900</span><span class="p">,</span> <span class="mi">4950</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">3400</span><span class="p">,</span> <span class="mi">8999</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span>
+                  <span class="mi">2950</span><span class="p">,</span> <span class="mi">3250</span><span class="p">,</span> <span class="mi">3950</span><span class="p">,</span> <span class="mi">4600</span><span class="p">,</span> <span class="mi">4500</span><span class="p">,</span> <span class="mi">1600</span><span class="p">,</span> <span class="mi">3900</span><span class="p">,</span> <span class="mi">4200</span><span class="p">,</span> <span class="mi">6500</span><span class="p">,</span> <span class="mi">3500</span><span class="p">,</span>
                   <span class="mi">2999</span><span class="p">,</span> <span class="mi">2600</span><span class="p">,</span> <span class="mi">3250</span><span class="p">,</span> <span class="mi">2500</span><span class="p">,</span> <span class="mi">2400</span><span class="p">,</span> <span class="mi">3990</span><span class="p">,</span> <span class="mi">4600</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span><span class="mi">4700</span><span class="p">])</span><span class="o">/</span><span class="mf">1000.</span>
 </pre></div>
 
@@ -1198,7 +1198,7 @@ $$\begin{aligned}
     <span class="n">mu</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">*</span><span class="n">x</span>
     <span class="c1"># Data likelihood</span>
     <span class="n">logp</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">dnorm</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">t</span><span class="o">**-</span><span class="mi">2</span><span class="p">))</span>
-    
+
     <span class="k">return</span> <span class="n">logp</span>
 </pre></div>
 
@@ -1233,53 +1233,53 @@ $$\begin{aligned}
 <span class="k">def</span> <span class="nf">metropolis</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">,</span> <span class="n">initial_values</span><span class="p">,</span> <span class="n">prop_var</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 
     <span class="n">n_params</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">initial_values</span><span class="p">)</span>
-            
+
     <span class="c1"># Initial proposal standard deviations</span>
     <span class="n">prop_sd</span> <span class="o">=</span> <span class="p">[</span><span class="n">prop_var</span><span class="p">]</span><span class="o">*</span><span class="n">n_params</span>
-    
+
     <span class="c1"># Initialize trace for parameters</span>
     <span class="n">trace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_iterations</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_params</span><span class="p">))</span>
-    
+
     <span class="c1"># Set initial values</span>
     <span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">initial_values</span>
-        
+
     <span class="c1"># Calculate joint posterior for initial values</span>
     <span class="n">current_log_prob</span> <span class="o">=</span> <span class="n">calc_posterior</span><span class="p">(</span><span class="o">*</span><span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    
+
     <span class="c1"># Initialize acceptance counts</span>
     <span class="n">accepted</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">n_params</span>
-    
+
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">):</span>
-    
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">%</span><span class="k">1000</span>: print(&#39;Iteration %i&#39; % i)
-    
+
         <span class="c1"># Grab current parameter values</span>
         <span class="n">current_params</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    
+
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_params</span><span class="p">):</span>
-    
+
             <span class="c1"># Get current value for parameter j</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    
+
             <span class="c1"># Propose new value</span>
             <span class="k">if</span> <span class="n">j</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
                 <span class="c1"># Ensure tau is positive</span>
                 <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">rnorm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">current_params</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span> <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">theta</span> <span class="o">=</span> <span class="n">rnorm</span><span class="p">(</span><span class="n">current_params</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-            
+
             <span class="c1"># Insert new value </span>
             <span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta</span>
-    
+
             <span class="c1"># Calculate log posterior with proposed value</span>
             <span class="n">proposed_log_prob</span> <span class="o">=</span> <span class="n">calc_posterior</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
-    
+
             <span class="c1"># Log-acceptance rate</span>
             <span class="n">alpha</span> <span class="o">=</span> <span class="n">proposed_log_prob</span> <span class="o">-</span> <span class="n">current_log_prob</span>
-    
+
             <span class="c1"># Sample a uniform random variate</span>
             <span class="n">u</span> <span class="o">=</span> <span class="n">runif</span><span class="p">()</span>
-    
+
             <span class="c1"># Test proposed value</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">alpha</span><span class="p">:</span>
                 <span class="c1"># Accept</span>
@@ -1289,7 +1289,7 @@ $$\begin{aligned}
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Reject</span>
                 <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
-                
+
     <span class="k">return</span> <span class="n">trace</span><span class="p">,</span> <span class="n">accepted</span>
 </pre></div>
 
@@ -1826,59 +1826,59 @@ Iteration 9000
 <div class="prompt input_prompt">In&nbsp;[60]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">metropolis_tuned</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">,</span> <span class="n">initial_values</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">calc_posterior</span><span class="p">,</span> <span class="n">prop_var</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">metropolis_tuned</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">,</span> <span class="n">initial_values</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">calc_posterior</span><span class="p">,</span> <span class="n">prop_var</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                      <span class="n">tune_for</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tune_interval</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
-    
+
     <span class="n">n_params</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">initial_values</span><span class="p">)</span>
-            
+
     <span class="c1"># Initial proposal standard deviations</span>
     <span class="n">prop_sd</span> <span class="o">=</span> <span class="p">[</span><span class="n">prop_var</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_params</span>
-    
+
     <span class="c1"># Initialize trace for parameters</span>
     <span class="n">trace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_iterations</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_params</span><span class="p">))</span>
-    
+
     <span class="c1"># Set initial values</span>
     <span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">initial_values</span>
     <span class="c1"># Initialize acceptance counts</span>
     <span class="n">accepted</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">n_params</span>
-    
+
     <span class="c1"># Calculate joint posterior for initial values</span>
     <span class="n">current_log_prob</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    
+
     <span class="k">if</span> <span class="n">tune_for</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">tune_for</span> <span class="o">=</span> <span class="n">n_iterations</span><span class="o">/</span><span class="mi">2</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">):</span>
-    
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">%</span><span class="k">1000</span>: print(&#39;Iteration %i&#39; % i)
-    
+
         <span class="c1"># Grab current parameter values</span>
         <span class="n">current_params</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    
+
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_params</span><span class="p">):</span>
-    
+
             <span class="c1"># Get current value for parameter j</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    
+
             <span class="c1"># Propose new value</span>
             <span class="k">if</span> <span class="n">j</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
                 <span class="c1"># Ensure tau is positive</span>
                 <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">rnorm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">current_params</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span> <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">theta</span> <span class="o">=</span> <span class="n">rnorm</span><span class="p">(</span><span class="n">current_params</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-            
+
             <span class="c1"># Insert new value </span>
             <span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta</span>
-    
+
             <span class="c1"># Calculate log posterior with proposed value</span>
             <span class="n">proposed_log_prob</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
-    
+
             <span class="c1"># Log-acceptance rate</span>
             <span class="n">alpha</span> <span class="o">=</span> <span class="n">proposed_log_prob</span> <span class="o">-</span> <span class="n">current_log_prob</span>
-    
+
             <span class="c1"># Sample a uniform random variate</span>
             <span class="n">u</span> <span class="o">=</span> <span class="n">runif</span><span class="p">()</span>
-    
+
             <span class="c1"># Test proposed value</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">alpha</span><span class="p">:</span>
                 <span class="c1"># Accept</span>
@@ -1888,10 +1888,10 @@ Iteration 9000
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Reject</span>
                 <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
-                
+
             <span class="c1"># Tune every 100 iterations</span>
             <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">tune_interval</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">tune_for</span><span class="p">):</span>
-        
+
                 <span class="c1"># Calculate aceptance rate</span>
                 <span class="n">acceptance_rate</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">*</span><span class="n">accepted</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">/</span><span class="n">tune_interval</span>
                 <span class="k">if</span> <span class="n">acceptance_rate</span><span class="o">&lt;</span><span class="mf">0.1</span><span class="p">:</span>
@@ -1902,9 +1902,9 @@ Iteration 9000
                     <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.05</span>
                 <span class="k">elif</span> <span class="n">acceptance_rate</span><span class="o">&gt;</span><span class="mf">0.6</span><span class="p">:</span>
                     <span class="n">prop_sd</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.1</span>
-        
+
                 <span class="n">accepted</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-                
+
     <span class="k">return</span> <span class="n">trace</span><span class="p">[</span><span class="n">tune_for</span><span class="p">:],</span> <span class="n">accepted</span>
 </pre></div>
 
@@ -2241,7 +2241,7 @@ Iteration 19000
 <h2 id="Exercise:-Bioassay-analysis">Exercise: Bioassay analysis<a class="anchor-link" href="#Exercise:-Bioassay-analysis">&#182;</a></h2><p>Gelman et al. (2003) present an example of an acute toxicity test, commonly performed on animals to estimate the toxicity of various compounds.</p>
 <p>In this dataset <code>log_dose</code> includes 4 levels of dosage, on the log scale, each administered to 5 rats during the experiment. The response variable is <code>death</code>, the number of positive responses to the dosage.</p>
 <p>The number of deaths can be modeled as a binomial response, with the probability of death being a linear function of dose:</p>
-<div style="font-size: 150%;">  
+<div style="font-size: 150%;">
 $$\begin{aligned}
 y_i &\sim \text{Bin}(n_i, p_i) \\
 \text{logit}(p_i) &= a + b x_i
@@ -2291,7 +2291,7 @@ y_i &\sim \text{Bin}(n_i, p_i) \\
     <span class="n">p</span> <span class="o">=</span> <span class="n">invlogit</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
     <span class="c1"># Data likelihood</span>
     <span class="n">logp</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">dbin</span><span class="p">(</span><span class="n">yi</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">pi</span><span class="p">)</span> <span class="k">for</span> <span class="n">yi</span><span class="p">,</span><span class="n">pi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">p</span><span class="p">)])</span>
-    
+
     <span class="k">return</span> <span class="n">logp</span>
 </pre></div>
 
@@ -2494,6 +2494,6 @@ Iteration 9000
 </div>
 
 </div>
- 
+
 
 {% endraw %}

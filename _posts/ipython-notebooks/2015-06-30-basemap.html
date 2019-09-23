@@ -4,7 +4,7 @@ description: An IPython Notebook showing how to make an interactive world map us
 name: Plotly maps with Matplotlib Basemap
 has_thumbnail: false
 thumbnail: /images/static-image
-layout: user-guide
+layout: base
 page_type: u-guide
 language: python
 ---
@@ -99,8 +99,8 @@ language: python
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>           
-<span class="kn">from</span> <span class="nn">scipy.io</span> <span class="kn">import</span> <span class="n">netcdf</span>  
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.io</span> <span class="kn">import</span> <span class="n">netcdf</span>
 </pre></div>
 
 </div>
@@ -210,7 +210,7 @@ language: python
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Shift &#39;lon&#39; from [0,360] to [-180,180], make numpy array</span>
-<span class="n">tmp_lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lon</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">-</span><span class="mi">360</span> <span class="k">if</span> <span class="n">l</span><span class="o">&gt;=</span><span class="mi">180</span> <span class="k">else</span> <span class="n">lon</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> 
+<span class="n">tmp_lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lon</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">-</span><span class="mi">360</span> <span class="k">if</span> <span class="n">l</span><span class="o">&gt;=</span><span class="mi">180</span> <span class="k">else</span> <span class="n">lon</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
                    <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lon</span><span class="p">)])</span>  <span class="c1"># =&gt; [0,180]U[-180,2.5]</span>
 
 <span class="n">i_east</span><span class="p">,</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tmp_lon</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># indices of east lon</span>
@@ -295,7 +295,7 @@ language: python
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Make shortcut to Basemap object, </span>
 <span class="c1"># not specifying projection type for this example</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">Basemap</span><span class="p">()</span> 
+<span class="n">m</span> <span class="o">=</span> <span class="n">Basemap</span><span class="p">()</span>
 
 <span class="c1"># Make trace-generating function (return a Scatter object)</span>
 <span class="k">def</span> <span class="nf">make_scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
@@ -317,19 +317,19 @@ language: python
 
     <span class="k">for</span> <span class="n">i_poly</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_poly</span><span class="p">):</span>
         <span class="n">poly_path</span> <span class="o">=</span> <span class="n">poly_paths</span><span class="p">[</span><span class="n">i_poly</span><span class="p">]</span>
-        
+
         <span class="c1"># get the Basemap coordinates of each segment</span>
         <span class="n">coords_cc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[(</span><span class="n">vertex</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">vertex</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> 
+            <span class="p">[(</span><span class="n">vertex</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">vertex</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
              <span class="k">for</span> <span class="p">(</span><span class="n">vertex</span><span class="p">,</span><span class="n">code</span><span class="p">)</span> <span class="ow">in</span> <span class="n">poly_path</span><span class="o">.</span><span class="n">iter_segments</span><span class="p">(</span><span class="n">simplify</span><span class="o">=</span><span class="bp">False</span><span class="p">)]</span>
         <span class="p">)</span>
-        
+
         <span class="c1"># convert coordinates to lon/lat by &#39;inverting&#39; the Basemap projection</span>
         <span class="n">lon_cc</span><span class="p">,</span> <span class="n">lat_cc</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="n">coords_cc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">coords_cc</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">inverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        
+
         <span class="c1"># add plot.ly plotting options</span>
         <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">make_scatter</span><span class="p">(</span><span class="n">lon_cc</span><span class="p">,</span><span class="n">lat_cc</span><span class="p">))</span>
-     
+
     <span class="k">return</span> <span class="n">traces</span>
 
 <span class="c1"># Function generating coastline lon/lat traces</span>
@@ -498,6 +498,6 @@ language: python
 </div>
 </div>
 </div>
- 
+
 
 {% endraw %}

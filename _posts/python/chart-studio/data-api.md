@@ -26,7 +26,7 @@ jupyter:
     display_as: chart_studio
     has_thumbnail: true
     language: python
-    layout: user-guide
+    layout: base
     name: Plots from Grids
     order: 5
     page_type: u-guide

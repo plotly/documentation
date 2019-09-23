@@ -4,7 +4,7 @@ description: Tutorial on the basic idea behind Markowitz portfolio optimization 
 title: Markowitz portfolio optimization
 has_thumbnail: false
 thumbnail: /images/static-image
-layout: user-guide
+layout: base
 name: Markowitz Portfolio Optimization
 language: python
 page_type: u-guide
@@ -88,10 +88,10 @@ Today's blog post is written in collaboration with <a href="http://drtomstarke.c
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># (*) To communicate with Plotly&#39;s server, sign in with credentials file</span>
-<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>  
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="kn">as</span> <span class="nn">py</span>
 
 <span class="c1"># (*) Useful Python/Plotly tools</span>
-<span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>   
+<span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="kn">as</span> <span class="nn">tls</span>
 
 <span class="c1"># (*) Graph objects to piece together plots</span>
 <span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
@@ -237,10 +237,10 @@ a filter that only allows to plot portfolios with a standard deviation of &lt; 2
     <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asmatrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asmatrix</span><span class="p">(</span><span class="n">rand_weights</span><span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
     <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asmatrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">returns</span><span class="p">))</span>
-    
+
     <span class="n">mu</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">T</span>
     <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">C</span> <span class="o">*</span> <span class="n">w</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-    
+
     <span class="c1"># This recursion reduces outliers to keep plots pretty</span>
     <span class="k">if</span> <span class="n">sigma</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">random_portfolio</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
@@ -284,7 +284,7 @@ diagonal and miss the rest. A small but significant difference.</p>
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">n_portfolios</span> <span class="o">=</span> <span class="mi">500</span>
 <span class="n">means</span><span class="p">,</span> <span class="n">stds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span>
-    <span class="n">random_portfolio</span><span class="p">(</span><span class="n">return_vec</span><span class="p">)</span> 
+    <span class="n">random_portfolio</span><span class="p">(</span><span class="n">return_vec</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n_portfolios</span><span class="p">)</span>
 <span class="p">])</span>
 </pre></div>
@@ -333,12 +333,12 @@ frontier‘, where we have the lowest variance for a given expected.</p>
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>/home/wiecki/envs/zipline_p14/local/lib/python2.7/site-packages/plotly/matplotlylib/renderer.py:514: UserWarning:
 
-Looks like the annotation(s) you are trying 
+Looks like the annotation(s) you are trying
 to draw lies/lay outside the given figure size.
 
-Therefore, the resulting Plotly figure may not be 
-large enough to view the full text. To adjust 
-the size of the figure, use the &#39;width&#39; and 
+Therefore, the resulting Plotly figure may not be
+large enough to view the full text. To adjust
+the size of the figure, use the &#39;width&#39; and
 &#39;height&#39; keys in the Layout object. Alternatively,
 use the Margin object to adjust the figure&#39;s margins.
 
@@ -384,22 +384,22 @@ to define quite a complex problem with bounds, constraints and a Lagrange multip
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">optimal_portfolio</span><span class="p">(</span><span class="n">returns</span><span class="p">):</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
     <span class="n">returns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asmatrix</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
-    
+
     <span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">mus</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="mf">5.0</span> <span class="o">*</span> <span class="n">t</span><span class="o">/</span><span class="n">N</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-    
+
     <span class="c1"># Convert to cvxopt matrices</span>
     <span class="n">S</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">returns</span><span class="p">))</span>
     <span class="n">pbar</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-    
+
     <span class="c1"># Create constraint matrices</span>
     <span class="n">G</span> <span class="o">=</span> <span class="o">-</span><span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>   <span class="c1"># negative n x n identity matrix</span>
     <span class="n">h</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span> <span class="p">,</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
-    
+
     <span class="c1"># Calculate efficient frontier weights using quadratic programming</span>
-    <span class="n">portfolios</span> <span class="o">=</span> <span class="p">[</span><span class="n">solvers</span><span class="o">.</span><span class="n">qp</span><span class="p">(</span><span class="n">mu</span><span class="o">*</span><span class="n">S</span><span class="p">,</span> <span class="o">-</span><span class="n">pbar</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> 
+    <span class="n">portfolios</span> <span class="o">=</span> <span class="p">[</span><span class="n">solvers</span><span class="o">.</span><span class="n">qp</span><span class="p">(</span><span class="n">mu</span><span class="o">*</span><span class="n">S</span><span class="p">,</span> <span class="o">-</span><span class="n">pbar</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
                   <span class="k">for</span> <span class="n">mu</span> <span class="ow">in</span> <span class="n">mus</span><span class="p">]</span>
     <span class="c1">## CALCULATE RISKS AND RETURNS FOR FRONTIER</span>
     <span class="n">returns</span> <span class="o">=</span> <span class="p">[</span><span class="n">blas</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">pbar</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">portfolios</span><span class="p">]</span>
@@ -505,7 +505,7 @@ to define quite a complex problem with bounds, constraints and a Lagrange multip
 <span class="n">end</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
 <span class="n">start</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="mi">2500</span> <span class="o">*</span> <span class="n">pd</span><span class="o">.</span><span class="n">tseries</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">BDay</span><span class="p">()</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">load_bars_from_yahoo</span><span class="p">(</span><span class="n">stocks</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;IBM&#39;</span><span class="p">,</span> <span class="s1">&#39;GLD&#39;</span><span class="p">,</span> <span class="s1">&#39;XOM&#39;</span><span class="p">,</span> <span class="s1">&#39;AAPL&#39;</span><span class="p">,</span> 
+<span class="n">data</span> <span class="o">=</span> <span class="n">load_bars_from_yahoo</span><span class="p">(</span><span class="n">stocks</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;IBM&#39;</span><span class="p">,</span> <span class="s1">&#39;GLD&#39;</span><span class="p">,</span> <span class="s1">&#39;XOM&#39;</span><span class="p">,</span> <span class="s1">&#39;AAPL&#39;</span><span class="p">,</span>
                                     <span class="s1">&#39;MSFT&#39;</span><span class="p">,</span> <span class="s1">&#39;TLT&#39;</span><span class="p">,</span> <span class="s1">&#39;SHY&#39;</span><span class="p">],</span>
                             <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
 </pre></div>
@@ -584,12 +584,12 @@ SHY
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">zipline</span>
-<span class="kn">from</span> <span class="nn">zipline.api</span> <span class="kn">import</span> <span class="p">(</span><span class="n">add_history</span><span class="p">,</span> 
-                         <span class="n">history</span><span class="p">,</span> 
-                         <span class="n">set_slippage</span><span class="p">,</span> 
+<span class="kn">from</span> <span class="nn">zipline.api</span> <span class="kn">import</span> <span class="p">(</span><span class="n">add_history</span><span class="p">,</span>
+                         <span class="n">history</span><span class="p">,</span>
+                         <span class="n">set_slippage</span><span class="p">,</span>
                          <span class="n">slippage</span><span class="p">,</span>
-                         <span class="n">set_commission</span><span class="p">,</span> 
-                         <span class="n">commission</span><span class="p">,</span> 
+                         <span class="n">set_commission</span><span class="p">,</span>
+                         <span class="n">commission</span><span class="p">,</span>
                          <span class="n">order_target_percent</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">zipline</span> <span class="kn">import</span> <span class="n">TradingAlgorithm</span>
@@ -617,7 +617,7 @@ SHY
     <span class="c1"># Set the commission model (Interactive Brokers Commission)</span>
     <span class="n">set_commission</span><span class="p">(</span><span class="n">commission</span><span class="o">.</span><span class="n">PerShare</span><span class="p">(</span><span class="n">cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">min_trade_cost</span><span class="o">=</span><span class="mf">1.0</span><span class="p">))</span>
     <span class="n">context</span><span class="o">.</span><span class="n">tick</span> <span class="o">=</span> <span class="mi">0</span>
-    
+
 <span class="k">def</span> <span class="nf">handle_data</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Called when a market event occurs for any of the algorithm&#39;s </span>
@@ -652,9 +652,9 @@ SHY
         <span class="c1"># Sometimes this error is thrown</span>
         <span class="c1"># ValueError: Rank(A) &lt; p or Rank([P; A; G]) &lt; n</span>
         <span class="k">pass</span>
-        
+
 <span class="c1"># Instantinate algorithm        </span>
-<span class="n">algo</span> <span class="o">=</span> <span class="n">TradingAlgorithm</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">initialize</span><span class="p">,</span> 
+<span class="n">algo</span> <span class="o">=</span> <span class="n">TradingAlgorithm</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">initialize</span><span class="p">,</span>
                         <span class="n">handle_data</span><span class="o">=</span><span class="n">handle_data</span><span class="p">)</span>
 <span class="c1"># Run algorithm</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -721,6 +721,6 @@ SHY
 </div>
 </div>
 </div>
- 
+
 
 {% endraw %}

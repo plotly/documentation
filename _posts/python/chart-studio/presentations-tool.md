@@ -28,7 +28,7 @@ jupyter:
     name: Presentations Tool | plotly
     has_thumbnail: true
     thumbnail: thumbnail/pres_api.jpg
-    layout: user-guide
+    layout: base
     name: Presentations Tool
     language: python
     title: Presentations Tool | plotly
