@@ -4,7 +4,7 @@ name: Getting Started with Plotly for R
 permalink: r/getting-started/
 description: Get started with Plotly's R graphing library to make interactive, publication-quality graphs online.
 page_type: example_index
-layout: getstart
+layout: base
 language: r
 ---
 
