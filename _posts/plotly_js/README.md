@@ -47,7 +47,7 @@ Our javascript tutorials are written in HTML files with embedded [codepen](http:
     indented content in markdown format which will prefix an example ****SEE BELOW
   ---
   {% assign examples = site.posts | where:"language","plotly_js" | where:"suite","add-chart-type-or-topic"**** | sort: "order" %}
-  {% include auto_examples.html examples=examples %}
+  {% include posts/auto_examples.html examples=examples %}
   ```
   - \*\*`display_as` sets where your tutorial is displayed
       - 'basic' = https://plot.ly/javascipt/#basic-charts
@@ -56,7 +56,7 @@ Our javascript tutorials are written in HTML files with embedded [codepen](http:
       - 'financial' = https://plot.ly/javascipt/#financial-charts
       - 'maps' = https://plot.ly/javascipt/#maps
       - '3d_charts' = https://plot.ly/javascipt/#3d-charts
-      - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/documentation_eg.html#L1)
+      - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/posts/documentation_eg.html#L1)
   - \*\*\* `order` defines the order in which the tutorials appear in each section on plot.ly/javascript. Please take a look at https://plot.ly/javascript/ and order your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
   - \*\*\*\* `markdown_content` is rendered directly above the examples. In general, it is best to *avoid* paragraph-formatted explanation and let the simplicity of the example speak for itself, but that's not always possible. Take note that headings in this block *are* reflected in the sidebar.
 

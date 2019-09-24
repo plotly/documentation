@@ -21,7 +21,7 @@
 ## Create Julia Documentation:
 Our Julia tutorials are written in HTML files with embedded plot examples.
 ##### In `documentation/_posts/julia`
-1. Create a folder titled with the chart type or topic you're adding to the documentation (i.e. `bar`)  
+1. Create a folder titled with the chart type or topic you're adding to the documentation (i.e. `bar`)
 2. `cd` into the folder you created and create an html index file labeled: `yyyy-mm-dd-chart_type_julia_index.html`. Copy the index file template below and replace with the necessary information pertaining to the doc you are creating.
   ```
   ---
@@ -38,7 +38,7 @@ Our Julia tutorials are written in HTML files with embedded plot examples.
   order: ***SEE BELOW
   ---
   {% assign examples = site.posts | where:"language","julia" | where:"suite","add-chart-type-or-topic"**** | sort: "order" %}
-  {% include auto_examples.html examples=examples %}
+  {% include posts/auto_examples.html examples=examples %}
   ```
   - **`display_as` sets where your tutorial is displayed
       - 'basic' = https://plot.ly/julia/#basic-charts
@@ -47,7 +47,7 @@ Our Julia tutorials are written in HTML files with embedded plot examples.
       - 'financial' = https://plot.ly/julia/#financial-charts
       - 'maps' = https://plot.ly/julia/#maps
       - '3d_charts' = https://plot.ly/julia/#3d-charts
-      - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/documentation_eg.html#L1)
+      - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/posts/documentation_eg.html#L1)
   - *** `order` defines the order in which the tutorials appear in each section on plot.ly/julia. Please take a look at https://plot.ly/julia/ and order your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
 
 3. Create an example and save it on https://plot.ly/.

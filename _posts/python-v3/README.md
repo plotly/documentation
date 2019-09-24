@@ -22,7 +22,7 @@
 ## Create Python Documentation:
 Our python tutorials are written in [ipython notebooks](http://ipython.org/notebook.html) (.ipynb file)
 ##### In `documentation/_posts/python`
-1. Create a folder titled with the chart type or topic you're adding to the documentation (i.e. `table`)  
+1. Create a folder titled with the chart type or topic you're adding to the documentation (i.e. `table`)
 2. `cd` into the folder you created and run `ipython notebook`
   - From the <b>New</b> dropdown create a new notebook and title it based on the type of chart you're adding to the documentation.
 3. Base your tutorial structure off of one of our existing tutorials (i.e. `documentation/_posts/python/table/table.ipynb`)
@@ -35,7 +35,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
     <br>We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/python_cheat_sheet.pdf) (new!) to help you get started!
     ```
 
-5. **IF** you're adding a doc about a new feature, the second and third cells will display a version check. This is to ensure the reader has updated to the necessary version. This is especially applicable to FigureFactory docs. You can refer to the python api [CHANGELOG](https://github.com/plotly/plotly.py/blob/master/CHANGELOG.md) to check the appropriate version #. Example of a version check:   
+5. **IF** you're adding a doc about a new feature, the second and third cells will display a version check. This is to ensure the reader has updated to the necessary version. This is especially applicable to FigureFactory docs. You can refer to the python api [CHANGELOG](https://github.com/plotly/plotly.py/blob/master/CHANGELOG.md) to check the appropriate version #. Example of a version check:
   - markdown cell:
       ```
       #### Version Check
@@ -108,7 +108,7 @@ Our python tutorials are written in [ipython notebooks](http://ipython.org/noteb
     - 'financial' = https://plot.ly/python/#financial-charts
     - 'maps' = https://plot.ly/python/#maps
     - '3d_charts' = https://plot.ly/python/#3d-charts
-    - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/documentation_eg.html#L1)
+    - See additional options [HERE](https://github.com/plotly/documentation/blob/source-design-merge/_includes/posts/documentation_eg.html#L1)
   - `order` defines the order in which the tutorials appear on plot.ly/python. Please take a look at https://plot.ly/python/ and order your tutorial next to similar chart types. <b>Note</b> `order` can be a float.
   - `uses_plotly_offline` is an optional argument, include as `True` if you're creating an offline doc.
 
