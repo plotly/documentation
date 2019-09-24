@@ -33,4 +33,4 @@ redirect_from: ggplot2/reference/
 {% assign languagelistimg = site.posts | where:"page_type","example_index" | where:"language","ggplot2"  | where:"has_thumbnail",true | sort: "order"  %}
 {% assign languagelist = site.posts | where:"page_type","example_index" | where:"language","ggplot2" %}
 
-{% include documentation_eg.html %}
+{% include posts/documentation_eg.html %}

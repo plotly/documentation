@@ -27,4 +27,4 @@ order: 10
 </header>
 
 		{% assign languagelistimg = site.posts | where:"language","r" | where:"display_as","style_opt" | where:"has_thumbnail",true | where: "layout","base" | sort: "order" %}
-        {% include documentation_eg.html %}
+        {% include posts/documentation_eg.html %}
