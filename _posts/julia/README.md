@@ -38,7 +38,7 @@ Our Julia tutorials are written in HTML files with embedded plot examples.
   order: ***SEE BELOW
   ---
   {% assign examples = site.posts | where:"language","julia" | where:"suite","add-chart-type-or-topic"**** | sort: "order" %}
-  {% include auto_examples.html examples=examples %}
+  {% include posts/auto_examples.html examples=examples %}
   ```
   - **`display_as` sets where your tutorial is displayed
       - 'basic' = https://plot.ly/julia/#basic-charts
