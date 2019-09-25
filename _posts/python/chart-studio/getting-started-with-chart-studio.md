@@ -28,7 +28,7 @@ jupyter:
     ipynb: ~notebook_demo/123/installation
     language: python
     layout: base
-    name: Getting Started with Plotly for Python
+    name: Getting Started with Plotly
     order: 0.1
     page_type: example_index
     permalink: python/getting-started-with-chart-studio/
