@@ -187,9 +187,7 @@ Here is a map rendered with the `"dark"` style from the Mapbox service, which re
 ```r
 library(plotly)
 
-token <- ".mapbox_token"
-token <- readChar(token, file.info(token)$size)
-token <- gsub("[\r\n]", "", token)
+token <- paste(readLines(".mapbox_token"), collapse="")    # You need your own token
 
 us_cities = read.csv("https://raw.githubusercontent.com/plotly/datasets/master/us-cities-top-1k.csv")
 
@@ -203,7 +201,7 @@ p <- us_cities %>%
   layout(
     mapbox = list(
       style = 'dark',
-      accesstoken = "pk.eyJ1IjoiZXRwaW5hcmQiLCJhIjoiY2luMHIzdHE0MGFxNXVubTRxczZ2YmUxaCJ9.hwWZful0U2CQxit4ItNsiQ",
+      accesstoken = token,
       zoom =2.5,
       center = list(lon = -88, lat = 34)))
 
