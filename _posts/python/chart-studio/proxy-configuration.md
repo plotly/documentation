@@ -27,7 +27,7 @@ jupyter:
     name: Requests Behind Corporate Proxies
     permalink: python/proxy-configuration/
     description: How to configure Plotly's Python API to work with corporate proxies
-    layout: user-guide
+    layout: base
     language: python
     has_thumbnail: true
     thumbnail: thumbnail/net.jpg

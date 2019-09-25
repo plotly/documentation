@@ -26,7 +26,7 @@ jupyter:
     display_as: chart_studio
     has_thumbnail: true
     language: python
-    layout: user-guide
+    layout: base
     name: Get Requests
     order: 8
     permalink: python/get-requests/
