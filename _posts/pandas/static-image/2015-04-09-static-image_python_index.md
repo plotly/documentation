@@ -2,7 +2,7 @@
 name: Static Image Export
 permalink: pandas/static-image-export/
 description: How to export plotly graphs as static images in python. Plotly supports png, svg, jpg, and pdf image export.
-layout: getstart
+layout: base
 thumbnail: thumbnail/static-image.jpg
 language: pandas
 page_type: example_index
