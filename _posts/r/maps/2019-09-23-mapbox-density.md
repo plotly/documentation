@@ -71,4 +71,4 @@ chart_link
 
 #Reference
 
-See [https://plot.ly/r/reference/#scattermapbox](https://plot.ly/r/reference/#densitymapbox) for more information and options!
+See [https://plot.ly/r/reference/#densitymapbox](https://plot.ly/r/reference/#densitymapbox) for more information and options!
