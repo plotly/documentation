@@ -5,6 +5,7 @@ gem 'jemoji'
 gem 'octopress'
 gem 'rake'
 gem 'jekyll-sitemap'
+gem 'percy-cli'
 
 group :jekyll_plugins do
   gem 'octopress-debugger'

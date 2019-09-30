@@ -46,10 +46,55 @@ jobs:
       - run:
           name: deployment
           command: |
+            git config --global user.email "accounts@plot.ly"
+            git config --global user.name "Deployer"
+            rm -rf _posts/python/html
+            git clone -b built git@github.com:plotly/plotly.py-docs _posts/python/html
+            bundle exec jekyll build
+            mkdir snapshots
+            cd _site
+            cp -r 'all_static' '../snapshots'
+            cp 'index.html' '../snapshots'
+            cp --parents 'python/index.html' '../snapshots'
+            cp --parents 'python/getting-started/index.html' '../snapshots'
+            cp --parents 'python/plotly-fundamentals/index.html' '../snapshots'
+            cp --parents 'python/line-and-scatter/index.html' '../snapshots'
+            cp --parents 'r/index.html' '../snapshots'
+            cp --parents 'r/getting-started/index.html' '../snapshots'
+            cp --parents 'r/plotly-fundamentals/index.html' '../snapshots'
+            cp --parents 'r/line-and-scatter/index.html' '../snapshots'
+            cp --parents 'javascript/index.html' '../snapshots'
+            cp --parents 'javascript/plotly-fundamentals/index.html' '../snapshots'
+            cp --parents 'javascript/getting-started/index.html' '../snapshots'
+            cp --parents 'javascript/line-and-scatter/index.html' '../snapshots'
+            cp --parents 'ggplot2/index.html' '../snapshots'
+            cp --parents 'ggplot2/getting-started/index.html' '../snapshots'
+            cp --parents 'ggplot2/geom_abline/index.html' '../snapshots'
+            cp --parents 'matplotlib/index.html' '../snapshots'
+            cp --parents 'matplotlib/getting-started/index.html' '../snapshots'
+            cp --parents 'matplotlib/plot/index.html' '../snapshots'
+            cp --parents 'python/v3/index.html' '../snapshots'
+            cp --parents 'python/v3/plotly-fundamentals/index.html' '../snapshots'
+            cp --parents 'python/v3/getting-started/index.html' '../snapshots'
+            cp --parents 'python/v3/line-and-scatter/index.html' '../snapshots'
+            cp --parents 'matlab/index.html' '../snapshots'
+            cp --parents 'matlab/getting-started/index.html' '../snapshots'
+            cp --parents 'matlab/graphing-multiple-chart-types/index.html' '../snapshots'
+            cp --parents 'matlab/scatter/index.html' '../snapshots'
+            cd ..
+            rm -f 'snapshots/all_static/javascripts/jquery-knob/index.html'
+            rm -f 'snapshots/all_static/images/Plotly-feed2.html'
+            rm -f 'snapshots/all_static/images/Plotly.html'
+            rm -f 'snapshots/all_static/images/Plotly-Feed.html'
+            percy snapshot snapshots --enable_javascript
+            rm -rf 'snapshots/'
             if [ "${CIRCLE_BRANCH}" == "source-design-merge" ]; then
-               git config --global user.email "accounts@plot.ly"
-               git config --global user.name "Deployer"
-               rake deploy
-            else
-               bundle exec jekyll build
+             git checkout gh-pages
+             git pull origin gh-pages
+             cp -r _site/* .
+             rm -rf _site/
+             touch .nojekyll
+             git add .
+             git commit -m "deploying"
+             git push origin gh-pages
             fi
