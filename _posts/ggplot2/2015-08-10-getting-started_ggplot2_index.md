@@ -1,10 +1,10 @@
 ---
 title: Getting Started with Plotly and ggplot2
-name: Getting Started with Plotly and ggplot2
+name: Getting Started with Plotly
 permalink: ggplot2/getting-started/
 description: Get started with Plotly's R graphing library with ggplot2 to make interactive, publication-quality graphs online.
 page_type: example_index
-layout: getstart
+layout: base
 language: ggplot2
 ---
 

@@ -27,7 +27,7 @@ jupyter:
     has_thumbnail: true
     ipynb: ~notebook_demo/98
     language: python
-    layout: user-guide
+    layout: base
     name: Deleting Plots
     order: 9
     page_type: u-guide

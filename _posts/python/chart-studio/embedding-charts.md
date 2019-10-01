@@ -26,7 +26,7 @@ jupyter:
     display_as: chart_studio
     has_thumbnail: true
     language: python
-    layout: user-guide
+    layout: base
     name: Embedding Graphs in HTML
     order: 6
     permalink: python/embedding-plotly-graphs-in-HTML/

@@ -27,8 +27,8 @@ jupyter:
     has_thumbnail: true
     ipynb: ~notebook_demo/123/installation
     language: python
-    layout: user-guide
-    name: Getting Started with Plotly for Python
+    layout: base
+    name: Getting Started with Plotly
     order: 0.1
     page_type: example_index
     permalink: python/getting-started-with-chart-studio/

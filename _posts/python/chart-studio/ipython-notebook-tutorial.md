@@ -28,7 +28,7 @@ jupyter:
     name: Jupyter Notebook Tutorial
     has_thumbnail: true
     thumbnail: thumbnail/ipythonnb.jpg
-    layout: user-guide
+    layout: base
     name: Jupyter Notebook Tutorial
     language: python
     title: Jupyter Notebook Tutorial | plotly
