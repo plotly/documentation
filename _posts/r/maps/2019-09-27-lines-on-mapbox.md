@@ -41,9 +41,10 @@ packageVersion('plotly')
 
 To plot on Mapbox maps with Plotly you `may` need a Mapbox account and a public [Mapbox Access Token](https://www.mapbox.com/studio), that you can add to your [Plotly Settings](https://plot.ly/settings/mapbox). See our [Mapbox Map Layers](/python/mapbox-layers/) documentation for more information. If you're using a Chart Studio Enterprise server, please see additional instructions [here](https://help.plot.ly/mapbox-atlas).
 
-### How to draw a Line on a Map
-
 To draw a line on your map, you either can use [Scattermapbox](https://plot.ly/r/reference/#scattermapbox) or [scattergeo](https://plot.ly/r/reference/#scattergeo) trace type in plotly. This example uses scattermapbox and defines the drawing [mode](https://plot.ly/python/reference/#scattermapbox-mode) to the combination of markers and line.
+
+
+### Lines on Mapbox maps using `Scattermapbox` traces
 
 
 ```r
@@ -75,44 +76,6 @@ chart_link
 ```
 
 <iframe src="https://plot.ly/~RPlotBot/5919.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
-This example uses scattermapbox trace and shows how to customize hoverinfo in Mapbox.
-
-
-```r
-library(plotly)
-
-us_cities = read.csv("https://raw.githubusercontent.com/plotly/datasets/master/us-cities-top-1k.csv")
-
-df = us_cities[us_cities$State == c('Washington'),]
-
-
-p <- plot_ly(
-    df,
-    lat= ~lat,
-    lon= ~lon,
-    type = 'scattermapbox',
-    mode='markers+lines',
-    marker=list(
-      color = 'fuchsia',
-      size = 10,
-      opacity =0.8),
-    color = list('color'),
-    hovertext = ~City,
-    hoverinfo = "lat+lon+text") %>%
-  layout(
-    mapbox=list(style = 'stamen-terrain',
-                center = list(lat =47, lon = -122),
-                zoom =5),
-    margin=list(r = 0,t = 0, l = 0, b = 0))
-
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p, filename="hover-scattermapbox")
-chart_link
-```
-
-<iframe src="https://plot.ly/~RPlotBot/5921.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #Reference
 
