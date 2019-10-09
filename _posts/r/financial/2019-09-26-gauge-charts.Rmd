@@ -1,0 +1,145 @@
+---
+title: Gauge Charts in R | Examples | Plotly
+name: Gauge Chart
+permalink: r/gauge-charts/
+description: How to create a Gauge Chart in R with Plotly
+layout: base
+thumbnail: thumbnail/gauge.jpg
+language: r
+has_thumbnail: true
+display_as: financial
+order: 7
+output:
+  html_document:
+    keep_md: true
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
+Sys.setenv("plotly_username"="RPlotBot")
+Sys.setenv("plotly_api_key"="q0lz6r5efr")
+```
+
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+```{r}
+library(plotly)
+packageVersion('plotly')
+```
+
+### Basic Gauge
+
+  A radial gauge chart has a circular arc, which displays a single value to estimate progress toward a goal.
+  The bar shows the target value, and the shading represents the progress toward that goal. Gauge charts, known as
+  speedometer charts as well. This chart type is usually used to illustrate key business indicators.
+
+  The example below displays a basic gauge chart with default attributes. For more information about different added attributes check [indicator](https://plot.ly/r/indicator/) tutorial.
+
+```{r, results = 'hide'}
+library(plotly)
+
+p <- plot_ly(
+    domain = list(x = c(0, 1), y = c(0, 1)),
+    value = 270,
+    title = list(text = "Speed"),
+    type = "indicator",
+    mode = "gauge+number") %>%
+  layout(margin = list(l=20,r=30))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="basic-gauge")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+### Add Steps, Threshold, and Delta
+
+The following examples include "steps" attribute shown as shading inside the radial arc, "delta" which is the
+  difference of the value and goal (reference - value), and "threshold" to determine boundaries that visually alert you if the value cross a defined threshold.
+
+```{r, results = 'hide'}
+library(plotly)
+
+p <- plot_ly(
+  domain = list(x = c(0, 1), y = c(0, 1)),
+  value = 450,
+  title = list(text = "Speed"),
+  type = "indicator",
+  mode = "gauge+number+delta",
+  delta = list(reference = 380),
+  gauge = list(
+    axis =list(range = list(NULL, 500)),
+    steps = list(
+      list(range = c(0, 250), color = "lightgray"),
+      list(range = c(250, 400), color = "gray")),
+    threshold = list(
+      line = list(color = "red", width = 4),
+      thickness = 0.75,
+      value = 490))) %>%
+  layout(margin = list(l=20,r=30))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="advance-gauge")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+### Custom Gauge Chart
+The following example shows how to style your gauge charts. For more information about all possible options check our [reference page](https://plot.ly/r/reference/#indicator).
+
+```{r, results = 'hide'}
+library(plotly)
+
+p <- plot_ly(
+  type = "indicator",
+  mode = "gauge+number+delta",
+  value = 420,
+  title = list(text = "Speed", font = list(size = 24)),
+  delta = list(reference = 400, increasing = list(color = "RebeccaPurple")),
+  gauge = list(
+    axis = list(range = list(NULL, 500), tickwidth = 1, tickcolor = "darkblue"),
+    bar = list(color = "darkblue"),
+    bgcolor = "white",
+    borderwidth = 2,
+    bordercolor = "gray",
+    steps = list(
+      list(range = c(0, 250), color = "cyan"),
+      list(range = c(250, 400), color = "royalblue")),
+    threshold = list(
+      line = list(color = "red", width = 4),
+      thickness = 0.75,
+      value = 490))) %>%
+  layout(
+    margin = list(l=20,r=30),
+    paper_bgcolor = "lavender",
+    font = list(color = "darkblue", family = "Arial"))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="custom-gauge")
+chart_link
+```
+
+```{r, echo=FALSE}
+chart_link
+```
+
+#Reference
+
+See [https://plot.ly/r/reference/#indicator](https://plot.ly/r/reference/#indicator) for more information and chart attribute options!
