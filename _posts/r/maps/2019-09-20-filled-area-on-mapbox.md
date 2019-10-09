@@ -1,0 +1,169 @@
+---
+title: Filled area in Mapbox in R | Examples | Plotly
+name: Filled Area in Mapbox
+permalink: r/filled-area-on-mapbox/
+description: How to make an area on Map in R with plotly.
+layout: base
+thumbnail: thumbnail/area.jpg
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: maps
+order: 6
+output:
+  html_document:
+    keep_md: true
+---
+
+
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+
+```r
+library(plotly)
+packageVersion('plotly')
+```
+
+```
+## [1] '4.9.0.9000'
+```
+
+### Mapbox Access Token
+
+To plot on Mapbox maps with Plotly you `may` need a Mapbox account and a public [Mapbox Access Token](https://www.mapbox.com/studio), that you can add to your [Plotly Settings](https://plot.ly/settings/mapbox). See our [Mapbox Map Layers](/python/mapbox-layers/) documentation for more information. If you're using a Chart Studio Enterprise server, please see additional instructions [here](https://help.plot.ly/mapbox-atlas).
+
+### How to Show an Area on a Map
+
+There are three different ways to show an area in a mapbox:
+<ol>
+    <li> Use [Scattermapbox](https://plot.ly/r/reference/#scattermapbox) trace and set [fill](https://plot.ly/r/reference/#scattermapbox-fill) attribute to 'toself'</li>
+    <li> Use [Scattermapbox](https://plot.ly/r/reference/#scattermapbox) trace and define the corresponding geojson</li>
+    <li> Use the new trace type: [Choroplethmapbox](https://plot.ly/r/mapbox-county-choropleth/) for mapbox cases, or [Choropleth](https://plot.ly/r/choropleth-maps/) trace for non-mapbox ones.</li>
+</ol>
+The following example uses `Scattermapbox` and sets `fill = 'toself'`
+
+
+```r
+library(plotly)
+
+p <- plot_ly(
+  fill = "toself",
+  lon = c(-74, -70, -70, -74),
+  lat = c(47, 47, 45, 45),
+  type = 'scattermapbox',
+  marker = list(size = 10, color = 'orange'),
+  fillcolor = 'color') %>%
+  layout(
+    mapbox = list(
+      style = "stamen-terrain",
+      center = list(lon = -73, lat = 46),
+      zoom = 5),
+    showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="scattermapbox-fill-to-self")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5929.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Provide Gaps on Map
+
+The following example shows how to use missing values in your data to provide gap in your graph. To ignore the gap on your plot, take benefit of [connectorgaps](https://plot.ly/r/reference/#scattermapbox-connectgaps) attribute.
+
+
+```r
+library(plotly)
+
+p <- plot_ly(
+  mode = "lines",
+  fill = "toself",
+  type = 'scattermapbox',
+  lon = c(-10, -10, 8, 8, NaN, 30, 30, 50, 50, NaN, 100, 100, 80, 80),
+  lat = c(30, 6, 6, 30, NaN, 20, 30, 30, 20, NaN, 40, 50, 50, 40)) %>%
+layout(
+  mapbox = list(
+    style = "stamen-terrain",
+    center = list(lon = 30, lat = 30),
+    zoom = 2),
+  showlegend = FALSE)
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="gap-scattermapbox")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5925.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+
+### Use the Corresponding Geojson
+
+The second way is using Scattermapbox trace with the corresponding geojson.
+
+
+```r
+library(plotly)
+
+p <- plot_ly(
+  type = 'scattermapbox',
+  mode = "markers",
+  lon = c(-73.605), lat = c(45.51),
+  marker = list(size = 20, color = c("cyan"))) %>%
+  layout(
+    mapbox = list(
+    style = "stamen-terrain",
+    center = list(lon = -73.6, lat = 45.5),
+    zoom = 12,
+    layers = list(list(
+    source = list(
+      type = "FeatureCollection",
+      features = list(list(
+        type = "Feature",
+        geometry = list(
+          type = "MultiPolygon",
+          coordinates = list(list(list(
+            c(-73.606352888, 45.507489991), c(-73.606133883, 45.50687600),
+            c(-73.605905904, 45.506773980), c(-73.603533905, 45.505698946),
+            c(-73.602475870, 45.506856969), c(-73.600031904, 45.505696003),
+            c(-73.599379992, 45.505389066), c(-73.599119902, 45.505632008),
+            c(-73.598896977, 45.505514039), c(-73.598783894, 45.505617001),
+            c(-73.591308727, 45.516246185), c(-73.591380782, 45.516280145),
+            c(-73.596778656, 45.518690062), c(-73.602796770, 45.521348046),
+            c(-73.612239983, 45.525564037), c(-73.612422919, 45.525642061),
+            c(-73.617229085, 45.527751983), c(-73.617279234, 45.527774160),
+            c(-73.617304713, 45.527741334), c(-73.617492052, 45.527498362),
+            c(-73.617533258, 45.527512253), c(-73.618074188, 45.526759105),
+            c(-73.618271651, 45.526500673), c(-73.618446320, 45.526287943),
+            c(-73.618968507, 45.525698560), c(-73.619388002, 45.525216750),
+            c(-73.619532966, 45.525064183), c(-73.619686662, 45.524889290),
+            c(-73.619787038, 45.524770086), c(-73.619925742, 45.524584939),
+            c(-73.619954486, 45.524557690), c(-73.620122362, 45.524377961),
+            c(-73.620201713, 45.524298907), c(-73.620775593, 45.523650879)
+            )))
+            )
+          ))
+        ),
+      type = "fill", below = "traces", color = "royalblue"))))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="Geojson-scattermapbox")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5927.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#Reference
+
+See [https://plot.ly/r/reference/#scattermapbox](https://plot.ly/r/reference/#scattermapbox) for more information and options!
