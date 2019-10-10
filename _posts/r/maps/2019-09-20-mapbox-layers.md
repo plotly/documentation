@@ -1,0 +1,218 @@
+---
+title: Mapbox Layers in R | Examples | Plotly
+name: Mapbox Layers
+permalink: r/mapbox-layers/
+description: How to make Mapbox maps in R with various base layers, with
+      or without needing a Mapbox Access token.
+layout: base
+thumbnail: thumbnail/mapbox-layers.png
+language: r
+page_type: example_index
+has_thumbnail: true
+display_as: maps
+order: 5
+output:
+  html_document:
+    keep_md: true
+---
+
+
+### New to Plotly?
+
+Plotly's R library is free and open source!<br>
+[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
+You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
+We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
+
+### Version Check
+
+Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
+Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
+
+```r
+library(plotly)
+packageVersion('plotly')
+```
+
+```
+## [1] '4.9.0.9000'
+```
+
+### Mapbox Access Token
+
+To create mapbox maps with Plotly, you'll need a Mapbox account and a [Mapbox Access Token](https://www.mapbox.com/studio/) that you can add to your [Plotly Settings](https://plot.ly/settings/mapbox). If you're using a Chart Studio Enterprise server, please see additional instructions here: https://help.plot.ly/mapbox-atlas/.
+
+
+```r
+library(plotly)
+
+Sys.setenv('MAPBOX_TOKEN' = 'your_mapbox_token_here')
+```
+
+### How Layers work in Mapbox Maps
+
+  If your figure contains one or more traces of type `Scattermapbox`, `Choroplethmapbox` or `Densitymapbox`, the `layout` object in your figure contains configuration information for the map itself. The map is composed of various layers, of three different types.
+    <ol>
+        <li> `layout.mapbox.style` defines the lowest layers, also known as your "base map"</li>
+        <li> The various traces in `data` are by default rendered above the base map (although this can be controlled via the `below` attribute).</li>
+        <li> `layout.mapbox.layers` is an array that defines more layers that are by default rendered above the traces in `data` (although this can also be controlled via the `below` attribute).</li>
+    </ol>
+
+
+### Mapbox Access Tokens and When You Need Them
+
+  The word "mapbox" in the trace names and `layout.mapbox` refers to the Mapbox.js open-source library. If your basemap in `layout.mapbox.style` uses data from the Mapbox *service*, then you will need to register for a free account at https://mapbox.com/ and obtain a Mapbox Access token. This token should be provided either in `mapboxAccessToken`  in `setPlotConfig` function, or as a variable that would be passed as an argument of `newPlot`.
+    If your `layout.mapbox.style` does not use data from the Mapbox service, you do *not* need to register for a Mapbox account.
+    <h6>Base Maps in `layout.mapbox.style`</h6>
+    The accepted values for `layout.mapbox.style` are one of the following tiles.
+    <ol>
+        <li> `"white-bg"` yields an empty white canvas which results in no external HTTP requests </li>
+        <li> `"open-street-map"`, `"carto-positron"`, `"carto-darkmatter"`, `"stamen-terrain"`, `"stamen-toner"` or `"stamen-watercolor"` yeild maps composed of *raster* tiles from various public tile servers which do not require signups or access tokens </li>
+        <li> `"basic"`, `"streets"`, `"outdoors"`, `"light"`, `"dark"`, `"satellite"`, or `"satellite-streets"` yeild maps composed of *vector* tiles from the Mapbox service, and *do* require a Mapbox Access Token or an on-premise Mapbox installation. </li>
+        <li> A Mapbox service style URL, which requires a Mapbox Access Token or an on-premise Mapbox installation. </li>
+        <li> A Mapbox Style object as defined at https://docs.mapbox.com/mapbox-gl-js/style-spec/ </li>
+    </ol>
+
+### OpenStreetMap Tiles, no Token Needed
+
+   Here is a simple map rendered with "open-street-map" tiles, without needing a Mapbox Access Token.
+
+
+```r
+library(plotly)
+
+us_cities = read.csv("https://raw.githubusercontent.com/plotly/datasets/master/us-cities-top-1k.csv")
+
+p <- us_cities %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lon,
+    marker = list(color = "fuchsia"),
+    type = 'scattermapbox',
+    hovertext = us_cities[,"City"]) %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =2.5,
+      center = list(lon = -88, lat = 34)))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="open-street-map")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5898.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Using `layout.mapbox.layers` to Specify a Base Map
+
+If you have access to your own private tile servers, or wish to use a tile server not included in the list above, the recommended approach is to set `layout.mapbox.style` to `"white-bg"` and to use `layout.mapbox.layers` with `below` to specify a custom base map.
+
+> If you omit the `below` attribute when using this approach, your data will likely be hidden by fully-opaque raster tiles!
+
+### Base Tiles from the USGS: no Token Needed
+
+Here is an example of a map which uses a public USGS imagery map, specified in `layout.mapbox.layers`, and which is rendered *below* the `data` layer.
+
+
+```r
+library(plotly)
+
+us_cities = read.csv("https://raw.githubusercontent.com/plotly/datasets/master/us-cities-top-1k.csv")
+
+p <-  us_cities %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lon,
+    type = "scattermapbox",
+    hovertext = us_cities[,"City"],
+    marker = list(color = "fuchsia")) %>%
+  layout(mapbox= list(
+    style = "white-bg",
+    zoom = 3,
+    center = list(lon = -93 ,lat= 41),
+    layers = list(list(
+      below = 'traces',
+      sourcetype = "raster",
+      source = list("https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}")))))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="base-tile-usgs")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5900.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Base Tiles from the USGS, Radar Overlay from Environment Canada: no Token Needed
+
+Here is the same example, with in addition, a WMS layer from Environment Canada which displays near-real-time radar imagery in partly-transparent raster tiles, rendered above the `go.Scattermapbox` trace, as is the default:
+
+
+```r
+library(plotly)
+p <- us_cities %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lon,
+    type = "scattermapbox",
+    hovertext = us_cities[,"City"],
+    marker = list(color = "fuchsia")) %>%
+  layout(
+    mapbox= list(
+      style = "white-bg",
+      sourcetype = 'raster',
+      zoom = 3,
+      center = list(lon = -93 ,lat= 41),
+      layers = list(list(
+        below = 'traces',
+        sourcetype = "raster",
+        source = list("https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}")),
+        list(
+          sourcetype = "raster",
+          source = list("https://geo.weather.gc.ca/geomet/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX={bbox-epsg-3857}&CRS=EPSG:3857&WIDTH=1000&HEIGHT=1000&LAYERS=RADAR_1KM_RDBR&TILED=true&FORMAT=image/png")))))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="environment-canada")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5902.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+#### Dark Tiles from Mapbox Service: Free Token Needed
+
+Here is a map rendered with the `"dark"` style from the Mapbox service, which requires an Access Token:
+
+
+```r
+library(plotly)
+
+token <- paste(readLines(".mapbox_token"), collapse="")    # You need your own token
+
+us_cities = read.csv("https://raw.githubusercontent.com/plotly/datasets/master/us-cities-top-1k.csv")
+
+p <- us_cities %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lon,
+    marker = list(color = "fuchsia"),
+    type = 'scattermapbox',
+    hovertext = us_cities[,"City"]) %>%
+  layout(
+    mapbox = list(
+      style = 'dark',
+      accesstoken = token,
+      zoom =2.5,
+      center = list(lon = -88, lat = 34)))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="dark-tile")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5904.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#Reference
+
+See [https://plot.ly/r/reference/#scattermapbox](https://plot.ly/r/reference/#scattermapbox) for more information and options!
