@@ -6,7 +6,7 @@
         and obj[0] != "description" and obj[0] != "_isLinkedToArray"
         and obj[0] != "items" and obj[0] != "uid"
         and obj[0] != "smith" and obj[0] != "_deprecated"
-        and obj[0] != "_isSubplotObj" and obj[0] != "transforms"
+        and obj[0] != "_isSubplotObj"
         and obj[0] != "editType" and obj[0] != "impliedEdits"%}
 
         {% if obj[0] == "type" and page.language == "python" and block == "data" %}
@@ -136,11 +136,14 @@
                 {% endif %}
             {% elsif obj[1].role == "object" %}
                 <br><em>Type:</em> {% raw %}{object}{% endraw %} containing one or more of the keys listed below.
+            {% elsif obj[1].role == "polymorphic_array" %}
+                 of {% raw %}{object}{% endraw %} where
+                each {% raw %}{object}{% endraw %} is one of the following object types
 
             {% endif %}
 
             {% if display_info and obj[1].description and obj[1].description!= "" %}
-                <p>{{ obj[1].description | escape }}</p>
+                <p>{{ obj[1].description | escape | newline_to_br }}</p>
             {% endif %}
 
             {% if obj[1].role == "object" %}
@@ -160,6 +163,17 @@
                 {% assign block = "nested" %}
                 {% include posts/reference-block.html parentlink=localparentlink block=block parentpath=localparentpath %}
                 {% assign attribute = parrentattribute %}
+            {% elsif obj[1].role == "polymorphic_array" %}
+                {% assign parentattribute = attribute %}
+                {% capture localparentlink %}{{include.parentlink}}-{{obj[0]}}{% endcapture %}
+                {% capture localparentpath %}{{include.parentpath}}-{{obj[0]}}{% endcapture %}
+                {% if obj[0] == "transforms" %}
+                    {% assign attribute = site.data.plotschema.transforms %}
+                    {% assign block = "nested" %}
+                    {% include posts/reference-block.html parentlink=localparentlink block=block parentpath=localparentpath %}
+
+                    {% assign attribute = parentattribute %}
+                {% endif %}
             {% endif %}
 
         </li>
