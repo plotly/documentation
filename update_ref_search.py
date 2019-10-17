@@ -18,12 +18,12 @@ schema = []
 # Add dictionaries to schema array.
 # The trace dictionary include name: trace name, permalink: reference/#trace-name, and description if applicable.
 
-for i in p['schema']['traces']:
+for i in p['traces']:
     trace = {}
     trace ['name'] = i
     trace ['permalink'] = 'reference/#'+i
-    if p['schema']['traces'][i]['meta']:
-        trace ['description'] = (p['schema']['traces'][i]['meta']['description']).replace('*', '"')
+    if p['traces'][i]['meta']:
+        trace ['description'] = (p['traces'][i]['meta']['description']).replace('*', '"')
     else: pass
     schema.append(trace)
 
@@ -52,16 +52,16 @@ def next_level(previous_level,chain_dict):
 layout_chain_dict = {'name':'Layout', 'permalink':'reference/#layout'}
 
 # recursively add trace attributes to schema
-for i in p['schema']['traces']:
+for i in p['traces']:
     chain_dict = {'name':i, 'permalink':'reference/#'+i }
-    next_level(p['schema']['traces'][i]['attributes'], chain_dict)
+    next_level(p['traces'][i]['attributes'], chain_dict)
 
     # if there are layoutAttributes in the trace add them too.
-    if p['schema']['traces'][i].get('layoutAttributes'):
-        next_level(p['schema']['traces'][i]['layoutAttributes'], layout_chain_dict)
+    if p['traces'][i].get('layoutAttributes'):
+        next_level(p['traces'][i]['layoutAttributes'], layout_chain_dict)
 
 # recursively add layout attributes to schema
-next_level(p['schema']['layout']['layoutAttributes'], layout_chain_dict)
+next_level(p['layout']['layoutAttributes'], layout_chain_dict)
 
 ## Send to Algolia
 
