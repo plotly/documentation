@@ -1,7 +1,8 @@
 ---
 title: ggplot2 useR guide | plotly
+name: ggplot2 User Guide
 permalink: ggplot2/user-guide/
-description: A useR guide for interfacing ggplot2 with Plotly.
+description: A user guide for interfacing ggplot2 with Plotly.
 layout: base
 thumbnail: thumbnail/facet_wrap.jpg
 language: ggplot2
