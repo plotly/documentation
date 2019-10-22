@@ -1,6 +1,7 @@
 ---
 title: ggplot2 Graphing Library | Plotly
 permalink: /ggplot2/
+name: ggplot2 Graphing Library
 description: With ggplotly() by Plotly, you can convert your ggplot2 figures into interactive ones powered by plotly.js, ready for embedding into Dash applications.
 layout: langindex
 language: ggplot2
