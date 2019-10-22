@@ -1,5 +1,4 @@
 ---
-title: Intro to Animations | Examples | Plotly
 name: Intro to Animations
 permalink: r/animations/
 description: How to create animations in R with Plotly.

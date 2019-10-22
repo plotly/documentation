@@ -1,5 +1,4 @@
 ---
-title: geom_contour | Examples | Plotly
 name: geom_contour
 permalink: ggplot2/geom_contour/
 description: How to make a contour in ggplot2 using geom_contour.

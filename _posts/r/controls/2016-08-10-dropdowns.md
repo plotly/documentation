@@ -1,5 +1,4 @@
 ---
-title: Adding Dropdowns
 name: Dropdown Events
 permalink: r/dropdowns/
 description: How to add dropdowns to R plots

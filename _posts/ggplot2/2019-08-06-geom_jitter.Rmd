@@ -1,5 +1,4 @@
 ---
-title: geom_jitter | Examples | Plotly
 name: geom_jitter
 permalink: ggplot2/geom_jitter/
 description: How to make a graph using geom_jitter.

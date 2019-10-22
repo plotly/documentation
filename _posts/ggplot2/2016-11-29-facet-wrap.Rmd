@@ -1,5 +1,4 @@
 ---
-title: ggplot2 facet_wrap | Examples | Plotly
 name: facet_wrap
 permalink: ggplot2/facet_wrap/
 description: How to make subplots with facet_wrap in ggplot2 and R.

@@ -1,5 +1,4 @@
 ---
-title: 3D Surface Plots in R
 name: 3D Surface Plots
 permalink: r/3d-surface-plots/
 description: How to make interactive 3D surface plots in R.

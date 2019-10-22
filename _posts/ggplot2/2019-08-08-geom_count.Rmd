@@ -1,5 +1,4 @@
 ---
-title: geom_count | Examples | Plotly
 name: geom_count
 permalink: ggplot2/geom_count/
 description: How to make a 2-dimensional frequency graph in ggplot2 using geom_count Examples of coloured and facetted graphs.

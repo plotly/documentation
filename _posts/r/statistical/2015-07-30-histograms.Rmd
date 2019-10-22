@@ -1,5 +1,4 @@
 ---
-title: Histograms in R | Examples | Plotly
 name: Histograms
 permalink: r/histograms/
 description: How to make a histogram in R.

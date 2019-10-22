@@ -1,5 +1,4 @@
 ---
-title: Shiny App - Reactive data exploration
 name: Shiny app using Plotly
 permalink: r/shinyapp-explore-diamonds/
 description: Shiny app to explore diamonds dataset

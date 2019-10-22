@@ -1,6 +1,5 @@
 ---
 permalink: r/layout-options/
-title: R Graphing Library Plotly Layout Options
 description: Plotly's R graphing library makes interactive, publication-quality graphs online. Tutorials and tips on layout options.
 name: More Layout Options
 layout: langindex

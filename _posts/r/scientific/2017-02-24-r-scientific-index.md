@@ -1,6 +1,5 @@
 ---
 permalink: r/scientific-charts/
-title: R Graphing Library Plotly Fundamentals
 description: Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of how to make scientific charts.
 name: More Scientific Charts
 layout: langindex

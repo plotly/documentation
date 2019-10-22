@@ -1,6 +1,5 @@
 ---
 permalink: r/style-options/
-title: R Graphing Library Plotly Style Options
 description: Plotly's R graphing library makes interactive, publication-quality graphs online. Tutorials and tips on style options.
 name: More Style Options
 layout: langindex

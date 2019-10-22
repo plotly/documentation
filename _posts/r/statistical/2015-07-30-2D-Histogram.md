@@ -1,5 +1,4 @@
 ---
-title: 2D Histograms in R | Examples | Plotly
 name: 2D Histograms
 permalink: r/2D-Histogram/
 description: How to make a 2D histogram in R. A 2D histogram is a visualization of a bivariate distribution.

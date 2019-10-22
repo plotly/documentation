@@ -1,5 +1,4 @@
 ---
-title: geom_abline| Examples | Plotly
 name: geom_abline
 permalink: ggplot2/geom_abline/
 description: How to use the abline geom in ggplot2 to add a line with specified slope and intercept to the plot.

@@ -1,5 +1,4 @@
 ---
-title: Shiny App - Events Data
 name: Shiny app using Plotly
 permalink: r/shinyapp-plotly-events/
 description: Shiny app to showcase different plotly events

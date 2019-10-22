@@ -1,5 +1,4 @@
 ---
-title: Hover Text and Formatting in R | Examples | Plotly
 name: Hover Text and Formatting
 permalink: r/hover-text-and-formatting/
 description: How to use hover text and formatting in R with Plotly.

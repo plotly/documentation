@@ -1,5 +1,4 @@
 ---
-title: User guide
 name: Plotly for Scala User Guide
 permalink: scala/user-guide/
 description: User guide to the Scala Plotly client

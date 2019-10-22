@@ -1,5 +1,4 @@
 ---
-title: geom_polygon | Examples | Plotly
 name: geom_polygon
 permalink: ggplot2/geom_polygon/
 description: Examples of geom_polygon in R.

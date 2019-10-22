@@ -1,5 +1,4 @@
 ---
-title: geom_point | Examples | Plotly
 name: geom_point
 permalink: ggplot2/geom_point/
 description: How to make a scatter chart in ggplot2. Examples of scatter charts and line charts with fits and regressions.

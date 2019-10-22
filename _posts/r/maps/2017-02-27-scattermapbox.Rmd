@@ -1,5 +1,4 @@
 ---
-title: Scattermapbox in R | Examples | Plotly
 name: Scattermapbox
 permalink: r/scattermapbox/
 description: How to create scattermapbox plots in R with Plotly.

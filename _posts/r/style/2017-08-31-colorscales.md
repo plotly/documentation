@@ -1,5 +1,4 @@
 ---
-title: Colorscales in R | Examples | Plotly
 name: Colorscales
 permalink: r/colorscales/
 description: How to create colorscales in R with Plotly.

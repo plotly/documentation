@@ -1,5 +1,4 @@
 ---
-title: OHLC Charts in R | Examples | Plotly
 name: OHLC Charts
 permalink: r/ohlc-charts/
 description: How to create OHLC charts in R.

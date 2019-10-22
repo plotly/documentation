@@ -1,5 +1,4 @@
 ---
-title: Streaming | Examples | Plotly
 name: Streaming
 permalink: r/streaming/
 description: Getting Started with Streaming in R

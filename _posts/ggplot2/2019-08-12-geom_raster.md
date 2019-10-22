@@ -1,5 +1,4 @@
 ---
-title: geom_raster | Examples | Plotly
 name: geom_raster
 permalink: ggplot2/geom_raster/
 description: How to make a 2-dimensional heatmap in ggplot2 using geom_raster.

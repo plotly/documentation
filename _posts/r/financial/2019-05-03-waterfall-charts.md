@@ -1,5 +1,4 @@
 ---
-title: R Waterfall Charts | Examples | Plotly
 name: Waterfall Charts
 permalink: r/waterfall-charts/
 description: How to make waterfall charts in R with Plotly.

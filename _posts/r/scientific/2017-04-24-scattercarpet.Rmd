@@ -1,5 +1,4 @@
 ---
-title: Carpet Scatter Plots in R | Examples | Plotly
 name: Carpet Scatter Plot
 permalink: r/carpet-scatter/
 description: How to create carpet plots in R with Plotly.

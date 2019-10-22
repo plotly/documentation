@@ -1,5 +1,4 @@
 ---
-title: Mixed Subplots in R | Examples | Plotly
 name: Mixed Subplots
 permalink: r/mixed-subplots/
 description: How to create mixed subplots in R with Plotly.

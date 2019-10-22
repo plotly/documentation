@@ -1,5 +1,4 @@
 ---
-title: R Gauge Charts | Examples | Plotly
 name: Gauge Charts
 permalink: r/gauge-charts/
 redirect_from: r/gauge-meter/

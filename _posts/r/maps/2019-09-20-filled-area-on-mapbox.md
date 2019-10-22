@@ -1,5 +1,4 @@
 ---
-title: Filled area in Mapbox in R | Examples | Plotly
 name: Filled Area in Mapbox
 permalink: r/filled-area-on-mapbox/
 description: How to make an area on Map in R with plotly.

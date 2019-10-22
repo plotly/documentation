@@ -1,5 +1,4 @@
 ---
-title: R Network Graph | Examples | Plotly
 name: Network Graph
 permalink: r/network-graphs/
 description: How to make network graphs in R with Plotly.

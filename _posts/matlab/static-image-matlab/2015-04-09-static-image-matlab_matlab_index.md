@@ -1,5 +1,4 @@
 ---
-title: Save MATLAB<sup>&reg;</sup> plots as JPG, PDF, PNG | Examples | Plotly
 name: Save plots as JPG, PDF, PNG | saveas
 permalink: matlab/static-image-export/
 description: How to export plotly graphs as static images in MATLAB. Plotly supports png, svg, jpg, and pdf image export.

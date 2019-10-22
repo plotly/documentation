@@ -1,5 +1,4 @@
 ---
-title: Configuration Options | Examples | Plotly
 name: Configuration Options
 permalink: r/configuration-options/
 description: How to set configuration options of plotly graphs in python. Examples of both online and offline configurations.

@@ -1,5 +1,4 @@
 ---
-title: ggplot2 facet_grid | Examples | Plotly
 name: facet_grid
 permalink: ggplot2/facet_grid/
 redirect_from: ggplot2/facet/

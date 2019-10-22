@@ -1,5 +1,4 @@
 ---
-title: Mapbox Layers in R | Examples | Plotly
 name: Mapbox Layers
 permalink: r/mapbox-layers/
 description: How to make Mapbox maps in R with various base layers, with

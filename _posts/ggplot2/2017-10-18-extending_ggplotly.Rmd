@@ -1,5 +1,4 @@
 ---
-title: Extending ggplotly | Examples | Plotly
 name: Extending ggplotly
 permalink: ggplot2/extending-ggplotly/
 description: How modify the plotly object after ggplot2 conversion.

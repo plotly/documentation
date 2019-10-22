@@ -1,5 +1,4 @@
 ---
-title: Carpet Plots in R | Examples | Plotly
 name: Carpet Plot
 permalink: r/carpet-plot/
 description: How to create carpet plots in R with Plotly.

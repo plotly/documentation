@@ -1,6 +1,5 @@
 ---
 permalink: r/maps/
-title: R Graphing Library Maps
 description: Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of maps.
 name: More Maps
 layout: langindex

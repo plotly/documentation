@@ -1,5 +1,4 @@
 ---
-title: ggplot2 useR guide | plotly
 permalink: ggplot2/user-guide/
 name: Plotly ggplot2 User Guide
 description: A user guide for interfacing ggplot2 with Plotly.

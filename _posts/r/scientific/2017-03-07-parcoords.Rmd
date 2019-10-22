@@ -1,5 +1,4 @@
 ---
-title: Parallel Coordinates Plot in R | Examples | Plotly
 name: Parallel Coordinates Plot
 permalink: r/parallel-coordinates-plot/
 description: How to create parallel coordinates plots in R with Plotly.

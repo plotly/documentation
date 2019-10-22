@@ -1,5 +1,4 @@
 ---
-title: Candlestick Charts in R | Examples | Plotly
 name: Candlestick Charts
 permalink: r/candlestick-charts/
 description: How to create candlestick charts in R.

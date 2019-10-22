@@ -1,5 +1,4 @@
 ---
-title: ggplot2 axis.ticks | Examples | Plotly
 name: axis.ticks
 permalink: ggplot2/axis-ticks/
 description: How to modify axis ticks in R and ggplot2.

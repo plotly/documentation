@@ -1,6 +1,5 @@
 ---
 permalink: r/statistical-charts/
-title: R Graphing Library Plotly Statistical Charts
 description: Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of how to make statistical charts.
 layout: langindex
 language: r

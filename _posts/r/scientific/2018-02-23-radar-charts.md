@@ -1,5 +1,4 @@
 ---
-title: Radar Charts in R | Examples | Plotly
 name: Radar Charts
 permalink: r/radar-chart/
 description: How to create Radar Charts in R with Plotly.
