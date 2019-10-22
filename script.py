@@ -11,7 +11,7 @@ from pathlib import Path
 
 pathNames = [];
 
-for md_path in Path("_posts/scala").glob("**/*.html"):
+for md_path in Path("_posts").glob("**/*.html"):
     post = frontmatter.load(md_path)
     try:
         print(post['name'])
