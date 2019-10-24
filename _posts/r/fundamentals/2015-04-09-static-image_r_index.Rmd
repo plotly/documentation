@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/png-export.png
 language: r
 page_type: example_index
-has_thumbnail: true
 order: 3
 display_as: file_settings
 sitemap: false

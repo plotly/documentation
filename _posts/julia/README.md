@@ -30,7 +30,6 @@ Our Julia tutorials are written in HTML files with embedded plot examples.
   permalink: julia/add-chart-type-or-topic/
   description: How to make a add-chart-type-or-topic in Julia. Add an additional sentence summarizing chart-type or topic.
   layout: base
-  has_thumbnail: true
   thumbnail: thumbnail/add-chart-type-or-topic.jpg *MORE INFO ON ADDING THUMBNAILS BELOW
   language: julia
   page_type: example_index

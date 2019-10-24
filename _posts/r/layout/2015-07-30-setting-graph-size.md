@@ -6,7 +6,6 @@ description: How to change the size of graphs in R.
 layout: base
 language: r
 page_type: example_index
-has_thumbnail: false
 display_as: layout_opt
 output:
   html_document:

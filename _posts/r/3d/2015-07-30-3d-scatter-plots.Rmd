@@ -7,7 +7,6 @@ layout: base
 thumbnail: thumbnail/3d-scatter.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: 3d_charts
 order: 0
 output:

@@ -6,7 +6,6 @@ description: How to create Ternary Contour Plots in R with Plotly.
 layout: base
 thumbnail: thumbnail/ternary-contour.jpg
 language: r
-has_thumbnail: true
 display_as: scientific
 order: 13.5
 output:

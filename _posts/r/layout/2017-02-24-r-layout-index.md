@@ -6,7 +6,6 @@ name: More Layout Options
 layout: langindex
 language: r
 display_as: layout_opt
-has_thumbnail: false
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
 order: 20
@@ -26,5 +25,5 @@ order: 20
 	</div>
 </header>
 
-		{% assign languagelistimg = site.posts | where:"language","r" | where:"display_as","layout_opt" | where:"has_thumbnail",true | where: "layout","base" | sort: "order" %}
+		{% assign languagelist = site.posts | where:"language","r" | where:"display_as","layout_opt" |  where: "layout","base" | sort: "order" %}
         {% include posts/documentation_eg.html %}

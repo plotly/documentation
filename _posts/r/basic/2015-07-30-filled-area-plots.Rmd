@@ -6,7 +6,6 @@ description: How to make a filled area plot in R. An area chart displays a solid
 layout: base
 thumbnail: thumbnail/area.jpg
 language: r
-has_thumbnail: true
 display_as: basic
 order: 3.5
 output:

@@ -6,7 +6,6 @@ description: How to create Polar Charts in R with Plotly.
 layout: base
 thumbnail: thumbnail/polar.gif
 language: r
-has_thumbnail: true
 page_type: example_index
 display_as: scientific
 order: 18

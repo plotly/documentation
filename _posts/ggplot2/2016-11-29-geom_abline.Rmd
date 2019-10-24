@@ -7,7 +7,6 @@ layout: base
 thumbnail: thumbnail/ipython_graph_email.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: basic
 order: 1
 redirect_from: ggplot2/line-shapes/

@@ -6,7 +6,6 @@ description: How to create colorscales in R with Plotly.
 layout: base
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: style_opt
 order: 6
 output:

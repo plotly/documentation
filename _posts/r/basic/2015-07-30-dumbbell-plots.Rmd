@@ -6,7 +6,6 @@ description: How to make a dumbbell plot in R. Dumbbell plots show changes betwe
 layout: base
 thumbnail: thumbnail/dumbbell-plot.jpg
 language: r
-has_thumbnail: true
 display_as: basic
 order: 8
 output:

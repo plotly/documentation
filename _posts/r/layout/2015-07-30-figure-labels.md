@@ -4,10 +4,8 @@ name: Axes Labels
 permalink: r/figure-labels/
 description: How to set the title and axis-titles in R
 layout: base
-thumbnail: figure-labels.jpg
 language: r
 page_type: example_index
-has_thumbnail: false
 display_as: layout_opt
 output:
   html_document:

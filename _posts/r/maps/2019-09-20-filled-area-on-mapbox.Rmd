@@ -7,7 +7,6 @@ layout: base
 thumbnail: thumbnail/area.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: maps
 order: 6
 output:

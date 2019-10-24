@@ -7,7 +7,6 @@ layout: base
 thumbnail: thumbnail/error-bar.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: statistics
 order: 2
 output:

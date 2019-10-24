@@ -7,7 +7,6 @@ layout: base
 thumbnail: thumbnail/apple_stock_animation.gif
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: animations
 order: 2
 output:

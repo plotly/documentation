@@ -37,7 +37,6 @@ Our javascript tutorials are written in HTML files with embedded [codepen](http:
   permalink: javascript/add-chart-type-or-topic/
   description: How to make a D3.js-based add-chart-type-or-topic in javascript. Add an additional sentence summarizing chart-type or topic.
   layout: base
-  has_thumbnail: true
   thumbnail: thumbnail/add-chart-type-or-topic.jpg *MORE INFO ON ADDING THUMBNAILS BELOW
   language: plotly_js
   page_type: example_index

@@ -6,7 +6,6 @@ description: Introduction to GitHub for Data Scientists without the Terminal
 layout: base
 language: r
 thumbnail: thumbnail/gitgithub.jpg
-has_thumbnail: true
 output:
   html_document:
     keep_md: true

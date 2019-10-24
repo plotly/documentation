@@ -7,7 +7,6 @@ description: How to create plots using WebGL
 layout: base
 thumbnail: thumbnail/webgl.jpg
 language: r
-has_thumbnail: true
 display_as: basic
 order: 0.5
 output:

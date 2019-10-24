@@ -7,7 +7,6 @@ layout: base
 thumbnail: thumbnail/geom_spoke.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: basic
 order: 10
 output:

@@ -36,8 +36,7 @@
       thumbnail: thumbnail/your-tutorial-chart.jpg *see step 2 for further thumbnail instructions*
       language: r
       page_type: example_index
-      has_thumbnail: true
-      display_as: chart_type
+            display_as: chart_type
       order: 9 *see below for order instructions*
       output:
         html_document:

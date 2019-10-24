@@ -7,7 +7,6 @@ layout: base
 thumbnail: thumbnail/geom_violin.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: statistical
 order: 8
 output:

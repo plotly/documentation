@@ -6,7 +6,6 @@ description: How to create parallel coordinates plots in R with Plotly.
 layout: base
 thumbnail: thumbnail/parcoords.jpg
 language: r
-has_thumbnail: true
 display_as: scientific
 order: 14
 output:

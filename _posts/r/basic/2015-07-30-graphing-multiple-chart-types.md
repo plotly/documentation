@@ -6,7 +6,6 @@ description: How to design figures with multiple chart types in R. An example of
 layout: base
 thumbnail: thumbnail/mixed.jpg
 language: r
-has_thumbnail: true
 display_as: basic
 order: 7
 output:

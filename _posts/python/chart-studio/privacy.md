@@ -25,8 +25,7 @@ jupyter:
     description: How to set the privacy settings of plotly graphs in python. Three
       examples of different privacy options&#58; public, private and secret.
     display_as: chart_studio
-    has_thumbnail: true
-    ipynb: ~notebook_demo/97
+        ipynb: ~notebook_demo/97
     language: python
     layout: base
     name: Privacy

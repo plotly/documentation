@@ -7,7 +7,6 @@ layout: base
 thumbnail: thumbnail/streaming-thumb-square.gif
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: streaming
 order: 1
 output:
