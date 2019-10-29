@@ -1,5 +1,4 @@
 ---
-title: Cumulative Animations | Examples | Plotly
 name: Cumulative Animations
 permalink: ggplot2/cumulative-animations/
 description: How to create cumulative animations in ggplot2 with Plotly.

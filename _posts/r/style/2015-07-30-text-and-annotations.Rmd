@@ -1,5 +1,4 @@
 ---
-title: Text and Annotations in R | Examples | Plotly
 name: Text and Annotations
 permalink: r/text-and-annotations/
 description: How to add text labels and annotations to plots in R.

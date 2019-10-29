@@ -1,5 +1,4 @@
 ---
-title: Marker Styling in R | Examples | Plotly
 name: Marker Styling
 permalink: r/marker-style/
 description: How to style markers in R.

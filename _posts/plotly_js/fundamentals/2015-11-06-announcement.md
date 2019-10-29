@@ -1,5 +1,4 @@
 ---
-title: Plotly.js Open-Source Announcement
 name: Plotly.js Open-Source Announcement
 permalink: javascript/open-source-announcement/
 language: plotly_js

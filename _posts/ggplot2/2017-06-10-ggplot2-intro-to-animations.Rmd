@@ -1,5 +1,4 @@
 ---
-title: Intro to Animations | Examples | Plotly
 name: Intro to Animations
 permalink: ggplot2/animations/
 description: How to create animations in ggplot2 with Plotly.

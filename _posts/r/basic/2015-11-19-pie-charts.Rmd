@@ -1,5 +1,4 @@
 ---
-title: Pie Charts in R | Examples | Plotly
 name: Pie Charts
 permalink: r/pie-charts/
 description: How to make pie charts in R using plotly.

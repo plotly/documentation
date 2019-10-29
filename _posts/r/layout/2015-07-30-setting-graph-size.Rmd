@@ -1,5 +1,4 @@
 ---
-title: Setting Graph Size in R
 name: Setting Graph Size
 permalink: r/setting-graph-size/
 description: How to change the size of graphs in R.

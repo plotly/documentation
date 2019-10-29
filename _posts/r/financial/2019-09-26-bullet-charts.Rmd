@@ -1,5 +1,4 @@
 ---
-title: Bullet Chart in R | Examples | Plotly
 name: Bullet Charts
 permalink: r/bullet-charts/
 description: How to create a Bullet Chart in R with Plotly

@@ -1,5 +1,4 @@
 ---
-title: Shiny App - Events Data
 name: Shiny app using Plotly
 permalink: r/shinyapp-linked-brush/
 description: Shiny app to showcase linked 2-d histogram

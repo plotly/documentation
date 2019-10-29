@@ -1,5 +1,4 @@
 ---
-title: Getting Started with Plotly for R
 name: Getting Started with Plotly
 permalink: r/getting-started/
 description: Get started with Plotly's graphing library

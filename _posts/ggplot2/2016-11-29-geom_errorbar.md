@@ -1,5 +1,4 @@
 ---
-title: geom_errorbar | Examples | Plotly
 name: geom_errorbar
 permalink: ggplot2/geom_errorbar/
 description: Examples of geom_errobar in R and ggplot2

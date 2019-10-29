@@ -1,5 +1,4 @@
 ---
-title: geom_ribbon | Examples | Plotly
 name: geom_ribbon
 permalink: ggplot2/geom_ribbon/
 description: How to make plots with geom_ribbon in ggplot2 and R.

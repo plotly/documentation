@@ -1,5 +1,4 @@
 ---
-title: Polar Charts in R | Examples | Plotly
 name: Polar Charts
 permalink: r/polar-chart/
 description: How to create Polar Charts in R with Plotly.

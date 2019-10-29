@@ -1,5 +1,4 @@
 ---
-title: Axes Labels in R
 name: Axes Labels
 permalink: r/figure-labels/
 description: How to set the title and axis-titles in R

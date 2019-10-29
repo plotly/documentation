@@ -1,5 +1,4 @@
 ---
-title: Shiny App - Events Data
 name: Shiny app using Plotly
 permalink: r/shinyapp-UN-advanced/
 description: Shiny app to capture plotly events on UN Data

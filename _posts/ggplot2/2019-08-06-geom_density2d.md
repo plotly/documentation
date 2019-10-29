@@ -1,5 +1,4 @@
 ---
-title: geom_density2d | Examples | Plotly
 name: geom_density2d
 permalink: ggplot2/geom_density2d/
 description: How to make a density map using geom_density2d.

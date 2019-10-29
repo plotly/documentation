@@ -1,6 +1,5 @@
 ---
 permalink: r/financial-charts/
-title: R Graphing Library Plotly Financial Charts
 description: APlotly.js makes interactive, publication-quality graphs online. Examples of how to make financial charts.
 name: More Financial Charts
 layout: langindex

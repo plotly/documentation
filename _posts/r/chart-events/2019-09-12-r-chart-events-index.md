@@ -1,6 +1,5 @@
 ---
 permalink: r/chart-events/
-title: R Graphing Library Plotly Chart Events
 description: All Plotly charts have click, hover and zoom events exposed to add custom controls with Plotly's JavaScript
 name: More Chart Events
 layout: langindex

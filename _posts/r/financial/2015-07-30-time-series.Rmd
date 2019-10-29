@@ -1,5 +1,4 @@
 ---
-title: Time Series in R | Examples | Plotly
 name: Time Series
 permalink: r/time-series/
 description: How to plot date and time in R. An example of a time series plot with the POSIXct and Sys.Date classes.

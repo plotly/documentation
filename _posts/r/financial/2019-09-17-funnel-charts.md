@@ -1,5 +1,4 @@
 ---
-title: Funnel Charts in R | Examples | Plotly
 name: Funnel Charts
 permalink: r/funnel-charts/
 description: How to create a Funnel Chart in R with Plotly

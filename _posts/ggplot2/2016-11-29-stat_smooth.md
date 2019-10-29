@@ -1,5 +1,4 @@
 ---
-title: stat_smooth | Examples | Plotly
 name: stat_smooth
 permalink: ggplot2/stat_smooth/
 description: Add a smoothed line in ggplot2 and R with stat_smooth.

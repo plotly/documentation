@@ -1,5 +1,4 @@
 ---
-title: Font Styles in R | Examples | Plotly
 name: Font Styles
 permalink: r/font/
 description: How to create font styles in R with Plotly.

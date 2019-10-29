@@ -1,5 +1,4 @@
 ---
-title: Coupled hover events with Shiny and Plotly | Examples | Plotly
 name: Coupled hover events with Shiny and Plotly
 permalink: r/shiny-coupled-hover-events/
 redirect_from:

@@ -1,5 +1,4 @@
 ---
-title: Datatable | Examples | Plotly
 name: Datatable and Plotly
 permalink: r/datatable/
 description: Getting Started with Datatable and Plotly

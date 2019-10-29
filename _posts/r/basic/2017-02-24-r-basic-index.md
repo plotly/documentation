@@ -1,6 +1,5 @@
 ---
 permalink: r/basic-charts/
-title: R Graphing Library Plotly Basic Charts
 description: Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of how to make basic charts.
 name: More Basic Charts
 layout: langindex

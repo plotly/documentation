@@ -1,5 +1,4 @@
 ---
-title: Proxy Interface | Examples | Plotly
 name: Proxy Interface
 permalink: r/plotlyproxy/
 description: Getting Started with Plotly's Proxy Interface

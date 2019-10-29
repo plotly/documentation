@@ -1,5 +1,4 @@
 ---
-title: Coupled events with Shiny and Plotly | Examples | Plotly
 name: Coupled events with Shiny and Plotly
 permalink: r/shiny-coupled-events/
 redirect_from:

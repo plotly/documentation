@@ -1,5 +1,4 @@
 ---
-title: Getting Started Plotly for Scala
 name: Getting Started with Plotly
 permalink: scala/getting-started/
 description: Getting Started with Plotly for Scala.

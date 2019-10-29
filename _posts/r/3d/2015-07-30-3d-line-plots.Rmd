@@ -1,5 +1,4 @@
 ---
-title: 3D Line Plots in R | Examples | Plotly
 name: 3D Line Plots
 permalink: r/3d-line-plots/
 description: How to make interactive 3D line plots in R.

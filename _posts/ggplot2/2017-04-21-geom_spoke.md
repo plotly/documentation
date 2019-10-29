@@ -1,5 +1,4 @@
 ---
-title: geom_spoke in ggplot2 | Examples | Plotly
 name: geom_spoke
 permalink: ggplot2/geom_spoke/
 description: How to use geom_spoke with Plotly.

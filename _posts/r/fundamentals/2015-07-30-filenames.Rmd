@@ -1,5 +1,4 @@
 ---
-title: Updating Plotly Graphs | Examples | Plotly
 name: Updating Plotly Graphs
 permalink: r/file-options/
 description: R Filenames, folders, and updating Plotly graphs in the plotly cloud.

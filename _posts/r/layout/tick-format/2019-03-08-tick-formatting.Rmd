@@ -1,5 +1,4 @@
 ---
-title: Formatting Ticks in R
 name: Formatting Ticks
 permalink: r/tick-formatting/
 description: How to format axes ticks in R.

@@ -1,5 +1,4 @@
 ---
-title: Aggregations in R | Examples | Plotly
 name: Aggregations
 permalink: r/aggregations/
 description: How to use aggregates in R with Plotly.
