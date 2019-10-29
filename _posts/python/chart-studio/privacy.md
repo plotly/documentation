@@ -33,7 +33,6 @@ jupyter:
     order: 2
     permalink: python/privacy/
     thumbnail: thumbnail/privacy.jpg
-    title: Privacy | plotly
     v4upgrade: true
 ---
 

@@ -25,7 +25,6 @@ Our Julia tutorials are written in HTML files with embedded plot examples.
 2. `cd` into the folder you created and create an html index file labeled: `yyyy-mm-dd-chart_type_julia_index.html`. Copy the index file template below and replace with the necessary information pertaining to the doc you are creating.
   ```
   ---
-  title: Julia Add-Chart-Type-or-Topic | Examples | Plotly
   name: Add-Chart-Type-or-Topic
   permalink: julia/add-chart-type-or-topic/
   description: How to make a add-chart-type-or-topic in Julia. Add an additional sentence summarizing chart-type or topic.
