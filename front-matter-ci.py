@@ -1,16 +1,19 @@
 import frontmatter
 from pathlib import Path, PosixPath
+import sys
 
 allPosts = [];
 
+path = str(sys.argv[1])
+
 #get all posts with frontmatter in html format
-for md_path in Path("_posts").glob("**/*.html"):
+for md_path in Path(path).glob("**/*.html"):
     post = frontmatter.load(str(md_path))
     if len(post.metadata.keys()) > 0:
         allPosts.append(post)
     
 #get all posts with frontmatter in md format
-for md_path in Path("_posts").glob("**/*.md"):
+for md_path in Path(path).glob("**/*.md"):
     post = frontmatter.load(str(md_path))
     if len(post.metadata.keys()) > 0:
         allPosts.append(post); 
@@ -26,7 +29,7 @@ for post in allPosts:
                 name = post.metadata['jupyter']['plotly']['name']
             except:
                 try:
-                    if post.metadata['redirect_to']:
+                    if 'redirect_to' in post.metadata.keys() or 'redirect_from' in post.metadata.keys() or 'redirect_to' in post.metadata['jupyter']['plotly'] or 'redirect_from' in post.metadata['jupyter']['plotly'] :
                         continue
                 except:
                     noNamePaths.append(post.metadata)
@@ -44,6 +47,6 @@ for post in allPosts:
         titlePaths.append(post.metadata)
 
 if (len(titlePaths) > 0):
-    raise Exception("CI Check #2 Not Passed: following permalinks:'{}' have title front-matter. No longer needed!\n".format(', '.join([str(item['permalink']) for item in titlePaths])))
+    raise Exception("CI Check #2 Not Passed: following permalinks:'{}' have title front-matter. No longer needed!\n".format('\n'.join([str(item['permalink']) for item in titlePaths])))
 
 print("CI Check #2 Passed: No Post has a title!")
