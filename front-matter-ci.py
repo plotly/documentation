@@ -36,3 +36,14 @@ if (len(noNamePaths) > 0):
     raise Exception("CI Check #1 Not Passed: post:'{}' is not a redirect but is missing a name frontmatter\n".format('\n'.join([str(item) for item in noNamePaths])))
 
 print("CI Check #1 Passed: All non-redirect posts have names!")
+
+#make sure no posts have titles
+titlePaths = [];
+for post in allPosts:
+    if 'title' in post.metadata.keys():
+        titlePaths.append(post.metadata)
+
+if (len(titlePaths) > 0):
+    raise Exception("CI Check #2 Not Passed: following permalinks:'{}' have title front-matter. No longer needed!\n".format(', '.join([str(item['permalink']) for item in titlePaths])))
+
+print("CI Check #2 Passed: No Post has a title!")
