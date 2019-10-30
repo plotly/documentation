@@ -31,7 +31,6 @@ jupyter:
     order: 6
     permalink: python/embedding-plotly-graphs-in-HTML/
     thumbnail: thumbnail/embed.jpg
-    title: Python Embedding Graphs in HTML | Examples | Plotly
     v4upgrade: true
 ---
 

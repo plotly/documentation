@@ -31,7 +31,6 @@ jupyter:
     layout: base
     name: Jupyter Notebook Tutorial
     language: python
-    title: Jupyter Notebook Tutorial | plotly
     display_as: chart_studio
     has_thumbnail: true
     page_type: example_index

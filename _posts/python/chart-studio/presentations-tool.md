@@ -31,7 +31,6 @@ jupyter:
     layout: base
     name: Presentations Tool
     language: python
-    title: Presentations Tool | plotly
     display_as: chart_studio
     has_thumbnail: true
     page_type: u-guide

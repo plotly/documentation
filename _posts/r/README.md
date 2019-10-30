@@ -28,7 +28,6 @@
       - Include the following header (*replacing `your-tutorial-chart` with the type of chart you're creating in the tutorial.) :
       ```
       ---
-      title: Your-Tutorial-Chart in R | Examples | Plotly
       name: Your-Tutorial-Chart
       permalink: r/your-tutorial-chart/
       description: How to create your-tutorial-chart in R. Short description of your tutorial.

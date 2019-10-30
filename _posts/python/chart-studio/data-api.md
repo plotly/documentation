@@ -32,7 +32,6 @@ jupyter:
     page_type: u-guide
     permalink: python/data-api/
     thumbnail: thumbnail/table.jpg
-    title: Plotly Data API
     v4upgrade: true
 ---
 
