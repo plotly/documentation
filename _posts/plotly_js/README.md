@@ -32,7 +32,6 @@ Our javascript tutorials are written in HTML files with embedded [codepen](http:
 2. `cd` into the folder you created and create an html index file labeled: `yyyy-mm-dd-chart_type_plotlyjs_index.html`. Copy the index file template below and replace with the necessary information pertaining to the doc you are creating.
   ```
   ---
-  title: JavaScript Graphing Library D3.js-based Add-Chart-Type-or-Topic | Examples | Plotly
   name: Add-Chart-Type-or-Topic
   permalink: javascript/add-chart-type-or-topic/
   description: How to make a D3.js-based add-chart-type-or-topic in javascript. Add an additional sentence summarizing chart-type or topic.

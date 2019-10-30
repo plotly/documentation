@@ -23,7 +23,6 @@ jupyter:
     version: 3.6.5
   plotly:
     v4upgrade: true
-    title: requests.exceptions.ConnectionError - Getting Around Corporate Proxies
     name: Requests Behind Corporate Proxies
     permalink: python/proxy-configuration/
     description: How to configure Plotly's Python API to work with corporate proxies
