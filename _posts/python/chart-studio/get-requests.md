@@ -31,7 +31,6 @@ jupyter:
     order: 8
     permalink: python/get-requests/
     thumbnail: thumbnail/spectral.jpg
-    title: Python Get Requests | Examples | Plotly
     v4upgrade: true
 ---
 

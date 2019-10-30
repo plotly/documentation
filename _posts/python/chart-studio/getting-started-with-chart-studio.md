@@ -33,7 +33,6 @@ jupyter:
     page_type: example_index
     permalink: python/getting-started-with-chart-studio/
     thumbnail: thumbnail/bubble.jpg
-    title: Getting Started with Chart Studio for Python | plotly
     v4upgrade: true
 ---
 

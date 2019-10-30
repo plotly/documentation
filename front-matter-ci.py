@@ -24,6 +24,7 @@ for md_path in Path(path).glob("**/*.md"):
 
 #make sure that every post that is not a redirect has a name tag in the front matter
 noNamePaths = [];
+titlePaths = [];
 for post in allPosts:
     if len(post.metadata.keys()) > 0:
         meta = post.metadata
@@ -34,8 +35,16 @@ for post in allPosts:
                 continue
             else:
                 noNamePaths.append(post.metadata)
+        if "title" in meta:
+            titlePaths.append(post.metadata)
+
 
 if (len(noNamePaths) > 0):
     raise Exception("CI Check #1 Not Passed: post:'{}' is not a redirect but is missing a name frontmatter\n".format('\n'.join([str(item) for item in noNamePaths])))
 
 print("CI Check #1 Passed: All non-redirect posts have names!")
+
+if (len(titlePaths) > 0):
+    raise Exception("CI Check #2 Not Passed: post:'{}' has a title. Titles no longer needed!\n".format('\n'.join([str(item) for item in titlePaths])))
+
+print("CI Check #2 Passed: No posts have titles!")
