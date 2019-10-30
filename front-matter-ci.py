@@ -1,16 +1,23 @@
 import frontmatter
 from pathlib import Path, PosixPath
+import sys
 
 allPosts = [];
 
+# should be either '_posts' for this repo or 'build/html' for the py-docs repo
+try:
+    path = str(sys.argv[1])
+except:
+    raise Exception("You need to specify a path that contains the files with front matter.")
+
 #get all posts with frontmatter in html format
-for md_path in Path("_posts").glob("**/*.html"):
+for md_path in Path(path).glob("**/*.html"):
     post = frontmatter.load(str(md_path))
     if len(post.metadata.keys()) > 0:
         allPosts.append(post)
     
 #get all posts with frontmatter in md format
-for md_path in Path("_posts").glob("**/*.md"):
+for md_path in Path(path).glob("**/*.md"):
     post = frontmatter.load(str(md_path))
     if len(post.metadata.keys()) > 0:
         allPosts.append(post); 
@@ -19,18 +26,14 @@ for md_path in Path("_posts").glob("**/*.md"):
 noNamePaths = [];
 for post in allPosts:
     if len(post.metadata.keys()) > 0:
-        try:
-            name = post.metadata['name']
-        except:
-            try:
-                name = post.metadata['jupyter']['plotly']['name']
-            except:
-                try:
-                    if post.metadata['redirect_to']:
-                        continue
-                except:
-                    noNamePaths.append(post.metadata)
-
+        meta = post.metadata
+        if "jupyter" in meta:
+            meta = meta['jupyter']['plotly']
+        if "name" not in meta:
+            if "redirect_to" in meta:
+                continue
+            else:
+                noNamePaths.append(post.metadata)
 
 if (len(noNamePaths) > 0):
     raise Exception("CI Check #1 Not Passed: post:'{}' is not a redirect but is missing a name frontmatter\n".format('\n'.join([str(item) for item in noNamePaths])))
