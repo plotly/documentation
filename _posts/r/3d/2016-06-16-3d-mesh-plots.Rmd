@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/3d-mesh.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: 3d_charts
 order: 16
 output:

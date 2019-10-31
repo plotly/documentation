@@ -6,7 +6,6 @@ layout: base
 display_as: shiny
 language: r
 page_type: example_index
-has_thumbnail: false
 ---
 ## Shiny app
 

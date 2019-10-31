@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/geom_density2d.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: statistical
 order: 8
 output:

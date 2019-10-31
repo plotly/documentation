@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/sliders.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: controls
 order: 2
 output:

@@ -5,7 +5,6 @@ name: More Plotly Fundamentals
 layout: langindex
 language: r
 display_as: file_settings
-has_thumbnail: true
 thumbnail: thumbnail/mixed.jpg
 redirect_from: r/fundamentals/
 page_type: example_index

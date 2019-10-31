@@ -5,7 +5,6 @@ name: More Financial Charts
 layout: langindex
 language: r
 display_as: financial
-has_thumbnail: true
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
 order: 20

@@ -5,7 +5,6 @@ name: More Layout Options
 layout: langindex
 language: r
 display_as: layout_opt
-has_thumbnail: false
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
 order: 20

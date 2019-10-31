@@ -5,7 +5,6 @@ name: More Style Options
 layout: langindex
 language: r
 display_as: style_opt
-has_thumbnail: false
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
 order: 10

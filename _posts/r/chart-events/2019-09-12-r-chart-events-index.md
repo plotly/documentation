@@ -5,7 +5,6 @@ name: More Chart Events
 layout: langindex
 language: r
 display_as: chart_events
-has_thumbnail: true
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
 order: 20

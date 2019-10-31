@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/bubble-map.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: maps
 order: 2
 output:

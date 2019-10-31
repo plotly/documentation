@@ -5,7 +5,6 @@ description: How to create map subplots and small multiples in R.
 layout: base
 thumbnail: thumbnail/map-subplots.jpg
 language: r
-has_thumbnail: true
 display_as: multiple_axes
 output:
   html_document:

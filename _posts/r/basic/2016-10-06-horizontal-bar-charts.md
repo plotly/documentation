@@ -5,7 +5,6 @@ description: How to make a horizontal bar chart in R. Examples of grouped, stack
 layout: base
 thumbnail: thumbnail/horizontal-bar.jpg
 language: r
-has_thumbnail: true
 display_as: basic
 order: 5
 output:

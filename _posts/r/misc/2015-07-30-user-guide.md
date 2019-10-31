@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/static-image.jpg
 language: r
 page_type: example_index
-has_thumbnail: false
 output: 
   html_document:
     keep_md: true

@@ -24,8 +24,7 @@ jupyter:
   plotly:
     description: Installation and Initialization Steps for Using Chart Studio in Python.
     display_as: chart_studio
-    has_thumbnail: true
-    ipynb: ~notebook_demo/123/installation
+        ipynb: ~notebook_demo/123/installation
     language: python
     layout: base
     name: Getting Started with Plotly

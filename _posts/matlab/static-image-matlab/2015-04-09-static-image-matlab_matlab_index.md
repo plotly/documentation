@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/static-image-matlab.jpg
 language: matlab
 page_type: example_index
-has_thumbnail: false
 display_as: get_request
 sitemap: false
 ---
