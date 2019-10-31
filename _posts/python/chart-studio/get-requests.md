@@ -24,7 +24,7 @@ jupyter:
   plotly:
     description: How to download plotly users's public graphs and data with python.
     display_as: chart_studio
-        language: python
+    language: python
     layout: base
     name: Get Requests
     order: 8

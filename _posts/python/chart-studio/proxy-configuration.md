@@ -28,7 +28,7 @@ jupyter:
     description: How to configure Plotly's Python API to work with corporate proxies
     layout: base
     language: python
-        thumbnail: thumbnail/net.jpg
+    thumbnail: thumbnail/net.jpg
     display_as: chart_studio
     order: 10
 ---

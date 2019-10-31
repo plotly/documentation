@@ -24,7 +24,7 @@ jupyter:
   plotly:
     description: How to embed plotly graphs with an iframe in HTML.
     display_as: chart_studio
-        language: python
+    language: python
     layout: base
     name: Embedding Graphs in HTML
     order: 6

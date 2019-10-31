@@ -26,12 +26,12 @@ jupyter:
     permalink: python/presentations-tool/
     description: How to create and publish a spectacle-presentation with the Python API.
     name: Presentations Tool | plotly
-        thumbnail: thumbnail/pres_api.jpg
+    thumbnail: thumbnail/pres_api.jpg
     layout: base
     name: Presentations Tool
     language: python
     display_as: chart_studio
-        page_type: u-guide
+    page_type: u-guide
     order: 0.6
 ---
 
