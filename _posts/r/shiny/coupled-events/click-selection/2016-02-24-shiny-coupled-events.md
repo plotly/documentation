@@ -1,10 +1,6 @@
 ---
 name: Coupled events with Shiny and Plotly
 permalink: r/shiny-coupled-events/
-redirect_from:
-  - ggplot2/shiny-tutorial/
-  - r/shiny/
-  - ggplot2/shiny/
 description: Coupled events with Shiny and Plotly
 layout: base
 language: r
