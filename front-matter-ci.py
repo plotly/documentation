@@ -34,7 +34,7 @@ for post in allPosts:
 
         #in case the front-matter format is different
         if "jupyter" in meta:
-            meta = meta['jupyter']['plotly']
+            continue
 
         # Check 1
         if "name" not in meta and "redirect_to" not in meta:
