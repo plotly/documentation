@@ -44,8 +44,8 @@ for post in allPosts:
         if "title" in meta:
             titlePaths.append(post.metadata)
 
-        # Check 3
-        if "permalink" in meta:
+        # Check 3 - ignor dash call outs
+        if "permalink" in meta and meta['permalink'] != '//plot.ly/products/dash/':
             permalinks.append(meta['permalink'])
         if "redirect_from" in meta:
             permalinks.append(meta['redirect_from'])
