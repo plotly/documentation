@@ -7,7 +7,7 @@ thumbnail: thumbnail/bar.jpg
 language: r
 page_type: example_index
 display_as: basic
-order: 4
+order: 3
 output:
   html_document:
     keep_md: true

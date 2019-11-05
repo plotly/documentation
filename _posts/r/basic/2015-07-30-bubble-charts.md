@@ -6,7 +6,7 @@ layout: base
 thumbnail: thumbnail/bubble.jpg
 language: r
 display_as: basic
-order: 2
+order: 6
 output:
   html_document:
     keep_md: true

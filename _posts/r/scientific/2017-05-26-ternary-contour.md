@@ -6,7 +6,7 @@ layout: base
 thumbnail: thumbnail/ternary-contour.jpg
 language: r
 display_as: scientific
-order: 13.5
+order: 8
 output:
   html_document:
     keep_md: true

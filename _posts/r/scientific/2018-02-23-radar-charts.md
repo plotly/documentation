@@ -5,9 +5,9 @@ description: How to create Radar Charts in R with Plotly.
 layout: base
 thumbnail: thumbnail/radar.gif
 language: r
-# page_type: example_index
+has_thumbnail: true
 display_as: scientific
-order: 19
+order: 13
 output:
   html_document:
     keep_md: true

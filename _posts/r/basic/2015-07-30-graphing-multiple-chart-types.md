@@ -6,7 +6,7 @@ layout: base
 thumbnail: thumbnail/mixed.jpg
 language: r
 display_as: basic
-order: 7
+order: 11
 output:
   html_document:
     keep_md: true

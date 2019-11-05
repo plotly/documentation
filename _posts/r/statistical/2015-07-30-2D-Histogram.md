@@ -7,7 +7,7 @@ thumbnail: thumbnail/histogram2d.jpg
 language: r
 page_type: example_index
 display_as: statistical
-order: 5
+order: 4
 output:
   html_document:
     keep_md: true

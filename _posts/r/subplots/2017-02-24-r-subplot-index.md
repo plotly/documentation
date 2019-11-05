@@ -7,7 +7,7 @@ name: More Subplots
 display_as: multiple_axes
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
-order: 20
+order: 5
 ---
 
 

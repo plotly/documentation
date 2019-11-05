@@ -7,7 +7,7 @@ thumbnail: thumbnail/contour.jpg
 language: r
 page_type: example_index
 display_as: scientific
-order: 6
+order: 1
 output:
   html_document:
     keep_md: true

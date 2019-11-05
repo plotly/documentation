@@ -6,7 +6,7 @@ layout: base
 thumbnail: thumbnail/county-level-choropleth.jpg
 language: r
 display_as: maps
-order: 6
+order: 10
 output:
   html_document:
     keep_md: true

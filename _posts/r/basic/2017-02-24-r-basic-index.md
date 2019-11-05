@@ -7,7 +7,7 @@ language: r
 display_as: basic
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
-order: 20
+order: 5
 ---
 
 

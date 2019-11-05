@@ -7,7 +7,7 @@ name: More Statistical Charts
 display_as: statistical
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
-order: 20
+order: 5
 ---
 
 

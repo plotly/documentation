@@ -7,7 +7,7 @@ thumbnail: thumbnail/pie-chart.jpg
 language: r
 page_type: example_index
 display_as: basic
-order: 7
+order: 4
 output:
   html_document:
     keep_md: true

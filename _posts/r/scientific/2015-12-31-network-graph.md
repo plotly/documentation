@@ -6,7 +6,7 @@ layout: base
 thumbnail: thumbnail/net.jpg
 language: r
 display_as: scientific
-order: 11
+order: 7
 output:
   html_document:
     keep_md: true

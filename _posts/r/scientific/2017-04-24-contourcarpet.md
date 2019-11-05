@@ -6,7 +6,7 @@ layout: base
 thumbnail: thumbnail/contourcarpet.jpg
 language: r
 display_as: scientific
-order: 17
+order: 12
 output:
   html_document:
     keep_md: true

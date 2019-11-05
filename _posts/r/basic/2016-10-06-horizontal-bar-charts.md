@@ -6,7 +6,7 @@ layout: base
 thumbnail: thumbnail/horizontal-bar.jpg
 language: r
 display_as: basic
-order: 5
+order: 9
 output:
   html_document:
     keep_md: true

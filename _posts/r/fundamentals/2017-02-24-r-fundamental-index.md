@@ -8,7 +8,7 @@ display_as: file_settings
 thumbnail: thumbnail/mixed.jpg
 redirect_from: r/fundamentals/
 page_type: example_index
-order: 20
+order: 5
 ---
 
 

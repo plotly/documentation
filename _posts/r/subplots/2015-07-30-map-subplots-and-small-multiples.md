@@ -6,6 +6,7 @@ layout: base
 thumbnail: thumbnail/map-subplots.jpg
 language: r
 display_as: multiple_axes
+order: 6
 output:
   html_document:
     keep_md: true

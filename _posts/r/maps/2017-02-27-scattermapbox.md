@@ -5,9 +5,9 @@ description: How to create scattermapbox plots in R with Plotly.
 layout: base
 thumbnail: thumbnail/scatter-mapbox.jpg
 language: r
-page_type: example_index
+has_thumbnail: true
 display_as: maps
-order: 6
+order: 9
 output:
   html_document:
     keep_md: true

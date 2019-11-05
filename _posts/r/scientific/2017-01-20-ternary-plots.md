@@ -7,7 +7,7 @@ thumbnail: thumbnail/ternary.jpg
 language: r
 page_type: example_index
 display_as: scientific
-order: 13
+order: 3
 output:
   html_document:
     keep_md: true

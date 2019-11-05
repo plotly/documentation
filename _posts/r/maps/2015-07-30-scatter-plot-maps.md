@@ -5,7 +5,8 @@ description: How to make scatter plots on maps in R. Scatter plots on maps highl
 layout: base
 thumbnail: thumbnail/scatter-plot-on-maps.jpg
 language: r
-order: 1
+order: 12
+has_thumbnail: true
 display_as: maps
 output:
   html_document:

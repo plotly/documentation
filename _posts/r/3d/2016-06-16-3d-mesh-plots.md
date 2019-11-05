@@ -7,7 +7,7 @@ thumbnail: thumbnail/3d-mesh.jpg
 language: r
 page_type: example_index
 display_as: 3d_charts
-order: 16
+order: 4
 output:
   html_document:
     keep_md: true

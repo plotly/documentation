@@ -6,7 +6,7 @@ layout: base
 thumbnail: thumbnail/dumbbell-plot.jpg
 language: r
 display_as: basic
-order: 8
+order: 15
 output:
   html_document:
     keep_md: true

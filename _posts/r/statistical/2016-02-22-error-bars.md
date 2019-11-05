@@ -7,7 +7,7 @@ thumbnail: thumbnail/error-bar.jpg
 language: r
 page_type: example_index
 display_as: statistical
-order: 0.5
+order: 1
 output:
   html_document:
     keep_md: true

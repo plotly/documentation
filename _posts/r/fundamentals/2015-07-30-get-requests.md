@@ -3,9 +3,10 @@ name: Get Requests
 permalink: r/get-requests/
 description: How to download plotly users's public graphs and data with R.
 layout: base
-thumbnail: thumbnail/get-requests.jpg
+thumbnail: thumbnail/tick-formatting.gif
 language: r
 display_as: file_settings
+order: 6
 output:
   html_document:
     keep_md: true

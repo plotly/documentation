@@ -7,7 +7,7 @@ thumbnail: thumbnail/mixed_subplot.JPG
 language: r
 page_type: example_index
 display_as: multiple_axes
-order: 5
+order: 4
 output:
   html_document:
     keep_md: true

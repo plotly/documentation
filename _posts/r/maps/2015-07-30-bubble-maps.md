@@ -7,7 +7,7 @@ thumbnail: thumbnail/bubble-map.jpg
 language: r
 page_type: example_index
 display_as: maps
-order: 2
+order: 3
 output:
   html_document:
     keep_md: true
