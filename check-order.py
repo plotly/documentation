@@ -29,7 +29,10 @@ for md_path in Path(path).glob("**/*.md"):
     if len(post.metadata.keys()) > 0:
         if "display_as" in post.metadata:
             if post.metadata['display_as'] == category:
-                postFamily.append({'path':str(md_path), 'order' : post.metadata['order']})
+                try:
+                    postFamily.append({'path':str(md_path), 'order' : post.metadata['order']})
+                except:
+                    print(post.metadata)
             
 sortedPostFamily = sorted(postFamily, key = lambda i: i['order'])
 
@@ -37,6 +40,8 @@ order = []
 
 for post in sortedPostFamily:
     order.append(post['order'])
+
+print(order)
 
 if order[0] != 1:
     raise Exception("Order Check Failed! First post does not have order 1!")
@@ -46,7 +51,6 @@ def checkConsecutive(l):
 
 def checkSequential(l):
     return all(i == j-1 for i, j in zip(l, l[1:])) 
-
 
 print(order)
 
