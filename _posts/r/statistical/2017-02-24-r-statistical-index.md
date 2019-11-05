@@ -8,7 +8,7 @@ display_as: statistical
 has_thumbnail: true
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
-order: 20
+order: 5
 ---
 
 

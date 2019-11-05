@@ -7,6 +7,7 @@ thumbnail: thumbnail/get-requests.jpg
 language: r
 has_thumbnail: true
 display_as: file_settings
+order: 6
 output:
   html_document:
     keep_md: true

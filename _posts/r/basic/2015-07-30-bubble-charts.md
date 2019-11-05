@@ -7,7 +7,7 @@ thumbnail: thumbnail/bubble.jpg
 language: r
 has_thumbnail: true
 display_as: basic
-order: 2
+order: 6
 output:
   html_document:
     keep_md: true

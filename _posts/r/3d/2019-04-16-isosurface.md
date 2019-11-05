@@ -7,7 +7,7 @@ thumbnail: thumbnail/isosurface.jpg
 language: r
 has_thumbnail: true
 display_as: 3d_charts
-order: 20
+order: 9
 output:
   html_document:
     keep_md: true

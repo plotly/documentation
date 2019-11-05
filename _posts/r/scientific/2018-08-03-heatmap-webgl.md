@@ -7,7 +7,7 @@ thumbnail: thumbnail/heatmap-webgl.jpg
 language: r
 has_thumbnail: true
 display_as: scientific
-order: 20
+order: 14
 output:
   html_document:
     keep_md: true

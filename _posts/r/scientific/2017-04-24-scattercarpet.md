@@ -7,7 +7,7 @@ thumbnail: thumbnail/scattercarpet.jpg
 language: r
 has_thumbnail: true
 display_as: scientific
-order: 16
+order: 11
 output:
   html_document:
     keep_md: true

@@ -7,7 +7,7 @@ thumbnail: thumbnail/net.jpg
 language: r
 has_thumbnail: true
 display_as: scientific
-order: 11
+order: 7
 output:
   html_document:
     keep_md: true

@@ -6,9 +6,8 @@ layout: base
 thumbnail: thumbnail/radar.gif
 language: r
 has_thumbnail: true
-# page_type: example_index
 display_as: scientific
-order: 19
+order: 13
 output:
   html_document:
     keep_md: true

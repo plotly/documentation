@@ -7,7 +7,7 @@ thumbnail: thumbnail/carpet.jpg
 language: r
 has_thumbnail: true
 display_as: scientific
-order: 15
+order: 10
 output:
   html_document:
     keep_md: true

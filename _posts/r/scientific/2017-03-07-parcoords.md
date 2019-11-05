@@ -7,7 +7,7 @@ thumbnail: thumbnail/parcoords.jpg
 language: r
 has_thumbnail: true
 display_as: scientific
-order: 14
+order: 9
 output:
   html_document:
     keep_md: true

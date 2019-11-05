@@ -7,7 +7,7 @@ thumbnail: thumbnail/sunburst.gif
 language: r
 has_thumbnail: true
 display_as: basic
-order: 7.1
+order: 12
 output:
   html_document:
     keep_md: true

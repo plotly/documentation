@@ -7,7 +7,7 @@ thumbnail: thumbnail/streamtube.jpg
 language: r
 has_thumbnail: true
 display_as: 3d_charts
-order: 19
+order: 8
 output:
   html_document:
     keep_md: true

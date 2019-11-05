@@ -8,7 +8,7 @@ language: r
 page_type: example_index
 has_thumbnail: true
 display_as: maps
-order: 0
+order: 1
 output:
   html_document:
     keep_md: true

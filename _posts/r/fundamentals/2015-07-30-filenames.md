@@ -8,7 +8,7 @@ page_type: example_index
 has_thumbnail: true
 thumbnail: thumbnail/horizontal-bar.jpg
 display_as: file_settings
-order: 2
+order: 1
 output:
   html_document:
     keep_md: true

@@ -7,7 +7,7 @@ thumbnail: thumbnail/area.jpg
 language: r
 has_thumbnail: true
 display_as: basic
-order: 3.5
+order: 8
 output:
   html_document:
     keep_md: true

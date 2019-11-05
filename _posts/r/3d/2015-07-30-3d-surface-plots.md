@@ -8,7 +8,7 @@ language: r
 page_type: example_index
 has_thumbnail: TRUE
 display_as: 3d_charts
-order: 5
+order: 3
 output:
   html_document:
     keep_md: true

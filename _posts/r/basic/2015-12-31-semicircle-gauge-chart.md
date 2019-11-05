@@ -8,7 +8,7 @@ thumbnail: thumbnail/gauge.jpg
 language: r
 has_thumbnail: true
 display_as: basic
-order: 10
+order: 16
 output:
   html_document:
     keep_md: true

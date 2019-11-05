@@ -8,7 +8,7 @@ thumbnail: thumbnail/webgl.jpg
 language: r
 has_thumbnail: true
 display_as: basic
-order: 0.5
+order: 7
 output:
   html_document:
     highlight: null

@@ -7,7 +7,7 @@ thumbnail: thumbnail/ternary-contour.jpg
 language: r
 has_thumbnail: true
 display_as: scientific
-order: 13.5
+order: 8
 output:
   html_document:
     keep_md: true
