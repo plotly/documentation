@@ -17,8 +17,6 @@ output:
 
 ```{r, echo = FALSE, message=FALSE}
 knitr::opts_chunk$set(message = FALSE, warning=FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
 ### New to Plotly?
 
@@ -39,7 +37,7 @@ packageVersion('plotly')
 
 The subplot() function provides a flexible interface for merging plotly objects into a single object (i.e., view).
 
-```{r, results = 'hide'}
+```{r}
 library(plotly)
 p1 <- plot_ly(economics, x = ~date, y = ~unemploy) %>%
   add_lines(name = ~"unemploy")
@@ -47,21 +45,14 @@ p2 <- plot_ly(economics, x = ~date, y = ~uempmed) %>%
   add_lines(name = ~"uempmed")
 p <- subplot(p1, p2)
 
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link <- api_create(p, filename = "subplot-basic")
-chart_link
-```
-
-```{r, echo=FALSE}
-chart_link
+p
 ```
 
 ### Scaled Subplots
 
 Although subplot() accepts an arbitrary number of plot objects, passing a list of plots can save typing and redundant code when dealing with a large number of plots. For example, you can share the x-axis by utlising shareX, set axis ID, and and specify the number of of rows with nrows.
 
-```{r, results = 'hide'}
+```{r}
 
 p <- economics %>%
   tidyr::gather(variable, value, -date) %>%
@@ -71,21 +62,14 @@ p <- economics %>%
   add_lines() %>%
   subplot(nrows = 5, shareX = TRUE)
 
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link <- api_create(p, filename = "subplot-scale-y")
-chart_link
-```
-
-```{r, echo=FALSE}
-chart_link
+p
 ```
 
 ### Recursive Subplots
 
 The subplot() function returns a plotly object so it can be modified like any other plotly object. This effectively means that subplots work recursively (i.e., you can have subplots within subplots).
 
-```{r, results = 'hide'}
+```{r}
 plotList <- function(nplots) {
   lapply(seq_len(nplots), function(x) plot_ly())
 }
@@ -93,14 +77,7 @@ s1 <- subplot(plotList(6), nrows = 2, shareX = TRUE, shareY = TRUE)
 s2 <- subplot(plotList(2), shareY = TRUE)
 p <- subplot(s1, s2, plot_ly(), nrows = 3, margin = 0.04, heights = c(0.6, 0.3, 0.1))
 
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link <- api_create(p, filename = "subplot-recursive")
-chart_link
-```
-
-```{r, echo=FALSE}
-chart_link
+p
 ```
 
 For more information on subplots check [the plotly book](https://cpsievert.github.io/plotly_book/merging-plotly-objects.html)
