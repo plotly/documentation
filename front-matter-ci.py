@@ -11,17 +11,12 @@ except:
     raise Exception("You need to specify a path that contains the files with front matter.")
 
 #get all posts with frontmatter in html format
-for md_path in Path(path).glob("**/*.html"):
-    post = frontmatter.load(str(md_path))
-    if len(post.metadata.keys()) > 0:
-        allPosts.append(post)
+for md_path in Path(path).glob("**/*"):
+    if md_path.suffix in [".html", ".md"]:
+        post = frontmatter.load(str(md_path))
+        if len(post.metadata.keys()) > 0:
+            allPosts.append(post)
     
-#get all posts with frontmatter in md format
-for md_path in Path(path).glob("**/*.md"):
-    post = frontmatter.load(str(md_path))
-    if len(post.metadata.keys()) > 0:
-        allPosts.append(post); 
-
 #make sure that every post that is not a redirect has a name tag in the front matter
 noNamePaths = [];
 titlePaths = [];

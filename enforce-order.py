@@ -16,21 +16,14 @@ except:
 postFamily = []
   
 #get all posts with frontmatter in md format
-for md_path in Path(path).glob("**/*.html"):
-    post = frontmatter.load(str(md_path))
-    if len(post.metadata.keys()) > 0:
-        if "display_as" in post.metadata:
-            if post.metadata['display_as'] == category:
-                postFamily.append({'path':str(md_path), 'order' : post.metadata['order']})
-
-#get all posts with frontmatter in md format
-for md_path in Path(path).glob("**/*.md"):
-    post = frontmatter.load(str(md_path))
-    if len(post.metadata.keys()) > 0:
-        if "display_as" in post.metadata:
-            if post.metadata['display_as'] == category:
-                postFamily.append({'path':str(md_path), 'order' : post.metadata['order']})
-           
+for md_path in Path(path).glob("**/*"):
+    if md_path.suffix in [".html", ".md"]:
+        post = frontmatter.load(str(md_path))
+        if len(post.metadata.keys()) > 0:
+            if "display_as" in post.metadata:
+                if post.metadata['display_as'] == category:
+                    postFamily.append({'path':str(md_path), 'order' : post.metadata['order']})
+         
 sortedPostFamily = sorted(postFamily, key = lambda i: i['order'])
 
 def enforceOrder(listToBeOrdered):
