@@ -26,13 +26,11 @@ jupyter:
     redirect_from: ipython-notebooks/ipython-notebook-tutorial/
     description: Jupyter notebook tutorial on how to install, run, and use Jupyter for interactive matplotlib plotting, data analysis, and publishing code
     name: Jupyter Notebook Tutorial
-    has_thumbnail: true
     thumbnail: thumbnail/ipythonnb.jpg
     layout: base
     name: Jupyter Notebook Tutorial
     language: python
     display_as: chart_studio
-    has_thumbnail: true
     page_type: example_index
     order: 11
     ipynb: ~chelsea_lyn/14070

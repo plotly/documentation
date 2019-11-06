@@ -6,7 +6,6 @@ description: How to make gauge charts in R with Plotly.
 layout: base
 thumbnail: thumbnail/gauge.jpg
 language: r
-has_thumbnail: true
 display_as: basic
 order: 10
 output:

@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/polar.jpg
 language: r
 #page_type: example_index
-has_thumbnail: true
 display_as: legacy_charts
 order: 1
 output:

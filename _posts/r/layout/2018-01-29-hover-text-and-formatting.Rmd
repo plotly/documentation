@@ -5,7 +5,6 @@ description: How to use hover text and formatting in R with Plotly.
 layout: base
 thumbnail: thumbnail/hover'text.jpg
 language: r
-has_thumbnail: false
 display_as: layout_opt
 page_type: example_index
 output:

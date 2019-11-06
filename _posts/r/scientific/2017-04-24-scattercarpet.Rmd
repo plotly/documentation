@@ -5,7 +5,6 @@ description: How to create carpet plots in R with Plotly.
 layout: base
 thumbnail: thumbnail/scattercarpet.jpg
 language: r
-has_thumbnail: true
 display_as: scientific
 order: 16
 output:

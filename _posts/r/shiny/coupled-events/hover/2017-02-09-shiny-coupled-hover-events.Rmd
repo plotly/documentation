@@ -9,7 +9,6 @@ description: Coupled events with Shiny and Plotly
 layout: base
 language: r
 page_type: example_index
-has_thumbnail: false
 display_as: get_request
 output:
   html_document:

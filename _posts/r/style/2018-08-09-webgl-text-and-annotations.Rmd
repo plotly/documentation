@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/webgl-text-and-annotations.jpg
 language: r
 page_type: example_index
-has_thumbnail: false
 display_as: style_opt
 order: 10
 output:

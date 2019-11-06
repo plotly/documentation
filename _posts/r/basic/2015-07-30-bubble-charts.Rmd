@@ -5,7 +5,6 @@ description: How to make a bubble chart in R. A bubble chart is a scatter plot w
 layout: base
 thumbnail: thumbnail/bubble.jpg
 language: r
-has_thumbnail: true
 display_as: basic
 order: 2
 output:

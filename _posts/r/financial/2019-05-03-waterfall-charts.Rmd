@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/waterfall-charts.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: financial
 order: 4
 output:

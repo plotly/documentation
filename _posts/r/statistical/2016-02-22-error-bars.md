@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/error-bar.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: statistical
 order: 0.5
 output:

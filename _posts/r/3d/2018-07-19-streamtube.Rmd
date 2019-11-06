@@ -5,7 +5,6 @@ description: How to create streamtube plots with Plotly.
 layout: base
 thumbnail: thumbnail/streamtube.jpg
 language: r
-has_thumbnail: true
 display_as: 3d_charts
 order: 19
 output:

@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/geom_raster.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: basic
 order: 7
 output:

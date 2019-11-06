@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/scatter-plot-on-maps.jpg
 language: r
 order: 1
-has_thumbnail: true
 display_as: maps
 output:
   html_document:

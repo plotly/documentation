@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/theme_image3.png
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: layout_opt
 output:
   html_document:

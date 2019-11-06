@@ -6,7 +6,6 @@ layout: base
 thumbnail: thumbnail/gg-themes.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: basic
 order: 6
 redirect_from: ggplot2/line-and-scatter/
