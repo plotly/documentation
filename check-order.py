@@ -14,22 +14,25 @@ except:
 
 # will contain all posts with display_as: file_settings
 postFamily = []
+
+paths = []
+for suffix in ["md", "hmtl"]:
+    paths += [x for x in Path(path).glob("**/*."+suffix)]
   
 #get all posts with frontmatter in md format
-for md_path in Path(path).glob("**/*"):
-    if md_path.suffix in [".html", ".md"]:
-        post = frontmatter.load(str(md_path))
-        if len(post.metadata.keys()) > 0:
-            if "display_as" in post.metadata:
-                if post.metadata['display_as'] == category:
-                    postFamily.append({'path':str(md_path), 'order' : post.metadata['order']})
-           
+for path in paths:
+    post = frontmatter.load(str(path))
+    if len(post.metadata.keys()) > 0:
+        if "display_as" in post.metadata:
+            if post.metadata['display_as'] == category:
+                postFamily.append({'path':str(path), 'order' : post.metadata['order']})
+        
 sortedPostFamily = sorted(postFamily, key = lambda i: i['order'])
 
 order = []
 
 for post in sortedPostFamily:
-    order.append(post['order'])
+   order.append(post['order'])
 
 print(order)
 
@@ -39,15 +42,9 @@ if order[0] != 1:
 def checkConsecutive(l): 
     return sorted(l) == list(range(min(l), max(l)+1)) 
 
-def checkSequential(l):
-    return all(i == j-1 for i, j in zip(l, l[1:])) 
-
 try:
     checkConsecutive(order)
 except:
     raise Exception("Order Check Failed! Orders are not consecutive integers!!")
-
-if not checkSequential(order):
-    raise Exception("Order Check Failed! Orders are not sequential integers!!")
 
 print("Order Checks Passed!")
