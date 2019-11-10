@@ -13,8 +13,6 @@ ignore_header: true
 
 ```{r, echo=FALSE, message=FALSE}
 knitr::opts_chunk$set(message = FALSE, warning=FALSE)
-Sys.setenv("plotly_username"="RPlotBot")
-Sys.setenv("plotly_api_key"="q0lz6r5efr")
 ```
 
 Plotly for R is an interactive, browser-based charting library built on the open source JavaScript graphing library <a href="https://plot.ly/javascript" target="_blank">plotly.js</a>. It works entirely locally in your web-browser via the <a target="_blank" href="http://www.htmlwidgets.org/">HTML widgets framework</a>.
@@ -25,7 +23,7 @@ Plotly graphs are interactive: click-and-drag to zoom, shift-drag to pan, click 
 
 The [plotly R package](https://github.com/ropensci/plotly) serializes ggplot2 figures into Plotly's <a target="_blank" href="http://help.plot.ly/json-chart-schema/">universal graph JSON</a>. `plotly::ggplotly` will crawl the ggplot2 figure, extract and translate all of the attributes of the ggplot2 figure into JSON (the colors, the axes, the chart type, etc), and draw the graph with plotly.js.
 
-```{r, results = 'hide'}
+```{r}
 library(plotly)
 
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
@@ -33,14 +31,7 @@ gg <- qplot(carat, price, data=dsamp, colour=clarity)
 
 gg <- ggplotly(gg)
 
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(gg, filename="ggplot-user-guide/1")
-chart_link
-```
-
-```{r, echo=FALSE}
-chart_link
+gg
 ```
 
 `plotly::ggplotly` returns a `plotly` object. When you print it in your console, the plotly graph will be rendered in your web browser or in R Studio's viewer.
@@ -52,21 +43,14 @@ Plotly graphs can also be published on the web by calling `api_create(ggplotly(g
 Since the `ggplotly()` function returns a plotly object, we can manipulate that object in the same way that we would manipulate any other plotly object. A simple and useful application of this is to specify interaction modes, like plotly.js' `layout.dragmode` for specifying the mode of click+drag events.
 
 
-```{r, results = 'hide'}
+```{r}
 p <- ggplot(fortify(forecast::gold), aes(x, y)) + geom_line()
 
 gg <- ggplotly(p)
 
 gg <- layout(gg, dragmode = "pan")
 
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(gg, filename="ggplot-user-guide/2")
-chart_link
-```
-
-```{r, echo=FALSE}
-chart_link
+gg
 ```
 
 #### Modifying Layers
@@ -85,40 +69,26 @@ plotly_json(p)
 
 Generally speaking, the `style()` function is designed modify attribute values of trace(s) within a plotly object, which is primarily useful for customizing defaults produced via `ggplotly()`
 
-```{r, results = 'hide'}
+```{r}
 p <- ggplot(fortify(forecast::gold), aes(x, y)) + geom_line()
 
 gg <- ggplotly(p)
 
 gg <- style(gg, line = list(color = 'gold'), hoverinfo = "y", traces = 1)
 
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(gg, filename="ggplot-user-guide/3")
-chart_link
-```
-
-```{r, echo=FALSE}
-chart_link
+gg
 ```
 
 #### Modify with Build
 
-```{r, results = 'hide'}
+```{r}
 df <- data.frame(x=c(1, 2, 3, 4), y=c(1, 5, 3, 5), group=c('A', 'A', 'B', 'B'))
 
 g <- ggplot(data=df, aes(x=x, y=y, colour=group)) + geom_point()
 
 g <- ggplotly(g)
 
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(g, filename="ggplot-user-guide/4")
-chart_link
-```
-
-```{r, echo=FALSE}
-chart_link
+g
 ```
 
 Here is the ggplot2 figure described as a plotly object
@@ -187,17 +157,10 @@ p$x$layout$title <- 'Updated title'
 
 Now, send this to your plotly account:
 
-```{r, results = 'hide'}
+```{r}
 p$x$filename <- 'ggplot2-user-guide/custom-ggplot2'
 
-# Create a shareable link to your chart
-# Set up API credentials: https://plot.ly/r/getting-started
-chart_link = api_create(p)
-chart_link
-```
-
-```{r, echo=FALSE}
-chart_link
+p
 ```
 
 #### Resources
