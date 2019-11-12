@@ -1,11 +1,9 @@
 install.packages("plotly")
 # r/3d/3d-tri-surf/Helicopter
 install.packages("geomorph")
-# r/3d/3d-tri-surf/Maps -- Example still not functional contacted with creator of dependency package
-install.packages("rgl")
-install.packages("RTriangle")
-install.packages("graticule")
-devtools::install_github("r-gris/rangl")
+# r/3d/3d-tri-surf/Maps -- Example updated & functional, thanks to @mdsummer
+install.packages("maptools")
+devtools::install_github("hypertidy/anglr")
 # r/3d/cone/3D Cone of Wind Dataset
 install.packages("rjson")
 # r/animations/2017-05-28-cumulative-animations/Cumulative Lines Animation
