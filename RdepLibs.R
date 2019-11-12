@@ -16,7 +16,13 @@ install.packages("gapminder")
 install.packages("broom")
 # r/basic/2015-07-30-graphing-multiple-chart-types/Plotting Forecast Object
 install.packages("forecast")
-# r/basic/2016-09-29-line.Rmd/Mapping data to linetype
+# r/basic/2016-09-29-line/Mapping data to linetype
 install.packages("plyr")
+# r/controls/2016-08-10-dropdowns/Simple Dropdown Menu Example
+install.packages("MASS")
+# r/financial/2019-09-17-funnel-charts
+# Need to install plotly from Github to get funnel plots
+devtools::install_github("ropensci/plotly")
+
 
 
