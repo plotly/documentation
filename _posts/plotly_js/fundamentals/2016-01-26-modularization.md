@@ -1,9 +1,7 @@
 ---
-title: Modularizing monolithic javascript projects
 name:  Modularizing monolithic javascript projects
 permalink: javascript/modularizing-monolithic-javascript-projects/
 language: plotly_js
-has_thumbnail: false
 layout: base
 no_sidebar: true
 ---

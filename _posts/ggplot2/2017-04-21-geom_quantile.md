@@ -1,5 +1,4 @@
 ---
-title: geom_quantile in ggplot2 | Examples | Plotly
 name: geom_quantile
 permalink: ggplot2/geom_quantile/
 description: How to use geom_quantile with Plotly.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/geom_quantile.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: statistical
 order: 4
 output:

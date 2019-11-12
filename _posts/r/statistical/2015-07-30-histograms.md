@@ -1,5 +1,4 @@
 ---
-title: Histograms in R | Examples | Plotly
 name: Histograms
 permalink: r/histograms/
 description: How to make a histogram in R.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/histogram.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: statistical
 order: 4
 output:

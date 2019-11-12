@@ -1,12 +1,10 @@
 ---
 permalink: r/scientific-charts/
-title: R Graphing Library Plotly Fundamentals
 description: Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of how to make scientific charts.
 name: More Scientific Charts
 layout: langindex
 language: r
 display_as: scientific
-has_thumbnail: true
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
 order: 20
@@ -26,5 +24,5 @@ order: 20
 	</div>
 </header>
 
-		{% assign languagelistimg = site.posts | where:"language","r" | where:"display_as","scientific" | where:"has_thumbnail",true | where: "layout","base" | sort: "order" %}
+		{% assign languagelist = site.posts | where:"language","r" | where:"display_as","scientific" | where: "layout","base" | sort: "order" %}
         {% include posts/documentation_eg.html %}

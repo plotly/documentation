@@ -1,12 +1,10 @@
 ---
-title: Ternary Contour Plots in R | Examples | Plotly
 name: Ternary Contour Plot
 permalink: r/ternary-contour/
 description: How to create Ternary Contour Plots in R with Plotly.
 layout: base
 thumbnail: thumbnail/ternary-contour.jpg
 language: r
-has_thumbnail: true
 display_as: scientific
 order: 13.5
 output:

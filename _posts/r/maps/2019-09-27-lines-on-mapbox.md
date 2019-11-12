@@ -1,5 +1,4 @@
 ---
-title: Mapbox in R | Examples | Plotly
 name: Lines on Mapbox
 permalink: r/lines-on-mapbox/
 description: How to draw a line on Map in R with plotly.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/line_mapbox.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: maps
 order: 6
 output:

@@ -1,5 +1,4 @@
 ---
-title: geom_contour | Examples | Plotly
 name: geom_contour
 permalink: ggplot2/geom_contour/
 description: How to make a contour in ggplot2 using geom_contour.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/geom_contour.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: basic
 order: 3
 output:

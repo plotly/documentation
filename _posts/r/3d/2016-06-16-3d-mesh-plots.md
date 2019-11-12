@@ -1,5 +1,4 @@
 ---
-title: 3D Mesh Plots in R | Examples | Plotly
 name: 3D Mesh Plots
 permalink: r/3d-mesh/
 description: How to make interactive 3D mesh plots in R.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/3d-mesh.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: 3d_charts
 order: 16
 output:

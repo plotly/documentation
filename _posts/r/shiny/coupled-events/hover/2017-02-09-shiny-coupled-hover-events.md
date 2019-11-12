@@ -1,16 +1,10 @@
 ---
-title: Coupled hover events with Shiny and Plotly | Examples | Plotly
 name: Coupled hover events with Shiny and Plotly
 permalink: r/shiny-coupled-hover-events/
-redirect_from:
-  - ggplot2/shiny-tutorial/
-  - r/shiny/
-  - ggplot2/shiny/
 description: Coupled events with Shiny and Plotly
 layout: base
 language: r
 page_type: example_index
-has_thumbnail: false
 display_as: get_request
 output:
   html_document:

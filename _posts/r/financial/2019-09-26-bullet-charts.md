@@ -1,12 +1,10 @@
 ---
-title: Bullet Chart in R | Examples | Plotly
 name: Bullet Charts
 permalink: r/bullet-charts/
 description: How to create a Bullet Chart in R with Plotly
 layout: base
 thumbnail: thumbnail/bullet.png
 language: r
-has_thumbnail: true
 display_as: financial
 order: 8
 output:

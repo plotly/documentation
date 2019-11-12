@@ -1,5 +1,4 @@
 ---
-title: geom_boxplot | Examples | Plotly
 name: geom_boxplot
 permalink: ggplot2/box-plots/
 description: How to make a box plot in ggplot2. Examples of box plots in R that are grouped, colored, and display the underlying data distribution.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/box.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: statistical
 order: 2
 output:

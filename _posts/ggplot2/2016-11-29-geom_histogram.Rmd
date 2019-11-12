@@ -1,5 +1,4 @@
 ---
-title: geom_histogram | Examples | Plotly
 name: geom_histogram
 permalink: ggplot2/geom_histogram/
 description: How to make a histogram in ggplot2. Examples and tutorials for plotting histograms with geom_histogram, geom_density and stat_density.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/histogram.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: statistical
 order: 3
 redirect_from: ggplot2/histograms/

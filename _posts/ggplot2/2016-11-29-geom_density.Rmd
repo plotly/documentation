@@ -1,5 +1,4 @@
 ---
-title: geom_density | Examples | Plotly
 name: geom_density
 permalink: ggplot2/geom_density/
 description: Add a smooth density estimate calculated by stat_density with ggplot2 and R. Examples, tutorials, and code.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/stat_density.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: basic
 order: 3
 output:

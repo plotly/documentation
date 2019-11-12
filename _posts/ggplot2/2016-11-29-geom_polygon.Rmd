@@ -1,5 +1,4 @@
 ---
-title: geom_polygon | Examples | Plotly
 name: geom_polygon
 permalink: ggplot2/geom_polygon/
 description: Examples of geom_polygon in R.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/shape.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: basic
 order: 7
 output:

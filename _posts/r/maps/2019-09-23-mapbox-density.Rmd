@@ -1,5 +1,4 @@
 ---
-title: Mapbox Density Heatmaps in R | Examples | Plotly
 name: Mapbox Density
 permalink: r/mapbox-density-heatmaps/
 description: How to make a Mapbox Density Heatmap in R
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/mapbox-density.png
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: maps
 order: 2
 output:

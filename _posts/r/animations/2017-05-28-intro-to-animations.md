@@ -1,5 +1,4 @@
 ---
-title: Intro to Animations | Examples | Plotly
 name: Intro to Animations
 permalink: r/animations/
 description: How to create animations in R with Plotly.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/animations.gif
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: animations
 order: 1
 output:

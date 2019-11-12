@@ -1,5 +1,4 @@
 ---
-title: Extending ggplotly | Examples | Plotly
 name: Extending ggplotly
 permalink: ggplot2/extending-ggplotly/
 description: How modify the plotly object after ggplot2 conversion.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/extending_ggplotly.png
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: fundamentals
 order: 1
 output:

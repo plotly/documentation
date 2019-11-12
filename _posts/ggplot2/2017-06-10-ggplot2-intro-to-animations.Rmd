@@ -1,5 +1,4 @@
 ---
-title: Intro to Animations | Examples | Plotly
 name: Intro to Animations
 permalink: ggplot2/animations/
 description: How to create animations in ggplot2 with Plotly.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/animations.gif
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: animations
 order: 1
 output:

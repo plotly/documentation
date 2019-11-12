@@ -1,5 +1,4 @@
 ---
-title: Streaming | Examples | Plotly
 name: Streaming
 permalink: r/streaming/
 description: Getting Started with Streaming in R
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/streaming-thumb-square.gif
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: streaming
 order: 1
 output:

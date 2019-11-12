@@ -1,5 +1,4 @@
 ---
-title: 3D Scatter Plots in R | Examples | Plotly
 name: 3D Scatter Plots
 permalink: r/3d-scatter-plots/
 description: How to make interactive 3D scatter plots in R.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/3d-scatter.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: 3d_charts
 order: 0
 output:

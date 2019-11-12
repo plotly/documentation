@@ -1,12 +1,10 @@
 ---
 permalink: r/subplot-charts/
-title: R Graphing Library Plotly Subplots and Multiple Axes
 description: Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of how to make charts with multiple axes and subplots.
 layout: langindex
 language: r
 name: More Subplots
 display_as: multiple_axes
-has_thumbnail: true
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
 order: 20
@@ -26,5 +24,5 @@ order: 20
 	</div>
 </header>
 
-		{% assign languagelistimg = site.posts | where:"language","r" | where:"display_as","multiple_axes" | where:"has_thumbnail",true | where: "layout","base" | sort: "order" %}
+		{% assign languagelist = site.posts | where:"language","r" | where:"display_as","multiple_axes" | where: "layout","base" | sort: "order" %}
         {% include posts/documentation_eg.html %}

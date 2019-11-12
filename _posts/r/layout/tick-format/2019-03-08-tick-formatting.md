@@ -1,12 +1,10 @@
 ---
-title: Formatting Ticks in R
 name: Formatting Ticks
 permalink: r/tick-formatting/
 description: How to format axes ticks in R.
 layout: base
 language: r
 page_type: example_index
-has_thumbnail: false
 display_as: layout_opt
 output:
   html_document:

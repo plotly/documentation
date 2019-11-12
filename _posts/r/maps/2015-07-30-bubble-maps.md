@@ -1,5 +1,4 @@
 ---
-title: Bubble Maps in R | Examples | Plotly
 name: Bubble Maps
 permalink: r/bubble-maps/
 description: How to make a bubble chart and map in R.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/bubble-map.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: maps
 order: 2
 output:

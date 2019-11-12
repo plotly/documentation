@@ -1,5 +1,4 @@
 ---
-title: Error Bars in R | Examples | Plotly
 name: Error Bars
 permalink: r/error-bars/
 description: How to add error bars to plots in R.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/error-bar.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: statistical
 order: 0.5
 output:

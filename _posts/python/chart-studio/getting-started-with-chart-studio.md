@@ -24,7 +24,6 @@ jupyter:
   plotly:
     description: Installation and Initialization Steps for Using Chart Studio in Python.
     display_as: chart_studio
-    has_thumbnail: true
     ipynb: ~notebook_demo/123/installation
     language: python
     layout: base
@@ -33,7 +32,6 @@ jupyter:
     page_type: example_index
     permalink: python/getting-started-with-chart-studio/
     thumbnail: thumbnail/bubble.jpg
-    title: Getting Started with Chart Studio for Python | plotly
     v4upgrade: true
 ---
 

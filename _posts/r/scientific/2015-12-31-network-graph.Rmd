@@ -1,12 +1,10 @@
 ---
-title: R Network Graph | Examples | Plotly
 name: Network Graph
 permalink: r/network-graphs/
 description: How to make network graphs in R with Plotly.
 layout: base
 thumbnail: thumbnail/net.jpg
 language: r
-has_thumbnail: true
 display_as: scientific
 order: 11
 output:

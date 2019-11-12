@@ -1,12 +1,11 @@
 ---
-title: Gauge Charts in R | Examples | Plotly
 name: Gauge Chart
 permalink: r/gauge-charts/
 description: How to create a Gauge Chart in R with Plotly
 layout: base
 thumbnail: thumbnail/gauge.jpg
 language: r
-has_thumbnail: true
+redirect_from: r/gauge-meter
 display_as: financial
 order: 7
 output:

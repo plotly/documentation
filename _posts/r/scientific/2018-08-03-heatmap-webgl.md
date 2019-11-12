@@ -1,12 +1,10 @@
 ---
-title: WebGL Heatmaps in R | Examples | Plotly
 name: WebGL Heatmaps
 permalink: r/heatmap-webgl/
 description: How to make webGL based heatmaps in R with Plotly.
 layout: base
 thumbnail: thumbnail/heatmap-webgl.jpg
 language: r
-has_thumbnail: true
 display_as: scientific
 order: 20
 output:

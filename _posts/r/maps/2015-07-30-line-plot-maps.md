@@ -1,5 +1,4 @@
 ---
-title: Lines on Maps in R | Examples | Plotly
 name: Lines on Maps
 permalink: r/lines-on-maps/
 description: How to draw lines, great circles, and contours on maps in R. Lines on maps can show distance between geographic points or be contour lines (isolines, isopleths, or isarithms).
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/flight-paths.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: maps
 order: 3
 output:

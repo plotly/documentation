@@ -1,5 +1,4 @@
 ---
-title: Range Sliders and Selectors in R | Examples | Plotly
 name: Range Sliders and Selectors
 permalink: r/range-slider/
 description: How to use range-sliders and range-selectors in R
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/sliders.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: controls
 order: 2
 output:

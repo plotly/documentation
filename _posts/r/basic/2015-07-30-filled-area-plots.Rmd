@@ -1,12 +1,10 @@
 ---
-title: Filled Area Plots in R | Examples
 name: Filled Area Plots
 permalink: r/filled-area-plots/
 description: How to make a filled area plot in R. An area chart displays a solid color between the traces of a graph.
 layout: base
 thumbnail: thumbnail/area.jpg
 language: r
-has_thumbnail: true
 display_as: basic
 order: 3.5
 output:

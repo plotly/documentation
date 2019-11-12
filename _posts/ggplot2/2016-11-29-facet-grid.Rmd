@@ -1,5 +1,4 @@
 ---
-title: ggplot2 facet_grid | Examples | Plotly
 name: facet_grid
 permalink: ggplot2/facet_grid/
 redirect_from: ggplot2/facet/
@@ -8,7 +7,6 @@ layout: base
 thumbnail: thumbnail/facet_grid.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: layout_opt
 output:
   html_document:

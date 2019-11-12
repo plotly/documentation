@@ -1,5 +1,4 @@
 ---
-title: Bar Charts in R | Examples | Plotly
 name: Bar Charts
 permalink: r/bar-charts/
 description: How to make a bar chart in R. Examples of grouped, stacked, overlaid, and colored bar charts.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/bar.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: basic
 order: 4
 output:

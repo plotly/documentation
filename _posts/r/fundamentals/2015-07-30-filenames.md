@@ -1,12 +1,10 @@
 ---
-title: Updating Plotly Graphs | Examples | Plotly
 name: Updating Plotly Graphs
 permalink: r/file-options/
 description: R Filenames, folders, and updating Plotly graphs in the plotly cloud.
 layout: base
 language: r
 page_type: example_index
-has_thumbnail: true
 thumbnail: thumbnail/horizontal-bar.jpg
 display_as: file_settings
 order: 2

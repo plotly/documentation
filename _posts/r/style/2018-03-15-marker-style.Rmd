@@ -1,5 +1,4 @@
 ---
-title: Marker Styling in R | Examples | Plotly
 name: Marker Styling
 permalink: r/marker-style/
 description: How to style markers in R.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/marker-style.gif
 language: r
 page_type: example_index
-has_thumbnail: false
 display_as: style_opt
 order: 8
 output:

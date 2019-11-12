@@ -1,5 +1,4 @@
 ---
-title: Shiny App - Events Data
 name: Shiny app using Plotly
 permalink: r/shinyapp-linked-click/
 description: Shiny app to showcase click event on heatmap
@@ -7,7 +6,6 @@ layout: base
 display_as: shiny
 language: r
 page_type: example_index
-has_thumbnail: false
 ---
 ## Shiny app
 

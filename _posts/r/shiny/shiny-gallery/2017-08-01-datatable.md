@@ -1,5 +1,4 @@
 ---
-title: Datatable | Examples | Plotly
 name: Datatable and Plotly
 permalink: r/datatable/
 description: Getting Started with Datatable and Plotly
@@ -7,7 +6,6 @@ layout: base
 display_as: shiny
 language: r
 page_type: example_index
-has_thumbnail: false
 output:
   html_document:
     keep_md: true

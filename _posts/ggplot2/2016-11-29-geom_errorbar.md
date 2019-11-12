@@ -1,5 +1,4 @@
 ---
-title: geom_errorbar | Examples | Plotly
 name: geom_errorbar
 permalink: ggplot2/geom_errorbar/
 description: Examples of geom_errobar in R and ggplot2
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/error-bar.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: statistics
 order: 2
 output:

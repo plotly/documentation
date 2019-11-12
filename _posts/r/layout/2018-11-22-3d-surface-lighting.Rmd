@@ -1,5 +1,4 @@
 ---
-title: 3D Surface Lighting in R | Examples | Plotly
 name: 3D Surface Lighting in R
 permalink: r/3d-surface-lighting/
 description: How to add lighting effects in 3D R Plots.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/your-tutorial-chart.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: layout_opt
 output:
   html_document:

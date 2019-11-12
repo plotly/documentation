@@ -1,12 +1,10 @@
 ---
-title: Aggregations in R | Examples | Plotly
 name: Aggregations
 permalink: r/aggregations/
 description: How to use aggregates in R with Plotly.
 layout: base
 thumbnail: thumbnail/aggregations.jpg
 language: r
-has_thumbnail: true
 display_as: transforms
 page_type: example_index
 order: 3

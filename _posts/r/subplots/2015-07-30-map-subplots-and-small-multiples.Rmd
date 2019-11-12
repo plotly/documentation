@@ -1,12 +1,10 @@
 ---
-title: Map Subplots And Small Multiples
 name: Map Subplots And Small Multiples
 permalink: r/map-subplots-and-small-multiples/
 description: How to create map subplots and small multiples in R.
 layout: base
 thumbnail: thumbnail/map-subplots.jpg
 language: r
-has_thumbnail: true
 display_as: multiple_axes
 output:
   html_document:

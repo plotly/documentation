@@ -1,5 +1,4 @@
 ---
-title: geom_spoke in ggplot2 | Examples | Plotly
 name: geom_spoke
 permalink: ggplot2/geom_spoke/
 description: How to use geom_spoke with Plotly.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/geom_spoke.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: basic
 order: 10
 output:

@@ -28,7 +28,6 @@
       - Include the following header (*replacing `your-tutorial-chart` with the type of chart you're creating in the tutorial.) :
       ```
       ---
-      title: Your-Tutorial-Chart in R | Examples | Plotly
       name: Your-Tutorial-Chart
       permalink: r/your-tutorial-chart/
       description: How to create your-tutorial-chart in R. Short description of your tutorial.
@@ -36,8 +35,7 @@
       thumbnail: thumbnail/your-tutorial-chart.jpg *see step 2 for further thumbnail instructions*
       language: r
       page_type: example_index
-      has_thumbnail: true
-      display_as: chart_type
+            display_as: chart_type
       order: 9 *see below for order instructions*
       output:
         html_document:

@@ -1,12 +1,10 @@
 ---
-title: County-Level Choropleth in R | Examples | Plotly
 name: County Level Choropleth
 permalink: r/county-level-choropleth/
 description: How to create county-level choropleths in R with Plotly.
 layout: base
 thumbnail: thumbnail/county-level-choropleth.jpg
 language: r
-has_thumbnail: true
 display_as: maps
 order: 6
 output:

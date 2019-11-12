@@ -24,7 +24,6 @@ jupyter:
   plotly:
     description: How to upload data to Plotly from Python with the Plotly Grid API.
     display_as: chart_studio
-    has_thumbnail: true
     language: python
     layout: base
     name: Plots from Grids
@@ -32,7 +31,6 @@ jupyter:
     page_type: u-guide
     permalink: python/data-api/
     thumbnail: thumbnail/table.jpg
-    title: Plotly Data API
     v4upgrade: true
 ---
 

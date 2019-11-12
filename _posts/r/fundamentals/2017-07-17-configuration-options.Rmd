@@ -1,11 +1,9 @@
 ---
-title: Configuration Options | Examples | Plotly
 name: Configuration Options
 permalink: r/configuration-options/
 description: How to set configuration options of plotly graphs in python. Examples of both online and offline configurations.
 layout: base
 language: r
-has_thumbnail: true
 thumbnail: thumbnail/modebar-icons.png
 display_as: fundamentals
 order: 7

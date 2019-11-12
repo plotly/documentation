@@ -1,12 +1,10 @@
 ---
-title: 2D Histogram Contour in R | Examples | Plotly
 name: 2D Histogram Contour
 permalink: r/2d-histogram-contour/
 description: How to create 2D Histogram Contour plots in R with Plotly.
 layout: base
 thumbnail: thumbnail/hist2dcontour.png
 language: r
-has_thumbnail: true
 display_as: statistical
 order: 6
 output:

@@ -1,5 +1,4 @@
 ---
-title: Mapbox Layers in R | Examples | Plotly
 name: Mapbox Layers
 permalink: r/mapbox-layers/
 description: How to make Mapbox maps in R with various base layers, with
@@ -8,7 +7,6 @@ layout: base
 thumbnail: thumbnail/mapbox-layers.png
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: maps
 order: 5
 output:

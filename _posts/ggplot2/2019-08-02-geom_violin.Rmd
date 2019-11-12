@@ -1,5 +1,4 @@
 ---
-title: geom_violin | Examples | Plotly
 name: geom_violin
 permalink: ggplot2/geom_violin/
 description: How to make a density map using geom_violin. Includes explanations on flipping axes and facetting.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/geom_violin.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: statistical
 order: 8
 output:

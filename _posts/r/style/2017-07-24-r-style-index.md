@@ -1,12 +1,10 @@
 ---
 permalink: r/style-options/
-title: R Graphing Library Plotly Style Options
 description: Plotly's R graphing library makes interactive, publication-quality graphs online. Tutorials and tips on style options.
 name: More Style Options
 layout: langindex
 language: r
 display_as: style_opt
-has_thumbnail: false
 thumbnail: thumbnail/mixed.jpg
 page_type: example_index
 order: 10
@@ -26,5 +24,5 @@ order: 10
 	</div>
 </header>
 
-		{% assign languagelistimg = site.posts | where:"language","r" | where:"display_as","style_opt" | where:"has_thumbnail",true | where: "layout","base" | sort: "order" %}
+		{% assign languagelist = site.posts | where:"language","r" | where:"display_as","style_opt" | where: "layout","base" | sort: "order" %}
         {% include posts/documentation_eg.html %}

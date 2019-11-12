@@ -1,12 +1,10 @@
 ---
-title: 3D Isosurface Plots | Plotly
 name: 3D Isosurface Plots 
 permalink: r/3d-isosurface-plots/
 description: How to create 3D isosurface plots with Plotly.
 layout: base
 thumbnail: thumbnail/isosurface.jpg
 language: r
-has_thumbnail: true
 display_as: 3d_charts
 order: 20
 output:

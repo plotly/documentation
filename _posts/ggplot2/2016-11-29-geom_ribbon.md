@@ -1,5 +1,4 @@
 ---
-title: geom_ribbon | Examples | Plotly
 name: geom_ribbon
 permalink: ggplot2/geom_ribbon/
 description: How to make plots with geom_ribbon in ggplot2 and R.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/geom_ribbon.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: statistical
 order: 5
 output:

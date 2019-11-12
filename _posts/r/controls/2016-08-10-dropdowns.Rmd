@@ -1,5 +1,4 @@
 ---
-title: Adding Dropdowns
 name: Dropdown Events
 permalink: r/dropdowns/
 description: How to add dropdowns to R plots
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/dropdown.jpg
 language: r
 page_type: example_index
-has_thumbnail: true
 display_as: controls
 order: 2
 output:

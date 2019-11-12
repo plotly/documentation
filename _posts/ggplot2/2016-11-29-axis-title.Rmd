@@ -1,5 +1,4 @@
 ---
-title: ggplot2 axis.title | Examples | Plotly
 name: axis.title
 permalink: ggplot2/axis-title/
 description: How to modify axis titles in R and ggplot2.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/theme_image.png
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: layout_opt
 output:
   html_document:

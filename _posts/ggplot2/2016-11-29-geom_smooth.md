@@ -1,5 +1,4 @@
 ---
-title: geom_smooth | Examples | Plotly
 name: geom_smooth
 permalink: ggplot2/geom_smooth/
 description: How to use the abline geom in ggplot2 online to add a line with specified slope and intercept to the plot.
@@ -7,7 +6,6 @@ layout: base
 thumbnail: thumbnail/line-plots.jpg
 language: ggplot2
 page_type: example_index
-has_thumbnail: true
 display_as: statistical
 order: 6
 output:
