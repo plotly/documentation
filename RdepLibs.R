@@ -14,3 +14,11 @@ install.packages("dplyr")
 install.packages("quantmod")
 # r/animations/2017-05-28-cumulative-animations/Mulitple Trace Animations
 install.packages("gapminder")
+# r/basic/2015-07-30-graphing-multiple-chart-types/Loess Smoother with Uncertainty Bounds
+install.packages("broom")
+# r/basic/2015-07-30-graphing-multiple-chart-types/Plotting Forecast Object
+install.packages("forecast")
+# r/basic/2016-09-29-line.Rmd/Mapping data to linetype
+install.packages("plyr")
+
+
