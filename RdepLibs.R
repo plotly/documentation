@@ -23,6 +23,7 @@ install.packages("MASS")
 # r/financial/2019-09-17-funnel-charts
 # Need to install plotly from Github to get funnel plots
 devtools::install_github("ropensci/plotly")
-
+# r/fundamentals/2015-08-10-knitr/
+install.packages("htmltools")
 
 
