@@ -18,6 +18,8 @@ install.packages("broom")
 install.packages("forecast")
 # r/basic/2016-09-29-line/Mapping data to linetype
 install.packages("plyr")
+# r/basic/scattergl/2015-08-10-knitr/2016-02-25-scattergl-timeseries
+install.packages("readr")
 # r/controls/2016-08-10-dropdowns/Simple Dropdown Menu Example
 install.packages("MASS")
 # r/financial/2019-09-17-funnel-charts
@@ -25,5 +27,6 @@ install.packages("MASS")
 devtools::install_github("ropensci/plotly")
 # r/fundamentals/2015-08-10-knitr/
 install.packages("htmltools")
+
 
 
