@@ -9,15 +9,10 @@ except:
     raise Exception("You need to specify a path!")
 
 def enforceOrder(listToBeOrdered):
-    for index, post in enumerate(listToBeOrdered):
-        if file_path == 'build/html':
-            if index+1 == 5:
-                continue
-
-        if index+1 != post['order']:      
-            postToBeAltered = frontmatter.load(post['path'])
-            postToBeAltered.metadata['order'] = index+1
-            frontmatter.dump(postToBeAltered, post['path'])
+    for index, post in enumerate(listToBeOrdered):    
+        postToBeAltered = frontmatter.load(post['path'])
+        postToBeAltered.metadata['order'] = (index+1 if file_path != "build/html" and index<5 else index+2)
+        frontmatter.dump(postToBeAltered, post['path'])
 
 def checkConsecutive(l): 
     if len(order) != len(set(order)):
@@ -43,10 +38,7 @@ for category in categories:
             if "display_as" in post.metadata:
                 if post.metadata['display_as'] == category:
                     postFamily.append({'path':str(md_path), 'order' : post.metadata['order']})
-                
-    if file_path == 'build/html':
-        postFamily.append({'path':'placeholder', 'order' : 5 })
-
+    
     sortedPostFamily = sorted(postFamily, key = lambda i: i['order'])
 
     order = [ p['order'] for p in sortedPostFamily ]
