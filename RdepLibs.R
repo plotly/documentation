@@ -34,6 +34,14 @@ install.packages("tidyr")
 install.packages("tidyverse")
 # r/maps/2018-06-22-sf/
 install.packages("sf")
+# r/scientific/2015-07-30-contour-plots/Create Matrix and Plot Contour
+install.packages("stringr")
+install.packages("reshape2")
+# r/scientific/2015-12-31-network-graph/Read Graph File
+install.packages("igraph")
+install.packages("igraphdata")
+# r/scientific/2018-08-03-heatmap-webgl/WebGL Heatmap from an Image
+install.packages("jpeg")
 
 
 
