@@ -11,7 +11,10 @@ except:
 paths = []
 for suffix in ["md", "hmtl"]:
     paths += [x for x in Path(path).glob("**/*."+suffix)]
-  
+
+# this will store the front matter for all posts in the given directory
+allPosts = [];
+
 #get all posts with frontmatter in md format
 for path in paths:
     post = frontmatter.load(str(path))
