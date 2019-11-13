@@ -27,6 +27,18 @@ install.packages("MASS")
 devtools::install_github("ropensci/plotly")
 # r/fundamentals/2015-08-10-knitr/
 install.packages("htmltools")
+# r/layout/2015-07-30-legend/Hiding the legend
+install.packages("plyr")
+install.packages("tidyr")
+# r/maps/2017-04-12-county-level-choropleth/Add County-Level Data
+install.packages("tidyverse")
+# r/maps/2018-06-22-sf/
+install.packages("sf")
+
+
+
+
+
 
 
 
