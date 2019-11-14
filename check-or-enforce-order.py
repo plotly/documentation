@@ -43,11 +43,8 @@ def enforceOrder(listToBeOrdered):
                 except:
                     continue
         elif file_path == "python": # accounts for the fact that this is also run in the plotly.py-docs repo
-            if post['path'][0] == ".":
-                continue
-            else:
-                postToBeAltered.metadata["jupyter"]["plotly"]['order'] = (index+2 if index>=4 else index+1)
-                frontmatter.dump(postToBeAltered, post['path'])
+            postToBeAltered.metadata["jupyter"]["plotly"]['order'] = (index+2 if index>=4 else index+1)
+            frontmatter.dump(postToBeAltered, post['path'])
         else:        
             postToBeAltered.metadata['order'] = index+1
             frontmatter.dump(postToBeAltered, post['path'])
@@ -65,6 +62,8 @@ def main():
         #get all posts with frontmatter in md format
         for md_path in paths:
             post = frontmatter.load(str(md_path))
+            if ".ipynb_checkpoints" in str(md_path):
+                continue
             metadata = get_meta(post)
             if len(post.metadata.keys()) > 0:
                 if "display_as" in metadata:
