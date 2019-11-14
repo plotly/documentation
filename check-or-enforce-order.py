@@ -15,7 +15,7 @@ if len(sys.argv) == 3:
         enforce = True
 
 # post families with these strings as "display_as" front-matter will be checked
-categories = ["file_settings", "basic", "statistical", "scientific", "maps", "3d_charts", "multiple_axes"]
+categories = ["file_settings", "basic", "financial", "statistical", "scientific", "maps", "3d_charts", "multiple_axes"]
 
 paths = []
 for suffix in ["md", "html"]:

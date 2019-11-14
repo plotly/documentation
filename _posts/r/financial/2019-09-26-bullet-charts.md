@@ -1,18 +1,16 @@
 ---
-name: Bullet Charts
-permalink: r/bullet-charts/
 description: How to create a Bullet Chart in R with Plotly
-layout: base
-thumbnail: thumbnail/bullet.png
-language: r
 display_as: financial
+language: r
+layout: base
+name: Bullet Charts
 order: 8
 output:
   html_document:
     keep_md: true
+permalink: r/bullet-charts/
+thumbnail: thumbnail/bullet.png
 ---
-
-
 
 ### New to Plotly?
 

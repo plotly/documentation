@@ -1,19 +1,17 @@
 ---
-name: OHLC Charts
-permalink: r/ohlc-charts/
 description: How to create OHLC charts in R.
-layout: base
-thumbnail: thumbnail/ohlc.jpg
-language: r
-page_type: example_index
 display_as: financial
+language: r
+layout: base
+name: OHLC Charts
 order: 3
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/ohlc-charts/
+thumbnail: thumbnail/ohlc.jpg
 ---
-
-
 
 ### New to Plotly?
 

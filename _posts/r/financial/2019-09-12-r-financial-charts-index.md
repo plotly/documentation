@@ -1,15 +1,15 @@
 ---
-permalink: r/financial-charts/
-description: APlotly.js makes interactive, publication-quality graphs online. Examples of how to make financial charts.
-name: More Financial Charts
-layout: langindex
-language: r
+description: APlotly.js makes interactive, publication-quality graphs online. Examples
+  of how to make financial charts.
 display_as: financial
-thumbnail: thumbnail/mixed.jpg
-page_type: example_index
+language: r
+layout: langindex
+name: More Financial Charts
 order: 5
+page_type: example_index
+permalink: r/financial-charts/
+thumbnail: thumbnail/mixed.jpg
 ---
-
 
 <header class="--welcome">
 	<div class="--welcome-body">

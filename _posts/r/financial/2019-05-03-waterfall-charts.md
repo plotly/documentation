@@ -1,19 +1,17 @@
 ---
-name: Waterfall Charts
-permalink: r/waterfall-charts/
 description: How to make waterfall charts in R with Plotly.
-layout: base
-thumbnail: thumbnail/waterfall-charts.jpg
-language: r
-page_type: example_index
 display_as: financial
+language: r
+layout: base
+name: Waterfall Charts
 order: 4
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/waterfall-charts/
+thumbnail: thumbnail/waterfall-charts.jpg
 ---
-
-
 
 ### New to Plotly?
 

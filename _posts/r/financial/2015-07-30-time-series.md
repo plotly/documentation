@@ -1,19 +1,18 @@
 ---
-name: Time Series
-permalink: r/time-series/
-description: How to plot date and time in R. An example of a time series plot with the POSIXct and Sys.Date classes.
-layout: base
-thumbnail: thumbnail/time-series.jpg
-language: r
-page_type: example_index
+description: How to plot date and time in R. An example of a time series plot with
+  the POSIXct and Sys.Date classes.
 display_as: financial
-order: 1.1
+language: r
+layout: base
+name: Time Series
+order: 1
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/time-series/
+thumbnail: thumbnail/time-series.jpg
 ---
-
-
 
 ### New to Plotly?
 
