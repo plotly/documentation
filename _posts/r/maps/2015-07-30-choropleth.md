@@ -1,18 +1,18 @@
 ---
-name: Choropleth Maps
-permalink: r/choropleth-maps/
-description: How to make a choropleth map in R. A choropleth map shades geographic regions by value.
-layout: base
-thumbnail: thumbnail/choropleth.jpg
-language: r
-page_type: example_index
+description: How to make a choropleth map in R. A choropleth map shades geographic
+  regions by value.
 display_as: maps
-order: 0
+language: r
+layout: base
+name: Choropleth Maps
+order: 1
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/choropleth-maps/
+thumbnail: thumbnail/choropleth.jpg
 ---
-
 
 ### New to Plotly?
 

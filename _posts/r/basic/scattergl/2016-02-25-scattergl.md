@@ -1,21 +1,19 @@
 ---
-name: WebGL vs SVG in R
-permalink: r/webgl-vs-svg/
-redirect_from: r/webgl-vs-svg-line-chart/
 description: How to create plots using WebGL
-layout: base
-thumbnail: thumbnail/webgl.jpg
-language: r
 display_as: basic
-order: 0.5
+language: r
+layout: base
+name: WebGL vs SVG in R
+order: 7
 output:
   html_document:
     highlight: null
     keep_md: true
     theme: null
+permalink: r/webgl-vs-svg/
+redirect_from: r/webgl-vs-svg-line-chart/
+thumbnail: thumbnail/webgl.jpg
 ---
-
-
 
 ### New to Plotly?
 

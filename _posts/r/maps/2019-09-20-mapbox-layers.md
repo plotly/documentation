@@ -1,19 +1,18 @@
 ---
-name: Mapbox Layers
-permalink: r/mapbox-layers/
-description: How to make Mapbox maps in R with various base layers, with
-      or without needing a Mapbox Access token.
-layout: base
-thumbnail: thumbnail/mapbox-layers.png
-language: r
-page_type: example_index
+description: How to make Mapbox maps in R with various base layers, with or without
+  needing a Mapbox Access token.
 display_as: maps
-order: 5
+has_thumbnail: true
+language: r
+layout: base
+name: Mapbox Layers
+order: 6
 output:
   html_document:
     keep_md: true
+permalink: r/mapbox-layers/
+thumbnail: thumbnail/mapbox-layers.png
 ---
-
 
 ### New to Plotly?
 

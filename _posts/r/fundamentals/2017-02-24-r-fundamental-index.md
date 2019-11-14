@@ -1,16 +1,16 @@
 ---
-permalink: r/plotly-fundamentals/
-description: Plotly's R graphing library makes interactive, publication-quality graphs online. Tutorials and tips about fundamental features of Plotly's R API.
-name: More Plotly Fundamentals
-layout: langindex
-language: r
+description: Plotly's R graphing library makes interactive, publication-quality graphs
+  online. Tutorials and tips about fundamental features of Plotly's R API.
 display_as: file_settings
-thumbnail: thumbnail/mixed.jpg
-redirect_from: r/fundamentals/
+language: r
+layout: langindex
+name: More Plotly Fundamentals
+order: 5
 page_type: example_index
-order: 20
+permalink: r/plotly-fundamentals/
+redirect_from: r/fundamentals/
+thumbnail: thumbnail/mixed.jpg
 ---
-
 
 <header class="--welcome">
 	<div class="--welcome-body">

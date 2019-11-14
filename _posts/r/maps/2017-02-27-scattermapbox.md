@@ -1,18 +1,17 @@
 ---
-name: Scattermapbox
-permalink: r/scattermapbox/
 description: How to create scattermapbox plots in R with Plotly.
-layout: base
-thumbnail: thumbnail/scatter-mapbox.jpg
-language: r
-page_type: example_index
 display_as: maps
-order: 6
+has_thumbnail: true
+language: r
+layout: base
+name: Scattermapbox
+order: 9
 output:
   html_document:
     keep_md: true
+permalink: r/scattermapbox/
+thumbnail: thumbnail/scatter-mapbox.jpg
 ---
-
 
 ### New to Plotly?
 
