@@ -80,8 +80,9 @@ def main():
             if enforce is True:
                 print('Order Check Did Not Pass! ENFORCING CORRECT ORDER for {}'.format(category))
                 enforceOrder(sortedPostFamily)
-            else: 
-                raise Exception("Order Check Failed in '{}' display_as! Run 'python check-or-enforce-order.py {} enforce' to resolve!".format(category, file_path))
+            else:
+                arg = file_path if file_path != "build/html" else "python"
+                raise Exception("Order Check Failed in '{}' display_as! Run 'python check-or-enforce-order.py {} enforce' to resolve!".format(category, arg))
 
         print("Order Check Passed for {} display_as in {}!".format(category, file_path))
         order = []
