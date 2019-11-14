@@ -53,7 +53,7 @@ def enforceOrder(listToBeOrdered):
             frontmatter.dump(postToBeAltered, post['path'])
 
 def checkConsecutive(listToBeChecked): 
-    if file_path == "python":
+    if file_path in ["python", "build/html"]:
         listToBeChecked = listToBeChecked + [5]
     return sorted(listToBeChecked) == list(range(1, len(listToBeChecked)+1))
 
