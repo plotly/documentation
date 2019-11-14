@@ -36,14 +36,13 @@ packageVersion('plotly')
 
 ```{r}
 library(plotly)
-library(plyr)
 
 # read in Walmart data
 df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/1962_2006_walmart_store_openings.csv")
 
 
 # first plot - bar chart
-total <- count(df$YEAR)
+total <- plyr::count(df$YEAR)
 fit <- fitted(loess(total$freq ~ total$x))
 
 p2 <- plot_ly(data = total, x = ~x, y = ~freq, type = "bar", showlegend=FALSE,
@@ -69,23 +68,22 @@ p3 <- plot_geo(df, lat = ~LAT, lon = ~LON) %>%
 
 
 # third plot - 3D mesh
-#install.packages("rgl")
-#install.packages("RTriangle")
-#install.packages("graticule")
-#devtools::install_github("r-gris/rangl", force=TRUE)
-
-library(rangl)
+#devtools::install_github("hypertidy/anglr")
+library(anglr)
 library(maptools)
 
 data(wrld_simpl)
 
-## max area in native units of the map data
-## globe() just reprojects to geocent, but stores in rangl's normal way (objects, primitives, vertices)
-mesh <- plot(globe(rangl(subset(wrld_simpl), max_area = 0.5)))
+map1 <- subset(wrld_simpl,
+               NAME %in% c("Indonesia", "Papua New Guinea", "New Zealand", "Australia"))
+## DEL model (like TRI in silicate)
+delmesh <-  anglr::globe(anglr::DEL(map1, max_area = 0.5))
+mesh <- as.mesh3d(delmesh)
+
 
 # plot point cloud
 x <- mesh$vb[1,]
-y <- mesh$vb[2,]
+y <- mesh$vb[2, ]
 z <- mesh$vb[3,]
 m <- matrix(c(x,y,z), ncol=3, dimnames=list(NULL,c("x","y","z")))
 
@@ -94,7 +92,7 @@ zmean <- apply(t(mesh$it),MARGIN=1,function(row){mean(m[row,3])})
 
 library(scales)
 facecolor = colour_ramp(
-  brewer_pal(palette="OrRd")(9)
+  brewer_pal(palette="RdBu")(9)
 )(rescale(x=zmean))
 
 p1 <- plot_ly(

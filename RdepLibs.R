@@ -28,7 +28,6 @@ devtools::install_github("ropensci/plotly")
 # r/fundamentals/2015-08-10-knitr/
 install.packages("htmltools")
 # r/layout/2015-07-30-legend/Hiding the legend
-install.packages("plyr")
 install.packages("tidyr")
 # r/maps/2017-04-12-county-level-choropleth/Add County-Level Data
 install.packages("tidyverse")
@@ -42,7 +41,13 @@ install.packages("igraph")
 install.packages("igraphdata")
 # r/scientific/2018-08-03-heatmap-webgl/WebGL Heatmap from an Image
 install.packages("jpeg")
-
+# r/shiny/2015-07-30-shiny
+install.packages("shiny")
+# r/shiny/coupled-events/click-selection
+install.packages("mlbench")
+install.packages("shinythemes")
+# r/statistical/2015-07-30-2D-Histogram/Basic 2D Histogram
+install.packages('mvtnorm')
 
 
 
