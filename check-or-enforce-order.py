@@ -8,27 +8,31 @@ try:
 except:
     raise Exception("You need to specify a path!")
 
+# if "enforce" is the second command line argument, 
+# this function will mutate the front-matter to enforce a sequential order
 def enforceOrder(listToBeOrdered):
     for index, post in enumerate(listToBeOrdered):    
         postToBeAltered = frontmatter.load(post['path'])
-        postToBeAltered.metadata['order'] = (index+1 if file_path != "build/html" and index<5 else index+2)
+        # if file_path == "build/html" conditional accounts for the fact that
+        # this script is run in the plotly.py-docs repo
+        # where there are no posts with order 5 
+        postToBeAltered.metadata['order'] = (index+2 if file_path == "build/html" and index>=5 else index+1)
         frontmatter.dump(postToBeAltered, post['path'])
 
-def checkConsecutive(l): 
-    if len(order) != len(set(order)):
-        return False
-    
-    if sorted(l) == list(range(1, len(l)+1)):
-        return True
-    else:
-        return False
+def checkConsecutive(listToBeChecked): 
+    if file_path == "build/html":
+        listToBeChecked = listToBeChecked + [5]
+    return sorted(listToBeChecked) == list(range(1, len(listToBeChecked)+1))
 
+# post families with these strings as "display_as" front-matter will be checked
 categories = ["file_settings", "basic", "statistical", "scientific", "maps", "3d_charts", "multiple_axes"]
 
 paths = []
 for suffix in ["md", "html"]:
     paths += [x for x in Path(file_path).glob("**/*."+suffix)]
 
+# 1. collect the current order of posts 
+# 2. sort and check if sorted order is sequential
 for category in categories:
     postFamily = []
     #get all posts with frontmatter in md format
