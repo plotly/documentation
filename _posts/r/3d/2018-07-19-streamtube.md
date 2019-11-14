@@ -1,17 +1,16 @@
 ---
-name: 3D Streamtube Plots 
-permalink: r/streamtube-plot/
 description: How to create streamtube plots with Plotly.
-layout: base
-thumbnail: thumbnail/streamtube.jpg
-language: r
 display_as: 3d_charts
+language: r
+layout: base
+name: 3D Streamtube Plots
 order: 8
 output:
   html_document:
     keep_md: true
+permalink: r/streamtube-plot/
+thumbnail: thumbnail/streamtube.jpg
 ---
-
 
 ### New to Plotly?
 

@@ -1,15 +1,15 @@
 ---
-permalink: r/statistical-charts/
-description: Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of how to make statistical charts.
-layout: langindex
-language: r
-name: More Statistical Charts
+description: Plotly's R graphing library makes interactive, publication-quality graphs
+  online. Examples of how to make statistical charts.
 display_as: statistical
-thumbnail: thumbnail/mixed.jpg
-page_type: example_index
+language: r
+layout: langindex
+name: More Statistical Charts
 order: 5
+page_type: example_index
+permalink: r/statistical-charts/
+thumbnail: thumbnail/mixed.jpg
 ---
-
 
 <header class="--welcome">
 	<div class="--welcome-body">

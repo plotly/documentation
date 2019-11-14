@@ -1,17 +1,16 @@
 ---
-name: Sunburst Charts
-permalink: r/sunburst-charts/
 description: How to make sunburst charts in R with Plotly.
-layout: base
-thumbnail: thumbnail/sunburst.gif
-language: r
 display_as: basic
+language: r
+layout: base
+name: Sunburst Charts
 order: 12
 output:
   html_document:
     keep_md: true
+permalink: r/sunburst-charts/
+thumbnail: thumbnail/sunburst.gif
 ---
-
 
 ### New to Plotly?
 

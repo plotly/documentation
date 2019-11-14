@@ -1,18 +1,16 @@
 ---
-name: Parallel Coordinates Plot
-permalink: r/parallel-coordinates-plot/
 description: How to create parallel coordinates plots in R with Plotly.
-layout: base
-thumbnail: thumbnail/parcoords.jpg
-language: r
 display_as: scientific
+language: r
+layout: base
+name: Parallel Coordinates Plot
 order: 9
 output:
   html_document:
     keep_md: true
+permalink: r/parallel-coordinates-plot/
+thumbnail: thumbnail/parcoords.jpg
 ---
-
-
 
 ### New to Plotly?
 

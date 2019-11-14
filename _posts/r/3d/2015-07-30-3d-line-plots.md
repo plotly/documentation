@@ -1,19 +1,17 @@
 ---
-name: 3D Line Plots
-permalink: r/3d-line-plots/
 description: How to make interactive 3D line plots in R.
-layout: base
-thumbnail: thumbnail/3d-line.jpg
-language: r
-page_type: example_index
 display_as: 3d_charts
+language: r
+layout: base
+name: 3D Line Plots
 order: 2
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/3d-line-plots/
+thumbnail: thumbnail/3d-line.jpg
 ---
-
-
 
 ### New to Plotly?
 

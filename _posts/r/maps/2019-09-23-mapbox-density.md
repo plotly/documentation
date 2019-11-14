@@ -1,18 +1,17 @@
 ---
-name: Mapbox Density
-permalink: r/mapbox-density-heatmaps/
 description: How to make a Mapbox Density Heatmap in R
-layout: base
-thumbnail: thumbnail/mapbox-density.png
-language: r
-page_type: example_index
 display_as: maps
+language: r
+layout: base
+name: Mapbox Density
 order: 2
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/mapbox-density-heatmaps/
+thumbnail: thumbnail/mapbox-density.png
 ---
-
 
 ### New to Plotly?
 

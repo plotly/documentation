@@ -1,18 +1,17 @@
 ---
-name: Multiple Axes
-permalink: r/multiple-axes/
 description: How to make a graph with multiple axes in R with Plotly.
-layout: base
-thumbnail: thumbnail/multiple-axes.jpg
-language: r
-page_type: example_index
 display_as: multiple_axes
+language: r
+layout: base
+name: Multiple Axes
 order: 1
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/multiple-axes/
+thumbnail: thumbnail/multiple-axes.jpg
 ---
-
 
 ### New to Plotly?
 

@@ -1,19 +1,17 @@
 ---
-name: Polar Charts
-permalink: r/polar-chart/
 description: How to create Polar Charts in R with Plotly.
-layout: base
-thumbnail: thumbnail/polar.gif
-language: r
-page_type: example_index
 display_as: scientific
+language: r
+layout: base
+name: Polar Charts
 order: 4
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/polar-chart/
+thumbnail: thumbnail/polar.gif
 ---
-
-
 
 ### New to Plotly?
 

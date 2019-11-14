@@ -1,18 +1,17 @@
 ---
-name: Filled Area in Mapbox
-permalink: r/filled-area-on-mapbox/
 description: How to make an area on Map in R with plotly.
-layout: base
-thumbnail: thumbnail/area.jpg
-language: r
-has_thumbnail: true
 display_as: maps
+has_thumbnail: true
+language: r
+layout: base
+name: Filled Area in Mapbox
 order: 8
 output:
   html_document:
     keep_md: true
+permalink: r/filled-area-on-mapbox/
+thumbnail: thumbnail/area.jpg
 ---
-
 
 ### New to Plotly?
 

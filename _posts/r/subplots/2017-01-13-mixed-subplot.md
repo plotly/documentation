@@ -1,18 +1,17 @@
 ---
-name: Mixed Subplots
-permalink: r/mixed-subplots/
 description: How to create mixed subplots in R with Plotly.
-layout: base
-thumbnail: thumbnail/mixed_subplot.JPG
-language: r
-page_type: example_index
 display_as: multiple_axes
+language: r
+layout: base
+name: Mixed Subplots
 order: 4
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/mixed-subplots/
+thumbnail: thumbnail/mixed_subplot.JPG
 ---
-
 
 ### New to Plotly?
 

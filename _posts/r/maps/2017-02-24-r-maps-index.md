@@ -1,15 +1,15 @@
 ---
-permalink: r/maps/
-description: Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of maps.
-name: More Maps
-layout: langindex
-language: r
+description: Plotly's R graphing library makes interactive, publication-quality graphs
+  online. Examples of maps.
 display_as: maps
-thumbnail: thumbnail/mixed.jpg
-page_type: example_index
+language: r
+layout: langindex
+name: More Maps
 order: 5
+page_type: example_index
+permalink: r/maps/
+thumbnail: thumbnail/mixed.jpg
 ---
-
 
 <header class="--welcome">
 	<div class="--welcome-body">

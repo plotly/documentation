@@ -1,18 +1,16 @@
 ---
-name: Carpet Contour Plot
-permalink: r/carpet-contour/
 description: How to create Carpet Contour Plots in R with Plotly.
-layout: base
-thumbnail: thumbnail/contourcarpet.jpg
-language: r
 display_as: scientific
+language: r
+layout: base
+name: Carpet Contour Plot
 order: 12
 output:
   html_document:
     keep_md: true
+permalink: r/carpet-contour/
+thumbnail: thumbnail/contourcarpet.jpg
 ---
-
-
 
 ### New to Plotly?
 

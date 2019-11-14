@@ -1,18 +1,16 @@
 ---
-name: Carpet Scatter Plot
-permalink: r/carpet-scatter/
 description: How to create carpet plots in R with Plotly.
-layout: base
-thumbnail: thumbnail/scattercarpet.jpg
-language: r
 display_as: scientific
+language: r
+layout: base
+name: Carpet Scatter Plot
 order: 11
 output:
   html_document:
     keep_md: true
+permalink: r/carpet-scatter/
+thumbnail: thumbnail/scattercarpet.jpg
 ---
-
-
 
 ### New to Plotly?
 

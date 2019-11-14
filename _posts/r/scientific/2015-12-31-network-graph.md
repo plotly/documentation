@@ -1,17 +1,16 @@
 ---
-name: Network Graph
-permalink: r/network-graphs/
 description: How to make network graphs in R with Plotly.
-layout: base
-thumbnail: thumbnail/net.jpg
-language: r
 display_as: scientific
+language: r
+layout: base
+name: Network Graph
 order: 7
 output:
   html_document:
     keep_md: true
+permalink: r/network-graphs/
+thumbnail: thumbnail/net.jpg
 ---
-
 
 ### New to Plotly?
 

@@ -1,18 +1,17 @@
 ---
-name: Ternary Plots
-permalink: r/ternary-plots/
 description: How to create ternary plots in R with Plotly.
-layout: base
-thumbnail: thumbnail/ternary.jpg
-language: r
-page_type: example_index
 display_as: scientific
+language: r
+layout: base
+name: Ternary Plots
 order: 3
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/ternary-plots/
+thumbnail: thumbnail/ternary.jpg
 ---
-
 
 ### New to Plotly?
 

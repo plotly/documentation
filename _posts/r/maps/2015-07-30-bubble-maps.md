@@ -1,18 +1,17 @@
 ---
-name: Bubble Maps
-permalink: r/bubble-maps/
 description: How to make a bubble chart and map in R.
-layout: base
-thumbnail: thumbnail/bubble-map.jpg
-language: r
-page_type: example_index
 display_as: maps
+language: r
+layout: base
+name: Bubble Maps
 order: 3
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/bubble-maps/
+thumbnail: thumbnail/bubble-map.jpg
 ---
-
 
 ### New to Plotly?
 

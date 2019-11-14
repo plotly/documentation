@@ -7,7 +7,7 @@ thumbnail: thumbnail/time-series.jpg
 language: r
 page_type: example_index
 display_as: financial
-order: 1
+order: 1.1
 output:
   html_document:
     keep_md: true

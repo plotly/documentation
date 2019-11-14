@@ -1,15 +1,15 @@
 ---
-permalink: r/scientific-charts/
-description: Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of how to make scientific charts.
-name: More Scientific Charts
-layout: langindex
-language: r
+description: Plotly's R graphing library makes interactive, publication-quality graphs
+  online. Examples of how to make scientific charts.
 display_as: scientific
-thumbnail: thumbnail/mixed.jpg
-page_type: example_index
+language: r
+layout: langindex
+name: More Scientific Charts
 order: 5
+page_type: example_index
+permalink: r/scientific-charts/
+thumbnail: thumbnail/mixed.jpg
 ---
-
 
 <header class="--welcome">
 	<div class="--welcome-body">
