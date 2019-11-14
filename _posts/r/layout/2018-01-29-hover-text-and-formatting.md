@@ -33,7 +33,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.9.0'
+## [1] '4.9.1'
 ```
 
 #### Add Hover Text
@@ -75,17 +75,10 @@ p <- plot_ly(type = 'scatter', mode = 'markers') %>%
     showlegend = F
   ) %>%
   layout(
-    title = "Set hover text formatting<br><a href= https://github.com/d3/d3-time-format/blob/master/README.md#locale_format>https://github.com/d3/d3-time-format/blob/master/README.md#locale_format</a>",
-    titlefont = list(
-      size = 10
-    ),
-    xaxis = list(
-      zeroline = F
-    ),
-    yaxis = list(
-      hoverformat = '.2f'
-    )
-  )
+    title = list(text="Set hover text formatting<br><a href= https://github.com/d3/d3-time-format/blob/master/README.md#locale_format>https://github.com/d3/d3-time-format/blob/master/README.md#locale_format</a>",
+      size = 10),
+    xaxis = list(zeroline = F),
+    yaxis = list(hoverformat = '.2f'))
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
@@ -95,7 +88,12 @@ chart_link
 
 <iframe src="https://plot.ly/~RPlotBot/5660.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-#### Hovertemplate
+#### Customize Tooltip Text with a Hovertemplate
+
+To customize the tooltip on your graph you can use [hovertemplate](https://plot.ly/r/reference/#pie-hovertemplate), which is a template string used for rendering the information that appear on hoverbox.
+This template string can include `variables` in %{variable} format, `numbers` in [d3-format's syntax](https://github.com/d3/d3-3.x-api-reference/blob/master/Formatting.md#d3_forma), and `date` in [d3-time-fomrat's syntax](https://github.com/d3/d3-3.x-api-reference/blob/master/Time-Formatting.md#format).
+Hovertemplate customize the tooltip text vs. [texttemplate](https://plot.ly/r/reference/#pie-texttemplate) which customizes the text that appears on your chart. <br>
+Set the horizontal alignment of the text within tooltip with [hoverlabel.align](https://plot.ly/r/reference/#layout-hoverlabel-align).
 
 
 ```r
@@ -130,6 +128,27 @@ chart_link
 
 <iframe src="https://plot.ly/~RPlotBot/5662.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
+
+```r
+library(plotly)
+p <-  plot_ly() %>%
+  add_trace(
+    type = "pie",
+    name = "",
+    values = c(2, 1, 3, 2.5),
+    labels = c("R", "Python", "Java Script", "Matlab"),
+    text = c("textA", "TextB", "TextC", "TextD"),
+    hovertemplate = "%{label}: <br>Popularity: %{percent} </br> %{text}")
+
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link <- api_create(p, filename = "texttemplate-basic")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5937.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
 #### Advanced Hovertemplate
 
 
@@ -159,11 +178,11 @@ p <- d %>%
 
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
-chart_link <- api_create(p, filename = "hovertemplate-advanced")
+chart_link <- api_create(p, filename = "advance")
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5664.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5939.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 #### Reference
 
