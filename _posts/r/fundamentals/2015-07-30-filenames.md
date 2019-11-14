@@ -1,18 +1,17 @@
 ---
-name: Updating Plotly Graphs
-permalink: r/file-options/
 description: R Filenames, folders, and updating Plotly graphs in the plotly cloud.
-layout: base
-language: r
-page_type: example_index
-thumbnail: thumbnail/horizontal-bar.jpg
 display_as: file_settings
+language: r
+layout: base
+name: Updating Plotly Graphs
 order: 1
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/file-options/
+thumbnail: thumbnail/horizontal-bar.jpg
 ---
-
 
 ### New to Plotly?
 
