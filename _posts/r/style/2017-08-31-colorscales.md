@@ -33,7 +33,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.7.1.9000'
+## [1] '4.9.1'
 ```
 
 ### Colorscale for Scatter Plots
@@ -94,6 +94,44 @@ p <- plot_ly(
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="colorscales-contour")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5426.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+### Share Color Axis
+
+This example shows how to specify the color scale and color bar per trace. To share colorscale information in multiple subplots, you can use [coloraxis](https://plot.ly/r/reference/#scatter-marker-line-coloraxis).
+Below we show how to set a reference coloraxis1 to a shared coloraxis, which are set in the layout. Note that multiple color scales can be linked to the same color.
+
+
+```r
+library(plotly)
+
+p1 <- plot_ly(
+    type = "heatmap",
+    x = c(1,2,3,4),
+    z = list(c(1,2,3,4), c(4,-3,-1,1)),
+    coloraxis = 'coloraxis')
+p2 <- plot_ly(
+    type = "heatmap",
+    x = c(3,4,5,6),
+    z = list(c(10,2,1,0), c(4,3,5,6)),
+    coloraxis = 'coloraxis')
+p <- subplot(p1, p2) %>%
+  layout(coloraxis=list(colorscale='Jet'))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="coloraxis")
+```
+
+```
+## Error: Client error: (400) Bad Request
+## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 0, 'z'), ('data', 1, 'z')]
+```
+
+```r
 chart_link
 ```
 
