@@ -48,6 +48,35 @@ install.packages("mlbench")
 install.packages("shinythemes")
 # r/statistical/2015-07-30-2D-Histogram/Basic 2D Histogram
 install.packages('mvtnorm')
+# ggplot2/2011-11-29-scale-x/By Month
+install.packages("ggplot2")
+install.packages("scales")
+# ggplot2/2016-11-29-facet-grid/Time Series Data
+install.packages("gridExtra")
+# ggplot2/2016-11-29-geom_boxplot/Time Series Facets
+install.packages("foreign")
+install.packages("Hmisc")
+# ggplot2/2016-11-29-geom_line/Mulitple Points
+install.packages("data.table")
+# ggplot2/2016-11-29-geom_polygon/Ellipses
+install.packages("proto")
+# ggplot2/2016-11-29-geom_polygon/Convex Hull
+install.packages("RColorBrewer")
+# ggplot2/2016-11-29-geom_polygon/County-Level Boundaries
+install.packages("maps")
+# ggplot2/2016-11-29-geom_ribbon/Facets
+install.packages("mgcv")
+# ggplot2/2016-11-29-geom_ribbon/Prediction Bands
+install.packages("nlme")
+# ggplot2/2016-11-29-geom_smooth/Facets
+install.packages("Lahman")
+# ggplot2/2017-04-21-geom_quantile/Basic Example
+install.packages("quantreg")
+# ggplot2/2019-07-30-geom_text/Customed Colour and Size Scale
+devtools::install_github("johannesbjork/LaCroixColoR")
+
+
+
 
 
 
