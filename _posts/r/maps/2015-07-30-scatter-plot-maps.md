@@ -2,7 +2,6 @@
 description: How to make scatter plots on maps in R. Scatter plots on maps highlight
   geographic areas and can be colored by value.
 display_as: maps
-has_thumbnail: true
 language: r
 layout: base
 name: Scatter Plots on Maps

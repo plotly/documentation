@@ -2,7 +2,6 @@
 description: How to export plotly graphs as static images in R. Plotly supports png,
   svg, jpg, and pdf image export.
 display_as: file_settings
-has_thumbnail: true
 language: r
 layout: base
 name: Static Image Export

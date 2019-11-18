@@ -1,7 +1,6 @@
 ---
 description: How to create a Funnel Chart in R with Plotly
 display_as: financial
-has_thumbnail: true
 language: r
 layout: base
 name: Funnel Charts
