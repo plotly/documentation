@@ -1,69 +1,65 @@
 import json
 import os
-
 from algoliasearch import algoliasearch
 
-## Algolia Credentials
+client = algoliasearch.Client("7EK9KHJW8M", os.environ["ALGOLIA_API_KEY"])
+index = client.init_index("schema")
 
-client = algoliasearch.Client("7EK9KHJW8M", os.environ['ALGOLIA_API_KEY'])
-index = client.init_index('schema')
-
-## Load plotschema.json
-# Note _data/plotschema.json is updated upon each deploy
-
-p = json.load(open('_data/plotschema.json'))
+p = json.load(open("_data/plotschema.json"))
 schema = []
 
-## Data Level 1: Traces
-# Add dictionaries to schema array.
-# The trace dictionary include name: trace name, permalink: reference/#trace-name, and description if applicable.
+skippable_keys = [
+    "src",
+    "_deprecated",
+    "impliedEdits",
+    "uid",
+    "editType",
+]
 
-for i in p['traces']:
-    trace = {}
-    trace ['name'] = i
-    trace ['permalink'] = 'reference/#'+i
-    if p['traces'][i]['meta']:
-        trace ['description'] = (p['traces'][i]['meta']['description']).replace('*', '"')
-    else: pass
-    schema.append(trace)
 
-def next_level(previous_level,chain_dict):
+def next_level(previous_level, chain_dict):
     for sub_attr in previous_level:
-        try:
-            if isinstance(previous_level[sub_attr],dict):
-                if not any(value in sub_attr for value in ("src", "_deprecated", "impliedEdits", "uid", "editType")):
-                    try:
-                        attribute = {}
-                        attribute ['name'] = chain_dict['name']+' > '+sub_attr
-                        attribute ['permalink'] = chain_dict['permalink']+'-'+sub_attr
-                        attribute ['description'] = (previous_level[sub_attr]['description']).replace('*', '"')
-                        schema.append(attribute)
-                        next_level(previous_level[sub_attr],{'name':attribute['name'], 'permalink':attribute['permalink']})
-                    except:
-                        attribute = {}
-                        attribute ['name'] = chain_dict['name']+' > '+sub_attr
-                        attribute ['permalink'] = chain_dict['permalink']+'-'+sub_attr
-                        attribute ['description'] = 'Properties for '+sub_attr
-                        schema.append(attribute)
-                        next_level(previous_level[sub_attr],{'name':attribute['name'], 'permalink':attribute['permalink']})
-        except:
-            pass
+        if isinstance(previous_level[sub_attr], dict) and not any(
+            v in sub_attr for v in skippable_keys
+        ):
+            attribute = dict(
+                name=chain_dict["name"] + " > " + sub_attr,
+                permalink=chain_dict["permalink"] + "-" + sub_attr,
+                rank=chain_dict["rank"] + 1,
+            )
+            if "description" in previous_level[sub_attr]:
+                attribute["description"] = previous_level[sub_attr][
+                    "description"
+                ].replace("*", '"')
+            else:
+                attribute["description"] = "Properties for " + sub_attr
+            schema.append(attribute)
+            next_level(previous_level[sub_attr], attribute.copy())
 
-layout_chain_dict = {'name':'Layout', 'permalink':'reference/#layout'}
 
-# recursively add trace attributes to schema
-for i in p['traces']:
-    chain_dict = {'name':i, 'permalink':'reference/#'+i }
-    next_level(p['traces'][i]['attributes'], chain_dict)
-
-    # if there are layoutAttributes in the trace add them too.
-    if p['traces'][i].get('layoutAttributes'):
-        next_level(p['traces'][i]['layoutAttributes'], layout_chain_dict)
+layout_chain_dict = dict(name="layout", permalink="reference/#layout", rank=0)
 
 # recursively add layout attributes to schema
-next_level(p['layout']['layoutAttributes'], layout_chain_dict)
+next_level(p["layout"]["layoutAttributes"], layout_chain_dict.copy())
 
-## Send to Algolia
+for i, trace_type in enumerate(p["traces"]):
+    trace_chain_dict = dict(
+        name=trace_type, permalink="reference/#" + trace_type, rank=(i + 1) * 1000
+    )
+    if p["traces"][trace_type]["meta"]:
+        trace_chain_dict["description"] = (
+            p["traces"][trace_type]["meta"]["description"]
+        ).replace("*", '"')
+    schema.append(trace_chain_dict)
+
+    next_level(p["traces"][trace_type]["attributes"], trace_chain_dict.copy())
+
+    # if there are layoutAttributes in the trace add them too.
+    if p["traces"][trace_type].get("layoutAttributes"):
+        next_level(
+            p["traces"][trace_type]["layoutAttributes"], layout_chain_dict.copy()
+        )
+
 
 index.clear_index()
 index.add_objects(schema)
