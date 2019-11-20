@@ -1,5 +1,4 @@
 ---
-title: Is Plotly.js Free?
 name: Is Plotly.js Free?
 permalink: javascript/is-plotly-free
 description: Plotly's open-source graphing libraries are free to use, work offline and don't require any account registration. Plotly also has commercial offerings, such as Dash Enterprise and Chart Studio Enterprise.
@@ -10,7 +9,7 @@ language: plotly_js
 
 #### Is Plotly.js Free?
 
- &nbsp;  &nbsp; **Yes.** &nbsp; Plotly.js is free and open-source software, [licensed under the **MIT license**](https://github.com/plotly/plotly.js/blob/master/LICENSE). It costs nothing to [install and use](/javascript/getting-started).
+ &nbsp;  &nbsp; **Yes.** &nbsp; Plotly.js is free and open-source software, [licensed under the **MIT license**](https://github.com/plotly/plotly.js/blob/master/LICENSE). It costs nothing to [install and use](/javascript/getting-started). You can view the source, report issues or contribute using [our Github repository](https://github.com/plotly/plotly.js).
 
 
 #### Can I use Plotly.js without signing up to any service?

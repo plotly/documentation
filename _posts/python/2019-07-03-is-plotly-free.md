@@ -1,5 +1,4 @@
 ---
-title: Is Plotly for Python Free?
 name: Is Plotly for Python  Free?
 permalink: python/is-plotly-free
 description: Plotly's open-source graphing libraries are free to use, work offline and don't require any account registration. Plotly also has commercial offerings, such as Dash Enterprise and Chart Studio Enterprise.
@@ -10,7 +9,7 @@ language: python
 
 #### Is Plotly for Python Free?
 
-&nbsp;  &nbsp; **Yes.** &nbsp; Plotly for Python is free and open-source software, [licensed under the **MIT license**](https://github.com/plotly/plotly.py/blob/master/LICENSE.txt). It costs nothing to [install and use](/python/getting-started).
+&nbsp;  &nbsp; **Yes.** &nbsp; Plotly for Python is free and open-source software, [licensed under the **MIT license**](https://github.com/plotly/plotly.py/blob/master/LICENSE.txt). It costs nothing to [install and use](/python/getting-started). You can view the source, report issues or contribute using [our Github repository](https://github.com/plotly/plotly.py).
 
 #### Can I use Plotly for Python without signing up to any service?
 

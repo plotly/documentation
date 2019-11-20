@@ -1,5 +1,4 @@
 ---
-title: Is Plotly for R Free?
 name: Is Plotly for R Free?
 permalink: r/is-plotly-free
 description: Plotly's open-source graphing libraries are free to use, work offline and don't require any account registration. Plotly also has commercial offerings, such as Dash Enterprise and Chart Studio Enterprise.
@@ -10,7 +9,7 @@ language: r
 
 #### Is Plotly for R Free?
 
-&nbsp;  &nbsp; **Yes.** &nbsp; Plotly for R is free and open-source software, [licensed under the **MIT license**](https://github.com/ropensci/plotly/blob/master/LICENSE.md). It costs nothing to [install and use](/r/getting-started).
+&nbsp;  &nbsp; **Yes.** &nbsp; Plotly for R is free and open-source software, [licensed under the **MIT license**](https://github.com/ropensci/plotly/blob/master/LICENSE.md). It costs nothing to [install and use](/r/getting-started). You can view the source, report issues or contribute using [our Github repository](https://github.com/ropensci/plotly).
 
 
 #### Can I use Plotly for R without signing up to any service?
