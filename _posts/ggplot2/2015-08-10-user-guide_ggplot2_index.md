@@ -275,7 +275,7 @@ str(p)
 ##   .. .. .. ..$ line     :List of 3
 ##   .. .. .. .. ..$ color   : logi NA
 ##   .. .. .. .. ..$ width   : num 0
-##   .. .. .. .. ..$ linetype: chr(0) 
+##   .. .. .. .. ..$ linetype: chr(0)
 ##   .. .. .. ..$ yref     : chr "paper"
 ##   .. .. .. ..$ xref     : chr "paper"
 ##   .. .. .. ..$ x0       : num 0
@@ -328,16 +328,16 @@ str(p)
 ##   ..$ attrs    :List of 1
 ##   .. ..$ 14102491252b:List of 4
 ##   .. .. ..$ x     :Class 'formula'  language ~x
-##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000005ec5030> 
+##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000005ec5030>
 ##   .. .. ..$ y     :Class 'formula'  language ~y
-##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000005ec5030> 
+##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000005ec5030>
 ##   .. .. ..$ colour:Class 'formula'  language ~group
-##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000005ec5030> 
+##   .. .. .. .. ..- attr(*, ".Environment")=<environment: 0x0000000005ec5030>
 ##   .. .. ..$ type  : chr "scatter"
 ##   .. .. ..- attr(*, "class")= chr "plotly_eval"
 ##   ..$ cur_data : chr "14102491252b"
 ##   ..$ visdat   :List of 1
-##   .. ..$ 14102491252b:function (y)  
+##   .. ..$ 14102491252b:function (y)
 ##   ..$ highlight:List of 6
 ##   .. ..$ on        : chr "plotly_click"
 ##   .. ..$ persistent: logi FALSE
@@ -347,7 +347,7 @@ str(p)
 ##   .. ..$ selected  :List of 1
 ##   .. .. ..$ opacity: num 1
 ##   ..$ base_url : chr "https://plot.ly"
-##   ..- attr(*, "TOJSON_FUNC")=function (x, ...)  
+##   ..- attr(*, "TOJSON_FUNC")=function (x, ...)
 ##  $ width        : NULL
 ##  $ height       : NULL
 ##  $ sizingPolicy :List of 6
@@ -424,7 +424,7 @@ str(p)
 ##   .. ..$ all_files : logi TRUE
 ##   .. ..- attr(*, "class")= chr "html_dependency"
 ##  $ elementId    : NULL
-##  $ preRenderHook:function (p, registerFrames = TRUE)  
+##  $ preRenderHook:function (p, registerFrames = TRUE)
 ##  $ jsHooks      :List of 1
 ##   ..$ render:List of 1
 ##   .. ..$ :List of 2
@@ -434,7 +434,7 @@ str(p)
 ##  - attr(*, "package")= chr "plotly"
 ```
 
-This declaritive description of the graph is very human readable. Every attribute of the chart, the colors, the data, the text, is described in a key-value pair in this object. [View all of the possible graph attributes.](https://plot.ly/r/reference)
+This declarative description of the graph is very human readable. Every attribute of the chart, the colors, the data, the text, is described in a key-value pair in this object. [View all of the possible graph attributes.](https://plot.ly/r/reference)
 
 Attributes of plotly figures are grouped into two categories: `data` and `layout`. `data` describes attributes that pertain to the plot's series, or "traces". These properties include things like the `x` and `y` data, the `color` and `name` of the trace, which axis the trace is bound to. `data` is an unnamed list.
 
@@ -446,8 +446,8 @@ names(p$x$data[[1]])
 ```
 
 ```
-##  [1] "x"           "y"           "text"        "type"        "mode"       
-##  [6] "marker"      "hoveron"     "name"        "legendgroup" "showlegend" 
+##  [1] "x"           "y"           "text"        "type"        "mode"
+##  [6] "marker"      "hoveron"     "name"        "legendgroup" "showlegend"
 ## [11] "xaxis"       "yaxis"       "hoverinfo"   "frame"
 ```
 
@@ -513,8 +513,8 @@ names(p$x$layout)
 ```
 
 ```
-##  [1] "margin"        "plot_bgcolor"  "paper_bgcolor" "font"         
-##  [5] "xaxis"         "yaxis"         "shapes"        "showlegend"   
+##  [1] "margin"        "plot_bgcolor"  "paper_bgcolor" "font"
+##  [5] "xaxis"         "yaxis"         "shapes"        "showlegend"
 ##  [9] "legend"        "annotations"   "hovermode"     "barmode"
 ```
 
@@ -618,7 +618,7 @@ str(p$x$layout)
 ##   .. ..$ line     :List of 3
 ##   .. .. ..$ color   : logi NA
 ##   .. .. ..$ width   : num 0
-##   .. .. ..$ linetype: chr(0) 
+##   .. .. ..$ linetype: chr(0)
 ##   .. ..$ yref     : chr "paper"
 ##   .. ..$ xref     : chr "paper"
 ##   .. ..$ x0       : num 0
@@ -718,7 +718,7 @@ chart_link
 
 - [ggplot2 examples](https://plot.ly/ggplot2)
 - [Plotly's native R DSL](https://plot.ly/r)
-- [Plotly's declaritive graph description reference](https://plot.ly/r/reference)
+- [Plotly's declarative graph description reference](https://plot.ly/r/reference)
 - [Plotly with Shiny](https://plot.ly/r/shiny-tutorial)
 - [`plotly` R package on GitHub](https://github.com/ropensci/plotly)
 - [Plotly graphs in other languages](https://plot.ly/api)

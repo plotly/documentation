@@ -1,27 +1,27 @@
 ---
-title: Is Plotly Free?
-name: Is Plotly Free?
+title: Is Plotly for Python Free?
+name: Is Plotly for Python  Free?
 permalink: python/is-plotly-free
 description: Plotly's open-source graphing libraries are free to use, work offline and don't require any account registration. Plotly also has commercial offerings, such as Dash Enterprise and Chart Studio Enterprise.
-page_type: example_index
-layout: getstart
+layout: base
+no_in_language: true
 language: python
 ---
 
-#### Is Plotly.py Free?
+#### Is Plotly for Python Free?
 
-**Yes.** &nbsp; Plotly.py is free and open-source software, [licensed under the **MIT license**](https://github.com/plotly/plotly.py/blob/master/LICENSE.txt).
+&nbsp;  &nbsp; **Yes.** &nbsp; Plotly for Python is free and open-source software, [licensed under the **MIT license**](https://github.com/plotly/plotly.py/blob/master/LICENSE.txt). It costs nothing to [install and use](/python/getting-started).
 
-#### Can I use Plotly.py without signing up to any service?
+#### Can I use Plotly for Python without signing up to any service?
 
-&nbsp;  &nbsp; **Yes.** &nbsp; You can use Plotly.py to render charts and maps without registering for any service,
-obtaining any token, or creating any account. The one exception is that to render tile maps
-which use tiles from the Mapbox service (which is optional), you will need to have a Mapbox token.
+&nbsp;  &nbsp; **Yes.** &nbsp; You can use Plotly for Python to make, view, and distribute charts and maps without registering for any service,
+obtaining any token, or creating any account. The one exception is that to view tile maps
+which use tiles from the Mapbox service (which is optional, as [you can use other tile servers](/python/mapbox-layers)), you will need to have a Mapbox token.
 
-#### Can I use Plotly.py without being connected to the internet?
+#### Can I use Plotly for Python offline, without being connected to the internet?
 
-&nbsp;  &nbsp; **Yes.** &nbsp; You can use Plotly.py to render graphics totally offline. The one exception is that to render tile maps
-which use tiles from a cloud-hosted service, such as Open Street Maps or Mapbox, you will need a connection to that service. You can render tile maps totally offline if you run your local own tile server, however.
+&nbsp;  &nbsp; **Yes.** &nbsp; You can use Plotly for Python to make, view, and distribute graphics totally offline. The one exception is that to view tile maps
+which use tiles from a cloud-hosted service, such as Open Street Maps or Mapbox, you will need a connection to that service. You can view tile maps totally offline if  you run your own local tile server and [use its tiles](/python/mapbox-layers).
 
 #### Is Dash free?
 
