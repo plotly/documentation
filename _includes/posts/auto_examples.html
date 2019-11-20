@@ -1,5 +1,7 @@
 
+{% assign counter = 0 %} 
 {% for example in examples %}
+{% assign counter=counter | plus:1 %}
     <div class="section">
         <div class="row auto-eg-padding">
       <div class=" row twelve columns">
@@ -12,7 +14,7 @@
           {% endif %}
           {% if example.content != "" %}
             <div class="z-depth-1">
-              <pre><code class="{{page.language}}">{{ example.content | xml_escape }}</code></pre>
+              <pre><code class="{{page.language}}">{{ example.content | xml_escape | replace: "pk.eyJ1IjoiZXRwaW5hcmQiLCJhIjoiY2luMHIzdHE0MGFxNXVubTRxczZ2YmUxaCJ9.hwWZful0U2CQxit4ItNsiQ", "your access token"}}</code></pre>
             </div>
           {% endif %}
           {% if example.description %}
@@ -27,8 +29,17 @@
               {% if example.plot_url contains '.gif' or example.plot_url contains '.png' %}
               <img src="{{ example.plot_url }}" />
               {% else %}
-              <iframe id="auto-examples" src="{{ example.plot_url }}{% if example.plot_url contains 'plot.ly' %}.embed{% endif %}"
-                style="width: {% if example.width %}{{example.width}}px;{% else %}100%;{% endif %} height: {% if example.height %}{{example.height}}px;{% else %}550px;{% endif %} border: none;"></iframe>
+                {% if page.language == "plotly_js"%}
+                {% capture div_id %}myDiv-{{counter}}{% endcapture %}
+                <div id="{{div_id}}"></div>
+                <script>
+                  {{ example.content | replace: 'myDiv', div_id }}
+                </script>
+                
+                {% else %}
+                  <iframe id="auto-examples" src="{{ example.plot_url }}{% if example.plot_url contains 'plot.ly' %}.embed{% endif %}"
+                  style="width: {% if example.width %}{{example.width}}px;{% else %}100%;{% endif %} height: {% if example.height %}{{example.height}}px;{% else %}550px;{% endif %} border: none;"></iframe>
+                {% endif %}
               {% endif %}
             </div>
           </div>
@@ -38,3 +49,4 @@
 
     </div>
 {% endfor %}
+
