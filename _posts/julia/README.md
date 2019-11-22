@@ -70,12 +70,12 @@ Our Julia tutorials are written in HTML files with embedded plot examples.
 
   data = [
     [
-      "x" =&gt; ["giraffes", "orangutans", "monkeys"],
-      "y" =&gt; [20, 14, 23],
-      "type" =&gt; "bar"
+      "x" => ["giraffes", "orangutans", "monkeys"],
+      "y" => [20, 14, 23],
+      "type" => "bar"
     ]
   ]
-  response = Plotly.plot(data, ["filename" =&gt; "basic-bar", "fileopt" =&gt; "overwrite"])
+  response = Plotly.plot(data, ["filename" => "basic-bar", "fileopt" => "overwrite"])
   plot_url = response["url"]
   ```
 
