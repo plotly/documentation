@@ -1,7 +1,6 @@
 ---
 description: How to create scattermapbox plots in R with Plotly.
 display_as: maps
-has_thumbnail: true
 language: r
 layout: base
 name: Scattermapbox

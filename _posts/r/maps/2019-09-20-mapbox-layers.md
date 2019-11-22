@@ -2,7 +2,6 @@
 description: How to make Mapbox maps in R with various base layers, with or without
   needing a Mapbox Access token.
 display_as: maps
-has_thumbnail: true
 language: r
 layout: base
 name: Mapbox Layers

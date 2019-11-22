@@ -1,7 +1,6 @@
 ---
 description: How to draw a line on Map in R with plotly.
 display_as: maps
-has_thumbnail: true
 language: r
 layout: base
 name: Lines on Mapbox
