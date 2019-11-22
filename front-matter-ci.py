@@ -13,12 +13,14 @@ def ci_check(checkList, error_message):
     print("***********************************!")
     print("Checking... {}".format(error_message))
     if len(checkList) > 0:
-        print("Failed!")
+        print("NOT PASSED!\n")
         print("List of failed permalinks:")
-        print(checkList)
+        print("**{}**".format(checkList))
         print("\n")
+        return False
     else:
         print("Passed!")
+        return True
 
 paths = []
 allPosts = []
@@ -91,13 +93,15 @@ for post in allPermalinks:
         continue
     else:
         temp.append(post)
-        
-print("Begin CI Checks!\n")
-ci_check(postsWithNoName, "do all non-redirect posts have names?")
-ci_check(postsWithTitle, "do any posts have titles?")
-ci_check(indexOverflow, "are there posts with order > 5 and 'page_type: example_index'?")
-ci_check(duplicatePermalinks, "are there duplicate permalinks/redirect_froms?")
-ci_check(postsWithNoThumbnail, "does every post have a thumbnail?")
-ci_check(noTrailingSlash, "do any permalinks not end with a trailing slash?")
 
+print("Begin CI Checks!\n")
+passed_check_1 = ci_check(postsWithNoName, "do all non-redirect posts have names?")
+passed_check_2 = ci_check(postsWithTitle, "do any posts have titles?")
+passed_check_3 = ci_check(indexOverflow, "are there posts with order > 5 and 'page_type: example_index'?")
+passed_check_4 = ci_check(duplicatePermalinks, "are there duplicate permalinks/redirect_froms?")
+passed_check_5 = ci_check(postsWithNoThumbnail, "does every post have a thumbnail?")
+passed_check_6 = ci_check(noTrailingSlash, "do any permalinks not end with a trailing slash?")
 print("End CI Checks!\n")
+
+if not passed_check_1 or not passed_check_2 or not passed_check_3 or not passed_check_4 or not passed_check_5 or not passed_check_6:
+    raise Exception("***********CI Checks Not Passed! Check Error Messages!*********************")
