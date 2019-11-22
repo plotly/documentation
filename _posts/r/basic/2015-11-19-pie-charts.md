@@ -1,19 +1,17 @@
 ---
-name: Pie Charts
-permalink: r/pie-charts/
 description: How to make pie charts in R using plotly.
-layout: base
-thumbnail: thumbnail/pie-chart.jpg
-language: r
-page_type: example_index
 display_as: basic
-order: 7
+language: r
+layout: base
+name: Pie Charts
+order: 4
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/pie-charts/
+thumbnail: thumbnail/pie-chart.jpg
 ---
-
-
 
 ### New to Plotly?
 

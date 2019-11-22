@@ -1,18 +1,17 @@
 ---
-name: Histograms
-permalink: r/histograms/
 description: How to make a histogram in R.
-layout: base
-thumbnail: thumbnail/histogram.jpg
-language: r
-page_type: example_index
 display_as: statistical
-order: 4
+language: r
+layout: base
+name: Histograms
+order: 3
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/histograms/
+thumbnail: thumbnail/histogram.jpg
 ---
-
 
 ### New to Plotly?
 

@@ -1,17 +1,17 @@
 ---
-name: Dumbbell Plots
-permalink: r/dumbbell-plots/
-description: How to make a dumbbell plot in R. Dumbbell plots show changes between two points in time or between two conditions.
-layout: base
-thumbnail: thumbnail/dumbbell-plot.jpg
-language: r
+description: How to make a dumbbell plot in R. Dumbbell plots show changes between
+  two points in time or between two conditions.
 display_as: basic
-order: 8
+language: r
+layout: base
+name: Dumbbell Plots
+order: 15
 output:
   html_document:
     keep_md: true
+permalink: r/dumbbell-plots/
+thumbnail: thumbnail/dumbbell-plot.jpg
 ---
-
 
 ### New to Plotly?
 

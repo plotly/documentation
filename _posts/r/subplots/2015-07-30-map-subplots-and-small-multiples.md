@@ -1,16 +1,16 @@
 ---
-name: Map Subplots And Small Multiples
-permalink: r/map-subplots-and-small-multiples/
 description: How to create map subplots and small multiples in R.
-layout: base
-thumbnail: thumbnail/map-subplots.jpg
-language: r
 display_as: multiple_axes
+language: r
+layout: base
+name: Map Subplots And Small Multiples
+order: 6
 output:
   html_document:
     keep_md: true
+permalink: r/map-subplots-and-small-multiples/
+thumbnail: thumbnail/map-subplots.jpg
 ---
-
 
 ### New to Plotly?
 

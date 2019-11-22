@@ -1,17 +1,17 @@
 ---
-name: Graphing Multiple Chart Types
-permalink: r/graphing-multiple-chart-types/
-description: How to design figures with multiple chart types in R. An example of a line chart with a line of best fit and an uncertainty band.
-layout: base
-thumbnail: thumbnail/mixed.jpg
-language: r
+description: How to design figures with multiple chart types in R. An example of a
+  line chart with a line of best fit and an uncertainty band.
 display_as: basic
-order: 7
+language: r
+layout: base
+name: Graphing Multiple Chart Types
+order: 11
 output:
   html_document:
     keep_md: true
+permalink: r/graphing-multiple-chart-types/
+thumbnail: thumbnail/mixed.jpg
 ---
-
 
 ### New to Plotly?
 

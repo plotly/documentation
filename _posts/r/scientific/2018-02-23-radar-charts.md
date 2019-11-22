@@ -1,19 +1,17 @@
 ---
-name: Radar Charts
-permalink: r/radar-chart/
 description: How to create Radar Charts in R with Plotly.
-layout: base
-thumbnail: thumbnail/radar.gif
-language: r
-# page_type: example_index
 display_as: scientific
-order: 19
+has_thumbnail: true
+language: r
+layout: base
+name: Radar Charts
+order: 13
 output:
   html_document:
     keep_md: true
+permalink: r/radar-chart/
+thumbnail: thumbnail/radar.gif
 ---
-
-
 
 ### New to Plotly?
 

@@ -1,15 +1,15 @@
 ---
-permalink: r/basic-charts/
-description: Plotly's R graphing library makes interactive, publication-quality graphs online. Examples of how to make basic charts.
-name: More Basic Charts
-layout: langindex
-language: r
+description: Plotly's R graphing library makes interactive, publication-quality graphs
+  online. Examples of how to make basic charts.
 display_as: basic
-thumbnail: thumbnail/mixed.jpg
+language: r
+layout: langindex
+name: More Basic Charts
+order: 5
 page_type: example_index
-order: 20
+permalink: r/basic-charts/
+thumbnail: thumbnail/mixed.jpg
 ---
-
 
 <header class="--welcome">
 	<div class="--welcome-body">

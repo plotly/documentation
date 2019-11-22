@@ -1,18 +1,16 @@
 ---
-name: Carpet Plot
-permalink: r/carpet-plot/
 description: How to create carpet plots in R with Plotly.
-layout: base
-thumbnail: thumbnail/carpet.jpg
-language: r
 display_as: scientific
-order: 15
+language: r
+layout: base
+name: Carpet Plot
+order: 10
 output:
   html_document:
     keep_md: true
+permalink: r/carpet-plot/
+thumbnail: thumbnail/carpet.jpg
 ---
-
-
 
 ### New to Plotly?
 

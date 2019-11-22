@@ -1,18 +1,17 @@
 ---
-name: 3D Mesh Plots
-permalink: r/3d-mesh/
 description: How to make interactive 3D mesh plots in R.
-layout: base
-thumbnail: thumbnail/3d-mesh.jpg
-language: r
-page_type: example_index
 display_as: 3d_charts
-order: 16
+language: r
+layout: base
+name: 3D Mesh Plots
+order: 4
 output:
   html_document:
     keep_md: true
+page_type: example_index
+permalink: r/3d-mesh/
+thumbnail: thumbnail/3d-mesh.jpg
 ---
-
 
 ### New to Plotly?
 
@@ -110,4 +109,3 @@ chart_link
 #Reference
 
 See [https://plot.ly/r/reference/#mesh3d](https://plot.ly/r/reference/#mesh3d) for more information and chart attribute options!
-
