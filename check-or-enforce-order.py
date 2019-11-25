@@ -21,15 +21,6 @@ categories = ["file_settings", "basic", "financial", "statistical", "scientific"
 def get_post(path):
     return fm.load(str(path))
 
-def get_all_posts(paths):
-    posts = []
-    for path in paths:
-        post = get_post(path)
-        front_matter = get_front_matter(post)
-        if validate_front_matter(front_matter):
-            posts.append({'path':path, 'order' : front_matter['order'], 'display_as' : front_matter['display_as']})
-    return posts
-
 def get_front_matter(post):
     if "jupyter" in post.metadata:
         return post["jupyter"]["plotly"]
