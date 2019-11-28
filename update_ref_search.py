@@ -33,6 +33,10 @@ def next_level(previous_level, chain_dict):
                 ].replace("*", '"')
             else:
                 attribute["description"] = "Properties for " + sub_attr
+            if "values" in previous_level[sub_attr]:
+                attribute["values"] = ", ".join(str(x) for x in previous_level[sub_attr][
+                    "values"
+                ]).replace("*", '"')
             schema.append(attribute)
             next_level(previous_level[sub_attr], attribute.copy())
 
