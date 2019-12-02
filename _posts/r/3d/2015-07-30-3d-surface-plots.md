@@ -13,6 +13,7 @@ permalink: r/3d-surface-plots/
 thumbnail: thumbnail/3d-surface.jpg
 ---
 
+
 ### New to Plotly?
 
 Plotly's R library is free and open source!<br>
@@ -31,7 +32,7 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.9.0'
+## [1] '4.9.1'
 ```
 
 # Basic 3D Surface Plot
@@ -92,6 +93,47 @@ p <- plot_ly(x = kd$x, y = kd$y, z = kd$z) %>% add_surface()
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="surface-2")
+chart_link
+```
+
+<iframe src="https://plot.ly/~RPlotBot/5497.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+#### Configure Surface Contour Levels
+This example shows how to slice the surface graph on the desired position for each of x, y and z axis. [contours.x.start](https://plot.ly/r/reference/#surface-contours-x-start) sets the starting contour level value, `end` sets the end of it, and `size` sets the step between each contour level.
+
+
+```r
+p <- plot_ly(
+  type = 'surface',
+  contours = list(
+    x = list(show = TRUE, start = 1.5, end = 2, size = 0.04, color = 'white'),
+    z = list(show = TRUE, start = 0.5, end = 0.8, size = 0.05)),
+  x = c(1,2,3,4,5),
+  y = c(1,2,3,4,5),
+  z = list(
+    c(0, 1, 0, 1, 0),
+    c(1, 0, 1, 0, 1),
+    c(0, 1, 0, 1, 0),
+    c(1, 0, 1, 0, 1),
+    c(0, 1, 0, 1, 0))) %>%
+  layout(
+    scene = list(
+      xaxis = list(nticks = 20),
+      zaxis = list(nticks = 4),
+      camera = list(eye = list(x = 0, y = -1, z = 0.5)),
+      aspectratio = list(x = .9, y = .8, z = 0.2)))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = api_create(p, filename="surface-config")
+```
+
+```
+## Error: Client error: (400) Bad Request
+## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 0, 'z')]
+```
+
+```r
 chart_link
 ```
 
