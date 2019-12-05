@@ -103,19 +103,25 @@ This example shows how to slice the surface graph on the desired position for ea
 
 
 ```r
+x = c(1,2,3,4,5)
+y = c(1,2,3,4,5)
+z = rbind(
+  c(0, 1, 0, 1, 0),
+  c(1, 0, 1, 0, 1),
+  c(0, 1, 0, 1, 0),
+  c(1, 0, 1, 0, 1),
+  c(0, 1, 0, 1, 0))
+
+
+library(plotly)
 p <- plot_ly(
   type = 'surface',
   contours = list(
     x = list(show = TRUE, start = 1.5, end = 2, size = 0.04, color = 'white'),
     z = list(show = TRUE, start = 0.5, end = 0.8, size = 0.05)),
-  x = c(1,2,3,4,5),
-  y = c(1,2,3,4,5),
-  z = list(
-    c(0, 1, 0, 1, 0),
-    c(1, 0, 1, 0, 1),
-    c(0, 1, 0, 1, 0),
-    c(1, 0, 1, 0, 1),
-    c(0, 1, 0, 1, 0))) %>%
+  x = ~x,
+  y = ~y,
+  z = ~z) %>%
   layout(
     scene = list(
       xaxis = list(nticks = 20),
@@ -126,18 +132,10 @@ p <- plot_ly(
 # Create a shareable link to your chart
 # Set up API credentials: https://plot.ly/r/getting-started
 chart_link = api_create(p, filename="surface-config")
-```
-
-```
-## Error: Client error: (400) Bad Request
-## 	Figure field is invalid. Reason: Raw data arrays are not allowed at this endpoint. Use grid references instead. Raw data found at the following paths in the figure [('data', 0, 'z')]
-```
-
-```r
 chart_link
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5497.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/5977.embed" width="800" height="800" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### Multiple Surfaces
 
