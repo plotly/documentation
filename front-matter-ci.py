@@ -44,7 +44,7 @@ else:
     # collect all paths 
     for suffix in ["md", "html"]:
         paths += [x for x in Path(path).glob("**/*."+suffix)]
-
+print("number posts:")
 print (len(paths))
 
 # collect all posts
