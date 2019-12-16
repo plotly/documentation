@@ -4,6 +4,7 @@ import sys
 
 # 'path' == '_posts' in 'documentation'
 # 'path' == 'build/html' in 'py-docs'
+# 'path' == 'r' in 'r-docs'
 try:
     path = str(sys.argv[1])
 except:
@@ -36,9 +37,15 @@ noTrailingSlash = []
 categories = ["file_settings", "basic", "financial", "statistical", "scientific", "maps", "3d_charts", "multiple_axes"]
 languages = ["python", "python/v3", "plotly_js", "r"]
 
-# collect all paths 
-for suffix in ["md", "html"]:
-    paths += [x for x in Path(path).glob("**/*."+suffix)]
+if path == "r":
+    for suffix in ["Rmd"]:
+        paths += [x for x in Path(path).glob("**/*."+suffix)]
+else:
+    # collect all paths 
+    for suffix in ["md", "html"]:
+        paths += [x for x in Path(path).glob("**/*."+suffix)]
+
+print (len(paths))
 
 # collect all posts
 for path in paths:
