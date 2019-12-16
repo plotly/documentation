@@ -64,7 +64,6 @@ Our javascript tutorials are written in HTML files with embedded [codepen](http:
   ```
   ---
   name: Basic Bar Chart **
-  plot_url: https://codepen.io/plotly/embed/74a638752a41ac9672a05f628e4ddaff/?height=500&theme-id=15263&default-tab=result
   language: plotly_js
   suite: bar
   order: 1 **
@@ -83,8 +82,7 @@ Our javascript tutorials are written in HTML files with embedded [codepen](http:
   ```
 
 6. Best Practices:
-  - Set `plot_url:` to the embedded codepen example with the `default-tab=result`
-  - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displays the `name`** in the `order`** so add a `name` for each example and try to make `name`s as informative and concise as possible. Ex: `Basic Bar Chart`
+  - Set `  - <b>Now we have an awesome navigation bar on the left side of our tutorial pages.</b> The navigation bar displays the `name`** in the `order`** so add a `name` for each example and try to make `name`s as informative and concise as possible. Ex: `Basic Bar Chart`
   - `order` examples from basic -> advanced.
   - Try to use "real" data, to make the examples realistic and interesting. Avoid including large datablocks in the tutorial by uploading the datafile to https://github.com/plotly/datasets. Importing data rather than pasting a large chunk of data in the tutorial creates a cleaner example. (Using random data is okay for some examples too :) )
 
