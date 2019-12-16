@@ -39,7 +39,7 @@ languages = ["python", "python/v3", "plotly_js", "r"]
 
 if path == "r":
     for suffix in ["Rmd"]:
-        paths += [x for x in Path(path).glob("**/*."+suffix)]
+        paths += [x for x in Path(path).glob("*."+suffix)]
 else:
     # collect all paths 
     for suffix in ["md", "html"]:
