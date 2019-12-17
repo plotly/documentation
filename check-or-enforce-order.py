@@ -85,7 +85,11 @@ def check_order():
                 print("ENFORCING CORRECT ORDER! for {}\n".format(category))
                 enforceOrder(sorted_paths)
             else:
-                arg = folder_path if folder_path != "build/html" else "python"
+                arg = folder_path 
+                if folder_path == "build/html":
+                    arg = "python"
+                if folder_path == "build":
+                    arg = "r"
                 raise Exception("Order is not sequential! **CHECK NOT PASSED** in '{}' display_as! Run 'python check-or-enforce-order.py {} enforce' to resolve!".format(category, arg))
         else:
             print("*Check Passed!*\n")
