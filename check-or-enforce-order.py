@@ -40,7 +40,7 @@ def enforceOrder(list_to_be_ordered):
             fm.dump(post_to_be_altered, post)
 
 def is_consecutive(list_to_be_checked): 
-    if folder_path in ["python", "build/html", "r", "build"]:
+    if folder_path in ["python", "build/html", "r", "build"] and len(list_to_be_checked) > 0:
         list_to_be_checked = list_to_be_checked + [5]
     print(sorted(list_to_be_checked))
     return sorted(list_to_be_checked) == list(range(1, len(list_to_be_checked)+1))
