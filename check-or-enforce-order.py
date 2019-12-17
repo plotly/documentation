@@ -32,18 +32,7 @@ def enforceOrder(list_to_be_ordered):
     print(list_to_be_ordered)
     for index, post in enumerate(list_to_be_ordered):
         post_to_be_altered = fm.load(post)
-        if folder_path == "_posts/r": # accounts for the fact that sometimes there are both .md and .Rmd files
-            if post[-3:] == ".md":
-                post_to_be_altered.metadata['order'] = index+1
-                fm.dump(post_to_be_altered, post)
-                rPath = post[:-3] + '.Rmd'
-                try: 
-                    rpost_to_be_altered = frontmatter.load(rPath)
-                    rpost_to_be_altered.metadata['order'] = index+1
-                    fm.dump(rpost_to_be_altered, rPath)
-                except:
-                    continue
-        elif folder_path == "python": # accounts for the fact that this is also run in the plotly.py-docs repo
+        if folder_path == "python": # accounts for the fact that this is also run in the plotly.py-docs repo
             post_to_be_altered.metadata["jupyter"]["plotly"]['order'] = (index+2 if index>=4 else index+1)
             fm.dump(post_to_be_altered, post)
         else:        
@@ -51,7 +40,7 @@ def enforceOrder(list_to_be_ordered):
             fm.dump(post_to_be_altered, post)
 
 def is_consecutive(list_to_be_checked): 
-    if folder_path in ["python", "build/html"]:
+    if folder_path in ["python", "build/html", "r", "build"]:
         list_to_be_checked = list_to_be_checked + [5]
     print(sorted(list_to_be_checked))
     return sorted(list_to_be_checked) == list(range(1, len(list_to_be_checked)+1))
@@ -68,7 +57,10 @@ def validate_front_matter(front_matter):
 
 def get_paths_and_orders_by_category():
     posts_by_category = {category: dict(orders=[], paths=[]) for category in categories}
-    for suffix in ["md", "html"]:
+    suffixes = ["md", "html"]
+    if folder_path == "r":
+        suffixes = ["Rmd"]
+    for suffix in suffixes:
         for path in Path(folder_path).glob("**/*."+suffix): 
             if ".ipynb_checkpoints" not in str(path):
                 post = get_post(path)
