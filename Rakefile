@@ -39,6 +39,6 @@ task :personal => [] do
 
   puts "...getting latest python docs"
   system "rm -rf _posts/python/html"  or exit!(1)
-  system "cp -r ../plotly.py-docs/build/html _posts/python/html"  or exit!(1)
+  system "cp -r ../plotly.py/doc/build/html _posts/python/html"  or exit!(1)
   system "jekyll serve --config _config_personal.yml"
 end
