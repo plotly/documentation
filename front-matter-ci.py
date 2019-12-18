@@ -46,7 +46,7 @@ def check_duplicatePermalinks(meta_to_check):
                 failures.append(meta["redirect_from"])
             else:
                 allPermalinks.append(meta["redirect_from"])
-    return "are there posts with order > 5 and 'page_type: example_index'?", failures
+    return "are there duplicate permalinks/redirect_froms?", failures
 
 
 def check_indexOverflow(meta_to_check):
@@ -58,7 +58,7 @@ def check_indexOverflow(meta_to_check):
                 if "order" in meta and meta["order"] > 5:
                     if "page_type" in meta and meta["page_type"] == "example_index":
                         failures.append(meta["permalink"])
-    return "are there duplicate permalinks/redirect_froms?", failures
+    return "are there posts with order > 5 and 'page_type: example_index'?", failures
 
 
 def check_postsWithNoThumbnail(meta_to_check):
