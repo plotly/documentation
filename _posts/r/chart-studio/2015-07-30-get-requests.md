@@ -1,6 +1,6 @@
 ---
 description: How to download plotly users's public graphs and data with R.
-display_as: file_settings
+display_as: chart_studio
 language: r
 layout: base
 name: Get Requests
