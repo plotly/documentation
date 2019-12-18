@@ -1,7 +1,7 @@
 ---
 description: Plotly's R graphing library makes interactive, publication-quality graphs
   online. Tutorials and tips about fundamental features of Plotly's R API.
-display_as: chart_studio
+display_as: file_settings
 language: r
 layout: langindex
 name: More Plotly Fundamentals
