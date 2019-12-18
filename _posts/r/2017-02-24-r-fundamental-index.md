@@ -8,7 +8,10 @@ name: More Plotly Fundamentals
 order: 5
 page_type: example_index
 permalink: r/plotly-fundamentals/
-redirect_from: r/fundamentals/
+redirect_from: 
+  - r/fundamentals/
+  - r/style-options/
+  - r/layout-options/
 thumbnail: thumbnail/mixed.jpg
 ---
 
