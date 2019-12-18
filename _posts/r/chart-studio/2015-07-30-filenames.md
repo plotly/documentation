@@ -1,6 +1,6 @@
 ---
 description: R Filenames, folders, and updating Plotly graphs in the plotly cloud.
-display_as: file_settings
+display_as: chart_studio
 language: r
 layout: base
 name: Updating Plotly Graphs
