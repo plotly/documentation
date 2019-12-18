@@ -53,11 +53,9 @@ def check_indexOverflow(meta_to_check):
     failures = []
     for meta in meta_to_check:
         # Check #4 - are there posts with order > 5 and 'page_type: example_index'?
-        if "display_as" in meta and meta["display_as"] in categories:
-            if "language" in meta and meta["language"] in languages:
-                if "order" in meta and meta["order"] > 5:
-                    if "page_type" in meta and meta["page_type"] == "example_index":
-                        failures.append(meta["permalink"])
+        if "order" in meta and meta["order"] > 5:
+            if "page_type" in meta and meta["page_type"] == "example_index":
+                failures.append(meta["permalink"])
     return "are there posts with order > 5 and 'page_type: example_index'?", failures
 
 
@@ -66,9 +64,7 @@ def check_postsWithNoThumbnail(meta_to_check):
     for meta in meta_to_check:
         # Check #5 - does every post have a thumbnail?
         if "thumbnail" not in meta:
-            if "display_as" in meta and meta["display_as"] in categories:
-                if "language" in meta and meta["language"] in languages:
-                    failures.append(meta["permalink"])
+            failures.append(meta["permalink"])
     return "does every post have a thumbnail?", failures
 
 
@@ -108,7 +104,10 @@ meta_to_check = []
 for path in paths:
     post = frontmatter.load(str(path))
     if len(post.metadata.keys()) > 0 and "jupyter" not in post.metadata:
-        meta_to_check.append(post.metadata)
+        meta = post.metadata
+        if "display_as" in meta and meta["display_as"] in categories:
+            if "language" in meta and meta["language"] in languages:
+                meta_to_check.append(meta)
 
 
 print("Begin CI Checks!\n")
