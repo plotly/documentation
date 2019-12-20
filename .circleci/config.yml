@@ -54,11 +54,14 @@ jobs:
             git config --global user.email "accounts@plot.ly"
             git config --global user.name "Deployer"
             rm -rf _posts/python/html
+            rm -rf _posts/r/md
             git clone -b built git@github.com:plotly/plotly.py-docs _posts/python/html
+            git clone -b built git@github.com:plotly/plotly.r-docs _posts/r/md
+            mv _posts/r/md/ggplot2 _posts/ggplot2/md
             python front-matter-ci.py _posts
             python check-or-enforce-order.py _posts/python
             python check-or-enforce-order.py _posts/python-v3
-            python check-or-enforce-order.py _posts/r
+            python check-or-enforce-order.py _posts/r/
             python check-or-enforce-order.py _posts/plotly_js
             bundle exec jekyll build
             mkdir snapshots
@@ -93,6 +96,12 @@ jobs:
             rm -f 'snapshots/all_static/images/Plotly-feed2.html'
             rm -f 'snapshots/all_static/images/Plotly.html'
             rm -f 'snapshots/all_static/images/Plotly-Feed.html'
+            sed -i.bkp 's/drift\.load/console\.log/g' snapshots/*.html
+            sed -i.bkp 's/drift\.load/console\.log/g' snapshots/*/*.html
+            sed -i.bkp 's/drift\.load/console\.log/g' snapshots/*/*/*.html
+            rm -f snapshots/*.bkp
+            rm -f snapshots/*/*.bkp
+            rm -f snapshots/*/*/*.bkp
             percy snapshot snapshots --enable_javascript
             rm -rf 'snapshots/'
             if [ "${CIRCLE_BRANCH}" == "source-design-merge" ]; then

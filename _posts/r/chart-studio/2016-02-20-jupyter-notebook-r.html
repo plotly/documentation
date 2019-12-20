@@ -1,0 +1,242 @@
+---
+description: How to embed Plotly charts in Jupyter notebooks using R
+display_as: chart_studio
+language: r
+layout: base
+name: Plotly Charts in Jupyter notebooks using R
+order: 4
+page_type: u-guide
+permalink: r/using-r-in-jupyter-notebooks/
+sitemap: false
+thumbnail: thumbnail/png-export.png
+---
+
+<h1>Plotly charts in Jupyter notebooks using R</h1>
+
+<p>This tutorial should help you get up and running with embedding Plotly charts inside a <a href="http://jupyter.org/">Jupyter</a> notebook using R</p>
+<hr>
+<h3>Install python</h3><br>
+<p>Head on over to <a href = "https://www.python.org/downloads/" target= "_blank">https://www.python.org/downloads/</a>, download and install python.</p>
+<hr>
+<h3>Install Jupyter</h3>
+<p>Simply run the following command in your console:</p>
+<pre><code>pip install jupyter
+</pre><p></code></p><br>
+<p>Use <code>pip3</code> for python 3.x. See <a href="http://jupyter.readthedocs.org/en/latest/install.html#existing-python-new-jupyter">here</a> for more  details.</p>
+<hr>
+<h3>Install IRKernel</h3>
+<p>Next we'll install a R Kernel so that we can use R commands inside a Jupyter notebook. This is  similar to installing a R package. Run this in R.</p><br>
+<pre><code>install.packages(c('repr', 'IRdisplay', 'pbdZMQ', 'devtools'))
+devtools::install_github('IRkernel/IRkernel')
+IRkernel::installspec()
+</pre><p></code></p><br>
+<p>See <a href="https://github.com/IRkernel/IRkernel">here</a> for details.</p>
+<hr>
+<h3>Install Pandoc</h3>
+<p><a href="http://pandoc.org/">Pandoc</a> is required to successfully render a Plotly chart in a Jupyter notebook. You could either:</p><br>
+<ul>
+<li>Download and install Pandoc from <a href="https://github.com/jgm/pandoc/releases/tag/1.16.0.2">here</a></li>
+<li>Or use the <code>*.exe</code> files in <code>\bin\pandoc</code> from your <strong>R-Studio</strong> installation folder</li>
+</ul>
+<p>Make sure that both <code>pandoc.exe</code> and <code>pandoc-citeproc</code> are available in your local python installation folder (or Jupyter environment if you have setup a separate environment).</p>
+<hr>
+<h3>Run Jupyter</h3>
+<p>Run this in the terminal / console:</p><br>
+<pre><code>jupyter notebook
+</pre><p></code></p><br>
+<p>You should see something like this pop up in a new browser window:</p><br>
+
+<img src="http://i.imgur.com/GfXHptO.png" /><br>
+
+<h3>Create a notebook</h3>
+<p>Click on <code>New</code> &gt;&gt; <code>R</code> to create a new Jupyter notebook using the R kernel.</p><br>
+
+<img src="http://i.imgur.com/0iFVUon.png" /><br>
+
+<p>You should now have something like this:</p><br>
+
+<img src="http://i.imgur.com/jTY3jCi.png" />
+
+<hr>
+
+<h3>Examples: </h3>
+<p>Here are some examples on how to use plotly inside of a Jupyter notebook.</p>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Scatter-plot">Scatter plot<a class="anchor-link" href="#Scatter-plot">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span class="c1"># Scatter Plot</span>
+<span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
+
+<span class="kp">set.seed</span><span class="p">(</span><span class="m">123</span><span class="p">)</span>
+
+x <span class="o">&lt;-</span> rnorm<span class="p">(</span><span class="m">1000</span><span class="p">)</span>
+y <span class="o">&lt;-</span> rchisq<span class="p">(</span><span class="m">1000</span><span class="p">,</span> df <span class="o">=</span> <span class="m">1</span><span class="p">,</span> ncp <span class="o">=</span> <span class="m">0</span><span class="p">)</span>
+group <span class="o">&lt;-</span> <span class="kp">sample</span><span class="p">(</span><span class="kc">LETTERS</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">],</span> size <span class="o">=</span> <span class="m">1000</span><span class="p">,</span> replace <span class="o">=</span> <span class="bp">T</span><span class="p">)</span>
+size <span class="o">&lt;-</span> <span class="kp">sample</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> size <span class="o">=</span> <span class="m">1000</span><span class="p">,</span> replace <span class="o">=</span> <span class="bp">T</span><span class="p">)</span>
+
+ds <span class="o">&lt;-</span> <span class="kt">data.frame</span><span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> group<span class="p">,</span> size<span class="p">)</span>
+
+p <span class="o">&lt;-</span> plot_ly<span class="p">(</span>ds<span class="p">,</span> x <span class="o">=</span> x<span class="p">,</span> y <span class="o">=</span> y<span class="p">,</span> mode <span class="o">=</span> <span class="s">&quot;markers&quot;</span><span class="p">,</span> split <span class="o">=</span> group<span class="p">,</span> size <span class="o">=</span> size<span class="p">)</span> <span class="o">%&gt;%</span>
+  layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Scatter Plot&quot;</span><span class="p">)</span>
+embed_notebook<span class="p">(</span>p<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+<div class="output_html rendered_html output_subarea ">
+<iframe src="https://plot.ly/~RPlotBot/2851.embed" width="100%" height="400" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Filled-line-chart">Filled Line Chart<a class="anchor-link" href="#Filled-line-chart">&#182;</a></h2><p>Apart from plots and figures, <em>tables</em> and <em>text output</em> can shown as well. Just like in <em>R-Markdown</em>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span class="c1"># Filled Line Chart</span>
+<span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>PerformanceAnalytics<span class="p">)</span>
+
+<span class="c1">#Load data</span>
+data<span class="p">(</span>managers<span class="p">)</span>
+
+<span class="c1"># Convert to data.frame</span>
+managers.df <span class="o">&lt;-</span> <span class="kp">as.data.frame</span><span class="p">(</span>managers<span class="p">)</span>
+managers.df<span class="o">$</span>Dates <span class="o">&lt;-</span> index<span class="p">(</span>managers<span class="p">)</span>
+
+<span class="c1"># See first few rows</span>
+<span class="kp">head</span><span class="p">(</span>managers.df<span class="p">)</span>
+
+<span class="c1"># Plot</span>
+p <span class="o">&lt;-</span> plot_ly<span class="p">(</span>managers.df<span class="p">,</span> x <span class="o">=</span> ~Dates<span class="p">,</span> y <span class="o">=</span> ~HAM1<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;scatter&quot;</span><span class="p">,</span> mode <span class="o">=</span> <span class="s">&quot;lines&quot;</span><span class="p">,</span> name <span class="o">=</span> <span class="s">&quot;Manager 1&quot;</span><span class="p">,</span> fill <span class="o">=</span> <span class="s">&quot;tonexty&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Time Series plot&quot;</span><span class="p">)</span>
+embed_notebook<span class="p">(</span>p<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[10]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+<thead><tr><th></th><th scope=col>HAM1</th><th scope=col>HAM2</th><th scope=col>HAM3</th><th scope=col>HAM4</th><th scope=col>HAM5</th><th scope=col>HAM6</th><th scope=col>EDHEC LS EQ</th><th scope=col>SP500 TR</th><th scope=col>US 10Y TR</th><th scope=col>US 3m TR</th><th scope=col>Dates</th></tr></thead>
+<tbody>
+	<tr><th scope=row>1996-01-31</th><td>0.0074</td><td>NA</td><td>0.0349</td><td>0.0222</td><td>NA</td><td>NA</td><td>NA</td><td>0.034</td><td>0.0038</td><td>0.00456</td><td>1996-01-31</td></tr>
+	<tr><th scope=row>1996-02-29</th><td>0.0193</td><td>NA</td><td>0.0351</td><td>0.0195</td><td>NA</td><td>NA</td><td>NA</td><td>0.0093</td><td>-0.03532</td><td>0.00398</td><td>1996-02-29</td></tr>
+	<tr><th scope=row>1996-03-31</th><td>0.0155</td><td>NA</td><td>0.0258</td><td>-0.0098</td><td>NA</td><td>NA</td><td>NA</td><td>0.0096</td><td>-0.01057</td><td>0.00371</td><td>1996-03-31</td></tr>
+	<tr><th scope=row>1996-04-30</th><td>-0.0091</td><td>NA</td><td>0.0449</td><td>0.0236</td><td>NA</td><td>NA</td><td>NA</td><td>0.0147</td><td>-0.01739</td><td>0.00428</td><td>1996-04-30</td></tr>
+	<tr><th scope=row>1996-05-31</th><td>0.0076</td><td>NA</td><td>0.0353</td><td>0.0028</td><td>NA</td><td>NA</td><td>NA</td><td>0.0258</td><td>-0.00543</td><td>0.00443</td><td>1996-05-31</td></tr>
+	<tr><th scope=row>1996-06-30</th><td>-0.0039</td><td>NA</td><td>-0.0303</td><td>-0.0019</td><td>NA</td><td>NA</td><td>NA</td><td>0.0038</td><td>0.01507</td><td>0.00412</td><td>1996-06-30</td></tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+
+<div class="output_html rendered_html output_subarea ">
+<iframe src="https://plot.ly/~RPlotBot/2839/time-series-plot/.embed" width="100%" height="400" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Heat-map">Heatmap<a class="anchor-link" href="#Heat-map">&#182;</a></h2>
+</div>
+</div>
+</div>
+<p><div class="cell border-box-sizing code_cell rendered"></p>
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre><span class="c1"># Heatmap</span>
+<span class="kn">library</span><span class="p">(</span>plotly<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>mlbench<span class="p">)</span>
+
+<span class="c1"># Get Sonar data</span>
+data<span class="p">(</span>Sonar<span class="p">)</span>
+
+<span class="c1"># Use only numeric data</span>
+rock <span class="o">&lt;-</span> <span class="kp">as.matrix</span><span class="p">(</span><span class="kp">subset</span><span class="p">(</span>Sonar<span class="p">,</span> Class <span class="o">==</span> <span class="s">&quot;R&quot;</span><span class="p">)[,</span><span class="m">1</span><span class="o">:</span><span class="m">59</span><span class="p">])</span>
+mine <span class="o">&lt;-</span> <span class="kp">as.matrix</span><span class="p">(</span><span class="kp">subset</span><span class="p">(</span>Sonar<span class="p">,</span> Class <span class="o">==</span> <span class="s">&quot;M&quot;</span><span class="p">)[,</span><span class="m">1</span><span class="o">:</span><span class="m">59</span><span class="p">])</span>
+
+<span class="c1"># For rocks</span>
+p1 <span class="o">&lt;-</span> plot_ly<span class="p">(</span>z <span class="o">=</span> rock<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;heatmap&quot;</span><span class="p">,</span> showscale <span class="o">=</span> <span class="bp">F</span><span class="p">)</span>
+
+<span class="c1"># For mines</span>
+p2 <span class="o">&lt;-</span> plot_ly<span class="p">(</span>z <span class="o">=</span> mine<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;heatmap&quot;</span><span class="p">,</span> name <span class="o">=</span> <span class="s">&quot;test&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  layout<span class="p">(</span>title <span class="o">=</span> <span class="s">&quot;Mine vs Rock&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot together</span>
+p3 <span class="o">&lt;-</span> subplot<span class="p">(</span>p1<span class="p">,</span> p2<span class="p">)</span>
+embed_notebook<span class="p">(</span>p3<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+<div class="output_html rendered_html output_subarea ">
+<iframe src="https://plot.ly/~RPlotBot/2841/mine-vs-rock/.embed" width="100%" height="400" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+</div>
+
+</div>
+
+</div>
+</div>
