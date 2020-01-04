@@ -1,10 +1,50 @@
-# Repo Organization
+# Contributing to Plotly's Graphing Libraries Documentation
 
-Edit or add files in the `_posts` folder in the [source-design-merge](http://github.com/plotly/documentation/tree/source-design-merge) branch.
+Plotly welcomes contributions to its [open-source graphing libraries documentation](https://plot.ly/graphing-libraries) from its community of users.
 
-## Clone the Repo and Install Dependencies
+The `source-design-merge` branch of this repository hosts a Jekyll application hosted on GitHub Pages that serves Plotly's graphing libraries documentation. 
 
-1. Clone the repo and then check out the source-design-merge branch:
+The index page for the documentation website is located at https://plot.ly/graphing-libraries. 
+
+### plotly.js
+
+Please be aware that **only the content of Plotly's JavaScript graphing library documentation** (hosted at https://plot.ly/javascript) is contained in this repository. You can find the content in the `_posts/plotly_js` directory. 
+
+For information about editing **plotly.js** documentation [click here](https://github.com/plotly/documentation/blob/readme-updates/_posts/plotly_js/README.md).
+
+### plotly.py
+
+The content for Plotly's Python graphing library documentation (hosted at https://plot.ly/python) **IS NOT** contained in this repository. It is contained in the `plotly.py` repository at https://github.com/plotly/plotly.py/tree/master/doc and is cloned into this repository at build time. 
+
+For information about editing **plotly.py** documentation [click here] (https://github.com/plotly/plotly.py/blob/master/doc/README.md).
+
+### plotly.r
+
+The content for Plotly's R graphing library documentation (hosted at https://plot.ly/r) **IS NOT** contained in this repository. It is contained in the `plotly.r-docs` repository at https://github.com/plotly/plotly.r-docs/ and is cloned into this repository at build time.  
+
+For information about editing Plotly's **R** documentation [click here](https://github.com/plotly/plotly.r-docs/blob/master/README.md).
+
+**For more information about the build process, inspect the CircleCI configuration file in this repository at https://github.com/plotly/documentation/blob/source-design-merge/.circleci/config.yml.**
+  
+## Contribute Quickly to Plotly's JavaScript Graphing Library Documentation
+  
+To quickly make a contribution to Plotly's JavaScript graphing libraries documentation, simply submit a pull request with the change you would like to suggest to the `source-design-merge` branch of this repository.
+
+The easiest way to do this is to follow the `Edit this page on GitHub` link at the top right of the page you are interested in contributing to:
+
+![Screen Shot 2020-01-07 at 12 45 39 PM](https://user-images.githubusercontent.com/1557650/71916356-bfe53800-314b-11ea-92b6-eb763037f6d5.png)
+
+**You don't have to worry about breaking the site when you submit a pull request!** This is because your change will not be merged to production immediately. A Plotly team member will first perform a code review on your pull request. 
+
+## How To Get The Application Working Locally
+
+For more extensive changes to Ploty's JavaScript documentation, we suggest getting the Jekyll application which builds the site to run locally so that you can test your changes as you develop them. 
+
+This involves cloning the repository and installing its dependencies: [Git](https://git-scm.com/), [Ruby]((https://www.ruby-lang.org/en/), [Jekyll](https://jekyllrb.com/), and the [Python `requests` package](https://pypi.org/project/requests/). 
+
+1. Use [`git`](https://git-scm.com/) to [clone](https://git-scm.com/docs/git-clone) the public `plotly/documentation` repository. Then [check out] (https://git-scm.com/docs/git-checkout) the source-design-merge branch of the `git` repository.
+
+To do so, run the following commands in your terminal:
 
 ```sh
 git clone git@github.com:plotly/documentation.git
@@ -12,9 +52,22 @@ git fetch origin
 git checkout source-design-merge
 ```
 
-2. Check Ruby version `$ ruby --version`. We recommend using `version 2.3.3` or the same ruby version as [gh-pages](https://pages.github.com/versions/). Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
+Running `git status` in your terminal should then output the following:
 
-3. Install bundler and dependencies from the `Gemfile`:
+```sh
+On branch source-design-merge
+Your branch is up to date with 'origin/source-design-merge'.
+
+nothing to commit, working tree clean
+```
+
+2. Download Ruby and check your `Ruby` version by running the `ruby --version` command in your terminal. 
+
+We recommend using `version 2.3.3` or the same ruby version as [gh-pages](https://pages.github.com/versions/). Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
+
+3. Download Jekyll and check your Jekyll version by running the `jekyll -v` command in your terminal. We recommend using the same ruby version as [gh-pages](https://pages.github.com/versions/).
+
+4. Install bundler and dependencies from the Jekyll applicaton's [`Gemfile`](https://github.com/plotly/documentation/blob/source-design-merge/Gemfile) by running the following commands in your terminal:
 
 ```sh
 gem install bundler
@@ -23,37 +76,24 @@ bundle install
 
 Note these dependencies should be the same version that [gh-pages](https://pages.github.com/versions/) is using.
 
-4. When we deploy, a function is run to update the plot schema. To do this successfully you have to make sure you have the `requests` python package: `pip install requests`
+5. When Plotly deploys its graphing libraries documentation to GitHub pages, a function is run to simultaneously update the graphing libraries plot schema in order to keep the two in sync. To do this successfully you have to make sure you have Python and the `requests` Python package installed in your local development environment: `pip install requests`.
 
-## Making Changes
+6. Serve the Jekyll application: `bundle exec jekyll serve --config _config_dev.yml`.
+7. Visit the pages at: [http://localhost:4000/](http://localhost:4000)
+8. When you make changes, Jekyll should automatically regenerate the application for you. Read the messages in your terminal to check it out.
 
-- For information about editing **plotly.js** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/plotly_js/README.md 
-- For information about editing **python** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/python/README.md
-- For information about editing **R** docs see: https://github.com/plotly/documentation/blob/source-design-merge/_posts/r/README.md
-- For information about editing chart studio documentation found at [https://help.plot.ly/tutorials/](https://help.plot.ly/tutorials/) please see this repo: [https://github.com/plotly/plotly.github.io](https://github.com/plotly/plotly.github.io)
+There are a TON of posts in here, so rendering can take up to thirty minutes! You can *limit* the number of posts that render by [excluding folders](https://jekyllrb.com/docs/configuration/options/) from being served using custom Jekyll configuration options. 
 
-## Render Changes Locally
-
-Please **ALWAYS** locally serve the docs and check your changes before committing updates.
-
-1. To serve the docs locally, in the documentation repo run: `bundle exec jekyll serve --config _config_dev.yml`
-2. Visit the pages at: [http://localhost:4000/python/](http://localhost:4000/python/)
-3. When you make changes, jekyll should automatically regenerate for you. Read the messages in your terminal to check it out
-
-There are a TON of posts in here, so rendering can take up to
-thirty minutes! You can *limit* the number of posts that render by
-excluding folders in the `_config_dev.yml` file.
-
-For example, change `_config_dev.yml` to this:
+To do so, create a `_config_personal.yml` file:
 
 ```yml
 staticurl: http://localhost:4000/all_static
-exclude: [_posts/ggplot2, _posts/julia, _posts/matlab, _posts/matplotlib, _posts/nodejs, _posts/r] # [_posts/python,]
+exclude: [_posts/ggplot2, _posts/julia, _posts/matlab, _posts/matplotlib, _posts/nodejs, _posts/r, posts/python] # [_posts/plotly_js,]
 ```
 
-and you'll only load the files in `_posts/python`.
+and you'll only load the files in `_posts/plotly_js`.
 
-Change it to this
+Change it to this:
 
 ```yml
 staticurl: http://localhost:4000/all_static
@@ -61,31 +101,3 @@ exclude: []
 ```
 
 and it'll load everything.
-
-## Make a PR
-Ready for your changes to be reviewed? Make a pull request against the `source-design-merge` branch!
-Create a feature branch and use `git status` to list changed files.
-
-(Make sure that the feature branch is a branch off from `source-design-merge` local branch in your machine and not from any other previously worked branch).
-```sh
-git checkout -b your_feature_branch
-git status
-```
-Add, commit, and push the files that you'd like to add to your pr:
-```sh
-git add file-a
-git add file-b
-git commit -m 'message about your changes'
-git push origin your_feature_branch
-```
-Visit the [documentation repo](https://github.com/plotly/documentation) and open a pull request against the `source-design-merge` branch.
-
-After your PR has been reviewed and approved, you can merge it into the `source-design-merge` branch! Your changes haven't been deployed yet so they won't be online. That said, be sure to check them after they have been deployed.
-
-## Search
-
-We now have search via algolia implemented on our index and reference documentation pages! Please refer to our [make README](https://github.com/plotly/documentation/blob/source-design-merge/make_instructions.txt) for more information on how search works and instructions on how to update or edit Plotly search indices.
-
-## Style Edits
-
-Please refer to our [Styles README](https://github.com/plotly/documentation/blob/source-design-merge/style_README.md)
