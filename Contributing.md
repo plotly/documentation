@@ -1,40 +1,33 @@
 # Contributing to Plotly's Graphing Libraries Documentation
 
+## Repo Overview
+
 Plotly welcomes contributions to its [open-source graphing libraries documentation](https://plot.ly/graphing-libraries) from its community of users.
 
-The `source-design-merge` branch of this repository hosts a Jekyll application hosted on GitHub Pages that serves Plotly's graphing libraries documentation. 
+This repository mainly serves:
+- Plotly's graphing libraries documentation index page at https://plot.ly/graphing-libraries. 
 
-The index page for the documentation website is located at https://plot.ly/graphing-libraries. 
+- Plotly's JavaScript graphing library documentation at https://plot.ly/javascript
+    - Please be aware that **only the content of Plotly's JavaScript graphing library documentation** (hosted at https://plot.ly/javascript) is contained in this repository. You can find the content in the `_posts/plotly_js` directory. 
+    - For information about editing **plotly.js** documentation [click here](https://github.com/plotly/documentation/blob/readme-updates/_posts/plotly_js/README.md).
 
-### plotly.js
+- Plotly's Python graphing library documentation at https://plot.ly/python
+    - The content for Plotly's Python graphing library documentation (hosted at https://plot.ly/python) **IS NOT** contained in this repository. It is contained in the `plotly.py` repository at https://github.com/plotly/plotly.py/tree/master/doc and is cloned into this repository at build time. 
+    - For information about editing **plotly.py** documentation [click here](https://github.com/plotly/plotly.py/blob/master/doc/README.md).
 
-Please be aware that **only the content of Plotly's JavaScript graphing library documentation** (hosted at https://plot.ly/javascript) is contained in this repository. You can find the content in the `_posts/plotly_js` directory. 
+- Plotly's R graphing library documentation at https://plot.ly/r
+    - The content for Plotly's R graphing library documentation (hosted at https://plot.ly/r) **IS NOT** contained in this repository. It is contained in the `plotly.r-docs` repository at https://github.com/plotly/plotly.r-docs/ and is cloned into this repository at build time.  
+    - For information about editing Plotly's **R** documentation [click here](https://github.com/plotly/plotly.r-docs/blob/master/README.md).
 
-For information about editing **plotly.js** documentation [click here](https://github.com/plotly/documentation/blob/readme-updates/_posts/plotly_js/README.md).
-
-### plotly.py
-
-The content for Plotly's Python graphing library documentation (hosted at https://plot.ly/python) **IS NOT** contained in this repository. It is contained in the `plotly.py` repository at https://github.com/plotly/plotly.py/tree/master/doc and is cloned into this repository at build time. 
-
-For information about editing **plotly.py** documentation [click here](https://github.com/plotly/plotly.py/blob/master/doc/README.md).
-
-### plotly.r
-
-The content for Plotly's R graphing library documentation (hosted at https://plot.ly/r) **IS NOT** contained in this repository. It is contained in the `plotly.r-docs` repository at https://github.com/plotly/plotly.r-docs/ and is cloned into this repository at build time.  
-
-For information about editing Plotly's **R** documentation [click here](https://github.com/plotly/plotly.r-docs/blob/master/README.md).
-
-**For more information about the build process, inspect the CircleCI configuration file in this repository at https://github.com/plotly/documentation/blob/source-design-merge/.circleci/config.yml.**
-  
 ## Contribute Quickly to Plotly's JavaScript Graphing Library Documentation
   
-To quickly make a contribution to Plotly's JavaScript graphing libraries documentation, simply submit a pull request with the change you would like to suggest to the `source-design-merge` branch of this repository.
+To quickly make a contribution to Plotly's JavaScript graphing libraries documentation, simply submit a pull request with the change you would like to suggest.
 
 The easiest way to do this is to follow the `Edit this page on GitHub` link at the top right of the page you are interested in contributing to:
 
 ![Screen Shot 2020-01-07 at 12 45 39 PM](https://user-images.githubusercontent.com/1557650/71916356-bfe53800-314b-11ea-92b6-eb763037f6d5.png)
 
-**You don't have to worry about breaking the site when you submit a pull request!** This is because your change will not be merged to production immediately. A Plotly team member will first perform a code review on your pull request. 
+**Note:** You don't have to worry about breaking the site when you submit a pull request!** This is because your change will not be merged to production immediately. A Plotly team member will first perform a code review on your pull request. 
 
 ## How To Get The Application Working Locally
 
@@ -52,6 +45,8 @@ git fetch origin
 git checkout source-design-merge
 ```
 
+**Note:** For historical reasons, the `source-design-merge` branch is the `master` branch of this repository. 
+
 Running `git status` in your terminal should then output the following:
 
 ```sh
@@ -63,7 +58,7 @@ nothing to commit, working tree clean
 
 2. Download Ruby and check your `Ruby` version by running the `ruby --version` command in your terminal. 
 
-We recommend using `version 2.3.3` or the same ruby version as [gh-pages](https://pages.github.com/versions/). Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
+**Note:** We recommend using `version 2.3.3` or the same ruby version as [gh-pages](https://pages.github.com/versions/). Note [RVM](https://rvm.io/rvm/install) is helpful for installing and managing ruby versions.
 
 3. Download Jekyll and check your Jekyll version by running the `jekyll -v` command in your terminal. We recommend using the same ruby version as [gh-pages](https://pages.github.com/versions/).
 
@@ -74,28 +69,51 @@ gem install bundler
 bundle install
 ```
 
-Note these dependencies should be the same version that [gh-pages](https://pages.github.com/versions/) is using.
+**Note:** These dependencies should be the same version that [gh-pages](https://pages.github.com/versions/) is using.
 
 5. Serve the Jekyll application: `bundle exec jekyll serve --config _config_dev.yml`.
+
 6. Visit the pages at: [http://localhost:4000/](http://localhost:4000)
-7. When you make changes, Jekyll should automatically regenerate the application for you. Read the messages in your terminal to check it out.
 
-You can limit the number of posts that render by [excluding folders](https://jekyllrb.com/docs/configuration/options/) from being served using custom Jekyll configuration options. 
+**Note** The default Jekyll configuration file only builds the JavaScript posts by [excluding folders](https://jekyllrb.com/docs/configuration/options/). If you want to override this behavior, serve the application with a custom Jekyll configuration file in the root of the repository. Do this by copying `_config_dev.yml`, renaming it `_config_personal.yml`, and modifying the `exclude` statement. 
 
-To do so, create a `_config_personal.yml` file:
+- If you name the Jekyll configuration file `_config_personal.yml`, it will be caught by the `.gitignore` file and not committed to version control. 
+- Run `bundle exec jekyll serve --config _config_personal.yml` to use the custom configuration file
 
+- Example configuration:
 ```yml
-staticurl: http://localhost:4000/all_static
-exclude: [_posts/ggplot2, _posts/julia, _posts/matlab, _posts/matplotlib, _posts/nodejs, _posts/r, posts/python] # [_posts/plotly_js,]
+# ---
+# Excludes every directory except JavaScript 
+# ---
+exclude: ['_posts/reference_pages', _posts/ggplot2','_posts/julia','_posts/matlab','_posts/node_js','_posts/r','_posts/python','_posts/python-v3','_posts/misc','_posts/dashboards',_posts/scala', '_posts/nodejs', 'node_modules']
 ```
 
-and you'll only load the files in `_posts/plotly_js`.
+and you'll only load the files in `_posts/plotly_js` directory because that is the only directory that is not excluded.
 
 Change it to this:
 
 ```yml
+# ---
+# Excludes no directory 
+# ---
 staticurl: http://localhost:4000/all_static
 exclude: []
 ```
 
-and it'll load everything.
+and you'll load every file because no directories are excluded. 
+
+## Continuous Integration
+
+Whenever a pull request is made, a continuous integration workflow is initiated. This includes of:
+    - running the `check-or-enforce-order.py` and `front-matter-ci.py` scripts inside of a Docker container to validate YAML front-matter
+    - Percy screenshot testing
+
+Making sure that a pull request passes every continuous integration test is a part of the code review process. 
+
+**For more information about the build process, inspect the CircleCI configuration file in this repository at https://github.com/plotly/documentation/blob/source-design-merge/.circleci/config.yml.**
+
+## Other Documentation
+
+This repository also contains:
+    - Plotly's Node.js, Matlab, Scala, Julia, and Python V3 graphing libraries documentation
+    - the reference pages for Plotly's JavaScript, Python, R, and Matlab graphing libraries. 
