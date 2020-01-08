@@ -76,13 +76,11 @@ bundle install
 
 Note these dependencies should be the same version that [gh-pages](https://pages.github.com/versions/) is using.
 
-5. When Plotly deploys its graphing libraries documentation to GitHub pages, a function is run to simultaneously update the graphing libraries plot schema in order to keep the two in sync. To do this successfully you have to make sure you have Python and the `requests` Python package installed in your local development environment: `pip install requests`.
+5. Serve the Jekyll application: `bundle exec jekyll serve --config _config_dev.yml`.
+6. Visit the pages at: [http://localhost:4000/](http://localhost:4000)
+7. When you make changes, Jekyll should automatically regenerate the application for you. Read the messages in your terminal to check it out.
 
-6. Serve the Jekyll application: `bundle exec jekyll serve --config _config_dev.yml`.
-7. Visit the pages at: [http://localhost:4000/](http://localhost:4000)
-8. When you make changes, Jekyll should automatically regenerate the application for you. Read the messages in your terminal to check it out.
-
-There are a TON of posts in here, so rendering can take up to thirty minutes! You can *limit* the number of posts that render by [excluding folders](https://jekyllrb.com/docs/configuration/options/) from being served using custom Jekyll configuration options. 
+You can limit the number of posts that render by [excluding folders](https://jekyllrb.com/docs/configuration/options/) from being served using custom Jekyll configuration options. 
 
 To do so, create a `_config_personal.yml` file:
 
