@@ -16,7 +16,7 @@ For information about editing **plotly.js** documentation [click here](https://g
 
 The content for Plotly's Python graphing library documentation (hosted at https://plot.ly/python) **IS NOT** contained in this repository. It is contained in the `plotly.py` repository at https://github.com/plotly/plotly.py/tree/master/doc and is cloned into this repository at build time. 
 
-For information about editing **plotly.py** documentation [click here] (https://github.com/plotly/plotly.py/blob/master/doc/README.md).
+For information about editing **plotly.py** documentation [click here](https://github.com/plotly/plotly.py/blob/master/doc/README.md).
 
 ### plotly.r
 
