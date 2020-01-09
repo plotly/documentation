@@ -18,7 +18,7 @@ The easiest way to do this is to follow the `Edit this page on GitHub` link at t
 
 For contributions such as new example posts, we recommend setting up a local development environment so that you can test your changes as you work on them. 
 
-**See the `How To Get The Application Working Locally` section of the [Contributing Guide](https://github.com/plotly/documentation/blob/readme-updates/Contributing.md)  to learn how to clone this repository to your local development environment and install its dependencies.**
+**See the `How To Get The Application Working Locally` section of the [Contributing Guide](https://github.com/plotly/documentation/blob/source-design-merge/Contributing.md)  to learn how to clone this repository to your local development environment and install its dependencies.**
 
 Then follow these instructions to create or modify a new post. If the post is the first of its chart type, you need to create an index page for it first. 
 
