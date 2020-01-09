@@ -9,7 +9,7 @@ This repository mainly serves:
 
 - Plotly's JavaScript graphing library documentation at https://plot.ly/javascript
     - Please be aware that **only the content of Plotly's JavaScript graphing library documentation** (hosted at https://plot.ly/javascript) is contained in this repository. You can find the content in the `_posts/plotly_js` directory. 
-    - For information about editing **plotly.js** documentation [click here](https://github.com/plotly/documentation/blob/readme-updates/_posts/plotly_js/README.md).
+    - For information about editing **plotly.js** documentation [click here](https://github.com/plotly/documentation/blob/source-design-merge/_posts/plotly_js/README.md).
 
 - Plotly's Python graphing library documentation at https://plot.ly/python
     - The content for Plotly's Python graphing library documentation (hosted at https://plot.ly/python) **IS NOT** contained in this repository. It is contained in the `plotly.py` repository at https://github.com/plotly/plotly.py/tree/master/doc and is cloned into this repository at build time. 
