@@ -1,9 +1,9 @@
 ---
-description: R Filenames, folders, and updating Plotly graphs in the plotly cloud.
+description: How to update graphs stored Chart Studio with R.
 display_as: chart_studio
 language: r
 layout: base
-name: Updating Plotly Graphs
+name: Updating Graphs Stored In Chart Studio
 order: 1
 output:
   html_document:
@@ -12,6 +12,7 @@ page_type: example_index
 permalink: r/file-options/
 thumbnail: thumbnail/horizontal-bar.jpg
 ---
+
 
 ### New to Plotly?
 
@@ -31,24 +32,27 @@ packageVersion('plotly')
 ```
 
 ```
-## [1] '4.7.1'
+## [1] '4.9.1'
 ```
 
-#### Save Plot to Server
-To create a plotly figure on a plotly server, use `api_create()`.
+### Save R Plot To Chart Studio
+
+Using the `plotly` R package, you can create a Chart Studio figure based on your R chart. Simply pass your chart as a parameter to the `api_create()` function:
 
 
 ```r
 library(plotly)
-p <- plot_ly(x = c(1, 2), y = c(1, 2))
+p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length)
 api_create(p)
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5459.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/6051.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-#### Overwrite Plot
+### How To Overwrite An Existing Plot
 
-If you don't include a filename, a new plot will be made on your online plotly account. If you want to overwrite a plot (i.e., keep the graph served from the same plotly URL), specify a filename. This implicitly overwrites your plotly graph.
+By default, when you call `api_create()` a new plot is created in your Chart Studio account with its own new URL.
+
+If you would like to overwrite an existing plot in your Chart Studio account and keep the same URL, then supply a `filename` as an extra parameter to the `api_create()` function. This will keep the same URL for the plot. 
 
 
 ```r
@@ -57,14 +61,19 @@ api_create(p, filename = "name-of-my-plotly-file")
 
 <iframe src="https://plot.ly/~RPlotBot/505.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-#### Save your Plot in a Folder
-If the filename contains "/", it will automatically create a plotly folder. This option is only available for [Pro-Subscriptions](https://plot.ly/products/cloud/)
+### Saving Plots In Folders
+
+If the `filename` parameter contains the character "/", then the `api_create()` function will save that plot in a folder in your Chart Studio account. 
+
+This option is only available for [Chart Studio Enterprise subscripbers](https://plot.ly/online-chart-maker/)
 
 
 ```r
-api_create(p, filename="r-docs-name-of-my-plotly-file")
+api_create(p, filename="r-docs/name-of-my-chart-studio-file")
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/5455.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/6029.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
-View your Plotly graphs at [https://plot.ly/organize](https://plot.ly/organize).
+### Viewing Saved Plots
+
+View the R graphs you have saved in your Chart Studio account at [https://plot.ly/organize](https://plot.ly/organize).
