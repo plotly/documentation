@@ -1,16 +1,16 @@
 ---
-description: How to export R graphs as static images. Ploty's R graphing library supports exporting to .png,
-  .svg, .jpg, and .pdf file formarts and exporting Chart Studio graphs.
+description: How to export R graphs as static images using Chart Studio. 
 display_as: chart_studio
 language: r
 layout: base
-name: Using Chart Studio to Export Static Images
+name: Exporting Graphs As Static Images Using Chart Studio
 order: 2
 output:
   html_document:
     keep_md: true
 page_type: example_index
-permalink: r/static-image-export/
+permalink: r/chart-studio-image-export/
+redirect_from: r/static-image-export/
 sitemap: false
 thumbnail: thumbnail/png-export.png
 ---
@@ -38,56 +38,42 @@ library(plotly)
 packageVersion('plotly')
 ```
 
-### Supported Formats For Static Image Export
+### Supported File Formats
 
-With the `plotly` R package, you can export your charts as static images in the `.png` and `.jpg/.jpeg` file formats.
+With the `plotly` R package, you can export graphs you create as static images in the `.png` and/or `.jpg/.jpeg` file formats for free using the [Chart Studio web service](https://chart-studio.plot.ly/create/#/). 
 
-Currently, exporting charts as static images in the `.eps`, `.svg`, and `.pdf` formats is a feature that is available only to users of [Chart Studio Enterprise](https://plot.ly/online-chart-maker/).
+Currently, exporting graphs you create as static images in the `.eps`, `.svg`, and/or `.pdf` format is a feature that is available only to users of [Chart Studio Enterprise](https://plot.ly/online-chart-maker/).
 
-**Note:** It is important to be aware that any R charts containing WebGL-based traces (i.e. of type `scattergl`, `heatmapgl`, `contourgl`, `scatter3d`, `surface`, `mesh3d`, `scatterpolargl`, `cone`, `streamtube`, `splom`, or `parcoords`) that are exported in a vector format like `.eps`, `.svg`, and `.pdf` will include encapsulated rasters instead of vectors for some parts of the image.
+**Note:** It is important to be aware that R graphs containing WebGL-based traces (i.e. of type `scattergl`, `heatmapgl`, `contourgl`, `scatter3d`, `surface`, `mesh3d`, `scatterpolargl`, `cone`, `streamtube`, `splom`, and/or `parcoords`) will include encapsulated rasters instead of vectors for some parts of the image if they are exported as static images in a vector format like `.eps`, `.svg`, and/or `.pdf`.
 
-### Supported Methods Static Image Export
+### Exporting Chart Studio Charts As Static Images
 
-To export R charts as static images with the `plotly` R package, you can:
+To export your R graphs as static images using the Chart Studio web service, you can use the built-in `plotly_IMAGE()` function. 
 
-* use the built-in integration with [Orca](https://github.com/plotly/orca), Plotly's command line application for generating static images.
+#### Create A Chart Studio Account And Get An API Key
 
-* export the image using your Chart Studio account using the `plotly_IMAGE()` fucntion.
+To use the `plotly_IMAGE()` function, you will need to have a [Chart Studio account](https://chart-studio.plot.ly/Auth/login/?action=signup#/) and an API key (which can be found [in your Chart Studio account online settings](https://plot.ly/settings/api)). Learn more about [getting started with Chart Studio in R](https://plot.ly/r/getting-started-with-chart-studio). 
 
-* append the format extension to the plot url of an existing Chart Studio plot. For example, the `.jpg` version of the plot at https://plot.ly/~chris/1638 is available at https://plot.ly/~chris/1638.jpg. The `.png` version of the plot is available at https://plot.ly/~chris/1638.png.
+#### Set Environment Variables In Your R Session
 
-#### Using Orca To Export Static Images Locally
-
-Version `4.7.900` and above of the `plotly` R package include the `orca()` function (replacing the `export()` function). 
-
-This function exports images locally using [Orca](https://github.com/plotly/orca). In order to use Orca with the `plotly` R package, you need to install the [`processx`](https://github.com/r-lib/processx) package as well.
-
-```{r, eval = FALSE}
-if (!require("processx")) install.packages("processx")
-
-p <- plot_ly(z = ~volcano) %>% add_surface()
-
-orca(p, "surface-plot.svg")
-```
-
-#### Using Chart Studio to Export Static Images
-
-Another option for exporting the R charts you create with the `plotly` R package is to use your Chart Studio account.
-
-This requires using the development version of the `plotly` R package from GitHub. This can be installed using the [`devtools`](https://cran.r-project.org/web/packages/devtools/index.html) R package.
-
-```r
-devtools::install_github("ropensci/plotly")
-```
- 
-In addition, if you haven't already, let the R session know about your Chart Studio authorization credentials by setting environment variables using [`Sys.setenv()`](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/Sys.setenv).
+Let the R session know about your Chart Studio authorization credentials by setting environment variables using [`Sys.setenv()`](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/Sys.setenv).
 
 ```{r, eval = FALSE}
 Sys.setenv("plotly_username" = "YOUR USER NAME")
 Sys.setenv("plotly_api_key" = "YOUR API KEY")
 ```
 
-The `plotly_IMAGE()` function exports plots as static images using the Chart Studio web service. The image will be stored in a file in the working directory of your R session.
+#### Use The Development Version Of The `plotly` R Package
+
+You will also need to be using the development version of the `plotly` R package in order to use the `plotly_IMAGE()` function. This can be installed from GitHub using the [`devtools`](https://cran.r-project.org/web/packages/devtools/index.html) R package by running the following command in your R session:
+
+```r
+devtools::install_github("ropensci/plotly")
+```
+
+#### Export R Graph As Static Image
+
+The `plotly_IMAGE()` function exports your R plots as static images using the Chart Studio web service. The image will be stored in a file in the working directory of your R session.
 
 ```{r}
 library(plotly)
@@ -97,12 +83,12 @@ plotly_IMAGE(p, format = "png", out_file = "output.png")
 
 ![](https://images.plot.ly/plotly-documentation/images/output.png)
 
-#### Appending Static Image File Types to Chart Studio Plot URLs
+### Alternative Methods Of Exporting Graphs As Static Images In R
 
-You can also view the static image version of any public Chart Studio graph by appending `.png` or `.jpeg` to the end of the URL for the graph. 
+#### Local Image Export
 
-For example, view the static image of <https://plot.ly/~chris/1638> at <https://plot.ly/~chris/1638.png>. 
+As an alternative to using the Chart Studio web service to export your R graphs as static images, you can [use the built-in `orca()` function](https://plot.ly/r/image-export-orca) to export images locally. 
 
-[Chart Studio Enterprise](https://plot.ly/online_chart_maker) users can also use this method to get static images in the `.pdf`, `.svg`, and `.eps` file formats. 
+#### Embed R Charts in RMarkdown Documents
 
 See [Embedding Graphs in RMarkdown](https://plot.ly/r/embedding-graphs-in-rmarkdown/) to learn more about embedding R charts in RMarkdown (.Rmd) files.
