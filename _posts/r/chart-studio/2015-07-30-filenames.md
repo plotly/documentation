@@ -4,7 +4,7 @@ display_as: chart_studio
 language: r
 layout: base
 name: Updating Graphs Stored In Chart Studio
-order: 1
+order: 9
 output:
   html_document:
     keep_md: true
@@ -46,11 +46,11 @@ p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length)
 api_create(p)
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/6051.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/6057.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### How To Overwrite An Existing Plot
 
-By default, when you call `api_create()` a new plot is created in your Chart Studio account with its own new URL.
+By default, when you call `api_create()`, a new plot is created in your Chart Studio account with its own unique URL.
 
 If you would like to overwrite an existing plot in your Chart Studio account and keep the same URL, then supply a `filename` as an extra parameter to the `api_create()` function. This will keep the same URL for the plot. 
 
@@ -65,7 +65,7 @@ api_create(p, filename = "name-of-my-plotly-file")
 
 If the `filename` parameter contains the character "/", then the `api_create()` function will save that plot in a folder in your Chart Studio account. 
 
-This option is only available for [Chart Studio Enterprise subscripbers](https://plot.ly/online-chart-maker/)
+This option is only available for [Chart Studio Enterprise subscribers](https://plot.ly/online-chart-maker/)
 
 
 ```r

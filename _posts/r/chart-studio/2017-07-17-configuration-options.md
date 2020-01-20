@@ -61,6 +61,3 @@ htmlwidgets::saveWidget(config(p, displayModeBar = FALSE), "graph.html")
 
 #### Reference
 Arguments are documented [here](https://github.com/plotly/plotly.js/blob/master/src/plot_api/plot_config.js).
-```r
-?config
-```

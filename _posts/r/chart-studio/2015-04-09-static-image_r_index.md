@@ -41,7 +41,7 @@ packageVersion('plotly')
 
 ### Supported File Formats
 
-With the `plotly` R package, you can export graphs you create as static images in the `.png` and/or `.jpg/.jpeg` file formats for free using the [Chart Studio web service](https://chart-studio.plot.ly/create/#/). 
+With the `plotly` R package, you can export graphs you create as static images in the `.png` and/or `.jpg`/`.jpeg` file formats for free using the [Chart Studio web service](https://chart-studio.plot.ly/create/#/). 
 
 Currently, exporting graphs you create as static images in the `.eps`, `.svg`, and/or `.pdf` format is a feature that is available only to users of [Chart Studio Enterprise](https://plot.ly/online-chart-maker/).
 

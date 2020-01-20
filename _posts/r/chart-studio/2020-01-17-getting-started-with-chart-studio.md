@@ -7,7 +7,7 @@ display_as: chart_studio
 layout: base
 language: r
 thumbnail: thumbnail/bubble.jpg
-order: 9
+order: 1
 output:
   html_document:
     keep_md: true
