@@ -1,0 +1,28 @@
+var x1 = [];
+var x2 = [];
+for (var i = 1; i < 500; i++)
+{
+	k = Math.random();
+	x1.push(Math.random() + 1);
+	x2.push(Math.random() + 1.1);
+}
+var trace1 = {
+  x: x1,
+  type: "histogram",
+  opacity: 0.5,
+  marker: {
+     color: 'green',
+  },
+};
+var trace2 = {
+  x: x2,
+  type: "histogram",
+  opacity: 0.6,
+  marker: {
+     color: 'red',
+  },
+};
+
+var data = [trace1, trace2];
+var layout = {barmode: "overlay"};
+Plotly.newPlot('myDiv', data, layout);
