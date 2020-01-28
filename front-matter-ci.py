@@ -77,6 +77,12 @@ def check_noTrailingSlash(meta_to_check):
                 failures.append(meta["permalink"])
     return "do any permalinks not end with a trailing slash?", failures
 
+def check_no_example_index_with_order_under_5(meta_to_check):
+    failures = []
+    for meta in meta_to_check:
+        if meta["order"] < 5 and meta['page_type'] == "u-guide":
+            failures.append(meta['permalink'])
+    return "do any posts have order less than five but page_type: u-guide?", failures
 
 categories = [
     "file_settings",
