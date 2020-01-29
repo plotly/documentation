@@ -1,5 +1,5 @@
 ---
-description: How to update graphs stored Chart Studio with R.
+description: How to update graphs stored in Chart Studio with R.
 display_as: chart_studio
 language: r
 layout: base
