@@ -19,7 +19,7 @@ output:
 
 `plotly` is an R package for creating interactive web-based graphs via the open source JavaScript graphing library [plotly.js](http://plot.ly/javascript). 
 
-As of version 2.0 (November 17, 2015), R graphs created with the `plotly` R package are rendered *locally* through the [htmlwidgets](http://www.htmlwidgets.org/) framework.
+As of version 2.0 (November 17, 2015), R graphs created with the `plotly` R package are, by default, rendered *locally* through the [htmlwidgets](http://www.htmlwidgets.org/) framework.
 
 ## Initialization for Online Plotting
 
@@ -127,4 +127,3 @@ If you're a [Chart Studio Enterprise subscriber](https://plot.ly/settings/subscr
 api_create(filename = "private-graph", sharing = "private")
 ```
 For more information regarding the privacy of plots published to Chart Studio using the `plotly` R package, please visit [our Chart Studio privacy documentation](https://plot.ly/r/privacy/)
-

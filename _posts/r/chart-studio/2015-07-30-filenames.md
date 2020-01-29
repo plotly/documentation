@@ -14,27 +14,6 @@ thumbnail: thumbnail/horizontal-bar.jpg
 ---
 
 
-### New to Plotly?
-
-Plotly's R library is free and open source!<br>
-[Get started](https://plot.ly/r/getting-started/) by downloading the client and [reading the primer](https://plot.ly/r/getting-started/).<br>
-You can set up Plotly to work in [online](https://plot.ly/r/getting-started/#hosting-graphs-in-your-online-plotly-account) or [offline](https://plot.ly/r/offline/) mode.<br>
-We also have a quick-reference [cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf) (new!) to help you get started!
-
-### Version Check
-
-Version 4 of Plotly's R package is now [available](https://plot.ly/r/getting-started/#installation)!<br>
-Check out [this post](http://moderndata.plot.ly/upgrading-to-plotly-4-0-and-above/) for more information on breaking changes and new features available in this version.
-
-```r
-library(plotly)
-packageVersion('plotly')
-```
-
-```
-## [1] '4.9.1'
-```
-
 ### Save R Plot To Chart Studio
 
 Using the `plotly` R package, you can create a Chart Studio figure based on your R chart. Simply pass your chart as a parameter to the `api_create()` function:
@@ -46,7 +25,7 @@ p <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length)
 api_create(p)
 ```
 
-<iframe src="https://plot.ly/~RPlotBot/6057.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+<iframe src="https://plot.ly/~RPlotBot/6092.embed" width="800" height="600" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ### How To Overwrite An Existing Plot
 
