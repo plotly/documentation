@@ -1,5 +1,5 @@
 ---
-description: How to download Chart Studio users' public graphs and data into R.
+description: How to download Chart Studio users' public graphs and data into an R session.
 display_as: chart_studio
 language: r
 layout: base
