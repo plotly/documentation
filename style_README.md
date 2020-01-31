@@ -1,18 +1,18 @@
 # Styles
 
-The styling for this repo is broken up into two different parts: [gulp](https://github.com/plotly/documentation/blob/source-design-merge/gulpfile.js) + browsersync + sass and vanilla css.
+The styling for this repo is broken up into two different parts: [gulp](https://github.com/plotly/graphing-library-docs/blob/master/gulpfile.js) + browsersync + sass and vanilla css.
 
 It is recommended to use something to create a local server environment such as MAMP Pro which allows you to set virtual hosts (e.g.: http://api.plotly.dev)
 
 ## gulp + browsersync + scss
 
-This repo is set up to run with a [gulp](https://github.com/plotly/documentation/blob/source-design-merge/gulpfile.js) + sass + browsersync workflow. Essentially what this does is leverages a local server to display the site and when you make updates to the scss files they will be live injected into the site to see the immediate effects of your changes.
+This repo is set up to run with a [gulp](https://github.com/plotly/graphing-library-docs/blob/master/gulpfile.js) + sass + browsersync workflow. Essentially what this does is leverages a local server to display the site and when you make updates to the scss files they will be live injected into the site to see the immediate effects of your changes.
 
 The scss and jekyll instance have been separated to allow for faster updates to the scss independent of the markup.
 
 ### Usage
 
-Once the repo has been cloned successfully (see [Contributing.md](https://github.com/plotly/documentation/blob/source-design-merge/Contributing.md)), run `$ npm install` to install gulp and the necessary dependencies.
+Once the repo has been cloned successfully (see [Contributing.md](https://github.com/plotly/graphing-library-docs/blob/master/Contributing.md)), run `$ npm install` to install gulp and the necessary dependencies.
 
 Generally it's best to work with two instances of terminal, one to use for anything related to `$ jekyll` and then another to keep the `$ gulp` task running.
 
@@ -55,8 +55,8 @@ When you run a `$ jekyll` you need to update any scss file as jekyll will automa
 
 ## Deploying Changes After Editing the SCSS
 
-   - Run `gulp build` in the root of the documentation repo after making any scss edits. This will update `main.css` as well as the [version](https://github.com/plotly/documentation/blob/source-design-merge/_data/cache_bust_css.yml) which is used to prevent css caching.
-   - `git add` the files you've changed as well as the generated `main.css` and `cache_bust_css.yml` files, `git commit -m 'message about update'`, and `git push origin source-design-merge` to add your updates to the repo.
+   - Run `gulp build` in the root of the documentation repo after making any scss edits. This will update `main.css` as well as the [version](https://github.com/plotly/graphing-library-docs/blob/master/_data/cache_bust_css.yml) which is used to prevent css caching.
+   - `git add` the files you've changed as well as the generated `main.css` and `cache_bust_css.yml` files, `git commit -m 'message about update'`, and `git push origin master` to add your updates to the repo.
    - run `rake deploy` to deploy changes.
 
 ## vanilla css
