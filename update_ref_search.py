@@ -16,16 +16,19 @@ skippable_keys = [
     "editType",
 ]
 
+epsilon = 0.0
 
 def next_level(previous_level, chain_dict):
+    global epsilon
     for sub_attr in previous_level:
         if isinstance(previous_level[sub_attr], dict) and not any(
             v in sub_attr for v in skippable_keys
         ):
+            epsilon += 0.0001
             attribute = dict(
                 name=chain_dict["name"] + " > " + sub_attr,
                 permalink=chain_dict["permalink"] + "-" + sub_attr,
-                rank=chain_dict["rank"] + 1,
+                rank=chain_dict["rank"] + 1 + epsilon,
             )
             if "description" in previous_level[sub_attr]:
                 attribute["description"] = previous_level[sub_attr][
