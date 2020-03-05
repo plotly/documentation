@@ -51,7 +51,7 @@ next_level(p["layout"]["layoutAttributes"], layout_chain_dict.copy())
 
 for i, trace_type in enumerate(p["traces"]):
     trace_chain_dict = dict(
-        name=trace_type, permalink="reference/#" + trace_type, rank=(i + 1) * 1000
+        name=trace_type, permalink="reference/#" + trace_type, rank=0
     )
     if p["traces"][trace_type]["meta"]:
         trace_chain_dict["description"] = (
