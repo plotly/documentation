@@ -17,10 +17,10 @@ skippable_keys = [
 ]
 
 def insert_whitespace(x):
-    for word in ["axis", "scatter", "bar", "group", "show", "tick", "text",
+    for word in ["axis", "scatter", "bar", "group", "show", "text",
                  "hover", "auto", "reverse", "max", "min", "mode", "anchor", "pad",
                 "prefix", "suffix", "format", "color", "item", "name", "direction", "revision",
-                "mapbox", "polar"
+                "mapbox", "polar",
                 ]:
         x = x.replace(word, " " + word + " ").replace("  ", " ")
     return x.strip(" ")
