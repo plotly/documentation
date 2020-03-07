@@ -16,19 +16,32 @@ skippable_keys = [
     "editType",
 ]
 
-epsilon = 0.0
+def insert_whitespace(x):
+    for word in ["axis", "scatter", "bar", "group", "show", "tick", "text",
+                 "hover", "auto", "reverse", "max", "min", "mode", "anchor", "pad",
+                "prefix", "suffix", "format", "color", "item", "name", "direction", "revision",
+                "mapbox", "polar"
+                ]:
+        x = x.replace(word, " " + word + " ").replace("  ", " ")
+    return x.strip(" ")
+
+_epsilon = 0.0
+
+def epsilon():
+    global _epsilon
+    _epsilon += 0.00001
+    return _epsilon
 
 def next_level(previous_level, chain_dict):
-    global epsilon
     for sub_attr in previous_level:
         if isinstance(previous_level[sub_attr], dict) and not any(
             v in sub_attr for v in skippable_keys
         ):
-            epsilon += 0.0001
             attribute = dict(
                 name=chain_dict["name"] + " > " + sub_attr,
+                split_name=insert_whitespace(chain_dict["name"] + " > " + sub_attr),
                 permalink=chain_dict["permalink"] + "-" + sub_attr,
-                rank=chain_dict["rank"] + 1 + epsilon,
+                rank=chain_dict["rank"] + 1 + epsilon(),
             )
             if "description" in previous_level[sub_attr]:
                 attribute["description"] = previous_level[sub_attr][
@@ -44,14 +57,16 @@ def next_level(previous_level, chain_dict):
             next_level(previous_level[sub_attr], attribute.copy())
 
 
-layout_chain_dict = dict(name="layout", permalink="reference/#layout", rank=0)
+layout_chain_dict = dict(name="layout", split_name="layout", permalink="reference/#layout", rank=epsilon())
 
 # recursively add layout attributes to schema
 next_level(p["layout"]["layoutAttributes"], layout_chain_dict.copy())
 
 for i, trace_type in enumerate(p["traces"]):
     trace_chain_dict = dict(
-        name=trace_type, permalink="reference/#" + trace_type, rank=0
+        name=trace_type + " traces",
+        split_name=insert_whitespace(trace_type),
+        permalink="reference/#" + trace_type, rank=epsilon()
     )
     if p["traces"][trace_type]["meta"]:
         trace_chain_dict["description"] = (
