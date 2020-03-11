@@ -2,109 +2,80 @@
 $(function(config) {
   'use strict';
 
-  var applicationId = config.applicationId;
-  var apiKey = config.apiKey;
-  var indexName = config.indexName;
-
-  var algolia = algoliasearch(applicationId, apiKey);
-  var helper = algoliasearchHelper(algolia, indexName);
-  helper.setQueryParameter('distinct', true);
-  helper.on('result', onResult);
-
-  // Input listening for queries
-  var $searchInput = $('.js-algolia__input');
-  $searchInput.on('keyup', onQueryChange);
-
-  // Content to hide/show when searching
-  var $initialContent = $('.js-algolia__initial-content');
-  var $searchContent = $('.js-algolia__search-content');
-  var $searchContentResults = $searchContent.find('.algolia__results');
-  $searchContentResults.on('click', 'a', onLinkClick);
-  // Rendering templates
-  var templateResult = Hogan.compile($('#algolia__template').html());
-  var templateNoResults = $('#algolia__template--no-results').html();
-
-  var lastQuery;
-
-  // Toggle result page
-  function showResults() {
-    window.scroll(0, 0);
-    $initialContent.addClass('algolia__initial-content--hidden');
-    $searchContent.addClass('algolia__search-content--active');
-
-  }
-  function hideResults() {
-    $initialContent.removeClass('algolia__initial-content--hidden');
-    $searchContent.removeClass('algolia__search-content--active');
+  var searchInput = document.getElementById("search-input");
+  var primarySearchResults = document.getElementById('primary-search-results');
+  var schemaSearchResults = document.getElementById('schema-search-results');
+  var modalBody = document.getElementById('modal-body');
+  var lang = window.plotly_doc_language;
+  if (lang == "plotly_js"){
+    lang = "javascript"
   }
 
-  // Handle typing query
-  function onQueryChange() {
-    lastQuery = $(this).val();
-    if (lastQuery.length === 0) {
-      hideResults();
-      return false;
+  var emptyResult = '<div class="text-center"><br><br>No results found matching <strong>{{query}}</strong>.<br><br> Click here to <a class="algolia__result-link" target="_blank" href="https://www.google.com/search?q=plotly+' + lang + '+{{query}}">search for "plotly ' + lang + ' {{query}}" on Google</a>.</div>';
+
+  var searches = [];
+
+  for (let i = 0; i < 2; i++){
+
+    searches[i] = instantsearch({
+      appId: config.applicationId,
+      apiKey: config.apiKey,
+      indexName: i == 0 ? config.indexName : "schema",
+      urlSync: false,
+      searchFunction: function (helper) {
+        if (helper.state.query === '') {
+          primarySearchResults.innerHTML = '';
+          return;
+        }
+        helper.search();
+      }
+    });
+
+    searches[i].addWidget(
+      instantsearch.widgets.searchBox({
+        container: "#search-input",
+        magnifier: false,
+        reset: false,
+        queryHook: function(query, search) {
+          if (query === "") {
+            search();
+          } else {
+            search(query);
+          }
+        }
+      })
+    );
+
+    searches[i].addWidget(
+      instantsearch.widgets.hits({
+        container: i == 0 ? '#primary-search-results' : '#schema-search-results',
+        templates: {
+          empty: emptyResult,
+          item: document.getElementById(i == 0 ? 'algolia__template' : 'algolia__secondary-template').innerHTML,
+        },
+        transformData: {
+          item: function(hit) {
+            hit.raw = JSON.stringify(hit, null, 2);
+            return hit;
+          }
+        }
+      })
+    );
+
+    searches[i].start();
+  }
+ 
+  searchInput.addEventListener("keyup", function (event){
+    if (searchInput.value == "" && !navigator.userAgent.match(/Trident.*rv:11\./)){
+      modalBody.style.display = "none";
+
+    } else {
+      modalBody.style.display = "block";
     }
-    helper.setQuery(lastQuery).search();
-    showResults();
-  }
+  });
 
-  function onResult(data) {
-    // Avoid race conditions, discard results that do not match the latest query
-    if (data.query !== lastQuery) {
-      return false;
-    }
-    var content = data.nbHits ? renderResults(data) : templateNoResults;
-    $searchContentResults.html(content);
-  }
-
-// return url from search item
-  function renderResults(data) {
-    return $.map(data.hits, function(hit) {
-      hit.full_url = "../" + hit.permalink;
-
-
-
-      return templateResult.render(hit);
-    }).join('');
-  }
-
-  // Scroll page to correct element
-  function getAnchorSelector(hash) {
-    var anchor = hash.substring(1);
-    if (!anchor.match(/^algolia:/)) {
-      return false;
-    }
-    return decodeURI(anchor.replace(/^algolia:/, ''));
-  }
-
-  function scrollPageToSelector(selector) {
-    var target = $('.page,.post').find(selector);
-    var targetOffset = target[0].getBoundingClientRect().top + window.pageYOffset - 20;
-    window.setTimeout(function() {
-      window.scroll(0, targetOffset);
-    }, 100);
-  }
-
-  function onLinkClick(event) {
-    var selector = getAnchorSelector(event.target.hash);
-    // Normal link, going to another page
-    if (event.target.pathname !== window.location.pathname || !selector) {
-      return true;
-    }
-    // Scrolling to a result on the same page
-    hideResults();
-    scrollPageToSelector(selector);
-    event.preventDefault();
-    return false;
-  }
-
-  window.setTimeout(function() {
-    var selector = getAnchorSelector(window.location.hash);
-    if (selector) {
-      scrollPageToSelector(selector);
-    }
-  }, 100);
-
+  $('#myModal').on('shown.bs.modal', function () {
+    searchInput.focus();
+  });
 
 }(window.ALGOLIA_CONFIG));
