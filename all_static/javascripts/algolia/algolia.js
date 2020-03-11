@@ -55,6 +55,9 @@ $(function(config) {
         },
         transformData: {
           item: function(hit) {
+            if (hit.permalink.includes("reference")){
+              hit.permalink = lang + '/' + hit.permalink;
+            }
             hit.raw = JSON.stringify(hit, null, 2);
             return hit;
           }
