@@ -2,21 +2,21 @@
 
 ## Repo Overview
 
-Plotly welcomes contributions to its [open-source graphing libraries documentation](https://plot.ly/graphing-libraries) from its community of users.
+Plotly welcomes contributions to its [open-source graphing libraries documentation](https://plotly.com/graphing-libraries) from its community of users.
 
 This repository mainly serves:
-- Plotly's graphing libraries documentation index page at https://plot.ly/graphing-libraries. 
+- Plotly's graphing libraries documentation index page at https://plotly.com/graphing-libraries. 
 
-- Plotly's JavaScript graphing library documentation at https://plot.ly/javascript
-    - Please be aware that **only the content of Plotly's JavaScript graphing library documentation** (hosted at https://plot.ly/javascript) is contained in this repository. You can find the content in the `_posts/plotly_js` directory. 
+- Plotly's JavaScript graphing library documentation at https://plotly.com/javascript
+    - Please be aware that **only the content of Plotly's JavaScript graphing library documentation** (hosted at https://plotly.com/javascript) is contained in this repository. You can find the content in the `_posts/plotly_js` directory. 
     - For information about editing **plotly.js** documentation [click here](https://github.com/plotly/graphing-library-docs/blob/master/_posts/plotly_js/README.md).
 
-- Plotly's Python graphing library documentation at https://plot.ly/python
-    - The content for Plotly's Python graphing library documentation (hosted at https://plot.ly/python) **IS NOT** contained in this repository. It is contained in the `plotly.py` repository at https://github.com/plotly/plotly.py/tree/master/doc and is cloned into this repository at build time. 
+- Plotly's Python graphing library documentation at https://plotly.com/python
+    - The content for Plotly's Python graphing library documentation (hosted at https://plotly.com/python) **IS NOT** contained in this repository. It is contained in the `plotly.py` repository at https://github.com/plotly/plotly.py/tree/master/doc and is cloned into this repository at build time. 
     - For information about editing **plotly.py** documentation [click here](https://github.com/plotly/plotly.py/blob/master/doc/README.md).
 
-- Plotly's R graphing library documentation at https://plot.ly/r
-    - The content for Plotly's R graphing library documentation (hosted at https://plot.ly/r) **IS NOT** contained in this repository. It is contained in the `plotly.r-docs` repository at https://github.com/plotly/plotly.r-docs/ and is cloned into this repository at build time.  
+- Plotly's R graphing library documentation at https://plotly.com/r
+    - The content for Plotly's R graphing library documentation (hosted at https://plotly.com/r) **IS NOT** contained in this repository. It is contained in the `plotly.r-docs` repository at https://github.com/plotly/plotly.r-docs/ and is cloned into this repository at build time.  
     - For information about editing Plotly's **R** documentation [click here](https://github.com/plotly/plotly.r-docs/blob/master/README.md).
 
 ## Contribute Quickly to Plotly's JavaScript Graphing Library Documentation

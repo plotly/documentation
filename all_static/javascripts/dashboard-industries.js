@@ -13,13 +13,13 @@ function changeMapQuarter(){
             update: {visible: true, showscale: showScale},
 				indices: [selection]
         },
-        'https://plot.ly');
+        'https://plotly.com');
 	plot.postMessage({
             task: 'restyle',
             update: {visible: false, showscale: showScale},
 				indices: [lastMapValue]
         },
-        'https://plot.ly');
+        'https://plotly.com');
 	lastMapValue = selection;
 }
 

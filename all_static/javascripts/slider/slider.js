@@ -60,14 +60,14 @@ function go() {
                     []
                 ]
             }
-        }, 'https://plot.ly');
+        }, 'https://plotly.com');
     });
 }
 
 var pinger = setInterval(function () {
     plot.postMessage({
         task: 'ping'
-    }, 'https://plot.ly')
+    }, 'https://plotly.com')
 }, 100);
 
 window.addEventListener('message', function (e) {
@@ -81,7 +81,7 @@ window.addEventListener('message', function (e) {
         plot.postMessage({
             task: 'listen',
             events: ['zoom']
-        }, 'https://plot.ly');
+        }, 'https://plotly.com');
     } else {
         console.log('Frame not ready yet', message);
     }

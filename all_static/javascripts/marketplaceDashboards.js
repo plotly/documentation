@@ -38,7 +38,7 @@ function applyAvg(){
 	plot1.postMessage({
 		 task: 'getAttributes',
 		 attributes: [ 'data[1].x', 'data[1].y' ] },
-		 'https://plot.ly/');   
+		 'https://plotly.com/');   
 }
 
 window.addEventListener('message', function(e) {
@@ -52,7 +52,7 @@ window.addEventListener('message', function(e) {
 				plot1.postMessage({
 		 			task: 'getAttributes',
 		 			attributes: [ 'data[1].x', 'data[1].y' ] },
-		 			'https://plot.ly/');
+		 			'https://plotly.com/');
 		}
 		else if( vis == true ){
 			vis = false;	
@@ -65,7 +65,7 @@ window.addEventListener('message', function(e) {
 			task: 'restyle',
 			update: { 'visible':vis },
 			indices: [2]
-		}, 'https://plot.ly'); 
+		}, 'https://plotly.com'); 
 	}
 	else{
 		var window = document.getElementById('myRange').value;
@@ -80,7 +80,7 @@ window.addEventListener('message', function(e) {
 				update: { y: [arr], x: [X], yaxis:"y2", mode:'lines', 
 					visible:true, name:'Moving average', line:{shape:'spline'}},
 				indices: [2]
-			}, 'https://plot.ly');  
+			}, 'https://plotly.com');  
 		}
 		else{		
 			avg = { y: [arr], x: [X], visible:true, 
@@ -90,7 +90,7 @@ window.addEventListener('message', function(e) {
 				task: 'addTraces',
 				traces: [ avg ],
 				newIndices: [2]
-			}, 'https://plot.ly'); 	
+			}, 'https://plotly.com'); 	
 			applyAvg();
 			average = true;
 		}
@@ -105,7 +105,7 @@ function toggleAvg(){
 	plot1.postMessage({
 		 task: 'getAttributes',
 		 attributes: [ 'data[2].visible' ] },
-		 'https://plot.ly/');
+		 'https://plotly.com/');
 }
 
 /***************************/
@@ -139,7 +139,7 @@ function changeType(type){
     'task': 'restyle',
         'update': update,
     },
-    'https://plot.ly');
+    'https://plotly.com');
 }
 
 
