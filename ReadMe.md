@@ -5,9 +5,10 @@ This repository is now solely used to host [issues related to Plotly's documenta
 Source code for the documentation of Plotly's open-source products can be found in the following repositories:
 
 
-| Product  | Github Repository | Notes | 
-| ------------- | ------------- | ------------- |
-| [**Dash**](https://github.com/plotly/dash)  | [plotly/dash-docs](https://github.com/plotly/dash-docs) | Documentation is delivered as a Dash app |
-| [**Plotly.py**](https://github.com/plotly/plotly.py)  | [plotly/plotly.py](https://github.com/plotly/plotly.py/tree/doc-prod/doc)  | Documentation is written in Jupyter Notebooks with Jupytext | 
-| [**Plotly.R**](https://github.com/ropensci/plotly)  | [plotly/plotly.r-docs](https://github.com/plotly/plotly.r-docs)  | Documentation is written in RMarkdown |
-| [**Plotly.js**](https://github.com/plotly/plotly.js)  | [plotly/graphing-library-docs](https://github.com/plotly/graphing-library-docs)  | Documentation is written in Javascript and bundled with Jekyll | 
+| Library Docs | Library Repo | Docs Repo | Notes | 
+| ------------- | ------------- | ------------- | ------------- |
+| [**Dash**](https://dash.plotly.com/) | [plotly/dash](https://github.com/plotly/dash)  | [plotly/dash-docs](https://github.com/plotly/dash-docs) | Documentation is delivered as a Dash app |
+| [**Dash for R**](https://dashr.plotly.com/) | [plotly/dashr](https://github.com/plotly/dashr)  | [plotly/dash-docs](https://github.com/plotly/dash-docs) | Documentation is delivered as a Dash for R app |
+| [**Plotly.py**](https://plotly.com/python) | [plotly/plotly.py](https://github.com/plotly/plotly.py)  | [plotly/plotly.py](https://github.com/plotly/plotly.py/tree/doc-prod/doc)  | Documentation is written in Jupyter Notebooks with Jupytext | 
+| [**Plotly.R**](https://plotly.com/r) | [ropensci/plotly](https://github.com/ropensci/plotly)  | [plotly/plotly.r-docs](https://github.com/plotly/plotly.r-docs)  | Documentation is written in RMarkdown |
+| [**Plotly.js**](https://plotly.com/javascript) | [plotly/plotly.js](https://github.com/plotly/plotly.js)  | [plotly/graphing-library-docs](https://github.com/plotly/graphing-library-docs)  | Documentation is written in Javascript and bundled with Jekyll | 
