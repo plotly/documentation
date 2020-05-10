@@ -20,7 +20,13 @@ update_python_search :
 
 update_r_search :
 	@echo "Updating r_docs index"
+	rm -rf plotly.r-docs _posts/r/md _posts/ggplot2/md
+	git clone git@github.com:plotly/plotly.r-docs --branch=master --depth=1
+	bash process_r_md.sh
+	cp -R plotly.r-docs/r/ _posts/r/md
+	cp -R plotly.r-docs/ggplot2/ _posts/ggplot2/md
 	bundle exec jekyll algolia push --config _config_r_search.yml
+	rm -rf plotly.r-docs _posts/r/md _posts/ggplot2/md
 
 update_ref_search :
 	@echo "Updating search for reference pages"
