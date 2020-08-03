@@ -25,6 +25,11 @@ def insert_whitespace(x):
         x = x.replace(word, " " + word + " ").replace("  ", " ")
     return x.strip(" ")
 
+split_layout_attrs = [
+        "xaxis", "yaxis", "coloraxis", "scene", "polar", "ternary", "geo", "mapbox",
+        "sliders", "updatemenus", "annotations", "shapes", "images"
+    ]
+
 _epsilon = 0.0
 
 def epsilon():
@@ -43,6 +48,10 @@ def next_level(previous_level, chain_dict):
                 permalink=chain_dict["permalink"] + "-" + sub_attr,
                 rank=chain_dict["rank"] + 1 + epsilon(),
             )
+            for attr in split_layout_attrs:
+                if attribute["permalink"].endswith("layout-"+attr):
+                    attribute["permalink"] = attribute["permalink"].replace("/layout/", "/layout/"+attr+"/")
+
             if "description" in previous_level[sub_attr]:
                 attribute["description"] = previous_level[sub_attr][
                     "description"
@@ -57,7 +66,7 @@ def next_level(previous_level, chain_dict):
             next_level(previous_level[sub_attr], attribute.copy())
 
 
-layout_chain_dict = dict(name="layout", split_name="layout", permalink="reference/#layout", rank=epsilon())
+layout_chain_dict = dict(name="layout", split_name="layout", permalink="reference/layout/#layout", rank=epsilon())
 
 # recursively add layout attributes to schema
 next_level(p["layout"]["layoutAttributes"], layout_chain_dict.copy())
@@ -66,7 +75,7 @@ for i, trace_type in enumerate(p["traces"]):
     trace_chain_dict = dict(
         name=trace_type + " traces",
         split_name=insert_whitespace(trace_type),
-        permalink="reference/#" + trace_type, rank=epsilon()
+        permalink="reference/"+ trace_type + "/#" + trace_type, rank=epsilon()
     )
     if p["traces"][trace_type]["meta"]:
         trace_chain_dict["description"] = (
