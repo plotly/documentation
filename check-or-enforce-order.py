@@ -16,7 +16,7 @@ if len(sys.argv) == 3:
     if sys.argv[2] == 'enforce':
         enforce = True
 
-categories = ["file_settings", "basic", "financial", "statistical", "scientific", "maps", "3d_charts", "multiple_axes"]
+categories = ["file_settings", "basic", "financial", "statistical", "scientific", "maps", "3d_charts", "multiple_axes", "ai_ml"]
 
 def get_post(path):
     return fm.load(str(path))

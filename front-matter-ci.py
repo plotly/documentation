@@ -75,6 +75,7 @@ categories = [
     "maps",
     "3d_charts",
     "multiple_axes",
+    "ai_ml"
 ]
 languages = ["python", "python/v3", "plotly_js", "r"]
 
