@@ -2,7 +2,7 @@
 <html>
 
 <head>
-      <!-- This page was last built at 2020-10-23 13:47 -->
+      <!-- This page was last built at 2020-10-23 13:50 -->
 
       <meta charset="utf-8"/>
 
@@ -284,13 +284,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
  
  
-<div id="3a372b41-9b99-4861-898d-7f981293cdf4"></div>
+<div id="cfd328de-71fa-4ea2-8df0-1ddf3beccd0b"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#3a372b41-9b99-4861-898d-7f981293cdf4');
+var element = $('#cfd328de-71fa-4ea2-8df0-1ddf3beccd0b');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
-{"version_major": 2, "version_minor": 0, "model_id": "da1facd68c41423493c23dabe2beabc1"}
+{"version_major": 2, "version_minor": 0, "model_id": "bc3cdbfe59574b5eb24b8e028eef0fff"}
 </script>
 </div>
 
@@ -465,13 +465,13 @@ var element = $('#3a372b41-9b99-4861-898d-7f981293cdf4');
 
  
  
-<div id="ff06e693-ec11-4d6d-bfd7-1e3b8421e264"></div>
+<div id="771f2f45-65a3-4094-97fc-d2ab8572e18e"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#ff06e693-ec11-4d6d-bfd7-1e3b8421e264');
+var element = $('#771f2f45-65a3-4094-97fc-d2ab8572e18e');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
-{"version_major": 2, "version_minor": 0, "model_id": "5ee273ff5ff64acaaa3cd0a3bdcb9bfc"}
+{"version_major": 2, "version_minor": 0, "model_id": "5e4c6e343f3143c6b6770ef3cfccdabe"}
 </script>
 </div>
 
@@ -677,6 +677,10 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |                      instance or dict with compatible properties
  |                  colorway
  |                      Sets the default trace colors.
+ |                  computed
+ |                      Placeholder for exporting automargin-impacting
+ |                      values namely `margin.t`, `margin.b`,
+ |                      `margin.l` and `margin.r` in &#34;full-json&#34; mode.
  |                  datarevision
  |                      If provided, a changed value tells
  |                      `Plotly.react` that one or more data arrays has
@@ -1115,7 +1119,7 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          if a property in the specification of data, layout, or frames
  |          is invalid AND skip_invalid is False
  |  
- |  add_annotation(self, arg=None, align=None, arrowcolor=None, arrowhead=None, arrowside=None, arrowsize=None, arrowwidth=None, ax=None, axref=None, ay=None, ayref=None, bgcolor=None, bordercolor=None, borderpad=None, borderwidth=None, captureevents=None, clicktoshow=None, font=None, height=None, hoverlabel=None, hovertext=None, name=None, opacity=None, showarrow=None, standoff=None, startarrowhead=None, startarrowsize=None, startstandoff=None, templateitemname=None, text=None, textangle=None, valign=None, visible=None, width=None, x=None, xanchor=None, xclick=None, xref=None, xshift=None, y=None, yanchor=None, yclick=None, yref=None, yshift=None, row=None, col=None, secondary_y=None, **kwargs)
+ |  add_annotation(self, arg=None, align=None, arrowcolor=None, arrowhead=None, arrowside=None, arrowsize=None, arrowwidth=None, ax=None, axref=None, ay=None, ayref=None, bgcolor=None, bordercolor=None, borderpad=None, borderwidth=None, captureevents=None, clicktoshow=None, font=None, height=None, hoverlabel=None, hovertext=None, name=None, opacity=None, showarrow=None, standoff=None, startarrowhead=None, startarrowsize=None, startstandoff=None, templateitemname=None, text=None, textangle=None, valign=None, visible=None, width=None, x=None, xanchor=None, xclick=None, xref=None, xshift=None, y=None, yanchor=None, yclick=None, yref=None, yshift=None, row=None, col=None, secondary_y=None, exclude_empty_subplots=None, **kwargs)
  |      Create and add a new annotation to the figure&#39;s layout
  |      
  |      Parameters
@@ -1145,32 +1149,68 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          Sets the x component of the arrow tail about the arrow
  |          head. If `axref` is `pixel`, a positive (negative)
  |          component corresponds to an arrow pointing from right
- |          to left (left to right). If `axref` is an axis, this is
- |          an absolute value on that axis, like `x`, NOT a
- |          relative value.
+ |          to left (left to right). If `axref` is not `pixel` and
+ |          is exactly the same as `xref`, this is an absolute
+ |          value on that axis, like `x`, specified in the same
+ |          coordinates as `xref`.
  |      axref
- |          Indicates in what terms the tail of the annotation
- |          (ax,ay)  is specified. If `pixel`, `ax` is a relative
- |          offset in pixels  from `x`. If set to an x axis id
- |          (e.g. &#34;x&#34; or &#34;x2&#34;), `ax` is  specified in the same
- |          terms as that axis. This is useful  for trendline
- |          annotations which should continue to indicate  the
- |          correct trend when zoomed.
+ |          Indicates in what coordinates the tail of the
+ |          annotation (ax,ay) is specified. If set to a ax axis id
+ |          (e.g. &#34;ax&#34; or &#34;ax2&#34;), the `ax` position refers to a ax
+ |          coordinate. If set to &#34;paper&#34;, the `ax` position refers
+ |          to the distance from the left of the plotting area in
+ |          normalized coordinates where 0 (1) corresponds to the
+ |          left (right). If set to a ax axis ID followed by
+ |          &#34;domain&#34; (separated by a space), the position behaves
+ |          like for &#34;paper&#34;, but refers to the distance in
+ |          fractions of the domain length from the left of the
+ |          domain of that axis: e.g., *ax2 domain* refers to the
+ |          domain of the second ax  axis and a ax position of 0.5
+ |          refers to the point between the left and the right of
+ |          the domain of the second ax axis. In order for absolute
+ |          positioning of the arrow to work, &#34;axref&#34; must be
+ |          exactly the same as &#34;xref&#34;, otherwise &#34;axref&#34; will
+ |          revert to &#34;pixel&#34; (explained next). For relative
+ |          positioning, &#34;axref&#34; can be set to &#34;pixel&#34;, in which
+ |          case the &#34;ax&#34; value is specified in pixels relative to
+ |          &#34;x&#34;. Absolute positioning is useful for trendline
+ |          annotations which should continue to indicate the
+ |          correct trend when zoomed. Relative positioning is
+ |          useful for specifying the text offset for an annotated
+ |          point.
  |      ay
  |          Sets the y component of the arrow tail about the arrow
  |          head. If `ayref` is `pixel`, a positive (negative)
  |          component corresponds to an arrow pointing from bottom
- |          to top (top to bottom). If `ayref` is an axis, this is
- |          an absolute value on that axis, like `y`, NOT a
- |          relative value.
+ |          to top (top to bottom). If `ayref` is not `pixel` and
+ |          is exactly the same as `yref`, this is an absolute
+ |          value on that axis, like `y`, specified in the same
+ |          coordinates as `yref`.
  |      ayref
- |          Indicates in what terms the tail of the annotation
- |          (ax,ay)  is specified. If `pixel`, `ay` is a relative
- |          offset in pixels  from `y`. If set to a y axis id (e.g.
- |          &#34;y&#34; or &#34;y2&#34;), `ay` is  specified in the same terms as
- |          that axis. This is useful  for trendline annotations
- |          which should continue to indicate  the correct trend
- |          when zoomed.
+ |          Indicates in what coordinates the tail of the
+ |          annotation (ax,ay) is specified. If set to a ay axis id
+ |          (e.g. &#34;ay&#34; or &#34;ay2&#34;), the `ay` position refers to a ay
+ |          coordinate. If set to &#34;paper&#34;, the `ay` position refers
+ |          to the distance from the bottom of the plotting area in
+ |          normalized coordinates where 0 (1) corresponds to the
+ |          bottom (top). If set to a ay axis ID followed by
+ |          &#34;domain&#34; (separated by a space), the position behaves
+ |          like for &#34;paper&#34;, but refers to the distance in
+ |          fractions of the domain length from the bottom of the
+ |          domain of that axis: e.g., *ay2 domain* refers to the
+ |          domain of the second ay  axis and a ay position of 0.5
+ |          refers to the point between the bottom and the top of
+ |          the domain of the second ay axis. In order for absolute
+ |          positioning of the arrow to work, &#34;ayref&#34; must be
+ |          exactly the same as &#34;yref&#34;, otherwise &#34;ayref&#34; will
+ |          revert to &#34;pixel&#34; (explained next). For relative
+ |          positioning, &#34;ayref&#34; can be set to &#34;pixel&#34;, in which
+ |          case the &#34;ay&#34; value is specified in pixels relative to
+ |          &#34;y&#34;. Absolute positioning is useful for trendline
+ |          annotations which should continue to indicate the
+ |          correct trend when zoomed. Relative positioning is
+ |          useful for specifying the text offset for an annotated
+ |          point.
  |      bgcolor
  |          Sets the background color of the annotation.
  |      bordercolor
@@ -1307,12 +1347,19 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          `x` value is `xclick` rather than the annotation&#39;s `x`
  |          value.
  |      xref
- |          Sets the annotation&#39;s x coordinate axis. If set to an x
+ |          Sets the annotation&#39;s x coordinate axis. If set to a x
  |          axis id (e.g. &#34;x&#34; or &#34;x2&#34;), the `x` position refers to
- |          an x coordinate If set to &#34;paper&#34;, the `x` position
- |          refers to the distance from the left side of the
- |          plotting area in normalized coordinates where 0 (1)
- |          corresponds to the left (right) side.
+ |          a x coordinate. If set to &#34;paper&#34;, the `x` position
+ |          refers to the distance from the left of the plotting
+ |          area in normalized coordinates where 0 (1) corresponds
+ |          to the left (right). If set to a x axis ID followed by
+ |          &#34;domain&#34; (separated by a space), the position behaves
+ |          like for &#34;paper&#34;, but refers to the distance in
+ |          fractions of the domain length from the left of the
+ |          domain of that axis: e.g., *x2 domain* refers to the
+ |          domain of the second x  axis and a x position of 0.5
+ |          refers to the point between the left and the right of
+ |          the domain of the second x axis.
  |      xshift
  |          Shifts the position of the whole annotation and arrow
  |          to the right (positive) or left (negative) by this many
@@ -1342,21 +1389,33 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          `y` value is `yclick` rather than the annotation&#39;s `y`
  |          value.
  |      yref
- |          Sets the annotation&#39;s y coordinate axis. If set to an y
+ |          Sets the annotation&#39;s y coordinate axis. If set to a y
  |          axis id (e.g. &#34;y&#34; or &#34;y2&#34;), the `y` position refers to
- |          an y coordinate If set to &#34;paper&#34;, the `y` position
+ |          a y coordinate. If set to &#34;paper&#34;, the `y` position
  |          refers to the distance from the bottom of the plotting
  |          area in normalized coordinates where 0 (1) corresponds
- |          to the bottom (top).
+ |          to the bottom (top). If set to a y axis ID followed by
+ |          &#34;domain&#34; (separated by a space), the position behaves
+ |          like for &#34;paper&#34;, but refers to the distance in
+ |          fractions of the domain length from the bottom of the
+ |          domain of that axis: e.g., *y2 domain* refers to the
+ |          domain of the second y  axis and a y position of 0.5
+ |          refers to the point between the bottom and the top of
+ |          the domain of the second y axis.
  |      yshift
  |          Shifts the position of the whole annotation and arrow
  |          up (positive) or down (negative) by this many pixels.
  |      row
- |          Subplot row for annotation
+ |          Subplot row for annotation. If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
  |      col
- |          Subplot column for annotation
+ |          Subplot column for annotation. If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y
  |          Whether to add annotation to secondary y-axis
+ |      exclude_empty_subplots
+ |          If True, annotation will not be added to subplots
+ |          without traces.
  |      
  |      Returns
  |      -------
@@ -1468,14 +1527,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -1814,14 +1875,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      ysrc
  |          Sets the source reference on Chart Studio Cloud for  y
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -2033,14 +2096,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      widthsrc
  |          Sets the source reference on Chart Studio Cloud for
  |          width .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -2447,14 +2512,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      ysrc
  |          Sets the source reference on Chart Studio Cloud for  y
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -2655,14 +2722,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          a 2D cartesian y axis. If &#34;y&#34; (the default value), the
  |          y coordinates refer to `layout.yaxis`. If &#34;y2&#34;, the y
  |          coordinates refer to `layout.yaxis2`, and so on.
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -2824,14 +2893,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      ysrc
  |          Sets the source reference on Chart Studio Cloud for  y
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -3079,14 +3150,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -3321,14 +3394,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -3593,14 +3668,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -3915,14 +3992,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -4160,14 +4239,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -4411,14 +4492,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -4728,14 +4811,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      ysrc
  |          Sets the source reference on Chart Studio Cloud for  y
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -4962,14 +5047,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -5278,14 +5365,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -5497,14 +5586,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -5780,14 +5871,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      ysrc
  |          Sets the source reference on Chart Studio Cloud for  y
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -6096,14 +6189,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -6423,14 +6518,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -6621,14 +6718,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -6747,14 +6846,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -7009,20 +7110,22 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
  |      FigureWidget
  |  
- |  add_layout_image(self, arg=None, layer=None, name=None, opacity=None, sizex=None, sizey=None, sizing=None, source=None, templateitemname=None, visible=None, x=None, xanchor=None, xref=None, y=None, yanchor=None, yref=None, row=None, col=None, secondary_y=None, **kwargs)
+ |  add_layout_image(self, arg=None, layer=None, name=None, opacity=None, sizex=None, sizey=None, sizing=None, source=None, templateitemname=None, visible=None, x=None, xanchor=None, xref=None, y=None, yanchor=None, yref=None, row=None, col=None, secondary_y=None, exclude_empty_subplots=None, **kwargs)
  |      Create and add a new image to the figure&#39;s layout
  |      
  |      Parameters
@@ -7048,12 +7151,14 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          Sets the image container size horizontally. The image
  |          will be sized based on the `position` value. When
  |          `xref` is set to `paper`, units are sized relative to
- |          the plot width.
+ |          the plot width. When `xref` ends with ` domain`, units
+ |          are sized relative to the axis width.
  |      sizey
  |          Sets the image container size vertically. The image
  |          will be sized based on the `position` value. When
  |          `yref` is set to `paper`, units are sized relative to
- |          the plot height.
+ |          the plot height. When `yref` ends with ` domain`, units
+ |          are sized relative to the axis height.
  |      sizing
  |          Specifies which dimension of the image to constrain.
  |      source
@@ -7080,11 +7185,18 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          Sets the anchor for the x position
  |      xref
  |          Sets the images&#39;s x coordinate axis. If set to a x axis
- |          id (e.g. &#34;x&#34; or &#34;x2&#34;), the `x` position refers to an x
- |          data coordinate If set to &#34;paper&#34;, the `x` position
- |          refers to the distance from the left of plot in
+ |          id (e.g. &#34;x&#34; or &#34;x2&#34;), the `x` position refers to a x
+ |          coordinate. If set to &#34;paper&#34;, the `x` position refers
+ |          to the distance from the left of the plotting area in
  |          normalized coordinates where 0 (1) corresponds to the
- |          left (right).
+ |          left (right). If set to a x axis ID followed by
+ |          &#34;domain&#34; (separated by a space), the position behaves
+ |          like for &#34;paper&#34;, but refers to the distance in
+ |          fractions of the domain length from the left of the
+ |          domain of that axis: e.g., *x2 domain* refers to the
+ |          domain of the second x  axis and a x position of 0.5
+ |          refers to the point between the left and the right of
+ |          the domain of the second x axis.
  |      y
  |          Sets the image&#39;s y position. When `yref` is set to
  |          `paper`, units are sized relative to the plot height.
@@ -7094,16 +7206,28 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      yref
  |          Sets the images&#39;s y coordinate axis. If set to a y axis
  |          id (e.g. &#34;y&#34; or &#34;y2&#34;), the `y` position refers to a y
- |          data coordinate. If set to &#34;paper&#34;, the `y` position
- |          refers to the distance from the bottom of the plot in
+ |          coordinate. If set to &#34;paper&#34;, the `y` position refers
+ |          to the distance from the bottom of the plotting area in
  |          normalized coordinates where 0 (1) corresponds to the
- |          bottom (top).
+ |          bottom (top). If set to a y axis ID followed by
+ |          &#34;domain&#34; (separated by a space), the position behaves
+ |          like for &#34;paper&#34;, but refers to the distance in
+ |          fractions of the domain length from the bottom of the
+ |          domain of that axis: e.g., *y2 domain* refers to the
+ |          domain of the second y  axis and a y position of 0.5
+ |          refers to the point between the bottom and the top of
+ |          the domain of the second y axis.
  |      row
- |          Subplot row for image
+ |          Subplot row for image. If &#39;all&#39;, addresses all rows in
+ |          the specified column(s).
  |      col
- |          Subplot column for image
+ |          Subplot column for image. If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y
  |          Whether to add image to secondary y-axis
+ |      exclude_empty_subplots
+ |          If True, image will not be added to subplots without
+ |          traces.
  |      
  |      Returns
  |      -------
@@ -7434,14 +7558,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -7631,14 +7757,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          a 2D cartesian y axis. If &#34;y&#34; (the default value), the
  |          y coordinates refer to `layout.yaxis`. If &#34;y2&#34;, the y
  |          coordinates refer to `layout.yaxis2`, and so on.
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -7787,14 +7915,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -7905,14 +8035,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -8167,14 +8299,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -8342,14 +8476,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      ysrc
  |          Sets the source reference on Chart Studio Cloud for  y
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -8484,14 +8620,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -8863,14 +9001,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      ysrc
  |          Sets the source reference on Chart Studio Cloud for  y
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -9116,14 +9256,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -9367,14 +9509,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          a 2D cartesian y axis. If &#34;y&#34; (the default value), the
  |          y coordinates refer to `layout.yaxis`. If &#34;y2&#34;, the y
  |          coordinates refer to `layout.yaxis2`, and so on.
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -9639,14 +9783,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -9943,14 +10089,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      ysrc
  |          Sets the source reference on Chart Studio Cloud for  y
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -10188,14 +10336,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -10459,14 +10609,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -10729,14 +10881,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -11003,20 +11157,22 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
  |      FigureWidget
  |  
- |  add_shape(self, arg=None, editable=None, fillcolor=None, fillrule=None, layer=None, line=None, name=None, opacity=None, path=None, templateitemname=None, type=None, visible=None, x0=None, x1=None, xanchor=None, xref=None, xsizemode=None, y0=None, y1=None, yanchor=None, yref=None, ysizemode=None, row=None, col=None, secondary_y=None, **kwargs)
+ |  add_shape(self, arg=None, editable=None, fillcolor=None, fillrule=None, layer=None, line=None, name=None, opacity=None, path=None, templateitemname=None, type=None, visible=None, x0=None, x1=None, xanchor=None, xref=None, xsizemode=None, y0=None, y1=None, yanchor=None, yref=None, ysizemode=None, row=None, col=None, secondary_y=None, exclude_empty_subplots=None, **kwargs)
  |      Create and add a new shape to the figure&#39;s layout
  |      
  |      Parameters
@@ -11114,15 +11270,22 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          to a certain data value. No effect when `xsizemode` not
  |          set to &#34;pixel&#34;.
  |      xref
- |          Sets the shape&#39;s x coordinate axis. If set to an x axis
- |          id (e.g. &#34;x&#34; or &#34;x2&#34;), the `x` position refers to an x
+ |          Sets the shape&#39;s x coordinate axis. If set to a x axis
+ |          id (e.g. &#34;x&#34; or &#34;x2&#34;), the `x` position refers to a x
  |          coordinate. If set to &#34;paper&#34;, the `x` position refers
- |          to the distance from the left side of the plotting area
- |          in normalized coordinates where 0 (1) corresponds to
- |          the left (right) side. If the axis `type` is &#34;log&#34;,
- |          then you must take the log of your desired range. If
- |          the axis `type` is &#34;date&#34;, then you must convert the
- |          date to unix time in milliseconds.
+ |          to the distance from the left of the plotting area in
+ |          normalized coordinates where 0 (1) corresponds to the
+ |          left (right). If set to a x axis ID followed by
+ |          &#34;domain&#34; (separated by a space), the position behaves
+ |          like for &#34;paper&#34;, but refers to the distance in
+ |          fractions of the domain length from the left of the
+ |          domain of that axis: e.g., *x2 domain* refers to the
+ |          domain of the second x  axis and a x position of 0.5
+ |          refers to the point between the left and the right of
+ |          the domain of the second x axis. If the axis `type` is
+ |          &#34;log&#34;, then you must take the log of your desired
+ |          range. If the axis `type` is &#34;date&#34;, then you must
+ |          convert the date to unix time in milliseconds.
  |      xsizemode
  |          Sets the shapes&#39;s sizing mode along the x axis. If set
  |          to &#34;scaled&#34;, `x0`, `x1` and x coordinates within `path`
@@ -11147,12 +11310,19 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          to a certain data value. No effect when `ysizemode` not
  |          set to &#34;pixel&#34;.
  |      yref
- |          Sets the annotation&#39;s y coordinate axis. If set to an y
+ |          Sets the annotation&#39;s y coordinate axis. If set to a y
  |          axis id (e.g. &#34;y&#34; or &#34;y2&#34;), the `y` position refers to
- |          an y coordinate If set to &#34;paper&#34;, the `y` position
+ |          a y coordinate. If set to &#34;paper&#34;, the `y` position
  |          refers to the distance from the bottom of the plotting
  |          area in normalized coordinates where 0 (1) corresponds
- |          to the bottom (top).
+ |          to the bottom (top). If set to a y axis ID followed by
+ |          &#34;domain&#34; (separated by a space), the position behaves
+ |          like for &#34;paper&#34;, but refers to the distance in
+ |          fractions of the domain length from the bottom of the
+ |          domain of that axis: e.g., *y2 domain* refers to the
+ |          domain of the second y  axis and a y position of 0.5
+ |          refers to the point between the bottom and the top of
+ |          the domain of the second y axis.
  |      ysizemode
  |          Sets the shapes&#39;s sizing mode along the y axis. If set
  |          to &#34;scaled&#34;, `y0`, `y1` and y coordinates within `path`
@@ -11165,11 +11335,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          maintaining a position relative to data or plot
  |          fraction.
  |      row
- |          Subplot row for shape
+ |          Subplot row for shape. If &#39;all&#39;, addresses all rows in
+ |          the specified column(s).
  |      col
- |          Subplot column for shape
+ |          Subplot column for shape. If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y
  |          Whether to add shape to secondary y-axis
+ |      exclude_empty_subplots
+ |          If True, shape will not be added to subplots without
+ |          traces.
  |      
  |      Returns
  |      -------
@@ -11361,14 +11536,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          is false and `showupperhalf` or `showlowerhalf` is
  |          false, this splom trace will generate one less x-axis
  |          and one less y-axis.
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -11619,20 +11796,22 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
  |      FigureWidget
  |  
- |  add_sunburst(self, branchvalues=None, count=None, customdata=None, customdatasrc=None, domain=None, hoverinfo=None, hoverinfosrc=None, hoverlabel=None, hovertemplate=None, hovertemplatesrc=None, hovertext=None, hovertextsrc=None, ids=None, idssrc=None, insidetextfont=None, insidetextorientation=None, labels=None, labelssrc=None, leaf=None, level=None, marker=None, maxdepth=None, meta=None, metasrc=None, name=None, opacity=None, outsidetextfont=None, parents=None, parentssrc=None, sort=None, stream=None, text=None, textfont=None, textinfo=None, textsrc=None, texttemplate=None, texttemplatesrc=None, uid=None, uirevision=None, values=None, valuessrc=None, visible=None, row=None, col=None, **kwargs)
+ |  add_sunburst(self, branchvalues=None, count=None, customdata=None, customdatasrc=None, domain=None, hoverinfo=None, hoverinfosrc=None, hoverlabel=None, hovertemplate=None, hovertemplatesrc=None, hovertext=None, hovertextsrc=None, ids=None, idssrc=None, insidetextfont=None, insidetextorientation=None, labels=None, labelssrc=None, leaf=None, level=None, marker=None, maxdepth=None, meta=None, metasrc=None, name=None, opacity=None, outsidetextfont=None, parents=None, parentssrc=None, rotation=None, sort=None, stream=None, text=None, textfont=None, textinfo=None, textsrc=None, texttemplate=None, texttemplatesrc=None, uid=None, uirevision=None, values=None, valuessrc=None, visible=None, row=None, col=None, **kwargs)
  |      Add a new Sunburst trace
  |      
  |      Visualize hierarchal data spanning outward radially from root
@@ -11789,6 +11968,9 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      parentssrc
  |          Sets the source reference on Chart Studio Cloud for
  |          parents .
+ |      rotation
+ |          Rotates the whole diagram counterclockwise by some
+ |          angle. By default the first slice starts at 3 o&#39;clock.
  |      sort
  |          Determines whether or not the sectors are reordered
  |          from largest to smallest.
@@ -11862,14 +12044,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -12133,14 +12317,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -12256,14 +12442,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -12495,14 +12683,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          &#34;legendonly&#34;, the trace is not drawn, but can appear as
  |          a legend item (provided that the legend itself is
  |          visible).
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -12788,14 +12978,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      ysrc
  |          Sets the source reference on Chart Studio Cloud for  y
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -13071,14 +13263,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      zsrc
  |          Sets the source reference on Chart Studio Cloud for  z
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      
  |      Returns
  |      -------
@@ -13406,14 +13600,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      ysrc
  |          Sets the source reference on Chart Studio Cloud for  y
  |          .
- |      row : int or None (default)
+ |      row : &#39;all&#39;, int or None (default)
  |          Subplot row index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
- |      col : int or None (default)
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
  |          Subplot col index (starting from 1) for the trace to be
  |          added. Only valid if figure was created using
- |          `plotly.tools.make_subplots`
+ |          `plotly.tools.make_subplots`.If &#39;all&#39;, addresses all
+ |          columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -14528,7 +14724,86 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |  
  |  __setitem__(self, prop, value)
  |  
- |  add_trace(self, trace, row=None, col=None, secondary_y=None)
+ |  add_hline(self, y, row=&#39;all&#39;, col=&#39;all&#39;, exclude_empty_subplots=True, **kwargs)
+ |      Add a horizontal line to a plot or subplot that extends infinitely in the
+ |      x-dimension.
+ |      
+ |      Parameters
+ |      ----------
+ |      y: float or int
+ |          A number representing the y coordinate of the horizontal line.
+ |      exclude_empty_subplots: Boolean
+ |          If True (default) do not place the shape on subplots that have no data
+ |          plotted on them.
+ |      row: None, int or &#39;all&#39;
+ |          Subplot row for shape indexed starting at 1. If &#39;all&#39;, addresses all rows in
+ |          the specified column(s). If both row and col are None, addresses the
+ |          first subplot if subplots exist, or the only plot. By default is &#34;all&#34;.
+ |      col: None, int or &#39;all&#39;
+ |          Subplot column for shape indexed starting at 1. If &#39;all&#39;, addresses all rows in
+ |          the specified column(s). If both row and col are None, addresses the
+ |          first subplot if subplots exist, or the only plot. By default is &#34;all&#34;.
+ |      annotation: dict or plotly.graph_objects.layout.Annotation. If dict(),
+ |          it is interpreted as describing an annotation. The annotation is
+ |          placed relative to the shape based on annotation_position (see
+ |          below) unless its x or y value has been specified for the annotation
+ |          passed here. xref and yref are always the same as for the added
+ |          shape and cannot be overridden.
+ |      annotation_position: a string containing optionally [&#34;top&#34;, &#34;bottom&#34;]
+ |          and [&#34;left&#34;, &#34;right&#34;] specifying where the text should be anchored
+ |          to on the line. Example positions are &#34;bottom left&#34;, &#34;right top&#34;,
+ |          &#34;right&#34;, &#34;bottom&#34;. If an annotation is added but annotation_position is
+ |          not specified, this defaults to &#34;top right&#34;.
+ |      annotation_*: any parameters to go.layout.Annotation can be passed as
+ |          keywords by prefixing them with &#34;annotation_&#34;. For example, to specify the
+ |          annotation text &#34;example&#34; you can pass annotation_text=&#34;example&#34; as a
+ |          keyword argument.
+ |      **kwargs:
+ |          Any named function parameters that can be passed to &#39;add_shape&#39;,
+ |          except for x0, x1, y0, y1 or type.
+ |  
+ |  add_hrect(self, y0, y1, row=&#39;all&#39;, col=&#39;all&#39;, exclude_empty_subplots=True, **kwargs)
+ |      Add a rectangle to a plot or subplot that extends infinitely in the
+ |      x-dimension.
+ |      
+ |      Parameters
+ |      ----------
+ |      y0: float or int
+ |          A number representing the y coordinate of one side of the rectangle.
+ |      y1: float or int
+ |          A number representing the y coordinate of the other side of the rectangle.
+ |      exclude_empty_subplots: Boolean
+ |          If True (default) do not place the shape on subplots that have no data
+ |          plotted on them.
+ |      row: None, int or &#39;all&#39;
+ |          Subplot row for shape indexed starting at 1. If &#39;all&#39;, addresses all rows in
+ |          the specified column(s). If both row and col are None, addresses the
+ |          first subplot if subplots exist, or the only plot. By default is &#34;all&#34;.
+ |      col: None, int or &#39;all&#39;
+ |          Subplot column for shape indexed starting at 1. If &#39;all&#39;, addresses all rows in
+ |          the specified column(s). If both row and col are None, addresses the
+ |          first subplot if subplots exist, or the only plot. By default is &#34;all&#34;.
+ |      annotation: dict or plotly.graph_objects.layout.Annotation. If dict(),
+ |          it is interpreted as describing an annotation. The annotation is
+ |          placed relative to the shape based on annotation_position (see
+ |          below) unless its x or y value has been specified for the annotation
+ |          passed here. xref and yref are always the same as for the added
+ |          shape and cannot be overridden.
+ |      annotation_position: a string containing optionally [&#34;inside&#34;, &#34;outside&#34;], [&#34;top&#34;, &#34;bottom&#34;]
+ |          and [&#34;left&#34;, &#34;right&#34;] specifying where the text should be anchored
+ |          to on the rectangle. Example positions are &#34;outside top left&#34;, &#34;inside
+ |          bottom&#34;, &#34;right&#34;, &#34;inside left&#34;, &#34;inside&#34; (&#34;outside&#34; is not supported). If
+ |          an annotation is added but annotation_position is not specified this
+ |          defaults to &#34;inside top right&#34;.
+ |      annotation_*: any parameters to go.layout.Annotation can be passed as
+ |          keywords by prefixing them with &#34;annotation_&#34;. For example, to specify the
+ |          annotation text &#34;example&#34; you can pass annotation_text=&#34;example&#34; as a
+ |          keyword argument.
+ |      **kwargs:
+ |          Any named function parameters that can be passed to &#39;add_shape&#39;,
+ |          except for x0, x1, y0, y1 or type.
+ |  
+ |  add_trace(self, trace, row=None, col=None, secondary_y=None, exclude_empty_subplots=False)
  |      Add a trace to the figure
  |      
  |      Parameters
@@ -14545,14 +14820,16 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |                - All remaining properties are passed to the constructor
  |                  of the specified trace type.
  |      
- |      row : int or None (default None)
- |          Subplot row index (starting from 1) for the trace to be added.
- |          Only valid if figure was created using
- |          `plotly.subplots.make_subplots`
- |      col : int or None (default None)
- |          Subplot col index (starting from 1) for the trace to be added.
- |          Only valid if figure was created using
- |          `plotly.subplots.make_subplots`
+ |      row : &#39;all&#39;, int or None (default)
+ |          Subplot row index (starting from 1) for the trace to be
+ |          added. Only valid if figure was created using
+ |          `plotly.tools.make_subplots`.
+ |          If &#39;all&#39;, addresses all rows in the specified column(s).
+ |      col : &#39;all&#39;, int or None (default)
+ |          Subplot col index (starting from 1) for the trace to be
+ |          added. Only valid if figure was created using
+ |          `plotly.tools.make_subplots`.
+ |          If &#39;all&#39;, addresses all columns in the specified row(s).
  |      secondary_y: boolean or None (default None)
  |          If True, associate this trace with the secondary y-axis of the
  |          subplot at the specified row and col. Only valid if all of the
@@ -14565,6 +14842,9 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |              make_subplots. See the make_subplots docstring for more info.
  |            * The trace argument is a 2D cartesian trace
  |              (scatter, bar, etc.)
+ |      exclude_empty_subplots: boolean
+ |          If True, the trace will not be added to subplots that don&#39;t already
+ |          have traces.
  |      Returns
  |      -------
  |      BaseFigure
@@ -14593,7 +14873,7 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      &gt;&gt;&gt; fig.add_trace(go.Scatter(x=[1,2,3], y=[2,1,2]), row=2, col=1) # doctest: +ELLIPSIS
  |      Figure(...)
  |  
- |  add_traces(self, data, rows=None, cols=None, secondary_ys=None)
+ |  add_traces(self, data, rows=None, cols=None, secondary_ys=None, exclude_empty_subplots=False)
  |      Add traces to the figure
  |      
  |      Parameters
@@ -14629,6 +14909,10 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |          List of secondary_y booleans for traces to be added. See the
  |          docstring for `add_trace` for more info.
  |      
+ |      exclude_empty_subplots: boolean
+ |          If True, the trace will not be added to subplots that don&#39;t already
+ |          have traces.
+ |      
  |      Returns
  |      -------
  |      BaseFigure
@@ -14654,6 +14938,85 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |      ...                 go.Scatter(x=[1,2,3], y=[2,1,2])],
  |      ...                 rows=[1, 2], cols=[1, 1]) # doctest: +ELLIPSIS
  |      Figure(...)
+ |  
+ |  add_vline(self, x, row=&#39;all&#39;, col=&#39;all&#39;, exclude_empty_subplots=True, annotation=None, **kwargs)
+ |      Add a vertical line to a plot or subplot that extends infinitely in the
+ |      y-dimension.
+ |      
+ |      Parameters
+ |      ----------
+ |      x: float or int
+ |          A number representing the x coordinate of the vertical line.
+ |      exclude_empty_subplots: Boolean
+ |          If True (default) do not place the shape on subplots that have no data
+ |          plotted on them.
+ |      row: None, int or &#39;all&#39;
+ |          Subplot row for shape indexed starting at 1. If &#39;all&#39;, addresses all rows in
+ |          the specified column(s). If both row and col are None, addresses the
+ |          first subplot if subplots exist, or the only plot. By default is &#34;all&#34;.
+ |      col: None, int or &#39;all&#39;
+ |          Subplot column for shape indexed starting at 1. If &#39;all&#39;, addresses all rows in
+ |          the specified column(s). If both row and col are None, addresses the
+ |          first subplot if subplots exist, or the only plot. By default is &#34;all&#34;.
+ |      annotation: dict or plotly.graph_objects.layout.Annotation. If dict(),
+ |          it is interpreted as describing an annotation. The annotation is
+ |          placed relative to the shape based on annotation_position (see
+ |          below) unless its x or y value has been specified for the annotation
+ |          passed here. xref and yref are always the same as for the added
+ |          shape and cannot be overridden.
+ |      annotation_position: a string containing optionally [&#34;top&#34;, &#34;bottom&#34;]
+ |          and [&#34;left&#34;, &#34;right&#34;] specifying where the text should be anchored
+ |          to on the line. Example positions are &#34;bottom left&#34;, &#34;right top&#34;,
+ |          &#34;right&#34;, &#34;bottom&#34;. If an annotation is added but annotation_position is
+ |          not specified, this defaults to &#34;top right&#34;.
+ |      annotation_*: any parameters to go.layout.Annotation can be passed as
+ |          keywords by prefixing them with &#34;annotation_&#34;. For example, to specify the
+ |          annotation text &#34;example&#34; you can pass annotation_text=&#34;example&#34; as a
+ |          keyword argument.
+ |      **kwargs:
+ |          Any named function parameters that can be passed to &#39;add_shape&#39;,
+ |          except for x0, x1, y0, y1 or type.
+ |  
+ |  add_vrect(self, x0, x1, row=&#39;all&#39;, col=&#39;all&#39;, exclude_empty_subplots=True, **kwargs)
+ |      Add a rectangle to a plot or subplot that extends infinitely in the
+ |      y-dimension.
+ |      
+ |      Parameters
+ |      ----------
+ |      x0: float or int
+ |          A number representing the x coordinate of one side of the rectangle.
+ |      x1: float or int
+ |          A number representing the x coordinate of the other side of the rectangle.
+ |      exclude_empty_subplots: Boolean
+ |          If True (default) do not place the shape on subplots that have no data
+ |          plotted on them.
+ |      row: None, int or &#39;all&#39;
+ |          Subplot row for shape indexed starting at 1. If &#39;all&#39;, addresses all rows in
+ |          the specified column(s). If both row and col are None, addresses the
+ |          first subplot if subplots exist, or the only plot. By default is &#34;all&#34;.
+ |      col: None, int or &#39;all&#39;
+ |          Subplot column for shape indexed starting at 1. If &#39;all&#39;, addresses all rows in
+ |          the specified column(s). If both row and col are None, addresses the
+ |          first subplot if subplots exist, or the only plot. By default is &#34;all&#34;.
+ |      annotation: dict or plotly.graph_objects.layout.Annotation. If dict(),
+ |          it is interpreted as describing an annotation. The annotation is
+ |          placed relative to the shape based on annotation_position (see
+ |          below) unless its x or y value has been specified for the annotation
+ |          passed here. xref and yref are always the same as for the added
+ |          shape and cannot be overridden.
+ |      annotation_position: a string containing optionally [&#34;inside&#34;, &#34;outside&#34;], [&#34;top&#34;, &#34;bottom&#34;]
+ |          and [&#34;left&#34;, &#34;right&#34;] specifying where the text should be anchored
+ |          to on the rectangle. Example positions are &#34;outside top left&#34;, &#34;inside
+ |          bottom&#34;, &#34;right&#34;, &#34;inside left&#34;, &#34;inside&#34; (&#34;outside&#34; is not supported). If
+ |          an annotation is added but annotation_position is not specified this
+ |          defaults to &#34;inside top right&#34;.
+ |      annotation_*: any parameters to go.layout.Annotation can be passed as
+ |          keywords by prefixing them with &#34;annotation_&#34;. For example, to specify the
+ |          annotation text &#34;example&#34; you can pass annotation_text=&#34;example&#34; as a
+ |          keyword argument.
+ |      **kwargs:
+ |          Any named function parameters that can be passed to &#39;add_shape&#39;,
+ |          except for x0, x1, y0, y1 or type.
  |  
  |  append_trace(self, trace, row, col)
  |      Add a trace to the figure bound to axes at the specified row,
@@ -15707,7 +16070,7 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  |  
  |  widget_types = &lt;ipywidgets.widgets.widget.WidgetRegistry object&gt;
  |  
- |  widgets = {&#39;5ee273ff5ff64acaaa3cd0a3bdcb9bfc&#39;: FigureWidget({
+ |  widgets = {&#39;5e4c6e343f3143c6b6770ef3cfccdabe&#39;: FigureWidget({
  |      &#39;dat...
  |  
  |  ----------------------------------------------------------------------
@@ -15941,7 +16304,7 @@ class FigureWidget(plotly.basewidget.BaseFigureWidget)
  
 
 <script type="application/vnd.jupyter.widget-state+json">
-{"state": {"da1facd68c41423493c23dabe2beabc1": {"model_name": "FigureModel", "model_module": "plotlywidget", "model_module_version": "^4.11.0", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 6, "_last_trace_edit_id": 4, "_layout": {}, "_model_module": "plotlywidget", "_model_module_version": "^4.11.0", "_model_name": "FigureModel", "_py2js_addTraces": null, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": null, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": null, "_py2js_update": {}, "_view_count": 0, "_view_module": "plotlywidget", "_view_module_version": "^4.11.0", "_view_name": "FigureView"}}, "5ee273ff5ff64acaaa3cd0a3bdcb9bfc": {"model_name": "FigureModel", "model_module": "plotlywidget", "model_module_version": "^4.11.0", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"x": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "y": ["Morning", "Afternoon", "Evening"], "z": [[1, 20, 30, 50, 1], [20, 1, 60, 80, 30], [30, 60, 1, -10, 20]], "type": "heatmap", "uid": "e93093a0-83fe-46e6-b1fd-1e2857fa333e"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"data": {"barpolar": [{"marker": {"line": {"color": "#E5ECF6", "width": 0.5}}, "type": "barpolar"}], "bar": [{"error_x": {"color": "#2a3f5f"}, "error_y": {"color": "#2a3f5f"}, "marker": {"line": {"color": "#E5ECF6", "width": 0.5}}, "type": "bar"}], "carpet": [{"aaxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "baxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "type": "carpet"}], "choropleth": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "choropleth"}], "contourcarpet": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "contourcarpet"}], "contour": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "contour"}], "heatmapgl": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "heatmapgl"}], "heatmap": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "heatmap"}], "histogram2dcontour": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "histogram2dcontour"}], "histogram2d": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "histogram2d"}], "histogram": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "histogram"}], "mesh3d": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "mesh3d"}], "parcoords": [{"line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "parcoords"}], "pie": [{"automargin": true, "type": "pie"}], "scatter3d": [{"line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatter3d"}], "scattercarpet": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattercarpet"}], "scattergeo": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattergeo"}], "scattergl": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattergl"}], "scattermapbox": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattermapbox"}], "scatterpolargl": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterpolargl"}], "scatterpolar": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterpolar"}], "scatter": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatter"}], "scatterternary": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterternary"}], "surface": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "surface"}], "table": [{"cells": {"fill": {"color": "#EBF0F8"}, "line": {"color": "white"}}, "header": {"fill": {"color": "#C8D4E3"}, "line": {"color": "white"}}, "type": "table"}]}, "layout": {"annotationdefaults": {"arrowcolor": "#2a3f5f", "arrowhead": 0, "arrowwidth": 1}, "coloraxis": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "colorscale": {"diverging": [[0, "#8e0152"], [0.1, "#c51b7d"], [0.2, "#de77ae"], [0.3, "#f1b6da"], [0.4, "#fde0ef"], [0.5, "#f7f7f7"], [0.6, "#e6f5d0"], [0.7, "#b8e186"], [0.8, "#7fbc41"], [0.9, "#4d9221"], [1, "#276419"]], "sequential": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "sequentialminus": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}, "colorway": ["#636efa", "#EF553B", "#00cc96", "#ab63fa", "#FFA15A", "#19d3f3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"], "font": {"color": "#2a3f5f"}, "geo": {"bgcolor": "white", "lakecolor": "white", "landcolor": "#E5ECF6", "showlakes": true, "showland": true, "subunitcolor": "white"}, "hoverlabel": {"align": "left"}, "hovermode": "closest", "mapbox": {"style": "light"}, "paper_bgcolor": "white", "plot_bgcolor": "#E5ECF6", "polar": {"angularaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "bgcolor": "#E5ECF6", "radialaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "scene": {"xaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}, "yaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}, "zaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}}, "shapedefaults": {"line": {"color": "#2a3f5f"}}, "ternary": {"aaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "baxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "bgcolor": "#E5ECF6", "caxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "title": {"x": 0.05}, "xaxis": {"automargin": true, "gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "zerolinewidth": 2}, "yaxis": {"automargin": true, "gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "zerolinewidth": 2}}}, "title": {"text": "Activity Heatmap"}}, "_model_module": "plotlywidget", "_model_module_version": "^4.11.0", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "plotlywidget", "_view_module_version": "^4.11.0", "_view_name": "FigureView"}}}, "version_major": 2, "version_minor": 0}
+{"state": {"bc3cdbfe59574b5eb24b8e028eef0fff": {"model_name": "FigureModel", "model_module": "plotlywidget", "model_module_version": "^4.12.0", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 6, "_last_trace_edit_id": 4, "_layout": {}, "_model_module": "plotlywidget", "_model_module_version": "^4.12.0", "_model_name": "FigureModel", "_py2js_addTraces": null, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": null, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": null, "_py2js_update": {}, "_view_count": 0, "_view_module": "plotlywidget", "_view_module_version": "^4.12.0", "_view_name": "FigureView"}}, "5e4c6e343f3143c6b6770ef3cfccdabe": {"model_name": "FigureModel", "model_module": "plotlywidget", "model_module_version": "^4.12.0", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"x": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "y": ["Morning", "Afternoon", "Evening"], "z": [[1, 20, 30, 50, 1], [20, 1, 60, 80, 30], [30, 60, 1, -10, 20]], "type": "heatmap", "uid": "28221978-2e84-4b3f-9d8e-94221a4ab60c"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"data": {"barpolar": [{"marker": {"line": {"color": "#E5ECF6", "width": 0.5}}, "type": "barpolar"}], "bar": [{"error_x": {"color": "#2a3f5f"}, "error_y": {"color": "#2a3f5f"}, "marker": {"line": {"color": "#E5ECF6", "width": 0.5}}, "type": "bar"}], "carpet": [{"aaxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "baxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "type": "carpet"}], "choropleth": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "choropleth"}], "contourcarpet": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "contourcarpet"}], "contour": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "contour"}], "heatmapgl": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "heatmapgl"}], "heatmap": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "heatmap"}], "histogram2dcontour": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "histogram2dcontour"}], "histogram2d": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "histogram2d"}], "histogram": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "histogram"}], "mesh3d": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "type": "mesh3d"}], "parcoords": [{"line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "parcoords"}], "pie": [{"automargin": true, "type": "pie"}], "scatter3d": [{"line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatter3d"}], "scattercarpet": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattercarpet"}], "scattergeo": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattergeo"}], "scattergl": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattergl"}], "scattermapbox": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scattermapbox"}], "scatterpolargl": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterpolargl"}], "scatterpolar": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterpolar"}], "scatter": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatter"}], "scatterternary": [{"marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "type": "scatterternary"}], "surface": [{"colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "type": "surface"}], "table": [{"cells": {"fill": {"color": "#EBF0F8"}, "line": {"color": "white"}}, "header": {"fill": {"color": "#C8D4E3"}, "line": {"color": "white"}}, "type": "table"}]}, "layout": {"annotationdefaults": {"arrowcolor": "#2a3f5f", "arrowhead": 0, "arrowwidth": 1}, "coloraxis": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "colorscale": {"diverging": [[0, "#8e0152"], [0.1, "#c51b7d"], [0.2, "#de77ae"], [0.3, "#f1b6da"], [0.4, "#fde0ef"], [0.5, "#f7f7f7"], [0.6, "#e6f5d0"], [0.7, "#b8e186"], [0.8, "#7fbc41"], [0.9, "#4d9221"], [1, "#276419"]], "sequential": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "sequentialminus": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}, "colorway": ["#636efa", "#EF553B", "#00cc96", "#ab63fa", "#FFA15A", "#19d3f3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"], "font": {"color": "#2a3f5f"}, "geo": {"bgcolor": "white", "lakecolor": "white", "landcolor": "#E5ECF6", "showlakes": true, "showland": true, "subunitcolor": "white"}, "hoverlabel": {"align": "left"}, "hovermode": "closest", "mapbox": {"style": "light"}, "paper_bgcolor": "white", "plot_bgcolor": "#E5ECF6", "polar": {"angularaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "bgcolor": "#E5ECF6", "radialaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "scene": {"xaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}, "yaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}, "zaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "gridwidth": 2, "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white"}}, "shapedefaults": {"line": {"color": "#2a3f5f"}}, "ternary": {"aaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "baxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "bgcolor": "#E5ECF6", "caxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "title": {"x": 0.05}, "xaxis": {"automargin": true, "gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "zerolinewidth": 2}, "yaxis": {"automargin": true, "gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "zerolinewidth": 2}}}, "title": {"text": "Activity Heatmap"}}, "_model_module": "plotlywidget", "_model_module_version": "^4.12.0", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "plotlywidget", "_view_module_version": "^4.12.0", "_view_name": "FigureView"}}}, "version_major": 2, "version_minor": 0}
 </script>
 
 
