@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name=”description” content=”">
+    <title>geom_polygon</title>
+    <link rel="stylesheet" 
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+          crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" 
+          integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+          crossorigin="anonymous">
+    </script>
+    <style>
+      .mcode { border: 1px solid #cfcfcf; border-radius: 2px; background: #f7f7f7; padding: 10px; }
+    </style>
+  </head>
+  <body>                                                           
+    <div class="container" style="position:relative;">
+      <h1>GGPLOT - <code>geom_polygon</code></h1>
+      <section>
+        <p>Draw polygons and then convert them with ggplotly</p>
+
+<pre class="mcode">
+ids <- factor(c("1.1", "2.1", "1.2", "2.2", "1.3", "2.3"))
+
+values <- data.frame(
+  id = ids,
+  value = c(3, 3.1, 3.1, 3.2, 3.15, 3.5)
+)
+
+positions <- data.frame(
+  id = rep(ids, each = 4),
+  x = c(2, 1, 1.1, 2.2, 1, 0, 0.3, 1.1, 2.2, 1.1, 1.2, 2.5, 1.1, 0.3,
+  0.5, 1.2, 2.5, 1.2, 1.3, 2.7, 1.2, 0.5, 0.6, 1.3),
+  y = c(-0.5, 0, 1, 0.5, 0, 0.5, 1.5, 1, 0.5, 1, 2.1, 1.7, 1, 1.5,
+  2.2, 2.1, 1.7, 2.1, 3.2, 2.8, 2.1, 2.2, 3.3, 3.2)
+)
+datapoly <- merge(values, positions, by = c("id"))
+p <- ggplot(datapoly, aes(x = x, y = y)) +
+  geom_polygon(aes(fill = value, group = id))
+</pre>
+
+<pre class="mcode">
+plotly::ggplotly(p)
+</pre>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="plot-tab" data-bs-toggle="tab" data-bs-target="#plot" type="button" role="tab" aria-controls="plot" aria-selected="true">Plot</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="ssim-tab" data-bs-toggle="tab" data-bs-target="#ssim" type="button" role="tab" aria-controls="ssim" aria-selected="false">SSIM</button>
+  </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="plot" role="tabpanel" aria-labelledby="plot-tab">
+    <iframe 
+      scrolling="no" 
+      margin="none" 
+      padding="none" 
+      seamless=seamless 
+      height="650" 
+      frameBorder="0"
+      style="border:0"
+      src="https://plotly.com/~nadhil2/168.embed" 
+      width="800">
+    </iframe>    
+  </div>
+  <div class="tab-pane fade" id="ssim" role="tabpanel" aria-labelledby="ssim-tab">
+    <img src="https://raw.githubusercontent.com/steroidfella/jekyll_ggplot/master/chart-title.png" style="width:90%; height: 90%"/>
+    <img src="https://raw.githubusercontent.com/plotly/ssim_baselines/main/out_ggplot2/ggplot2/Layers/Geoms/geom_polygon/example1_montage.png" width="1152" height="480">
+    <img src="https://raw.githubusercontent.com/plotly/ssim_baselines/main/out_ggplot2/ggplot2/Layers/Geoms/geom_polygon/example1_ssim_map.png" width="1152" height="480">
+  </div>
+</div>
+
+<pre class="mcode">
+stream <- data.frame(
+  x = cumsum(runif(50, max = 0.1)),
+  y = cumsum(runif(50,max = 0.1))
+)
+p <- ggplot(datapoly, aes(x = x, y = y)) +
+  geom_polygon(aes(fill = value, group = id))
+p <-  p + geom_line(data = stream, colour = "grey30", size = 5)
+</pre>
+
+<pre class="mcode">
+plotly::ggplotly(p)
+</pre>
+
+<iframe 
+  scrolling="no" 
+  margin="none" 
+  padding="none" 
+  seamless=seamless 
+  height="650" 
+  frameBorder="0"
+  style="border:0"
+  src="https://plotly.com/~nadhil2/170.embed" 
+  width="800">
+</iframe>
+
+<pre class="mcode">
+p <-   
+ if (packageVersion("grid") >= "3.6") {
+  # As of R version 3.6 geom_polygon() supports polygons with holes
+  # Use the subgroup aesthetic to differentiate holes from the main polygon
+
+  holes <- do.call(rbind, lapply(split(datapoly, datapoly$id), function(df) {
+    df$x <- df$x + 0.5 * (mean(df$x) - df$x)
+    df$y <- df$y + 0.5 * (mean(df$y) - df$y)
+    df
+  }))
+  datapoly$subid <- 1L
+  holes$subid <- 2L
+  datapoly <- rbind(datapoly, holes)
+
+  p <- ggplot(datapoly, aes(x = x, y = y)) +
+    geom_polygon(aes(fill = value, group = id, subgroup = subid))
+  p
+}
+</pre>
+
+<pre class="mcode">
+plotly::ggplotly(p)
+</pre>
+
+<iframe 
+  scrolling="no" 
+  margin="none" 
+  padding="none" 
+  seamless=seamless 
+  height="650" 
+  frameBorder="0"
+  style="border:0"
+  src="https://plotly.com/~nadhil2/172.embed" 
+  width="800">
+</iframe>
+
+      </section>
+      <footer style="font-size:75%;">
+        ggplot2 is a part of the tidyverse, an ecosystem of packages designed with common APIs and a shared philosophy. Source material for this webpage is periodically updated from https://ggplot2.tidyverse.org/reference/.
+      </footer>
+    </div>  
+  </body>
+</html>
