@@ -26,7 +26,7 @@ OR
 
 ### markup + scss workflow
 
-It's a bit of a hassle to make concurrent updates to markup and scss. Anytime you update an html/js file you'll have to run a `$ jekyll build` command or `$ jekyll serve` and have jekyll watching for changes. I have found issues with jekyll's watch being too sensitive and have opted to build when I choose to prevent long hangs because of the size of the repo. 
+It's a bit of a hassle to make concurrent updates to markup and scss. Anytime you update an html/js file you'll have to run a `$ jekyll build` command or `$ jekyll serve` and have jekyll watching for changes. I have found issues with jekyll's watch being too sensitive and have opted to build when I choose to prevent long hangs because of the size of the repo.
 When you run a `$ jekyll` you need to update any scss file as jekyll will automatically replace the styles.css file. e.g.: if you modify any scss file and save it, it will overwrite the file jekyll has produced.
 
 ### folder structure
@@ -49,7 +49,7 @@ When you run a `$ jekyll` you need to update any scss file as jekyll will automa
      * _tutorial-index.scss
      * _tutorial-single.scss
    - main.scss *(bringing it all together)*
- 
+
 - all_static/css/
    - main.css *(the css conversion of main.scss)*
 
@@ -57,7 +57,6 @@ When you run a `$ jekyll` you need to update any scss file as jekyll will automa
 
    - Run `gulp build` in the root of the documentation repo after making any scss edits. This will update `main.css` as well as the [version](https://github.com/plotly/graphing-library-docs/blob/master/_data/cache_bust_css.yml) which is used to prevent css caching.
    - `git add` the files you've changed as well as the generated `main.css` and `cache_bust_css.yml` files, `git commit -m 'message about update'`, and `git push origin master` to add your updates to the repo.
-   - run `rake deploy` to deploy changes.
 
 ## vanilla css
 
