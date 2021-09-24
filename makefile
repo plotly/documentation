@@ -40,6 +40,7 @@ fetch_upstream_files: clean
 	git clone --depth 1 -b built git@github.com:plotly/plotly.py-docs _posts/python/html
 	git clone --depth 1 -b built git@github.com:plotly/plotlyjs.jl-docs _posts/julia/html
 	git clone --depth 1 -b built git@github.com:plotly/plotly.net-docs _posts/fsharp/html
+	rm -rf _posts/fsharp/html/redir
 	git clone --depth 1 -b built git@github.com:plotly/plotly.r-docs _posts/r/md
 	mv _posts/r/md/ggplot2 _posts/ggplot2/md
 
