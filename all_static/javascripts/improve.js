@@ -1,7 +1,15 @@
 (function ($) {
   $(document).on("ready", function () {
     var db = new Object();
+    db.menuMobile = function () {
+      $('.menu-icon').click(function(){
+      $('body').addClass("open-menu");
+      });
 
+      $('.close-menu').click(function(){
+        $('body').removeClass("open-menu");
+        });
+    };
     db.switchMode = function () {
       $(".switch-mode .switch").click(function () {
         $("body").toggleClass("dark-mode");
@@ -342,7 +350,7 @@
         }
       });
     };
-
+    db.menuMobile();
     db.switchMode();
   });
 })(jQuery);
