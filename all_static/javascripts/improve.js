@@ -1,5 +1,4 @@
 (function ($) {
-
     var db = new Object();
     db.menuMobile = function () {
       $('.menu-icon').click(function(){
@@ -13,7 +12,7 @@
     db.switchMode = function () {
       const theme = localStorage.getItem('theme');
       if (theme === "dark-mode") {
-        $("body").addClass("dark-mode");
+       // $("body").addClass("dark-mode");
         javascript: document.querySelectorAll(".js-plotly-plot").forEach(function (gd) {
           Plotly.relayout(gd, {
             "template.layout": {
@@ -169,12 +168,10 @@
         });
       }
       else {
-
       }
-
       $(".switch-mode .switch").click(function () {
-        $("body").toggleClass("dark-mode");
-        if ($("body").hasClass("dark-mode")) {
+        $("html").toggleClass("dark-mode");
+        if ($("html").hasClass("dark-mode")) {
           window.localStorage.setItem('theme', 'dark-mode');
           javascript: document.querySelectorAll(".js-plotly-plot").forEach(function (gd) {
             Plotly.relayout(gd, {
@@ -515,5 +512,4 @@
     };
     db.menuMobile();
     db.switchMode();
-
 })(jQuery);
