@@ -510,13 +510,39 @@
         }
       });
     };
+
+    $.fn.ignore = function(sel){
+      return this.clone().find(sel||">*").remove().end();
+    };
+
+    db.copyButton = function () {
+      setTimeout(function(){  $(".hljs").each(function(){
+        $(this).append( "<div class='db-copy'><svg class='SVGInline-svg SVGInline--cleaned-svg SVG-svg Icon-svg Icon--clipboard-svg SVG--color-svg SVG--color--blue200-svg' style='width: 14px;height: 14px;' height='14' viewBox='0 0 16 16'  xmlns='http://www.w3.org/2000/svg'><path d='M7 5h2a3 3 0 0 0 3-3 2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2 3 3 0 0 0 3 3zM6 2a2 2 0 1 1 4 0 1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z' fill-rule='evenodd'></path></svg> <div class='db-tooltip'>Click to copy</div> </div>");
+     }); }, 1000);
+     $("body").on("click", ".db-copy", function() {
+      var $tempElement = $("<textarea>");
+      $("body").append($tempElement);
+      $tempElement.val($(this).parent(".hljs").ignore(".db-copy").text()).select();
+      document.execCommand("Copy");
+      $tempElement.remove();
+      $(this).find('.db-tooltip').text("Copied!");
+      var id =$(this);
+      setTimeout(function(){  $(id).find('.db-tooltip').text("Click to copy");
+
+    }, 3000);
+      });
+
+   }
     db.menuMobile();
     db.switchMode();
+    db.copyButton();
+
 })(jQuery);
-// document.addEventListener("DOMContentLoaded", (event) => {
-//   document.querySelectorAll("pre code").forEach((block) => {
-//     hljs.highlightBlock(block);
-//     hljs.initLineNumbersOnLoad();
-//   });
-// });
+document.addEventListener("DOMContentLoaded", (event) => {
+  document.querySelectorAll("pre code").forEach((block) => {
+    hljs.highlightBlock(block);
+  //  hljs.initLineNumbersOnLoad();
+  hljsln.initLineNumbersOnLoad();
+  });
+});
 
