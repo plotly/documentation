@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <!-- This page was last built at 2021-10-06 02:16 -->
+  <!-- This page was last built at 2021-10-07 04:05 -->
 
   <meta charset="utf-8" />
 
@@ -79,7 +79,7 @@
     href="/all_static/css/main.css?version=../all_sta"
   />
   <link rel="stylesheet" type="text/css"
-  href="/all_static/css/improve.css?version=2021-10-06-02-16">
+  href="/all_static/css/improve.css?version=2021-10-07-04-05">
 
   <!-- LOCAL DEV STYLESHEET -->
   <!--<link rel="stylesheet" type="text/css" href="http://api.plotly.dev/all_static/css/main.css">-->
@@ -421,7 +421,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="output_html rendered_html output_subarea ">
 
 <div>
-    <div id='dotnet-interactive-this-cell-5109.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+    <div id='dotnet-interactive-this-cell-5305.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
         The below script needs to be able to find the current output cell; this is an easy method to get it.
     </div>
     <script type='text/javascript'>
@@ -466,12 +466,12 @@ async function probeAddresses(probingAddresses) {
 }
 
 function loadDotnetInteractiveApi() {
-    probeAddresses(["http://172.28.0.3:1000/", "http://127.0.0.1:1000/"])
+    probeAddresses(["http://192.168.176.3:1000/", "http://127.0.0.1:1000/"])
         .then((root) => {
         // use probing to find host url and api resources
         // load interactive helpers and language services
         let dotnetInteractiveRequire = require.config({
-        context: '5109.Microsoft.DotNet.Interactive.Http.HttpPort',
+        context: '5305.Microsoft.DotNet.Interactive.Http.HttpPort',
                 paths:
             {
                 'dotnet-interactive': `${root}resources`
@@ -575,6 +575,23 @@ else {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Plotly.NET graphing library can create various graphical figures (i.e. charts, plots, maps and diagrams). The rendering process uses the Plotly.js JavaScript library under the hood. Figures can be represented in F# and serialized as text in JavaScript Object Notation (JSON) before being passed to Plotly.js.</p>
+<p>Viewing the underlying data structure for any plotly chart, can be done via GenericChart.toFigure, which gives access to Figure object</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Figures-as-Trees-of-Attributes">Figures as Trees of Attributes<a class="anchor-link" href="#Figures-as-Trees-of-Attributes">&#182;</a></h1><p>Plotly.js supports inputs adhering to a well-defined schema, whose overall architecture is explained in this page and which is exhaustively documented in the Figure Reference (which is itself generated from a machine-readable JSON representation of the schema). Figures are represented as trees with named nodes called "attributes". The root node of the tree has three top-level attributes: data, layout and frames (see below).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Figure-Data-Structure">Figure Data Structure<a class="anchor-link" href="#Figure-Data-Structure">&#182;</a></h1>
 </div>
 </div>
@@ -593,7 +610,8 @@ else {
             <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Width</span><span class="o">=</span><span class="mi">500</span><span class="o">,</span><span class="n">Height</span><span class="o">=</span><span class="mi">500</span><span class="o">))</span>
             <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">toFigure</span>
 
-<span class="n">figure</span><span class="o">.</span><span class="n">Layout</span><span class="o">.</span><span class="n">GetProperties</span><span class="o">(</span><span class="k">true</span><span class="o">)</span>
+
+<span class="n">figure</span><span class="o">.</span><span class="n">Display</span><span class="bp">()</span>
 </pre></div>
 
     </div>
@@ -606,7 +624,110 @@ else {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[2]:</div>
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<table><thead><tr><th>Data</th><th>Layout</th><th>Frames</th></tr></thead><tbody><tr><td><div class="dni-plaintext">[ { Plotly.NET.Trace2D: type: scatter } ]</div></td><td><div class="dni-plaintext">Plotly.NET.Layout</div></td><td><div class="dni-plaintext">[  ]</div></td></tr></tbody></table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="The-Top-Level-Data-Attribute">The Top-Level Data Attribute<a class="anchor-link" href="#The-Top-Level-Data-Attribute">&#182;</a></h1><p>The first of the three top-level attributes of a figure is Data, whose value must be a list of dicts referred to as "traces".</p>
+<ul>
+<li>Each trace has one of more than 40 possible types (see below for a list organized by subplot type, including e.g. scatter, bar, pie, surface, choropleth etc), and represents a set of related graphical marks in a figure. Each trace * must have a type attribute which defines the other allowable attributes.</li>
+<li>Each trace is drawn on a single subplot whose type must be compatible with the trace's type, or is its own subplot (see below).</li>
+<li>Traces may have a single legend entry, with the exception of pie and funnelarea traces (see below).</li>
+<li>Certain trace types support continuous color, with an associated colorbar, which can be controlled by attributes either within the trace, or within the layout when using the coloraxis attribute.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="n">figure</span><span class="o">.</span><span class="n">Data</span><span class="o">.[</span><span class="mi">0</span><span class="o">].</span><span class="n">GetProperties</span><span class="o">(</span><span class="k">true</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table><thead><tr><th><i>index</i></th><th>Key</th><th>Value</th></tr></thead><tbody><tr><td>0</td><td>type</td><td>scatter</td></tr><tr><td>1</td><td>mode</td><td>lines</td></tr><tr><td>2</td><td>x</td><td><div class="dni-plaintext">[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 ... (1 more) ]</div></td></tr><tr><td>3</td><td>y</td><td><div class="dni-plaintext">[ 10, 17, 24, 31, 38, 45, 52, 59, 66, 73, 80, 87, 94, 101, 108, 115, 122, 129, 136, 143 ... (1 more) ]</div></td></tr><tr><td>4</td><td>line</td><td><div class="dni-plaintext">Plotly.NET.Line</div></td></tr><tr><td>5</td><td>marker</td><td><div class="dni-plaintext">Plotly.NET.TraceObjects.Marker</div></td></tr></tbody></table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="The-Top-Level-Layout-Attribute">The Top-Level Layout Attribute<a class="anchor-link" href="#The-Top-Level-Layout-Attribute">&#182;</a></h1><p>The second of the three top-level attributes of a figure is Layout, whose value is referred to in text as "the layout" and must be a dict, containing attributes that control positioning and configuration of non-data-related parts of the figure such as:</p>
+<ul>
+<li>Dimensions and margins, which define the bounds of "paper coordinates" (see below)</li>
+<li>Figure-wide defaults: templates, fonts, colors, hover-label and modebar defaults</li>
+<li>Title and legend (positionable in container and/or paper coordinates)</li>
+<li>Color axes and associated color bars (positionable in paper coordinates)</li>
+<li>Subplots of various types on which can be drawn multiple traces and which are positioned in paper coordinates:</li>
+<li>xaxis, yaxis, xaxis2, yaxis3 etc: X and Y cartesian axes, the intersections of which are cartesian subplots</li>
+<li>scene, scene2, scene3 etc: 3d scene subplots</li>
+<li>ternary, ternary2, ternary3, polar, polar2, polar3, geo, geo2, geo3, mapbox, mapbox2, mabox3 etc: ternary, polar, geo or mapbox subplots</li>
+<li>Non-data marks which can be positioned in paper coordinates, or in data coordinates linked to 2d cartesian subplots:</li>
+<li>annotations: textual annotations with or without arrows</li>
+<li>shapes: lines, rectangles, ellipses or open or closed paths</li>
+<li>images: background or decorative images</li>
+<li>Controls which can be positioned in paper coordinates and which can trigger Plotly.js functions when interacted with by a user:</li>
+<li>updatemenus: single buttons, toggles and dropdown menus</li>
+<li>sliders: slider controls</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="n">figure</span><span class="o">.</span><span class="n">Layout</span><span class="o">.</span><span class="n">GetProperties</span><span class="o">(</span><span class="k">true</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
 
 
 
@@ -616,6 +737,27 @@ else {
 
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="The-Top-Level-frames-Attribute">The Top-Level frames Attribute<a class="anchor-link" href="#The-Top-Level-frames-Attribute">&#182;</a></h1><p>The third of the three top-level attributes of a figure is Frames, whose value must be a list of dicts that define sequential frames in an animated plot. Each frame contains its own data attribute as well as other parameters. Animations are usually triggered and controlled via controls defined in layout.sliders and/or layout.updatemenus</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="c1">//figure.Frames.[0].GetProperties(true)</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
@@ -796,7 +938,7 @@ else {
 <script src="/all_static//javascripts/hash_offset.js"></script>
 <!-- Image Hover Script -->
 <script src="/all_static/javascripts/imghover.js"></script>
-<script src="/all_static/javascripts/improve.js?version=2021-10-06-02-16"></script>
+<script src="/all_static/javascripts/improve.js?version=2021-10-07-04-05"></script>
 <!-- code highlighting -->
 <script src="/all_static/javascripts/codehighlight/highlight.pack.js"></script>
 <!-- <script src="/all_static/javascripts/highlightjs-line-numbers.js"></script> -->
