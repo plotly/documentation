@@ -26,7 +26,6 @@
             return a + '<span class="ln-num" data-num="' + numStr + '"></span>';
         });
         html = '<span class="ln-num" data-num="  1"></span>' + html;
-        html = '<span class="ln-bg"></span>' + html;
         return html;
     }
 
