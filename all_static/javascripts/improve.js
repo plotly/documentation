@@ -579,15 +579,7 @@
 
       }, 3000);
     });
-     setTimeout(function () {
-      $("code.language-r").each(function () {
-        $(this).children('.ln-num').last().hide();
-      });
-       
-      $("code.language-matlab").each(function () {
-      $(this).children('.ln-num').last().hide();
-      });
-    }, 1300);
+    
     
   }
   db.menuMobile();
@@ -602,5 +594,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
     setTimeout(function () {
       hljsln.initLineNumbersOnLoad();
     }, 1000);
+     setTimeout(function () {
+      $("code.language-r").each(function () {
+        $(this).children('.ln-num').last().hide();
+      });
+       
+      $("code.language-matlab").each(function () {
+      $(this).children('.ln-num').last().hide();
+      });
+    }, 1300);
   });
 });
