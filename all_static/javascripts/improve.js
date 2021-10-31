@@ -583,11 +583,9 @@
       $("code.language-r").each(function () {
         $(this).children('.ln-num').last().hide();
       });
-        $("code.language-matlab").each(function () {
-        $(this).children('.ln-num').last().hide();
-      });
-        $("code.language-r").each(function () {
-        $(this).children('.ln-num').last().hide();
+       
+      $("code.language-matlab").each(function () {
+      $(this).children('.ln-num').last().hide();
       });
     }, 1100);
     
