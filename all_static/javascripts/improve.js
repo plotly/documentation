@@ -587,7 +587,7 @@
       $("code.language-matlab").each(function () {
       $(this).children('.ln-num').last().hide();
       });
-    }, 1100);
+    }, 1300);
     
   }
   db.menuMobile();
