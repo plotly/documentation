@@ -602,6 +602,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
       $("code.language-matlab").each(function () {
       $(this).children('.ln-num').last().hide();
       });
-    }, 1300);
+    }, 1100);
   });
 });
