@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 gem 'github-pages'
 gem 'jekyll-redirect-from'
+gem 'jekyll-seo-tag'
 gem 'jemoji'
 gem 'octopress'
 gem 'rake'
