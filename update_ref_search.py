@@ -20,13 +20,13 @@ def insert_whitespace(x):
     for word in ["axis", "scatter", "bar", "group", "show", "text",
                  "hover", "auto", "reverse", "max", "min", "mode", "anchor", "pad",
                 "prefix", "suffix", "format", "color", "item", "name", "direction", "revision",
-                "mapbox", "polar",
+                "mapbox", "polar", "smith"
                 ]:
         x = x.replace(word, " " + word + " ").replace("  ", " ")
     return x.strip(" ")
 
 split_layout_attrs = [
-        "xaxis", "yaxis", "coloraxis", "scene", "polar", "ternary", "geo", "mapbox",
+        "xaxis", "yaxis", "coloraxis", "scene", "polar", "smith", "ternary", "geo", "mapbox",
         "sliders", "updatemenus", "annotations", "shapes", "images"
     ]
 
