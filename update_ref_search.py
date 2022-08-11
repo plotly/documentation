@@ -27,7 +27,7 @@ def insert_whitespace(x):
 
 split_layout_attrs = [
         "xaxis", "yaxis", "coloraxis", "scene", "polar", "smith", "ternary", "geo", "mapbox",
-        "sliders", "updatemenus", "annotations", "shapes", "images"
+        "sliders", "updatemenus", "annotations", "shapes", "images", "selections"
     ]
 
 _epsilon = 0.0
