@@ -69,6 +69,7 @@ window.markprompt = {
             },
             enabled: true,
             model: 'gpt-3.5-turbo',
+            maxTokens: 2000,
         },
         search: {
             enabled: false,
