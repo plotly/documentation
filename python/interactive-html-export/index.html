@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- This page was last built at 2024-01-03 19:21 -->
+  <!-- This page was last built at 2024-01-09 15:56 -->
 
   <meta charset="utf-8" />
 
@@ -52,7 +52,7 @@
 
   <!-- Main Stylesheets -->
   <link rel="stylesheet" type="text/css" href="/all_static/css/main.css?version=false" />
-  <link rel="stylesheet" type="text/css" href="/all_static/css/improve.css?version=2024-01-03-19-21">
+  <link rel="stylesheet" type="text/css" href="/all_static/css/improve.css?version=2024-01-09-15-56">
 
   <!-- LOCAL DEV STYLESHEET -->
   <!--<link rel="stylesheet" type="text/css" href="http://api.plotly.dev/all_static/css/main.css">-->
@@ -906,10 +906,41 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Controlling-the-size-of-the-HTML-file">Controlling the size of the HTML file<a class="anchor-link" href="#Controlling-the-size-of-the-HTML-file">&#182;</a></h3><p>By default, the resulting HTML file is a fully self-contained HTML file which can be uploaded to a web server or shared via email or other file-sharing mechanisms. The downside to this approach is that the file is very large (5Mb+) because it contains an inlined copy of the Plotly.js library required to make the figure interactive. This can be controlled via the <code>include_plotlyjs</code> argument (see below).</p>
+<h3 id="Inserting-Plotly-Output-into-HTML-using-a-Jinja2-Template">Inserting Plotly Output into HTML using a Jinja2 Template<a class="anchor-link" href="#Inserting-Plotly-Output-into-HTML-using-a-Jinja2-Template">&#182;</a></h3><p>You can insert Plotly output and text related to your data into HTML templates using Jinja2. Use <code>.to_html</code> to send the HTML to a Python string variable rather than using <code>write_html</code> to send the HTML to a disk file.  Use the <code>full_html=False</code> option to output just the code necessary to add a figure to a template. We don't want to output a full HTML page, as the template will define the rest of the page's structure — for example, the page's <code>HTML</code> and <code>BODY</code> tags.  First create an HTML template file containing a Jinja <code>{{ variable }}</code>.  In this example, we customize the HTML in the template file by replacing the Jinja variable <code>{{ fig }}</code> with our graphic <code>fig</code>.</p>
 
 </div>
 </div>
+</div><!DOCTYPE html>
+<html>
+<body>
+<h1>Here's a Plotly graph!</h1>
+{{ fig }}
+<p>And here's some text after the graph.</p>
+</body>
+</html>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then use the following Python to replace <code>{{ fig }}</code> in the template with HTML that will display the Plotly figure "fig":</p>
+
 </div>
+</div>
+</div>import plotly.express as px
+from jinja2 import Template
+
+data_canada = px.data.gapminder().query("country == 'Canada'")
+fig = px.bar(data_canada, x='year', y='pop')
+
+output_html_path=r"/path/to/output.html"
+input_template_path = r"/path/to/template.html"
+
+plotly_jinja_data = {"fig":fig.to_html(full_html=False)}
+#consider also defining the include_plotlyjs parameter to point to an external Plotly.js as described above
+
+with open(output_html_path, "w", encoding="utf-8") as output_file:
+    with open(input_template_path) as template_file:
+        j2_template = Template(template_file.read())
+        output_file.write(j2_template.render(plotly_jinja_data))
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1323,7 +1354,7 @@ write_html(self, *args, **kwargs)
 <script src="/all_static//javascripts/hash_offset.js"></script>
 <!-- Image Hover Script -->
 <script src="/all_static/javascripts/imghover.js"></script>
-<script src="/all_static/javascripts/improve.js?version=2024-01-03-19-21"></script>
+<script src="/all_static/javascripts/improve.js?version=2024-01-09-15-56"></script>
 <!-- code highlighting -->
 
 <!--<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
