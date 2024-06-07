@@ -1,5 +1,12 @@
 # Contributing to Plotly's Graphing Libraries Documentation
 
+<div align="center">
+  <a href="https://dash.plotly.com/project-maintenance">
+    <img src="https://dash.plotly.com/assets/images/maintained-by-plotly.png" width="400px" alt="Maintained by Plotly">
+  </a>
+</div>
+
+
 ## Repo Overview
 
 Plotly welcomes contributions to its [open-source graphing libraries documentation](https://plotly.com/graphing-libraries) from its community of users.
