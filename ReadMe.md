@@ -1,5 +1,12 @@
 # Plotly Documentation
 
+<div align="center">
+  <a href="https://dash.plotly.com/project-maintenance">
+    <img src="https://dash.plotly.com/assets/images/maintained-by-plotly.png" width="400px" alt="Maintained by Plotly">
+  </a>
+</div>
+
+
 This repository is now solely used to host [issues related to Plotly's documentation](https://github.com/plotly/documentation/issues) and the output of the [Graphing Library documentation](https://plot.ly/graphing-libraries/) build process in the [`gh-pages`](https://github.com/plotly/documentation/tree/gh-pages) branch.
 
 Source code for the documentation of Plotly's open-source products can be found in the following repositories:
