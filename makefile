@@ -37,11 +37,11 @@ fetch_adjacent_python_files:
 	cp -r ../plotly.py/doc/build/html _posts/python/html
 
 fetch_upstream_files: clean
-	git clone --depth 1 -b built git@github.com:plotly/plotly.py-docs _posts/python/html
-	git clone --depth 1 -b built git@github.com:plotly/plotlyjs.jl-docs _posts/julia/html
-	git clone --depth 1 -b built git@github.com:plotly/plotly.net-docs _posts/fsharp/html
-	git clone --depth 1 -b built git@github.com:plotly/plotly.r-docs _posts/r/md
-	git clone --depth 1 -b built git@github.com:plotly/plotly.matlab-docs _posts/matlab/md
+	git clone --depth 1 -b built https://github.com/plotly/plotly.py-docs _posts/python/html
+	git clone --depth 1 -b built https://github.com/plotly/plotlyjs.jl-docs _posts/julia/html
+	git clone --depth 1 -b built https://github.com/plotly/plotly.net-docs _posts/fsharp/html
+	git clone --depth 1 -b built https://github.com/plotly/plotly.r-docs _posts/r/md
+	git clone --depth 1 -b built https://github.com/plotly/plotly.matlab-docs _posts/matlab/md
 	mv _posts/r/md/ggplot2 _posts/ggplot2/md
 	mv _posts/fsharp/html/csharp _posts/csharp/html
 
