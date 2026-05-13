@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- This page was last built at 2026-05-12 16:49 -->
+  <!-- This page was last built at 2026-05-13 22:05 -->
 
   <meta charset="utf-8" />
 
@@ -50,7 +50,7 @@
 
   <!-- Main Stylesheets -->
   <link rel="stylesheet" type="text/css" href="/all_static/css/main.css?version=6a0d63a7ef" />
-  <link rel="stylesheet" type="text/css" href="/all_static/css/improve.css?version=2026-05-12-16-49">
+  <link rel="stylesheet" type="text/css" href="/all_static/css/improve.css?version=2026-05-13-22-05">
 
   <!-- LOCAL DEV STYLESHEET -->
   <!--<link rel="stylesheet" type="text/css" href="http://api.plotly.dev/all_static/css/main.css">-->
@@ -885,7 +885,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Controlling-the-size-of-the-HTML-file">Controlling the size of the HTML file<a class="anchor-link" href="#Controlling-the-size-of-the-HTML-file">&#182;</a></h3><p>By default, the resulting HTML file is a fully self-contained HTML file which can be uploaded to a web server or shared via email or other file-sharing mechanisms. The downside to this approach is that the file is very large (5Mb+) because it contains an inlined copy of the Plotly.js library required to make the figure interactive. This can be controlled via the <code>include_plotlyjs</code> argument (see below).</p>
-<h3 id="Inserting-Plotly-Output-into-HTML-using-a-Jinja2-Template">Inserting Plotly Output into HTML using a Jinja2 Template<a class="anchor-link" href="#Inserting-Plotly-Output-into-HTML-using-a-Jinja2-Template">&#182;</a></h3><p>You can insert Plotly output and text related to your data into HTML templates using Jinja2. Use <code>.to_html</code> to send the HTML to a Python string variable rather than using <code>write_html</code> to send the HTML to a disk file.  Use the <code>full_html=False</code> option to output just the code necessary to add a figure to a template. We don't want to output a full HTML page, as the template will define the rest of the page's structure — for example, the page's <code>HTML</code> and <code>BODY</code> tags.  First create an HTML template file containing a Jinja <code>{{ variable }}</code>.  In this example, we customize the HTML in the template file by replacing the Jinja variable <code>{{ fig }}</code> with our graphic <code>fig</code>.</p>
+<h3 id="Inserting-Plotly-Output-into-HTML-using-a-Jinja2-Template">Inserting Plotly Output into HTML using a Jinja2 Template<a class="anchor-link" href="#Inserting-Plotly-Output-into-HTML-using-a-Jinja2-Template">&#182;</a></h3><p>You can insert Plotly output and text related to your data into HTML templates using Jinja2. Use <code>.to_html</code> to send the HTML to a Python string variable rather than using <code>write_html</code> to send the HTML to a disk file.  Use the <code>full_html=False</code> option to output just the code necessary to add a figure to a template. We do not want to output a full HTML page, as the template will define the rest of the page's structure — for example, the page's <code>HTML</code> and <code>BODY</code> tags.  First create a template file containing HTML and a Jinja variable, <code>{{ fig }}</code>.  We use Python to replace the Jinja variable with our graphic <code>fig</code>.</p>
 
 </div>
 </div>
@@ -918,6 +918,30 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="n">input_template_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;/path/to/template.html&quot;</span>
 
 <span class="n">plotly_jinja_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fig&quot;</span><span class="p">:</span><span class="n">fig</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="n">full_html</span><span class="o">=</span><span class="kc">False</span><span class="p">)}</span>
+<span class="c1">#consider also defining the include_plotlyjs parameter to point to an external Plotly.js as described above</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_html_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_template_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">template_file</span><span class="p">:</span>
+        <span class="n">j2_template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">template_file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">j2_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">plotly_jinja_data</span><span class="p">))</span>
+</pre></div>
+<p>The height of the figure can be made responsive by setting <code>autosize</code> to <code>True</code> and  <code>height</code> to <code>None</code> in the layout, and <code>responsive</code> to <code>True</code> in the config.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">plotly.express</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">px</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jinja2</span><span class="w"> </span><span class="kn">import</span> <span class="n">Template</span>
+
+<span class="n">data_canada</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">gapminder</span><span class="p">()</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;country == &#39;Canada&#39;&quot;</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">data_canada</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pop&#39;</span><span class="p">)</span>
+
+<span class="n">output_html_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;/path/to/output.html&quot;</span>
+<span class="n">input_template_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;/path/to/template.html&quot;</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">autosize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">fig_html</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;responsive&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="n">default_height</span><span class="o">=</span><span class="s2">&quot;80vh&quot;</span><span class="p">,</span>
+    <span class="n">full_html</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plotly_jinja_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fig&quot;</span><span class="p">:</span> <span class="n">fig_html</span><span class="p">}</span>
 <span class="c1">#consider also defining the include_plotlyjs parameter to point to an external Plotly.js as described above</span>
 
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_html_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
@@ -980,144 +1004,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Full-Parameter-Documentation">Full Parameter Documentation<a class="anchor-link" href="#Full-Parameter-Documentation">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
-
-<span class="n">help</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="o">.</span><span class="n">write_html</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Help on function write_html in module plotly.basedatatypes:
-
-write_html(self, *args, **kwargs)
-    Write a figure to an HTML file representation
-    
-    Parameters
-    ----------
-    file: str or writeable
-        A string representing a local file path or a writeable object
-        (e.g. a pathlib.Path object or an open file descriptor)
-    config: dict or None (default None)
-        Plotly.js figure config options
-    auto_play: bool (default=True)
-        Whether to automatically start the animation sequence on page load
-        if the figure contains frames. Has no effect if the figure does not
-        contain frames.
-    include_plotlyjs: bool or string (default True)
-        Specifies how the plotly.js library is included/loaded in the output
-        div string.
-    
-        If True, a script tag containing the plotly.js source code (~3MB)
-        is included in the output.  HTML files generated with this option are
-        fully self-contained and can be used offline.
-    
-        If &#39;cdn&#39;, a script tag that references the plotly.js CDN is included
-        in the output. HTML files generated with this option are about 3MB
-        smaller than those generated with include_plotlyjs=True, but they
-        require an active internet connection in order to load the plotly.js
-        library.
-    
-        If &#39;directory&#39;, a script tag is included that references an external
-        plotly.min.js bundle that is assumed to reside in the same
-        directory as the HTML file. If `file` is a string to a local file
-        path and `full_html` is True, then the plotly.min.js bundle is copied
-        into the directory of the resulting HTML file. If a file named
-        plotly.min.js already exists in the output directory then this file
-        is left unmodified and no copy is performed. HTML files generated
-        with this option can be used offline, but they require a copy of
-        the plotly.min.js bundle in the same directory. This option is
-        useful when many figures will be saved as HTML files in the same
-        directory because the plotly.js source code will be included only
-        once per output directory, rather than once per output file.
-    
-        If a string that ends in &#39;.js&#39;, a script tag is included that
-        references the specified path. This approach can be used to point
-        the resulting HTML file to an alternative CDN or local bundle.
-    
-        If False, no script tag referencing plotly.js is included. This is
-        useful when the resulting div string will be placed inside an HTML
-        document that already loads plotly.js.  This option is not advised
-        when full_html=True as it will result in a non-functional html file.
-    
-    include_mathjax: bool or string (default False)
-        Specifies how the MathJax.js library is included in the output html
-        div string.  MathJax is required in order to display labels
-        with LaTeX typesetting.
-    
-        If False, no script tag referencing MathJax.js will be included in the
-        output.
-    
-        If &#39;cdn&#39;, a script tag that references a MathJax CDN location will be
-        included in the output.  HTML div strings generated with this option
-        will be able to display LaTeX typesetting as long as internet access
-        is available.
-    
-        If a string that ends in &#39;.js&#39;, a script tag is included that
-        references the specified path. This approach can be used to point the
-        resulting HTML div string to an alternative CDN.
-    post_script: str or list or None (default None)
-        JavaScript snippet(s) to be included in the resulting div just after
-        plot creation.  The string(s) may include &#39;{plot_id}&#39; placeholders
-        that will then be replaced by the `id` of the div element that the
-        plotly.js figure is associated with.  One application for this script
-        is to install custom plotly.js event handlers.
-    full_html: bool (default True)
-        If True, produce a string containing a complete HTML document
-        starting with an &lt;html&gt; tag.  If False, produce a string containing
-        a single &lt;div&gt; element.
-    animation_opts: dict or None (default None)
-        dict of custom animation parameters to be passed to the function
-        Plotly.animate in Plotly.js. See
-        https://github.com/plotly/plotly.js/blob/master/src/plots/animation_attributes.js
-        for available options. Has no effect if the figure does not contain
-        frames, or auto_play is False.
-    default_width, default_height: number or str (default &#39;100%&#39;)
-        The default figure width/height to use if the provided figure does not
-        specify its own layout.width/layout.height property.  May be
-        specified in pixels as an integer (e.g. 500), or as a css width style
-        string (e.g. &#39;500px&#39;, &#39;100%&#39;).
-    validate: bool (default True)
-        True if the figure should be validated before being converted to
-        JSON, False otherwise.
-    auto_open: bool (default True)
-        If True, open the saved file in a web browser after saving.
-        This argument only applies if `full_html` is True.
-    div_id: str (default None)
-        If provided, this is the value of the id attribute of the div tag. If None, the
-        id attribute is a UUID.
-    
-    Returns
-    -------
-    None
-
-</pre>
-</div>
-</div>
+<h3 id="Reference">Reference<a class="anchor-link" href="#Reference">&#182;</a></h3><p>See the following links for parameter information and HTML figure export options:</p>
+<ul>
+<li><a href="https://plotly.com/python-api-reference/generated/plotly.io.to_html.html"><code>plotly.io.to_html()</code></a></li>
+<li><a href="https://plotly.com/python-api-reference/generated/plotly.io.write_html.html"><code>plotly.io.write_html()</code></a></li>
+</ul>
 
 </div>
 </div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -1334,7 +1228,7 @@ write_html(self, *args, **kwargs)
 <script src="/all_static//javascripts/hash_offset.js"></script>
 <!-- Image Hover Script -->
 <script src="/all_static/javascripts/imghover.js"></script>
-<script src="/all_static/javascripts/improve.js?version=2026-05-12-16-49"></script>
+<script src="/all_static/javascripts/improve.js?version=2026-05-13-22-05"></script>
 <!-- code highlighting -->
 
 <!--<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
