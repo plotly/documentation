@@ -15,7 +15,7 @@ help:  ## Show this help (list available targets)
 
 setup:  ## Install all dependencies needed to build the site locally (gems, Python, Node, upstream content)
 	@echo "Installing Ruby gems..."
-	gem install bundler
+	gem install bundler -v 2.4.22
 	bundle install
 	@echo "Installing Python packages..."
 	pip install -r requirements.txt
