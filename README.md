@@ -77,14 +77,14 @@ npm install                                # Node packages (for the gulp/scss wo
 make fetch_upstream_files                  # Python, R, Julia, Matlab, C#, and F# tutorial content
 ```
 
-4. Serve the Jekyll application: `bundle exec jekyll serve --config _config_dev.yml`.
+4. Serve the Jekyll application (the initial build may take a while): `bundle exec jekyll serve --incremental --config _config_dev.yml`.
 
 5. Visit the pages at: [http://localhost:4000/](http://localhost:4000)
 
 **Note** The default development configuration (`_config_dev.yml`) excludes `_posts/plotly_js` and `_posts/python-v3` for faster builds. If you want to include or exclude different folders, copy `_config_dev.yml`, rename it `_config_personal.yml`, and modify the `exclude` statement.
 
 - If you name the Jekyll configuration file `_config_personal.yml`, it will be caught by the `.gitignore` file and not committed to version control.
-- Run `bundle exec jekyll serve --config _config_personal.yml` to use the custom configuration file
+- Run `bundle exec jekyll serve --incremental --config _config_personal.yml` to use the custom configuration file
 
 - Example configuration that loads **only** the JavaScript posts:
 ```yml
