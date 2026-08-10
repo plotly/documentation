@@ -42,9 +42,11 @@ For more extensive changes to Plotly's JavaScript documentation, we suggest gett
 
 This involves cloning the repository and installing its dependencies: [Git](https://git-scm.com/), [Ruby](https://www.ruby-lang.org/en/), and the Python packages used by the CI scripts.
 
-1. Use [`git`](https://git-scm.com/) to [clone](https://git-scm.com/docs/git-clone) the public `plotly/graphing-library-docs` repository.
+Note: Some older subdependencies need to be built from source on Windows, which is difficult or in some cases not possible.
 
-To do so, run the following commands in your terminal:
+To run this application locally:
+
+1. Use Git to [clone](https://git-scm.com/docs/git-clone) this repository:
 
 ```sh
 git clone git@github.com:plotly/graphing-library-docs.git
@@ -60,7 +62,13 @@ Your branch is up to date with 'origin/master'.
 nothing to commit, working tree clean
 ```
 
-2. Install Ruby 2.7.4. Check your version with `ruby --version`. [RVM](https://rvm.io/rvm/install) is helpful for installing and managing Ruby versions.
+2. Install Ruby 2.7.4. We recommend using [rbenv](https://github.com/rbenv/rbenv). (RVM tries to fetch openssl 1.1 which has been disabled, but if you already have openssl 1.1, then RVM should work):
+
+```sh
+rbenv install 2.7.4
+```
+
+Running `ruby --version` should output `ruby 2.7.4p191 (2021-07-07 revision a21a3b7d23)`.
 
 3. Install all remaining dependencies (Ruby gems, Python packages, Node packages, and upstream tutorial content) in one step:
 
@@ -79,9 +87,11 @@ make fetch_upstream_files                  # Python, R, Julia, Matlab, C#, and F
 
 4. Serve the Jekyll application (the initial build may take a while): `bundle exec jekyll serve --incremental --config _config_dev.yml`.
 
+  If you get an error due to a missing package, install the package manually with `gem install <package>`, then restart your terminal.
+
 5. Visit the pages at: [http://localhost:4000/](http://localhost:4000)
 
-**Note** The default development configuration (`_config_dev.yml`) excludes `_posts/plotly_js` and `_posts/python-v3` for faster builds. If you want to include or exclude different folders, copy `_config_dev.yml`, rename it `_config_personal.yml`, and modify the `exclude` statement.
+**Note**: The default development configuration (`_config_dev.yml`) excludes `_posts/plotly_js` and `_posts/python-v3` for faster builds. If you want to include or exclude different folders, copy `_config_dev.yml`, rename it `_config_personal.yml`, and modify the `exclude` statement.
 
 - If you name the Jekyll configuration file `_config_personal.yml`, it will be caught by the `.gitignore` file and not committed to version control.
 - Run `bundle exec jekyll serve --incremental --config _config_personal.yml` to use the custom configuration file
@@ -103,7 +113,7 @@ staticurl: http://localhost:4000/all_static
 exclude: []
 ```
 
-**Note** The Python, R, Julia, Matlab, C#, and F# tutorial content is not stored in this repository — it is cloned in at build time from upstream repos by `make fetch_upstream_files`. If you want those pages to render locally, run `make fetch_upstream_files` before serving.
+**Note** The Python, R, Julia, Matlab, C#, and F# tutorial content is not stored in this repository—it is cloned in at build time from upstream repos by `make fetch_upstream_files`. If you want those pages to render locally, run `make fetch_upstream_files` before serving.
 
 ## Continuous Integration
 
