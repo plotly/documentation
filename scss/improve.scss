@@ -457,14 +457,28 @@ aside.\--sidebar-container .\--sidebar-fixed.affix #modal-button {
   width: 195px;
 }
 
+/* These "More <section> >>" links previously had no underline and a muted
+   slate colour, so they didn't read as clickable until hover. Make the
+   affordance permanent rather than hover-only. */
 .langindexlink {
-  text-decoration: none;
-  color: #506784;
+  text-decoration: underline;
+  color: #2186f4;
 
   &:hover {
     text-decoration: underline;
-    color: #2186f4 !important;
+    color: #1266c4 !important;
   }
+}
+
+/* Per-section intro copy on the language index pages. Lives outside
+   .--section-header, which is a flex row shared with the "More <section> >>"
+   link, so a paragraph inside it would become a third item on that row. */
+.\--section-description {
+  margin: 0px 0px 15px 0px;
+  max-width: 60rem;
+  color: #506784;
+  font-size: 0.95rem;
+  line-height: 1.5rem;
 }
 
 /*********fix dark sidebar*********/
@@ -659,6 +673,51 @@ aside.\--sidebar-container .\--sidebar-fixed #modal-button {
 
 summary::-webkit-details-marker {
   display: none !important;
+}
+
+/* The global rule above hides the native disclosure triangle, and the
+   replacement arrow is scoped to .--sidebar-fixed only -- so a <details> in
+   page content had no affordance at all and read as static text. Give the
+   plotly.js features section its own arrow, colour and underline so it's
+   obviously an expandable control. */
+details.js-splash--features {
+  > summary {
+    cursor: pointer;
+    list-style: none;
+    padding-left: 22px;
+    position: relative;
+
+    &::-webkit-details-marker {
+      display: none !important;
+    }
+
+    &:before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 0.45em;
+      border: 5px solid transparent;
+      border-width: 5px 7px;
+      border-left-color: #506784;
+      transition: transform 0.15s ease;
+    }
+
+    .js-splash--features-title {
+      font-size: 22px;
+      font-weight: 500;
+      color: #506784;
+      text-decoration: underline;
+    }
+
+    &:hover .js-splash--features-title {
+      color: #2186f4;
+    }
+  }
+
+  &[open] > summary:before {
+    transform: rotate(90deg);
+    transform-origin: 30% 50%;
+  }
 }
 
 .\--footer-meta {
@@ -1476,8 +1535,15 @@ body header.header-main.\--default nav.--nav-meta {
     fill: #a0aaba;
   }
 
-  .--section-header a {
+  /* Section headings are <span> now that their pointless self-links were
+     removed; keep the darkmode colour applying to both. */
+  .--section-header a,
+  .--section-header > span {
     color: #fff !important;
+  }
+
+  .\--section-description {
+    color: #a0aaba;
   }
 
   .\--tutorial-section .\--grid-item {
