@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- This page was last built at 2026-08-25 20:53 -->
+  <!-- This page was last built at 2026-08-26 18:38 -->
 
   <meta charset="utf-8" />
 
@@ -37,13 +37,16 @@
   
 
   <!-- Mathjax -->
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+  <!-- MathJax v3 (tex-svg). Plotly.js v4 removed MathJax v2 support; v3 works with v2.x and v3.x bundles too. -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+  
 
   
   <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
    
   <!-- Plotly.js -->
-  <script src="https://cdn.plot.ly/plotly-3.6.0.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-4.0.0.min.js"></script>
    
   <!--
       //// Stylesheets
@@ -58,7 +61,7 @@
 
   <!-- Main Stylesheets -->
   <link rel="stylesheet" type="text/css" href="/all_static/css/main.css?version=d35a2a3f4f" />
-  <link rel="stylesheet" type="text/css" href="/all_static/css/improve.css?version=2026-08-25-20-53">
+  <link rel="stylesheet" type="text/css" href="/all_static/css/improve.css?version=2026-08-26-18-38">
 
   <!-- LOCAL DEV STYLESHEET -->
   <!--<link rel="stylesheet" type="text/css" href="http://api.plotly.dev/all_static/css/main.css">-->
@@ -173,7 +176,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                             
                             <a class="plotly_js">
                                 <div class="icon"></div>
-                                Javascript (v3.6.0)
+                                Javascript (v4.0.0)
                             </a>
                             
 
@@ -195,7 +198,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                                 </li>
                                 <li>
                                     <a href="https://plotly.com/javascript/" class="plotly_js">
-                                        <div class="icon"></div>Javascript (v3.6.0)
+                                        <div class="icon"></div>Javascript (v4.0.0)
                                     </a>
                                 </li>
                                 <li>
@@ -249,6 +252,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <!-- aside - Main Sidebar-->
 
       
+
+
+
+
 
 
 
@@ -556,6 +563,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                         <a href="/javascript/configuration-options/" class="js-splash--navigation-item">Configuration
                             Options</a>
                     </li>
+                    <li class="--sidebar-item">
+                        <a href="/javascript/guides/" class="js-splash--navigation-item">Guides</a>
+                    </li>
                     
 
                     <!-- R Specific -->
@@ -715,18 +725,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 
 
-          <p>With the release of Plotly.js v2.35.0, we are introducing a new set of trace types for maps with tile underlays:</p>
+          <p>Plotly.js v2.35.0 introduced a new set of trace types for maps with tile underlays:</p>
 
 <ul>
-    <li>Choroplethmap</li>
-    <li>Scattermap</li>
-    <li>Densitymap</li>
+    <li><code>Choroplethmap</code></li>
+    <li><code>Scattermap</code></li>
+    <li><code>Densitymap</code></li>
 </ul>
 
-<p>These traces replace the existing Mapbox traces, <code>Choroplethmapbox</code>, <code>Scattermapbox</code>,
-    <code>Densitymapbox</code>, but use <a href="https://maplibre.org">MapLibre</a> as the map renderer rather than
+<p>These traces replaced the Mapbox traces, <code>Choroplethmapbox</code>, <code>Scattermapbox</code>, and
+    <code>Densitymapbox</code>, and use <a href="https://maplibre.org">MapLibre</a> as the map renderer rather than
     Mapbox.
 </p>
+
+<p><strong>The Mapbox traces, the <code>layout.mapbox</code> subplot, and the <code>mapboxAccessToken</code> config
+    option were removed in Plotly.js v4</strong>, along with the <code>plotly-mapbox.min.js</code> partial bundle and
+    the <code>zoomInMapbox</code>, <code>zoomOutMapbox</code>, and <code>resetViewMapbox</code> modebar buttons (use
+    <code>plotly-map.min.js</code> and <code>zoomInMap</code>, <code>zoomOutMap</code>, <code>resetViewMap</code>).
+    If you are upgrading to v4, follow the steps below first. See
+    <a href="/javascript/guides/migrating-to-v4/">Migrating to Plotly.js v4</a> for the rest of the upgrade.</p>
 
 <p>When switching to the new traces, keep an eye out for improved rendering performance, WebGL2 support, and over time,
     improved features in the Plotly map traces inherited from the MapLibre renderer, including projection support, globe
@@ -753,12 +770,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <code>outdoors</code>, <code>light</code>, <code>dark</code>, <code>satellite</code>, and
         <code>satellite-streets</code> styles,
         using Mapbox styling. These style names are still available, but they now reference slightly different styles
-        provided by other tools.
+        provided by other tools. The three Stamen styles (<code>stamen-terrain</code>, <code>stamen-toner</code>, and
+        <code>stamen-watercolor</code>) are not available, because Stamen tiles are served by Stadia Maps and require
+        an API key — pass the URL of a style definition to use them.
     </li>
+    <li>Remove <code>mapboxAccessToken</code> from your config, and any
+        <code>mapbox://styles/mapbox/...</code> style URLs, neither of which is supported. Custom MapLibre and Mapbox
+        JSON style URLs still work.</li>
 </ol>
 
 <p>Note that Mapbox API keys are no longer required for Plotly-provided styles, but using external styles in your Plotly
     maps remains supported with the existing API.</p>
+
 
         </section>
 
@@ -945,7 +968,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <script src="/all_static//javascripts/hash_offset.js"></script>
 <!-- Image Hover Script -->
 <script src="/all_static/javascripts/imghover.js"></script>
-<script src="/all_static/javascripts/improve.js?version=2026-08-25-20-53"></script>
+<script src="/all_static/javascripts/improve.js?version=2026-08-26-18-38"></script>
 <!-- code highlighting -->
 
 <!--<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
