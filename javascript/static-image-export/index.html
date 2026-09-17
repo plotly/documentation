@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- This page was last built at 2026-09-16 15:35 -->
+  <!-- This page was last built at 2026-09-17 16:56 -->
 
   <meta charset="utf-8" />
 
@@ -61,7 +61,7 @@
 
   <!-- Main Stylesheets -->
   <link rel="stylesheet" type="text/css" href="/all_static/css/main.css?version=d35a2a3f4f" />
-  <link rel="stylesheet" type="text/css" href="/all_static/css/improve.css?version=2026-09-16-15-35">
+  <link rel="stylesheet" type="text/css" href="/all_static/css/improve.css?version=2026-09-17-16-56">
 
   <!-- LOCAL DEV STYLESHEET -->
   <!--<link rel="stylesheet" type="text/css" href="http://api.plotly.dev/all_static/css/main.css">-->
@@ -678,7 +678,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   
                   
                 </h1>
-                <p>How to export graphs as static images in JavaScript. The Plotly JavaScript graphing library supports `.jpg`, `.png`, and `.svg` as formats for static image export. </p>
+                <p>How to export graphs as static images in JavaScript. The Plotly JavaScript graphing library supports `.jpg`, `.png`, `.webp`, and `.svg` as formats for static image export. </p>
                 <br>
                 
                 <!--
@@ -750,59 +750,74 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 
           <p>You can save graphs created with <code>plotly.js</code> to static images and view them in your browser. Consider the following example:</p>
-<div class="highlight"><pre><code class="language-" data-lang="">var img_jpg= d3.select('#jpg-export');
+<div class="highlight"><pre><code class="language-" data-lang="">const imgJpg = document.getElementById('jpg-export');
 
-// Plotting the Graph
+const trace = {x: [3, 9, 8, 10, 4, 6, 5], y: [5, 7, 6, 7, 8, 9, 8], type: 'scatter'};
+const trace1 = {x: [3, 4, 1, 6, 8, 9, 5], y: [4, 2, 5, 2, 1, 7, 3], type: 'scatter'};
+const data = [trace, trace1];
+const layout = {title: {text: 'Simple JavaScript Graph'}};
 
-var trace={x:[3,9,8,10,4,6,5],y:[5,7,6,7,8,9,8],type:"scatter"};
-var trace1={x:[3,4,1,6,8,9,5],y:[4,2,5,2,1,7,3],type:"scatter"};
-var data = [trace,trace1];
-var layout = {title : "Simple JavaScript Graph"};
-Plotly.newPlot(
-  'plotly_div',
-   data,
-   layout)
-
-// static image in jpg format
-
-.then(
-    function(gd)
-     {
-      Plotly.toImage(gd,{height:300,width:300})
-         .then(
-             function(url)
-         {
-             img_jpg.attr("src", url);
-         }
-         )
-    });
+Plotly.newPlot('plotly_div', data, layout)
+  .then((gd) =&gt; Plotly.toImage(gd, {format: 'jpeg', height: 300, width: 300}))
+  .then((url) =&gt; {
+    imgJpg.src = url;
+  });
 </code></pre></div>
 <p>To view this image in your page include following HTML tag:</p>
-<div class="highlight"><pre><code class="language-" data-lang="">&lt;img id="jpg-export"&gt;&lt;/img&gt;
+<div class="highlight"><pre><code class="language-" data-lang="">&lt;img id="jpg-export"&gt;
 </code></pre></div>
 <p>Height and width of the image can be adjusted by specifying the same in <code>toImage</code> call:</p>
-<div class="highlight"><pre><code class="language-" data-lang="">Plotly.toImage(
-gd,{
-  format:'jpeg',
-  height:desired_height,
-  width:desired_width,
+<div class="highlight"><pre><code class="language-" data-lang="">Plotly.toImage(gd, {
+  format: 'jpeg',
+  height: desiredHeight,
+  width: desiredWidth
 });
 </code></pre></div>
 <p>You can also save the image using different formats.</p>
 
 <h1>Formats Supported</h1>
 
-<p>The common image formats: &#39;PNG&#39;, &#39;JPG/JPEG&#39; are supported. In addition, formats like &#39;EPS&#39;, &#39;SVG&#39; and &#39;PDF&#39; are also available for user with a Personal or Professional subscription. You can get more details on our <a href="https://plotly.com/products/cloud/">pricing page</a></p>
+<p><code>Plotly.toImage</code> and <code>Plotly.downloadImage</code> take one of five values for <code>format</code>:</p>
 
-<p><strong>Note:</strong> It is important to note that any figures containing WebGL traces (i.e. of type scattergl, scatter3d, surface, mesh3d, scatterpolargl, cone, streamtube, splom, or parcoords) that are exported in a vector format like SVG or PDF will include encapsulated rasters instead of vectors for some parts of the image.</p>
+<ul>
+<li><code>png</code> - raster image, and the default format</li>
+<li><code>jpeg</code> - raster image with no transparency</li>
+<li><code>webp</code> - raster image</li>
+<li><code>svg</code> - vector image</li>
+<li><code>full-json</code> - the figure specification as JSON, not a rendered image</li>
+</ul>
+
+<p><strong>Note:</strong> A figure that contains a WebGL trace (of type scattergl, scatter3d, surface, mesh3d, scatterpolargl, cone, streamtube, splom, or parcoords) holds encapsulated rasters instead of vectors for some parts of an SVG export.</p>
 
 <h2>Saving as PNG</h2>
-<div class="highlight"><pre><code class="language-" data-lang="">  img_png.attr("src", url);
-  Plotly.toImage(gd,{format:'png',height:400,width:400});
+<div class="highlight"><pre><code class="language-" data-lang="">const imgPng = document.getElementById('png-export');
+
+Plotly.toImage(gd, {format: 'png', height: 400, width: 400}).then((url) =&gt; {
+  imgPng.src = url;
+});
 </code></pre></div>
 <h2>Saving as SVG</h2>
-<div class="highlight"><pre><code class="language-" data-lang="">img_svg.attr("src", url);
-Plotly.toImage(gd,{format:'svg',height:800,width:800});
+<div class="highlight"><pre><code class="language-" data-lang="">const imgSvg = document.getElementById('svg-export');
+
+Plotly.toImage(gd, {format: 'svg', height: 800, width: 800}).then((url) =&gt; {
+  imgSvg.src = url;
+});
+</code></pre></div>
+<h2>Saving as JSON</h2>
+
+<p>The <code>full-json</code> format returns the figure with every default value filled in, including data, layout, frames, config, and the plotly.js <code>version</code>.</p>
+<div class="highlight"><pre><code class="language-" data-lang="">// toImage returns a data:application/json URL
+Plotly.toImage(gd, {format: 'full-json'}).then((dataUrl) =&gt; {
+  console.log(dataUrl);
+});
+
+// Set imageDataOnly to get the raw JSON string instead
+Plotly.toImage(gd, {format: 'full-json', imageDataOnly: true}).then((json) =&gt; {
+  console.log(JSON.parse(json));
+});
+</code></pre></div>
+<p><code>Plotly.downloadImage</code> downloads the figure JSON instead, and saves it as <code>newplot.full.json</code>:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">Plotly.downloadImage(gd, {format: 'full-json', filename: 'newplot'});
 </code></pre></div>
 
         </section>
@@ -990,7 +1005,7 @@ Plotly.toImage(gd,{format:'svg',height:800,width:800});
 <script src="/all_static//javascripts/hash_offset.js"></script>
 <!-- Image Hover Script -->
 <script src="/all_static/javascripts/imghover.js"></script>
-<script src="/all_static/javascripts/improve.js?version=2026-09-16-15-35"></script>
+<script src="/all_static/javascripts/improve.js?version=2026-09-17-16-56"></script>
 <!-- code highlighting -->
 
 <!--<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
