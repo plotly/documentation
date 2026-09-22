@@ -1,0 +1,40 @@
+var data = [{
+  x: [1, 2, 3, 4, 5],
+  y: [2, 4, 3, 5, 4],
+  type: 'scatter',
+  mode: 'markers',
+  marker: {size: 14}
+}];
+
+var layout = {
+  title: {text: 'Click Anywhere'},
+  hovermode: 'closest',
+  clickanywhere: true,
+  annotations: [{
+    text: 'Click anywhere in the plot area',
+    xref: 'paper',
+    yref: 'paper',
+    x: 0.02,
+    y: 0.98,
+    xanchor: 'left',
+    yanchor: 'top',
+    showarrow: false
+  }]
+};
+
+Plotly.newPlot('myDiv', data, layout);
+
+document.getElementById('myDiv').on('plotly_click', function(eventData) {
+  var text;
+
+  if (eventData.points.length) {
+    var point = eventData.points[0];
+    text = 'Point: x = ' + point.x + ', y = ' + point.y;
+  } else {
+    // points is empty over blank space, so read the click position from xvals and yvals
+    text = 'Empty space: x = ' + eventData.xvals[0].toFixed(2) +
+      ', y = ' + eventData.yvals[0].toFixed(2);
+  }
+
+  Plotly.relayout('myDiv', {'annotations[0].text': text});
+});

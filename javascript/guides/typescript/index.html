@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- This page was last built at 2026-09-22 17:32 -->
+  <!-- This page was last built at 2026-09-22 20:48 -->
 
   <meta charset="utf-8" />
 
@@ -46,7 +46,7 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
    
   <!-- Plotly.js -->
-  <script src="https://cdn.plot.ly/plotly-4.0.0.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-4.1.1.min.js"></script>
    
   <!--
       //// Stylesheets
@@ -61,7 +61,7 @@
 
   <!-- Main Stylesheets -->
   <link rel="stylesheet" type="text/css" href="/all_static/css/main.css?version=d35a2a3f4f" />
-  <link rel="stylesheet" type="text/css" href="/all_static/css/improve.css?version=2026-09-22-17-32">
+  <link rel="stylesheet" type="text/css" href="/all_static/css/improve.css?version=2026-09-22-20-48">
 
   <!-- LOCAL DEV STYLESHEET -->
   <!--<link rel="stylesheet" type="text/css" href="http://api.plotly.dev/all_static/css/main.css">-->
@@ -176,14 +176,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                             
                             <a class="plotly_js">
                                 <div class="icon"></div>
-                                Javascript (v4.0.0)
+                                Javascript (v4.1.1)
                             </a>
                             
 
                             <ul>
                                 <li>
                                     <a href="https://plotly.com/python/" class="python">
-                                        <div class="icon"></div>Python (v7.0.0)
+                                        <div class="icon"></div>Python (v7.1.0)
                                     </a>
                                 </li>
                                 <li>
@@ -198,7 +198,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                                 </li>
                                 <li>
                                     <a href="https://plotly.com/javascript/" class="plotly_js">
-                                        <div class="icon"></div>Javascript (v4.0.0)
+                                        <div class="icon"></div>Javascript (v4.1.1)
                                     </a>
                                 </li>
                                 <li>
@@ -752,6 +752,25 @@ namespace, so all of these work:</p>
 
 <span class="k">await</span> <span class="nx">newPlot</span><span class="p">(</span><span class="nx">div</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">layout</span><span class="p">);</span>
 </code></pre></div>
+<h3>Modular entry points</h3>
+
+<p><em>New in 4.1</em></p>
+
+<p><code>lib/</code> holds one entry point per trace, component, partial bundle, and locale. Each
+entry point has its own declaration, which <code>typesVersions</code> in <code>package.json</code> maps onto
+<code>plotly.js/lib/&lt;entry&gt;</code>. A custom bundle therefore typechecks:</p>
+<div class="highlight"><pre><code class="language-ts" data-lang="ts"><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">Plotly</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">plotly.js/lib/core</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">scatter</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">plotly.js/lib/scatter</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">bar</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">plotly.js/lib/bar</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="nx">Plotly</span><span class="p">.</span><span class="nx">register</span><span class="p">([</span><span class="nx">scatter</span><span class="p">,</span> <span class="nx">bar</span><span class="p">]);</span>
+</code></pre></div>
+<p><code>plotly.js/lib/core</code> carries the same type surface as the full package. A trace that you
+never register still typechecks.</p>
+
+<p>The <code>plotly.js-dist</code> and <code>plotly.js-dist-min</code> packages also ship the type definitions
+from 4.1 onward. Version 4.0 shipped them only in <code>plotly.js</code>.</p>
+
 <h2>Typing trace data</h2>
 
 <p><code>Data</code> is the union of every trace&#39;s data object, and it discriminates on <code>type</code>.
@@ -781,6 +800,10 @@ every field is optional, and the full interface would require all of them.
 
 <span class="kd">const</span> <span class="nx">config</span><span class="p">:</span> <span class="nb">Partial</span><span class="o">&lt;</span><span class="nx">Config</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span> <span class="na">responsive</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="na">showSendToCloud</span><span class="p">:</span> <span class="kc">false</span> <span class="p">};</span>
 </code></pre></div>
+<p>From 4.1, <code>Layout</code> also carries the attributes that traces contribute, such as
+<code>barmode</code>, <code>boxmode</code>, <code>violinmode</code>, and <code>piecolorway</code>. Version 4.0 left those out.
+<code>PolarLayout</code> carries its own <code>barmode</code> and <code>bargap</code> for the same reason.</p>
+
 <p>Note that <code>Layout</code> and <code>Data</code> are <em>input</em> shapes. The post-coerce internal shapes
 that Plotly computes from them (often called &quot;FullLayout&quot; and &quot;FullData&quot;) are
 deliberately not exported.</p>
@@ -1036,7 +1059,7 @@ should prefer <code>TraceType</code>.</p>
 <script src="/all_static//javascripts/hash_offset.js"></script>
 <!-- Image Hover Script -->
 <script src="/all_static/javascripts/imghover.js"></script>
-<script src="/all_static/javascripts/improve.js?version=2026-09-22-17-32"></script>
+<script src="/all_static/javascripts/improve.js?version=2026-09-22-20-48"></script>
 <!-- code highlighting -->
 
 <!--<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
